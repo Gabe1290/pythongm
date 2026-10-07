@@ -324,7 +324,7 @@ def build_t05(root, phase=3, level=None):
 # Tutorial 06 - Maze: Navigate to the Exit   (phases 1..3)
 # ---------------------------------------------------------------------------
 
-T06_PHASES = ["player_and_maze", "coins_and_exit", "game_controller"]
+T06_PHASES = ["player_and_maze", "coins_and_exit", "game_controller", "bonus_2_5d"]
 
 # The tutorial's example maze (W wall, P player, C coin, E exit); coins and exit added.
 T06_LEVEL = [
@@ -346,20 +346,35 @@ T06_LEVEL = [
 ]
 
 
-def build_t06(root, phase=3, level=None):
+def build_t06(root, phase=4, level=None):
     level = level or T06_LEVEL
     p = Project(root, "Maze")
     p.sprite("spr_player", "circle", 32, 32, (60, 120, 240, 255))
     p.sprite("spr_wall", "rect", 32, 32, (120, 100, 80, 255))
     p.obj("obj_wall", "spr_wall", solid=True)
-    p.obj("obj_player", "spr_player", {
+
+    # Directional player sprites (Part A, docs/MAZE_2_5D_TUTORIAL_PLAN.md) --
+    # core curriculum from phase 1 onward (page 2's Step 3B), a stand-in for
+    # the real Tutorials/06_maze/assets/spr_player_{up,down,left,right}.png
+    # hand-drawn art (4 distinct colours here instead, same "simple flat
+    # shapes" convention every other builder in this file uses).
+    p.sprite("spr_player_right", "circle", 32, 32, (60, 150, 255, 255))
+    p.sprite("spr_player_left", "circle", 32, 32, (40, 100, 200, 255))
+    p.sprite("spr_player_up", "circle", 32, 32, (90, 170, 255, 255))
+    p.sprite("spr_player_down", "circle", 32, 32, (30, 80, 170, 255))
+
+    right_actions = [act("set_hspeed", speed=4), act("set_sprite", sprite="spr_player_right")]
+    left_actions = [act("set_hspeed", speed=-4), act("set_sprite", sprite="spr_player_left")]
+    up_actions = [act("set_vspeed", speed=-4), act("set_sprite", sprite="spr_player_up")]
+    down_actions = [act("set_vspeed", speed=4), act("set_sprite", sprite="spr_player_down")]
+    player_ev = {
         "keyboard": {
-            "right": {"actions": [act("set_hspeed", speed=4)]},
-            "left": {"actions": [act("set_hspeed", speed=-4)]},
-            "down": {"actions": [act("set_vspeed", speed=4)]},
-            "up": {"actions": [act("set_vspeed", speed=-4)]},
+            "right": {"actions": right_actions},
+            "left": {"actions": left_actions},
+            "down": {"actions": down_actions},
+            "up": {"actions": up_actions},
             "nokey": {"actions": [act("stop_movement")]}},
-        "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}})
+        "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}}
     kinds = {"W": "obj_wall", "P": "obj_player"}
     if phase >= 2:
         p.sprite("spr_coin", "circle", 32, 32, (250, 210, 40, 255))
@@ -376,6 +391,20 @@ def build_t06(root, phase=3, level=None):
             "create": {"actions": [act("set_score", value=0)]},
             "draw": {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}})
         placements.append(("obj_game_controller", 40, 40))
+    if phase >= 4:
+        # Part B, the "Make It 2.5D" bonus page: enable the raycast view on
+        # the player (camera_object defaults to the caller) and give the
+        # camera the same facing angle as the sprite each key already picks
+        # -- the obj_wall collision event above already makes walls solid
+        # to the player, nothing new needed there (see the bonus page's own
+        # "Walls Are Already Solid" callout).
+        player_ev["create"] = {"actions": [
+            act("enable_raycast_view", cell_size=32, fov=66, render_distance=20)]}
+        right_actions.append(act("set_facing_angle", angle=0))
+        left_actions.append(act("set_facing_angle", angle=180))
+        up_actions.append(act("set_facing_angle", angle=90))
+        down_actions.append(act("set_facing_angle", angle=270))
+    p.obj("obj_player", "spr_player", player_ev)
     p.room("room_maze", 640, 480, placements)
     return p.save()
 

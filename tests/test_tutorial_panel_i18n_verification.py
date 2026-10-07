@@ -174,6 +174,71 @@ class TestTutorial10FileExchangeMultiplayer:
     def test_thumbnail_file_exists(self):
         assert (TUTORIALS_ROOT / "thumbnails" / "10_file_exchange_multiplayer.png").exists()
 
+
+class TestTutorial06MazeBonusPage:
+    """docs/MAZE_2_5D_TUTORIAL_PLAN.md: Tutorial 6 gained a new optional 5th
+    page (05_bonus_2_5d.html) plus a Part-A addition to page 2, EN+FR only.
+    Same gap as TestTutorial10FileExchangeMultiplayer above -- the
+    parametrized LOCALIZED_LANGUAGES tests never walk the English root
+    directly, only Tutorials/<lang>/ subfolders -- so this class adds that
+    walk and a direct pin on the new page count/shape.
+    """
+
+    def test_appears_in_both_language_indexes_with_five_pages(self):
+        for index_path in (TUTORIALS_ROOT / "index.json", TUTORIALS_ROOT / "fr" / "index.json"):
+            with open(index_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            entries = [t for t in data["tutorials"] if t["folder"] == "06_maze"]
+            assert len(entries) == 1, f"{index_path}: expected exactly one entry"
+            assert entries[0]["pages"] == [
+                "01_introduction.html",
+                "02_player_and_maze.html",
+                "03_coins_and_exit.html",
+                "04_game_controller.html",
+                "05_bonus_2_5d.html",
+            ]
+
+    def test_new_directional_sprite_assets_exist(self):
+        assets = TUTORIALS_ROOT / "06_maze" / "assets"
+        for direction in ("up", "down", "left", "right"):
+            assert (assets / f"spr_player_{direction}.png").is_file()
+
+    def test_english_root_walks_every_page_without_error(self):
+        """The ENGLISH root (Tutorials/, not Tutorials/<lang>/) -- nothing
+        in the parametrized tests above ever opens it directly."""
+        _make_app()
+        from widgets.tutorial_panel import TutorialPanel
+        from core.language_manager import get_language_manager
+        from utils.config import Config
+
+        manager = get_language_manager()
+        original_lang, original_edition = manager.current_language, Config.get("edition", None)
+        manager.current_language = "en"
+        Config.set("edition", "development")
+        try:
+            with open(TUTORIALS_ROOT / "index.json", "r", encoding="utf-8") as f:
+                index_data = json.load(f)
+            maze = next(t for t in index_data["tutorials"] if t["folder"] == "06_maze")
+
+            panel = TutorialPanel()
+            panel.set_tutorials_path(TUTORIALS_ROOT)
+            panel.open_tutorial_by_data(maze)
+
+            assert panel.stack.currentIndex() == 1
+            assert len(panel.tutorial_pages) == 5
+
+            for page_index in range(5):
+                panel.current_page_index = page_index
+                panel.load_current_page()
+                plain = panel.content_browser.toPlainText()
+                for marker in _ERROR_MARKERS:
+                    assert marker not in plain, f"en/06_maze page {page_index}: hit {marker!r}"
+                assert len(plain.strip()) > 100, (
+                    f"en/06_maze page {page_index}: suspiciously short ({len(plain.strip())} chars)")
+        finally:
+            manager.current_language = original_lang
+            Config.set("edition", original_edition)
+
     def test_english_root_every_page_loads(self):
         """The English pages live directly under Tutorials/, not a
         Tutorials/<lang>/ subfolder -- forcing the language to one with no

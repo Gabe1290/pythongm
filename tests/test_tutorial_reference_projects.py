@@ -58,6 +58,12 @@ def insts(runner, name):
     return [i for i in runner.current_room.instances if i.object_name == name]
 
 
+def sprite_name(runner, instance):
+    """Reverse-lookup an instance's current sprite's NAME out of
+    runner.sprites (GameSprite itself carries no name, only a file path)."""
+    return next(name for name, spr in runner.sprites.items() if spr is instance.sprite)
+
+
 # ----------------------------------------------------------------- Tutorial 02
 
 def test_t02_phase1_player_moves_and_can_leave_the_screen(tmp_path):
@@ -658,6 +664,87 @@ def test_t06_a_player_placed_off_the_grid_jams_in_one_tile_corridors(tmp_path):
         ys.append(insts(r, "obj_player")[0].y)
     play(path, script, 60)
     assert ys[-1] < 40                                # jammed at the mouth of column 1's corridor
+
+
+def test_t06_facing_direction_sprite_changes_with_each_arrow_key(tmp_path):
+    """Part A (docs/MAZE_2_5D_TUTORIAL_PLAN.md): each arrow key swaps the
+    player's sprite to match the direction it just moved, and it keeps
+    showing that direction after the key is released."""
+    path = trp.build_t06(tmp_path, 1)
+    # Each key held for ~10 frames (KEYDOWN .. KEYUP) so the "(held)" event
+    # actually fires at least once -- posting KEYDOWN+KEYUP in the same
+    # frame left the key "not held" for every frame the runner processed
+    # input, so the sprite never changed (caught by this test failing
+    # against a first draft that did exactly that).
+    downs = {4: pygame.K_RIGHT, 40: pygame.K_LEFT, 80: pygame.K_UP, 120: pygame.K_DOWN}
+    ups = {15: pygame.K_RIGHT, 51: pygame.K_LEFT, 91: pygame.K_UP, 131: pygame.K_DOWN}
+    seen = {}
+
+    def script(f, post, r, seen_):
+        if f in downs:
+            post(pygame.KEYDOWN, downs[f])
+        if f in ups:
+            post(pygame.KEYUP, ups[f])
+        if f in (20, 60, 100, 140):
+            seen[f] = sprite_name(r, insts(r, "obj_player")[0])
+    play(path, script, 141)
+    assert seen[20] == "spr_player_right"
+    assert seen[60] == "spr_player_left"
+    assert seen[100] == "spr_player_up"
+    assert seen[140] == "spr_player_down"
+
+
+def test_t06_bonus_phase_enables_raycast_and_facing_angle_tracks_each_key(tmp_path):
+    """Part B, the bonus page: Create enables the raycast view, and each
+    arrow key sets the matching facing_angle (0/180/90/270) alongside the
+    sprite Part A already sets -- the exact recipe the bonus page teaches."""
+    from extensions.raycast_2_5d.state import peek_camera, raycast_state
+
+    path = trp.build_t06(tmp_path, 4)
+    downs = {4: pygame.K_RIGHT, 40: pygame.K_LEFT, 80: pygame.K_UP, 120: pygame.K_DOWN}
+    ups = {15: pygame.K_RIGHT, 51: pygame.K_LEFT, 91: pygame.K_UP, 131: pygame.K_DOWN}
+    seen = {}
+
+    def script(f, post, r, seen_):
+        if f in downs:
+            post(pygame.KEYDOWN, downs[f])
+        if f in ups:
+            post(pygame.KEYUP, ups[f])
+        if f == 1:
+            seen["camera_enabled"] = peek_camera(r.current_room)
+        if f in (20, 60, 100, 140):
+            player = insts(r, "obj_player")[0]
+            seen[f] = (player.facing_angle, sprite_name(r, player))
+        if f == 140:
+            # The wall-edge cache the renderer rebuilds every frame (fixed
+            # 2026-10-06, d416e0d9) must actually be populated by now -- the
+            # maze has a full border, so it can never be empty.
+            seen["v_walls_nonempty"] = bool(raycast_state(r.current_room)["v_walls"] or
+                                            raycast_state(r.current_room)["h_walls"])
+    play(path, script, 141)
+    assert seen["camera_enabled"]["enabled"] is True
+    assert seen[20] == (0, "spr_player_right")
+    assert seen[60] == (180, "spr_player_left")
+    assert seen[100] == (90, "spr_player_up")
+    assert seen[140] == (270, "spr_player_down")
+    assert seen["v_walls_nonempty"] is True
+
+
+def test_t06_bonus_phase_walls_still_block_the_player(tmp_path):
+    """The bonus page's "nothing to add here" claim for the wall collision
+    event: unchanged from Phase 1, the player still can't walk through
+    obj_wall once the raycast view is on."""
+    path = trp.build_t06(tmp_path, 4)
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 100:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        xs.append(insts(r, "obj_player")[0].x)
+    play(path, script, 130)
+    assert xs[95] == 160 and xs[125] == 160         # same wall, same stop point as Phase 1
 
 
 # ----------------------------------------------------------------- Tutorial 07
