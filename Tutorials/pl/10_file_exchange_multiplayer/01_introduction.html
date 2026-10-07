@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .history { background-color: #eef2fb; padding: 10px; border-left: 4px solid #5b67a5; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Gra wieloosobowa turowa: Kółko i krzyżyk przez wymianę plików</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/10_file_exchange_multiplayer.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128196;</p>
+        <p><strong>Dwóch graczy, jeden wspólny folder, żadnego połączenia na żywo.</strong></p>
+        <p>Zagraj w kółko i krzyżyk przeciwko znajomemu na innym komputerze &mdash; twoje
+        ruchy podróżują jako małe pliki na wspólnym dysku zamiast przez
+        bezpośrednie połączenie sieciowe.</p>
+    </div>
+
+    <h2>Co zbudujemy</h2>
+    <p>Grę w kółko i krzyżyk dla dwóch graczy. Jeden komputer hostuje, drugi
+    dołącza, a każdy ruch jest zapisywany do (a następnie odczytywany z)
+    wspólnego folderu, do którego oba komputery mają dostęp &mdash; żadnego
+    bezpośredniego połączenia między tymi dwiema maszynami. Gra jest
+    grywalna na końcu każdego etapu, więc możesz się zatrzymać i wypróbować
+    ją w dowolnym momencie.</p>
+
+    <div class="history">
+        <strong>To nie jest nowy pomysł.</strong> Zanim każdy miał stale
+        włączone połączenie internetowe, całe gatunki gier wieloosobowych
+        działały dokładnie w ten sposób: ruch gracza był zapisywany do pliku,
+        przekazywany (lub udostępniany) następnemu graczowi, a gra odczytywała
+        ten plik, który akurat obowiązywał. Klasyczne gry strategiczne jak
+        <strong>VGA Planets</strong> (1992) i <strong>Stars!</strong>
+        (1995) działały w ten sposób, a sam pomysł sięga jeszcze dalej
+        &mdash; do gier korespondencyjnych, gdzie ludzki „sędzia” zbierał
+        ruch przesłany pocztą przez każdego gracza i odsyłał wynik pocztą.
+        Budujemy małą, nowoczesną wersję tego samego pomysłu.
+    </div>
+
+    <h2>Jak działa ten tutorial</h2>
+
+    <div class="phase">
+        <strong>Etap 1 &mdash; Plansza</strong><br>
+        Zbuduj klikalną siatkę 3&times;3 do umieszczania X. Jeszcze bez
+        sieci &mdash; przetestuj ją najpierw w całości samodzielnie.
+    </div>
+
+    <div class="phase">
+        <strong>Etap 2 &mdash; Hostuj grę / Dołącz do gry</strong><br>
+        Połącz dwa komputery przez wspólny folder i dowiedz się, czy
+        grasz X czy O.
+    </div>
+
+    <div class="phase">
+        <strong>Etap 3 &mdash; Prawdziwe tury</strong><br>
+        Pozwól kliknąć tylko graczowi, którego jest tura, prześlij ruch
+        i przerysuj planszę, gdy oba komputery zgodzą się, co się stało.
+    </div>
+
+    <div class="phase">
+        <strong>Etap 4 &mdash; Wygrana i ponowna gra</strong><br>
+        Sprawdź trzy w rzędzie, ogłoś zwycięzcę i pozwól obu graczom
+        rozpocząć nową grę.
+    </div>
+
+    <h2>Czego się nauczysz</h2>
+    <ul>
+        <li>Akcji <strong>Hostuj grę (wymiana plików)</strong> /
+        <strong>Dołącz do gry (wymiana plików)</strong> i dlaczego to
+        rozszerzenie używa wspólnego folderu zamiast połączenia na żywo</li>
+        <li>Odczytywania globalnych zmiennych tożsamości, takich jak
+        <code>global.player_id</code> i <code>global.round_number</code></li>
+        <li>Przygotowywania ruchu za pomocą <strong>Ustaw zmienną
+        współdzieloną (wymiana plików)</strong> i przesyłania go za pomocą
+        <strong>Zakończ turę (wymiana plików)</strong></li>
+        <li>Reagowania na zdarzenie <strong>Tura rozstrzygnięta</strong>, aby
+        przerysować planszę po potwierdzeniu tury</li>
+        <li>Używania akcji <strong>Jeśli</strong> do dopuszczania tylko
+        właściwego gracza do ruchu</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Wymagany czas:</strong> ok. 25&ndash;30 minut.
+        <strong>Uwaga:</strong> Etap 1 i większość Etapu 2 można zbudować i
+        przetestować samodzielnie; pełne przetestowanie Etapów 2&ndash;4
+        wymaga drugiego komputera (lub znajomego) oraz wspólnego folderu,
+        do którego oba komputery mają dostęp. Możesz też wypróbować obie
+        role na JEDNYM komputerze, naciskając samodzielnie oba klawisze w
+        dwóch uruchomieniach, tak jak pozwala na to dołączony przykład
+        <code>fichier_1</code> (jego własna ukończona wersja tej gry) do
+        testowania solo.
+    </div>
+
+    <div class="info">
+        <strong>Gotowy?</strong> Kliknij „Dalej”, aby zacząć budowę.
+    </div>
+</body>
+</html>

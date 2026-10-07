@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.lines { border-collapse: collapse; margin: 8px 0; }
+        table.lines td, table.lines th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 4: Wygrana i ponowna gra</h1>
+
+    <p>Ostatni element: sprawdź trzy znaki w rzędzie, ogłoś zwycięzcę na
+    obu ekranach i pozwól obu graczom zacząć od nowa.</p>
+
+    <h2>Sprawdź jedną linię</h2>
+    <div class="step">
+        <ol>
+            <li>Dodaj zdarzenie <strong>Tura rozstrzygnięta</strong> do
+            <code>obj_game</code> i dodaj to, sprawdzając górny rząd
+            (<code>cell_0_0</code>, <code>cell_1_0</code>, <code>cell_2_0</code>):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Tura rozstrzygnięta</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">global.cell_0_0 == global.cell_1_0 and global.cell_1_0 == global.cell_2_0 and global.cell_0_0 != 0</span> wtedy</span><br>
+            <span class="block block-control block-indent2">Ustaw zmienną <span class="block-text">winner</span> na <span class="block-text">global.cell_0_0</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> jeśli wszystkie trzy pola w linii
+            zawierają <em>ten sam</em> znak, a ta zmienna współdzielona
+            rzeczywiście została ustawiona (pamiętaj, nietknięta odczytuje
+            się jako liczba <code>0</code>, nie pusty ciąg), ktoś właśnie
+            wygrał na tej linii &mdash; <code>winner</code> staje się tym znakiem.
+        </div>
+    </div>
+
+    <h2>Sprawdź pozostałych siedem linii</h2>
+    <div class="step">
+        <p>Powtórz dokładnie ten sam wzorzec dla każdej z tych linii &mdash;
+        trzy nazwy pól, wszystkie równe, nie <code>0</code>:</p>
+        <table class="lines">
+            <tr><th>Linia</th><th>Pole A</th><th>Pole B</th><th>Pole C</th></tr>
+            <tr><td>Środkowy rząd</td><td>cell_0_1</td><td>cell_1_1</td><td>cell_2_1</td></tr>
+            <tr><td>Dolny rząd</td><td>cell_0_2</td><td>cell_1_2</td><td>cell_2_2</td></tr>
+            <tr><td>Lewa kolumna</td><td>cell_0_0</td><td>cell_0_1</td><td>cell_0_2</td></tr>
+            <tr><td>Środkowa kolumna</td><td>cell_1_0</td><td>cell_1_1</td><td>cell_1_2</td></tr>
+            <tr><td>Prawa kolumna</td><td>cell_2_0</td><td>cell_2_1</td><td>cell_2_2</td></tr>
+            <tr><td>Przekątna &#8598;&#8600;</td><td>cell_0_0</td><td>cell_1_1</td><td>cell_2_2</td></tr>
+            <tr><td>Przekątna &#8599;&#8601;</td><td>cell_2_0</td><td>cell_1_1</td><td>cell_0_2</td></tr>
+        </table>
+        <p style="font-style: italic;">Osiem bloków <strong>Jeśli</strong>
+        łącznie w zdarzeniu <strong>Tura rozstrzygnięta</strong> &mdash;
+        żmudne do wpisania, ale każdy identyczny kształtem z pierwszym (i
+        dokładnie pasuje do układu planszy dołączonego przykładu
+        <code>fichier_1</code>, jeśli chcesz porównać).</p>
+    </div>
+
+    <h2>Pokaż zwycięzcę</h2>
+    <div class="step">
+        <ol>
+            <li>Dodaj do zdarzenia <strong>Gdy utworzony</strong> obiektu
+            <code>obj_game</code>: ustaw <code>winner</code> na
+            <code>""</code> (żeby nie było pozostałości zwycięzcy z poprzedniej gry)</li>
+            <li>Dodaj do zdarzenia <strong>Gdy rysowanie</strong>, po wszystkim
+            z Etapów 1&ndash;3:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-control">Jeśli <span class="block-text">winner != ""</span> wtedy</span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-text">winner + " wygrywa! Naciśnij SPACJĘ, aby zagrać ponownie."</span> na x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
+        </div>
+    </div>
+
+    <h2>Zagraj ponownie</h2>
+    <div class="step">
+        <p>Każdy z graczy może zrestartować, gdy jest już zwycięzca:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Klawisz wciśnięty: Spacja</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">winner != ""</span> wtedy</span><br>
+            <span class="block block-network block-indent2">Opuść grę (wymiana plików)</span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> <strong>Opuść grę (wymiana
+            plików)</strong> czysto kończy tę sesję, nie dotykając plików
+            drugiego gracza. Naciśnij ponownie <strong>H</strong> lub
+            <strong>J</strong> (z Etapu 2) na obu komputerach, aby rozpocząć
+            nową grę &mdash; dziewięć zmiennych <code>cell_*</code> i
+            <code>winner</code> też wymagają zresetowania, jeśli chcesz
+            naprawdę czysty rewanż bez restartowania całego projektu
+            (zostawione jako „Wypróbuj dalej” poniżej).
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj pełną grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5 na obu komputerach!</strong></p>
+        <ul>
+            <li>Hostuj i dołącz jak w Etapie 2</li>
+            <li>Graj turami jak w Etapie 3, X potem O</li>
+            <li>Zdobądź trzy w rzędzie &rarr; oba ekrany ogłaszają zwycięzcę</li>
+            <li>Naciśnij <strong>SPACJĘ</strong>, potem ponownie H/J, aby zagrać nową grę</li>
+        </ul>
+    </div>
+
+    <h2>Zbudowałeś grę wieloosobową przez wymianę plików!</h2>
+    <p>To kompletna turowa pętla wieloosobowa, używająca tego samego pomysłu
+    co gry takie jak <strong>VGA Planets</strong> dekady temu &mdash; żadnego
+    połączenia na żywo, żadnego problemu z zaporą sieciową, tylko pliki we
+    wspólnym folderze:</p>
+    <ul>
+        <li>Hostowanie i dołączanie przez wspólny folder zamiast bezpośredniego połączenia</li>
+        <li>Przygotowanie ruchu i przesłanie go za pomocą <strong>Zakończ turę (wymiana plików)</strong></li>
+        <li>Dopuszczanie tylko właściwego gracza do ruchu i pasowanie, gdy to nie jego tura</li>
+        <li>Reagowanie na <strong>Turę rozstrzygniętą</strong>, aby pozostać zsynchronizowanym między maszynami</li>
+        <li>Kompletne sprawdzenie zwycięstwa i sposób na ponowną grę</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Wypróbuj dalej:</strong> zresetuj dziewięć zmiennych
+        <code>cell_*</code> i <code>winner</code> przy <strong>Opuść grę
+        (wymiana plików)</strong> dla prawdziwego rewanżu bez restartowania;
+        dodaj komunikat „Gracz pominął rundę” na wypadek, gdy ktoś zbyt długo
+        zwleka; albo bieżący wynik przez kilka gier za pomocą kolejnej
+        zmiennej współdzielonej.
+    </div>
+</body>
+</html>
