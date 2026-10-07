@@ -3804,4 +3804,273 @@ Błąd: {0}</translation>
 {}</translation>
     </message>
 </context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="21"/>
+        <source>Preferences</source>
+        <translation>Preferencje</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="46"/>
+        <source>Note: Some settings require restarting the IDE to take effect.</source>
+        <translation>Uwaga: niektóre ustawienia wymagają ponownego uruchomienia IDE, aby zaczęły obowiązywać.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="62"/>
+        <source>IDE Edition</source>
+        <translation>Edycja IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="69"/>
+        <source>Edition:</source>
+        <translation>Edycja:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="79"/>
+        <source>The edition controls which tutorials are shown and the default
+block preset for new projects. Existing projects are not affected.</source>
+        <translation>Edycja kontroluje, które samouczki są wyświetlane oraz domyślny
+zestaw bloków dla nowych projektów. Istniejące projekty nie są zmieniane.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="88"/>
+        <source>General</source>
+        <translation>Ogólne</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="96"/>
+        <source>Font Settings</source>
+        <translation>Ustawienia czcionki</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="103"/>
+        <source>Font Size:</source>
+        <translation>Rozmiar czcionki:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="108"/>
+        <source>System Default</source>
+        <translation>Domyślna systemowa</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="111"/>
+        <source>Font Family:</source>
+        <translation>Rodzina czcionek:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="114"/>
+        <source>Preview: The quick brown fox jumps over the lazy dog</source>
+        <translation>Podgląd: Pchnąć w tę łódź jeża lub osiem skrzyń fig</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="116"/>
+        <source>Preview:</source>
+        <translation>Podgląd:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="121"/>
+        <source>Theme Settings</source>
+        <translation>Ustawienia motywu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="127"/>
+        <source>Theme:</source>
+        <translation>Motyw:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="134"/>
+        <source>UI Scale:</source>
+        <translation>Skala interfejsu:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="137"/>
+        <source>Show tooltips</source>
+        <translation>Pokazuj podpowiedzi</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="143"/>
+        <source>Appearance</source>
+        <translation>Wygląd</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="151"/>
+        <source>Auto-Save Settings</source>
+        <translation>Ustawienia autozapisu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="154"/>
+        <source>Enable auto-save</source>
+        <translation>Włącz autozapis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="159"/>
+        <source> minutes</source>
+        <translation> minut</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="160"/>
+        <source>Auto-save interval:</source>
+        <translation>Odstęp autozapisu:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="165"/>
+        <source>Grid &amp; Snapping</source>
+        <translation>Siatka i przyciąganie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="168"/>
+        <source>Show grid in editors</source>
+        <translation>Pokazuj siatkę w edytorach</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="174"/>
+        <source>Grid size:</source>
+        <translation>Rozmiar siatki:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="176"/>
+        <source>Snap to grid</source>
+        <translation>Przyciągaj do siatki</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="179"/>
+        <source>Show collision boxes</source>
+        <translation>Pokazuj ramki kolizji</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="185"/>
+        <source>Editor</source>
+        <translation>Edytor</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="193"/>
+        <source>Project Paths</source>
+        <translation>Ścieżki projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="199"/>
+        <source>Browse...</source>
+        <translation>Przeglądaj...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="203"/>
+        <source>Default projects folder:</source>
+        <translation>Domyślny folder projektów:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="208"/>
+        <source>Project Settings</source>
+        <translation>Ustawienia projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="213"/>
+        <source>Recent projects limit:</source>
+        <translation>Limit ostatnich projektów:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="215"/>
+        <source>Create backup on save</source>
+        <translation>Twórz kopię zapasową przy zapisie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="221"/>
+        <source>Project</source>
+        <translation>Projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="229"/>
+        <source>Debug Settings</source>
+        <translation>Ustawienia debugowania</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="232"/>
+        <source>Enable debug mode</source>
+        <translation>Włącz tryb debugowania</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="235"/>
+        <source>Show console output</source>
+        <translation>Pokazuj dane wyjściowe konsoli</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="241"/>
+        <source>Performance</source>
+        <translation>Wydajność</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="246"/>
+        <source>Maximum undo steps:</source>
+        <translation>Maksymalna liczba kroków cofania:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="251"/>
+        <source>Advanced</source>
+        <translation>Zaawansowane</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="343"/>
+        <source>Select Default Projects Directory</source>
+        <translation>Wybierz domyślny katalog projektów</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="402"/>
+        <source>Settings Saved</source>
+        <translation>Ustawienia zapisane</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="403"/>
+        <source>Settings have been saved successfully.
+
+Some changes may require restarting the IDE to take effect.</source>
+        <translation>Ustawienia zostały pomyślnie zapisane.
+
+Niektóre zmiany mogą wymagać ponownego uruchomienia IDE, aby zaczęły obowiązywać.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Rozszerzenia</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Wyłączenie rozszerzenia tutaj zaczyna obowiązywać w IDE po ponownym uruchomieniu — rozszerzenia rejestrują swoje akcje przy starcie. Eksporty respektują to ustawienie natychmiast, bez konieczności ponownego uruchamiania.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Nie znaleziono rozszerzeń.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Udostępnia: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Zainstalowane rozszerzenia</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="252"/>
+        <source>Multiple IDE windows</source>
+        <translation>Wiele okien IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="256"/>
+        <source>Allow several IDE instances at the same time</source>
+        <translation>Zezwól na jednoczesne uruchomienie kilku instancji IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="257"/>
+        <source>By default only one PyGameMaker IDE runs at a time, because two instances saving into the same project folder corrupt it. Enable this only if you open different projects in each instance. Takes effect the next time the IDE starts.</source>
+        <translation>Domyślnie działa tylko jedna instancja PyGameMaker IDE naraz, ponieważ dwie instancje zapisujące do tego samego folderu projektu uszkadzają go. Włącz tę opcję tylko wtedy, gdy w każdej instancji otwierasz inny projekt. Zaczyna obowiązywać przy następnym uruchomieniu IDE.</translation>
+    </message>
+</context>
 </TS>
