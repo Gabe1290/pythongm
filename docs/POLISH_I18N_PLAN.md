@@ -1,11 +1,25 @@
 # Polish (`pl`) translation — plan
 
-Written 2026-10-07. Status: **Phases 1 (Qt UI catalog) and 2 (Blockly)
-complete** as of 2026-10-07 — Phase 1: all 70 real contexts / 1562
-located-active messages in `translations/pygm2_pl.ts`, byte-identical in
-coverage to `fr`. Phase 2: all 4 `blockly_i18n.js` translation tables
-(377 entries), key-set-identical to `fr`. Phase 3 (Tutorials) not
-started.
+Written 2026-10-07. Status: **ALL THREE PHASES COMPLETE** as of
+2026-10-07 — the full plan finished in one extended session (the user's
+own "two sessions, if necessary" framing turned out not to be needed).
+Phase 1: all 70 real contexts / 1562 located-active messages in
+`translations/pygm2_pl.ts`, byte-identical in coverage to `fr`. Phase 2:
+all 4 `blockly_i18n.js` translation tables (377 entries), key-set-
+identical to `fr`. Phase 3: all 14 lessons / 63 pages of the Tutorials
+curriculum translated, `Tutorials/pl/index.json` registers all 14 with
+real current page lists, `pl` added to
+`test_tutorial_panel_i18n_verification.py`'s `LOCALIZED_LANGUAGES` (34
+tests passing, incl. every lesson/every page walked through the real
+`TutorialPanel` widget), and all 63 HTML files + `index.json` confirmed
+to carry real Polish diacritics. Full suite green throughout (only 3
+pre-existing, unrelated failures from an in-progress Thymio-extension
+refactor on `main`, untouched by this work). One unplanned detour: a
+user bug report mid-session (the Blockly `instance_create` block
+silently producing no action at all — see the session note in
+CLAUDE.md) was investigated and fixed, since it directly affected
+Tutorial 2 and Tutorial 9's "Create instance" steps in every language,
+Polish included.
 
 **Correction (2026-10-07, same day):** the counts below (1849 messages /
 73 contexts) were the plan's original naive count — a straight
@@ -282,7 +296,7 @@ missing/extra), non-empty values, diacritics present, and the existing
 `test_blockly_i18n_uk.py` (which independently parses the same file)
 still passes unchanged.
 
-### Phase 3 — Tutorials curriculum (14 lessons / 63 pages / ~34,500 English words)
+### Phase 3 — Tutorials curriculum (14 lessons / 63 pages / ~34,500 English words) — **COMPLETE 2026-10-07**
 
 Follow the pt Tutorials workflow precedent exactly (2026-08-08 session):
 read the **current** English lesson content page by page (page counts have
@@ -298,22 +312,43 @@ catalog-verified `Activer la vue Raycast` etc., not English placeholders).
 This is why Phase 2 is sequenced before Phase 3: Tutorial translation
 reuses Phase 2's already-decided terminology instead of inventing it twice.
 
-- [ ] P3.1 — Lessons 1-9 (core curriculum: Getting Started through Catch
+- [x] P3.1 — Lessons 1-9 (core curriculum: Getting Started through Catch
       the Coins).
-- [ ] P3.2 — Lessons 11-14 (the 2.5D raycast series) — `fr`'s own Tutorial
-      11-14 content and block-view mockup conventions are the structural
-      template, same ones this session's Tutorial 6 bonus page reused.
-- [ ] P3.3 — Lesson 10 (file-exchange multiplayer) and Tutorial 6's new
-      bonus page (`05_bonus_2_5d.html`, added this session) — the newest
-      content; don't let it fall through the cracks between the "pt did
-      1-9" and "fr did 11-14" precedents.
-- [ ] P3.4 — `Tutorials/pl/index.json` registering all 14 lessons with
-      their real current per-lesson page lists (confirm each from the
-      English `index.json`, not from memory).
-- [ ] P3.5 — guard test: `pl` added to
+- [x] P3.2 — Lessons 11-14 (the 2.5D raycast series), including the
+      `05_bonus_2_5d.html` bonus page bundled with Lesson 6.
+- [x] P3.3 — Lesson 10 (file-exchange multiplayer).
+- [x] P3.4 — `Tutorials/pl/index.json` registering all 14 lessons with
+      their real current per-lesson page lists, confirmed against the
+      English `index.json` directly (not from memory).
+- [x] P3.5 — guard test: `pl` added to
       `test_tutorial_panel_i18n_verification.py`'s `LOCALIZED_LANGUAGES`;
-      every lesson's every page renders through the real `TutorialPanel`
-      widget with no error-branch marker and substantial content.
+      all 34 tests pass, every lesson's every page renders through the
+      real `TutorialPanel` widget with no error-branch marker and
+      substantial content. All 63 HTML files + `index.json` additionally
+      confirmed to contain real Polish diacritics (a direct sweep, not
+      just the generic "some file somewhere" check).
+
+**Workflow actually used, differs from the original plan slightly:**
+mockups mostly use the REAL Phase 2 Polish block labels where a block
+genuinely has one (`Gdy utworzony`, `Ustaw prędkość horyzontalną na`,
+`Gdy kolizja z X`, etc.), but several lessons' mockups reference actions
+*outside* the 377-entry Phase 2 set entirely — the raycast `3D View`
+category (Enable Raycast View, Set Facing Angle, Draw Minimap, Draw DOOM
+HUD), the `Game`/`Output` categories (Show Highscore, End Game, Restart
+Game), the File-Exchange multiplayer extension's own actions, and the
+traditional (non-Blockly) action editor's Test-Instance-Count block —
+none of these were ever in scope for Phase 2's BLOCK_MESSAGES/
+CATEGORY_MESSAGES/BLOCKLY_MSG_TRANSLATIONS/KEY_NAMES tables (those cover
+only the original 231+37+12+97 "core" Blockly set). For all of these,
+translated naturally and consistently (cross-checked against `fr`'s own
+tutorial text where available), matching the precedent `fr` itself
+already established of not requiring byte-exact BLOCK_MESSAGES matches
+in free-form tutorial prose. Raycast/HUD/multiplayer *parameter* names
+(Field of View, Cell Size, Render Distance, Viewport Height, Wall/Sky/
+Floor/Ceiling Texture, Wall/Floor/Ceiling Color, Columns, Floor Detail,
+Health/Score/Objective Label, Face Sprite, Face Frames, Camera Object)
+were kept in English throughout, matching `fr`'s own explicit note that
+these stay English in the IDE itself.
 
 ## Not in scope
 

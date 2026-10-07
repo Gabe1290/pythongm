@@ -24,8 +24,9 @@ TUTORIALS_ROOT = Path(__file__).resolve().parent.parent / "Tutorials"
 
 # Section L's scope: the six additive lesson-9 languages plus pt (built from
 # scratch). fr predates this registry but is included for free since it also
-# ships a Tutorials/fr/ folder and costs nothing extra to verify.
-LOCALIZED_LANGUAGES = ["de", "es", "fr", "it", "pt", "ru", "sl", "uk"]
+# ships a Tutorials/fr/ folder and costs nothing extra to verify. pl (all 14
+# lessons, docs/POLISH_I18N_PLAN.md Phase 3) added the same way pt was.
+LOCALIZED_LANGUAGES = ["de", "es", "fr", "it", "pl", "pt", "ru", "sl", "uk"]
 
 _ERROR_MARKERS = (
     "Tutorial not found",
