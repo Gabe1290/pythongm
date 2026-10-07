@@ -2609,6 +2609,13 @@ Replace it with this project?</source>
 
 Ga zamenjam s tem projektom?</translation>
     </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="80"/>
+        <source>Failed to export game as HTML5:
+{0}</source>
+        <translation>Igre ni bilo mogoče izvoziti kot HTML5:
+{0}</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

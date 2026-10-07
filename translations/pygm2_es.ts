@@ -7715,6 +7715,13 @@ Replace it with this project?</source>
 
 ¿Reemplazarlo por este proyecto?</translation>
     </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="80"/>
+        <source>Failed to export game as HTML5:
+{0}</source>
+        <translation>No se pudo exportar el juego como HTML5:
+{0}</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>
