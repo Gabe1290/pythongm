@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Sala i ściany</h1>
+    <p>Wszystko w sali 2.5D stoi na <strong>siatce</strong> pól 32&times;32 piksele. Zbudujemy salę o szerokości 10 i wysokości 10 pól
+    (320&times;320 pikseli) i umieścimy blok ściany w każdym polu brzegowym.</p>
+    <h2>Utwórz nowy projekt</h2>
+    <div class="step"><ol>
+        <li>Przejdź do <code>Plik &gt; Nowy projekt</code></li>
+        <li>Nazwij go <strong>FirstPerson</strong> i wybierz szablon <strong>„Pusty projekt”</strong></li></ol></div>
+    <h2>Utwórz sprite'y</h2>
+    <div class="step"><ol>
+        <li>Utwórz sprite o nazwie <code>spr_wall</code>. Narysuj kwadrat <strong>32&times;32</strong> wypełniony jasnoszarym kolorem albo wzorem cegły.</li>
+        <li>Utwórz sprite o nazwie <code>spr_player</code>. Narysuj kwadrat <strong>16&times;16</strong> (dowolny kolor) &mdash; nigdy go właściwie nie zobaczysz,
+        ponieważ gracz <em>jest</em> kamerą, ale każdy obiekt potrzebuje sprite'a.</li></ol>
+        <p style="font-style: italic;">Sprite ściany musi mieć dokładnie rozmiar pola (32&times;32). Sprite ściany, który jest w przybliżeniu kwadratowy, blokuje wszystkie cztery strony swojego pola.</p></div>
+    <h2>Utwórz obiekt ściany</h2>
+    <div class="step"><ol>
+        <li>Utwórz obiekt o nazwie <code>obj_wall</code> i nadaj mu sprite <code>spr_wall</code></li>
+        <li>Zaznacz właściwość <strong>Solidny</strong> &mdash; to właśnie mówi widokowi 2.5D „to jest ściana”</li></ol></div>
+    <h2>Utwórz obiekt gracza</h2>
+    <div class="step"><ol>
+        <li>Utwórz obiekt o nazwie <code>obj_player</code> ze sprite'em <code>spr_player</code>. Zostaw go niesolidnym. Dodamy jego zachowanie w Etapie 2.</li></ol></div>
+    <h2>Zbuduj salę</h2>
+    <div class="step"><ol>
+        <li>Utwórz salę o nazwie <code>room_main</code>. W jej właściwościach ustaw <strong>szerokość i wysokość na 320</strong>.</li>
+        <li>Kliknij przycisk <strong>Siatka</strong> na pasku narzędzi Edytora sali, aby pokazać siatkę. Domyślnie wynosi <strong>32</strong> piksele, więc bloki przyciągają się dokładnie do właściwych pól.</li>
+        <li>Umieść <code>obj_wall</code> w tych pozycjach:
+        <table class="t"><tr><th>Pozycja (x, y)</th><th>Bloki</th></tr><tr><td><code>(0, 0) &hellip; (288, 0)</code></td><td>górny rząd: 10 bloków, co 32 piksele</td></tr><tr><td><code>(0, 288) &hellip; (288, 288)</code></td><td>dolny rząd: 10 bloków</td></tr><tr><td><code>(0, 32) &hellip; (0, 256)</code></td><td>lewa kolumna, między narożnikami: 8 bloków</td></tr><tr><td><code>(288, 32) &hellip; (288, 256)</code></td><td>prawa kolumna: 8 bloków</td></tr><tr><td><code>(128, 128), (160, 128), (128, 160)</code></td><td>trzy bloki wewnątrz, żeby było na co popatrzeć</td></tr></table></li>
+        <li>Umieść <strong>jednego</strong> <code>obj_player</code> w <code>(48, 48)</code> &mdash; wewnątrz sali, z dala od ścian.</li></ol></div>
+    <div class="info"><strong>Dlaczego sala jest mała:</strong> okno gry przyjmuje rozmiar sali, więc sala 320&times;320 daje widok 320&times;320.
+    Później możesz budować większe sale &mdash; wystarczy trzymać każdą ścianę na siatce 32 pikseli.</div>
+    <div class="info">Kliknij „Dalej”, aby ożywić salę.</div>
+</body>
+</html>

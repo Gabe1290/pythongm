@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Testuj i dostrajaj</h1>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+    <ul>
+        <li>Sala pojawia się w <strong>pierwszej osobie</strong> &mdash; szare ściany, niebieskie sufit i ciemna podłoga</li>
+        <li>Strzałki <strong>w lewo</strong> i <strong>w prawo</strong> obracają cię; <strong>góra</strong> i <strong>dół</strong> idą</li>
+        <li>Wpadasz na ściany brzegowe i trzy bloki na środku zamiast przez nie przechodzić</li></ul></div>
+    <h2>Jeśli coś wygląda nie tak</h2>
+    <table class="t"><tr><th>Co widzisz</th><th>Prawdopodobna przyczyna</th></tr>
+    <tr><td>Normalna sala widziana z góry</td><td>Brakuje zdarzenia Gdy utworzony z <strong>Włącz widok Raycast</strong>, albo jest ono na obiekcie, który nie jest w sali</td></tr>
+    <tr><td>Przechodzisz przez ściany</td><td>Brakuje zdarzenia <strong>Gdy kolizja z obj_wall</strong>, albo <code>obj_wall</code> nie jest <strong>Solidny</strong></td></tr>
+    <tr><td>Ściany wyglądają źle albo pojawiają się dziury</td><td>Blok ściany jest poza siatką 32 pikseli, albo <strong>Cell Size</strong> nie wynosi 32</td></tr>
+    <tr><td>Obracasz się w złą stronę</td><td>Zamień miejscami <code>3</code> i <code>-3</code> w dwóch zdarzeniach obrotu</td></tr></table>
+    <h2>Eksperymentuj</h2>
+    <div class="step"><p>Zmień jedną rzecz naraz w <strong>Włącz widok Raycast</strong> i naciśnij F5 ponownie:</p><ul>
+        <li><strong>Field of View</strong> &mdash; spróbuj 40 (jak teleskop) i 100 (bardzo szeroko, lekko rybie oko)</li>
+        <li><strong>Render Distance</strong> &mdash; spróbuj 3: dalekie ściany po prostu znikają w tle</li>
+        <li><strong>Wall Color</strong>, <strong>Floor Color</strong>, <strong>Ceiling Color</strong> &mdash; stwórz loch albo bazę na Marsie</li>
+        <li><strong>Columns</strong> &mdash; mniej kolumn rysuje się szybciej, ale wygląda bardziej kanciasto</li></ul></div>
+    <h2>Zbudowałeś swój pierwszy świat 2.5D!</h2>
+    <ul><li>Solidne bloki na siatce 32 pikseli stają się ścianami</li><li>Obiekt gracza jest kamerą</li>
+        <li>Jeden kąt patrzenia kieruje zarówno tym, co widzisz, jak i tym, dokąd idziesz</li></ul>
+    <div class="highlight"><strong>Następna lekcja:</strong> ściany są zwyczajnie szare. W <em>Tekstury, niebo i podłoga</em> pomalujesz je cegłami, dodasz przesuwające się niebo i kamienną podłogę.</div>
+</body>
+</html>
