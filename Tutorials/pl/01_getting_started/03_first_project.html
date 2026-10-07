@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .step {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tworzenie pierwszego projektu</h1>
+
+    <p>Stwórzmy prosty projekt krok po kroku.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Utwórz nowy projekt</span>
+        <p>Przejdź do <code>Plik &gt; Nowy projekt</code> (lub naciśnij <code>Ctrl+N</code>).</p>
+        <p>Wprowadź nazwę projektu i wybierz miejsce zapisu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Utwórz sprite</span>
+        <p>Kliknij prawym przyciskiem na <strong>Sprite'y</strong> w drzewie zasobów i wybierz
+        <code>Utwórz nowy sprite</code>.</p>
+        <p>Nazwij go "spr_player". Kliknij go dwukrotnie, aby otworzyć Edytor sprite'ów i narysować prostą postać, albo kliknij prawym przyciskiem i wybierz <strong>Importuj obraz...</strong>, aby wczytać istniejący plik obrazu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Utwórz obiekt</span>
+        <p>Kliknij prawym przyciskiem na <strong>Obiekty</strong> i wybierz <code>Utwórz nowy obiekt</code>.</p>
+        <p>Nazwij go "obj_player" i przypisz mu sprite, który właśnie utworzyłeś.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Zmień nazwę sali</span>
+        <p>Każdy nowy projekt zawiera już salę o nazwie <code>room0</code>. Kliknij ją prawym przyciskiem pod <strong>Sale</strong> i wybierz <code>Zmień nazwę</code>.</p>
+        <p>Zmień jej nazwę na "room_game". To będzie twój pierwszy poziom gry.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Umieść swój obiekt</span>
+        <p>Kliknij dwukrotnie swoją salę, aby otworzyć Edytor sali.</p>
+        <p>Wybierz swój obiekt z listy i kliknij w sali, aby go umieścić.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Przetestuj swoją grę</span>
+        <p>Naciśnij <code>F5</code> lub przejdź do <code>Kompilacja &gt; Testuj grę</code>.</p>
+        <p>Otworzy się okno z twoją grą i umieszczonym w niej obiektem!</p>
+    </div>
+
+    <div class="success">
+        <strong>Gratulacje!</strong> Stworzyłeś swój pierwszy projekt w PyGameMaker!
+        Jeszcze nie robi wiele, ale w kolejnych tutorialach nauczysz się dodawać zachowania.
+    </div>
+</body>
+</html>

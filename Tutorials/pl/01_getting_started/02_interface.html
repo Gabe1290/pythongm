@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .panel {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .panel-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+  </head>
+  <body>
+    <h2>Interfejs PyGameMaker</h2>
+    <p>Okno PyGameMaker jest podzielone na trzy główne obszary:</p>
+    <div class="panel">
+      <div class="panel-title">1. Drzewo zasobów (lewy panel)</div>
+      <p>Ten panel pokazuje wszystkie zasoby w twoim projekcie,
+        podzielone według typu:</p>
+      <ul>
+        <li><strong>Sprite'y</strong> - Obrazy i animacje dla
+          twojej gry</li>
+        <li><strong>Dźwięki</strong> - Efekty dźwiękowe i muzyka</li>
+        <li><strong>Obiekty</strong> - Jednostki gry z zachowaniami</li>
+        <li><strong>Sale</strong> - Poziomy i ekrany gry</li>
+      </ul>
+      <p>Kliknij prawym przyciskiem na dowolną kategorię, aby utworzyć
+        nowe zasoby.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">2. Obszar edycji (środek)</div>
+      <p>Tutaj edytujesz swoje zasoby. Różne edytory otwierają się
+        w zakładkach:</p>
+      <ul>
+        <li><strong>Edytor sprite'ów</strong> - Przeglądanie i
+          konfigurowanie sprite'ów</li>
+        <li><strong>Edytor obiektów</strong> - Definiowanie zachowań
+          obiektów za pomocą zdarzeń</li>
+        <li><strong>Edytor sali</strong> - Projektowanie poziomów
+          twojej gry</li>
+      </ul>
+      <p>Kliknij dwukrotnie zasób w drzewie, aby otworzyć jego edytor.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3. Panel właściwości (prawy panel)</div>
+      <p>Pokazuje właściwości aktualnie wybranego zasobu lub obiektu.
+        Możesz tutaj zmieniać ustawienia podczas edycji sal lub
+        obiektów.</p>
+    </div>
+    <h2>Najważniejsze menu</h2>
+    <ul>
+      <li><code>Plik</code> - Twórz, otwieraj i zapisuj projekty</li>
+      <li><code>Zasoby</code> - Twórz i importuj zasoby gry</li>
+      <li><code>Kompilacja</code> - Testuj i eksportuj swoją grę</li>
+      <li><code>Pomoc</code> - Dostęp do tutoriali i dokumentacji</li>
+    </ul>
+    <div class="highlight"> <strong>Skrót:</strong> Naciśnij <code>F5</code>
+      aby szybko przetestować swoją grę! </div>
+  </body>
+</html>

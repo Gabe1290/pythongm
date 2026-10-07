@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Łapanie i punktacja</h1>
+
+    <p>Spraw, by gracz łapał gwiazdy, zdobywał punkty i wyświetlał wynik!</p>
+
+    <h2>Łap gwiazdy przy kolizji</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_player</code> &rarr; zakładka <strong>Blockly</strong></li>
+            <li>Dodaj ten nowy blok zdarzenia (zachowaj istniejące bloki ruchu):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_star</span><br>
+            <span class="block block-score block-indent">Dodaj <span class="block-num">10</span> do wyniku</span><br>
+            <span class="block block-instance block-indent">Zniszcz inną instancję</span>
+        </div>
+        <p>Gdy gracz dotknie gwiazdy:</p>
+        <ul>
+            <li><strong>Dodaj 10 do wyniku</strong> (z kategorii <em>Wynik/Życia/Zdrowie</em>) &mdash; zdobywasz 10 punktów</li>
+            <li><strong>Zniszcz inną instancję</strong> (z kategorii <em>Instancja</em>) &mdash; gwiazda znika</li>
+        </ul>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Wyświetl wynik</h2>
+    <p>Potrzebujemy kontrolera gry, aby pokazać wynik na ekranie.</p>
+
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_game_controller</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_game_controller</code> &rarr; zakładka <strong>Blockly</strong></li>
+            <li>Dodaj te bloki:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-score block-indent">Ustaw wynik na <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-score block-indent">Wyświetl wynik na x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <h2>Posprzątaj przegapione gwiazdy</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_star</code> &rarr; zakładka <strong>Blockly</strong></li>
+            <li>Dodaj to zdarzenie (zachowaj istniejące zdarzenie Gdy utworzony):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Poza salą</span><br>
+            <span class="block block-instance block-indent">Zniszcz tę instancję</span>
+        </div>
+        <p>Gwiazdy, które spadną poza dolną krawędź ekranu, są niszczone, aby nie gromadziły się w pamięci.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Umieść kontroler gry</h2>
+    <div class="step">
+        <p>Otwórz <code>room_game</code> i umieść <code>obj_game_controller</code> w dowolnym miejscu w sali.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Łap spadające gwiazdy, aby zdobywać punkty</li>
+            <li>Wynik wyświetla się w lewym górnym rogu</li>
+            <li>Gwiazdy, których nie złapiesz, spadają poza ekran i znikają</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać ostatnie szlify i wyzwania.
+    </div>
+</body>
+</html>

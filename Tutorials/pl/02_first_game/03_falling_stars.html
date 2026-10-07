@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Spadające gwiazdy</h1>
+
+    <p>Teraz sprawmy, by gwiazdy pojawiały się u góry ekranu i spadały w dół!</p>
+
+    <h2>Utwórz sprite gwiazdy</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_star</code></li>
+            <li>Narysuj gwiazdę lub monetę (32&times;32 piksele) i zapisz</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekt gwiazdy</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_star</code></li>
+            <li>Ustaw sprite na <code>spr_star</code></li>
+        </ol>
+    </div>
+
+    <h2>Spraw, by gwiazdy spadały</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_star</code> &rarr; zakładka <strong>Blockly</strong></li>
+            <li>Dodaj ten blok:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">3</span></span>
+        </div>
+        <p>Każda gwiazda zaczyna spadać w dół z prędkością 3, gdy tylko się pojawi.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Utwórz generator</h2>
+    <p>Potrzebujemy niewidzialnego obiektu, który tworzy gwiazdy w losowych miejscach.</p>
+
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_spawner</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong> (będzie niewidzialny)</li>
+        </ol>
+    </div>
+
+    <h2>Zaprogramuj generator</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_spawner</code> &rarr; zakładka <strong>Blockly</strong></li>
+            <li>Dodaj te bloki:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw alarm 0 na <span class="block-num">60</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy alarm 0 uruchomi się</span><br>
+            <span class="block block-instance block-indent">Utwórz obj_star na x: losowo y: <span class="block-num">0</span></span><br>
+            <span class="block block-move block-indent">Ustaw alarm 0 na <span class="block-num">60</span></span>
+        </div>
+        <p>Zdarzenie Gdy utworzony uruchamia minutnik. Gdy alarm się uruchomi (co sekundę),
+        tworzy gwiazdę na losowej pozycji x u góry ekranu, a następnie uruchamia minutnik ponownie.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Umieść generator w sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_game</code></li>
+            <li>Umieść <code>obj_spawner</code> w dowolnym miejscu (jest niewidzialny, położenie nie ma znaczenia)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Gwiazdy powinny spadać z losowych pozycji u góry</li>
+            <li>Poruszaj graczem, aby je unikać lub do nich dotrzeć</li>
+            <li>Na razie gwiazdy przechodzą przez gracza &mdash; łapanie dodamy w następnym kroku!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać kolizje i punktację.
+    </div>
+</body>
+</html>

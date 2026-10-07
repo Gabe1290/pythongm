@@ -1,0 +1,179 @@
+{
+    "tutorials": [
+        {
+            "title": "Pierwsze kroki z PyGameMaker",
+            "folder": "01_getting_started",
+            "description": "Poznaj podstawy środowiska PyGameMaker IDE",
+            "thumbnail": "thumbnails/01_getting_started.png",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ]
+        },
+        {
+            "title": "Twoja pierwsza gra: Złap gwiazdę",
+            "folder": "02_first_game",
+            "description": "Stwórz prostą grę, w której łapiesz spadające gwiazdy",
+            "thumbnail": "thumbnails/02_first_game.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_falling_stars.html",
+                "04_scoring.html",
+                "05_finishing.html"
+            ]
+        },
+        {
+            "title": "Klasyczny Pong: Gra dla dwóch graczy",
+            "folder": "03_pong",
+            "description": "Stwórz klasyczną grę arcade Pong dla dwóch graczy",
+            "thumbnail": "thumbnails/03_pong.png",
+            "pages": [
+                "01_introduction.html",
+                "02_paddles_and_ball.html",
+                "03_goals_and_scoring.html",
+                "04_score_display.html"
+            ]
+        },
+        {
+            "title": "Breakout: Niszczyciel cegieł",
+            "folder": "04_breakout",
+            "description": "Zbuduj klasyczną grę arcade polegającą na niszczeniu cegieł",
+            "thumbnail": "thumbnails/04_breakout.png",
+            "pages": [
+                "01_introduction.html",
+                "02_sprites_basic.html",
+                "03_paddle_and_ball.html",
+                "04_first_room.html",
+                "05_first_bricks.html",
+                "06_more_bricks.html",
+                "07_game_controller.html"
+            ]
+        },
+        {
+            "title": "Sokoban: Łamigłówka z pchaniem skrzyń",
+            "folder": "05_sokoban",
+            "description": "Stwórz klasyczną łamigłówkę polegającą na pchaniu skrzyń",
+            "thumbnail": "thumbnails/05_sokoban.png",
+            "pages": [
+                "01_introduction.html",
+                "02_player_and_walls.html",
+                "03_pushing_crates.html",
+                "04_targets_and_controller.html"
+            ]
+        },
+        {
+            "title": "Labirynt: Dotrzyj do wyjścia",
+            "folder": "06_maze",
+            "description": "Poruszaj się korytarzami, zbieraj monety, dotrzyj do wyjścia",
+            "thumbnail": "thumbnails/06_maze.png",
+            "pages": [
+                "01_introduction.html",
+                "02_player_and_maze.html",
+                "03_coins_and_exit.html",
+                "04_game_controller.html",
+                "05_bonus_2_5d.html"
+            ]
+        },
+        {
+            "title": "Platformówka: Biegaj, skacz, zbieraj",
+            "folder": "07_platformer",
+            "description": "Skacz po platformach, unikaj zagrożeń, zbieraj monety",
+            "thumbnail": "thumbnails/07_platformer.png",
+            "pages": [
+                "01_introduction.html",
+                "02_jumping_player.html",
+                "03_coins_and_hazards.html",
+                "04_game_controller.html"
+            ]
+        },
+        {
+            "title": "Lądownik księżycowy: Wyląduj na Księżycu",
+            "folder": "08_lunar_lander",
+            "description": "Steruj ciągiem, aby bezpiecznie wylądować, zarządzaj paliwem",
+            "thumbnail": "thumbnails/08_lunar_lander.png",
+            "pages": [
+                "01_introduction.html",
+                "02_flying_lander.html",
+                "03_landing_and_crashing.html",
+                "04_game_controller.html"
+            ]
+        },
+        {
+            "title": "Złap monety: Wygraj albo przegraj",
+            "folder": "09_catch_the_coins",
+            "description": "Zbuduj kompletną grę: łap monety, aby wygrać, unikaj wroga, inaczej koniec gry",
+            "thumbnail": "thumbnails/09_catch_the_coins.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ]
+        },
+        {
+            "title": "Gra wieloosobowa turowa: Kółko i krzyżyk przez wymianę plików",
+            "folder": "10_file_exchange_multiplayer",
+            "description": "Zagraj w kółko i krzyżyk z innym komputerem przez wspólny folder, bez potrzeby połączenia na żywo",
+            "thumbnail": "thumbnails/10_file_exchange_multiplayer.png",
+            "pages": [
+                "01_introduction.html",
+                "02_the_board.html",
+                "03_host_and_join.html",
+                "04_taking_turns.html",
+                "05_winning_and_playing_again.html"
+            ]
+        },
+        {
+            "title": "2.5D: Pierwsze kroki",
+            "folder": "11_raycast_first_steps",
+            "description": "Zbuduj salę z widokiem pierwszoosobowym w stylu Doom/Wolfenstein: ściany, kamerę i sterowanie",
+            "thumbnail": "thumbnails/11_raycast_first_steps.png",
+            "pages": [
+                "01_introduction.html",
+                "02_room_and_walls.html",
+                "03_camera_and_controls.html",
+                "04_test_and_tune.html"
+            ]
+        },
+        {
+            "title": "2.5D: Tekstury, niebo i podłoga",
+            "folder": "12_raycast_textures",
+            "description": "Udekoruj swój świat pierwszoosobowy: ceglane ściany, panoramiczne niebo i kaflową podłogę",
+            "thumbnail": "thumbnails/12_raycast_textures.png",
+            "pages": [
+                "01_introduction.html",
+                "02_textured_walls.html",
+                "03_sky_and_floor.html",
+                "04_tune_the_look.html"
+            ]
+        },
+        {
+            "title": "2.5D: Cele, klejnoty i potwory",
+            "folder": "13_raycast_goals_monsters",
+            "description": "Wypełnij swój pierwszoosobowy labirynt klejnotami, patrolującym potworem, życiami i wyjściem wymagającym klejnotów",
+            "thumbnail": "thumbnails/13_raycast_goals_monsters.png",
+            "pages": [
+                "01_introduction.html",
+                "02_gems_and_score.html",
+                "03_monster_and_lives.html",
+                "04_the_exit.html"
+            ]
+        },
+        {
+            "title": "2.5D: HUD i minimapa",
+            "folder": "14_raycast_hud_minimap",
+            "description": "Pokaż wynik, życia, minimapę i pasek stanu w stylu DOOM na widoku pierwszoosobowym",
+            "thumbnail": "thumbnails/14_raycast_hud_minimap.png",
+            "pages": [
+                "01_introduction.html",
+                "02_score_and_lives.html",
+                "03_minimap.html",
+                "04_status_bar.html"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 4: Ostatnie szlify</h1>
+
+    <p>Dodajmy ostatnie poprawki, aby twoja gra wydawała się kompletna!</p>
+
+    <h2>Zadbaj, by gracz nie wychodził poza ekran</h2>
+    <div class="step">
+        <p>Otwórz <code>obj_player</code> w edytorze Blockly i dodaj zdarzenie <strong>Przy każdym kroku</strong>
+        ze sprawdzaniem granic:</p>
+        <ul>
+            <li>Jeśli x &lt; 0, ustaw x = 0</li>
+            <li>Jeśli x &gt; szerokość_sali &minus; szerokość_sprite'a, ustaw x = szerokość_sali &minus; szerokość_sprite'a</li>
+        </ul>
+        <p>To zapobiega wyjściu gracza poza ekran.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Ustaw kolor tła</h2>
+    <div class="step">
+        <p>Otwórz <code>room_game</code> w Edytorze sali i ustaw kolor tła
+        na przyjemny błękit nieba albo ciemny kosmiczny kolor.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Gratulacje!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Twoja pierwsza gra jest gotowa!</strong></p>
+        <p>Naciśnij <strong>F5</strong>, aby zagrać w ukończoną grę. Złap tyle gwiazd, ile zdołasz!</p>
+    </div>
+
+    <h2>Pomysły na wyzwania</h2>
+    <div class="challenge">
+        <strong>Chcesz pójść dalej? Wypróbuj to:</strong>
+        <ul>
+            <li>Dodaj życia &mdash; trać życie, gdy gwiazda dotrze do dołu</li>
+            <li>Spraw, by gwiazdy spadały szybciej wraz ze wzrostem wyniku</li>
+            <li>Dodaj gwiazdy w różnych kolorach, warte różną liczbę punktów</li>
+            <li>Dodaj „zły” obiekt (bombę), który kończy grę po złapaniu</li>
+            <li>Dodaj efekty dźwiękowe przy łapaniu gwiazd</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Co dalej?</strong><br>
+        Odkryj kolejne tutoriale, aby poznać odbijające się piłki, łamigłówki i platformówki!
+    </div>
+</body>
+</html>
