@@ -2255,4 +2255,372 @@ Czy mimo to zapisać?</translation>
         <translation>Wybierz lokalizację projektu.</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="644"/>
+        <source>Orphaned Files</source>
+        <translation>Osierocone pliki</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="652"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Fizyczne pliki w sprites/sounds/backgrounds/fonts/thumbnails, do których nic w tym projekcie się nie odwołuje — zwykle pozostałość po usuniętym wpisie zasobu lub pliku skopiowanym ręcznie. Pliki przeniesione do kosza można przywrócić poniżej, dopóki nie zostaną usunięte na stałe.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="660"/>
+        <source>Found on disk:</source>
+        <translation>Znalezione na dysku:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="674"/>
+        <source>Move Selected to Trash</source>
+        <translation>Przenieś zaznaczone do kosza</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="680"/>
+        <source>Trashed:</source>
+        <translation>W koszu:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="686"/>
+        <source>Restore</source>
+        <translation>Przywróć</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="690"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="822"/>
+        <source>Delete Permanently</source>
+        <translation>Usuń na stałe</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="694"/>
+        <source>Empty</source>
+        <translation>Puste</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="734"/>
+        <source>No orphaned files found.</source>
+        <translation>Nie znaleziono osieroconych plików.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="746"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  usunięto {1}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="789"/>
+        <source>Move to Trash</source>
+        <translation>Przenieś do kosza</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="790"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>Przenieść do kosza: {0} osieroconych plików?</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="809"/>
+        <source>Restore Failed</source>
+        <translation>Przywracanie nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="811"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>Nie można przywrócić „{0}” — plik już tam istnieje. Najpierw go przenieś lub usuń, a następnie spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="823"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Usunąć „{0}” na stałe? Tej czynności nie można cofnąć.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="833"/>
+        <source>Empty Trash</source>
+        <translation>Opróżnij kosz</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="834"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>Usunąć na stałe wszystkie osierocone pliki znajdujące się w koszu? Tej czynności nie można cofnąć.</translation>
+    </message>
+</context>
+<context>
+    <name>ViewConfigDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="969"/>
+        <source>View Configuration</source>
+        <translation>Konfiguracja widoku</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="979"/>
+        <source>View {0}</source>
+        <translation>Widok {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="980"/>
+        <source>View:</source>
+        <translation>Widok:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="984"/>
+        <source>View in Room</source>
+        <translation>Widok w sali</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="988"/>
+        <source>Visible:</source>
+        <translation>Widoczny:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="992"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1014"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="996"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1018"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1000"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1022"/>
+        <source>Width:</source>
+        <translation>Szerokość:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1004"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1026"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1009"/>
+        <source>Port on Screen</source>
+        <translation>Port na ekranie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1031"/>
+        <source>Object Following</source>
+        <translation>Śledzenie obiektu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1035"/>
+        <source>None</source>
+        <translation>Brak</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1038"/>
+        <source>Follow:</source>
+        <translation>Śledź:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1042"/>
+        <source>H Border:</source>
+        <translation>Margines H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1046"/>
+        <source>V Border:</source>
+        <translation>Margines V:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1050"/>
+        <source>H Speed:</source>
+        <translation>Prędkość H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1054"/>
+        <source>V Speed:</source>
+        <translation>Prędkość V:</translation>
+    </message>
+</context>
+<context>
+    <name>AssetPropertiesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114"/>
+        <source>{0} Properties - {1}</source>
+        <translation>Właściwości {0} - {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126"/>
+        <source>Type: {0}</source>
+        <translation>Typ: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131"/>
+        <source>File: {0}</source>
+        <translation>Plik: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Imported</source>
+        <translation>Zaimportowano</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Not imported</source>
+        <translation>Nie zaimportowano</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <source>Status: {0}</source>
+        <translation>Stan: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 Importuj obraz...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150"/>
+        <source>Created: {0}</source>
+        <translation>Utworzono: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155"/>
+        <source>Close</source>
+        <translation>Zamknij</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171"/>
+        <source>Select Sprite Image</source>
+        <translation>Wybierz obraz sprite'a</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>Pliki obrazów (*.png *.jpg *.jpeg *.bmp *.gif);;Wszystkie pliki (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198"/>
+        <source>Success</source>
+        <translation>Sukces</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>Obraz został pomyślnie zaimportowany dla sprite'a „{0}”</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207"/>
+        <source>Import Failed</source>
+        <translation>Import nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208"/>
+        <source>Failed to import the image. Please try again.</source>
+        <translation>Nie udało się zaimportować obrazu. Spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219"/>
+        <source>Error</source>
+        <translation>Błąd</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214"/>
+        <source>Error importing image: {0}</source>
+        <translation>Błąd podczas importowania obrazu: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220"/>
+        <source>Could not access asset manager. Please try again.</source>
+        <translation>Nie można uzyskać dostępu do menedżera zasobów. Spróbuj ponownie.</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="153"/>
+        <source>Tile Palette</source>
+        <translation>Paleta kafelków</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="169"/>
+        <source>Tileset:</source>
+        <translation>Zestaw kafelków:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="174"/>
+        <source>Tile W:</source>
+        <translation>Kafelek Sz:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="181"/>
+        <source>H:</source>
+        <translation>W:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="191"/>
+        <source>Layer:</source>
+        <translation>Warstwa:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="208"/>
+        <source>Clear Tile</source>
+        <translation>Wyczyść kafelek</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="212"/>
+        <source>Close</source>
+        <translation>Zamknij</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="244"/>
+        <source>(none)</source>
+        <translation>(brak)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="184"/>
+        <source>Tilesheet grid</source>
+        <translation>Siatka arkusza kafelków</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="187"/>
+        <source>Use as tileset</source>
+        <translation>Użyj jako zestawu kafelków</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="205"/>
+        <source>H sep:</source>
+        <translation>Odstęp H:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="208"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Odstęp poziomy między kafelkami w pikselach (ustaw 1 dla arkuszy z liniami siatki o grubości 1 px)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="212"/>
+        <source>V sep:</source>
+        <translation>Odstęp V:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="215"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Odstęp pionowy między kafelkami w pikselach</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="219"/>
+        <source>H offset:</source>
+        <translation>Przesunięcie H:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="222"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Przesunięcie od lewej krawędzi przed pierwszą kolumną kafelków, w pikselach</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="226"/>
+        <source>V offset:</source>
+        <translation>Przesunięcie V:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="229"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Przesunięcie od górnej krawędzi przed pierwszym rzędem kafelków, w pikselach</translation>
+    </message>
+</context>
 </TS>
