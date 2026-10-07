@@ -736,4 +736,594 @@ Czy mimo to zapisać?</translation>
         <translation>⬇️ Przesuń w dół</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="29"/>
+        <source>Colors</source>
+        <translation>Kolory</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="43"/>
+        <source>Add color</source>
+        <translation>Dodaj kolor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="49"/>
+        <source>Remove color</source>
+        <translation>Usuń kolor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Add Color</source>
+        <translation>Dodaj kolor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Color name:</source>
+        <translation>Nazwa koloru:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="87"/>
+        <source>Duplicate</source>
+        <translation>Duplikuj</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="88"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>Kolor o nazwie „{}” już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="91"/>
+        <source>Choose Color</source>
+        <translation>Wybierz kolor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="121"/>
+        <source>Edit Color</source>
+        <translation>Edytuj kolor</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="25"/>
+        <source>Tools</source>
+        <translation>Narzędzia</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="32"/>
+        <source>Select</source>
+        <translation>Zaznacz</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="35"/>
+        <source>Select and move elements</source>
+        <translation>Zaznaczaj i przesuwaj elementy</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="39"/>
+        <source>Wall</source>
+        <translation>Ściana</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="41"/>
+        <source>Click to place walls</source>
+        <translation>Kliknij, aby umieścić ściany</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="45"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="47"/>
+        <source>Click to place robots</source>
+        <translation>Kliknij, aby umieścić roboty</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="51"/>
+        <source>Block</source>
+        <translation>Blok</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="53"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>Maluj kostki na siatce (w stylu Minecraft)</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="44"/>
+        <source>Select Thymio Event</source>
+        <translation>Wybierz zdarzenie Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="52"/>
+        <source>Select a Thymio event to respond to:</source>
+        <translation>Wybierz zdarzenie Thymio, na które reagować:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="72"/>
+        <source>Click on the robot to filter events, or select from the list below.</source>
+        <translation>Kliknij robota, aby filtrować zdarzenia, lub wybierz z listy poniżej.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="84"/>
+        <source>All</source>
+        <translation>Wszystkie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="108"/>
+        <source>Search:</source>
+        <translation>Szukaj:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="112"/>
+        <source>Type to filter events...</source>
+        <translation>Wpisz, aby filtrować zdarzenia...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="140"/>
+        <source>Select Event</source>
+        <translation>Wybierz zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="308"/>
+        <source>No Selection</source>
+        <translation>Brak wyboru</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="309"/>
+        <source>Please select a Thymio event first.</source>
+        <translation>Najpierw wybierz zdarzenie Thymio.</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="27"/>
+        <source>Tutorials</source>
+        <translation>Samouczki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="46"/>
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&amp;lt;h2&amp;gt;Samouczki PyGameMaker&amp;lt;/h2&amp;gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="50"/>
+        <source>Select a tutorial and click Open (or double-click):</source>
+        <translation>Wybierz samouczek i kliknij Otwórz (lub kliknij dwukrotnie):</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="83"/>
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>Wskazówka: sprawdź dokumentację (F1), aby uzyskać szybką pomoc!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="91"/>
+        <source>Open</source>
+        <translation>Otwórz</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="97"/>
+        <source>Close</source>
+        <translation>Zamknij</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="118"/>
+        <source>Select a tutorial to see its description.</source>
+        <translation>Wybierz samouczek, aby zobaczyć jego opis.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="121"/>
+        <source>No tutorials folder found</source>
+        <translation>Nie znaleziono folderu samouczków</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="162"/>
+        <source>No tutorials available</source>
+        <translation>Brak dostępnych samouczków</translation>
+    </message>
+</context>
+<context>
+    <name>BaseBlockConfigDialog</name>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="149"/>
+        <source>Preset:</source>
+        <translation>Ustawienie wstępne:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Block</source>
+        <translation>Blok</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Description</source>
+        <translation>Opis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="196"/>
+        <source>Select All</source>
+        <translation>Zaznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
+        <source>Select None</source>
+        <translation>Odznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
+        <source>{0} blocks</source>
+        <translation>{0} bloków</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="268"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[Niezaimplementowane] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="284"/>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="285"/>
+        <source>Requires: {0}</source>
+        <translation>Wymaga: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="378"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ Uwaga: niektórym blokom brakuje zależności:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="391"/>
+        <source>Missing Dependencies</source>
+        <translation>Brakujące zależności</translation>
+    </message>
+</context>
+<context>
+    <name>GM80ActionDialog</name>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="37"/>
+        <source>Configure: {0}</source>
+        <translation>Konfiguruj: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="55"/>
+        <source>Parameters</source>
+        <translation>Parametry</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="70"/>
+        <source>This action has no parameters.</source>
+        <translation>Ta akcja nie ma parametrów.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="136"/>
+        <source>Pick Color...</source>
+        <translation>Wybierz kolor...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="197"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="230"/>
+        <source>{0} actions</source>
+        <translation>{0} akcji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="202"/>
+        <source>📋 Configure...</source>
+        <translation>📋 Konfiguruj...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="217"/>
+        <source>Pick Color</source>
+        <translation>Wybierz kolor</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="96"/>
+        <source>Applies to</source>
+        <translation>Dotyczy</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="105"/>
+        <source>Self</source>
+        <translation>Siebie</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="106"/>
+        <source>Other</source>
+        <translation>Inny</translation>
+    </message>
+</context>
+<context>
+    <name>InstanceProperties</name>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <source>Instance Properties</source>
+        <translation>Właściwości instancji</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <source>Object: None</source>
+        <translation>Obiekt: Brak</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <source>Position</source>
+        <translation>Pozycja</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <source>Visible</source>
+        <translation>Widoczny</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <source>Rotation</source>
+        <translation>Obrót</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <source>Scale</source>
+        <translation>Skala</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <source>Delete Instance</source>
+        <translation>Usuń instancję</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <source>Object: {0}</source>
+        <translation>Obiekt: {0}</translation>
+    </message>
+</context>
+<context>
+    <name>OpenProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="149"/>
+        <source>Open Project</source>
+        <translation>Otwórz projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="159"/>
+        <source>Recent Projects</source>
+        <translation>Ostatnie projekty</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="167"/>
+        <source>Browse for Project</source>
+        <translation>Przeglądaj w poszukiwaniu projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="171"/>
+        <source>Select project file...</source>
+        <translation>Wybierz plik projektu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="173"/>
+        <source>Browse...</source>
+        <translation>Przeglądaj...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="203"/>
+        <source>Open PyGameMaker Project</source>
+        <translation>Otwórz projekt PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="204"/>
+        <source>PyGameMaker Projects (*.json);;All Files (*)</source>
+        <translation>Projekty PyGameMaker (*.json);;Wszystkie pliki (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Invalid Input</source>
+        <translation>Nieprawidłowe dane</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <source>Please enter a project name.</source>
+        <translation>Wprowadź nazwę projektu.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Please choose a project location.</source>
+        <translation>Wybierz lokalizację projektu.</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioActionSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="92"/>
+        <source>Select Thymio Action</source>
+        <translation>Wybierz akcję Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="100"/>
+        <source>Select a Thymio action to add:</source>
+        <translation>Wybierz akcję Thymio do dodania:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="120"/>
+        <source>Click on the robot to filter actions, or select from the list below.</source>
+        <translation>Kliknij robota, aby filtrować akcje, lub wybierz z listy poniżej.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="132"/>
+        <source>All</source>
+        <translation>Wszystkie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="154"/>
+        <source>Search:</source>
+        <translation>Szukaj:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="158"/>
+        <source>Type to filter actions...</source>
+        <translation>Wpisz, aby filtrować akcje...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="186"/>
+        <location filename="../dialogs/thymio_action_selector.py" line="343"/>
+        <source>Configure &amp;&amp; Add</source>
+        <translation>Konfiguruj i dodaj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="345"/>
+        <source>Add Action</source>
+        <translation>Dodaj akcję</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="405"/>
+        <source>No Selection</source>
+        <translation>Brak wyboru</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="406"/>
+        <source>Please select a Thymio action first.</source>
+        <translation>Najpierw wybierz akcję Thymio.</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="324"/>
+        <source>Trash</source>
+        <translation>Kosz</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="332"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Usunięte zasoby pozostają tutaj, dopóki nie zostaną usunięte na stałe.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="346"/>
+        <source>Restore</source>
+        <translation>Przywróć</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="351"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="420"/>
+        <source>Delete Permanently</source>
+        <translation>Usuń na stałe</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="356"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="431"/>
+        <source>Empty Trash</source>
+        <translation>Opróżnij kosz</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="372"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  usunięto {2}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="392"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>To usunięcie wyczyściło odwołanie w: {0}. Przywrócenie przywraca plik, ale nie łączy automatycznie tego odwołania ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="405"/>
+        <source>Restore Failed</source>
+        <translation>Przywracanie nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="407"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>Nie można przywrócić „{0}” — zasób o tej nazwie już istnieje. Najpierw zmień jego nazwę lub usuń go, a następnie spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="422"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Usunąć „{0}” na stałe? Tej czynności nie można cofnąć.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="432"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>Usunąć na stałe całą zawartość kosza? Tej czynności nie można cofnąć.</translation>
+    </message>
+</context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="31"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="94"/>
+        <source>Find</source>
+        <translation>Znajdź</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="42"/>
+        <source>Find:</source>
+        <translation>Znajdź:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="44"/>
+        <source>Replace:</source>
+        <translation>Zamień:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="50"/>
+        <source>Case sensitive</source>
+        <translation>Uwzględniaj wielkość liter</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="51"/>
+        <source>Whole words</source>
+        <translation>Całe słowa</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="62"/>
+        <source>Find Next</source>
+        <translation>Znajdź następny</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="64"/>
+        <source>Find Previous</source>
+        <translation>Znajdź poprzedni</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="66"/>
+        <source>Replace</source>
+        <translation>Zamień</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="68"/>
+        <source>Replace All</source>
+        <translation>Zamień wszystko</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="94"/>
+        <source>Find and Replace</source>
+        <translation>Znajdź i zamień</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="124"/>
+        <source>Phrase not found</source>
+        <translation>Nie znaleziono wyrażenia</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="183"/>
+        <source>%d replacement(s) made</source>
+        <translation>Dokonano zamian: %d</translation>
+    </message>
+</context>
 </TS>
