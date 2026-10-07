@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Bonus : Passer en 2.5D</h1>
+
+    <div class="info">
+        <strong>Cette page est facultative.</strong> Votre jeu de labyrinthe est
+        déjà terminé &mdash; ceci est un extra pour ceux qui veulent essayer
+        quelque chose de nouveau. Pas de nouveau labyrinthe, pas de nouveaux
+        graphismes pour le labyrinthe lui-même : vous allez regarder <em>exactement
+        le même labyrinthe</em> depuis l'intérieur, façon Doom/Wolfenstein.
+    </div>
+
+    <p>Souvenez-vous de la Phase 1, où votre joueur affichait une image différente
+    pour chaque direction de déplacement. C'était la <strong>direction
+    regardée</strong>. Une caméra à la première personne a exactement besoin de la
+    même idée &mdash; de quel côté elle pointe &mdash; sauf qu'au lieu de choisir
+    une image, elle utilise cette direction pour décider quoi dessiner. Vous
+    connaissez déjà ce principe ; vous allez simplement le réutiliser.</p>
+
+    <h2>Activer la vue 2.5D</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">À la création</span><br>
+            <span class="block block-view block-indent">Activer la vue Raycast &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span>
+        </div>
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'objets et cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Ajoutez un nouvel événement <strong>À la création</strong> (depuis <em>Événements</em>)</li>
+            <li>Trouvez <strong>Activer la vue Raycast</strong> dans la catégorie <em>Vue 3D</em> et emboîtez-le à l'intérieur</li>
+            <li>Réglez <em>Cell Size</em> (taille de case) à <code>32</code> &mdash; elle doit correspondre à la grille de votre labyrinthe</li>
+            <li>Laissez <em>Camera Object</em> (objet caméra) vide &mdash; cela signifie « celui qui exécute cette action », c'est-à-dire le joueur</li>
+        </ol>
+        <div class="info">
+            Les noms des paramètres restent en anglais dans l'IDE, comme dans
+            <em>Cell Size</em> et <em>Render Distance</em> (distance de rendu)
+            ci-dessus. Vous ne voyez pas <em>Vue 3D</em> dans la boîte à outils ?
+            Ouvrez <strong>Fichier &rarr; Paramètres du projet... &rarr;
+            Extensions</strong> et cochez la case nommée <strong>2.5D Raycast
+            View</strong> (le nom de l'extension reste lui aussi en anglais).
+        </div>
+    </div>
+
+    <h2>Faire regarder la caméra dans la même direction que le sprite</h2>
+    <div class="step">
+        <p>Retournez sur les 4 mêmes événements de touches fléchées de la Phase 1
+        et ajoutez-y <strong>un bloc de plus</strong> &mdash; <strong>Définir
+        l'angle de vue</strong> (dans <em>Vue 3D</em>), avec le même sens
+        que sur une boussole : 0 = droite, 90 = haut, 180 = gauche, 270 = bas.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche droite (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_right</span></span><br>
+            <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_left</span></span><br>
+            <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">180</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche haut (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_up</span></span><br>
+            <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">90</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche bas (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_down</span></span><br>
+            <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">270</span></span>
+        </div>
+
+        <div class="highlight">
+            <strong>Pourquoi ne pas simplement réutiliser le sprite ?</strong>
+            <code>Définir le sprite</code> choisit une image ; <code>Définir
+            l'angle de vue</code> choisit un nombre (l'angle). La caméra a
+            besoin du nombre pour calculer ce que vous verriez réellement &mdash;
+            murs, couloirs, tout &mdash; depuis cette direction.
+        </div>
+    </div>
+
+    <h2>Les murs bloquent déjà le joueur</h2>
+    <div class="info">
+        Rien à ajouter ici ! Votre événement <strong>Collision avec obj_wall
+        &rarr; Arrêter le mouvement</strong> de la Phase 1 fait déjà en sorte que
+        les murs bloquent le joueur &mdash; cela fonctionne exactement de la même
+        façon, que la salle soit dessinée vue de dessus ou à la première personne.
+    </div>
+
+    <h2>Testez votre labyrinthe en 2.5D !</h2>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>La salle apparaît maintenant à la <strong>première personne</strong> au lieu d'être vue de dessus</li>
+            <li>Les murs sont texturés avec votre propre image <code>spr_wall</code> &mdash; vous n'avez défini aucune texture de mur, chaque mur utilise automatiquement son propre sprite</li>
+            <li>Tourner fait regarder dans la direction de la flèche maintenue, exactement comme votre sprite à la Phase 1</li>
+            <li>Vous butez contre les murs au lieu de les traverser</li>
+            <li>Les pièces et la sortie fonctionnent toujours &mdash; elles flottent dans les airs, face à vous, sans aucun changement</li>
+        </ul>
+    </div>
+
+    <h2>Si quelque chose ne va pas</h2>
+    <table class="t"><tr><th>Ce que vous voyez</th><th>Cause probable</th></tr>
+    <tr><td>La salle normale vue de dessus, inchangée</td><td>L'événement <strong>À la création</strong> avec <strong>Activer la vue Raycast</strong> est manquant, ou <em>2.5D Raycast View</em> n'est pas cochée dans Fichier &rarr; Paramètres du projet... &rarr; Extensions</td></tr>
+    <tr><td>Vous traversez les murs</td><td><code>obj_wall</code> n'est pas <strong>Solide</strong>, ou l'événement <strong>Collision avec obj_wall</strong> de la Phase 1 a été supprimé</td></tr>
+    <tr><td>Les murs semblent faux ou il y a des trous</td><td>Un mur n'est pas aligné sur la grille de 32 pixels, ou <em>Cell Size</em> (taille de case) n'est pas <code>32</code></td></tr>
+    <tr><td>La caméra ne tourne pas quand vous bougez</td><td>Un bloc <strong>Définir l'angle de vue</strong> manque sur l'un des 4 événements de touches fléchées, ou a le mauvais nombre</td></tr>
+    <tr><td>Tourner semble inversé (la gauche montre ce qui devrait être à droite)</td><td>Deux valeurs de <strong>Définir l'angle de vue</strong> ont été inversées &mdash; vérifiez 0/90/180/270 par rapport au tableau ci-dessus</td></tr>
+    </table>
+
+    <h2>Envie d'aller plus loin ?</h2>
+    <div class="highlight">
+        Deux autres actions de la catégorie Vue 3D existent si vous voulez
+        continuer à explorer par vous-même : <strong>Dessiner la mini-carte</strong>
+        (une petite carte vue de dessus dans un coin de l'écran) et
+        <strong>Dessiner l'ATH DOOM</strong> (une barre de statut classique
+        avec vie/score). Aucune des deux n'est expliquée ici &mdash; essayez d'en
+        emboîter une dans l'événement Dessin de votre <code>obj_game_controller</code>
+        et observez ce qui se passe !
+    </div>
+
+    <div class="info">
+        Vous venez de transformer un labyrinthe 2D vu de dessus en un jeu en 3D à
+        la première personne, en utilisant exactement la même salle, exactement
+        les mêmes murs, et exactement la même idée de direction regardée que
+        dans la Phase 1 &mdash; simplement appliquée à une caméra plutôt qu'à un
+        sprite.
+    </div>
+</body>
+</html>

@@ -35,7 +35,8 @@
     <h1>Phase 1 : Joueur et labyrinthe</h1>
 
     <p>Dans cette phase, vous allez créer les sprites du joueur et des murs, construire les objets,
-    programmer le déplacement avec Blockly et concevoir un labyrinthe simple.
+    programmer le déplacement avec Blockly, faire en sorte que le joueur regarde dans la direction
+    où il se déplace, et concevoir un labyrinthe simple.
     À la fin, vous pourrez vous déplacer à l'intérieur de votre labyrinthe !</p>
 
     <!-- ========== SPRITES ========== -->
@@ -203,6 +204,93 @@
         Lorsque vous relâchez toutes les touches, le joueur s'arrête. Si le joueur touche un mur, il s'arrête également.
     </div>
 
+    <!-- ========== FACING DIRECTION ========== -->
+    <h2>Étape 3B : Faire regarder votre joueur dans la bonne direction</h2>
+
+    <div class="info">
+        Pour l'instant, votre joueur a toujours la même apparence, quelle que soit
+        la direction dans laquelle il se déplace. Beaucoup de jeux affichent une
+        <strong>image différente pour chaque direction</strong> &mdash; un <em>sprite</em>
+        différent selon le sens dans lequel le personnage regarde. Vous avez déjà
+        créé les 4 événements des touches fléchées ; cette étape ajoute simplement
+        un bloc de plus à chacun d'eux.
+    </div>
+
+    <h2>spr_player_up / _down / _left / _right (24x24)</h2>
+    <div class="step">
+        <ol>
+            <li>Créez <strong>4 nouveaux sprites</strong> : <code>spr_player_up</code>,
+            <code>spr_player_down</code>, <code>spr_player_left</code>, <code>spr_player_right</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Dessinez-les vous-même</h3>
+        <div class="option-box">
+            <ol>
+                <li>Pour chacun, réglez la taille comme pour <code>spr_player</code></li>
+                <li>Dessinez le même petit personnage, mais déplacez les yeux (ou
+                ajoutez une flèche) pour montrer la direction qu'il regarde : les
+                deux yeux pour <code>_down</code>, pas de visage pour <code>_up</code>
+                (l'arrière de la tête), un seul œil du bon côté pour
+                <code>_left</code> / <code>_right</code></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger les sprites d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Faites un clic droit sur chaque nouveau sprite &rarr; <strong>Importer une image...</strong></li>
+                <li>Naviguez vers <code>Tutorials/06_maze/assets/</code></li>
+                <li>Sélectionnez le fichier correspondant (<code>spr_player_up.png</code>,
+                <code>spr_player_down.png</code>, <code>spr_player_left.png</code>,
+                <code>spr_player_right.png</code>)</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>Ajouter un bloc « Définir le sprite » à chaque touche fléchée</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur
+            d'objets (s'il n'est pas déjà ouvert) et cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Retrouvez chacun de vos 4 événements de touches fléchées de
+            l'étape 3 et emboîtez-y un bloc de plus &mdash; <strong>Définir le
+            sprite</strong> (dans la catégorie <em>Instance</em>)</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche droite (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_right</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_left</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche haut (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_up</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche bas (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Définir le sprite à <span class="block-str">spr_player_down</span></span>
+        </div>
+
+        <p>Laissez <strong>Clavier : Aucune touche</strong> et <strong>Collision
+        avec obj_wall</strong> exactement comme ils étaient &mdash; le joueur
+        continue simplement d'afficher la dernière direction dans laquelle il
+        s'est déplacé.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Comment ça fonctionne :</strong> Chaque touche fléchée fait
+        maintenant deux choses : elle règle la vitesse <em>et</em> choisit
+        l'image correspondante. Le sprite du joueur affiche toujours la
+        dernière direction appuyée, même après l'arrêt.
+    </div>
+
     <!-- ========== ROOM ========== -->
     <h2>Étape 4 : Créer la salle</h2>
     <div class="step">
@@ -255,6 +343,7 @@ W = obj_wall   P = obj_player   . = Espace vide</pre>
         <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
         <ul>
             <li>Utilisez les <strong>touches fléchées</strong> pour déplacer le joueur</li>
+            <li>L'image du joueur devrait changer pour regarder dans la direction du déplacement</li>
             <li>Le joueur devrait s'arrêter lorsqu'il touche un mur</li>
             <li>Le joueur devrait s'arrêter lorsque vous relâchez toutes les touches</li>
             <li>Essayez de naviguer dans les couloirs de votre labyrinthe</li>

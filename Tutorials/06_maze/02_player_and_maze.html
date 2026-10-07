@@ -35,7 +35,8 @@
     <h1>Phase 1: Player and Maze</h1>
 
     <p>In this phase you will create the player and wall sprites, build objects,
-    program movement with Blockly, and design a simple maze.
+    program movement with Blockly, make the player face the direction it is
+    walking, and design a simple maze.
     By the end, you can walk around inside your maze!</p>
 
     <!-- ========== SPRITES ========== -->
@@ -200,6 +201,90 @@
         When you release all keys, the player stops. If the player hits a wall, it also stops.
     </div>
 
+    <!-- ========== FACING DIRECTION ========== -->
+    <h2>Step 3B: Make Your Player Face the Right Way</h2>
+
+    <div class="info">
+        Right now your player always looks the same no matter which way it moves.
+        Lots of games show a <strong>different picture for each direction</strong> &mdash;
+        a different <em>sprite</em> depending on which way the character is facing.
+        You already built the 4 arrow-key events; this step just adds one more
+        block to each of them.
+    </div>
+
+    <h2>spr_player_up / _down / _left / _right (24x24)</h2>
+    <div class="step">
+        <ol>
+            <li>Create <strong>4 new sprites</strong>: <code>spr_player_up</code>,
+            <code>spr_player_down</code>, <code>spr_player_left</code>, <code>spr_player_right</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Draw them yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>For each one, set the size to match <code>spr_player</code></li>
+                <li>Draw the same little character, but move the eyes (or an
+                arrow) to show which way it is looking: both eyes for
+                <code>_down</code>, no face for <code>_up</code> (the back of
+                the head), one eye on that side for <code>_left</code> /
+                <code>_right</code></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprites</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click each new sprite &rarr; <strong>Import Image...</strong></li>
+                <li>Browse to <code>Tutorials/06_maze/assets/</code></li>
+                <li>Select the matching file (<code>spr_player_up.png</code>,
+                <code>spr_player_down.png</code>, <code>spr_player_left.png</code>,
+                <code>spr_player_right.png</code>)</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>Add a Set Sprite Block to Each Arrow Key</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_player</code> to open the Object Editor
+            (if it is not already open) and click the <strong>Blockly</strong> tab</li>
+            <li>Find each of your 4 arrow-key events from Step 3 and snap one more
+            block inside &mdash; <strong>Set Sprite</strong> (from the
+            <em>Instance</em> category)</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_right</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_left</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_up</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_down</span></span>
+        </div>
+
+        <p>Leave <strong>Keyboard: No key</strong> and <strong>When colliding with
+        obj_wall</strong> exactly as they were &mdash; the player simply keeps
+        showing whichever direction it last moved.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>How it works:</strong> Each arrow key now does two things: it sets
+        the speed <em>and</em> picks the matching picture. The player's sprite
+        always shows the last direction you pressed, even after you stop.
+    </div>
+
     <!-- ========== ROOM ========== -->
     <h2>Step 4: Create the Room</h2>
     <div class="step">
@@ -252,6 +337,7 @@ W = obj_wall   P = obj_player   . = Empty space</pre>
         <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
         <ul>
             <li>Use the <strong>arrow keys</strong> to move the player</li>
+            <li>The player's picture should change to face the direction you are moving</li>
             <li>The player should stop when hitting walls</li>
             <li>The player should stop when you release all keys</li>
             <li>Try navigating through the corridors of your maze</li>

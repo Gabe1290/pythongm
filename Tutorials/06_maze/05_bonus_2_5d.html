@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Bonus: Make It 2.5D</h1>
+
+    <div class="info">
+        <strong>This page is optional.</strong> Your maze game is already finished
+        &mdash; this is an extra for anyone who wants to try something new. No new
+        maze, no new art for the maze itself: you will look at the <em>exact same
+        maze</em> from the inside, Doom/Wolfenstein style.
+    </div>
+
+    <p>Remember Phase 1, where your player showed a different picture for each
+    direction it moved? That was <strong>facing direction</strong>. A first-person
+    camera needs the exact same idea &mdash; which way it is pointing &mdash; except
+    instead of picking a picture, it uses that direction to decide what to draw.
+    You already know this pattern; you are about to reuse it.</p>
+
+    <h2>Turn On the 2.5D View</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-view block-indent">Enable Raycast View &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span>
+        </div>
+        <ol>
+            <li>Double-click <code>obj_player</code> to open the Object Editor and click the <strong>Blockly</strong> tab</li>
+            <li>Add a new <strong>Create</strong> event (from <em>Events</em>)</li>
+            <li>Find <strong>Enable Raycast View</strong> in the <em>3D View</em> category and snap it inside</li>
+            <li>Set <strong>Cell Size</strong> to <code>32</code> &mdash; it must match the grid your maze is built on</li>
+            <li>Leave <strong>Camera Object</strong> empty &mdash; that means "whoever runs this action", i.e. the player</li>
+        </ol>
+        <div class="info">
+            Don't see <em>3D View</em> in the toolbox? Open <strong>File &rarr;
+            Project Settings... &rarr; Extensions</strong> and check <strong>2.5D
+            Raycast View</strong>.
+        </div>
+    </div>
+
+    <h2>Make the Camera Face the Same Way as Your Sprite</h2>
+    <div class="step">
+        <p>Go back to the same 4 arrow-key events from Phase 1 and add <strong>one
+        more block</strong> to each &mdash; <strong>Set Facing Angle</strong>
+        (from <em>3D View</em>), using the same angle meaning as a compass: 0 =
+        right, 90 = up, 180 = left, 270 = down.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_right</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_left</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">180</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_up</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">90</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_down</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">270</span></span>
+        </div>
+
+        <div class="highlight">
+            <strong>Why not just reuse the sprite?</strong> <code>Set Sprite</code>
+            picks a picture; <code>Set Facing Angle</code> picks a number (the
+            angle). The camera needs the number so it can calculate what you would
+            actually see &mdash; walls, corridors, everything &mdash; from that
+            direction.
+        </div>
+    </div>
+
+    <h2>The Walls Are Already Solid to the Player</h2>
+    <div class="info">
+        Nothing to add here! Your <strong>Collision with obj_wall &rarr; Stop
+        movement</strong> event from Phase 1 already makes walls block the player
+        &mdash; that works exactly the same whether the room is drawn top-down or
+        in first person.
+    </div>
+
+    <h2>Test Your 2.5D Maze!</h2>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>The room now appears in <strong>first person</strong> instead of top-down</li>
+            <li>The walls are textured with your own <code>spr_wall</code> picture &mdash; you never set a wall texture, each wall just uses its own sprite automatically</li>
+            <li>Turning snaps to face the arrow you are holding, exactly like your sprite did in Phase 1</li>
+            <li>You bump into walls instead of walking through them</li>
+            <li>Coins and the exit still work &mdash; they appear floating in the air, facing you, with no changes at all</li>
+        </ul>
+    </div>
+
+    <h2>If Something Looks Wrong</h2>
+    <table class="t"><tr><th>What you see</th><th>Likely cause</th></tr>
+    <tr><td>The normal top-down room, unchanged</td><td>The <strong>Create</strong> event with <strong>Enable Raycast View</strong> is missing, or <em>2.5D Raycast View</em> is not checked in File &rarr; Project Settings... &rarr; Extensions</td></tr>
+    <tr><td>You walk through walls</td><td><code>obj_wall</code> is not <strong>Solid</strong>, or Phase 1's <strong>Collision with obj_wall</strong> event got deleted</td></tr>
+    <tr><td>Walls look wrong or there are gaps</td><td>A wall block is off the 32-pixel grid, or <strong>Cell Size</strong> is not <code>32</code></td></tr>
+    <tr><td>The camera does not turn when you move</td><td>A <strong>Set Facing Angle</strong> block is missing from one of the 4 arrow-key events, or has the wrong number</td></tr>
+    <tr><td>Turning looks reversed (left shows what should be on the right)</td><td>Two <strong>Set Facing Angle</strong> values got swapped &mdash; check 0/90/180/270 against the table above</td></tr>
+    </table>
+
+    <h2>Want More?</h2>
+    <div class="highlight">
+        Two more 3D View actions exist if you want to keep exploring on your own:
+        <strong>Draw Minimap</strong> (a little top-down map in the corner of the
+        screen) and <strong>Draw DOOM HUD</strong> (a classic status bar with
+        health/score). Neither is covered here &mdash; try snapping one into your
+        <code>obj_game_controller</code>'s Draw event and see what happens!
+    </div>
+
+    <div class="info">
+        You just turned a 2D top-down maze into a first-person 3D-style game using
+        the exact same room, the exact same walls, and the exact same facing-
+        direction idea from Phase 1 &mdash; just pointed at a camera instead of a
+        sprite.
+    </div>
+</body>
+</html>
