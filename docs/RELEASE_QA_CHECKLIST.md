@@ -687,8 +687,8 @@ each row names what used to be wrong so a regression is recognisable.
 
 ## 17. Localization
 
-- L [ ] M [ ] W [ ] Tools → Preferences → Language lists all **11**
-  entries (English + de es fr it ja pt ru sl uk zh).
+- L [ ] M [ ] W [ ] Tools → Preferences → Language lists all **12**
+  entries (English + de es fr it ja pl pt ru sl uk zh).
 - L [ ] M [ ] W [ ] Switch to **French**: menus, dialogs, Welcome tab are
   French, correct accents, **no mojibake** (`Ã©`, `â€"`).
 - L [ ] M [ ] W [ ] Welcome tab lists the 2.5D samples as

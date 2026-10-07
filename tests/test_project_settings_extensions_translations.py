@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANS_DIR = REPO_ROOT / "translations"
 
 _SPLIT_LANGS = {"de", "it", "ru", "sl", "uk"}
-_ALL_LANGS = ["de", "es", "fr", "it", "pt", "ru", "sl", "uk", "ja", "zh"]
+_ALL_LANGS = ["de", "es", "fr", "it", "pt", "ru", "sl", "uk", "ja", "zh", "pl"]
 
 CONTEXT = "ProjectSettingsDialog"
 SOURCES = ["Extensions", "used by {0} action(s)"]

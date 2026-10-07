@@ -120,10 +120,10 @@ def test_the_language_list_length_is_as_stated():
     from core.language_manager import get_language_manager
 
     codes = get_language_manager()._discover_languages()
-    assert len(codes) == 11, (
-        "the checklist says 11 language entries, discovery found %d: %s"
+    assert len(codes) == 12, (
+        "the checklist says 12 language entries, discovery found %d: %s"
         % (len(codes), codes))
-    assert "**11**" in _text()
+    assert "**12**" in _text()
 
 
 def test_the_frozen_launcher_diagnostics_named_are_the_real_ones():

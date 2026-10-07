@@ -1,6 +1,27 @@
 # Polish (`pl`) translation — plan
 
-Written 2026-10-07. Status: **plan only, nothing implemented yet.**
+Written 2026-10-07. Status: **Phase 1 (Qt UI catalog) complete** as of
+2026-10-07 — all 70 real contexts / 1562 located-active messages in
+`translations/pygm2_pl.ts`, byte-identical in coverage to `fr`. Phases 2
+(Blockly) and 3 (Tutorials) not started.
+
+**Correction (2026-10-07, same day):** the counts below (1849 messages /
+73 contexts) were the plan's original naive count — a straight
+non-`vanished` scan of `pygm2_fr.ts` that didn't additionally filter for
+the `<location>` tag `TranslationBuilder._parse_source_context` actually
+requires (same filter `gen_translation_ts.py`'s own docstring describes).
+Applying that filter, the **true** total actually usable by the tool is
+**1562 messages across 70 contexts** — confirmed by completing Phase 1
+and cross-checking the result context-for-context and message-for-message
+against a matching `<location>`-filtered scan of `fr` (zero missing, zero
+extra). Of the "73 contexts" figure, 3 (`AboutDialog`, `EventActionWidget`,
+`GM80EventsPanel`) turned out to have zero located-active messages (their
+classes no longer exist in the codebase) and are correctly absent from
+`pygm2_pl.ts`. Numbers elsewhere in this doc (e.g. `PyGameMakerIDE`'s "361
+messages") are likewise the naive count; the real, tool-usable number for
+that context was 357. Left the historical numbers below as originally
+written rather than silently rewriting history, with this note as the
+correction of record.
 
 ## The ask
 
@@ -127,6 +148,28 @@ for a brand-new language the monolithic form sidesteps entirely.
    behind `fr` (231) — verify **count AND key-set parity against `fr`**
    specifically before considering Phase 2 done, not just "some entries
    exist."
+8. **Source escaping is genuinely inconsistent WITHIN `pygm2_fr.ts` itself**
+   (not a uniform rule) — some apostrophes are written as `&apos;`, others
+   as a literal `'`, in otherwise-similar strings in the same context.
+   `TranslationBuilder._parse_source_context` matches dict keys against
+   the raw, un-decoded `<source>` bytes, so a key must match whichever
+   form that specific string happens to use — copy it, don't assume. Hit
+   for real in `ObjectEventsPanel` (two "needs the extension" strings used
+   a literal apostrophe while the rest of the context used `&apos;`),
+   fixed by re-deriving the exact bytes rather than guessing. For a large
+   or entity-heavy context (HTML blocks, `&amp;` mnemonics), the safer
+   approach is to not retype `<source>` text as dict keys at all: call
+   `_parse_source_context(name)` once, get its exact `(src, locs)` tuples,
+   and `zip()` them against an ordered translation list by index — this
+   is what the `PyGameMakerIDE` batch (357 messages, several multi-line
+   and HTML-entity-heavy) used, and it has zero escaping-mismatch risk by
+   construction. Separately: **`lrelease` DOES decode XML entities when
+   compiling to `.qm`**, so a live `QTranslator`/`QCoreApplication.translate`
+   spot-check must look up the *decoded* real-character form (`&File`,
+   `<h3>...`), not the raw escaped `.ts` text (`&amp;File`,
+   `&lt;h3&gt;...`) — only the `_parse_source_context`/dict-key side of
+   the pipeline needs the raw escaped form; the runtime-resolution side
+   needs the decoded form. Conflating the two wastes a debugging cycle.
 
 ## Guard tests
 
@@ -153,32 +196,33 @@ for a brand-new language the monolithic form sidesteps entirely.
 
 ## Units of work (one commit + push per batch, matching standing discipline)
 
-### Phase 1 — Qt UI catalog (1849 messages / 73 contexts)
+### Phase 1 — Qt UI catalog (1562 messages / 70 contexts — see correction note) — **COMPLETE 2026-10-07**
 
-- [ ] P1.0 — this plan, committed first.
-- [ ] P1.1 — the ~60 small/medium contexts `fr` and pt/ja/zh both already
-      have (re-derive each one's source strings from `fr`, not pt, since
-      `fr` is a strict superset — several of these contexts also grew
-      beyond pt's old counts).
-- [ ] P1.2 — the 11 contexts that only exist in `fr`: `AboutDialog`,
-      `BackgroundEditor`, `BlockWorldEditorWindow`, `EventActionWidget`,
-      `FindReplaceDialog`, `FontEditor`, `GM80EventsPanel`,
+- [x] P1.0 — this plan, committed first.
+- [x] P1.1 — the ~60 small/medium contexts `fr` and pt/ja/zh both already
+      have (re-derived each one's source strings from `fr`, not pt).
+- [x] P1.2 — the contexts that only exist in `fr` (`BackgroundEditor`,
+      `BlockWorldEditorWindow`, `FindReplaceDialog`, `FontEditor`,
       `OrphanedFilesDialog`, `SoundEditor`, `TrashDialog`,
-      `UnusedAssetsDialog` — no pt/ja/zh precedent to crib structure from,
-      budget as first-time work.
-- [ ] P1.3 — `PyGameMakerIDE` (361 messages: menus + mnemonics, toolbar,
-      status bar, every File/Edit/Assets/Build/Tools/Help flow, the Export
-      dialog's per-platform strings, the About dialog's HTML blocks) via
-      several `add_partial_context` batches.
-- [ ] P1.4 — check for a legacy `translations/pygamemaker_pl.ts` stub (the
-      kind pt/ja/zh each had and deleted once superseded) — delete it only
-      if one actually exists; Polish may never have had one.
+      `UnusedAssetsDialog`, etc.) — done alongside P1.1, no separate pass
+      needed in practice.
+- [x] P1.3 — `PyGameMakerIDE` (357 located-active messages: menus +
+      mnemonics, toolbar, status bar, every File/Edit/Assets/Build/Tools/
+      Help flow, the Export dialog's per-platform strings, the About/
+      License dialogs' HTML blocks) via 3 `add_partial_context` batches of
+      120/120/117, built by zipping an ordered Polish translation list
+      against `_parse_source_context`'s own parsed `(src, locs)` tuples by
+      index rather than hand-retyping entity-escaped `<source>` text —
+      avoided the escaping-mismatch risk hit once in `ObjectEventsPanel`
+      (see landmine 8 below).
+- [x] P1.4 — checked for a legacy `translations/pygamemaker_pl.ts` stub —
+      none exists; Polish never had one.
 - [ ] P1.5 — add `"pl"` to every hardcoded per-language test list (see
       Guard tests); confirm `pl` is discoverable in
-      `LanguageManager._discover_languages()` once the `.qm` compiles.
-- [ ] P1.6 — guard tests: diacritics sweep, unfinished-entry sweep, live
-      `QTranslator` resolution across a representative sample, full suite
-      green.
+      `LanguageManager._discover_languages()`.
+- [ ] P1.6 — guard tests: diacritics sweep, unfinished-entry sweep
+      (`tests/test_i18n_unfinished_pl.py`), live `QTranslator` resolution
+      across a representative sample, full suite green.
 
 ### Phase 2 — Blockly block-level translation (~240 entries)
 
