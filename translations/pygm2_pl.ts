@@ -1830,4 +1830,429 @@ Czy mimo to zapisać?</translation>
         <translation>Strona {0} z {1}</translation>
     </message>
 </context>
+<context>
+    <name>BackgroundLayersDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
+        <source>Background Layers</source>
+        <translation>Warstwy tła</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
+        <source>Background {0}</source>
+        <translation>Tło {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
+        <source>Layer:</source>
+        <translation>Warstwa:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
+        <source>Layer Properties</source>
+        <translation>Właściwości warstwy</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
+        <source>Visible:</source>
+        <translation>Widoczna:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
+        <source>Foreground:</source>
+        <translation>Pierwszy plan:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
+        <source>None</source>
+        <translation>Brak</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
+        <source>Image:</source>
+        <translation>Obraz:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
+        <source>Stretch:</source>
+        <translation>Rozciągnij:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
+        <source>Tile H:</source>
+        <translation>Kafelek H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
+        <source>Tile V:</source>
+        <translation>Kafelek V:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1232"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1238"/>
+        <source>H Speed:</source>
+        <translation>Prędkość H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1244"/>
+        <source>V Speed:</source>
+        <translation>Prędkość V:</translation>
+    </message>
+</context>
+<context>
+    <name>BlocklyConfigDialog</name>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="46"/>
+        <source>Configure Events &amp; Actions</source>
+        <translation>Konfiguruj zdarzenia i akcje</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="101"/>
+        <source>Full (All Blocks)</source>
+        <translation>Pełny (wszystkie bloki)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="55"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="102"/>
+        <source>Beginner (Basic Blocks)</source>
+        <translation>Początkujący (podstawowe bloki)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="56"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="103"/>
+        <source>Intermediate (More Features)</source>
+        <translation>Średniozaawansowany (więcej funkcji)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="57"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="104"/>
+        <source>Platformer Game</source>
+        <translation>Gra platformowa</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="58"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="105"/>
+        <source>Grid-based RPG</source>
+        <translation>RPG oparte na siatce</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="59"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="106"/>
+        <source>Sokoban (Box Puzzle)</source>
+        <translation>Sokoban (łamigłówka z pudełkami)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="60"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="107"/>
+        <source>Testing (Validated Only)</source>
+        <translation>Testowy (tylko zweryfikowane)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="61"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="108"/>
+        <source>Implemented Only</source>
+        <translation>Tylko zaimplementowane</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="62"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="109"/>
+        <source>Code Editor</source>
+        <translation>Edytor kodu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="63"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="110"/>
+        <source>Blockly Editor</source>
+        <translation>Edytor Blockly</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="64"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
+        <source>Custom</source>
+        <translation>Niestandardowy</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
+        <source>Select blocks to enable:</source>
+        <translation>Wybierz bloki do włączenia:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="136"/>
+        <source>{0} blocks, {1} categories</source>
+        <translation>{0} bloków, {1} kategorii</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="128"/>
+        <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>Niektórym włączonym blokom brakuje wymaganych zależności. Bloki mogą nie działać poprawnie.
+
+Czy mimo to zapisać?</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="29"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="233"/>
+        <source>No Selection</source>
+        <translation>Brak wyboru</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="34"/>
+        <source>Wall</source>
+        <translation>Ściana</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="72"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="82"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="159"/>
+        <source>Angle:</source>
+        <translation>Kąt:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="93"/>
+        <source>Color:</source>
+        <translation>Kolor:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="102"/>
+        <source>Pushable</source>
+        <translation>Do popychania</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="118"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="124"/>
+        <source>Type:</source>
+        <translation>Typ:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="134"/>
+        <source>Name:</source>
+        <translation>Nazwa:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="170"/>
+        <source>Port:</source>
+        <translation>Port:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="180"/>
+        <source>Code:</source>
+        <translation>Kod:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="183"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>Kod którego obiektu Thymio uruchomić podczas symulacji</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="192"/>
+        <source>Delete</source>
+        <translation>Usuń</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="240"/>
+        <source>Wall Properties</source>
+        <translation>Właściwości ściany</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="258"/>
+        <source>Robot Properties</source>
+        <translation>Właściwości robota</translation>
+    </message>
+</context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="102"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="152"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="160"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="176"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="438"/>
+        <source>Block World</source>
+        <translation>Świat bloków</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="103"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>Nie można wczytać zapisanych bloków tej sali ({0}); rozpoczynanie od pustej.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="139"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="224"/>
+        <source>Block World Editor</source>
+        <translation>Edytor świata bloków</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="153"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>Ta sala nie ma projektu ani nazwy, do której można zapisać.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="161"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>Nie udało się zapisać bloków:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="164"/>
+        <source>Saved to {0}</source>
+        <translation>Zapisano do {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="177"/>
+        <source>There are no blocks to clear.</source>
+        <translation>Nie ma bloków do wyczyszczenia.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="180"/>
+        <source>Clear World</source>
+        <translation>Wyczyść świat</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="181"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>Usunąć wszystkie bloki w tej sali? Tę czynność można cofnąć.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="205"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD lot | przeciąganie środkowym przyciskiem rozgląda się | kółko zmienia pochylenie | Spacja/Shift zmienia warstwę | lewy przycisk stawia | prawy przycisk / Delete niszczy | Ctrl+Z / Ctrl+Y cofnij/ponów | Ctrl+S zapisz</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="214"/>
+        <source>Blocks</source>
+        <translation>Bloki</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="227"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>Zapisz bloki (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="233"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ Wyczyść świat</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="234"/>
+        <source>Remove every block in this room</source>
+        <translation>Usuń wszystkie bloki w tej sali</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="429"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>komórka {0}   warstwa {1}   kąt {2:.0f}   pochylenie {3:+.0f}   blok {4}   cofnij {5}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="439"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>Zapisać zmiany w blokach tej sali przed zamknięciem?</translation>
+    </message>
+</context>
+<context>
+    <name>NewProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="26"/>
+        <source>New Project</source>
+        <translation>Nowy projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="36"/>
+        <source>Project Details</source>
+        <translation>Szczegóły projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="40"/>
+        <source>Enter project name...</source>
+        <translation>Wprowadź nazwę projektu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <source>Project Name:</source>
+        <translation>Nazwa projektu:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="45"/>
+        <source>Choose project location...</source>
+        <translation>Wybierz lokalizację projektu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="47"/>
+        <source>Browse...</source>
+        <translation>Przeglądaj...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="52"/>
+        <source>Location:</source>
+        <translation>Lokalizacja:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="56"/>
+        <source>Optional project description...</source>
+        <translation>Opcjonalny opis projektu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <source>Description:</source>
+        <translation>Opis:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="62"/>
+        <source>Empty Project</source>
+        <translation>Pusty projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="63"/>
+        <source>With Game Over Screen</source>
+        <translation>Z ekranem końca gry</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="67"/>
+        <source>Template:</source>
+        <translation>Szablon:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <source>Choose Project Location</source>
+        <translation>Wybierz lokalizację projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Invalid Input</source>
+        <translation>Nieprawidłowe dane</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <source>Please enter a project name.</source>
+        <translation>Wprowadź nazwę projektu.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Please choose a project location.</source>
+        <translation>Wybierz lokalizację projektu.</translation>
+    </message>
+</context>
 </TS>
