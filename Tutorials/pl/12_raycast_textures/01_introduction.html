@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>2.5D: Tekstury, niebo i podłoga</h1>
+    <div class="game-preview">
+        <img src="thumbnails/12_raycast_textures.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#129521;</p>
+        <p><strong>Od płaskich szarych pudeł do prawdziwego lochu z cegły!</strong></p>
+        <p>Pomaluj ściany, dodaj niebo, które obraca się wraz z tobą, i połóż kafelkową kamienną podłogę.</p>
+    </div>
+    <h2>Co zbudujemy</h2>
+    <p>Bierzemy salę z <em>2.5D: Pierwsze kroki</em> i ubieramy ją. Nic w sposobie grania się nie zmienia &mdash;
+    zmienia się tylko to, jak wygląda. Jeśli nie masz już tego projektu, najpierw ukończ Lekcję 11 (ok. 20 minut).</p>
+    <h2>Jak działa ten tutorial</h2>
+    <div class="phase"><strong>Etap 1 &mdash; Teksturowane ściany</strong><br>Narysuj obraz cegły i owiń nim każdą ścianę.</div>
+    <div class="phase"><strong>Etap 2 &mdash; Niebo i podłoga</strong><br>Dodaj panoramiczne niebo i kafelkową podłogę.</div>
+    <div class="phase"><strong>Etap 3 &mdash; Dostrój wygląd</strong><br>Włączaj i wyłączaj tekstury, wymieniaj szczegóły na szybkość.</div>
+    <h2>Czego się nauczysz</h2>
+    <ul>
+        <li>Jak <strong>tekstura</strong> to po prostu sprite wybrany w <strong>Włącz widok Raycast</strong></li>
+        <li>Co robi niebo, gdy się obracasz (i dlaczego nigdy się nie zbliża)</li>
+        <li>Jak rysowana jest podłoga i co traci się przez <strong>Floor Detail</strong></li>
+        <li>Jak wrócić do zwykłych kolorów</li>
+    </ul>
+    <div class="highlight"><strong>Wymagany czas:</strong> ok. 20&ndash;25 minut.</div>
+    <div class="info"><strong>Gotowy?</strong> Kliknij „Dalej”, aby zacząć.</div>
+</body>
+</html>
