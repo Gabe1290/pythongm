@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Kontroler gry</h1>
+
+    <p>Dodajmy obiekt kontrolera gry, aby wyświetlić tytuł, instrukcje i zainicjować wynik.</p>
+
+    <h2>Utwórz obiekt kontrolera</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &gt; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_game_controller</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong> &mdash; to niewidzialny kontroler</li>
+        </ol>
+    </div>
+
+    <h2>Zaprogramuj kontroler (Blockly)</h2>
+    <p>Kliknij dwukrotnie <code>obj_game_controller</code> i otwórz zakładkę <strong>Blockly</strong>.</p>
+
+    <h2>1. Zainicjuj wynik (zdarzenie Gdy utworzony)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-score block-indent">Ustaw wynik na <span class="block-val">0</span></span>
+        </div>
+        <p>Znajdź <strong>Gdy utworzony</strong> w <em>Zdarzeniach</em>.
+        Dodaj <strong>Ustaw wynik</strong> (z kategorii <em>Wynik</em>) z wartością <strong>0</strong>.
+        To resetuje wynik za każdym razem, gdy sala się uruchamia.</p>
+    </div>
+
+    <h2>2. Narysuj tekst HUD (zdarzenie Gdy rysowanie)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-draw block-indent">Ustaw kolor rysowania <span class="block-val">#ffffff</span></span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-val">„Lądownik księżycowy”</span> na <span class="block-val">10</span>, <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-val">„Wyląduj na zielonej płycie!”</span> na <span class="block-val">10</span>, <span class="block-val">30</span></span>
+        </div>
+        <p>Znajdź <strong>Gdy rysowanie</strong> w <em>Zdarzeniach</em>.
+        Najpierw dodaj <strong>Ustaw kolor rysowania</strong> (biały) &mdash; tekst domyślnie rysowany jest na czarno, co jest niewidoczne w czarnej sali.
+        Następnie dodaj dwa bloki <strong>Rysuj tekst</strong> (z kategorii <em>Rysowanie</em>) &mdash;
+        jeden dla tytułu gry na pozycji (10, 10) i jeden dla instrukcji na pozycji (10, 30).</p>
+    </div>
+
+    <h2>Zastosuj swoje bloki</h2>
+    <div class="step">
+        <ol>
+            <li>Powinieneś mieć <strong>2 bloki zdarzeń</strong> (Gdy utworzony + Gdy rysowanie)</li>
+        </ol>
+    </div>
+
+    <h2>Umieść kontroler w sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_game</code></li>
+            <li>Umieść jedną instancję <code>obj_game_controller</code> w dowolnym miejscu sali (nie ma sprite'a, więc jego pozycja nie ma znaczenia)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Tytuł „Lądownik księżycowy” pojawia się w lewym górnym rogu</li>
+            <li>Poniżej pokazane są instrukcje „Wyląduj na zielonej płycie!”</li>
+            <li>Lataj swoim lądownikiem, wyląduj na płycie, aby wygrać, rozbij się, aby zrestartować</li>
+            <li>Pełna gra jest teraz ukończona!</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Gratulacje! Zbudowałeś grę Lądownik księżycowy!</strong>
+        </p>
+        <p>Twoja gra ma grawitację księżycową, sterowanie ciągiem, płytę lądowiska, wykrywanie rozbicia i wyświetlacz HUD. Dobra robota!</p>
+    </div>
+
+    <h2>Pomysły na wyzwania</h2>
+    <div class="challenge">
+        <p>Chcesz ulepszyć swoją grę? Wypróbuj te usprawnienia:</p>
+        <ul>
+            <li><strong>System paliwa:</strong> Dodaj zmienną paliwa, która zmniejsza się przy użyciu ciągu. Gdy paliwo spadnie do 0, ciąg przestaje działać!</li>
+            <li><strong>Wykrywanie rozbicia na podstawie prędkości:</strong> Użyj prędkości wertykalnej lądownika, aby sprawdzić prędkość lądowania. Jeśli lądownik porusza się zbyt szybko przy dotknięciu płyty, rozbija się zamiast bezpiecznie wylądować!</li>
+            <li><strong>Mniejsza płyta lądowiska:</strong> Zmniejsz płytę (mniej bloków), aby zwiększyć trudność</li>
+            <li><strong>Wiele poziomów:</strong> Utwórz dodatkowe sale z innym ukształtowaniem terenu i trudniejszymi miejscami do lądowania</li>
+            <li><strong>Wynik zależny od pozostałego paliwa:</strong> Przyznawaj więcej punktów za lądowanie z większą ilością pozostałego paliwa &mdash; zachęca to do oszczędnego latania!</li>
+        </ul>
+    </div>
+</body>
+</html>

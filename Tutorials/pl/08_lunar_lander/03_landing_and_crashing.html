@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Lądowanie i rozbicie</h1>
+
+    <p>Teraz dodajmy płytę lądowiska i wykrywanie kolizji.
+    Wyląduj na płycie, aby wygrać &mdash; rozbij się o grunt, aby zrestartować!</p>
+
+    <h2>Utwórz sprite płyty lądowiska</h2>
+    <div class="step">
+        <p><strong>spr_pad</strong> (32x32) &mdash; Płaska zielona płyta lądowiska</p>
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sprite'y</strong> &gt; <strong>Utwórz nowy sprite</strong></li>
+            <li>Nazwij go <code>spr_pad</code> (32x32 piksele)</li>
+            <li>Narysuj płaską zieloną platformę (jaskrawozielony prostokąt) albo zaimportuj z zasobów</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekt płyty lądowiska</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &gt; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_pad</code>, przypisz <code>spr_pad</code></li>
+            <li>Zaznacz pole <strong>Solidny</strong></li>
+        </ol>
+    </div>
+
+    <h2>Zaprogramuj kolizje lądownika (Blockly)</h2>
+    <p>Otwórz edytor Blockly dla <code>obj_lander</code> i dodaj dwa nowe zdarzenia kolizji.</p>
+
+    <h2>1. Lądowanie na płycie (Sukces!)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_pad</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span><br>
+            <span class="block block-move block-indent">Ustaw kierunek grawitacji: 270, siła: <span class="block-val">0</span></span><br>
+            <span class="block block-game block-indent">Wyświetl wiadomość <span class="block-val">„Udane lądowanie!”</span></span>
+        </div>
+        <p>Znajdź <strong>Kolizja</strong> w <em>Zdarzeniach</em>, wpisz <code>obj_pad</code>.
+        Dodaj <strong>Zatrzymaj ruch</strong> (z kategorii <em>Ruch</em>), aby zatrzymać lądownik.
+        Dodaj <strong>Ustaw grawitację</strong> (z kategorii <em>Ruch</em>) z kierunkiem <strong>270</strong> i siłą <strong>0</strong>,
+        a następnie dodaj <strong>Wyświetl wiadomość</strong> (z kategorii <em>Gra</em>) z tekstem zwycięstwa.</p>
+        <div class="highlight"><strong>Dlaczego wyłączyć grawitację?</strong> Grawitacja wciąż wpycha spoczywający lądownik w płytę co klatkę,
+        a każde wepchnięcie ponownie uruchamia kolizję &mdash; więc wiadomość pojawiałaby się w kółko. Wyłączenie grawitacji po wylądowaniu
+        sprawia, że pojawia się tylko raz.</div>
+    </div>
+
+    <h2>2. Rozbicie o grunt (Porażka!)</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_ground</span><br>
+            <span class="block block-game block-indent">Wyświetl wiadomość <span class="block-val">„Rozbity!”</span></span><br>
+            <span class="block block-game block-indent">Uruchom salę ponownie</span>
+        </div>
+        <p>Znajdź <strong>Kolizja</strong> w <em>Zdarzeniach</em>, wpisz <code>obj_ground</code>.
+        Dodaj <strong>Wyświetl wiadomość</strong> (z kategorii <em>Gra</em>) z tekstem o rozbiciu,
+        a następnie <strong>Uruchom salę ponownie</strong> (z kategorii <em>Poziom</em>).
+        Trafienie w skalisty grunt resetuje poziom!</p>
+    </div>
+
+    <h2>Zastosuj swoje bloki</h2>
+    <div class="step">
+        <ol>
+            <li>Powinieneś mieć teraz <strong>7 bloków zdarzeń</strong> łącznie (Gdy utworzony + 3 klawiatura + Brak klawisza + 2 kolizje)</li>
+        </ol>
+    </div>
+
+    <h2>Zaktualizuj salę</h2>
+    <div class="step">
+        <p>Otwórz <code>room_game</code> i zaktualizuj teren:</p>
+        <ol>
+            <li>Spraw, by grunt był <strong>nierówny</strong> &mdash; ułóż niektóre bloki <code>obj_ground</code> wyżej w pewnych miejscach, tworząc wzgórza</li>
+            <li>Usuń jeden lub dwa bloki gruntu z dolnego rzędu, aby stworzyć lukę</li>
+            <li>Umieść <code>obj_pad</code> w luce (strefa lądowania!)</li>
+        </ol>
+    </div>
+
+    <h2>Przykładowy układ poziomu</h2>
+    <pre>
+        L                          &lt;- Lądownik zaczyna tutaj
+
+
+
+GG       GG
+GGG     GGGG    PP     GGGGG     GGG
+GGGGGGGGGGGG    PP     GGGGGGGGGGGGG
+
+G = Grunt (rozbicie!)    L = Lądownik    P = Płyta lądowiska (bezpiecznie!)</pre>
+
+    <div class="highlight">
+        <strong>Wskazówka:</strong> Spraw, by strefa lądowania była wystarczająco mała, aby stanowić wyzwanie, ale nie niemożliwie mała!
+        Jeden lub dwa bloki płyty obok siebie sprawdzają się dobrze.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Leć w kierunku <strong>zielonej płyty lądowiska</strong></li>
+            <li>Wyląduj na płycie &rarr; pojawia się komunikat „Udane lądowanie!”</li>
+            <li>Rozbij się o grunt &rarr; komunikat „Rozbity!”, a następnie sala uruchamia się ponownie</li>
+            <li>Używaj krótkich impulsów ciągu (stuknij Górę), aby kontrolować opadanie</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać kontroler gry z tekstem HUD!
+    </div>
+</body>
+</html>
