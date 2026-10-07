@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-draw { background-color: #5BA58B; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Kontroler gry</h1>
+
+    <p>Kontroler gry to niewidzialny obiekt, który zarządza wyświetlaniem wyniku i żyć.
+    Zaktualizujemy też kolizję z kolcami, aby korzystała z systemu żyć.</p>
+
+    <h2>Utwórz obiekt kontrolera</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &gt; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_game_controller</code></li>
+            <li>NIE przypisuj sprite'a &mdash; pozostaje niewidzialny</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Czym jest kontroler gry?</strong> To niewidzialny obiekt, który działa w tle,
+        zarządzając takimi rzeczami jak wyświetlanie wyniku i żyć. Ponieważ nie ma sprite'a, nie pojawi się
+        w grze &mdash; po prostu rysuje informacje na ekranie.
+    </div>
+
+    <h2>Zaprogramuj obj_game_controller w Blockly</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_game_controller</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Zainicjuj wynik i życia (zdarzenie Start gry)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Start gry</span><br>
+            <span class="block block-score block-indent">Ustaw wynik na <span class="block-val">0</span></span><br>
+            <span class="block block-score block-indent">Ustaw życia na <span class="block-val">3</span></span>
+        </div>
+        <p>Znajdź <strong>Inne zdarzenia</strong> w <em>Zdarzeniach</em> i wybierz <strong>Start gry</strong>.
+        Z kategorii <em>Wynik/Życia/Zdrowie</em> wsuń <strong>Ustaw wynik</strong> z wartością <strong>0</strong>
+        i <strong>Ustaw życia</strong> z wartością <strong>3</strong>.</p>
+        <div class="highlight"><strong>Dlaczego Start gry, a nie Gdy utworzony?</strong> Zdarzenie Gdy utworzony uruchamia się ponownie za każdym razem, gdy sala się
+        restartuje &mdash; a kolec restartuje salę. Gdyby życia ustawiano na 3 w Gdy utworzony, każdy kolec
+        przywracałby ci życia i nigdy by ci się nie skończyły. <strong>Start gry</strong> uruchamia się tylko raz, gdy gra się rozpoczyna.</div>
+    </div>
+
+    <h2>Narysuj wynik i życia (zdarzenie Gdy rysowanie)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-draw block-indent">Wyświetl wynik na x: <span class="block-val">10</span> y: <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Wyświetl życia na x: <span class="block-val">200</span> y: <span class="block-val">10</span></span>
+        </div>
+        <p>Znajdź <strong>Gdy rysowanie</strong> w <em>Zdarzeniach</em>.
+        Z kategorii <em>Wynik/Życia/Zdrowie</em> wsuń <strong>Wyświetl wynik</strong> na pozycji (10, 10)
+        i <strong>Wyświetl życia</strong> na pozycji (200, 10).
+        Wynik i życia pojawią się w lewym górnym obszarze ekranu.</p>
+    </div>
+
+    <h2>Zastosuj swoje bloki</h2>
+    <div class="step">
+        <ol>
+            <li>Powinieneś mieć <strong>2 bloki zdarzeń</strong> (Start gry + Gdy rysowanie)</li>
+        </ol>
+    </div>
+
+    <h2>Zaktualizuj obj_player &mdash; kolizja z kolcem i życia</h2>
+    <div class="step">
+        <p>Teraz otwórz edytor Blockly dla <code>obj_player</code> i zaktualizuj kolizję z kolcem.
+        Znajdź istniejący blok kolizji z <code>obj_spike</code> i dodaj blok przed restartem:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_spike</span><br>
+            <span class="block block-score block-indent">Dodaj <span class="block-val">-1</span> do żyć</span><br>
+            <span class="block block-room block-indent">Uruchom salę ponownie</span>
+        </div>
+        <p>Dodaj <strong>Dodaj do żyć</strong> (z kategorii <em>Wynik/Życia/Zdrowie</em>) z wartością <strong>-1</strong>
+        przed blokiem Uruchom salę ponownie. Teraz każde trafienie kolcem kosztuje jedno życie!</p>
+        <ol>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Jak to działa:</strong> Gdy gracz dotknie kolca, traci jedno życie, a sala uruchamia się ponownie.
+        Kontroler gry wyświetla aktualny wynik i pozostałe życia co klatkę.
+    </div>
+
+    <h2>Umieść kontroler w swojej sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_level1</code></li>
+            <li>Umieść jeden <code>obj_game_controller</code> w dowolnym miejscu sali</li>
+            <li>Ponieważ nie ma sprite'a, będzie niewidzialny &mdash; pozycja nie ma znaczenia</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Wynik i życia pojawiają się w lewym górnym rogu</li>
+            <li>Zbieranie monet zwiększa wynik</li>
+            <li>Trafienie kolcem kosztuje jedno życie i restartuje salę</li>
+            <li>Dotarcie do flagi pokazuje „Wygrałeś!”</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Gratulacje!</strong> Zbudowałeś kompletną grę platformową
+            z grawitacją, skakaniem, monetami, zagrożeniami, wynikiem i życiami!
+        </p>
+    </div>
+
+    <h2>Pomysły na wyzwania</h2>
+    <div class="challenge">
+        <p>Chcesz pójść dalej? Wypróbuj te pomysły:</p>
+        <ul>
+            <li><strong>Ruchome platformy:</strong> Utwórz obiekt, który automatycznie porusza się w lewo i w prawo</li>
+            <li><strong>Wrogowie:</strong> Dodaj obiekty patrolujące platformy i ranią gracza</li>
+            <li><strong>Podwójny skok:</strong> Użyj zmiennej, aby umożliwić jeszcze jeden skok w powietrzu</li>
+            <li><strong>Wiele poziomów:</strong> Utwórz dodatkowe sale i użyj „Następna sala” przy fladze</li>
+            <li><strong>Koniec gry:</strong> Sprawdzaj, czy życia spadły do 0, i pokaż komunikat „Koniec gry”</li>
+        </ul>
+    </div>
+</body>
+</html>
