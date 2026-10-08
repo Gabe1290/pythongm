@@ -89,6 +89,62 @@ representation either (block_world's `move_and_collide`/`place_block`/
 whole containing event was dropped first. Confirmed via the audit tool
 itself (`action-lost` 32 -> 36, matching exactly the handful of
 now-reachable extension actions; `event-dropped` 44 -> 7).
+
+## B4 -- Expressions in number slots become numbers
+
+Two of the audit's five named examples (`if_collision`, `draw_sprite`) turned
+out not to exist anywhere in this codebase at all, and a third
+(`set_direction_speed`) is really `start_moving_direction`'s hand-written
+`move_direction` block, whose DIRECTION is a fixed 4-way dropdown that can
+never represent an arbitrary expression regardless of this fix (a B5-shaped
+gap, not B4's). Only `jump_to_position` and `draw_health_bar` are real,
+confirmed instances -- corrected in the audit doc rather than chasing the
+other three.
+
+The real bug, in `connectNumberBlock` (LOAD: events -> blocks): any
+authored value that isn't a plain number (`"direction+90"`, `"self.x"`) got
+`String()`-coerced straight into a `math_number` field, which Blockly's
+`FieldNumber` can't parse -- it silently keeps the field's own default (0),
+discarding the real value entirely.
+
+**The fix needed a second half, found empirically, not just assumed:**
+making `connectNumberBlock` fall back to a `text` block for a non-numeric
+value does nothing on its own -- `Connection.connect()` refuses the
+connection outright when the input is `.setCheck("Number")` and the `text`
+block's output is `"String"` (confirmed with a throwaway script connecting
+the two blocks directly and checking the return value: `false`, target
+`null`). Fixed by dropping the type check on `move_jump_to`'s and
+`draw_health_bar`'s X/Y inputs -- intentionally scoped to just these two
+(real, confirmed) blocks, not swept across every `connectNumberBlock` call
+site in the file.
+
+**A second, independent bug bundled under the same B4 entry:**
+`jump_to_position.relative` always saved `false` regardless of what was
+authored -- the generator already read `block.getFieldValue('RELATIVE')`,
+but `move_jump_to` never had a `RELATIVE` field at all, so the read always
+returned `null`. Added the checkbox.
+
+**A third bug, surfaced only once X/Y could carry an expression:**
+`draw_health_bar` doesn't store `x2`/`y2` directly -- it derives them as
+`x1 + width` / `y1 + 20` with a plain JS `+`. The moment `x1`/`y1` can be a
+STRING, that `+` silently does concatenation (`"self.x" + 100` ->
+`"self.x100"`, not a usable expression). Fixed with a new `addExpr(a, b)`
+helper (`blockly_generators.js`): real arithmetic when both sides are
+genuinely numbers (byte-identical to the old behaviour), otherwise an
+expression string (`"(self.x) + (100)"`) `ActionExecutor._evaluate_expression`
+can evaluate at runtime.
+
+**Known, documented remaining limitation, NOT fixed:** `draw_health_bar`
+models bar height as a hardcoded `+20`, not a real field -- a sample
+authoring any other height (confirmed for real: `raycast_3`'s hud bar is
+18px tall, `y2 - y1 = 18`) will never round-trip its `y2` exactly,
+independent of this fix entirely (the block had no way to represent a
+custom height before this fix either). `draw_rectangle` has the identical
+`x1+width`/`y1+height` derivation and would hit the identical
+string-concatenation bug if its own X/Y inputs ever lost their `"Number"`
+check -- not done here (not a named B4 case, not confirmed by any sample),
+so `draw_rectangle` is unaffected either way; worth checking together if
+anyone ever extends expression support to it.
 """
 import json
 
@@ -192,6 +248,19 @@ CASES = {
         {"action": "set_hspeed", "parameters": {"value": 2}}]}}},
     "keyboard_held_nokey_control": {"keyboard": {"nokey": {"actions": [
         {"action": "set_hspeed", "parameters": {"value": 0}}]}}},
+    # --- B4 ---
+    "jump_to_position_expression_x": {"create": {"actions": [
+        {"action": "jump_to_position", "parameters": {"x": "direction+90", "y": 5, "relative": False}}]}},
+    "jump_to_position_relative_true": {"create": {"actions": [
+        {"action": "jump_to_position", "parameters": {"x": 5, "y": 10, "relative": True}}]}},
+    "jump_to_position_relative_false": {"create": {"actions": [
+        {"action": "jump_to_position", "parameters": {"x": 5, "y": 10, "relative": False}}]}},
+    "jump_to_position_numeric_control": {"create": {"actions": [
+        {"action": "jump_to_position", "parameters": {"x": 100, "y": 200, "relative": False}}]}},
+    "draw_health_bar_expression_x1": {"create": {"actions": [
+        {"action": "draw_health_bar", "parameters": {"x1": "self.x", "y1": 10, "x2": 110, "y2": 30}}]}},
+    "draw_health_bar_numeric_control": {"create": {"actions": [
+        {"action": "draw_health_bar", "parameters": {"x1": 10, "y1": 10, "x2": 110, "y2": 30}}]}},
 }
 
 
@@ -390,3 +459,49 @@ class TestB3KeyboardAnykeyNokeyShift:
     def test_held_nokey_control_still_uses_the_dedicated_no_field_block(self, round_tripped):
         actions = _nested_key_actions(round_tripped, "keyboard_held_nokey_control", "keyboard", "nokey")
         assert len(actions) == 1
+
+
+class TestB4ExpressionsInNumberSlots:
+    def test_jump_to_position_x_expression_survives_verbatim(self, round_tripped):
+        params = _params(round_tripped, "jump_to_position_expression_x")
+        assert params["x"] == "direction+90", f"x became {params['x']!r}, expected the expression verbatim"
+        assert float(params["y"]) == 5.0, "a genuinely numeric sibling field must stay numeric"
+
+    def test_jump_to_position_relative_true_round_trips(self, round_tripped):
+        """The actual second B4 bug: the generator already read a RELATIVE
+        field that never existed on the block, so every save emitted False
+        regardless of what was authored."""
+        params = _params(round_tripped, "jump_to_position_relative_true")
+        assert params["relative"] is True
+
+    def test_jump_to_position_relative_false_round_trips(self, round_tripped):
+        params = _params(round_tripped, "jump_to_position_relative_false")
+        assert params["relative"] is False
+
+    def test_jump_to_position_plain_numbers_are_not_coerced_to_text(self, round_tripped):
+        """Regression guard: the connectNumberBlock fix must not turn an
+        ordinary numeric x/y into a text block just because it CAN now hold
+        one -- the common case stays a real number."""
+        params = _params(round_tripped, "jump_to_position_numeric_control")
+        assert params["x"] == 100 and not isinstance(params["x"], str)
+        assert params["y"] == 200 and not isinstance(params["y"], str)
+
+    def test_draw_health_bar_x1_expression_survives_and_x2_becomes_a_real_expression(self, round_tripped):
+        """The third B4 bug: draw_health_bar derives x2 as x1 + width with a
+        plain JS '+' -- once x1 can be a string, that silently did STRING
+        CONCATENATION ("self.x" + 100 -> "self.x100", not a usable
+        expression) instead of building an evaluable expression string."""
+        params = _params(round_tripped, "draw_health_bar_expression_x1")
+        assert params["x1"] == "self.x"
+        assert params["x2"] == "(self.x) + (100)"
+        assert float(params["y1"]) == 10.0
+        assert float(params["y2"]) == 30.0
+
+    def test_draw_health_bar_plain_numbers_still_compute_x2_arithmetically(self, round_tripped):
+        """Regression guard: when both operands are genuinely numeric, x2/y2
+        must stay real numbers (the exact pre-fix behaviour), not an
+        expression string like "(10) + (100)"."""
+        params = _params(round_tripped, "draw_health_bar_numeric_control")
+        assert params["x1"] == 10 and not isinstance(params["x1"], str)
+        assert params["x2"] == 110 and not isinstance(params["x2"], str)
+        assert params["y2"] == 30 and not isinstance(params["y2"], str)

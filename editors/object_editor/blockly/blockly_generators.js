@@ -94,6 +94,20 @@ function generateBlockCode(eventBlock) {
     return {actions: actions};
 }
 
+// docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: draw_health_bar models x2/y2 as
+// x1+width/y1+20 rather than storing them directly, computed with a plain JS
+// `+`. That silently did STRING CONCATENATION the moment x1/y1 became an
+// authored expression instead of always being a number (e.g. "self.x" + 100
+// -> "self.x100", not a usable expression) -- a direct consequence of this
+// same fix making a non-numeric X/Y possible at all. Real arithmetic when
+// both sides are genuinely numbers (preserves the exact prior behavior);
+// otherwise builds an expression string ActionExecutor._evaluate_expression
+// can evaluate at runtime.
+function addExpr(a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a + b;
+    return '(' + a + ') + (' + b + ')';
+}
+
 // parseScopedVariable: split a 'scope.name' user-typed variable expression
 // into the (scope, name) pair the runtime's set_variable / test_variable
 // actions expect. Accepted prefixes: 'self.' (or 'sel.'), 'global.', 'other.'.
@@ -182,7 +196,12 @@ function generateActionCode(block) {
         case 'draw_lives':
             return {action: 'draw_lives', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
         case 'draw_health_bar':
-            return {action: 'draw_health_bar', parameters: {x1: getInputValue(block, 'X', 0), y1: getInputValue(block, 'Y', 0), x2: getInputValue(block, 'X', 0) + getInputValue(block, 'WIDTH', 100), y2: getInputValue(block, 'Y', 0) + 20}};
+            var hbX = getInputValue(block, 'X', 0);
+            var hbY = getInputValue(block, 'Y', 0);
+            return {action: 'draw_health_bar', parameters: {
+                x1: hbX, y1: hbY,
+                x2: addExpr(hbX, getInputValue(block, 'WIDTH', 100)),
+                y2: addExpr(hbY, 20)}};
         case 'instance_destroy':
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':

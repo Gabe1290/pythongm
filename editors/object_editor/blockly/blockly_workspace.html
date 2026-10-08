@@ -1057,12 +1057,21 @@
 
         Blockly.Blocks['move_jump_to'] = {
             init: function() {
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: no type check on
+                // X/Y (not "Number") -- see draw_health_bar's identical note
+                // just above for why.
                 this.appendValueInput("X")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('move_jump_to_prefix', window.BLOCKLY_LANG) || "Jump to x:");
                 this.appendValueInput("Y")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('move_jump_to_y', window.BLOCKLY_LANG) || "y:");
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: the generator
+                // (blockly_generators.js) already read a RELATIVE field --
+                // it just never existed on the block, so getFieldValue
+                // always returned null and every save emitted relative:
+                // false regardless of what was authored.
+                this.appendDummyInput()
+                    .appendField(new Blockly.FieldCheckbox("FALSE"), "RELATIVE")
+                    .appendField(getBlockMessage('move_jump_to_relative', window.BLOCKLY_LANG) || "relative");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
@@ -1178,11 +1187,17 @@
 
         Blockly.Blocks['draw_health_bar'] = {
             init: function() {
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: X/Y deliberately
+                // have NO type check (not "Number") so an authored
+                // expression (e.g. "self.x") can connect as a text block --
+                // Blockly's Connection.connect() refuses a type-mismatched
+                // connection outright (confirmed empirically: a text block's
+                // output is "String", not "Number", so .setCheck("Number")
+                // here would silently make connectNumberBlock's own
+                // text-block fallback a no-op).
                 this.appendValueInput("X")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('draw_health_bar_prefix', window.BLOCKLY_LANG) || "Draw health bar at x:");
                 this.appendValueInput("Y")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('draw_health_bar_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("WIDTH")
                     .setCheck("Number")
@@ -2295,11 +2310,24 @@
             function connectNumberBlock(inputName, value) {
                 var input = block.getInput(inputName);
                 if (input && input.connection) {
-                    var numBlock = workspace.newBlock('math_number');
-                    numBlock.setFieldValue(String(value), 'NUM');
-                    numBlock.initSvg();
-                    numBlock.render();
-                    input.connection.connect(numBlock.outputConnection);
+                    var str = String(value);
+                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: an authored
+                    // EXPRESSION ("direction+90", "32/6", "other.x*2") here
+                    // silently became 0 -- Blockly's FieldNumber rejects
+                    // anything it can't parse as a plain number and falls
+                    // back to its own default (0), discarding the real
+                    // value. A value that isn't a plain number loads as a
+                    // text block instead, which getInputValue already
+                    // returns verbatim on save, so the expression survives.
+                    if (/^-?\d+(\.\d+)?$/.test(str.trim())) {
+                        var numBlock = workspace.newBlock('math_number');
+                        numBlock.setFieldValue(str, 'NUM');
+                        numBlock.initSvg();
+                        numBlock.render();
+                        input.connection.connect(numBlock.outputConnection);
+                    } else {
+                        connectTextBlock(inputName, value);
+                    }
                 }
             }
 
@@ -2374,6 +2402,7 @@
                 case 'move_jump_to':
                     connectNumberBlock('X', paramOr(params.x, 0));
                     connectNumberBlock('Y', paramOr(params.y, 0));
+                    block.setFieldValue(params.relative ? 'TRUE' : 'FALSE', 'RELATIVE');
                     break;
 
                 case 'grid_stop_if_no_keys':

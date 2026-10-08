@@ -2,11 +2,11 @@
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
 just placeholders?* Status: **review complete; U0, B1, B2 (partial), B3
-(partial) landed.** B4–B9 are still open, plus three new findings (B10, B11,
-B12) turned up while fixing B1/B3, B2 itself only closes 3 of its 4 named
-cases (see B2's own notes), and B3 leaves the three LAN-multiplayer events
-open (see B3's own notes). The checkboxes below are the resume state; one
-unit ≈ one commit with its regression test.
+(partial), B4 landed.** B5–B9 are still open, plus three new findings (B10,
+B11, B12) turned up while fixing B1/B3, B2 itself only closes 3 of its 4
+named cases (see B2's own notes), and B3 leaves the three LAN-multiplayer
+events open (see B3's own notes). The checkboxes below are the resume
+state; one unit ≈ one commit with its regression test.
 
 ## How it was checked (re-runnable)
 
@@ -30,7 +30,8 @@ and the project asset lists pushed exactly as `BlocklyWidget` does.
    real number by then was **598**, not 615 (more samples/objects had landed
    in between on another machine; this doc's own baseline wasn't re-verified
    each time). Post-B3: **596** (see B3's own notes for why the headline count
-   barely moved despite fixing 37 event-drops — it's not a regression).*
+   barely moved despite fixing 37 event-drops — it's not a regression).
+   Post-B4: **566**.*
 
 Why it matters: `ObjectEditor.on_blockly_events_modified`
 (`editors/object_editor/object_editor_main.py`) **replaces the object's events
@@ -143,13 +144,44 @@ moment they touch a block.
   real page via `tests/test_blockly_block_audit_roundtrip.py`'s `TestB3*`
   classes (same shared fixture as B1/B2 — do not add a second real-page test
   file).
-- [ ] **B4 — Expressions in number slots become numbers (HIGH).** The loader
-  puts a non-numeric value into a `math_number`, so `direction+90` → 0,
-  `32/6` → 4, `8*other.hspeed` → 0 (`set_direction_speed`,
-  `jump_to_position`, `if_collision`, `draw_sprite` x/y, `draw_health_bar`).
-  `jump_to_position.relative: true` also becomes `false`. Fix direction: load a
-  non-numeric value as a `text` block (which `getInputValue` already returns
-  verbatim).
+- [x] **B4 — Expressions in number slots become numbers, landed
+  `<pending>`.** Two of the five originally-named examples (`if_collision`,
+  `draw_sprite`) don't exist anywhere in this codebase, and a third
+  (`set_direction_speed`) is really `move_direction`'s fixed 4-way DIRECTION
+  dropdown — a B5-shaped "the block can't model this" gap, not fixable by
+  this fix at all. Corrected here rather than chased. Only `jump_to_position`
+  and `draw_health_bar` were real.
+  `connectNumberBlock` (LOAD) now falls back to a `text` block (which
+  `getInputValue` already returns verbatim on SAVE) for any value that
+  isn't a plain number — but that alone did nothing: `Connection.connect()`
+  refuses the connection outright when the input is `.setCheck("Number")`
+  and `text`'s output is `"String"` (confirmed empirically with a
+  throwaway script). Fixed by dropping the type check on
+  `move_jump_to`'s/`draw_health_bar`'s X/Y inputs specifically — not swept
+  across every `connectNumberBlock` call site.
+  Also fixed, same bullet: `jump_to_position.relative` always saved `false`
+  — the generator already read a `RELATIVE` field that never existed on
+  the block; added the checkbox. And a bug only exposed once X/Y could be a
+  string: `draw_health_bar` derives `x2`/`y2` as `x1 + width`/`y1 + 20` with
+  a plain JS `+`, which silently did STRING CONCATENATION
+  (`"self.x" + 100` → `"self.x100"`) the moment `x1` became non-numeric.
+  Fixed with a new `addExpr(a, b)` helper: real arithmetic when both sides
+  are genuinely numbers (byte-identical old behaviour), an evaluable
+  expression string otherwise.
+  **Known, documented remaining limitation, not fixed:** `draw_health_bar`'s
+  bar height is a hardcoded `+20`, not a real field — any sample authoring a
+  different height (confirmed for real: `raycast_3`'s hud bar is 18px) can
+  never round-trip its `y2` exactly, independent of this fix.
+  `draw_rectangle` has the identical width/height-derivation shape and would
+  hit the identical bug if its own X/Y inputs ever lost their `"Number"`
+  check — not done here (unconfirmed by any sample, not a named case), so
+  it's unaffected either way.
+  Audit tool's 98-sample baseline: 596 → 566 (`param-changed` 263 → 233,
+  all from `jump_to_position` — now fully clean across every sample — and
+  one pre-existing, unrelated `draw_health_bar.y2` diff explained above).
+  Verified against the real page via
+  `tests/test_blockly_block_audit_roundtrip.py`'s `TestB4*` classes (same
+  shared fixture as B1–B3).
 - [ ] **B5 — Parameters the hand-written blocks don't model are dropped (HIGH).**
   "Applies to" `target` / `target_object` (`change_instance`, `jump_to_start`,
   `set_alarm`, `destroy_instance` — the action then hits the wrong instance);
@@ -244,7 +276,10 @@ moment they touch a block.
 - [x] **B3** (landed, partial — see above; `player_joined`/
   `network_game_started`/`network_message` still have no block and remain
   open).
-1. B4, B5 — each its own unit; re-run the tool after each.
+- [x] **B4** (landed — see above; the two originally-named non-existent
+  actions and the `move_direction`-dropdown case were corrected out of
+  scope, not fixed).
+1. B5 — its own unit; re-run the tool after.
 2. B6, B7, B8, B9.
 3. B10, B11 (found while fixing B1), B12 (found while fixing B3) — narrower
    scope than any of the above.
