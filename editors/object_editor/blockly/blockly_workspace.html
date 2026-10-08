@@ -48,6 +48,35 @@
             border-radius: 8px;
             max-width: 80%;
         }
+        /* Shown when the workspace can't faithfully represent this object's
+           real events (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0). Sits
+           above #blocklyDiv and captures clicks so the blocks underneath
+           can't be dragged/edited/deleted while locked. */
+        #lockOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 20, 20, 0.55);
+            cursor: not-allowed;
+        }
+        #lockMessageBox {
+            max-width: 70%;
+            padding: 20px 24px;
+            background: #3a2f00;
+            border: 1px solid #ffb300;
+            border-radius: 8px;
+            color: #ffe082;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
         /* Force toolbox visibility - Blockly 12.x class names */
         .blocklyToolbox {
             background-color: #2d2d2d !important;
@@ -86,6 +115,7 @@
     <div id="loadingDiv">Loading Blockly...</div>
     <div id="errorDiv"></div>
     <div id="blocklyDiv"></div>
+    <div id="lockOverlay"><div id="lockMessageBox"><div id="lockMessageText"></div></div></div>
 
     <!-- Load Blockly with error handling - use local files -->
     <script>
@@ -1688,6 +1718,27 @@
             }
         }
 
+        // Set when Python determines this object's real events can't be
+        // reproduced exactly by loading them into blocks (docs/
+        // BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0). The #lockOverlay div blocks
+        // mouse interaction with the blocks visually; workspaceLocked below
+        // is the actual safety net -- it stops a change from ever reaching
+        // Python even if some interaction got through the overlay (keyboard
+        // delete, say), so a locked object's events can't be silently
+        // replaced by Blockly's lossy reconstruction on the next edit.
+        var workspaceLocked = false;
+        function setLocked(locked, message) {
+            workspaceLocked = !!locked;
+            var overlay = document.getElementById('lockOverlay');
+            var text = document.getElementById('lockMessageText');
+            if (text) {
+                text.textContent = message || '';
+            }
+            if (overlay) {
+                overlay.style.display = workspaceLocked ? 'flex' : 'none';
+            }
+        }
+
         // Code generation, event/action mapping, and getInputValue live in
         // blockly_generators.js (loaded near the top of this file). This was
         // previously duplicated inline; the inline copies drifted away from
@@ -1697,7 +1748,7 @@
         // Listen for workspace changes
         var ignoreChanges = false;  // Flag to prevent infinite loops during sync
         workspace.addChangeListener(function(event) {
-            if (ignoreChanges) return;
+            if (ignoreChanges || workspaceLocked) return;
             if (event.type == Blockly.Events.BLOCK_CHANGE ||
                 event.type == Blockly.Events.BLOCK_CREATE ||
                 event.type == Blockly.Events.BLOCK_DELETE ||
@@ -1748,6 +1799,13 @@
             // twice in the toolbox alongside these proper DO-input blocks).
             'if_next_room_exists': 'room_if_next_exists',
             'if_previous_room_exists': 'room_if_previous_exists',
+            // Same reason (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2): without
+            // these, an authored if_condition/test_variable loaded as the
+            // generic custom_* block, which has no DO/ELSE statement input at
+            // all -- the condition AND every nested action vanished the
+            // moment the object synced into Blockly.
+            'if_condition': 'if_condition',
+            'test_variable': 'test_variable',
             // Audio actions (play_sound, stop_sound, play_music, stop_music,
             // set_volume) are intentionally NOT mapped here. They are owned by
             // the Audio Actions plugin and auto-generate into a single "Audio"
@@ -2154,6 +2212,17 @@
         }
 
         function setBlockParameters(block, blockType, params) {
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B1 (loader half): the
+            // connectNumberBlock/connectTextBlock calls below used
+            // `params.x || default`, which treats a genuinely-authored 0 (or
+            // '') the same as a missing parameter -- a project.json storing
+            // gravity as the NUMBER 0 (not the string "0") loaded into
+            // Blockly as STRENGTH=0.5 before this block was ever examined by
+            // getInputValue's own (separately fixed) save-side check. Only
+            // fall back when the parameter is truly absent.
+            function paramOr(value, fallback) {
+                return (value === undefined || value === null || value === '') ? fallback : value;
+            }
             // Helper to create and connect a number block
             function connectNumberBlock(inputName, value) {
                 var input = block.getInput(inputName);
@@ -2222,34 +2291,34 @@
                     }
 
                     block.setFieldValue(direction, 'DIRECTION');
-                    connectNumberBlock('SPEED', params.speed || 4);
+                    connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 
                 case 'move_snap_to_grid':
-                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    connectNumberBlock('GRID_SIZE', paramOr(params.grid_size, 32));
                     break;
 
                 case 'grid_move':
                     block.setFieldValue(params.direction || 'right', 'DIRECTION');
-                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    connectNumberBlock('GRID_SIZE', paramOr(params.grid_size, 32));
                     break;
 
                 case 'move_jump_to':
-                    connectNumberBlock('X', params.x || 0);
-                    connectNumberBlock('Y', params.y || 0);
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
                     break;
 
                 case 'grid_stop_if_no_keys':
-                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    connectNumberBlock('GRID_SIZE', paramOr(params.grid_size, 32));
                     break;
 
                 case 'grid_check_keys_and_move':
-                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
-                    connectNumberBlock('SPEED', params.speed || 4);
+                    connectNumberBlock('GRID_SIZE', paramOr(params.grid_size, 32));
+                    connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 
                 case 'grid_if_on_grid':
-                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    connectNumberBlock('GRID_SIZE', paramOr(params.grid_size, 32));
                     // Handle inner actions - attach them to the DO input
                     if (params.then_actions && params.then_actions.length > 0) {
                         var doInput = block.getInput('DO');
@@ -2276,13 +2345,13 @@
                 case 'lives_add':
                 case 'health_set':
                 case 'health_add':
-                    connectNumberBlock('VALUE', params.value || 0);
+                    connectNumberBlock('VALUE', paramOr(params.value, 0));
                     break;
 
                 case 'draw_score':
                 case 'draw_lives':
-                    connectNumberBlock('X', params.x || 0);
-                    connectNumberBlock('Y', params.y || 0);
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
                     break;
 
                 case 'draw_health_bar':
@@ -2293,8 +2362,8 @@
 
                 case 'instance_create':
                     if (params.object) block.setFieldValue(params.object, 'OBJECT');
-                    connectNumberBlock('X', params.x || 0);
-                    connectNumberBlock('Y', params.y || 0);
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
                     break;
 
                 case 'room_goto':
@@ -2303,9 +2372,39 @@
 
                 case 'room_if_next_exists':
                 case 'room_if_previous_exists':
-                    // Conditional room blocks have a single DO statement input
-                    // holding the then_actions (see blockly_generators.js).
-                    attachSubActionsToBlock(block, params.then_actions || []);
+                    // Conditional room blocks have DO/ELSE statement inputs
+                    // holding then_actions/else_actions (blockly_generators.js);
+                    // the runtime actually executes else_actions (action_room.py
+                    // _dispatch_room_test), so this isn't cosmetic.
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
+                    break;
+
+                case 'if_condition':
+                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2. condition_type
+                    // other than 'instance_count' can't be represented by this
+                    // block (it has no field for it) -- OBJECT_NAME/OPERATOR/
+                    // VALUE are only meaningful for the instance_count case,
+                    // but the then/else actions are preserved regardless.
+                    if (params.object_name) block.setFieldValue(params.object_name, 'OBJECT_NAME');
+                    if (params.operator) block.setFieldValue(params.operator, 'OPERATOR');
+                    block.setFieldValue(String(paramOr(params.value, 0)), 'VALUE');
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
+                    break;
+
+                case 'test_variable':
+                    // Re-add the scope prefix generateActionCode's
+                    // parseScopedVariable strips on save (blockly_generators.js).
+                    var tvScope = params.scope || 'sel';
+                    var tvName = params.variable || '';
+                    var tvPrefixed = (tvScope === 'global') ? ('global.' + tvName)
+                        : (tvScope === 'other') ? ('other.' + tvName) : tvName;
+                    block.setFieldValue(tvPrefixed, 'VARIABLE');
+                    if (params.operation) block.setFieldValue(params.operation, 'OPERATION');
+                    connectNumberBlock('VALUE', paramOr(params.value, 0));
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
                     break;
 
                 case 'sound_play':
@@ -2317,18 +2416,18 @@
                     break;
 
                 case 'output_message':
-                    connectTextBlock('MESSAGE', params.message || 'Hello!');
+                    connectTextBlock('MESSAGE', paramOr(params.message, 'Hello!'));
                     break;
 
                 case 'set_alarm':
                     block.setFieldValue(String(params.alarm_number || params.alarm_num || 0), 'ALARM_NUM');
-                    connectNumberBlock('STEPS', params.steps || 30);
+                    connectNumberBlock('STEPS', paramOr(params.steps, 30));
                     break;
 
                 case 'draw_text':
-                    connectTextBlock('TEXT', params.text || 'Hello!');
-                    connectNumberBlock('X', params.x || 0);
-                    connectNumberBlock('Y', params.y || 0);
+                    connectTextBlock('TEXT', paramOr(params.text, 'Hello!'));
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
                     break;
 
                 case 'draw_rectangle':
@@ -2336,14 +2435,14 @@
                     connectNumberBlock('Y', params.y1 || 0);
                     connectNumberBlock('WIDTH', (params.x2 - params.x1) || 100);
                     connectNumberBlock('HEIGHT', (params.y2 - params.y1) || 100);
-                    connectTextBlock('COLOR', params.color || 'white');
+                    connectTextBlock('COLOR', paramOr(params.color, 'white'));
                     break;
 
                 case 'draw_circle':
-                    connectNumberBlock('X', params.x || 0);
-                    connectNumberBlock('Y', params.y || 0);
-                    connectNumberBlock('RADIUS', params.radius || 50);
-                    connectTextBlock('COLOR', params.color || 'white');
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
+                    connectNumberBlock('RADIUS', paramOr(params.radius, 50));
+                    connectTextBlock('COLOR', paramOr(params.color, 'white'));
                     break;
 
                 case 'set_sprite':
@@ -2351,16 +2450,16 @@
                     break;
 
                 case 'set_alpha':
-                    connectNumberBlock('ALPHA', params.alpha || 1.0);
+                    connectNumberBlock('ALPHA', paramOr(params.alpha, 1.0));
                     break;
 
                 case 'set_gravity':
-                    connectNumberBlock('DIRECTION', params.direction || 270);
-                    connectNumberBlock('STRENGTH', params.gravity || 0.5);
+                    connectNumberBlock('DIRECTION', paramOr(params.direction, 270));
+                    connectNumberBlock('STRENGTH', paramOr(params.gravity, 0.5));
                     break;
 
                 case 'set_friction':
-                    connectNumberBlock('FRICTION', params.friction || 0);
+                    connectNumberBlock('FRICTION', paramOr(params.friction, 0));
                     break;
 
                 case 'if_can_push':
@@ -2398,24 +2497,24 @@
                 // THYMIO MOTOR ACTIONS
                 // ============================================================================
                 case 'thymio_set_motor_speed':
-                    connectNumberBlock('LEFT_SPEED', params.left_speed || 0);
-                    connectNumberBlock('RIGHT_SPEED', params.right_speed || 0);
+                    connectNumberBlock('LEFT_SPEED', paramOr(params.left_speed, 0));
+                    connectNumberBlock('RIGHT_SPEED', paramOr(params.right_speed, 0));
                     break;
 
                 case 'thymio_move_forward':
-                    connectNumberBlock('SPEED', params.speed || 200);
+                    connectNumberBlock('SPEED', paramOr(params.speed, 200));
                     break;
 
                 case 'thymio_move_backward':
-                    connectNumberBlock('SPEED', params.speed || 200);
+                    connectNumberBlock('SPEED', paramOr(params.speed, 200));
                     break;
 
                 case 'thymio_turn_left':
-                    connectNumberBlock('SPEED', params.speed || 300);
+                    connectNumberBlock('SPEED', paramOr(params.speed, 300));
                     break;
 
                 case 'thymio_turn_right':
-                    connectNumberBlock('SPEED', params.speed || 300);
+                    connectNumberBlock('SPEED', paramOr(params.speed, 300));
                     break;
 
                 // thymio_stop_motors has no parameters
@@ -2426,14 +2525,14 @@
                 case 'thymio_set_led_top':
                 case 'thymio_set_led_bottom_left':
                 case 'thymio_set_led_bottom_right':
-                    connectNumberBlock('RED', params.red || 0);
-                    connectNumberBlock('GREEN', params.green || 0);
-                    connectNumberBlock('BLUE', params.blue || 0);
+                    connectNumberBlock('RED', paramOr(params.red, 0));
+                    connectNumberBlock('GREEN', paramOr(params.green, 0));
+                    connectNumberBlock('BLUE', paramOr(params.blue, 0));
                     break;
 
                 case 'thymio_set_led_circle':
                     block.setFieldValue(String(params.led_index || 0), 'LED_INDEX');
-                    connectNumberBlock('INTENSITY', params.intensity || 32);
+                    connectNumberBlock('INTENSITY', paramOr(params.intensity, 32));
                     break;
 
                 case 'thymio_set_led_circle_all':
@@ -2453,8 +2552,8 @@
                 // THYMIO SOUND ACTIONS
                 // ============================================================================
                 case 'thymio_play_tone':
-                    connectNumberBlock('FREQUENCY', params.frequency || 440);
-                    connectNumberBlock('DURATION', params.duration || 60);
+                    connectNumberBlock('FREQUENCY', paramOr(params.frequency, 440));
+                    connectNumberBlock('DURATION', paramOr(params.duration, 60));
                     break;
 
                 case 'thymio_play_system_sound':
@@ -2487,7 +2586,7 @@
                 case 'thymio_if_proximity':
                     block.setFieldValue(String(params.sensor_index || 2), 'SENSOR_INDEX');
                     block.setFieldValue(params.comparison || '>', 'COMPARISON');
-                    connectNumberBlock('THRESHOLD', params.threshold || 2000);
+                    connectNumberBlock('THRESHOLD', paramOr(params.threshold, 2000));
                     // Handle sub_actions
                     if (params.sub_actions && params.sub_actions.length > 0) {
                         attachSubActionsToBlock(block, params.sub_actions);
@@ -2497,7 +2596,7 @@
                 case 'thymio_if_ground_dark':
                 case 'thymio_if_ground_light':
                     block.setFieldValue(String(params.sensor_index || 0), 'SENSOR_INDEX');
-                    connectNumberBlock('THRESHOLD', params.threshold || 300);
+                    connectNumberBlock('THRESHOLD', paramOr(params.threshold, 300));
                     if (params.sub_actions && params.sub_actions.length > 0) {
                         attachSubActionsToBlock(block, params.sub_actions);
                     }
@@ -2514,7 +2613,7 @@
                 case 'thymio_if_variable':
                     block.setFieldValue(params.variable || 'state', 'VARIABLE');
                     block.setFieldValue(params.comparison || '==', 'COMPARISON');
-                    connectNumberBlock('VALUE', params.value || 0);
+                    connectNumberBlock('VALUE', paramOr(params.value, 0));
                     if (params.sub_actions && params.sub_actions.length > 0) {
                         attachSubActionsToBlock(block, params.sub_actions);
                     }
@@ -2525,7 +2624,7 @@
                 // ============================================================================
                 case 'thymio_set_timer_period':
                     block.setFieldValue(String(params.timer_id || 0), 'TIMER_ID');
-                    connectNumberBlock('PERIOD', params.period || 1000);
+                    connectNumberBlock('PERIOD', paramOr(params.period, 1000));
                     break;
 
                 // ============================================================================
@@ -2533,19 +2632,19 @@
                 // ============================================================================
                 case 'thymio_set_variable':
                     block.setFieldValue(params.variable || 'state', 'VARIABLE');
-                    connectNumberBlock('VALUE', params.value || 0);
+                    connectNumberBlock('VALUE', paramOr(params.value, 0));
                     break;
 
                 case 'thymio_increase_variable':
                 case 'thymio_decrease_variable':
                     block.setFieldValue(params.variable || 'counter', 'VARIABLE');
-                    connectNumberBlock('AMOUNT', params.amount || 1);
+                    connectNumberBlock('AMOUNT', paramOr(params.amount, 1));
                     break;
             }
 
             // Helper function to attach sub_actions to a block's DO input
-            function attachSubActionsToBlock(targetBlock, subActions) {
-                var doInput = targetBlock.getInput('DO');
+            function attachSubActionsToBlock(targetBlock, subActions, inputName) {
+                var doInput = targetBlock.getInput(inputName || 'DO');
                 if (doInput && doInput.connection && subActions.length > 0) {
                     var prevInnerBlock = null;
                     for (var i = 0; i < subActions.length; i++) {
@@ -3058,7 +3157,10 @@
             // NEW: Register custom blocks from ActionType definitions
             registerCustomBlocks: registerCustomBlocks,
             // NEW: Push project asset lists for the dropdown fields
-            setAssetLists: setAssetLists
+            setAssetLists: setAssetLists,
+            // NEW: Lock/unlock block editing (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0)
+            setLocked: setLocked,
+            isLocked: function() { return workspaceLocked; }
         };
     </script>
 </body>

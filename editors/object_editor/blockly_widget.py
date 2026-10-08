@@ -16,6 +16,7 @@ from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtGui import QCloseEvent
 
 from core.logger import get_logger
+from editors.object_editor.blockly_roundtrip import diff_events, summarize_issues
 logger = get_logger(__name__)
 
 try:
@@ -102,6 +103,11 @@ class BlocklyWidget(QWidget):
         self._loading = False
         self._page_ready = False
         self._pending_events_data = None
+        # Set by _check_round_trip_safety whenever Blockly can't reproduce
+        # the object's real events exactly (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md,
+        # U0) -- the JS page is locked in that case, so editing here is a
+        # visible, explained dead end rather than a silent data loss.
+        self.round_trip_unsafe = False
         # Most recent workspace XML, refreshed asynchronously whenever the
         # blocks change or a workspace is loaded. get_workspace_xml returns
         # this cached value synchronously — the runJavaScript result callback
@@ -423,6 +429,7 @@ class BlocklyWidget(QWidget):
 
         if not events_data:
             self.update_status(self.tr("No events to load"))
+            self.set_locked(False)
             return
 
         # Queue data if the page hasn't finished loading yet
@@ -450,6 +457,7 @@ class BlocklyWidget(QWidget):
                 self.update_status(self.tr("Loaded {0} events as blocks").format(result))
             else:
                 self.update_status(self.tr("Loaded {0} events - some may not have block equivalents").format(len(events_data)))
+            self._check_round_trip_safety(events_data)
 
         # Check if blocklyApi is available before calling
         check_and_load_script = f"""
@@ -473,6 +481,53 @@ class BlocklyWidget(QWidget):
         """
 
         self.web_view.page().runJavaScript(check_and_load_script, on_load_complete)
+
+    def set_locked(self, locked: bool, message: str = ""):
+        """Lock/unlock block editing in the JS page (docs/
+        BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0). The JS change-listener's own
+        lock check is the actual safety net — it stops a change from ever
+        reaching Python; the overlay this shows is just the explanation, so
+        this is safe to call even before the page or the overlay exists."""
+        self.round_trip_unsafe = locked
+        if not self._page_ready:
+            return
+        payload = json.dumps(message or "")
+        self.web_view.page().runJavaScript(
+            f"window.blocklyApi && window.blocklyApi.setLocked({'true' if locked else 'false'}, {payload})"
+        )
+
+    def _check_round_trip_safety(self, events_data: Dict[str, Any]):
+        """After syncing real events into Blockly, ask the page to generate
+        code right away and diff it against what was just loaded. If Blockly
+        can't reproduce the object's events exactly, lock the workspace
+        instead of leaving it editable: the *next* unrelated block edit would
+        otherwise fire on_blocks_changed -> events_generated ->
+        ObjectEditor.on_blockly_events_modified, which replaces ALL of the
+        object's events with Blockly's current (lossy) reconstruction —
+        docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md's root finding."""
+        if not self._page_ready:
+            return
+
+        def on_code(result):
+            try:
+                after = json.loads(result) if result else {}
+            except (TypeError, ValueError):
+                logger.debug(f"_check_round_trip_safety: could not parse getCode() result: {result!r}")
+                after = {}
+            issues = diff_events(events_data, after)
+            if issues:
+                lost = summarize_issues(issues)
+                message = self.tr(
+                    "This object uses features the visual blocks can't fully "
+                    "represent yet, so editing here would permanently lose: "
+                    "{0}. Use the Action List or Code tab for this object "
+                    "instead."
+                ).format("; ".join(lost))
+                self.set_locked(True, message)
+            else:
+                self.set_locked(False)
+
+        self.web_view.page().runJavaScript("window.blocklyApi.getCode()", on_code)
 
     def update_status(self, message: str):
         """Update status (no-op - status label removed to save space)"""

@@ -1,8 +1,11 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete, no fix started.** The checkboxes
-below are the resume state; one unit ≈ one commit with its regression test.
+just placeholders?* Status: **review complete; U0, B1, B2 (partial) landed.**
+B3–B9 are still open, plus two new findings (B10, B11) turned up while fixing
+B1, and B2 itself only closes 3 of its 4 named cases (see B2's own notes).
+The checkboxes below are the resume state; one unit ≈ one commit with its
+regression test.
 
 ## How it was checked (re-runnable)
 
@@ -44,25 +47,64 @@ moment they touch a block.
 
 ## Findings, by root cause (highest impact first)
 
-- [ ] **B1 — Typing 0 gives the default instead (CRITICAL, affects new blocks).**
-  `getInputValue` returns `parseFloat(NUM) || defaultValue`
-  (`blockly_generators.js`), so 0 is replaced by the default: *set gravity 0*
-  saves **0.5** (gravity turns on), *set sprite subimage 0 / speed 0* saves -1.
-  Seen in plateforme_1–3, maze_4, treasure. Fix: `isNaN` check, not `||`.
-- [ ] **B2 — Conditions lose their condition and nested actions (CRITICAL).**
-  - `if_condition`: only the condition types the hand-written block models
-    survive; `expression`, `key` and other `condition_type`s are dropped and
-    the reload uses the generic `custom_if_condition`, so saving writes
-    `parameters: {}` — condition **and then/else actions gone**. 55 nested
-    actions lost across block_world_1, multiplayer_lan_1, reseau_1–4,
-    sky_strike_1.
-  - `test_variable`: reloads as `custom_test_variable`, `then_actions` /
-    `else_actions` dropped.
-  - `test_expression`, `if_next_room_exists`: nested actions dropped.
-  - `if_collision_at`: the loader deliberately replaces it with its **first**
-    nested action (`blockly_workspace.html`, "doesn't have a direct block
-    equivalent") — condition gone, the action now runs unconditionally, other
-    nested actions dropped; with no nested actions the block vanishes.
+- [x] **B1 — Typing 0 gives the default instead, landed `2749147c`.**
+  Two independent halves of the same `value || default` anti-pattern, both
+  fixed: `getInputValue` (`blockly_generators.js`, SAVE: blocks -> events) now
+  uses an `isNaN` check instead of `||`. `setBlockParameters`'s
+  `connectNumberBlock`/`connectTextBlock` call sites (`blockly_workspace.html`,
+  LOAD: events -> blocks, 42 + 4 sites) had the identical bug one layer
+  earlier — found only because a real-page test using a native JSON *number*
+  0 for `gravity` still failed after the generator-side fix alone (the 98
+  bundled samples all store parameters as *strings*, where `"0"` is truthy
+  and never triggered this half; a future numeric-JSON producer would).
+  Both now route through a shared `paramOr(value, fallback)` helper that only
+  falls back on `undefined`/`null`/`''`. The audit tool's own 98-sample
+  baseline only moved on the already-known cases (644 → 633; the
+  loader-side fix doesn't show up there since no sample hits it -- see
+  above). Verified against the real page via
+  `tests/test_blockly_block_audit_roundtrip.py` (6 tests, one shared
+  QWebEngineView -- creating more than one per test process segfaults here).
+  Surfaced two new, separate bugs while testing (now B10/B11 below) that are
+  **not** fixed by this change.
+- [x] **B2 — Conditions lose their condition and nested actions, landed
+  `2dd6215d` (partial — see remaining items below).**
+  - `if_condition` / `test_variable`: **fixed.** Neither had an
+    `actionToBlockType` entry, so they loaded as the generic
+    `custom_if_condition` / `custom_test_variable` block — which has no
+    DO/ELSE statement input at all (`registerCustomBlocks` only knows
+    number/choice/boolean/string fields). Verified empirically this was
+    worse than the audit's own description: round-tripping either action
+    produced **zero** actions, not `parameters: {}` with the condition
+    merely blanked. Added the mapping, a real `setBlockParameters` case for
+    each (restoring the condition fields — including `test_variable`'s
+    `scope`/`global.`-prefix reconstruction), and a new **ELSE** statement
+    input on both blocks (was DO-only) wired through generator + loader.
+    **Remaining, not fixed:** `if_condition`'s hand-written block only has
+    fields for `condition_type='instance_count'` — loading any other
+    `condition_type` (`expression`, `key`, ...) now preserves the nested
+    actions, but the condition itself reverts to `instance_count`. A real
+    multi-condition-type UI is a separate, larger feature.
+  - `if_next_room_exists` / `if_previous_room_exists`: **THEN actions were
+    already fine** (re-verified against the real page before touching
+    anything — the audit's "nested actions dropped" claim was wrong for
+    this half). **ELSE actions were genuinely dropped** (no ELSE statement
+    input existed) even though the runtime actually executes them
+    (`runtime/action_room.py`'s `_dispatch_room_test`) — not cosmetic.
+    Fixed the same way as `if_condition`/`test_variable`.
+  - `test_expression`: **not fixed.** No hand-written block exists at all
+    (confirmed — zero references anywhere in `blockly_blocks.js` /
+    `blockly_generators.js`); falls to the same "zero actions survive"
+    failure as `if_condition` did. Needs a new block (expression input +
+    DO/ELSE), not a wiring fix.
+  - `if_collision_at`: **not fixed, as originally described.** No block
+    exists; `createActionBlock` deliberately unwraps it to its first nested
+    action, discarding the condition and the rest. Same remedy as
+    `test_expression` — a new block, not in this commit's scope.
+  - Audit tool's 98-sample baseline: 633 → 615 (`action-lost` 63 → 4, the
+    remaining 4 all `test_expression`). Verified against the real page via
+    `tests/test_blockly_block_audit_roundtrip.py`'s `TestB2*` classes (one
+    shared `QWebEngineView` fixture with B1's tests — **do not add a
+    second real-page test file**; see that module's docstring).
 - [ ] **B3 — Events with no Blockly block are deleted (HIGH).** No block exists
   for `game_start`, `no_more_lives`, `no_more_health`, `outside_room`,
   `end_step`, `animation_end`, `draw_gui`, `player_joined`,
@@ -105,17 +147,59 @@ moment they touch a block.
   `blockly_blocks.js`, in no toolbox (Thymio is programmed through its own
   panel); their generators save `{type: …}` rather than `{action: …}`, which
   the runtime's `execute_action` would ignore. Remove or wire up — decide.
+- [ ] **B10 — `set_sprite`'s loader never connects SUBIMAGE/SPEED at all
+  (found fixing B1).** `setBlockParameters`'s `case 'set_sprite':` only does
+  `block.setFieldValue(params.sprite, 'SPRITE')` — no `connectNumberBlock`
+  call for either input, unlike every sibling case. Unlike B1 this isn't
+  value-specific: **every** authored `subimage`/`speed`, zero or not, is
+  lost on load (falls through to `getInputValue`'s final `return
+  defaultValue`, i.e. -1/-1) the moment the object's events sync into
+  Blockly with no saved workspace XML. Fix: add the two missing
+  `connectNumberBlock('SUBIMAGE', paramOr(params.subimage, -1))` /
+  `('SPEED', paramOr(params.speed, -1))` calls.
+- [ ] **B11 — `move_free` has no `actionToBlockType` entry (found fixing
+  B1).** The generator's `case 'move_free':` (free-direction movement, not
+  the 4-way `move_direction`/`start_moving_direction` block) emits
+  `{action: 'move_free', ...}` on save, but `actionToBlockType` — the
+  loader's action-name → block-type lookup — has no `'move_free'` key, so
+  an object authoring `move_free` (action list, GMK import, a sample) gets
+  **zero** blocks for that action the moment it's loaded into Blockly:
+  confirmed empirically, `loadEventsData` on a `move_free` action produces
+  an empty `actions` list, not even a fallback block. Same failure shape as
+  B3 (an action/event Blockly can't represent gets silently deleted) but
+  this one is self-inflicted — the generator and the loader disagree about
+  whether this block exists at all. Fix: add
+  `'move_free': 'move_free'` to `actionToBlockType`.
 
 ## Suggested order
 
-0. **Safety net first (recommended U0):** at load time, run load → save on the
-   object's events and compare; if Blockly can't reproduce them exactly, don't
-   let a Blockly edit overwrite the object (read-only Blockly view + a clear
-   message naming what isn't supported). Protects every student immediately,
-   and stays useful as a guard after B1–B6 shrink the set.
-1. B1 (one-line root cause, affects new work).
-2. B2, B3, B4, B5 — each its own unit; re-run the tool after each.
-3. B6, B7, B8, B9.
+- [x] **U0 — Safety net, landed `394ca579`.** `BlocklyWidget.
+  load_events_data` now asks the real page to regenerate code right after
+  loading an object's events, diffs it against what was loaded
+  (`editors/object_editor/blockly_roundtrip.diff_events` — the same function
+  `tools/audit_blockly_roundtrip.py` now imports, so there's one source for
+  "what did Blockly lose", not two). Any difference locks the workspace:
+  `blockly_workspace.html` gained a `#lockOverlay` + `workspaceLocked` flag
+  that the change-listener checks before notifying Python at all (belt and
+  braces — the overlay also blocks mouse interaction), and
+  `window.blocklyApi.setLocked(bool, message)` drives both. The message names
+  what would be lost via `summarize_issues`. Verified against the real page
+  (not just unit tests): `setLocked`/`isLocked`/the overlay's `display` all
+  toggle correctly headlessly; the audit tool's own baseline is unchanged
+  (still 644 differences — U0 only gates edits, it doesn't fix any loader).
+  Tests: `tests/test_blockly_round_trip_safety.py` (19). Does **not** cover
+  objects that already have a saved `blockly_workspace` XML (that path is
+  `load_workspace_xml`, not `load_events_data` — those blocks are already the
+  source of truth) — only the "events authored outside Blockly, about to be
+  synced in for the first time" case B1 through B9 are about.
+- [x] **B1** (landed — see above).
+- [x] **B2** (landed, partial — see above; `test_expression` and
+  `if_collision_at` still have no block at all and remain open).
+1. B3, B4, B5 — each its own unit; re-run the tool after each. B3 is the
+   natural next step for `test_expression`/`if_collision_at` since it's
+   already about "events/actions with no matching block".
+2. B6, B7, B8, B9.
+3. B10, B11 (found while fixing B1, narrower scope than any of the above).
 
 Each fix: regression test (a headless-page test like the harness, or the tool
 in CI), full suite green, commit + push, flip the checkbox with the hash.
