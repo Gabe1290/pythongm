@@ -46,7 +46,7 @@ moment they touch a block.
 
 ## Findings, by root cause (highest impact first)
 
-- [x] **B1 — Typing 0 gives the default instead, landed `<pending-hash>`.**
+- [x] **B1 — Typing 0 gives the default instead, landed `2749147c`.**
   Two independent halves of the same `value || default` anti-pattern, both
   fixed: `getInputValue` (`blockly_generators.js`, SAVE: blocks -> events) now
   uses an `isNaN` check instead of `||`. `setBlockParameters`'s
@@ -147,7 +147,7 @@ moment they touch a block.
 
 ## Suggested order
 
-- [x] **U0 — Safety net, landed `<pending-hash>`.** `BlocklyWidget.
+- [x] **U0 — Safety net, landed `394ca579`.** `BlocklyWidget.
   load_events_data` now asks the real page to regenerate code right after
   loading an object's events, diffs it against what was loaded
   (`editors/object_editor/blockly_roundtrip.diff_events` — the same function
