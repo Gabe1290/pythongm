@@ -1,8 +1,9 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete, no fix started.** The checkboxes
-below are the resume state; one unit ≈ one commit with its regression test.
+just placeholders?* Status: **review complete; U0 (the safety net) landed.**
+B1–B9 are still open. The checkboxes below are the resume state; one unit ≈
+one commit with its regression test.
 
 ## How it was checked (re-runnable)
 
@@ -108,11 +109,25 @@ moment they touch a block.
 
 ## Suggested order
 
-0. **Safety net first (recommended U0):** at load time, run load → save on the
-   object's events and compare; if Blockly can't reproduce them exactly, don't
-   let a Blockly edit overwrite the object (read-only Blockly view + a clear
-   message naming what isn't supported). Protects every student immediately,
-   and stays useful as a guard after B1–B6 shrink the set.
+- [x] **U0 — Safety net, landed `<pending-hash>`.** `BlocklyWidget.
+  load_events_data` now asks the real page to regenerate code right after
+  loading an object's events, diffs it against what was loaded
+  (`editors/object_editor/blockly_roundtrip.diff_events` — the same function
+  `tools/audit_blockly_roundtrip.py` now imports, so there's one source for
+  "what did Blockly lose", not two). Any difference locks the workspace:
+  `blockly_workspace.html` gained a `#lockOverlay` + `workspaceLocked` flag
+  that the change-listener checks before notifying Python at all (belt and
+  braces — the overlay also blocks mouse interaction), and
+  `window.blocklyApi.setLocked(bool, message)` drives both. The message names
+  what would be lost via `summarize_issues`. Verified against the real page
+  (not just unit tests): `setLocked`/`isLocked`/the overlay's `display` all
+  toggle correctly headlessly; the audit tool's own baseline is unchanged
+  (still 644 differences — U0 only gates edits, it doesn't fix any loader).
+  Tests: `tests/test_blockly_round_trip_safety.py` (19). Does **not** cover
+  objects that already have a saved `blockly_workspace` XML (that path is
+  `load_workspace_xml`, not `load_events_data` — those blocks are already the
+  source of truth) — only the "events authored outside Blockly, about to be
+  synced in for the first time" case B0 through B9 are about.
 1. B1 (one-line root cause, affects new work).
 2. B2, B3, B4, B5 — each its own unit; re-run the tool after each.
 3. B6, B7, B8, B9.

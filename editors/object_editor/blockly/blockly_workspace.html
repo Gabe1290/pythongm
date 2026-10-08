@@ -48,6 +48,35 @@
             border-radius: 8px;
             max-width: 80%;
         }
+        /* Shown when the workspace can't faithfully represent this object's
+           real events (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0). Sits
+           above #blocklyDiv and captures clicks so the blocks underneath
+           can't be dragged/edited/deleted while locked. */
+        #lockOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 20, 20, 0.55);
+            cursor: not-allowed;
+        }
+        #lockMessageBox {
+            max-width: 70%;
+            padding: 20px 24px;
+            background: #3a2f00;
+            border: 1px solid #ffb300;
+            border-radius: 8px;
+            color: #ffe082;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
         /* Force toolbox visibility - Blockly 12.x class names */
         .blocklyToolbox {
             background-color: #2d2d2d !important;
@@ -86,6 +115,7 @@
     <div id="loadingDiv">Loading Blockly...</div>
     <div id="errorDiv"></div>
     <div id="blocklyDiv"></div>
+    <div id="lockOverlay"><div id="lockMessageBox"><div id="lockMessageText"></div></div></div>
 
     <!-- Load Blockly with error handling - use local files -->
     <script>
@@ -1688,6 +1718,27 @@
             }
         }
 
+        // Set when Python determines this object's real events can't be
+        // reproduced exactly by loading them into blocks (docs/
+        // BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0). The #lockOverlay div blocks
+        // mouse interaction with the blocks visually; workspaceLocked below
+        // is the actual safety net -- it stops a change from ever reaching
+        // Python even if some interaction got through the overlay (keyboard
+        // delete, say), so a locked object's events can't be silently
+        // replaced by Blockly's lossy reconstruction on the next edit.
+        var workspaceLocked = false;
+        function setLocked(locked, message) {
+            workspaceLocked = !!locked;
+            var overlay = document.getElementById('lockOverlay');
+            var text = document.getElementById('lockMessageText');
+            if (text) {
+                text.textContent = message || '';
+            }
+            if (overlay) {
+                overlay.style.display = workspaceLocked ? 'flex' : 'none';
+            }
+        }
+
         // Code generation, event/action mapping, and getInputValue live in
         // blockly_generators.js (loaded near the top of this file). This was
         // previously duplicated inline; the inline copies drifted away from
@@ -1697,7 +1748,7 @@
         // Listen for workspace changes
         var ignoreChanges = false;  // Flag to prevent infinite loops during sync
         workspace.addChangeListener(function(event) {
-            if (ignoreChanges) return;
+            if (ignoreChanges || workspaceLocked) return;
             if (event.type == Blockly.Events.BLOCK_CHANGE ||
                 event.type == Blockly.Events.BLOCK_CREATE ||
                 event.type == Blockly.Events.BLOCK_DELETE ||
@@ -3058,7 +3109,10 @@
             // NEW: Register custom blocks from ActionType definitions
             registerCustomBlocks: registerCustomBlocks,
             // NEW: Push project asset lists for the dropdown fields
-            setAssetLists: setAssetLists
+            setAssetLists: setAssetLists,
+            // NEW: Lock/unlock block editing (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0)
+            setLocked: setLocked,
+            isLocked: function() { return workspaceLocked; }
         };
     </script>
 </body>

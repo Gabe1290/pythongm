@@ -26,6 +26,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
+from editors.object_editor.blockly_roundtrip import diff_events  # noqa: E402
+
 
 def run_page(objs, assets):
     from PySide6.QtCore import QUrl, QTimer
@@ -75,63 +77,6 @@ def run_page(objs, assets):
     return result['after']
 
 
-def norm(v):
-    if isinstance(v, bool):
-        return v
-    if isinstance(v, str):
-        s = v.strip()
-        try:
-            return float(s)
-        except ValueError:
-            return {'self': 'sel', 'instance': 'sel'}.get(s, s)
-    if isinstance(v, (int, float)):
-        return float(v)
-    if isinstance(v, list):
-        return [norm(x) for x in v]
-    if isinstance(v, dict):
-        return {k: norm(x) for k, x in v.items()}
-    return v
-
-
-def flat_events(ev):
-    out = {}
-    for name, data in ev.items():
-        if not isinstance(data, dict):
-            continue
-        if isinstance(data.get('actions'), list):
-            out[name] = data['actions']
-        for k, sub in data.items():
-            if k != 'actions' and isinstance(sub, dict) and isinstance(sub.get('actions'), list):
-                out[f"{name}/{k.lower()}"] = sub['actions']
-    # flat alarm_N == nested alarm/alarm_N for the runtime (game_runner checks both)
-    return {(k.replace('alarm_', 'alarm/alarm_', 1) if k.startswith('alarm_') else k): v
-            for k, v in out.items()}
-
-
-NESTED = ('then_actions', 'else_actions', 'sub_actions', 'actions')
-
-
-def walk(a_list, b_list, where, issues):
-    a_list = [x for x in (a_list if isinstance(a_list, list) else []) if isinstance(x, dict)]
-    b_list = [x for x in (b_list if isinstance(b_list, list) else []) if isinstance(x, dict)]
-    for i in range(max(len(a_list), len(b_list))):
-        a = a_list[i] if i < len(a_list) else None
-        b = b_list[i] if i < len(b_list) else None
-        an = a and (a.get('action') or a.get('type'))
-        bn = b and (b.get('action') or b.get('type'))
-        if an != bn:
-            issues.append((where, 'action-lost' if bn is None else 'action-changed', an, bn))
-            return
-        ap, bp = a.get('parameters') or {}, b.get('parameters') or {}
-        for k in sorted(set(ap) | set(bp)):
-            if k in NESTED:
-                walk(ap.get(k), bp.get(k), f"{where}>{an}.{k}", issues)
-            elif k not in bp:
-                issues.append((where, 'param-dropped', an, k))
-            elif k in ap and norm(ap[k]) != norm(bp[k]):
-                issues.append((where, 'param-changed', an, f"{k}: {ap[k]!r} -> {bp[k]!r}"))
-
-
 def main():
     objs, assets = {}, {}
     for pj in sorted(glob.glob(str(REPO / 'samples/*/project.json'))):
@@ -150,12 +95,8 @@ def main():
         if '__error__' in aft:
             issues.append((obj, 'load-error', aft['__error__'], ''))
             continue
-        fb, fa = flat_events(before), flat_events(aft)
-        for ev in sorted(set(fb) | set(fa)):
-            if ev not in fa:
-                issues.append((f"{obj}:{ev}", 'event-dropped', ev.split('/')[0], ev))
-            elif ev in fb:
-                walk(fb[ev], fa[ev], f"{obj}:{ev}", issues)
+        for where, kind, a, b in diff_events(before, aft):
+            issues.append((f"{obj}:{where}", kind, a, b))
 
     groups = collections.defaultdict(set)
     for where, kind, a, b in issues:
