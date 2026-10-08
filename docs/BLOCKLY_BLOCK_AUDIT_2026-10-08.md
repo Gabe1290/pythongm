@@ -184,7 +184,7 @@ moment they touch a block.
   `tests/test_blockly_block_audit_roundtrip.py`'s `TestB4*` classes (same
   shared fixture as B1–B3).
 - [x] **B5 — Parameters the hand-written blocks don't model are dropped,
-  landed `<pending>`.** Fixed with ONE generic mechanism, not twelve
+  landed `e7046f0f`.** Fixed with ONE generic mechanism, not twelve
   per-block patches, matching the audit's own prescribed fix direction
   exactly: `createActionBlock` (LOAD) stashes the full, untouched `params`
   dict as `block.pygmExtraParams`; both places that build the final
