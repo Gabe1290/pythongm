@@ -840,10 +840,13 @@ Blockly.Blocks['if_condition'] = {
         this.appendStatementInput("DO")
             .setCheck(null)
             .appendField("then");
+        this.appendStatementInput("ELSE")
+            .setCheck(null)
+            .appendField("else");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#FFAB19");
-        this.setTooltip("Run the nested actions when the chosen object's instance count matches the comparison");
+        this.setTooltip("Run the nested actions when the chosen object's instance count matches the comparison, otherwise run the else actions");
     }
 };
 
@@ -879,11 +882,14 @@ Blockly.Blocks['test_variable'] = {
         this.appendStatementInput("DO")
             .setCheck(null)
             .appendField("then");
+        this.appendStatementInput("ELSE")
+            .setCheck(null)
+            .appendField("else");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#FFAB19");
-        this.setTooltip("Compare a variable against a value and run nested actions when the comparison holds");
+        this.setTooltip("Compare a variable against a value and run nested actions when the comparison holds, otherwise run the else actions");
     }
 };
 
@@ -941,11 +947,15 @@ Blockly.Blocks['room_if_next_exists'] = {
         this.appendDummyInput()
             .appendField("If next room exists");
         this.appendStatementInput("DO")
-            .setCheck(null);
+            .setCheck(null)
+            .appendField("then");
+        this.appendStatementInput("ELSE")
+            .setCheck(null)
+            .appendField("else");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#A6745C");
-        this.setTooltip("Execute actions only if there is a next room");
+        this.setTooltip("Execute the then actions if there is a next room, otherwise the else actions");
     }
 };
 
@@ -954,11 +964,15 @@ Blockly.Blocks['room_if_previous_exists'] = {
         this.appendDummyInput()
             .appendField("If previous room exists");
         this.appendStatementInput("DO")
-            .setCheck(null);
+            .setCheck(null)
+            .appendField("then");
+        this.appendStatementInput("ELSE")
+            .setCheck(null)
+            .appendField("else");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#A6745C");
-        this.setTooltip("Execute actions only if there is a previous room");
+        this.setTooltip("Execute the then actions if there is a previous room, otherwise the else actions");
     }
 };
 

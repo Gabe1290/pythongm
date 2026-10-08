@@ -200,7 +200,7 @@ function generateActionCode(block) {
         case 'exit_event':
             return {action: 'exit_event', parameters: {}};
         case 'if_condition':
-            // Collect nested actions from the DO slot for then_actions.
+            // Collect nested actions from the DO/ELSE slots.
             // condition_type is hardcoded to instance_count for the Blockly form;
             // the multi-type editor stays available via the traditional picker.
             var ifCondActions = [];
@@ -212,13 +212,22 @@ function generateActionCode(block) {
                 }
                 ifCondInner = ifCondInner.getNextBlock();
             }
+            var ifCondElseActions = [];
+            var ifCondElseInner = block.getInputTargetBlock('ELSE');
+            while (ifCondElseInner) {
+                var ifCondElseAction = generateActionCode(ifCondElseInner);
+                if (ifCondElseAction) {
+                    ifCondElseActions.push(ifCondElseAction);
+                }
+                ifCondElseInner = ifCondElseInner.getNextBlock();
+            }
             return {action: 'if_condition', parameters: {
                 condition_type: 'instance_count',
                 object_name: block.getFieldValue('OBJECT_NAME'),
                 operator: block.getFieldValue('OPERATOR'),
                 value: block.getFieldValue('VALUE'),
                 then_actions: ifCondActions,
-                else_actions: []
+                else_actions: ifCondElseActions
             }};
         case 'set_variable':
             // Split a leading 'self.' / 'global.' / 'other.' prefix into the
@@ -232,8 +241,8 @@ function generateActionCode(block) {
                 relative: false
             }};
         case 'test_variable':
-            // Same nested-action pattern as if_condition: collect DO slot
-            // statements into then_actions and let the runtime branch.
+            // Same nested-action pattern as if_condition: collect DO/ELSE
+            // slot statements and let the runtime branch.
             var tvActions = [];
             var tvInner = block.getInputTargetBlock('DO');
             while (tvInner) {
@@ -243,6 +252,15 @@ function generateActionCode(block) {
                 }
                 tvInner = tvInner.getNextBlock();
             }
+            var tvElseActions = [];
+            var tvElseInner = block.getInputTargetBlock('ELSE');
+            while (tvElseInner) {
+                var tvElseAction = generateActionCode(tvElseInner);
+                if (tvElseAction) {
+                    tvElseActions.push(tvElseAction);
+                }
+                tvElseInner = tvElseInner.getNextBlock();
+            }
             var tv = parseScopedVariable(block.getFieldValue('VARIABLE'));
             return {action: 'test_variable', parameters: {
                 variable: tv.name,
@@ -250,7 +268,7 @@ function generateActionCode(block) {
                 operation: block.getFieldValue('OPERATION'),
                 value: getInputValue(block, 'VALUE', 0),
                 then_actions: tvActions,
-                else_actions: []
+                else_actions: tvElseActions
             }};
         case 'room_goto_next':
             return {action: 'next_room', parameters: {}};
@@ -270,7 +288,18 @@ function generateActionCode(block) {
                 }
                 nextExistsBlock = nextExistsBlock.getNextBlock();
             }
-            return {action: 'if_next_room_exists', parameters: {then_actions: nextExistsActions}};
+            var nextExistsElseActions = [];
+            var nextExistsElseBlock = block.getInputTargetBlock('ELSE');
+            while (nextExistsElseBlock) {
+                var nextExistsElseAction = generateActionCode(nextExistsElseBlock);
+                if (nextExistsElseAction) {
+                    nextExistsElseActions.push(nextExistsElseAction);
+                }
+                nextExistsElseBlock = nextExistsElseBlock.getNextBlock();
+            }
+            return {action: 'if_next_room_exists', parameters: {
+                then_actions: nextExistsActions, else_actions: nextExistsElseActions
+            }};
         case 'room_if_previous_exists':
             var prevExistsActions = [];
             var prevExistsBlock = block.getInputTargetBlock('DO');
@@ -281,7 +310,18 @@ function generateActionCode(block) {
                 }
                 prevExistsBlock = prevExistsBlock.getNextBlock();
             }
-            return {action: 'if_previous_room_exists', parameters: {then_actions: prevExistsActions}};
+            var prevExistsElseActions = [];
+            var prevExistsElseBlock = block.getInputTargetBlock('ELSE');
+            while (prevExistsElseBlock) {
+                var prevExistsElseAction = generateActionCode(prevExistsElseBlock);
+                if (prevExistsElseAction) {
+                    prevExistsElseActions.push(prevExistsElseAction);
+                }
+                prevExistsElseBlock = prevExistsElseBlock.getNextBlock();
+            }
+            return {action: 'if_previous_room_exists', parameters: {
+                then_actions: prevExistsActions, else_actions: prevExistsElseActions
+            }};
         case 'sound_play':
             return {action: 'play_sound', parameters: {sound: block.getFieldValue('SOUND')}};
         case 'music_play':

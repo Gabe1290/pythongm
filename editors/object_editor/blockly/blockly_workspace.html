@@ -1799,6 +1799,13 @@
             // twice in the toolbox alongside these proper DO-input blocks).
             'if_next_room_exists': 'room_if_next_exists',
             'if_previous_room_exists': 'room_if_previous_exists',
+            // Same reason (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2): without
+            // these, an authored if_condition/test_variable loaded as the
+            // generic custom_* block, which has no DO/ELSE statement input at
+            // all -- the condition AND every nested action vanished the
+            // moment the object synced into Blockly.
+            'if_condition': 'if_condition',
+            'test_variable': 'test_variable',
             // Audio actions (play_sound, stop_sound, play_music, stop_music,
             // set_volume) are intentionally NOT mapped here. They are owned by
             // the Audio Actions plugin and auto-generate into a single "Audio"
@@ -2365,9 +2372,39 @@
 
                 case 'room_if_next_exists':
                 case 'room_if_previous_exists':
-                    // Conditional room blocks have a single DO statement input
-                    // holding the then_actions (see blockly_generators.js).
-                    attachSubActionsToBlock(block, params.then_actions || []);
+                    // Conditional room blocks have DO/ELSE statement inputs
+                    // holding then_actions/else_actions (blockly_generators.js);
+                    // the runtime actually executes else_actions (action_room.py
+                    // _dispatch_room_test), so this isn't cosmetic.
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
+                    break;
+
+                case 'if_condition':
+                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2. condition_type
+                    // other than 'instance_count' can't be represented by this
+                    // block (it has no field for it) -- OBJECT_NAME/OPERATOR/
+                    // VALUE are only meaningful for the instance_count case,
+                    // but the then/else actions are preserved regardless.
+                    if (params.object_name) block.setFieldValue(params.object_name, 'OBJECT_NAME');
+                    if (params.operator) block.setFieldValue(params.operator, 'OPERATOR');
+                    block.setFieldValue(String(paramOr(params.value, 0)), 'VALUE');
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
+                    break;
+
+                case 'test_variable':
+                    // Re-add the scope prefix generateActionCode's
+                    // parseScopedVariable strips on save (blockly_generators.js).
+                    var tvScope = params.scope || 'sel';
+                    var tvName = params.variable || '';
+                    var tvPrefixed = (tvScope === 'global') ? ('global.' + tvName)
+                        : (tvScope === 'other') ? ('other.' + tvName) : tvName;
+                    block.setFieldValue(tvPrefixed, 'VARIABLE');
+                    if (params.operation) block.setFieldValue(params.operation, 'OPERATION');
+                    connectNumberBlock('VALUE', paramOr(params.value, 0));
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
                     break;
 
                 case 'sound_play':
@@ -2606,8 +2643,8 @@
             }
 
             // Helper function to attach sub_actions to a block's DO input
-            function attachSubActionsToBlock(targetBlock, subActions) {
-                var doInput = targetBlock.getInput('DO');
+            function attachSubActionsToBlock(targetBlock, subActions, inputName) {
+                var doInput = targetBlock.getInput(inputName || 'DO');
                 if (doInput && doInput.connection && subActions.length > 0) {
                     var prevInnerBlock = null;
                     for (var i = 0; i < subActions.length; i++) {

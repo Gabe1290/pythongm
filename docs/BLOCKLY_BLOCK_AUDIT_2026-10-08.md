@@ -1,9 +1,10 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete; U0 and B1 landed.** B2–B9 are
-still open, plus two new findings (B10, B11) turned up while fixing B1. The
-checkboxes below are the resume state; one unit ≈ one commit with its
+just placeholders?* Status: **review complete; U0, B1, B2 (partial) landed.**
+B3–B9 are still open, plus two new findings (B10, B11) turned up while fixing
+B1, and B2 itself only closes 3 of its 4 named cases (see B2's own notes).
+The checkboxes below are the resume state; one unit ≈ one commit with its
 regression test.
 
 ## How it was checked (re-runnable)
@@ -61,24 +62,49 @@ moment they touch a block.
   baseline only moved on the already-known cases (644 → 633; the
   loader-side fix doesn't show up there since no sample hits it -- see
   above). Verified against the real page via
-  `tests/test_blockly_zero_value_roundtrip.py` (6 tests, one shared
+  `tests/test_blockly_block_audit_roundtrip.py` (6 tests, one shared
   QWebEngineView -- creating more than one per test process segfaults here).
   Surfaced two new, separate bugs while testing (now B10/B11 below) that are
   **not** fixed by this change.
-- [ ] **B2 — Conditions lose their condition and nested actions (CRITICAL).**
-  - `if_condition`: only the condition types the hand-written block models
-    survive; `expression`, `key` and other `condition_type`s are dropped and
-    the reload uses the generic `custom_if_condition`, so saving writes
-    `parameters: {}` — condition **and then/else actions gone**. 55 nested
-    actions lost across block_world_1, multiplayer_lan_1, reseau_1–4,
-    sky_strike_1.
-  - `test_variable`: reloads as `custom_test_variable`, `then_actions` /
-    `else_actions` dropped.
-  - `test_expression`, `if_next_room_exists`: nested actions dropped.
-  - `if_collision_at`: the loader deliberately replaces it with its **first**
-    nested action (`blockly_workspace.html`, "doesn't have a direct block
-    equivalent") — condition gone, the action now runs unconditionally, other
-    nested actions dropped; with no nested actions the block vanishes.
+- [x] **B2 — Conditions lose their condition and nested actions, landed
+  `<pending-hash>` (partial — see remaining items below).**
+  - `if_condition` / `test_variable`: **fixed.** Neither had an
+    `actionToBlockType` entry, so they loaded as the generic
+    `custom_if_condition` / `custom_test_variable` block — which has no
+    DO/ELSE statement input at all (`registerCustomBlocks` only knows
+    number/choice/boolean/string fields). Verified empirically this was
+    worse than the audit's own description: round-tripping either action
+    produced **zero** actions, not `parameters: {}` with the condition
+    merely blanked. Added the mapping, a real `setBlockParameters` case for
+    each (restoring the condition fields — including `test_variable`'s
+    `scope`/`global.`-prefix reconstruction), and a new **ELSE** statement
+    input on both blocks (was DO-only) wired through generator + loader.
+    **Remaining, not fixed:** `if_condition`'s hand-written block only has
+    fields for `condition_type='instance_count'` — loading any other
+    `condition_type` (`expression`, `key`, ...) now preserves the nested
+    actions, but the condition itself reverts to `instance_count`. A real
+    multi-condition-type UI is a separate, larger feature.
+  - `if_next_room_exists` / `if_previous_room_exists`: **THEN actions were
+    already fine** (re-verified against the real page before touching
+    anything — the audit's "nested actions dropped" claim was wrong for
+    this half). **ELSE actions were genuinely dropped** (no ELSE statement
+    input existed) even though the runtime actually executes them
+    (`runtime/action_room.py`'s `_dispatch_room_test`) — not cosmetic.
+    Fixed the same way as `if_condition`/`test_variable`.
+  - `test_expression`: **not fixed.** No hand-written block exists at all
+    (confirmed — zero references anywhere in `blockly_blocks.js` /
+    `blockly_generators.js`); falls to the same "zero actions survive"
+    failure as `if_condition` did. Needs a new block (expression input +
+    DO/ELSE), not a wiring fix.
+  - `if_collision_at`: **not fixed, as originally described.** No block
+    exists; `createActionBlock` deliberately unwraps it to its first nested
+    action, discarding the condition and the rest. Same remedy as
+    `test_expression` — a new block, not in this commit's scope.
+  - Audit tool's 98-sample baseline: 633 → 615 (`action-lost` 63 → 4, the
+    remaining 4 all `test_expression`). Verified against the real page via
+    `tests/test_blockly_block_audit_roundtrip.py`'s `TestB2*` classes (one
+    shared `QWebEngineView` fixture with B1's tests — **do not add a
+    second real-page test file**; see that module's docstring).
 - [ ] **B3 — Events with no Blockly block are deleted (HIGH).** No block exists
   for `game_start`, `no_more_lives`, `no_more_health`, `outside_room`,
   `end_step`, `animation_end`, `draw_gui`, `player_joined`,
@@ -167,7 +193,11 @@ moment they touch a block.
   source of truth) — only the "events authored outside Blockly, about to be
   synced in for the first time" case B1 through B9 are about.
 - [x] **B1** (landed — see above).
-1. B2, B3, B4, B5 — each its own unit; re-run the tool after each.
+- [x] **B2** (landed, partial — see above; `test_expression` and
+  `if_collision_at` still have no block at all and remain open).
+1. B3, B4, B5 — each its own unit; re-run the tool after each. B3 is the
+   natural next step for `test_expression`/`if_collision_at` since it's
+   already about "events/actions with no matching block".
 2. B6, B7, B8, B9.
 3. B10, B11 (found while fixing B1, narrower scope than any of the above).
 
