@@ -113,6 +113,55 @@ before that machine was reformatted. They apply on every machine.
   across several computers that all converge on `main` (GitHub is the sync);
   a feature branch fragments that single line of history. Group changes into
   logical commits and push.
+- **`git sync` is a global alias (installed per-machine, not in this repo)
+  for updating `main` after a history rewrite.** Added 2026-10-08 after a
+  repo-wide author-identity rewrite (`git filter-repo`, fixing 190 commits
+  wrongly attributed to `edu-thulleng@localhost.localdomain`) changed the
+  hash of every commit from 2026-05-19 onward, which left every other
+  machine's `main` diverged from `origin/main` despite having identical
+  content. `git pull` itself **cannot** be aliased to handle this — git
+  resolves built-in command names before consulting `alias.*` at all
+  (verified empirically; `alias.pull`/`alias.status` are silently never
+  consulted), so `git sync` is a *new* command, not an override of `pull`.
+  It fetches, then: no-ops if already current; fast-forwards normally for
+  ordinary new commits; if history diverged but the tree hash is identical
+  to `origin/main` (a pure identity/metadata rewrite, not a real content
+  change), resets safely; otherwise refuses and prints the two `git log`
+  commands to inspect the real divergence by hand. Never acts with
+  uncommitted changes present. Install on a new machine by pasting this
+  once (works the moment you're inside any git repo afterward — no
+  repo-specific setup):
+  ```bash
+  git config --global alias.sync '!f() {
+    set -e
+    if ! upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '"'"'@{u}'"'"' 2>/dev/null); then
+      echo "No upstream configured for the current branch -- nothing to do."; exit 1
+    fi
+    remote=${upstream%%/*}
+    if [ -n "$(git status --porcelain)" ]; then
+      echo "Uncommitted changes present -- commit, stash, or discard them first, then sync again."; exit 1
+    fi
+    git fetch --prune --tags "$remote"
+    local_head=$(git rev-parse HEAD)
+    remote_head=$(git rev-parse "$upstream")
+    if [ "$local_head" = "$remote_head" ]; then
+      echo "Already up to date."; exit 0
+    elif git merge-base --is-ancestor "$local_head" "$remote_head" 2>/dev/null; then
+      echo "Fast-forwarding to $upstream."
+      git merge --ff-only "$upstream"
+    elif [ "$(git rev-parse "$local_head^{tree}")" = "$(git rev-parse "$remote_head^{tree}")" ]; then
+      echo "History was rewritten upstream (e.g. an author-identity fix) but the content is byte-identical -- updating the local ref safely."
+      git reset --hard "$upstream"
+    else
+      echo "Local and $upstream have really diverged (different content, not just a rewrite)."
+      echo "Refusing to auto-merge or reset. Inspect manually:"
+      echo "  git log HEAD..$upstream   # what upstream has that you do not"
+      echo "  git log $upstream..HEAD   # what you have that upstream does not"
+      exit 1
+    fi
+  }; f
+  '
+  ```
 - **Size every task to the account's session limit — no multi-agent
   workflows.** The account's usage limit is small; fan-out (not total work)
   exhausts it. Empirically (2026-07 export audit) multi-agent `Workflow`s
