@@ -113,7 +113,7 @@ moment they touch a block.
     shared `QWebEngineView` fixture with B1's tests — **do not add a
     second real-page test file**; see that module's docstring).
 - [x] **B3 — Events with no Blockly block are deleted (partial), landed
-  `<pending>`.** Added the missing `event_other` block (a single `EVENT_NAME`
+  `6a54709a`.** Added the missing `event_other` block (a single `EVENT_NAME`
   dropdown; matches `BLOCK_REGISTRY`'s pre-existing but previously-false
   `"implemented": True` claim) and routed `game_start`, `game_end`,
   `room_start`, `room_end`, `begin_step`, `end_step`, `draw_gui`,
