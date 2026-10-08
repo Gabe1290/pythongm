@@ -67,7 +67,7 @@ moment they touch a block.
   Surfaced two new, separate bugs while testing (now B10/B11 below) that are
   **not** fixed by this change.
 - [x] **B2 — Conditions lose their condition and nested actions, landed
-  `<pending-hash>` (partial — see remaining items below).**
+  `2dd6215d` (partial — see remaining items below).**
   - `if_condition` / `test_variable`: **fixed.** Neither had an
     `actionToBlockType` entry, so they loaded as the generic
     `custom_if_condition` / `custom_test_variable` block — which has no
