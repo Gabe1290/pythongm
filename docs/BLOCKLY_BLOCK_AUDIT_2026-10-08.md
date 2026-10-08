@@ -2,11 +2,12 @@
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
 just placeholders?* Status: **review complete; U0, B1, B2 (partial), B3
-(partial), B4 landed.** B5–B9 are still open, plus three new findings (B10,
-B11, B12) turned up while fixing B1/B3, B2 itself only closes 3 of its 4
-named cases (see B2's own notes), and B3 leaves the three LAN-multiplayer
-events open (see B3's own notes). The checkboxes below are the resume
-state; one unit ≈ one commit with its regression test.
+(partial), B4, B5 landed.** B6–B9 are still open, plus four new findings
+(B10, B11, B12, B13) turned up while fixing B1/B3/B5, B2 itself only
+closes 3 of its 4 named cases (see B2's own notes), and B3 leaves the
+three LAN-multiplayer events open (see B3's own notes). The checkboxes
+below are the resume state; one unit ≈ one commit with its regression
+test.
 
 ## How it was checked (re-runnable)
 
@@ -31,7 +32,7 @@ and the project asset lists pushed exactly as `BlocklyWidget` does.
    in between on another machine; this doc's own baseline wasn't re-verified
    each time). Post-B3: **596** (see B3's own notes for why the headline count
    barely moved despite fixing 37 event-drops — it's not a regression).
-   Post-B4: **566**.*
+   Post-B4: **566**. Post-B5: **255** (`param-dropped` 277 → 0).*
 
 Why it matters: `ObjectEditor.on_blockly_events_modified`
 (`editors/object_editor/object_editor_main.py`) **replaces the object's events
@@ -182,16 +183,46 @@ moment they touch a block.
   Verified against the real page via
   `tests/test_blockly_block_audit_roundtrip.py`'s `TestB4*` classes (same
   shared fixture as B1–B3).
-- [ ] **B5 — Parameters the hand-written blocks don't model are dropped (HIGH).**
-  "Applies to" `target` / `target_object` (`change_instance`, `jump_to_start`,
-  `set_alarm`, `destroy_instance` — the action then hits the wrong instance);
-  every authored `*_translations`; `draw_text.color`; `play_sound.loop`;
-  `next_room` / `restart_room.transition`; `set_window_caption` fields;
-  `draw_lives.sprite/scale`; `if_collision.relative`; `draw_rectangle.filled`;
-  `set_draw_font.align`; `draw_health_bar` colours;
-  `start_moving_direction.directions` ("stop" → 0). Fix direction: carry
-  unmodelled parameters through on the block (e.g. a hidden data field / mutation)
-  and merge them back on save.
+- [x] **B5 — Parameters the hand-written blocks don't model are dropped,
+  landed `<pending>`.** Fixed with ONE generic mechanism, not twelve
+  per-block patches, matching the audit's own prescribed fix direction
+  exactly: `createActionBlock` (LOAD) stashes the full, untouched `params`
+  dict as `block.pygmExtraParams`; both places that build the final
+  `{action, parameters}` result on SAVE — `generateActionCode`'s wrapper
+  (every hand-written block) and the dynamic `custom_*` block generator's
+  own from-scratch builder (`registerCustomBlocks`'s monkeypatch, used for
+  every action with NO hand-written block at all) — merge that stash back
+  in underneath whatever their own code explicitly produced.
+  The dynamic-block path turned out to be the one that actually mattered
+  for most of the named examples: `change_instance`, `set_window_caption`,
+  `jump_to_start`, `play_sound.loop`, `test_instance_count.count` and
+  others have no hand-written block at all — e.g. `change_instance` sets
+  `supports_applies_to=True` (`events/action_types.py`) but has no
+  `target`/`target_object` `ActionParameter` in its own list, so the
+  generic UI builder never knew `target`/`target_object` existed.
+  Confirmed via the audit tool: `param-dropped` across all 98 samples went
+  from 277 to **zero** — every named example, plus several the audit
+  didn't name (`test_variable`/`set_sprite`/`set_variable`'s own target/
+  target_object, `draw_lives.image`/`.relative`, ...).
+  **A second, independent bug found investigating this bullet's own
+  `start_moving_direction.directions` example:** `"stop"` is a real
+  sentinel the runtime zeroes both speeds for, not "move at 0 degrees"
+  (right) — `move_direction`'s generator fell through its degrees switch
+  for `dir === 'stop'` straight to its default, silently turning every
+  authored "stop" into "move right" (confirmed across 12 samples). Fixed
+  with an explicit early return. `move_direction`'s SPEED field got the
+  same B4 treatment (dropped `"Number"` check) for the identical reason
+  (`speed: "32/6"` was becoming the default `4`).
+  **Known, NOT addressed:** the remaining `start_moving_direction.directions`
+  diffs (`'right' -> 0`, `'up' -> 90`, ...) are a representation
+  difference the audit tool's comparator flags, not a behaviour change —
+  the runtime accepts both forms identically (same category as B1's own
+  note about the samples storing parameters as strings).
+  Verified against the real page via
+  `tests/test_blockly_block_audit_roundtrip.py`'s `TestB5*` classes
+  (same shared fixture as B1–B4, now also registering a dynamic block
+  so the custom_* merge path is exercised directly, not just via the
+  audit tool).
 - [ ] **B6 — Value blocks silently become the default (MEDIUM).** `getInputValue`
   only knows `math_number`, `text`, `value_x/y/score/lives/health`,
   `math_random_int`. In the toolbox but unhandled: `value_hspeed`,
@@ -248,6 +279,17 @@ moment they touch a block.
   likely needs each extension's own `actionToBlockType`-equivalent wiring
   (mirroring Thymio's pattern), not a one-line fix — hasn't been
   investigated beyond confirming it's real via the audit tool.
+- [ ] **B13 — `start_moving_direction.directions` can be an ARRAY, which
+  `move_direction` can't model at all (found fixing B5).** A patrolling
+  monster picking a random direction from several (`["left", "right"]`,
+  `["up", "down", "left", "right"]`, ...) is real, authored data — confirmed
+  across 7 samples (`maze_3`/`4`'s three monster types, `plateforme_3`,
+  `raycast_2`/`3`/`4`). `move_direction`'s DIRECTION field is a single-value
+  dropdown; every one of these collapses to a single hardcoded direction
+  (0/right) on round-trip, silently narrowing a patrol into a straight line.
+  Not a quick fix — needs a real UI redesign (a checkbox grid, matching the
+  pattern the action-list editor already uses for this exact parameter),
+  not a dropdown tweak.
 
 ## Suggested order
 
@@ -279,11 +321,12 @@ moment they touch a block.
 - [x] **B4** (landed — see above; the two originally-named non-existent
   actions and the `move_direction`-dropdown case were corrected out of
   scope, not fixed).
-1. B5 — its own unit; re-run the tool after.
-2. B6, B7, B8, B9.
-3. B10, B11 (found while fixing B1), B12 (found while fixing B3) — narrower
-   scope than any of the above.
-4. The three deferred LAN-multiplayer events (B3's remainder) — needs
+- [x] **B5** (landed — see above; `param-dropped` fully closed across all
+  98 samples).
+1. B6, B7, B8, B9.
+2. B10, B11 (found while fixing B1), B12 (found while fixing B3), B13
+   (found while fixing B5) — narrower scope than any of the above.
+3. The three deferred LAN-multiplayer events (B3's remainder) — needs
    per-event Blockly blocks, not `event_other`; a reasonable pairing with
    B12 if that turns out to need the same per-extension wiring investigation.
 

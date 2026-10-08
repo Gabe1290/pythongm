@@ -145,6 +145,74 @@ string-concatenation bug if its own X/Y inputs ever lost their `"Number"`
 check -- not done here (not a named B4 case, not confirmed by any sample),
 so `draw_rectangle` is unaffected either way; worth checking together if
 anyone ever extends expression support to it.
+
+## B5 -- Parameters the hand-written blocks don't model are dropped
+
+A grab-bag of ~12 named examples across a dozen actions, almost all with
+the SAME root cause: `translations`, "applies to" `target`/`target_object`,
+colours, `play_sound.loop`, `set_window_caption`'s six fields, etc. are
+real keys in the authored JSON that the corresponding Blockly block simply
+has no field for -- so they vanished the instant an object synced into
+Blockly, even though nothing in the UI ever touched them.
+
+Fixed with ONE generic mechanism, not twelve per-block patches, matching
+the audit's own prescribed "fix direction" exactly: `createActionBlock`
+(LOAD) stashes the full, untouched `params` dict onto the block as
+`block.pygmExtraParams`; both places that build the final `{action,
+parameters}` result on SAVE -- `generateActionCode`'s wrapper
+(`blockly_generators.js`, for every hand-written block) and the dynamic
+`custom_*` block generator's own from-scratch parameter builder
+(`blockly_workspace.html`'s `registerCustomBlocks` monkeypatch, used for
+every action with no hand-written block at all) -- now merge that stash
+back in underneath whatever their own code explicitly produced. A field
+the block DOES model (and the student may have changed) always wins; a
+field it doesn't even know about passes through unchanged.
+
+**The dynamic-block path was the one that actually mattered for most of
+the twelve named examples.** `change_instance`, `set_window_caption`,
+`jump_to_start`, `play_sound.loop`, `test_instance_count.count`, and
+others have NO hand-written Blockly block at all -- they're auto-generated
+from their Python `ActionType` definition the moment `registerCustomBlocks`
+runs, and that generic builder only ever knew about the action's *declared*
+`ActionParameter` list. `change_instance.target`/`target_object` is a
+clean example of why: the action sets `supports_applies_to=True`
+(`events/action_types.py`) but has no `target`/`target_object`
+`ActionParameter` in its own list at all -- "applies to" is handled by a
+wholly separate mechanism the generic UI builder never looked at.
+
+Confirmed via the audit tool: `param-dropped` across the 98 bundled
+samples went from 277 to **zero** in one commit -- every one of B5's named
+examples, plus several more it didn't name (`test_variable`/`set_sprite`/
+`set_variable`'s own target/target_object, `draw_lives.image`/`.relative`,
+...).
+
+**A second, independent bug found investigating the same bullet's own
+`start_moving_direction.directions` example:** `"stop"` is a real sentinel
+the runtime zeroes both speeds for, not "move at 0 degrees" (i.e. right).
+`move_direction`'s generator fell through its degrees `switch` for `dir ===
+'stop'` straight to `default: directionDegrees = 0` -- turning every
+authored "stop" into "move right", a genuine behaviour change confirmed
+across 12 samples. Fixed with an explicit early return for `'stop'`.
+`move_direction`'s SPEED field got the identical B4 treatment (dropped its
+`"Number"` check) for the same reason: `speed: "32/6"` was becoming the
+default `4`.
+
+**New finding, NOT fixed here (logged as B13 in the audit doc):**
+`move_direction`'s DIRECTION field is a single-value dropdown, but
+`start_moving_direction.directions` can legitimately be an ARRAY (a
+patrolling monster picking a random direction from several). Confirmed
+real across 7 samples (`maze_3`/`4`'s three monster types, `plateforme_3`,
+`raycast_2`/`3`/`4`) -- every one collapses to a single hardcoded
+direction (0/right) on round-trip. Needs a real UI redesign (a checkbox
+grid, matching the pattern the action-list editor already uses for the
+same parameter), not a quick fix -- scoped out.
+
+**Known, NOT addressed:** the remaining `start_moving_direction.directions`
+diffs after this fix (`'right' -> 0`, `'up' -> 90`, ...) are a
+representation difference the audit tool's own comparator flags (a JSON
+string vs. the equivalent float), not a behaviour change -- the runtime
+accepts both forms identically. Not chased; same category as B1's own note
+about the bundled samples storing parameters as strings.
 """
 import json
 
@@ -261,7 +329,37 @@ CASES = {
         {"action": "draw_health_bar", "parameters": {"x1": "self.x", "y1": 10, "x2": 110, "y2": 30}}]}},
     "draw_health_bar_numeric_control": {"create": {"actions": [
         {"action": "draw_health_bar", "parameters": {"x1": 10, "y1": 10, "x2": 110, "y2": 30}}]}},
+    # --- B5 ---
+    "show_message_with_translations": {"create": {"actions": [
+        {"action": "show_message", "parameters": {
+            "message": "Hello!", "message_translations": {"fr": "Bonjour !"}}}]}},
+    "move_direction_stop": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": "stop", "speed": "8"}}]}},
+    "move_direction_speed_expression": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": "right", "speed": "32/6"}}]}},
+    "move_direction_numeric_control": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": "up", "speed": 4}}]}},
+    # Dynamic (custom_*) block: change_instance has supports_applies_to=True
+    # (events/action_types.py) but NO target/target_object ActionParameter
+    # in its own list -- a real example of the generic-UI-builder gap B5's
+    # dynamic-block merge fixes.
+    "change_instance_applies_to": {"create": {"actions": [
+        {"action": "change_instance", "parameters": {
+            "object": "obj_enemy", "perform_events": True,
+            "target": "other", "target_object": "obj_trigger"}}]}},
 }
+
+# Minimal real-shaped ActionType definitions for the one dynamic (custom_*)
+# block case above -- mirrors events/action_types.py's own change_instance
+# entry exactly (object + perform_events only; no target/target_object).
+DYNAMIC_BLOCK_DEFS = [
+    {"name": "change_instance", "display_name": "Change Instance",
+     "description": "Transform into different object type", "category": "Instance",
+     "icon": "", "parameters": [
+         {"name": "object", "display_name": "Change Into", "param_type": "object", "default_value": ""},
+         {"name": "perform_events", "display_name": "Perform Events", "param_type": "boolean", "default_value": True},
+     ]},
+]
 
 
 @pytest.fixture(scope="module")
@@ -277,14 +375,15 @@ def round_tripped():
     view = QWebEngineView()
     result = {}
 
-    js = """(function(cases){
+    js = """(function(cases, dynamicDefs){
+        registerCustomBlocks(dynamicDefs);
         var out = {};
         for (var k in cases) {
             loadEventsData(cases[k]);
             out[k] = JSON.parse(generatePythonCode());
         }
         return JSON.stringify(out);
-    })(%s)""" % json.dumps(CASES)
+    })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
 
     def loaded(_ok):
         view.page().runJavaScript(js, done)
@@ -505,3 +604,47 @@ class TestB4ExpressionsInNumberSlots:
         assert params["x1"] == 10 and not isinstance(params["x1"], str)
         assert params["x2"] == 110 and not isinstance(params["x2"], str)
         assert params["y2"] == 30 and not isinstance(params["y2"], str)
+
+
+class TestB5UnmodelledParametersSurviveTheRoundTrip:
+    def test_translations_survive_on_a_hand_written_block(self, round_tripped):
+        """show_message is hand-written (the 'output_message' block) and
+        has no field for message_translations at all -- proves the first
+        half of the generic merge (generateActionCode's own wrapper)."""
+        params = _params(round_tripped, "show_message_with_translations")
+        assert params["message"] == "Hello!"
+        assert params["message_translations"] == {"fr": "Bonjour !"}
+
+    def test_applies_to_target_survives_on_a_dynamic_custom_block(self, round_tripped):
+        """change_instance has NO hand-written block at all -- it's
+        auto-generated by registerCustomBlocks from its ActionType
+        definition, which (matching the real events/action_types.py entry)
+        declares only object/perform_events, nothing about target/
+        target_object. Proves the SECOND half of the generic merge (the
+        registerCustomBlocks monkeypatch's own generic parameter builder),
+        which is the one that actually mattered for most of B5's named
+        examples (change_instance, set_window_caption, jump_to_start, ...)."""
+        params = _params(round_tripped, "change_instance_applies_to")
+        assert params["object"] == "obj_enemy"
+        assert params["perform_events"] is True
+        assert params["target"] == "other"
+        assert params["target_object"] == "obj_trigger"
+
+    def test_move_direction_stop_is_not_turned_into_move_right(self, round_tripped):
+        """The actual B5 bug: 'stop' is a real sentinel the runtime zeroes
+        both speeds for -- falling through the degrees switch to its
+        default silently turned every authored 'stop' into 'move right'."""
+        params = _params(round_tripped, "move_direction_stop")
+        assert params["directions"] == "stop"
+
+    def test_move_direction_speed_expression_survives(self, round_tripped):
+        params = _params(round_tripped, "move_direction_speed_expression")
+        assert params["speed"] == "32/6"
+
+    def test_move_direction_numeric_control_is_unaffected(self, round_tripped):
+        """Regression guard: a plain numeric direction/speed must still
+        round-trip as numbers, unaffected by the 'stop' special-case or the
+        SPEED input's dropped type check."""
+        params = _params(round_tripped, "move_direction_numeric_control")
+        assert params["directions"] == 90  # 'up'
+        assert params["speed"] == 4 and not isinstance(params["speed"], str)

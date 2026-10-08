@@ -127,6 +127,24 @@ function parseScopedVariable(raw) {
 }
 
 function generateActionCode(block) {
+    var result = generateActionCodeInner(block);
+    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: merge back whatever the
+    // LOAD side (createActionBlock, blockly_workspace.html) saw but this
+    // block's own case below never mentions -- translations, an "applies
+    // to" target, a colour, anything the hand-written block simply has no
+    // field for. Keys the case DID explicitly set always win (the merge
+    // order below puts them on top), since those reflect the block's real
+    // current state, not the stale original.
+    if (result && result.parameters && block.pygmExtraParams) {
+        var merged = {};
+        for (var k in block.pygmExtraParams) merged[k] = block.pygmExtraParams[k];
+        for (var k2 in result.parameters) merged[k2] = result.parameters[k2];
+        result.parameters = merged;
+    }
+    return result;
+}
+
+function generateActionCodeInner(block) {
     switch (block.type) {
         case 'move_set_hspeed':
             return {action: 'set_hspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
@@ -137,6 +155,15 @@ function generateActionCode(block) {
         case 'move_direction':
             var dir = block.getFieldValue('DIRECTION');
             var speed = getInputValue(block, 'SPEED', 4);
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: "stop" is a real
+            // sentinel the runtime zeroes both speeds for (not "move at 0
+            // degrees", i.e. right) -- falling through the degrees switch
+            // below silently turned every authored "stop" into "move
+            // right", a real behaviour change, not just a representation
+            // difference.
+            if (dir === 'stop') {
+                return {action: 'start_moving_direction', parameters: {directions: 'stop', speed: speed}};
+            }
             // Convert direction string to numeric degrees for game compatibility
             var directionDegrees;
             switch (dir) {

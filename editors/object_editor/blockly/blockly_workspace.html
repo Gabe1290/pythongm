@@ -929,8 +929,12 @@
 
         Blockly.Blocks['move_direction'] = {
             init: function() {
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: no type check on
+                // SPEED (not "Number") -- see draw_health_bar's identical
+                // note for why: an authored expression ("32/6") must be able
+                // to connect as a text block, which Blockly's Connection.
+                // connect() refuses outright against a "Number" check.
                 this.appendValueInput("SPEED")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('move_direction_prefix', window.BLOCKLY_LANG) || "Move")
                     // "stop" mirrors the runtime's start_moving_direction("stop")
                     // shortcut for zeroing both speeds — without it imported
@@ -2284,6 +2288,18 @@
                 // Set parameters based on action type
                 setBlockParameters(block, blockType, params);
 
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: a parameter the
+                // hand-written block has no field for (translations, an
+                // "applies to" target, a colour, ...) used to vanish
+                // silently the moment an object synced into Blockly, even
+                // though the student never touched it. Remember everything
+                // the JSON actually had; generateActionCode merges it back
+                // in underneath whatever the SAVE-side case explicitly
+                // produces, so a field the block DOES model (and the
+                // student may have changed) always wins over the stale
+                // original.
+                block.pygmExtraParams = Object.assign({}, params);
+
                 block.initSvg();
                 block.render();
 
@@ -3196,6 +3212,21 @@
                     var val = block.getFieldValue(fieldName);
                     params[param.name] = val !== null ? val : (param.default_value || '');
                 }
+            }
+
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: this generic
+            // dynamic-block path builds `params` from ONLY the action's
+            // declared ActionParameter list, same gap as the hand-written
+            // blocks had -- a parameter that exists in the real JSON but
+            // isn't modeled as a real block field (translations, an
+            // "applies to" target, ...) was silently dropped here too.
+            // Same merge as generateActionCode's own wrapper (blockly_
+            // generators.js): declared/modeled fields above always win.
+            if (block.pygmExtraParams) {
+                var mergedDyn = {};
+                for (var ek in block.pygmExtraParams) mergedDyn[ek] = block.pygmExtraParams[ek];
+                for (var dk in params) mergedDyn[dk] = params[dk];
+                params = mergedDyn;
             }
 
             return {action: def.name, parameters: params};
