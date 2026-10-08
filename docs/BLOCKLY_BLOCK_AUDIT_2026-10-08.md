@@ -145,7 +145,7 @@ moment they touch a block.
   classes (same shared fixture as B1/B2 — do not add a second real-page test
   file).
 - [x] **B4 — Expressions in number slots become numbers, landed
-  `<pending>`.** Two of the five originally-named examples (`if_collision`,
+  `d20a4706`.** Two of the five originally-named examples (`if_collision`,
   `draw_sprite`) don't exist anywhere in this codebase, and a third
   (`set_direction_speed`) is really `move_direction`'s fixed 4-way DIRECTION
   dropdown — a B5-shaped "the block can't model this" gap, not fixable by
