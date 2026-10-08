@@ -1,9 +1,10 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete; U0 (the safety net) landed.**
-B1–B9 are still open. The checkboxes below are the resume state; one unit ≈
-one commit with its regression test.
+just placeholders?* Status: **review complete; U0 and B1 landed.** B2–B9 are
+still open, plus two new findings (B10, B11) turned up while fixing B1. The
+checkboxes below are the resume state; one unit ≈ one commit with its
+regression test.
 
 ## How it was checked (re-runnable)
 
@@ -45,11 +46,25 @@ moment they touch a block.
 
 ## Findings, by root cause (highest impact first)
 
-- [ ] **B1 — Typing 0 gives the default instead (CRITICAL, affects new blocks).**
-  `getInputValue` returns `parseFloat(NUM) || defaultValue`
-  (`blockly_generators.js`), so 0 is replaced by the default: *set gravity 0*
-  saves **0.5** (gravity turns on), *set sprite subimage 0 / speed 0* saves -1.
-  Seen in plateforme_1–3, maze_4, treasure. Fix: `isNaN` check, not `||`.
+- [x] **B1 — Typing 0 gives the default instead, landed `<pending-hash>`.**
+  Two independent halves of the same `value || default` anti-pattern, both
+  fixed: `getInputValue` (`blockly_generators.js`, SAVE: blocks -> events) now
+  uses an `isNaN` check instead of `||`. `setBlockParameters`'s
+  `connectNumberBlock`/`connectTextBlock` call sites (`blockly_workspace.html`,
+  LOAD: events -> blocks, 42 + 4 sites) had the identical bug one layer
+  earlier — found only because a real-page test using a native JSON *number*
+  0 for `gravity` still failed after the generator-side fix alone (the 98
+  bundled samples all store parameters as *strings*, where `"0"` is truthy
+  and never triggered this half; a future numeric-JSON producer would).
+  Both now route through a shared `paramOr(value, fallback)` helper that only
+  falls back on `undefined`/`null`/`''`. The audit tool's own 98-sample
+  baseline only moved on the already-known cases (644 → 633; the
+  loader-side fix doesn't show up there since no sample hits it -- see
+  above). Verified against the real page via
+  `tests/test_blockly_zero_value_roundtrip.py` (6 tests, one shared
+  QWebEngineView -- creating more than one per test process segfaults here).
+  Surfaced two new, separate bugs while testing (now B10/B11 below) that are
+  **not** fixed by this change.
 - [ ] **B2 — Conditions lose their condition and nested actions (CRITICAL).**
   - `if_condition`: only the condition types the hand-written block models
     survive; `expression`, `key` and other `condition_type`s are dropped and
@@ -106,6 +121,29 @@ moment they touch a block.
   `blockly_blocks.js`, in no toolbox (Thymio is programmed through its own
   panel); their generators save `{type: …}` rather than `{action: …}`, which
   the runtime's `execute_action` would ignore. Remove or wire up — decide.
+- [ ] **B10 — `set_sprite`'s loader never connects SUBIMAGE/SPEED at all
+  (found fixing B1).** `setBlockParameters`'s `case 'set_sprite':` only does
+  `block.setFieldValue(params.sprite, 'SPRITE')` — no `connectNumberBlock`
+  call for either input, unlike every sibling case. Unlike B1 this isn't
+  value-specific: **every** authored `subimage`/`speed`, zero or not, is
+  lost on load (falls through to `getInputValue`'s final `return
+  defaultValue`, i.e. -1/-1) the moment the object's events sync into
+  Blockly with no saved workspace XML. Fix: add the two missing
+  `connectNumberBlock('SUBIMAGE', paramOr(params.subimage, -1))` /
+  `('SPEED', paramOr(params.speed, -1))` calls.
+- [ ] **B11 — `move_free` has no `actionToBlockType` entry (found fixing
+  B1).** The generator's `case 'move_free':` (free-direction movement, not
+  the 4-way `move_direction`/`start_moving_direction` block) emits
+  `{action: 'move_free', ...}` on save, but `actionToBlockType` — the
+  loader's action-name → block-type lookup — has no `'move_free'` key, so
+  an object authoring `move_free` (action list, GMK import, a sample) gets
+  **zero** blocks for that action the moment it's loaded into Blockly:
+  confirmed empirically, `loadEventsData` on a `move_free` action produces
+  an empty `actions` list, not even a fallback block. Same failure shape as
+  B3 (an action/event Blockly can't represent gets silently deleted) but
+  this one is self-inflicted — the generator and the loader disagree about
+  whether this block exists at all. Fix: add
+  `'move_free': 'move_free'` to `actionToBlockType`.
 
 ## Suggested order
 
@@ -127,10 +165,11 @@ moment they touch a block.
   objects that already have a saved `blockly_workspace` XML (that path is
   `load_workspace_xml`, not `load_events_data` — those blocks are already the
   source of truth) — only the "events authored outside Blockly, about to be
-  synced in for the first time" case B0 through B9 are about.
-1. B1 (one-line root cause, affects new work).
-2. B2, B3, B4, B5 — each its own unit; re-run the tool after each.
-3. B6, B7, B8, B9.
+  synced in for the first time" case B1 through B9 are about.
+- [x] **B1** (landed — see above).
+1. B2, B3, B4, B5 — each its own unit; re-run the tool after each.
+2. B6, B7, B8, B9.
+3. B10, B11 (found while fixing B1, narrower scope than any of the above).
 
 Each fix: regression test (a headless-page test like the harness, or the tool
 in CI), full suite green, commit + push, flip the checkbox with the hash.

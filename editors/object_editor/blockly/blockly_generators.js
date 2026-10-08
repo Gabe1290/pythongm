@@ -554,9 +554,20 @@ function getInputValue(block, inputName, defaultValue) {
     var input = block.getInputTargetBlock(inputName);
     if (input) {
         if (input.type === 'math_number') {
-            return parseFloat(input.getFieldValue('NUM')) || defaultValue;
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B1: `|| defaultValue`
+            // treats 0 (and NaN/empty) alike, so typing 0 saved the block's
+            // DEFAULT instead -- "set gravity 0" silently saved 0.5 (gravity
+            // turned ON), "set sprite subimage 0" saved -1. Only fall back
+            // to defaultValue when the field genuinely isn't a number.
+            var num = parseFloat(input.getFieldValue('NUM'));
+            return isNaN(num) ? defaultValue : num;
         } else if (input.type === 'text') {
-            return input.getFieldValue('TEXT') || defaultValue;
+            // Same pattern as above, applied to the empty string -- no
+            // currently-registered caller passes a non-'' default for a
+            // text field, so this has no observable effect yet, but it's
+            // the identical bug shape and a future caller would hit it.
+            var text = input.getFieldValue('TEXT');
+            return (text === null || text === undefined) ? defaultValue : text;
         } else if (input.type === 'value_x') {
             return 'self.x';
         } else if (input.type === 'value_y') {
