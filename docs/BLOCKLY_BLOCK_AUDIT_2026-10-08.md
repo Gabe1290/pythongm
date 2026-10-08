@@ -1,11 +1,12 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete; U0, B1, B2 (partial) landed.**
-B3–B9 are still open, plus two new findings (B10, B11) turned up while fixing
-B1, and B2 itself only closes 3 of its 4 named cases (see B2's own notes).
-The checkboxes below are the resume state; one unit ≈ one commit with its
-regression test.
+just placeholders?* Status: **review complete; U0, B1, B2 (partial), B3
+(partial) landed.** B4–B9 are still open, plus three new findings (B10, B11,
+B12) turned up while fixing B1/B3, B2 itself only closes 3 of its 4 named
+cases (see B2's own notes), and B3 leaves the three LAN-multiplayer events
+open (see B3's own notes). The checkboxes below are the resume state; one
+unit ≈ one commit with its regression test.
 
 ## How it was checked (re-runnable)
 
@@ -23,7 +24,13 @@ and the project asset lists pushed exactly as `BlocklyWidget` does.
 3. **Every sample object (98 in `samples/*/objects/`)**: real events loaded into
    Blockly and saved straight back, diffed. Re-run with
    `QT_QPA_PLATFORM=offscreen python3 tools/audit_blockly_roundtrip.py`
-   (2026-10-08 baseline: **644 differences**; target 0).
+   (2026-10-08 baseline: **644 differences**; target 0). *The "644 → 633 → 615"
+   chain recorded in U0/B1/B2's own notes below went stale sometime after B2 —
+   re-measured directly against pre-refactor HEAD before starting B3 and the
+   real number by then was **598**, not 615 (more samples/objects had landed
+   in between on another machine; this doc's own baseline wasn't re-verified
+   each time). Post-B3: **596** (see B3's own notes for why the headline count
+   barely moved despite fixing 37 event-drops — it's not a regression).*
 
 Why it matters: `ObjectEditor.on_blockly_events_modified`
 (`editors/object_editor/object_editor_main.py`) **replaces the object's events
@@ -105,14 +112,37 @@ moment they touch a block.
     `tests/test_blockly_block_audit_roundtrip.py`'s `TestB2*` classes (one
     shared `QWebEngineView` fixture with B1's tests — **do not add a
     second real-page test file**; see that module's docstring).
-- [ ] **B3 — Events with no Blockly block are deleted (HIGH).** No block exists
-  for `game_start`, `no_more_lives`, `no_more_health`, `outside_room`,
-  `end_step`, `animation_end`, `draw_gui`, `player_joined`,
-  `network_game_started`, `network_message`, `keyboard_release/anykey`, or a
-  key the drop-down lacks (`shift`). They disappear on the first Blockly edit
-  (12 samples). `event_other` — listed `"implemented": True` in
-  `BLOCK_REGISTRY` and enabled in the **beginner** preset for Breakout's
-  game-over — **does not exist as a block at all.**
+- [x] **B3 — Events with no Blockly block are deleted (partial), landed
+  `<pending>`.** Added the missing `event_other` block (a single `EVENT_NAME`
+  dropdown; matches `BLOCK_REGISTRY`'s pre-existing but previously-false
+  `"implemented": True` claim) and routed `game_start`, `game_end`,
+  `room_start`, `room_end`, `begin_step`, `end_step`, `draw_gui`,
+  `outside_room`, `intersect_boundary`, `no_more_lives`, `no_more_health`,
+  `animation_end` through it (`createEventBlock` LOAD side, `getEventType`
+  SAVE side). Separately, `createEventBlock`'s keyboard dispatch checked bare
+  `key === 'anykey'/'nokey'` **before** checking whether the event was a
+  press/release variant, so `keyboard_release_anykey` collapsed into the
+  always-held, no-KEY-field `event_keyboard_anykey` block — fixed by checking
+  press/release first, and added `"anykey"`/`"nokey"`/`"shift"` to the KEY
+  dropdown's option list (`event_keyboard_press`/`_release` already had the
+  field; it just had no matching option, so even correct dispatch ordering
+  would have silently reset to the dropdown's first entry).
+  **Remaining, not fixed:** `player_joined`, `network_game_started`,
+  `network_message` — the LAN multiplayer extension's own events, which need
+  per-event blocks following Thymio's convention
+  (`PLUGIN_EVENT_BLOCKLY_MAP`), not `event_other` (core-only). A natural
+  follow-up unit, same shape as B2's deferred `test_expression`/
+  `if_collision_at`.
+  Audit tool's 98-sample baseline: 598 → 596 (`event-dropped` 44 → 7, all
+  three remaining are the multiplayer events above). The headline total
+  barely moved despite fixing 37 event-drops because events that previously
+  vanished *entirely* now load far enough to reveal that several of their own
+  nested actions have no Blockly representation either — see B12 below; not
+  a regression, confirmed via a direct pre/post-fix comparison, not just the
+  doc's own prior (and by this point stale) numbers. Verified against the
+  real page via `tests/test_blockly_block_audit_roundtrip.py`'s `TestB3*`
+  classes (same shared fixture as B1/B2 — do not add a second real-page test
+  file).
 - [ ] **B4 — Expressions in number slots become numbers (HIGH).** The loader
   puts a non-numeric value into a `math_number`, so `direction+90` → 0,
   `32/6` → 4, `8*other.hspeed` → 0 (`set_direction_speed`,
@@ -170,6 +200,22 @@ moment they touch a block.
   this one is self-inflicted — the generator and the loader disagree about
   whether this block exists at all. Fix: add
   `'move_free': 'move_free'` to `actionToBlockType`.
+- [ ] **B12 — Several extension actions have no Blockly block at all (found
+  fixing B3).** Invisible before B3 because the events containing them
+  (`game_start`, `keyboard_press/shift`, ...) were dropped *entirely*; B3
+  made them load far enough to reveal the gap underneath. Confirmed via the
+  audit tool: `action-lost` went 32 → 36 after B3, all four new entries
+  inside previously-dropped events. Affects at least: Block World's
+  `move_and_collide`, `set_look_pitch`, `select_hotbar_slot`, `place_block`,
+  `break_block`, `load_block_world`, `draw_block_world_hud`; LAN
+  multiplayer's `host_game`, `join_game`, `network_spawn`, `set_shared_var`,
+  `send_network_message` — but several of these were *already* `action-lost`
+  before B3 too (inside events that DID load, e.g. `keyboard_press/h` for
+  `host_game`), so this isn't purely a B3 side-effect; the extension-action
+  Blockly coverage gap is real and pre-existing, just undercounted. Scope:
+  likely needs each extension's own `actionToBlockType`-equivalent wiring
+  (mirroring Thymio's pattern), not a one-line fix — hasn't been
+  investigated beyond confirming it's real via the audit tool.
 
 ## Suggested order
 
@@ -195,11 +241,16 @@ moment they touch a block.
 - [x] **B1** (landed — see above).
 - [x] **B2** (landed, partial — see above; `test_expression` and
   `if_collision_at` still have no block at all and remain open).
-1. B3, B4, B5 — each its own unit; re-run the tool after each. B3 is the
-   natural next step for `test_expression`/`if_collision_at` since it's
-   already about "events/actions with no matching block".
+- [x] **B3** (landed, partial — see above; `player_joined`/
+  `network_game_started`/`network_message` still have no block and remain
+  open).
+1. B4, B5 — each its own unit; re-run the tool after each.
 2. B6, B7, B8, B9.
-3. B10, B11 (found while fixing B1, narrower scope than any of the above).
+3. B10, B11 (found while fixing B1), B12 (found while fixing B3) — narrower
+   scope than any of the above.
+4. The three deferred LAN-multiplayer events (B3's remainder) — needs
+   per-event Blockly blocks, not `event_other`; a reasonable pairing with
+   B12 if that turns out to need the same per-extension wiring investigation.
 
 Each fix: regression test (a headless-page test like the harness, or the tool
 in CI), full suite green, commit + push, flip the checkbox with the hash.

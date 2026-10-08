@@ -57,6 +57,9 @@ function getEventType(block) {
         case 'event_keyboard_release': return {event: 'keyboard_release', subtype: block.getFieldValue('KEY')};
         case 'event_mouse': return {event: 'mouse_' + block.getFieldValue('BUTTON')};
         case 'event_collision': return {event: 'collision_with_' + block.getFieldValue('OBJECT')};
+        // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: the EVENT_NAME dropdown
+        // value IS the real event name -- no lookup table to keep in sync.
+        case 'event_other': return {event: block.getFieldValue('EVENT_NAME')};
         // Thymio events
         case 'event_thymio_button_forward': return {event: 'thymio_button_forward'};
         case 'event_thymio_button_backward': return {event: 'thymio_button_backward'};

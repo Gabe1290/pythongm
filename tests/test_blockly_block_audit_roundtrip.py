@@ -49,6 +49,46 @@ other condition_type (expression, key, ...) now preserves the nested
 actions, but the condition itself reverts to instance_count. test_expression
 and if_collision_at have no hand-written block at all and are untouched by
 this fix (see the audit doc).
+
+## B3 (partial) -- Events with no Blockly block are deleted
+
+Two independent gaps, both in blockly_workspace.html's createEventBlock
+(LOAD: events -> blocks):
+
+- Nine events (game_start, game_end, room_start, room_end, begin_step,
+  end_step, draw_gui, outside_room, intersect_boundary, no_more_lives,
+  no_more_health, animation_end) had NO block at all -- `event_other`
+  (config/blockly_config.py's BLOCK_REGISTRY already claimed it existed,
+  "implemented": True) was never actually defined. The whole event, and
+  everything nested inside it, vanished on the first Blockly edit. Fixed by
+  adding the block (a single EVENT_NAME dropdown) and routing all twelve
+  through it.
+- The keyboard dispatch checked `key === 'anykey'`/`'nokey'` BEFORE checking
+  whether the event was a press/release variant, so `keyboard_release_anykey`
+  collapsed into the always-held, no-KEY-field `event_keyboard_anykey` block
+  -- silently losing the "release" half. Fixed by checking press/release
+  first; `event_keyboard_press`/`_release` already have a KEY dropdown, it
+  just didn't offer "anykey"/"nokey"/"shift" as values (so even a
+  correctly-ordered dispatch would have silently reset to the dropdown's
+  first option) -- added all three.
+
+**Not fixed, deliberately deferred (still event-dropped):** `player_joined`,
+`network_game_started`, `network_message` -- the LAN multiplayer extension's
+own events, which need their own blocks following Thymio's per-event-block
+convention (`extensions/thymio/__init__.py`'s `PLUGIN_EVENT_BLOCKLY_MAP`),
+not `event_other` (that's for core-only events). Scoped out as its own
+follow-up unit, same shape as B2's deferred `test_expression`/
+`if_collision_at`.
+
+**New finding surfaced by this fix, not fixed here (logged as B12 in the
+audit doc):** events that previously vanished ENTIRELY now load far enough
+to reveal that several of their OWN nested actions have no Blockly
+representation either (block_world's `move_and_collide`/`place_block`/
+`load_block_world`/etc., multiplayer_lan's `host_game`/`network_spawn`/etc.)
+-- these were already broken before this fix, just invisible because the
+whole containing event was dropped first. Confirmed via the audit tool
+itself (`action-lost` 32 -> 36, matching exactly the handful of
+now-reachable extension actions; `event-dropped` 44 -> 7).
 """
 import json
 
@@ -110,6 +150,48 @@ CASES = {
         {"action": "if_previous_room_exists", "parameters": {
             "then_actions": [{"action": "previous_room", "parameters": {}}],
             "else_actions": [{"action": "restart_room", "parameters": {}}]}}]}},
+    # --- B3: the twelve events routed through event_other ---
+    "game_start_event": {"game_start": {"actions": [
+        {"action": "set_lives", "parameters": {"value": 3, "relative": False}}]}},
+    "game_end_event": {"game_end": {"actions": [
+        {"action": "restart_room", "parameters": {}}]}},
+    "room_start_event": {"room_start": {"actions": [
+        {"action": "restart_room", "parameters": {}}]}},
+    "room_end_event": {"room_end": {"actions": [
+        {"action": "restart_room", "parameters": {}}]}},
+    "begin_step_event": {"begin_step": {"actions": [
+        {"action": "set_vspeed", "parameters": {"value": 0}}]}},
+    "end_step_event": {"end_step": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": 0}}]}},
+    "draw_gui_event": {"draw_gui": {"actions": [
+        {"action": "draw_score", "parameters": {"x": 10, "y": 10, "caption": "Score:"}}]}},
+    "outside_room_event": {"outside_room": {"actions": [
+        {"action": "destroy_instance", "parameters": {"target": "self"}}]}},
+    "intersect_boundary_event": {"intersect_boundary": {"actions": [
+        {"action": "destroy_instance", "parameters": {"target": "self"}}]}},
+    "no_more_lives_event": {"no_more_lives": {"actions": [
+        {"action": "restart_room", "parameters": {}}]}},
+    "no_more_health_event": {"no_more_health": {"actions": [
+        {"action": "set_health", "parameters": {"value": 100, "relative": False}}]}},
+    "animation_end_event": {"animation_end": {"actions": [
+        {"action": "destroy_instance", "parameters": {"target": "self"}}]}},
+    # --- B3: keyboard press/release anykey/nokey/shift ---
+    "keyboard_press_shift": {"keyboard_press": {"shift": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": 1}}]}}},
+    "keyboard_release_anykey": {"keyboard_release": {"anykey": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": 0}}]}}},
+    "keyboard_press_anykey": {"keyboard_press": {"anykey": {"actions": [
+        {"action": "set_vspeed", "parameters": {"value": 1}}]}}},
+    "keyboard_release_nokey": {"keyboard_release": {"nokey": {"actions": [
+        {"action": "set_vspeed", "parameters": {"value": 0}}]}}},
+    # Regression guard: the always-held variants (no KEY field at all) must
+    # still produce the dedicated no-field block, not a KEY='anykey' one --
+    # press/release must be checked first, but held-anykey/nokey must still
+    # resolve to event_keyboard_anykey/nokey, not event_keyboard_held.
+    "keyboard_held_anykey_control": {"keyboard": {"anykey": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": 2}}]}}},
+    "keyboard_held_nokey_control": {"keyboard": {"nokey": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": 0}}]}}},
 }
 
 
@@ -159,6 +241,27 @@ def _action(round_tripped, label):
 
 def _params(round_tripped, label):
     return _action(round_tripped, label)["parameters"]
+
+
+def _event_actions(round_tripped, label, event_name):
+    """The flat ``{event_name: {"actions": [...]}}`` shape the twelve
+    event_other-routed events use."""
+    events = round_tripped[label]
+    assert event_name in events, (
+        f"{label}: event {event_name!r} was dropped entirely; got {list(events)!r}")
+    return events[event_name]["actions"]
+
+
+def _nested_key_actions(round_tripped, label, event_name, key):
+    """The nested ``{event_name: {key: {"actions": [...]}}}`` shape keyboard
+    press/release/held events use."""
+    events = round_tripped[label]
+    assert event_name in events, (
+        f"{label}: event {event_name!r} was dropped entirely; got {list(events)!r}")
+    sub = events[event_name]
+    assert key in sub, (
+        f"{label}: key {key!r} under {event_name!r} was dropped; got {list(sub)!r}")
+    return sub[key]["actions"]
 
 
 class TestB1ZeroValuesSurviveTheRoundTrip:
@@ -232,3 +335,58 @@ class TestB2ConditionsPreserveNestedActions:
         params = _params(round_tripped, "if_previous_room_exists_with_else")
         assert params["then_actions"] == [{"action": "previous_room", "parameters": {}}]
         assert params["else_actions"] == [{"action": "restart_room", "parameters": {}}]
+
+
+class TestB3EventsWithNoBlockRoundTrip:
+    """The twelve events now routed through the new event_other block."""
+
+    @pytest.mark.parametrize("label,event_name", [
+        ("game_start_event", "game_start"),
+        ("game_end_event", "game_end"),
+        ("room_start_event", "room_start"),
+        ("room_end_event", "room_end"),
+        ("begin_step_event", "begin_step"),
+        ("end_step_event", "end_step"),
+        ("draw_gui_event", "draw_gui"),
+        ("outside_room_event", "outside_room"),
+        ("intersect_boundary_event", "intersect_boundary"),
+        ("no_more_lives_event", "no_more_lives"),
+        ("no_more_health_event", "no_more_health"),
+        ("animation_end_event", "animation_end"),
+    ])
+    def test_event_survives_the_round_trip(self, round_tripped, label, event_name):
+        actions = _event_actions(round_tripped, label, event_name)
+        assert len(actions) == 1, f"{label}: expected 1 action, got {actions!r}"
+
+
+class TestB3KeyboardAnykeyNokeyShift:
+    def test_press_shift_is_not_reset_to_the_dropdowns_first_option(self, round_tripped):
+        actions = _nested_key_actions(round_tripped, "keyboard_press_shift", "keyboard_press", "shift")
+        assert len(actions) == 1
+
+    def test_release_anykey_is_not_collapsed_into_the_held_block(self, round_tripped):
+        """The actual B3 bug: keyboard_release_anykey previously matched the
+        bare 'anykey' check before the '_release_' check, silently becoming
+        the always-held event_keyboard_anykey block (which has no KEY field,
+        so it can't distinguish press/release/held at all)."""
+        actions = _nested_key_actions(round_tripped, "keyboard_release_anykey", "keyboard_release", "anykey")
+        assert len(actions) == 1
+
+    def test_press_anykey_round_trips(self, round_tripped):
+        actions = _nested_key_actions(round_tripped, "keyboard_press_anykey", "keyboard_press", "anykey")
+        assert len(actions) == 1
+
+    def test_release_nokey_round_trips(self, round_tripped):
+        actions = _nested_key_actions(round_tripped, "keyboard_release_nokey", "keyboard_release", "nokey")
+        assert len(actions) == 1
+
+    def test_held_anykey_control_still_uses_the_dedicated_no_field_block(self, round_tripped):
+        """Regression guard for the dispatch reorder: a bare (always-held)
+        anykey/nokey event must keep resolving to event_keyboard_anykey/
+        nokey, not get swept into event_keyboard_held by the reorder."""
+        actions = _nested_key_actions(round_tripped, "keyboard_held_anykey_control", "keyboard", "anykey")
+        assert len(actions) == 1
+
+    def test_held_nokey_control_still_uses_the_dedicated_no_field_block(self, round_tripped):
+        actions = _nested_key_actions(round_tripped, "keyboard_held_nokey_control", "keyboard", "nokey")
+        assert len(actions) == 1

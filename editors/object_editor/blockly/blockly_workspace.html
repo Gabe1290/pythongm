@@ -212,6 +212,9 @@
             <block type="event_alarm">
                 <field name="ALARM_NUM">0</field>
             </block>
+            <block type="event_other">
+                <field name="EVENT_NAME">game_start</field>
+            </block>
         </category>
 
         <!-- Movement Category -->
@@ -743,6 +746,14 @@
             ["Tab", "tab"],
             ["Backspace", "backspace"],
             ["Delete", "delete"],
+            // Sentinel keys (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3): a
+            // press/release event can target "any key" or a bare "shift" --
+            // distinct from the always-held event_keyboard_anykey/nokey
+            // blocks, which have no KEY field at all. Without these, the
+            // field silently resets to the dropdown's first option on load.
+            ["Any Key", "anykey"],
+            ["No Key", "nokey"],
+            ["Shift", "shift"],
             // Modifier keys
             ["Left Shift", "lshift"],
             ["Right Shift", "rshift"],
@@ -1452,6 +1463,39 @@
             }
         };
 
+        // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: a single catch-all block
+        // for every event with no dedicated block of its own -- matches
+        // config/blockly_config.py's BLOCK_REGISTRY ("event_other", "Other
+        // Events") and events/event_types.py's EVENT_TO_BLOCKLY_MAP, which
+        // already routed several of these events here; the block itself just
+        // never existed. The dropdown's values are the literal event names
+        // (createEventBlock/getEventType pass the field value straight
+        // through -- no name-to-name translation table to keep in sync).
+        Blockly.Blocks['event_other'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('event_other_prefix', window.BLOCKLY_LANG) || "Other event:")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["Game Start", "game_start"],
+                        ["Game End", "game_end"],
+                        ["Room Start", "room_start"],
+                        ["Room End", "room_end"],
+                        ["Begin Step", "begin_step"],
+                        ["End Step", "end_step"],
+                        ["Draw GUI", "draw_gui"],
+                        ["Outside Room", "outside_room"],
+                        ["Intersect Boundary", "intersect_boundary"],
+                        ["No More Lives", "no_more_lives"],
+                        ["No More Health", "no_more_health"],
+                        ["Animation End", "animation_end"]
+                    ]), "EVENT_NAME");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#CC8800");
+                this.setTooltip(getBlockMessage('event_other_tooltip', window.BLOCKLY_LANG) || "Runs on an event with no dedicated block -- pick which one from the dropdown");
+            }
+        };
+
         // ============ TIMING BLOCKS ============
         Blockly.Blocks['set_alarm'] = {
             init: function() {
@@ -1902,6 +1946,17 @@
             'thymio_message_received': 'event_thymio_message_received'
         };
 
+        // Event names with no dedicated block -- routed to the single
+        // event_other catch-all (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3).
+        // Keep in sync with event_other's EVENT_NAME dropdown options above
+        // and getEventType's 'event_other' case (blockly_generators.js).
+        var OTHER_EVENT_NAMES = [
+            'game_start', 'game_end', 'room_start', 'room_end',
+            'begin_step', 'end_step', 'draw_gui',
+            'outside_room', 'intersect_boundary',
+            'no_more_lives', 'no_more_health', 'animation_end'
+        ];
+
         function loadEventsData(eventsJson) {
             // Parse JSON if string
             var events = typeof eventsJson === 'string' ? JSON.parse(eventsJson) : eventsJson;
@@ -2096,16 +2151,23 @@
                 // Normalize key to lowercase to match Blockly dropdown values
                 key = key.toLowerCase();
 
-                if (key === 'nokey') {
-                    blockType = 'event_keyboard_nokey';
-                } else if (key === 'anykey') {
-                    blockType = 'event_keyboard_anykey';
-                } else if (eventName.includes('_release_')) {
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: press/release
+                // must be checked BEFORE the bare nokey/anykey check below --
+                // keyboard_release_anykey previously matched `key ===
+                // 'anykey'` first and collapsed into the always-held,
+                // no-KEY-field event_keyboard_anykey block, silently losing
+                // the "release" half. event_keyboard_nokey/_anykey (no KEY
+                // field) only apply to the bare held form.
+                if (eventName.includes('_release_')) {
                     blockType = 'event_keyboard_release';
                     fields['KEY'] = key;
                 } else if (eventName.includes('_press_')) {
                     blockType = 'event_keyboard_press';
                     fields['KEY'] = key;
+                } else if (key === 'nokey') {
+                    blockType = 'event_keyboard_nokey';
+                } else if (key === 'anykey') {
+                    blockType = 'event_keyboard_anykey';
                 } else {
                     blockType = 'event_keyboard_held';
                     fields['KEY'] = key;
@@ -2117,6 +2179,12 @@
             } else if (eventName.startsWith('collision_with_')) {
                 blockType = 'event_collision';
                 fields['OBJECT'] = eventName.replace('collision_with_', '');
+            } else if (OTHER_EVENT_NAMES.indexOf(eventName) !== -1) {
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: every event with
+                // no dedicated block of its own goes through the single
+                // event_other catch-all, keyed by its own event name.
+                blockType = 'event_other';
+                fields['EVENT_NAME'] = eventName;
             } else if (eventName.startsWith('thymio_')) {
                 // Thymio events - simple mapping from event name to block type
                 blockType = eventToBlockType[eventName];
@@ -2710,7 +2778,8 @@
                         // project doesn't have it. Lets the dropdown pick
                         // its first available option.
                         '<block type="event_collision"></block>',
-                        '<block type="event_alarm"><field name="ALARM_NUM">0</field></block>'
+                        '<block type="event_alarm"><field name="ALARM_NUM">0</field></block>',
+                        '<block type="event_other"><field name="EVENT_NAME">game_start</field></block>'
                     ]
                 },
                 'Movement': {
