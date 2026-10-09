@@ -239,7 +239,7 @@ moment they touch a block.
   (same shared fixture as B1–B4, now also registering a dynamic block
   so the custom_* merge path is exercised directly, not just via the
   audit tool).
-- [ ] **B6 — Value blocks silently become the default (MEDIUM).** `getInputValue`
+- [x] **B6 — Value blocks silently become the default (MEDIUM) — closed 2026-10-10 via B6a–B6d below.** `getInputValue`
   only knows `math_number`, `text`, `value_x/y/score/lives/health`,
   `math_random_int`. In the toolbox but unhandled: `value_hspeed`,
   `value_vspeed`, `value_mouse_x`, `value_mouse_y`, `math_arithmetic`,
@@ -313,8 +313,13 @@ moment they touch a block.
     block via `getInputValue` — the syntax `_eval_bool_expression`
     evaluates, HTML5 already converts (`and`/`or`/`not`/`True`/`False`),
     and Kivy emits as Python. Loader: `actionToBlockType` entry + DO/ELSE.
-  - [ ] **B6d — re-run the audit tool and the full Blockly suite; check
-    a sample exports to HTML5 and Kivy with each new spelling.**
+  - [x] **B6d — landed (commit "test(blockly): B6d", 2026-10-10).**
+    A real Kivy export (maze_1 plus a step event using every B6a/B6b/B6c
+    spelling) compiles and contains the expected calls
+    (`test_kivy_export_with_every_new_spelling_compiles`; fails against the
+    pre-B6b Kivy files). HTML5 copies actions verbatim, and its two
+    evaluators were checked with the real engine.js in B6a–B6c. Audit tool
+    final: 102 differences, action-lost 0. Full suite green.
 - [ ] **B7 — `move_towards` is a placeholder (MEDIUM).** Block defined,
   `BLOCK_REGISTRY` says implemented, **no generator** — saves nothing. Hidden
   in beginner/intermediate, visible in the full preset.

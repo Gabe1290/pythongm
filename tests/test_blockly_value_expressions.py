@@ -200,3 +200,50 @@ def test_html5_treats_test_expression_as_a_nested_conditional():
     block = js[js.index("static isConditionalAction(actionType)"):]
     block = block[:block.index("}")]
     assert "actionType === 'test_expression'" in block
+
+
+# --- B6d: one real Kivy export carrying every new spelling must compile.
+def test_kivy_export_with_every_new_spelling_compiles(tmp_path):
+    """End to end rather than per function: maze_1 plus a step event using
+    every spelling B6a/B6b/B6c introduced, through the real KivyExporter,
+    and every generated .py file compiled."""
+    import json
+    import py_compile
+    import shutil
+    from export.Kivy.kivy_exporter import KivyExporter
+    from utils.project_file_merge import merge_object_file  # same merge the IDE uses
+
+    sample = tmp_path / "maze_1"
+    shutil.copytree(REPO / "samples" / "maze_1", sample)
+    data = json.loads((sample / "project.json").read_text(encoding="utf-8"))
+    for name, obj in data["assets"]["objects"].items():
+        side = sample / "objects" / f"{name}.json"
+        if side.exists():
+            merge_object_file(obj, json.loads(side.read_text(encoding="utf-8")))
+    for name in list(data["assets"]["rooms"]):
+        side = sample / "rooms" / f"{name}.json"
+        if side.exists():
+            data["assets"]["rooms"][name] = json.loads(side.read_text(encoding="utf-8"))
+
+    target = next(iter(data["assets"]["objects"].values()))
+    target.setdefault("events", {})["step"] = {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": "(score * (self.x + 2))"}},
+        {"action": "set_vspeed", "parameters": {"value": "sqrt(self.mouse_x)"}},
+        {"action": "jump_to_position", "parameters": {"x": "(10 ** (2))", "y": "ln(lives)"}},
+        {"action": "test_expression", "parameters": {
+            "expression": "((score > 10) and (not (lives == 0)))",
+            "then_actions": [{"action": "set_hspeed", "parameters": {"value": "exp(0)"}}],
+            "else_actions": [{"action": "set_hspeed", "parameters": {"value": "log10(100)"}}]}},
+    ]}
+
+    out = tmp_path / "export"
+    assert KivyExporter(data, sample, out).export()
+    py_files = list(out.rglob("*.py"))
+    assert py_files
+    generated = ""
+    for p in py_files:
+        py_compile.compile(str(p), doraise=True)
+        generated += p.read_text(encoding="utf-8")
+    for needle in ("self.sqrt(self.mouse_x)", "self.ln(", "self.exp(0)",
+                   "self.log10(100)", "get_score()", "def sqrt(self, x)"):
+        assert needle in generated, needle
