@@ -1865,6 +1865,7 @@
             // move_free but the loader had no entry, so the action vanished
             // (or became the generic custom_move_free block) on load.
             'move_free': 'move_free',
+            'move_towards_point': 'move_towards',  // B7
             'snap_to_grid': 'move_snap_to_grid',
             'move_grid': 'grid_move',
             'jump_to_position': 'move_jump_to',
@@ -2433,6 +2434,12 @@
                                      (params.vspeed !== undefined ? params.vspeed :
                                      (params.speed !== undefined ? params.speed : 0));
                     connectNumberBlock('SPEED', vspeedValue);
+                    break;
+
+                case 'move_towards':
+                    connectNumberBlock('X', paramOr(params.x, 0));
+                    connectNumberBlock('Y', paramOr(params.y, 0));
+                    connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 
                 case 'move_free':

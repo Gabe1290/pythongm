@@ -174,6 +174,14 @@ function generateActionCodeInner(block) {
                 default: directionDegrees = 0;
             }
             return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
+        case 'move_towards':
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B7: the block existed with
+            // no generator, so it saved nothing at all.
+            return {action: 'move_towards_point', parameters: {
+                x: getInputValue(block, 'X', 0),
+                y: getInputValue(block, 'Y', 0),
+                speed: getInputValue(block, 'SPEED', 4)
+            }};
         case 'move_free':
             return {action: 'move_free', parameters: {
                 direction: getInputValue(block, 'DIRECTION', 0),

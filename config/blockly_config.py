@@ -225,12 +225,15 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
 # ============================================================================
 
 
-# Actions that used to be in GENERATED_ACTION_NAMES and now have a
-# hand-written block (listed in BLOCK_REGISTRY instead). Every place that
-# enables "all generated actions" also enables these, so a preset or migrated
-# config keeps showing them exactly as before the block was written.
-# test_expression: docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6c.
-PROMOTED_TO_HAND_WRITTEN_BLOCKS: frozenset = frozenset({"test_expression"})
+# Hand-written block types that took over a generated action's block.
+# Every place that enables "all generated actions" also enables these, so a
+# preset or migrated config keeps showing the block exactly as before.
+# (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md)
+# - test_expression (B6c): the action itself moved out of
+#   GENERATED_ACTION_NAMES; block and action share the name.
+# - move_towards (B7): the block for the move_towards_point action, which
+#   stays in GENERATED_ACTION_NAMES (the action-list editor gates on it).
+PROMOTED_TO_HAND_WRITTEN_BLOCKS: frozenset = frozenset({"test_expression", "move_towards"})
 
 @dataclass
 class BlocklyConfig:

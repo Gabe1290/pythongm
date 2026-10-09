@@ -144,3 +144,17 @@ def test_promoting_test_expression_to_a_block_kept_every_preset_showing_it():
     missing = sorted(name for name, cfg in PRESETS.items()
                      if name != "thymio" and "test_expression" not in cfg.enabled_blocks)
     assert missing == []
+
+
+
+def test_every_preset_with_move_towards_point_shows_its_block():
+    """Blockly audit B7: move_towards_point now loads into the hand-written
+    move_towards block (no generated custom block any more), so a preset
+    that enables the action must also enable the block."""
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    missing = sorted(name for name, cfg in PRESETS.items()
+                     if "move_towards_point" in cfg.enabled_blocks
+                     and "move_towards" not in cfg.enabled_blocks)
+    assert missing == []

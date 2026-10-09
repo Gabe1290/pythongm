@@ -280,6 +280,12 @@ blocks (compare, and/or, not, true/false) had nothing to plug into. The new
 "If <condition>" block saves Python-syntax condition text built from them
 (getConditionValue), with DO/ELSE; an authored expression loads as a text
 block. Engine side (desktop/Kivy/HTML5) in test_blockly_value_expressions.py.
+
+## B7 -- move_towards saved nothing
+
+The block existed (and BLOCK_REGISTRY called it implemented) but had no
+generator, so it saved nothing, and move_towards_point actions loaded as
+the generic custom block. It now saves move_towards_point and loads back.
 """
 import json
 
@@ -479,6 +485,11 @@ CASES = {
             "expression": "vspeed > 0 and y - vspeed < other.y+8",
             "then_actions": [{"action": "set_vspeed", "parameters": {"value": "-6"}}],
             "else_actions": [{"action": "set_hspeed", "parameters": {"value": "2"}}]}}]}},
+    # B7 -- move_towards
+    "move_towards_numbers": {"create": {"actions": [
+        {"action": "move_towards_point", "parameters": {"x": "320", "y": "240", "speed": "6"}}]}},
+    "move_towards_expression": {"create": {"actions": [
+        {"action": "move_towards_point", "parameters": {"x": "other.x", "y": "other.y + 16", "speed": 0}}]}},
     "test_expression_flat": {"create": {"actions": [
         {"action": "test_expression", "parameters": {"expression": "score > 3"}},
         {"action": "set_hspeed", "parameters": {"value": "5"}}]}},
@@ -973,3 +984,16 @@ class TestB6cTestExpressionBlock:
         actions = round_tripped["test_expression_flat"]["create"]["actions"]
         assert [a["action"] for a in actions] == ["test_expression", "set_hspeed"]
         assert actions[0]["parameters"]["expression"] == "score > 3"
+
+
+class TestB7MoveTowards:
+    def test_move_towards_point_round_trips(self, round_tripped):
+        action = _action(round_tripped, "move_towards_numbers")
+        assert action["action"] == "move_towards_point"
+        assert action["parameters"] == {"x": 320, "y": 240, "speed": 6}
+
+    def test_expression_target_and_zero_speed_survive(self, round_tripped):
+        params = _params(round_tripped, "move_towards_expression")
+        assert params["x"] == "other.x"
+        assert params["y"] == "other.y + 16"
+        assert params["speed"] == 0

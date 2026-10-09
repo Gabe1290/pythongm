@@ -320,7 +320,16 @@ moment they touch a block.
     pre-B6b Kivy files). HTML5 copies actions verbatim, and its two
     evaluators were checked with the real engine.js in B6a–B6c. Audit tool
     final: 102 differences, action-lost 0. Full suite green.
-- [ ] **B7 — `move_towards` is a placeholder (MEDIUM).** Block defined,
+- [x] **B7 — `move_towards` is a placeholder, landed (commit
+  "fix(blockly): B7", 2026-10-10).** The block now saves the engine's
+  `move_towards_point` action (x, y, speed — an exact fit), and
+  `move_towards_point` loads back into it instead of the generic custom
+  block. Seven presets (intermediate, platformer, grid_rpg, sokoban,
+  testing, code_editor, blockly_editor) enabled the action but not the block
+  name, so `move_towards` joined `PROMOTED_TO_HAND_WRITTEN_BLOCKS` (the
+  action stays in `GENERATED_ACTION_NAMES` for the action-list editor).
+  Tests: `TestB7MoveTowards` + a preset guard; all 3 fail on the old code.
+  Original note: block defined,
   `BLOCK_REGISTRY` says implemented, **no generator** — saves nothing. Hidden
   in beginner/intermediate, visible in the full preset.
 - [ ] **B8 — Preset names that match no block (LOW).** `event_other` (see B3),
