@@ -151,8 +151,20 @@ page without relying on dense instructions.
       all 5 pages render with no error/placeholder branch, for every
       shipped language via the English-root fallback (dedicated French
       pages land in U3).
-- [ ] **U3 — In-app tutorial pages, FR** (translation, not new content) +
-      `Tutorials/fr/index.json`.
+- [x] **U3 — In-app tutorial pages, FR (DONE 2026-10-09).** Full translation
+      of all 5 pages under `Tutorials/fr/15_fruit_fusion/` + `Tutorials/
+      fr/index.json` entry, following the vocabulary already established by
+      Tutorial 9's French pages (closest precedent: `Quand créé`, `Quand
+      dessiner`, `Quand collision avec X`, `Hors de la salle`, `Détruire
+      l'autre/cette instance`, `Définir le score`, `Ajouter au score`,
+      `Touche pressée : Espace`), with a new but consistent `Si X est égal
+      à Y alors` / `Sinon` convention for the merge If/Else (no existing
+      in-app page needed an Else branch to borrow from). Verified: all 5
+      pages render through `TutorialPanel` with no error/placeholder
+      branch (`tests/test_tutorial_panel_i18n_verification.py`, 34/34
+      passed), and every page carries real accented French text (spot
+      checked é/è/ê/à/ç/ù/î/ô counts per file, no stripped-accent
+      offenders found).
 - [ ] **U4 — Student handout + worksheet, EN + FR**, with real screenshots
       captured from the reference project (see the 2026-08-10 CLAUDE.md
       note on offscreen `QWidget.grab()` screenshots for the technique).

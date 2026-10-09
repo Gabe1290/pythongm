@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Première fusion</h1>
+
+    <p>Faisons maintenant tomber des cerises du ciel, et apprenons au panier
+    quoi faire quand l'une d'elles y atterrit.</p>
+
+    <h2>Créer le sprite de la cerise</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouveau sprite nommé <code>spr_fruit_cherry</code></li>
+        </ol>
+        <h3>Option A &mdash; Dessine-le toi-même</h3>
+        <div class="option-box">
+            <ol>
+                <li>Réglez la taille à <strong>20&times;20</strong> et dessinez un petit cercle rouge</li>
+            </ol>
+        </div>
+        <h3>Option B &mdash; Charger le sprite fourni</h3>
+        <div class="option-box">
+            <ol>
+                <li>Importez <code>Tutorials/15_fruit_fusion/assets/spr_fruit_cherry.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>Créer l'objet cerise</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouvel objet nommé <code>obj_fruit_cherry</code></li>
+            <li>Réglez le sprite sur <code>spr_fruit_cherry</code></li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong> et ajoutez ces deux événements :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-move block-indent">Définir vitesse verticale à <span class="block-num">3</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Hors de la salle</span><br>
+            <span class="block block-instance block-indent">Détruire cette instance</span>
+        </div>
+        <p>Le premier événement la fait tomber. Le second la retire
+        discrètement si elle atteint un jour le bas de la salle sans être
+        attrapée &mdash; rien ne s'accumule jamais, et une nouvelle est toujours
+        en route.</p>
+    </div>
+
+    <h2>Créer le générateur de cerises</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouvel objet nommé <code>obj_spawn_cherry</code> &mdash; il n'a
+            <strong>besoin d'aucun sprite</strong>, il est invisible, il sert juste à
+            faire apparaître des cerises</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong> et ajoutez ces deux événements :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">90</span> pas</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Alarme 0</span><br>
+            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_cherry</span> à x : aléatoire, y : <span class="block-num">0</span></span><br>
+            <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">90</span> pas</span>
+        </div>
+        <p>L'alarme se réinitialise elle-même chaque fois qu'elle se déclenche,
+        donc une nouvelle cerise arrive environ toutes les <strong>1,5 secondes</strong>.</p>
+        <ol>
+            <li>Ouvrez <code>room_main</code> et placez une instance de
+            <code>obj_spawn_cherry</code> n'importe où &mdash; elle ne sera pas visible
+            en jouant.</li>
+        </ol>
+    </div>
+
+    <h2>Le panier commence avec une cerise</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>obj_player</code>, double-cliquez sur son champ sprite et
+            changez-le de <code>spr_basket_empty</code> vers un nouveau sprite
+            <code>spr_basket_cherry</code> (Option B : importez
+            <code>Tutorials/15_fruit_fusion/assets/spr_basket_cherry.png</code>)
+            &mdash; un panier avec une cerise dessinée dedans</li>
+        </ol>
+        <p>Dès maintenant, l'image du panier montre toujours ce qu'il tient
+        actuellement. Il commence avec une cerise, c'est pourquoi il n'y a
+        jamais de « panier vide » à gérer.</p>
+    </div>
+
+    <h2>Se souvenir du score et de ce qui est tenu</h2>
+    <div class="step">
+        <ol>
+            <li>Toujours dans l'onglet Blockly de <code>obj_player</code>, ajoutez cet événement :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-score block-indent">Définir le score à <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Définir la variable <span class="block-num">held_level</span> à <span class="block-num">1</span></span>
+        </div>
+        <p><code>held_level</code> est un nombre que nous inventons nous-mêmes :
+        <strong>1</strong> veut dire « tient une cerise », <strong>2</strong> voudra
+        dire « tient une fraise », et ainsi de suite. C'est ainsi que le panier
+        se souvient de ce qu'il tient.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Quand dessiner</span><br>
+            <span class="block block-score block-indent">Dessiner le score à x : <span class="block-num">10</span> y : <span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <h2>Attraper une cerise</h2>
+    <div class="step">
+        <ol>
+            <li>Ajoutez un événement <strong>Collision</strong> pour <code>obj_fruit_cherry</code> :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_fruit_cherry</span><br>
+            <span class="block block-control block-indent">Si <span class="block-num">held_level</span> est égal à <span class="block-num">1</span> alors</span><br>
+            <span class="block block-instance block-indent2">Définir la variable <span class="block-num">held_level</span> à <span class="block-num">2</span></span><br>
+            <span class="block block-score block-indent2">Ajouter au score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent2">Définir le sprite à <span class="block-num">spr_basket_strawberry</span></span><br>
+            <span class="block block-control block-indent">Sinon</span><br>
+            <span class="block block-score block-indent2">Ajouter au score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Détruire l'autre instance</span>
+        </div>
+        <div class="info" style="margin-top: 10px;">
+            <strong>Ce que cela fait :</strong> <code>held_level</code> commence à
+            <strong>1</strong> (une cerise), et une cerise qui tombe est aussi de
+            « niveau 1 » &mdash; ils <strong>correspondent</strong>, donc la branche
+            <em>Si</em> s'exécute : le panier devient niveau 2 (une fraise), vous
+            gagnez <strong>10</strong> points, et l'image du panier change. Si vous
+            attrapez un jour une cerise alors que vous tenez déjà quelque chose de
+            plus gros, la correspondance échoue, donc la branche <em>Sinon</em>
+            s'exécute à la place : juste <strong>1</strong> point, rien d'autre ne
+            change. Dans tous les cas, la cerise attrapée (<em>l'autre</em>
+            instance de la collision &mdash; pas le panier lui-même) disparaît.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Attrapez une cerise qui tombe &rarr; le panier devient une
+            <strong>fraise</strong> et le score bondit de <strong>10</strong></li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter les fraises et fusionner jusqu'à une orange &mdash; c'est exactement la même recette.
+    </div>
+</body>
+</html>

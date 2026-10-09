@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4 : Gagner la partie</h1>
+
+    <p>Encore un fruit, encore une fusion &mdash; et cette fois, fusionner
+    jusqu'au bout fait gagner la partie.</p>
+
+    <h2>Créer le sprite et l'objet de l'orange</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un sprite <code>spr_fruit_orange</code>, 32&times;32, un cercle
+            orange (ou importez <code>Tutorials/15_fruit_fusion/assets/spr_fruit_orange.png</code>)</li>
+            <li>Créez un objet <code>obj_fruit_orange</code> avec ce sprite</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-move block-indent">Définir vitesse verticale à <span class="block-num">3</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Hors de la salle</span><br>
+            <span class="block block-instance block-indent">Détruire cette instance</span>
+        </div>
+    </div>
+
+    <h2>Créer le générateur d'oranges</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un objet <code>obj_spawn_orange</code> (sans sprite)</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">150</span> pas</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Alarme 0</span><br>
+            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_orange</span> à x : aléatoire, y : <span class="block-num">0</span></span><br>
+            <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">150</span> pas</span>
+        </div>
+        <ol>
+            <li>Ouvrez <code>room_main</code> et placez une instance de
+            <code>obj_spawn_orange</code> n'importe où</li>
+        </ol>
+        <p>Il n'y a <strong>pas de pastèque qui tombe du ciel</strong>, ni de
+        sprite ni de générateur pour elle &mdash; une pastèque n'est jamais
+        qu'une chose que votre panier devient, jamais une chose qui tombe du
+        ciel. C'est le but, pas un ingrédient.</p>
+    </div>
+
+    <h2>Construire la salle de victoire</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un objet <code>obj_win_text</code> &mdash; aucun sprite nécessaire</li>
+            <li>Ouvrez son onglet Blockly et ajoutez ces deux événements :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand dessiner</span><br>
+            <span class="block block-draw block-indent">Dessiner texte <span class="block-text">VOUS AVEZ GAGNÉ ! Vous avez fait une pastèque !</span> à x : <span class="block-num">120</span> y : <span class="block-num">220</span></span><br>
+            <span class="block block-draw block-indent">Dessiner texte <span class="block-text">Appuyez sur ESPACE pour rejouer</span> à x : <span class="block-num">190</span> y : <span class="block-num">260</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Touche pressée : Espace</span><br>
+            <span class="block block-game block-indent">Redémarrer le jeu</span>
+        </div>
+        <ol>
+            <li>Créez une nouvelle salle nommée <code>room_win</code></li>
+            <li>Réglez sa couleur d'arrière-plan sur une couleur vive et festive
+            (vert clair ou or)</li>
+            <li>Placez une instance de <code>obj_win_text</code> n'importe où dedans</li>
+        </ol>
+    </div>
+
+    <h2>Attraper une orange</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez l'onglet Blockly de <code>obj_player</code> et ajoutez le
+            dernier événement Collision :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_fruit_orange</span><br>
+            <span class="block block-control block-indent">Si <span class="block-num">held_level</span> est égal à <span class="block-num">3</span> alors</span><br>
+            <span class="block block-instance block-indent2">Définir la variable <span class="block-num">held_level</span> à <span class="block-num">4</span></span><br>
+            <span class="block block-score block-indent2">Ajouter au score <span class="block-num">50</span></span><br>
+            <span class="block block-instance block-indent2">Définir le sprite à <span class="block-num">spr_basket_watermelon</span></span><br>
+            <span class="block block-room block-indent2">Aller à la salle <span class="block-text">room_win</span></span><br>
+            <span class="block block-control block-indent">Sinon</span><br>
+            <span class="block block-score block-indent2">Ajouter au score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Détruire l'autre instance</span>
+        </div>
+        <div class="info" style="margin-top: 10px;">
+            <strong>Ce que cela fait :</strong> le même schéma que les deux
+            premières fusions, avec une nouvelle ligne : au moment où la fusion
+            réussit (une orange attrape une orange), <strong>Aller à la salle
+            room_win</strong> s'exécute là, directement dans la branche <em>Si</em>.
+            Il n'y a aucune étape séparée « vérifier si j'ai gagné » ailleurs
+            &mdash; gagner se produit exactement quand la quatrième fusion se produit.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu complet !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Attrapez une cerise &rarr; fraise (+10)</li>
+            <li>Attrapez une fraise &rarr; orange (+20)</li>
+            <li>Attrapez une orange &rarr; <strong>pastèque &mdash; VOUS AVEZ GAGNÉ !</strong> (+50)</li>
+            <li>Appuyez sur <strong>ESPACE</strong> sur l'écran de victoire pour rejouer</li>
+        </ul>
+    </div>
+
+    <h2>Vous avez construit un jeu complet !</h2>
+    <p>Félicitations &mdash; c'est un jeu de fusion complet avec :</p>
+    <ul>
+        <li>Les entrées du joueur (déplacement au clavier)</li>
+        <li>Trois types de collision, chacun géré de la même façon</li>
+        <li>Une variable qui se souvient de ce qui est tenu</li>
+        <li>Un bloc Si / Sinon qui choisit entre deux résultats</li>
+        <li>Le sprite d'un objet qui change pendant que le jeu tourne</li>
+        <li>Un score qui augmente, et un écran de victoire clair</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Essayez ceci ensuite :</strong> faites tomber les fruits plus
+        vite (baissez les nombres des générateurs), donnez au panier un
+        quatrième générateur pour un type de fruit supplémentaire avant la
+        pastèque, ou ajoutez des vies qui diminuent quand vous vous trompez
+        trop souvent de suite &mdash; chaque changement n'est qu'un nombre ou un
+        bloc que vous pouvez modifier et tester.
+    </div>
+</body>
+</html>
