@@ -52,18 +52,26 @@ jobs:
           # -X faulthandler: a 2026-10 run of this exact job (Python 3.10)
           # aborted with "munmap_chunk(): invalid pointer" (SIGABRT) AFTER
           # every test already passed -- i.e. during process teardown, not
-          # inside any test, so --tb=long had nothing to show. faulthandler
-          # installs a SIGABRT handler that dumps the live Python traceback
-          # at the moment of the fault, which is the only way a future
-          # recurrence becomes diagnosable instead of a bare "Aborted
-          # (core dumped)". See tests/conftest.py's
-          # _quit_pygame_at_session_end fixture for the suspected cause
-          # (SDL never explicitly quit) this is paired with.
+          # inside any test, so --tb=long had nothing to show. With
+          # faulthandler enabled, a follow-up run still crashed the same
+          # way but showed "Garbage-collecting" / "<no Python frame>" --
+          # confirms it's inside the interpreter's own final gc.collect(),
+          # not any specific test, and that tests/conftest.py's
+          # _quit_pygame_at_session_end fixture (added for the first
+          # crash) was NOT sufficient on its own.
+          # PYGM_GC_COLLECT_PER_TEST: forces a real gc.collect() after
+          # every test (see tests/conftest.py's _gc_collect_after_every_test)
+          # so that if a specific test is corrupting the heap, the crash
+          # happens right after THAT test instead of generically at exit.
+          # Deliberately only set here, not globally -- this job never
+          # touches QWebEngineView, where the unconditional version of
+          # this fixture was observed to introduce its own flakiness.
           cd tests && python -X faulthandler -m pytest test_config.py test_project_manager.py test_asset_manager.py test_integration.py test_exporters.py test_game_runner.py test_action_executor.py -v --tb=long
         env:
           SDL_AUDIODRIVER: dummy
           SDL_VIDEODRIVER: dummy
           QT_QPA_PLATFORM: offscreen
+          PYGM_GC_COLLECT_PER_TEST: "1"
 
   # ============================================================================
   # Widget Tests (Require Qt and display)

@@ -77,18 +77,49 @@ def _quit_pygame_at_session_end():
     """pygame.init() above has no matching pygame.quit() anywhere in this
     repo (confirmed by grep) -- SDL's subsystems were only ever torn down
     by whatever implicit cleanup runs at interpreter shutdown, not pygame's
-    own documented quit() path. A CI run (`tests.yml`'s unit-tests job,
-    Python 3.10 specifically) has shown a `munmap_chunk(): invalid
-    pointer` / SIGABRT crash *after* every test already passed -- i.e.
-    during process teardown, not any specific test -- which is exactly
-    the shape of bug an uncontrolled SDL subsystem shutdown produces.
-    Calling pygame.quit() explicitly, once, after the whole session is the
-    documented-correct lifecycle and a low-risk, well-justified mitigation
-    even though it could not be reproduced locally (no Python 3.10
-    interpreter available here to confirm the exact fault)."""
+    own documented quit() path. Added as a plausible mitigation for a CI
+    crash (see _gc_collect_after_every_test below) -- CONFIRMED NOT
+    SUFFICIENT on its own: the crash still reproduced on the next CI run
+    with this fixture already in place. Left in anyway since it's still
+    the documented-correct lifecycle and genuinely harmless (only runs
+    after every test has already finished), but it is not, by itself,
+    the fix."""
     yield
     if HAS_PYGAME:
         pygame.quit()
+
+
+@pytest.fixture(autouse=True)
+def _gc_collect_after_every_test():
+    """Diagnostic, not a fix -- and deliberately OPT-IN via
+    PYGM_GC_COLLECT_PER_TEST, not a blanket autouse fixture. A CI run
+    (tests.yml's unit-tests job, Python 3.10) aborts with `munmap_chunk():
+    invalid pointer` (SIGABRT) only after every test in the batch has
+    already passed, with `-X faulthandler` showing nothing more specific
+    than "Garbage-collecting" / "<no Python frame>" -- i.e. some earlier
+    test corrupts the heap, but the crash only surfaces much later,
+    during the interpreter's own final gc.collect() at shutdown, by which
+    point the actual offending test is impossible to identify from the
+    log. Forcing a real gc.collect() after every single test turns
+    "crashes once, generically, at process exit" into "crashes right
+    after the test that actually caused it" -- the specific test name at
+    the point of the abort IS the diagnosis.
+
+    Gated behind the env var because a first attempt at making this
+    autouse-always (no gate) produced one (non-reproducing on 3 immediate
+    retries) spurious error in tests/test_blockly_block_audit_roundtrip.py
+    when run in combination with test_raycast_view.py -- i.e. the
+    unconditional version is itself a plausible source of NEW flakiness
+    around that file's QWebEngineView (already documented there as
+    fragile: "creating more than one QWebEngineView per pytest process
+    segfaults here"). The unit-tests CI job that actually has the crash
+    never touches QWebEngineView at all, so this only needs to run there
+    -- set by tests.yml's unit-tests step, never globally, so local runs
+    and the separate widget-tests (Qt) job are both unaffected."""
+    yield
+    if os.environ.get("PYGM_GC_COLLECT_PER_TEST"):
+        import gc
+        gc.collect()
 
 
 # PIL/Pillow detection
