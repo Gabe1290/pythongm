@@ -185,7 +185,7 @@ def _tofloat(value, default):
 # is what both desktop and this exporter already did.
 _VALUE_IS_EXPRESSION = re.compile(
     r'[*+\-/%]'
-    r'|\b(?:random|irandom|choose|max|min|abs|round)\s*\('
+    r'|\b(?:random|irandom|choose|max|min|abs|round|sqrt|ln|log10|exp)\s*\('
     r'|\b(?:self|other|global)\.')
 
 

@@ -271,12 +271,24 @@ moment they touch a block.
     set_hspeed loaded as nothing; `connectTextBlock` now untypes that one
     block's output. Audit tool 112 → 106. Tests:
     `TestB6aValueAndArithmeticBlocks` + `tests/test_blockly_value_expressions.py`.
-  - [ ] **B6b — math functions on all three engines.** Add `sqrt`, `ln`,
-    `log10`, `exp`, `pow10` (or the spellings chosen) to every engine's
-    function set (desktop `_known_functions`, the function-detect regex,
-    `safe_namespace`, `_eval_bool_expression`'s namespace; HTML5 evaluator
-    scope; Kivy whitelist + generated helpers), then map every
-    `math_single` op (ROOT, ABS, NEG, LN, LOG10, EXP, POW10).
+  - [x] **B6b — math functions on all three engines, landed (commit
+    "feat(blockly): B6b", 2026-10-10).** `sqrt`, `ln`, `log10`, `exp`
+    (GameMaker's names; 10^x is `(10 ** (x))`, no function needed).
+    Desktop: new `runtime/gm_math.py` (`GM_MATH_FUNCTIONS`, its own module
+    because `action_executor` imports `action_flow`), wired into
+    `_parse_value`'s function-detect regex, `_known_functions`,
+    `safe_namespace` and `_eval_bool_expression`. HTML5: `gmSafeMath` +
+    scope entries in `gmExpressionValue` (numbers reach it via B6a's
+    `parseNumParam` fallback). Kivy: `GameObject.sqrt/ln/log10/exp`
+    methods (the resolver binds names to `self.`, as with `random`) + the
+    `_VALUE_IS_EXPRESSION` regex. **Agreed rule: a domain error (sqrt of a
+    negative, ln of 0) gives 0 for that call on every engine** — before,
+    desktop zeroed the whole expression, HTML5 got NaN and Kivy would have
+    raised mid-game. All nine probe expressions give identical results on
+    the three engines (HTML5 via the real engine.js headlessly). Generator:
+    `MATH_SINGLE_TEMPLATES` for all seven ops. Tests: `TestB6bMathSingle` +
+    the MATH cases in `tests/test_blockly_value_expressions.py` (17 of 20
+    fail on the old code; abs/negate/power already worked).
   - [ ] **B6c — Logic blocks get a true/false slot: a `test_expression`
     block.** Closes B2's remaining `test_expression` gap at the same time:
     an "if ‹condition›" block with a CONDITION value input (no type check,

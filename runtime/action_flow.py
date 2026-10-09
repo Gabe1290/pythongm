@@ -37,6 +37,7 @@ import re
 from typing import Any, Dict, List, Tuple
 
 from core.logger import get_logger
+from runtime.gm_math import GM_MATH_FUNCTIONS
 
 logger = get_logger(__name__)
 
@@ -783,6 +784,7 @@ class FlowMixin:
                 'room_width': getattr(self.game_runner.current_room, 'width', 0) if self.game_runner and self.game_runner.current_room else 0,
                 'room_height': getattr(self.game_runner.current_room, 'height', 0) if self.game_runner and self.game_runner.current_room else 0,
                 'abs': abs, 'min': min, 'max': max, 'round': round,
+                **GM_MATH_FUNCTIONS,
                 '_global': self.game_runner.global_variables if self.game_runner else {},
                 # Custom instance variables
                 **{k: v for k, v in instance.__dict__.items() if not k.startswith('_')}

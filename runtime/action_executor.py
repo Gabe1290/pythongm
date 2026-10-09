@@ -6,6 +6,9 @@ Converts visual actions into runtime behavior
 
 import math
 import re
+
+
+from runtime.gm_math import GM_MATH_FUNCTIONS
 from typing import Dict, Any, List, Tuple
 from runtime.action_colors import _hex_to_rgb
 from core.logger import get_logger
@@ -701,7 +704,7 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
         # calling action as a literal string and silently fail to parse.
         import re as _re
         has_operator = any(op in value_str for op in ['*', '+', '-', '/', '%'])
-        has_function = _re.search(r'\b(?:random|irandom|choose|max|min|abs|round)\s*\(', value_str) is not None
+        has_function = _re.search(r'\b(?:random|irandom|choose|max|min|abs|round|sqrt|ln|log10|exp)\s*\(', value_str) is not None
         if (has_operator or has_function) and not value_str.startswith('"'):
             # Evaluate arithmetic / function expression
             return self._evaluate_expression(value_str, instance)
@@ -739,7 +742,7 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
         # Bare tokens that are function names (substituted further below), not
         # instance variables — these legitimately don't resolve to an attribute,
         # so they must be excluded from the "unresolved token" warning.
-        _known_functions = {'random', 'irandom', 'choose', 'max', 'min', 'abs', 'round'}
+        _known_functions = {'random', 'irandom', 'choose', 'max', 'min', 'abs', 'round'} | set(GM_MATH_FUNCTIONS)
 
         # Replace bare variable names (hspeed, vspeed, x, y, etc.) with their instance values
         def replace_bare_var(match):
@@ -813,6 +816,7 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
                     # HTML5's gmExpressionValue) — needed for e.g. a
                     # difficulty ramp clamped with max(15, 40 - score/50).
                     'max': max, 'min': min, 'abs': abs, 'round': round,
+                    **GM_MATH_FUNCTIONS,
                 }
                 result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)  # nosec B307 - builtins stripped + regex whitelist (:2006) gates input; literal_eval would break random()/choose()
                 return result

@@ -596,6 +596,11 @@ function spawnParticles(system, emitter, ptype, number) {
 // primitive custom variables. Returns the raw value; callers coerce
 // (test_expression -> bool, check_empty x/y -> number). Returns
 // undefined on empty/error so callers apply their own fallback.
+function gmSafeMath(fn, x) {
+    const r = fn(Number(x));
+    return (typeof r === 'number' && isFinite(r)) ? r : 0;
+}
+
 function gmExpressionValue(expr, inst, game) {
     if (expr === undefined || expr === null || String(expr).trim() === '') return undefined;
     const js = String(expr)
@@ -633,6 +638,10 @@ function gmExpressionValue(expr, inst, game) {
         room_width: room ? room.width : 0,
         room_height: room ? room.height : 0,
         abs: Math.abs, min: Math.min, max: Math.max, round: Math.round,
+        // GameMaker math (Blockly audit B6b): a domain error gives 0, as on
+        // desktop (runtime/action_executor.py GM_MATH_FUNCTIONS) and Kivy.
+        sqrt: (x) => gmSafeMath(Math.sqrt, x), ln: (x) => gmSafeMath(Math.log, x),
+        log10: (x) => gmSafeMath(Math.log10, x), exp: (x) => gmSafeMath(Math.exp, x),
         // GameMaker's random(n)/irandom(n)/choose(a,b,...), matching
         // desktop's own gm_random/gm_irandom/gm_choose (runtime/
         // action_executor.py's _evaluate_expression) exactly: random(n) is

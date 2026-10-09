@@ -685,6 +685,12 @@ var MATH_ARITHMETIC_OPS = {
     'ADD': '+', 'MINUS': '-', 'MULTIPLY': '*', 'DIVIDE': '/', 'POWER': '**'
 };
 
+// Blockly's math_single OP field -> expression template ("%" = argument).
+var MATH_SINGLE_TEMPLATES = {
+    'ROOT': 'sqrt(%)', 'ABS': 'abs(%)', 'NEG': '(-(%))',
+    'LN': 'ln(%)', 'LOG10': 'log10(%)', 'EXP': 'exp(%)', 'POW10': '(10 ** (%))'
+};
+
 function getInputValue(block, inputName, defaultValue) {
     var input = block.getInputTargetBlock(inputName);
     if (input) {
@@ -712,6 +718,12 @@ function getInputValue(block, inputName, defaultValue) {
         } else if (input.type === 'math_arithmetic') {
             var op = MATH_ARITHMETIC_OPS[input.getFieldValue('OP')] || '+';
             return '(' + getInputValue(input, 'A', 0) + ' ' + op + ' ' + getInputValue(input, 'B', 0) + ')';
+        } else if (input.type === 'math_single') {
+            // B6b: every op maps to a function all three engines provide
+            // (runtime/gm_math.py, engine.js gmSafeMath, Kivy GameObject).
+            var arg = getInputValue(input, 'NUM', 0);
+            var tmpl = MATH_SINGLE_TEMPLATES[input.getFieldValue('OP')] || 'abs(%)';
+            return tmpl.replace('%', arg);
         } else if (input.type === 'math_random_int') {
             // Blockly's standard Math category block ("random integer from
             // %1 to %2", FROM/TO value inputs) -- used by Tutorial 2's star

@@ -529,6 +529,13 @@ def round_tripped():
         var three = workspace.newBlock('math_number'); three.setFieldValue('3', 'NUM');
         pw.getInput('A').connection.connect(three.outputConnection);
         saved.power = saveVia(pw);
+        // B6b: every math_single op
+        ['ROOT', 'ABS', 'NEG', 'LN', 'LOG10', 'EXP', 'POW10'].forEach(function(op) {
+            var single = workspace.newBlock('math_single'); single.setFieldValue(op, 'OP');
+            var four = workspace.newBlock('math_number'); four.setFieldValue('4', 'NUM');
+            single.getInput('NUM').connection.connect(four.outputConnection);
+            saved['single_' + op] = saveVia(single);
+        });
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
@@ -893,3 +900,15 @@ class TestB6aValueAndArithmeticBlocks:
         the text block an expression loads as was refused and the value
         saved back as 0."""
         assert _params(round_tripped, "hspeed_arithmetic_expression")["value"] == "(score * 2)"
+
+
+class TestB6bMathSingle:
+    def test_every_op_saves_a_function_all_engines_have(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["single_ROOT"] == "sqrt(4)"
+        assert saved["single_ABS"] == "abs(4)"
+        assert saved["single_NEG"] == "(-(4))"
+        assert saved["single_LN"] == "ln(4)"
+        assert saved["single_LOG10"] == "log10(4)"
+        assert saved["single_EXP"] == "exp(4)"
+        assert saved["single_POW10"] == "(10 ** (4))"

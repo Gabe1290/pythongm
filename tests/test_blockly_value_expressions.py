@@ -1,4 +1,4 @@
-"""Engine side of Blockly audit B6a / B15
+"""Engine side of Blockly audit B6a / B15 / B6b
 (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md).
 
 Blockly's value and arithmetic blocks save expression TEXT (self.hspeed,
@@ -81,3 +81,54 @@ def test_html5_numeric_params_fall_back_to_the_full_expression_evaluator():
     tail = body[body.rindex("} catch (e)"):]
     assert re.search(r"gmExpressionValue\(s, inst,", tail), "fallback missing"
     assert tail.index("gmExpressionValue") < tail.rindex("return fallback")
+
+
+# --- B6b: math functions, with "domain error -> 0 for that call" everywhere.
+MATH = {
+    "sqrt(self.x)": 4, "sqrt(16) + 1": 5, "5 + sqrt(-1)": 5, "ln(0)": 0,
+    "log10(100)": 2, "exp(0)": 1, "(10 ** (2))": 100, "(-(self.x))": -16,
+    "abs(-3)": 3,
+}
+
+
+@pytest.mark.parametrize("expr,expected", MATH.items())
+def test_desktop_math_functions(executor, expr, expected):
+    inst = SimpleNamespace(x=16, y=0, hspeed=0, vspeed=0, object_name="o", mouse_x=0, mouse_y=0)
+    assert executor._parse_value(expr, inst) == pytest.approx(expected)
+
+
+def test_desktop_conditions_can_use_math_functions():
+    from runtime.action_executor import ActionExecutor
+    ex = ActionExecutor(game_runner=SimpleNamespace(
+        score=0, lives=0, health=0, global_variables={}, current_room=None))
+    inst = SimpleNamespace(x=16, y=0, hspeed=0, vspeed=0, object_name="o")
+    assert ex._eval_bool_expression(inst, "sqrt(x) > 3") is True
+    assert ex._eval_bool_expression(inst, "sqrt(x) > 5") is False
+
+
+def _kivy_game_object():
+    """The math helpers exactly as the exporter writes them into the
+    generated GameObject (extracted from its source, then executed)."""
+    src = (REPO / "export/Kivy/kivy_exporter.py").read_text(encoding="utf-8")
+    start = src.index("    def _gm_math(self, fn, x):")
+    end = src.index("    def choose(self, *options):")
+    ns = {}
+    exec("class GO:\n    x = 16\n" + src[start:end], ns)
+    return ns["GO"]()
+
+
+@pytest.mark.parametrize("expr,expected", MATH.items())
+def test_kivy_math_functions(expr, expected):
+    from export.Kivy.code_generator import _num_code
+    code = _num_code(expr)
+    assert eval(code, {}, {"self": _kivy_game_object()}) == pytest.approx(expected)
+
+
+def test_html5_expression_scope_has_the_math_functions():
+    """Verified in a real browser engine when this landed (all nine MATH
+    cases matched); CI has no JS engine, so pin the scope entries."""
+    js = (REPO / "export/HTML5/templates/engine.js").read_text(encoding="utf-8")
+    assert "function gmSafeMath(fn, x)" in js
+    for name, fn in (("sqrt", "Math.sqrt"), ("ln", "Math.log"),
+                     ("log10", "Math.log10"), ("exp", "Math.exp")):
+        assert re.search(rf"\b{name}: \(x\) => gmSafeMath\({re.escape(fn)}, x\)", js), name

@@ -3607,6 +3607,32 @@ class GameObject(Widget):
         import random as _random
         return _random.randint(0, int(upper))
 
+    def _gm_math(self, fn, x):
+        """GameMaker math (Blockly audit B6b): a domain error gives 0, as on
+        desktop and HTML5, instead of raising mid-game."""
+        import math as _math
+        try:
+            r = fn(float(x))
+        except (ValueError, OverflowError, TypeError):
+            return 0
+        return r if _math.isfinite(r) else 0
+
+    def sqrt(self, x):
+        import math as _math
+        return self._gm_math(_math.sqrt, x)
+
+    def ln(self, x):
+        import math as _math
+        return self._gm_math(_math.log, x)
+
+    def log10(self, x):
+        import math as _math
+        return self._gm_math(_math.log10, x)
+
+    def exp(self, x):
+        import math as _math
+        return self._gm_math(_math.exp, x)
+
     def choose(self, *options):
         """GameMaker's choose(a, b, ...): one argument at random."""
         import random as _random
