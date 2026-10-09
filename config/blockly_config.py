@@ -124,7 +124,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     ],
     "Game": [
         {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
-        {"type": "game_restart", "name": "Restart Game", "description": "Restart from first room", "implemented": True},
+        {"type": "restart_game", "name": "Restart Game", "description": "Restart from first room", "implemented": True},  # was "game_restart", a name no block had (Blockly audit B8)
         {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table", "implemented": True},
         {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table", "implemented": True},
     ],
@@ -886,7 +886,7 @@ class BlocklyConfig:
         # GAME CONTROL
         # =====================================================================
         config.enable_block("game_end")             # end_game
-        config.enable_block("game_restart")         # restart_game
+        config.enable_block("restart_game")         # restart_game
 
         # =====================================================================
         # SCORE/LIVES/HEALTH
@@ -1073,7 +1073,7 @@ class BlocklyConfig:
         # GAME CONTROL
         # =====================================================================
         config.enable_block("game_end")
-        config.enable_block("game_restart")
+        config.enable_block("restart_game")
         config.enable_block("show_highscore")
         config.enable_block("clear_highscore")
 

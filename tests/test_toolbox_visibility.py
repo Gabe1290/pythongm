@@ -359,3 +359,49 @@ def test_context_menu_and_dialog_callers_pass_project_data():
     for rel_path, needle in paths_and_needles:
         src = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
         assert needle in src, f"{rel_path} doesn't wire project_data through"
+
+
+# --- Blockly audit B8 (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md) -------------
+
+def test_beginner_toolbox_offers_change_instance():
+    """ACTION_TO_BLOCKLY_MAP maps change_instance to "instance_change", a
+    block name the JS toolbox doesn't have; its only block is the generated
+    custom_change_instance, matched by the ACTION name. Beginner enables it
+    for a sample but the Blockly tab silently lacked it."""
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    from config.toolbox_visibility import toolbox_enabled_blocks, visible_actions
+    beginner = PRESETS["beginner"]
+    assert "change_instance" in visible_actions(beginner)
+    assert "change_instance" in toolbox_enabled_blocks(beginner)
+
+
+def test_toolbox_list_contains_every_visible_action_name():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    from config.toolbox_visibility import toolbox_enabled_blocks, visible_actions
+    for name, cfg in PRESETS.items():
+        assert visible_actions(cfg) <= toolbox_enabled_blocks(cfg), name
+
+
+def test_toolbox_list_never_adds_an_invisible_action():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    from config.toolbox_visibility import toolbox_enabled_blocks, visible_actions
+    from events.action_types import ACTION_TYPES
+    beginner = PRESETS["beginner"]
+    hidden = set(ACTION_TYPES) - visible_actions(beginner)
+    assert hidden, "beginner should hide some actions"
+    assert not (hidden & toolbox_enabled_blocks(beginner))
+
+
+def test_registry_restart_game_entry_names_the_real_action():
+    """The registry's "Restart Game" entry was "game_restart", a name no
+    block or action had, so its config checkbox controlled nothing."""
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for blocks in BLOCK_REGISTRY.values() for b in blocks}
+    assert "game_restart" not in types
+    assert "restart_game" in types

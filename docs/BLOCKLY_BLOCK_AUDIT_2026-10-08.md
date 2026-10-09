@@ -332,7 +332,23 @@ moment they touch a block.
   Original note: block defined,
   `BLOCK_REGISTRY` says implemented, **no generator** — saves nothing. Hidden
   in beginner/intermediate, visible in the full preset.
-- [ ] **B8 — Preset names that match no block (LOW).** `event_other` (see B3),
+- [x] **B8 — Preset names that match no block, landed (commit
+  "fix(blockly): B8", 2026-10-10).** Re-checked every `BLOCK_REGISTRY` entry
+  against the live page: `event_other` exists since B3. `instance_change`
+  was more than a dead name — `ACTION_TO_BLOCKLY_MAP` sends `change_instance`
+  to the JS toolbox as `instance_change`, which no JS block has; the only
+  block is the generated `custom_change_instance`, matched by the action's
+  own name, so **beginner's Blockly tab silently lacked Change Instance**
+  while the action-list editor showed it. Fixed generically: new
+  `config/toolbox_visibility.toolbox_enabled_blocks` (moved out of
+  `BlocklyWidget.apply_configuration`) sends every visible action under its
+  own name too — verified in the real toolbox: old list 72 blocks without
+  it, new list 73 with it, nothing else added. `game_restart` (a registry
+  entry no block or action had, so its config checkbox did nothing) renamed
+  to `restart_game`. No other `ACTION_TO_BLOCKLY_MAP` entry points at a
+  missing block where a block exists. **Left for B9:** the 14 Thymio event
+  registry names (their blocks are unreachable anyway). Tests: four in
+  `tests/test_toolbox_visibility.py`. Original note: `event_other` (see B3),
   `instance_change` (action is `change_instance`; enabled in beginner),
   `game_restart` (action is `restart_game`), and the Thymio Events registry
   names lack the `event_` prefix of the real blocks.

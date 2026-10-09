@@ -129,3 +129,31 @@ def visible_events(config, project_data: Optional[dict] = None) -> Set[str]:
         if block_type in enabled_blocks:
             result.add(name)
     return result
+
+
+def toolbox_enabled_blocks(config, project_data: Optional[dict] = None) -> Set[str]:
+    """The ``enabled_blocks`` list BlocklyWidget sends to the JS toolbox.
+
+    ``config.enabled_blocks`` also carries non-action block types (events,
+    value blocks, Thymio's own entries) that ``visible_actions`` has no
+    opinion on; those pass through. Every real action is replaced by
+    ``visible_actions``' answer -- a plain union could only ever add blocks,
+    never hide one it says should be hidden.
+
+    Each visible action is sent under BOTH its hand-written block name
+    (``ACTION_TO_BLOCKLY_MAP``) and its own name. The JS toolbox matches an
+    auto-generated ``custom_<action>`` block by the action's own name, so a
+    mapping whose block name exists nowhere in JS hid the action's only
+    block: ``change_instance`` -> ``instance_change`` left the beginner
+    preset's Blockly tab without Change Instance, though the action-list
+    editor showed it (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B8). Sending
+    the action name too can't over-show: only already-visible names are
+    added, and an action with a hand-written block has no custom block for
+    the extra name to match.
+    """
+    visible = visible_actions(config, project_data)
+    resolved = {ACTION_TO_BLOCKLY_MAP.get(name, name) for name in visible} | set(visible)
+    action_block_types = ({ACTION_TO_BLOCKLY_MAP.get(name, name) for name in ACTION_TYPES}
+                          | set(ACTION_TYPES))
+    non_action_entries = set(config.enabled_blocks) - action_block_types
+    return non_action_entries | resolved

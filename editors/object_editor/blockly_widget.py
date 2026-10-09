@@ -610,14 +610,8 @@ class BlocklyWidget(QWidget):
         # could only ever ADD blocks, never remove one visible_actions says
         # should be hidden (e.g. an inactive extension's action that somehow
         # ended up in a preset's enabled_blocks).
-        from config.toolbox_visibility import visible_actions
-        from events.action_types import ACTION_TYPES, ACTION_TO_BLOCKLY_MAP
-        project_data = self._find_project_data()
-        visible = visible_actions(config, project_data)
-        resolved_blocks = {ACTION_TO_BLOCKLY_MAP.get(name, name) for name in visible}
-        action_block_types = {ACTION_TO_BLOCKLY_MAP.get(name, name) for name in ACTION_TYPES}
-        non_action_entries = set(config.enabled_blocks) - action_block_types
-        enabled_blocks = non_action_entries | resolved_blocks
+        from config.toolbox_visibility import toolbox_enabled_blocks
+        enabled_blocks = toolbox_enabled_blocks(config, self._find_project_data())
         enabled_categories = set(config.enabled_categories)
 
         # Let any registered extension hide its own blocks/categories when
