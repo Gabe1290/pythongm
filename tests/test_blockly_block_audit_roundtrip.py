@@ -286,6 +286,13 @@ block. Engine side (desktop/Kivy/HTML5) in test_blockly_value_expressions.py.
 The block existed (and BLOCK_REGISTRY called it implemented) but had no
 generator, so it saved nothing, and move_towards_point actions loaded as
 the generic custom block. It now saves move_towards_point and loads back.
+
+## B16 -- expressions in generated blocks' number parameters became 0
+
+The generated custom_* blocks' loader always built a math_number, so
+"facing_angle+180" (the raycast samples' turning) or "32/6" loaded as 0.
+It now shares the hand-written loader's number-or-expression logic
+(loadNumberInput).
 """
 import json
 
@@ -485,6 +492,11 @@ CASES = {
             "expression": "vspeed > 0 and y - vspeed < other.y+8",
             "then_actions": [{"action": "set_vspeed", "parameters": {"value": "-6"}}],
             "else_actions": [{"action": "set_hspeed", "parameters": {"value": "2"}}]}}]}},
+    # B16 -- generated block number params
+    "dynamic_direction_expression": {"create": {"actions": [
+        {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
+    "dynamic_direction_numbers": {"create": {"actions": [
+        {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
     # B7 -- move_towards
     "move_towards_numbers": {"create": {"actions": [
         {"action": "move_towards_point", "parameters": {"x": "320", "y": "240", "speed": "6"}}]}},
@@ -504,6 +516,12 @@ DYNAMIC_BLOCK_DEFS = [
      "icon": "", "parameters": [
          {"name": "object", "display_name": "Change Into", "param_type": "object", "default_value": ""},
          {"name": "perform_events", "display_name": "Perform Events", "param_type": "boolean", "default_value": True},
+     ]},
+    # B16: a generated block with number params (no hand-written block)
+    {"name": "set_direction_speed", "display_name": "Set Direction and Speed",
+     "description": "", "category": "Movement", "icon": "", "parameters": [
+         {"name": "direction", "display_name": "Direction", "param_type": "number", "default_value": 0},
+         {"name": "speed", "display_name": "Speed", "param_type": "float", "default_value": 4.0},
      ]},
 ]
 
@@ -996,4 +1014,17 @@ class TestB7MoveTowards:
         params = _params(round_tripped, "move_towards_expression")
         assert params["x"] == "other.x"
         assert params["y"] == "other.y + 16"
+        assert params["speed"] == 0
+
+
+class TestB16GeneratedBlockExpressions:
+    def test_expressions_survive_on_a_generated_block(self, round_tripped):
+        action = _action(round_tripped, "dynamic_direction_expression")
+        assert action["action"] == "set_direction_speed"
+        assert action["parameters"]["direction"] == "facing_angle+180"
+        assert action["parameters"]["speed"] == "32/6"
+
+    def test_plain_numbers_and_zero_still_load_as_numbers(self, round_tripped):
+        params = _params(round_tripped, "dynamic_direction_numbers")
+        assert params["direction"] == 90
         assert params["speed"] == 0

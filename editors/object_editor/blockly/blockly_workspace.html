@@ -586,6 +586,53 @@
             return null;
         }
 
+        // Load a saved number parameter into a value input. Shared by the
+        // hand-written blocks' loader (setBlockParameters) and the generated
+        // custom_* blocks' loader. Order matters:
+        // - B6a: a value that is exactly what a value block saves ("score",
+        //   "self.hspeed", legacy "game.score") loads as that block.
+        // - A plain number loads as a math_number block.
+        // - B4/B16: anything else is an authored EXPRESSION ("direction+90",
+        //   "facing_angle+180", "32/6"); a math_number would parse it to 0,
+        //   so it loads as a text block, which getInputValue saves verbatim.
+        function loadNumberInput(block, inputName, value) {
+            var input = block.getInput(inputName);
+            if (!input || !input.connection) return;
+            var str = String(value).trim();
+            var valueType = valueBlockForText(str);
+            if (valueType) {
+                var valueBlock = workspace.newBlock(valueType);
+                valueBlock.initSvg();
+                valueBlock.render();
+                input.connection.connect(valueBlock.outputConnection);
+            } else if (/^-?\d+(\.\d+)?$/.test(str)) {
+                var numBlock = workspace.newBlock('math_number');
+                numBlock.setFieldValue(str, 'NUM');
+                numBlock.initSvg();
+                numBlock.render();
+                input.connection.connect(numBlock.outputConnection);
+            } else {
+                loadTextInput(block, inputName, value);
+            }
+        }
+
+        // Load a saved value into a value input as a text block. B6a: a text
+        // block's output is typed String; a Number-only input (most of them)
+        // refused it, so untype this one block's output when needed.
+        function loadTextInput(block, inputName, value) {
+            var input = block.getInput(inputName);
+            if (!input || !input.connection) return;
+            var textBlock = workspace.newBlock('text');
+            textBlock.setFieldValue(String(value), 'TEXT');
+            var accepts = input.connection.getCheck();
+            if (accepts && accepts.indexOf('String') === -1) {
+                textBlock.setOutput(true, null);
+            }
+            textBlock.initSvg();
+            textBlock.render();
+            input.connection.connect(textBlock.outputConnection);
+        }
+
         function createAssetField(assetKey, defaultValue, extraOptions) {
             // Blockly calls optionsFn with `this` bound to the FieldDropdown,
             // so we can read the field's current value to preserve "stale"
@@ -2361,62 +2408,14 @@
                 return (value === undefined || value === null || value === '') ? fallback : value;
             }
             // Helper to create and connect a number block
+            // Thin wrappers over the shared top-level loaders (also used by
+            // the generated custom_* blocks' loader -- audit B16).
             function connectNumberBlock(inputName, value) {
-                var input = block.getInput(inputName);
-                if (input && input.connection) {
-                    var str = String(value);
-                    // B6a: a value that is exactly what a value block saves
-                    // ("score", "self.hspeed", ...) loads as that block, not
-                    // a text block. "game.*" is the pre-B6a spelling no engine
-                    // evaluated on desktop; loading it as the block makes the
-                    // next save write the working spelling.
-                    var valueType = valueBlockForText(str.trim());
-                    if (valueType) {
-                        var valueBlock = workspace.newBlock(valueType);
-                        valueBlock.initSvg();
-                        valueBlock.render();
-                        input.connection.connect(valueBlock.outputConnection);
-                        return;
-                    }
-                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: an authored
-                    // EXPRESSION ("direction+90", "32/6", "other.x*2") here
-                    // silently became 0 -- Blockly's FieldNumber rejects
-                    // anything it can't parse as a plain number and falls
-                    // back to its own default (0), discarding the real
-                    // value. A value that isn't a plain number loads as a
-                    // text block instead, which getInputValue already
-                    // returns verbatim on save, so the expression survives.
-                    if (/^-?\d+(\.\d+)?$/.test(str.trim())) {
-                        var numBlock = workspace.newBlock('math_number');
-                        numBlock.setFieldValue(str, 'NUM');
-                        numBlock.initSvg();
-                        numBlock.render();
-                        input.connection.connect(numBlock.outputConnection);
-                    } else {
-                        connectTextBlock(inputName, value);
-                    }
-                }
+                loadNumberInput(block, inputName, value);
             }
 
-            // Helper to create and connect a text block
             function connectTextBlock(inputName, value) {
-                var input = block.getInput(inputName);
-                if (input && input.connection) {
-                    var textBlock = workspace.newBlock('text');
-                    textBlock.setFieldValue(String(value), 'TEXT');
-                    // Audit B6a: an expression ("(score * 2)") loads as a text
-                    // block, whose output is typed String -- a Number-only input
-                    // (most of them) refused it and the value was lost. Untype
-                    // this one block's output when the input won't take text;
-                    // getInputValue already saves a text block verbatim.
-                    var accepts = input.connection.getCheck();
-                    if (accepts && accepts.indexOf('String') === -1) {
-                        textBlock.setOutput(true, null);
-                    }
-                    textBlock.initSvg();
-                    textBlock.render();
-                    input.connection.connect(textBlock.outputConnection);
-                }
+                loadTextInput(block, inputName, value);
             }
 
             // Set parameters based on block type
@@ -3362,15 +3361,10 @@
                 if (value === undefined || value === null) continue;
 
                 if (param.param_type === 'number' || param.param_type === 'float') {
-                    // Connect number block to value input
-                    var input = block.getInput(fieldName);
-                    if (input && input.connection) {
-                        var numBlock = workspace.newBlock('math_number');
-                        numBlock.setFieldValue(String(value), 'NUM');
-                        numBlock.initSvg();
-                        numBlock.render();
-                        input.connection.connect(numBlock.outputConnection);
-                    }
+                    // B16: same number-or-expression logic as the hand-written
+                    // blocks -- this used to build a math_number from any
+                    // value, so "facing_angle+180" loaded as 0.
+                    loadNumberInput(block, fieldName, value);
                 } else if (param.param_type === 'boolean') {
                     block.setFieldValue(value ? 'TRUE' : 'FALSE', fieldName);
                 } else {

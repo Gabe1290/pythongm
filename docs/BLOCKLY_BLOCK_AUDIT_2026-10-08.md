@@ -441,8 +441,12 @@ B12's symptom is gone: extension actions (Block World, LAN) now load as
 generated `custom_*` blocks and `action-lost` is 0. What remains, beyond
 B13's `directions` and the three LAN events (B3 remainder):
 
-- [ ] **B16 — Expressions in auto-generated blocks' number parameters become
-  0 (HIGH).** The dynamic-block `setBlockParameters` override in
+- [x] **B16 — landed (commit "fix(blockly): B16", 2026-10-10).** The
+  number-or-expression loader is now one top-level `loadNumberInput` (with
+  `loadTextInput`) used by both loaders; audit tool 102 → 76, every
+  expression entry gone. Tests: `TestB16GeneratedBlockExpressions`.
+  Expressions in auto-generated blocks' number parameters become
+  0 (HIGH). The dynamic-block `setBlockParameters` override in
   `blockly_workspace.html` always builds a `math_number` from the value, so
   a non-numeric value parses to 0. B4 fixed this only for hand-written
   blocks (`connectNumberBlock`). Seen: `set_direction_speed` direction
