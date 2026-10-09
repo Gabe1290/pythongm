@@ -278,6 +278,17 @@ moment they touch a block.
   fallback is now `<self>` ("keep current sprite") rather than an empty
   name. U0's lock catches it, but a real fix would load such names as a
   preserved "(missing)" option.
+- [ ] **B15 — The score/lives/health value blocks save names the desktop
+  engine can't evaluate (found scoping B6, 2026-10-09).** `getInputValue`
+  turns `value_score`/`value_lives`/`value_health` into `game.score` /
+  `game.lives` / `game.health`, but `ActionExecutor._parse_value` only
+  knows the bare names: verified with plain objects (not mocks, which
+  "resolve" every attribute), `game.score` stays the literal string
+  `"game.score"` and `game.score + 1` evaluates to 0 (`name 'game' is not
+  defined`), while `score` → 7 and `score + 1` → 8. Bare `mouse_x` is
+  unresolved too. Fix with B6: emit the names every target evaluates
+  (check HTML5's `gmExpressionValue` and Kivy's expression translation
+  for each before choosing).
 - [x] **B11 — `move_free` has no `actionToBlockType` entry, landed (commit
   "fix(blockly): B11", 2026-10-09).** Added the mapping, a loader case
   restoring DIRECTION/SPEED, and dropped the inputs' `setCheck("Number")`
