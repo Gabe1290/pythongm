@@ -165,14 +165,56 @@ page without relying on dense instructions.
       passed), and every page carries real accented French text (spot
       checked é/è/ê/à/ç/ù/î/ô counts per file, no stripped-accent
       offenders found).
-- [ ] **U4 — Student handout + worksheet, EN + FR**, with real screenshots
-      captured from the reference project (see the 2026-08-10 CLAUDE.md
-      note on offscreen `QWidget.grab()` screenshots for the technique).
-- [ ] **U5 — Teacher guide + answer key, EN + FR.**
-- [ ] **U6 — Guard tests** (`tests/test_teacher_resources.py` extended the
-      same way every other tutorial's set is covered) + PDF/ODT generation.
-- [ ] **U7 — Publish** (wiki sync) — outward-facing, needs explicit
-      approval first, same as every prior publish step in this repo.
+- [x] **U4+U5+U6 — Handouts, wiki build, guard tests (DONE 2026-10-09,
+      merged into one unit).** The plan's U4/U5 split assumed student+
+      worksheet could land before teacher+answer_key, but
+      `test_dir_matches_a_real_tutorial_and_is_complete` requires all 4
+      kinds x 2 languages to exist together the moment the folder exists,
+      and `answer_key.*.md` is *generated* from teacher's own "Worksheet
+      Answer Key" section — so all 8 markdown files had to land in one pass.
+      - **Real illustrations, not placeholders** (the explicit ask):
+        `tools/gen_tutorial_15_handout_images.py` produces 6 PNGs — two
+        real offscreen `RoomCanvas` screenshots (same technique as
+        `tests/test_room_canvas_cache_clear.py`: construct the widget
+        directly, no full IDE window needed) showing the Room Editor with
+        the reference project's actual room, and four real gameplay
+        screenshots (the real `GameRunner`'s pygame surface, scripted the
+        same way `tests/test_tutorial_reference_projects.py`'s `play()`
+        helper drives the engine) showing the basket moving and each of
+        the three fusions actually happening, cumulative score included.
+        Embedded in the student handout only (5 images; EN and FR share
+        the same images -- no IDE-chrome text is shown, and the one piece
+        of in-game text, the score caption, stays English in both as a
+        deliberate, documented simplification).
+      - **Landmine, cost a real file:** `generate_tutorial_handouts_pdf.py`
+        / `_odt.py` take ONE source file and an *optional explicit output
+        path* as their second argument -- passing two `.md` paths on one
+        command line is silently interpreted as "render file 1, write the
+        result over file 2", which clobbered `student.fr.md` with PDF
+        then ODT bytes. Recovered by rewriting it from the content already
+        authored earlier in the same turn (no data lost, caught
+        immediately by `file docs/handouts/.../student.fr.md` showing
+        "OpenDocument Text" instead of UTF-8 text). Regenerate one file
+        per invocation.
+      - **Landmine:** handout images must sit FLAT next to the `.md`
+        files (Tutorial 1's existing convention) -- `build_teacher_wiki.py`
+        only `glob.glob("*.png")`s the handout's own directory, non-
+        recursive, so a `images/` subfolder (tried first) is silently
+        never copied to the wiki and produces a broken link.
+      - **Landmine:** `build_teacher_wiki.py` regenerates every
+        tutorial's PDFs on every run (not just the new one), and `fpdf2`'s
+        output isn't byte-deterministic -- discard the resulting noise in
+        unrelated tutorials' `wiki/downloads/*.pdf` / `solutions/*.zip`
+        with a targeted `git checkout --`, don't commit it.
+      - Verified: `tests/test_teacher_resources.py` (408 passed, structural
+        EN/FR parity confirmed programmatically before committing, no
+        stripped-accent offenders), a rendered-PDF visual spot-check
+        (both languages, images and accents render correctly).
+- [ ] **U7 — Publish** (`scripts/sync_wiki.sh push`) — outward-facing,
+      needs explicit approval first, same as every prior publish step in
+      this repo. (The `wiki/` files above are already committed to *this*
+      repo, matching every other tutorial's U0-U13 precedent -- only the
+      push to the separate live wiki repo is deferred.)
 
 ## Not in scope
 
