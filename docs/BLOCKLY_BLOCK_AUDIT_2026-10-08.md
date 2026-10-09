@@ -92,7 +92,7 @@ moment they touch a block.
     each (restoring the condition fields — including `test_variable`'s
     `scope`/`global.`-prefix reconstruction), and a new **ELSE** statement
     input on both blocks (was DO-only) wired through generator + loader.
-    **Follow-up, now fixed (landed `<pending-hash>`):** `if_condition`'s
+    **Follow-up, now fixed (landed `7906b7d9`):** `if_condition`'s
     hand-written block originally had fields for
     `condition_type='instance_count'` only — loading any other
     `condition_type` preserved the nested actions but the condition itself
