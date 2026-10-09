@@ -260,6 +260,17 @@ actionToBlockType had no entry for it, so an authored move_free produced no
 block and was deleted by the next Blockly edit. Its inputs were also
 Number-only, which would have dropped an expression direction (B4's text
 block can't connect to them).
+
+## B6a / B15 -- value and arithmetic blocks
+
+getInputValue ignored value_hspeed/vspeed/mouse_x/mouse_y and
+math_arithmetic (the slot's default was saved instead), and saved
+score/lives/health as game.score/..., which the desktop engine can't
+evaluate. They now save self.hspeed, score, "(A op B)", ... -- spellings
+desktop, HTML5 and Kivy all evaluate (engine side:
+test_blockly_value_expressions.py). The loader turns those exact texts (and the legacy
+game.* ones) back into the value blocks, and a text block carrying an
+expression now connects to Number-only inputs instead of being dropped.
 """
 import json
 
@@ -446,6 +457,13 @@ CASES = {
         {"action": "move_free", "parameters": {"direction": "45", "speed": "3"}}]}},
     "move_free_expression_and_zero": {"create": {"actions": [
         {"action": "move_free", "parameters": {"direction": "direction+90", "speed": 0}}]}},
+    # B6a / B15 -- value texts and expressions through a Number-only input
+    "hspeed_legacy_game_score": {"create": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": "game.score"}}]}},
+    "hspeed_self_hspeed": {"create": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": "self.hspeed"}}]}},
+    "hspeed_arithmetic_expression": {"create": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": "(score * 2)"}}]}},
 }
 
 # Minimal real-shaped ActionType definitions for the one dynamic (custom_*)
@@ -484,6 +502,34 @@ def round_tripped():
             loadEventsData(cases[k]);
             out[k] = JSON.parse(generatePythonCode());
         }
+        // B6a: what each value block (and a nested math_arithmetic) SAVES
+        // when plugged into a number slot.
+        workspace.clear();
+        var saved = {};
+        function saveVia(block) {
+            var host = workspace.newBlock('move_set_hspeed');
+            host.getInput('SPEED').connection.connect(block.outputConnection);
+            var v = generateActionCode(host).parameters.value;
+            host.dispose(true);
+            return v;
+        }
+        ['value_x', 'value_y', 'value_hspeed', 'value_vspeed', 'value_mouse_x',
+         'value_mouse_y', 'value_score', 'value_lives', 'value_health'].forEach(function(t) {
+            saved[t] = saveVia(workspace.newBlock(t));
+        });
+        var mul = workspace.newBlock('math_arithmetic'); mul.setFieldValue('MULTIPLY', 'OP');
+        mul.getInput('A').connection.connect(workspace.newBlock('value_score').outputConnection);
+        var add = workspace.newBlock('math_arithmetic'); add.setFieldValue('ADD', 'OP');
+        add.getInput('A').connection.connect(workspace.newBlock('value_x').outputConnection);
+        var two = workspace.newBlock('math_number'); two.setFieldValue('2', 'NUM');
+        add.getInput('B').connection.connect(two.outputConnection);
+        mul.getInput('B').connection.connect(add.outputConnection);
+        saved.nested_arithmetic = saveVia(mul);
+        var pw = workspace.newBlock('math_arithmetic'); pw.setFieldValue('POWER', 'OP');
+        var three = workspace.newBlock('math_number'); three.setFieldValue('3', 'NUM');
+        pw.getInput('A').connection.connect(three.outputConnection);
+        saved.power = saveVia(pw);
+        out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
 
@@ -816,3 +862,34 @@ class TestB11MoveFreeRoundTrips:
         params = _params(round_tripped, "move_free_expression_and_zero")
         assert params["direction"] == "direction+90"
         assert params["speed"] == 0
+
+
+class TestB6aValueAndArithmeticBlocks:
+    EXPECTED = {
+        "value_x": "self.x", "value_y": "self.y",
+        "value_hspeed": "self.hspeed", "value_vspeed": "self.vspeed",
+        "value_mouse_x": "self.mouse_x", "value_mouse_y": "self.mouse_y",
+        "value_score": "score", "value_lives": "lives", "value_health": "health",
+    }
+
+    def test_each_value_block_saves_a_portable_expression(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        for block_type, expected in self.EXPECTED.items():
+            assert saved[block_type] == expected, block_type
+
+    def test_math_arithmetic_saves_a_parenthesised_expression(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["nested_arithmetic"] == "(score * (self.x + 2))"
+        assert saved["power"] == "(3 ** 0)"
+
+    def test_legacy_game_score_loads_as_the_block_and_resaves_portably(self, round_tripped):
+        assert _params(round_tripped, "hspeed_legacy_game_score")["value"] == "score"
+
+    def test_self_hspeed_round_trips(self, round_tripped):
+        assert _params(round_tripped, "hspeed_self_hspeed")["value"] == "self.hspeed"
+
+    def test_expression_survives_a_number_only_input(self, round_tripped):
+        """move_set_hspeed's SPEED input is setCheck("Number"); before B6a
+        the text block an expression loads as was refused and the value
+        saved back as 0."""
+        assert _params(round_tripped, "hspeed_arithmetic_expression")["value"] == "(score * 2)"

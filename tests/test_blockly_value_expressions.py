@@ -1,0 +1,83 @@
+"""Engine side of Blockly audit B6a / B15
+(docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md).
+
+Blockly's value and arithmetic blocks save expression TEXT (self.hspeed,
+score, "(score * (self.x + 2))", ...) -- see the page-side tests in
+test_blockly_block_audit_roundtrip.py. That text is only useful if every
+engine evaluates it. Before B6a the score/lives/health blocks saved
+"game.score", which the desktop engine left as a literal string (and turned
+into 0 inside arithmetic), and HTML5's numeric-parameter evaluator rejected
+any bare name it didn't substitute itself.
+"""
+
+import ast
+import re
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+REPO = Path(__file__).resolve().parent.parent
+
+# Every spelling getInputValue can save for a value / arithmetic block.
+SPELLINGS = {
+    "self.x": 10, "self.hspeed": 2, "self.vspeed": -1,
+    "self.mouse_x": 120, "self.mouse_y": 80,
+    "score": 7, "lives": 3, "health": 50,
+    "(score * (self.x + 2))": 84, "(self.x ** 2)": 100, "(3 + 4)": 7,
+}
+
+
+@pytest.fixture
+def executor():
+    from runtime.action_executor import ActionExecutor
+    return ActionExecutor(game_runner=SimpleNamespace(
+        score=7, lives=3, health=50, global_variables={}))
+
+
+def _instance(**extra):
+    # Plain objects, not MagicMock: a mock "has" every attribute, which is
+    # exactly how game.score's failure stayed hidden.
+    return SimpleNamespace(x=10, y=20, hspeed=2, vspeed=-1, object_name="o", **extra)
+
+
+@pytest.mark.parametrize("expr,expected", SPELLINGS.items())
+def test_desktop_evaluates_every_saved_spelling(executor, expr, expected):
+    inst = _instance(mouse_x=120, mouse_y=80)
+    assert executor._parse_value(expr, inst) == expected
+
+
+def test_desktop_game_score_was_the_broken_spelling(executor):
+    """Pins why B15 changed the spelling (not the engine)."""
+    assert executor._parse_value("game.score", _instance()) == "game.score"
+
+
+def test_new_desktop_instance_has_mouse_position_zero():
+    """HTML5 and Kivy start mouse_x/mouse_y at 0; desktop only set them on
+    the first click, so "self.mouse_x" stayed a literal string before it."""
+    from runtime.instance import GameInstance
+    inst = GameInstance("obj", 0, 0, {})
+    assert inst.mouse_x == 0 and inst.mouse_y == 0
+
+
+@pytest.mark.parametrize("expr", list(SPELLINGS))
+def test_kivy_emits_compilable_code_for_every_saved_spelling(expr):
+    from export.Kivy.code_generator import _num_code
+    code = _num_code(expr)
+    ast.parse(code, mode="eval")
+    assert "game." not in code
+    if "score" in expr:
+        assert "get_score()" in code
+
+
+def test_html5_numeric_params_fall_back_to_the_full_expression_evaluator():
+    """No JS engine in CI: pin that parseNumParam tries gmExpressionValue
+    (whose scope has score/lives/health/self/mouse) before the fallback.
+    Verified in a real browser engine when this landed: score -> 7,
+    self.mouse_x -> 120, "(score * (self.x + 2))" -> 84."""
+    js = (REPO / "export/HTML5/templates/engine.js").read_text(encoding="utf-8")
+    body = js[js.index("function parseNumParam("):]
+    body = body[:body.index("\n}\n")]
+    tail = body[body.rindex("} catch (e)"):]
+    assert re.search(r"gmExpressionValue\(s, inst,", tail), "fallback missing"
+    assert tail.index("gmExpressionValue") < tail.rindex("return fallback")

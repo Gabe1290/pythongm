@@ -574,6 +574,18 @@
          * deleted or renamed), and a "Custom name..." entry lets users type
          * an arbitrary name.
          */
+        // Inverse of blockly_generators.js's VALUE_BLOCK_EXPRESSIONS, plus the
+        // legacy game.score/lives/health spellings (audit B15).
+        function valueBlockForText(text) {
+            var legacy = {'game.score': 'value_score', 'game.lives': 'value_lives',
+                          'game.health': 'value_health'};
+            if (legacy[text]) return legacy[text];
+            for (var t in VALUE_BLOCK_EXPRESSIONS) {
+                if (VALUE_BLOCK_EXPRESSIONS[t] === text && Blockly.Blocks[t]) return t;
+            }
+            return null;
+        }
+
         function createAssetField(assetKey, defaultValue, extraOptions) {
             // Blockly calls optionsFn with `this` bound to the FieldDropdown,
             // so we can read the field's current value to preserve "stale"
@@ -2349,6 +2361,19 @@
                 var input = block.getInput(inputName);
                 if (input && input.connection) {
                     var str = String(value);
+                    // B6a: a value that is exactly what a value block saves
+                    // ("score", "self.hspeed", ...) loads as that block, not
+                    // a text block. "game.*" is the pre-B6a spelling no engine
+                    // evaluated on desktop; loading it as the block makes the
+                    // next save write the working spelling.
+                    var valueType = valueBlockForText(str.trim());
+                    if (valueType) {
+                        var valueBlock = workspace.newBlock(valueType);
+                        valueBlock.initSvg();
+                        valueBlock.render();
+                        input.connection.connect(valueBlock.outputConnection);
+                        return;
+                    }
                     // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: an authored
                     // EXPRESSION ("direction+90", "32/6", "other.x*2") here
                     // silently became 0 -- Blockly's FieldNumber rejects
@@ -2375,6 +2400,15 @@
                 if (input && input.connection) {
                     var textBlock = workspace.newBlock('text');
                     textBlock.setFieldValue(String(value), 'TEXT');
+                    // Audit B6a: an expression ("(score * 2)") loads as a text
+                    // block, whose output is typed String -- a Number-only input
+                    // (most of them) refused it and the value was lost. Untype
+                    // this one block's output when the input won't take text;
+                    // getInputValue already saves a text block verbatim.
+                    var accepts = input.connection.getCheck();
+                    if (accepts && accepts.indexOf('String') === -1) {
+                        textBlock.setOutput(true, null);
+                    }
                     textBlock.initSvg();
                     textBlock.render();
                     input.connection.connect(textBlock.outputConnection);

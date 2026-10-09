@@ -98,6 +98,12 @@ class GameInstance:
         # Speed properties for smooth movement
         self.hspeed = 0.0  # Horizontal speed (pixels per frame)
         self.vspeed = 0.0  # Vertical speed (pixels per frame)
+        # Position of the last mouse press in room coordinates (set by
+        # input_handler). Defaulted to 0 so "self.mouse_x" in an expression
+        # evaluates before the first click, as it already does on the HTML5
+        # and Kivy exports (Blockly audit B6a).
+        self.mouse_x = 0.0
+        self.mouse_y = 0.0
 
         # Physics properties
         self.gravity = 0.0  # Gravity strength (pixels per frame^2)

@@ -664,6 +664,27 @@ function generateActionCodeInner(block) {
     }
 }
 
+// Value blocks -> expression text (see getInputValue). Shared with the
+// loader (blockly_workspace.html's connectNumberBlock), which turns these
+// exact texts back into the same blocks.
+var VALUE_BLOCK_EXPRESSIONS = {
+    'value_x': 'self.x',
+    'value_y': 'self.y',
+    'value_hspeed': 'self.hspeed',
+    'value_vspeed': 'self.vspeed',
+    'value_mouse_x': 'self.mouse_x',
+    'value_mouse_y': 'self.mouse_y',
+    'value_score': 'score',
+    'value_lives': 'lives',
+    'value_health': 'health'
+};
+
+// Blockly's math_arithmetic OP field -> operator text. "**" (power) is
+// valid on all three engines (Python eval on desktop/Kivy, JS on HTML5).
+var MATH_ARITHMETIC_OPS = {
+    'ADD': '+', 'MINUS': '-', 'MULTIPLY': '*', 'DIVIDE': '/', 'POWER': '**'
+};
+
 function getInputValue(block, inputName, defaultValue) {
     var input = block.getInputTargetBlock(inputName);
     if (input) {
@@ -682,16 +703,15 @@ function getInputValue(block, inputName, defaultValue) {
             // the identical bug shape and a future caller would hit it.
             var text = input.getFieldValue('TEXT');
             return (text === null || text === undefined) ? defaultValue : text;
-        } else if (input.type === 'value_x') {
-            return 'self.x';
-        } else if (input.type === 'value_y') {
-            return 'self.y';
-        } else if (input.type === 'value_score') {
-            return 'game.score';
-        } else if (input.type === 'value_lives') {
-            return 'game.lives';
-        } else if (input.type === 'value_health') {
-            return 'game.health';
+        } else if (VALUE_BLOCK_EXPRESSIONS[input.type]) {
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6a/B15: spellings every
+            // engine evaluates (desktop _parse_value, HTML5 gmExpressionValue
+            // via parseNumParam, Kivy _num_code). "game.score" -- the old
+            // spelling -- only ever worked nowhere on desktop.
+            return VALUE_BLOCK_EXPRESSIONS[input.type];
+        } else if (input.type === 'math_arithmetic') {
+            var op = MATH_ARITHMETIC_OPS[input.getFieldValue('OP')] || '+';
+            return '(' + getInputValue(input, 'A', 0) + ' ' + op + ' ' + getInputValue(input, 'B', 0) + ')';
         } else if (input.type === 'math_random_int') {
             // Blockly's standard Math category block ("random integer from
             // %1 to %2", FROM/TO value inputs) -- used by Tutorial 2's star

@@ -537,6 +537,12 @@ function parseNumParam(value, inst, fallback) {
             if (typeof result === 'number' && isFinite(result)) return result;
         }
     } catch (e) { /* fall through */ }
+    // Anything the narrow whitelist above can't take ("score",
+    // "self.hspeed", "(score * 2)", "self.mouse_x" -- what Blockly's value
+    // and math blocks save, audit B6a) goes through the same evaluator the
+    // conditions use, which has the full instance/game scope.
+    const viaScope = gmExpressionValue(s, inst, (typeof window !== 'undefined') ? window.game : null);
+    if (typeof viaScope === 'number' && isFinite(viaScope)) return viaScope;
     return fallback;
 }
 

@@ -255,12 +255,22 @@ moment they touch a block.
   `_resolve_instance_names` + its function whitelist regex). Check each
   before choosing a spelling; `math_random_int` → `irandom(...)` is the
   precedent. Units, one commit each:
-  - [ ] **B6a — value blocks + B15.** `value_score/lives/health` → bare
-    `score`/`lives`/`health` (works on all three; `game.score` doesn't on
-    desktop); `value_hspeed/vspeed` → `self.hspeed`/`self.vspeed`;
-    `value_mouse_x/y` → needs the name resolved on every engine first
-    (desktop leaves bare `mouse_x` unresolved); `math_arithmetic` →
-    parenthesised `(A op B)` with `+ - * /` and `**` for power.
+  - [x] **B6a — value blocks + B15, landed (commit "fix(blockly): B6a",
+    2026-10-09).** Spellings in a shared `VALUE_BLOCK_EXPRESSIONS` table:
+    `score`/`lives`/`health`, `self.hspeed`/`self.vspeed`,
+    `self.mouse_x`/`self.mouse_y` (the last mouse press, the meaning all
+    three engines share); `math_arithmetic` → `(A op B)` with `**` for
+    power. Engine side: desktop instances now start with
+    `mouse_x`/`mouse_y` = 0 (HTML5/Kivy already did); HTML5's
+    `parseNumParam` falls back to `gmExpressionValue` (it rejected any bare
+    name — verified in a real browser engine: score 7, self.mouse_x 120,
+    `(score * (self.x + 2))` 84); Kivy needed nothing. Loader: those exact
+    texts (and legacy `game.*`) load as their value blocks, and — found
+    while testing — a text block carrying an expression could not connect
+    to a Number-only input at all (~120 of them), so `(score * 2)` in
+    set_hspeed loaded as nothing; `connectTextBlock` now untypes that one
+    block's output. Audit tool 112 → 106. Tests:
+    `TestB6aValueAndArithmeticBlocks` + `tests/test_blockly_value_expressions.py`.
   - [ ] **B6b — math functions on all three engines.** Add `sqrt`, `ln`,
     `log10`, `exp`, `pow10` (or the spellings chosen) to every engine's
     function set (desktop `_known_functions`, the function-detect regex,
@@ -312,7 +322,7 @@ moment they touch a block.
   fallback is now `<self>` ("keep current sprite") rather than an empty
   name. U0's lock catches it, but a real fix would load such names as a
   preserved "(missing)" option.
-- [ ] **B15 — The score/lives/health value blocks save names the desktop
+- [x] **B15 — fixed with B6a (see above).** The score/lives/health value blocks save names the desktop
   engine can't evaluate (found scoping B6, 2026-10-09).** `getInputValue`
   turns `value_score`/`value_lives`/`value_health` into `game.score` /
   `game.lives` / `game.health`, but `ActionExecutor._parse_value` only
