@@ -49,7 +49,17 @@ jobs:
 
       - name: Run unit tests
         run: |
-          cd tests && python -m pytest test_config.py test_project_manager.py test_asset_manager.py test_integration.py test_exporters.py test_game_runner.py test_action_executor.py -v --tb=long
+          # -X faulthandler: a 2026-10 run of this exact job (Python 3.10)
+          # aborted with "munmap_chunk(): invalid pointer" (SIGABRT) AFTER
+          # every test already passed -- i.e. during process teardown, not
+          # inside any test, so --tb=long had nothing to show. faulthandler
+          # installs a SIGABRT handler that dumps the live Python traceback
+          # at the moment of the fault, which is the only way a future
+          # recurrence becomes diagnosable instead of a bare "Aborted
+          # (core dumped)". See tests/conftest.py's
+          # _quit_pygame_at_session_end fixture for the suspected cause
+          # (SDL never explicitly quit) this is paired with.
+          cd tests && python -X faulthandler -m pytest test_config.py test_project_manager.py test_asset_manager.py test_integration.py test_exporters.py test_game_runner.py test_action_executor.py -v --tb=long
         env:
           SDL_AUDIODRIVER: dummy
           SDL_VIDEODRIVER: dummy

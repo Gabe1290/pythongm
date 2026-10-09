@@ -71,6 +71,26 @@ except Exception:
     # pygame.error or other initialization errors
     HAS_PYGAME = False
 
+
+@pytest.fixture(autouse=True, scope="session")
+def _quit_pygame_at_session_end():
+    """pygame.init() above has no matching pygame.quit() anywhere in this
+    repo (confirmed by grep) -- SDL's subsystems were only ever torn down
+    by whatever implicit cleanup runs at interpreter shutdown, not pygame's
+    own documented quit() path. A CI run (`tests.yml`'s unit-tests job,
+    Python 3.10 specifically) has shown a `munmap_chunk(): invalid
+    pointer` / SIGABRT crash *after* every test already passed -- i.e.
+    during process teardown, not any specific test -- which is exactly
+    the shape of bug an uncontrolled SDL subsystem shutdown produces.
+    Calling pygame.quit() explicitly, once, after the whole session is the
+    documented-correct lifecycle and a low-risk, well-justified mitigation
+    even though it could not be reproduced locally (no Python 3.10
+    interpreter available here to confirm the exact fault)."""
+    yield
+    if HAS_PYGAME:
+        pygame.quit()
+
+
 # PIL/Pillow detection
 try:
     from PIL import Image as _PIL_Image  # noqa: F401
