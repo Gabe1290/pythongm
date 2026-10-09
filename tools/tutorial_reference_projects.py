@@ -45,6 +45,21 @@ def _art(kind, w, h, color):
     return im
 
 
+def _basket_art(w, h, fruit_color, fruit_r):
+    """A simple brown bowl, optionally holding one fruit circle (for
+    Tutorial 15 -- the basket's sprite shows what it's currently holding).
+    fruit_color=None draws an empty bowl."""
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    bowl_top = h - 22
+    d.polygon([(4, bowl_top), (w - 4, bowl_top), (w - 10, h - 2), (10, h - 2)],
+              fill=(150, 100, 60, 255))
+    if fruit_color is not None:
+        cx, cy = w // 2, bowl_top - fruit_r + 6
+        d.ellipse((cx - fruit_r, cy - fruit_r, cx + fruit_r, cy + fruit_r), fill=fruit_color)
+    return im
+
+
 class Project:
     """Tiny writer for the embedded-assets project.json the engine and the IDE load."""
 
@@ -61,6 +76,16 @@ class Project:
 
     def sprite(self, name, kind, w, h, color):
         _art(kind, w, h, color).save(self.root / "sprites" / f"{name}.png")
+        self.data["assets"]["sprites"][name] = {
+            "name": name, "asset_type": "sprite", "file_path": f"sprites/{name}.png",
+            "width": w, "height": h, "origin_x": 0, "origin_y": 0, "frames": 1,
+            "frame_width": w, "frame_height": h, "animation_type": "single",
+            "speed": 10.0, "imported": True}
+
+    def sprite_from_image(self, name, image, w, h):
+        """Register a sprite from an already-built PIL image (for art that
+        isn't one of _art's flat shapes, e.g. a two-colour composite)."""
+        image.save(self.root / "sprites" / f"{name}.png")
         self.data["assets"]["sprites"][name] = {
             "name": name, "asset_type": "sprite", "file_path": f"sprites/{name}.png",
             "width": w, "height": h, "origin_x": 0, "origin_y": 0, "frames": 1,
@@ -716,6 +741,106 @@ def build_t14(root, phase=2):
     return m._build_lesson14(Path(root), hud, viewport_height=256)
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 15 - Fruit Fusion: a simplified merge game   (phases 1..4)
+#
+# Each fruit tier is its OWN object (obj_fruit_cherry/_strawberry/_orange),
+# not one object with a random "level" -- so the collision event that fires
+# already tells the basket which tier was caught, with no conditional
+# needed at spawn time and no need to read a variable off the caught
+# instance before destroying it. The basket always holds exactly one fruit
+# (starts holding a cherry, so there's no "empty" state); the only
+# conditional in the whole game is a single if/else per merge tier
+# ("does this match what I'm holding?"), repeated once per phase with one
+# new fruit type added -- see docs/TUTORIAL_15_FRUIT_FUSION_PLAN.md.
+# ---------------------------------------------------------------------------
+
+T15_PHASES = ["moving_basket", "first_merge", "second_merge", "winning"]
+
+
+def build_t15(root, phase=4):
+    p = Project(root, "FruitFusion", 640, 480)
+
+    p.sprite_from_image("spr_basket_empty", _basket_art(56, 40, None, 0), 56, 40)
+    p.sprite_from_image("spr_basket_cherry", _basket_art(56, 40, (210, 30, 30, 255), 9), 56, 40)
+    p.sprite_from_image("spr_basket_strawberry", _basket_art(56, 40, (235, 60, 90, 255), 12), 56, 40)
+    p.sprite_from_image("spr_basket_orange", _basket_art(56, 40, (250, 140, 20, 255), 15), 56, 40)
+    p.sprite_from_image("spr_basket_watermelon", _basket_art(56, 40, (60, 170, 80, 255), 18), 56, 40)
+
+    player_ev = {"keyboard": {
+        "left": {"actions": [act("set_hspeed", speed=-5)]},
+        "right": {"actions": [act("set_hspeed", speed=5)]},
+        "nokey": {"actions": [act("stop_movement")]}}}
+    placements = [("obj_player", 304, 430)]
+    basket_sprite = "spr_basket_empty"
+
+    def falling_fruit(sprite_name_, w, color):
+        p.sprite(sprite_name_, "circle", w, w, color)
+        return {"create": {"actions": [act("set_vspeed", speed=3)]},
+                "outside_room": {"actions": [act("destroy_instance", target="self")]}}
+
+    def merge_action(matches_level, next_level, bonus, next_sprite, win=False):
+        then_actions = [act("set_variable", variable="held_level", value=next_level),
+                        act("set_score", value=bonus, relative=True),
+                        act("set_sprite", sprite=next_sprite)]
+        if win:
+            then_actions.append(act("goto_room", room="room_win"))
+        return [act("if_condition", condition_type="expression",
+                    expression=f"self.held_level == {matches_level}",
+                    then_actions=then_actions,
+                    else_actions=[act("set_score", value=1, relative=True)]),
+                act("destroy_instance", target="other")]
+
+    if phase >= 2:
+        p.obj("obj_fruit_cherry", "spr_fruit_cherry", falling_fruit("spr_fruit_cherry", 20, (210, 30, 30, 255)))
+        p.obj("obj_spawn_cherry", "", {
+            "create": {"actions": [act("set_alarm", alarm_number=0, steps=90)]},
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_cherry", x="irandom(580)", y=0),
+                                    act("set_alarm", alarm_number=0, steps=90)]}})
+        placements.append(("obj_spawn_cherry", 10, 10))
+        player_ev["create"] = {"actions": [act("set_score", value=0),
+                                           act("set_variable", variable="held_level", value=1)]}
+        player_ev["draw"] = {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}
+        player_ev["collision_with_obj_fruit_cherry"] = {
+            "target_object": "obj_fruit_cherry",
+            "actions": merge_action(1, 2, 10, "spr_basket_strawberry")}
+        basket_sprite = "spr_basket_cherry"
+
+    if phase >= 3:
+        p.obj("obj_fruit_strawberry", "spr_fruit_strawberry",
+              falling_fruit("spr_fruit_strawberry", 26, (235, 60, 90, 255)))
+        p.obj("obj_spawn_strawberry", "", {
+            "create": {"actions": [act("set_alarm", alarm_number=0, steps=120)]},
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_strawberry", x="irandom(580)", y=0),
+                                    act("set_alarm", alarm_number=0, steps=120)]}})
+        placements.append(("obj_spawn_strawberry", 10, 50))
+        player_ev["collision_with_obj_fruit_strawberry"] = {
+            "target_object": "obj_fruit_strawberry",
+            "actions": merge_action(2, 3, 20, "spr_basket_orange")}
+
+    if phase >= 4:
+        p.obj("obj_fruit_orange", "spr_fruit_orange", falling_fruit("spr_fruit_orange", 32, (250, 140, 20, 255)))
+        p.obj("obj_spawn_orange", "", {
+            "create": {"actions": [act("set_alarm", alarm_number=0, steps=150)]},
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_orange", x="irandom(580)", y=0),
+                                    act("set_alarm", alarm_number=0, steps=150)]}})
+        placements.append(("obj_spawn_orange", 10, 90))
+        player_ev["collision_with_obj_fruit_orange"] = {
+            "target_object": "obj_fruit_orange",
+            "actions": merge_action(3, 4, 50, "spr_basket_watermelon", win=True)}
+        p.obj("obj_win_text", "", {
+            "draw": {"actions": [act("set_draw_color", color="#ffffff"),
+                                 act("draw_text", text='"YOU WIN! You made a watermelon!"', x=120, y=220),
+                                 act("draw_text", text='"Press SPACE to play again"', x=190, y=260)]},
+            "keyboard_press": {"space": {"actions": [act("restart_game")]}}})
+
+    p.obj("obj_player", basket_sprite, player_ev)
+    p.room("room_main", 640, 480, placements, "#cfe8ff")
+    if phase >= 4:
+        p.room("room_win", 640, 480, [("obj_win_text", 10, 10)], "#B0E8A0")
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -730,6 +855,7 @@ BUILDERS = {  # folder -> (builder, phase names)
     "12_raycast_textures": (build_t12, T12_PHASES),
     "13_raycast_goals_monsters": (build_t13, T13_PHASES),
     "14_raycast_hud_minimap": (build_t14, T14_PHASES),
+    "15_fruit_fusion": (build_t15, T15_PHASES),
 }
 
 

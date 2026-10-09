@@ -1297,6 +1297,148 @@ def test_t10_space_after_a_win_leaves_the_game(tmp_path):
     assert st2 is None or st2.get("session") is None
 
 
+# ----------------------------------------------------------------- Tutorial 15
+
+def _place(path, object_name, x, y):
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    data["assets"]["rooms"]["room_main"]["instances"].append(
+        {"object_name": object_name, "x": x, "y": y, "rotation": 0,
+         "scale_x": 1.0, "scale_y": 1.0, "visible": True})
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    return path
+
+
+def test_t15_phase1_basket_moves_left_and_right_and_stops_with_no_key(tmp_path):
+    path = trp.build_t15(tmp_path, 1)
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 15:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        if f >= 17:
+            xs.append(insts(r, "obj_player")[0].x)
+    play(path, script, 40)
+    assert len(set(xs)) == 1 and xs[0] > 304     # moved right, then stayed put
+
+
+def test_t15_phase1_has_no_fruit_objects_yet(tmp_path):
+    path = trp.build_t15(tmp_path, 1)
+    objects = trp.json.loads(path.read_text(encoding="utf-8"))["assets"]["objects"]
+    assert "obj_fruit_cherry" not in objects and "obj_spawn_cherry" not in objects
+
+
+def test_t15_phase2_catching_a_cherry_merges_to_strawberry_and_scores_ten(tmp_path):
+    path = trp.build_t15(tmp_path, 2)
+    _place(path, "obj_fruit_cherry", 304, 400)       # falls straight onto the basket
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 20:
+            player = insts(r, "obj_player")[0]
+            snap["score"] = r.score
+            snap["held_level"] = player.held_level
+            snap["sprite"] = sprite_name(r, player)
+            snap["cherry_gone"] = len(insts(r, "obj_fruit_cherry")) == 0
+    play(path, script, 21)
+    assert snap["score"] == 10
+    assert snap["held_level"] == 2
+    assert snap["sprite"] == "spr_basket_strawberry"
+    assert snap["cherry_gone"]
+
+
+def test_t15_phase3_mismatched_fruit_gives_only_a_consolation_point(tmp_path):
+    """The basket still holds a cherry (held_level 1); a strawberry falling
+    in does not match, so it should NOT merge -- just +1, held_level unchanged."""
+    path = trp.build_t15(tmp_path, 3)
+    _place(path, "obj_fruit_strawberry", 304, 400)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 20:
+            player = insts(r, "obj_player")[0]
+            snap["score"] = r.score
+            snap["held_level"] = player.held_level
+            snap["sprite"] = sprite_name(r, player)
+    play(path, script, 21)
+    assert snap["score"] == 1
+    assert snap["held_level"] == 1
+    assert snap["sprite"] == "spr_basket_cherry"
+
+
+def test_t15_phase3_catching_a_matching_strawberry_merges_to_orange(tmp_path):
+    path = trp.build_t15(tmp_path, 3)
+    _place(path, "obj_fruit_strawberry", 304, 400)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 1:
+            insts(r, "obj_player")[0].held_level = 2        # already holding a strawberry
+        if f == 20:
+            player = insts(r, "obj_player")[0]
+            snap["score"] = r.score
+            snap["held_level"] = player.held_level
+            snap["sprite"] = sprite_name(r, player)
+    play(path, script, 21)
+    assert snap["score"] == 20
+    assert snap["held_level"] == 3
+    assert snap["sprite"] == "spr_basket_orange"
+
+
+def test_t15_phase4_catching_a_matching_orange_merges_to_watermelon_and_wins(tmp_path):
+    path = trp.build_t15(tmp_path, 4)
+    _place(path, "obj_fruit_orange", 304, 400)
+    rooms = []
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 1:
+            insts(r, "obj_player")[0].held_level = 3        # already holding an orange
+        name = r.current_room.name if r.current_room else None
+        if not rooms or rooms[-1] != name:
+            rooms.append(name)
+        if f == 20:
+            snap["score"] = r.score
+    play(path, script, 21)
+    assert snap["score"] == 50
+    assert rooms == ["room_main", "room_win"]
+
+
+def test_t15_missed_fruit_is_destroyed_once_it_falls_outside_the_room(tmp_path):
+    path = trp.build_t15(tmp_path, 2)
+    _place(path, "obj_fruit_cherry", 10, 460)      # off to the side, never touches the basket
+    counts = []
+
+    def script(f, post, r, seen):
+        counts.append(len(insts(r, "obj_fruit_cherry")))
+    play(path, script, 60)
+    assert counts[-1] == 0, "a missed fruit should be destroyed outside the room, not pile up"
+
+
+def test_t15_every_phase_checkpoint_loads_in_the_real_ide_project_loader(tmp_path):
+    from core.project_manager import ProjectManager
+    builder, names = trp.BUILDERS["15_fruit_fusion"]
+    for i, name in enumerate(names, 1):
+        path = builder(tmp_path / f"{i}_{name}", i)
+        assert ProjectManager().load_project(str(path.parent))
+
+
+def test_t15_phase4_wins_via_the_real_action_list_not_a_hardcoded_test_shortcut():
+    """Guard against a future edit accidentally hardcoding the win instead of
+    deriving it from three real if/else merges -- the win action only exists
+    inside obj_player's collision_with_obj_fruit_orange event."""
+    import tempfile
+    path = trp.build_t15(Path(tempfile.mkdtemp()), 4)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    ev = data["assets"]["objects"]["obj_player"]["events"]["collision_with_obj_fruit_orange"]
+    cond = ev["actions"][0]
+    assert cond["action"] == "if_condition"
+    assert cond["parameters"]["condition_type"] == "expression"
+    then_actions = cond["parameters"]["then_actions"]
+    assert any(a["action"] == "goto_room" and a["parameters"]["room"] == "room_win" for a in then_actions)
+
+
 # ----------------------------------------------------------------- Tutorials 11-14 zips
 
 @pytest.mark.parametrize("folder", ["11_raycast_first_steps", "12_raycast_textures",
