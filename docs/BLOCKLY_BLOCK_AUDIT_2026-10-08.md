@@ -1,10 +1,12 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete; U0, B1, B2 (partial), B3
-(partial), B4, B5 landed.** B6–B9 are still open, plus four new findings
-(B10, B11, B12, B13) turned up while fixing B1/B3/B5, B2 itself only
-closes 3 of its 4 named cases (see B2's own notes), and B3 leaves the
+just placeholders?* Status: **review complete; U0, B1, B2 (+ its
+condition_type follow-up), B3 (partial), B4, B5 landed.** B6–B9 are still
+open, plus four new findings (B10, B11, B12, B13) turned up while fixing
+B1/B3/B5. B2 itself now closes 3 of its 4 named cases plus the
+condition_type follow-up described under its own bullet (the 4th,
+`test_expression`, needs a new block — see below), and B3 leaves the
 three LAN-multiplayer events open (see B3's own notes). The checkboxes
 below are the resume state; one unit ≈ one commit with its regression
 test.
@@ -32,7 +34,9 @@ and the project asset lists pushed exactly as `BlocklyWidget` does.
    in between on another machine; this doc's own baseline wasn't re-verified
    each time). Post-B3: **596** (see B3's own notes for why the headline count
    barely moved despite fixing 37 event-drops — it's not a regression).
-   Post-B4: **566**. Post-B5: **255** (`param-dropped` 277 → 0).*
+   Post-B4: **566**. Post-B5: **255** (`param-dropped` 277 → 0). Post-B2's
+   condition_type follow-up: **176** (every remaining `if_condition`
+   entry gone from the `--details` output).*
 
 Why it matters: `ObjectEditor.on_blockly_events_modified`
 (`editors/object_editor/object_editor_main.py`) **replaces the object's events
@@ -88,11 +92,23 @@ moment they touch a block.
     each (restoring the condition fields — including `test_variable`'s
     `scope`/`global.`-prefix reconstruction), and a new **ELSE** statement
     input on both blocks (was DO-only) wired through generator + loader.
-    **Remaining, not fixed:** `if_condition`'s hand-written block only has
-    fields for `condition_type='instance_count'` — loading any other
-    `condition_type` (`expression`, `key`, ...) now preserves the nested
-    actions, but the condition itself reverts to `instance_count`. A real
-    multi-condition-type UI is a separate, larger feature.
+    **Follow-up, now fixed (landed `<pending-hash>`):** `if_condition`'s
+    hand-written block originally had fields for
+    `condition_type='instance_count'` only — loading any other
+    `condition_type` preserved the nested actions but the condition itself
+    reverted to `instance_count`. Rebuilt the block with one field-group
+    per condition_type (8 total, matching
+    `events/conditional_editor.py`'s `ConditionalActionEditor` and
+    `runtime/action_executor.py`'s `_evaluate_if_condition` field-by-field),
+    shown/hidden via the `CONDITION_TYPE` dropdown's validator — the same
+    `setVisible` pattern `set_sprite` already uses elsewhere in the file.
+    Verified against the real page via
+    `tests/test_blockly_block_audit_roundtrip.py`'s
+    `TestB2ConditionTypesBeyondInstanceCount` class, using the shared
+    `diff_events` comparator. Audit tool's 98-sample baseline: 255 → 176
+    (every `if_condition` entry gone from `--details`). `test_expression`
+    and `if_collision_at` (below) are unaffected — this only extends the
+    block `if_condition` already had.
   - `if_next_room_exists` / `if_previous_room_exists`: **THEN actions were
     already fine** (re-verified against the real page before touching
     anything — the audit's "nested actions dropped" claim was wrong for

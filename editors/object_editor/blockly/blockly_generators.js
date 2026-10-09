@@ -249,9 +249,9 @@ function generateActionCodeInner(block) {
         case 'exit_event':
             return {action: 'exit_event', parameters: {}};
         case 'if_condition':
-            // Collect nested actions from the DO/ELSE slots.
-            // condition_type is hardcoded to instance_count for the Blockly form;
-            // the multi-type editor stays available via the traditional picker.
+            // Collect nested actions from the DO/ELSE slots (common to every
+            // condition_type), then the fields for whichever type is
+            // selected -- see blockly_blocks.js for the 8 types and why.
             var ifCondActions = [];
             var ifCondInner = block.getInputTargetBlock('DO');
             while (ifCondInner) {
@@ -270,14 +270,39 @@ function generateActionCodeInner(block) {
                 }
                 ifCondElseInner = ifCondElseInner.getNextBlock();
             }
-            return {action: 'if_condition', parameters: {
-                condition_type: 'instance_count',
-                object_name: block.getFieldValue('OBJECT_NAME'),
-                operator: block.getFieldValue('OPERATOR'),
-                value: block.getFieldValue('VALUE'),
+            var ifCondType = block.getFieldValue('CONDITION_TYPE');
+            var ifCondParams = {
+                condition_type: ifCondType,
                 then_actions: ifCondActions,
                 else_actions: ifCondElseActions
-            }};
+            };
+            if (ifCondType === 'variable_compare') {
+                ifCondParams.variable = block.getFieldValue('VAR_NAME');
+                ifCondParams.operator = block.getFieldValue('VAR_OPERATOR');
+                ifCondParams.value = block.getFieldValue('VAR_VALUE');
+            } else if (ifCondType === 'position_check') {
+                ifCondParams.check_type = block.getFieldValue('POS_CHECK_TYPE');
+                ifCondParams.operator = block.getFieldValue('POS_OPERATOR');
+                ifCondParams.value = block.getFieldValue('POS_VALUE');
+            } else if (ifCondType === 'collision_check') {
+                ifCondParams.object = block.getFieldValue('COLLISION_OBJECT');
+                ifCondParams.offset_x = block.getFieldValue('COLLISION_OFFSET_X');
+                ifCondParams.offset_y = block.getFieldValue('COLLISION_OFFSET_Y');
+            } else if (ifCondType === 'key_pressed') {
+                ifCondParams.key = block.getFieldValue('KEY_CHECK');
+            } else if (ifCondType === 'mouse_check') {
+                ifCondParams.check = block.getFieldValue('MOUSE_CHECK_FIELD');
+            } else if (ifCondType === 'random_chance') {
+                ifCondParams.chance = block.getFieldValue('CHANCE');
+            } else if (ifCondType === 'expression') {
+                ifCondParams.expression = block.getFieldValue('EXPRESSION');
+            } else {
+                // instance_count (and any unrecognized future type)
+                ifCondParams.object_name = block.getFieldValue('OBJECT_NAME');
+                ifCondParams.operator = block.getFieldValue('OPERATOR');
+                ifCondParams.value = block.getFieldValue('VALUE');
+            }
+            return {action: 'if_condition', parameters: ifCondParams};
         case 'set_variable':
             // Split a leading 'self.' / 'global.' / 'other.' prefix into the
             // separate `scope` parameter the runtime expects. A bare name

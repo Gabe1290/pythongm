@@ -2494,14 +2494,38 @@
                     break;
 
                 case 'if_condition':
-                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2. condition_type
-                    // other than 'instance_count' can't be represented by this
-                    // block (it has no field for it) -- OBJECT_NAME/OPERATOR/
-                    // VALUE are only meaningful for the instance_count case,
-                    // but the then/else actions are preserved regardless.
-                    if (params.object_name) block.setFieldValue(params.object_name, 'OBJECT_NAME');
-                    if (params.operator) block.setFieldValue(params.operator, 'OPERATOR');
-                    block.setFieldValue(String(paramOr(params.value, 0)), 'VALUE');
+                    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B2 follow-up: all
+                    // 8 condition_types the runtime supports
+                    // (action_executor.py's _evaluate_if_condition), matching
+                    // blockly_generators.js's save side field-by-field.
+                    var ifCondLoadType = params.condition_type || 'instance_count';
+                    block.setFieldValue(ifCondLoadType, 'CONDITION_TYPE');
+                    if (ifCondLoadType === 'variable_compare') {
+                        if (params.variable) block.setFieldValue(params.variable, 'VAR_NAME');
+                        if (params.operator) block.setFieldValue(params.operator, 'VAR_OPERATOR');
+                        block.setFieldValue(String(paramOr(params.value, 0)), 'VAR_VALUE');
+                    } else if (ifCondLoadType === 'position_check') {
+                        if (params.check_type) block.setFieldValue(params.check_type, 'POS_CHECK_TYPE');
+                        if (params.operator) block.setFieldValue(params.operator, 'POS_OPERATOR');
+                        block.setFieldValue(String(paramOr(params.value, 0)), 'POS_VALUE');
+                    } else if (ifCondLoadType === 'collision_check') {
+                        if (params.object) block.setFieldValue(params.object, 'COLLISION_OBJECT');
+                        block.setFieldValue(String(paramOr(params.offset_x, 0)), 'COLLISION_OFFSET_X');
+                        block.setFieldValue(String(paramOr(params.offset_y, 0)), 'COLLISION_OFFSET_Y');
+                    } else if (ifCondLoadType === 'key_pressed') {
+                        if (params.key) block.setFieldValue(params.key, 'KEY_CHECK');
+                    } else if (ifCondLoadType === 'mouse_check') {
+                        if (params.check) block.setFieldValue(params.check, 'MOUSE_CHECK_FIELD');
+                    } else if (ifCondLoadType === 'random_chance') {
+                        block.setFieldValue(String(paramOr(params.chance, 50)), 'CHANCE');
+                    } else if (ifCondLoadType === 'expression') {
+                        if (params.expression !== undefined) block.setFieldValue(params.expression, 'EXPRESSION');
+                    } else {
+                        // instance_count (and any unrecognized future type)
+                        if (params.object_name) block.setFieldValue(params.object_name, 'OBJECT_NAME');
+                        if (params.operator) block.setFieldValue(params.operator, 'OPERATOR');
+                        block.setFieldValue(String(paramOr(params.value, 0)), 'VALUE');
+                    }
                     attachSubActionsToBlock(block, params.then_actions || [], 'DO');
                     attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
                     break;

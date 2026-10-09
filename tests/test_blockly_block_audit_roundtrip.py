@@ -43,12 +43,40 @@ loadable but had no ELSE statement input, so an authored else_actions
 (which the runtime genuinely executes -- runtime/action_room.py's
 _dispatch_room_test) was silently dropped.
 
-Known, documented remaining gap, NOT fixed: if_condition's hand-written
-block only has fields for condition_type='instance_count' -- loading any
-other condition_type (expression, key, ...) now preserves the nested
-actions, but the condition itself reverts to instance_count. test_expression
-and if_collision_at have no hand-written block at all and are untouched by
-this fix (see the audit doc).
+## B2 follow-up -- if_condition's other 7 condition_types
+
+if_condition's hand-written block originally had fields for
+condition_type='instance_count' only -- loading any other condition_type
+(variable_compare, position_check, collision_check, key_pressed,
+mouse_check, random_chance, expression) preserved the nested then/else
+actions (B2's fix above) but the condition itself silently reverted to
+instance_count, since there was nowhere to put it.
+
+Rebuilt the block with one field-group per condition_type (a
+CONDITION_TYPE dropdown whose validator shows/hides the matching group via
+setVisible -- the same pattern 'set_sprite' already used elsewhere in this
+file), matching events/conditional_editor.py's ConditionalActionEditor
+(the traditional action-list editor's equivalent, already supporting all
+8 types) and runtime/action_executor.py's _evaluate_if_condition field-
+by-field, including the key_pressed condition's canonical key-name set
+(deliberately NOT the file's keyboard-EVENT-block ALL_KEYS list, which
+uses lshift/rshift/lctrl -- this condition uses the smaller generic
+shift/control/alt set both the runtime and the Python editor use).
+
+test_expression and if_collision_at still have no hand-written block at
+all and are untouched by this fix (see the audit doc) -- that's a new
+block, not a wiring fix, same as B2's own note on those two.
+
+Audit tool's 98-sample baseline: 255 -> 176 (B2 was the last of B1-B5's
+if_condition-adjacent fixes; this follow-up's drop is isolated to
+if_condition entries, confirmed by their complete absence from the
+`--details` output after this fix, where they were present before).
+Verified against the real page via
+`tests/test_blockly_block_audit_roundtrip.py`'s
+`TestB2ConditionTypesBeyondInstanceCount` class (same shared fixture),
+using `editors/object_editor/blockly_roundtrip.py`'s own `diff_events`
+comparator rather than a hand-rolled equality check, so representational
+differences ("10" vs 10) don't false-positive.
 
 ## B3 (partial) -- Events with no Blockly block are deleted
 
@@ -219,6 +247,7 @@ import json
 import pytest
 
 from conftest import skip_without_pyside6
+from editors.object_editor.blockly_roundtrip import diff_events
 
 pytestmark = skip_without_pyside6
 
@@ -274,6 +303,45 @@ CASES = {
         {"action": "if_previous_room_exists", "parameters": {
             "then_actions": [{"action": "previous_room", "parameters": {}}],
             "else_actions": [{"action": "restart_room", "parameters": {}}]}}]}},
+    # --- B2 follow-up: if_condition's other 7 condition_types ---
+    "if_condition_variable_compare": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "variable_compare", "variable": "hp",
+            "operator": "<=", "value": "0",
+            "then_actions": [{"action": "destroy_instance", "parameters": {"target": "self"}}],
+            "else_actions": [{"action": "set_score", "parameters": {"value": "5", "relative": True}}]}}]}},
+    "if_condition_position_check": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "position_check", "check_type": "y position",
+            "operator": ">", "value": "600",
+            "then_actions": [{"action": "destroy_instance", "parameters": {"target": "self"}}],
+            "else_actions": []}}]}},
+    "if_condition_collision_check": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "collision_check", "object": "obj_wall",
+            "offset_x": "4", "offset_y": "0",
+            "then_actions": [{"action": "stop_movement", "parameters": {}}],
+            "else_actions": [{"action": "set_score", "parameters": {"value": "1", "relative": True}}]}}]}},
+    "if_condition_key_pressed": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "key_pressed", "key": "space",
+            "then_actions": [{"action": "start_moving_direction", "parameters": {"directions": 90, "speed": "4"}}],
+            "else_actions": []}}]}},
+    "if_condition_mouse_check": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "mouse_check", "check": "Left button pressed",
+            "then_actions": [{"action": "set_score", "parameters": {"value": "1", "relative": True}}],
+            "else_actions": []}}]}},
+    "if_condition_random_chance": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "random_chance", "chance": "25",
+            "then_actions": [{"action": "set_lives", "parameters": {"value": "1", "relative": True}}],
+            "else_actions": [{"action": "set_lives", "parameters": {"value": "-1", "relative": True}}]}}]}},
+    "if_condition_expression": {"create": {"actions": [
+        {"action": "if_condition", "parameters": {
+            "condition_type": "expression", "expression": "self.hp <= 0 and other.alive",
+            "then_actions": [{"action": "destroy_instance", "parameters": {"target": "self"}}],
+            "else_actions": [{"action": "set_score", "parameters": {"value": "0", "relative": True}}]}}]}},
     # --- B3: the twelve events routed through event_other ---
     "game_start_event": {"game_start": {"actions": [
         {"action": "set_lives", "parameters": {"value": 3, "relative": False}}]}},
@@ -503,6 +571,41 @@ class TestB2ConditionsPreserveNestedActions:
         params = _params(round_tripped, "if_previous_room_exists_with_else")
         assert params["then_actions"] == [{"action": "previous_room", "parameters": {}}]
         assert params["else_actions"] == [{"action": "restart_room", "parameters": {}}]
+
+
+class TestB2ConditionTypesBeyondInstanceCount:
+    """if_condition's other 7 condition_types -- see the module docstring's
+    'B2 follow-up' section. Each case is checked with diff_events against
+    its own CASES entry (not a hand-rolled equality check), so a benign
+    representational difference ("10" vs 10) can't false-positive, the
+    same discipline the audit tool itself uses."""
+
+    @pytest.mark.parametrize("label", [
+        "if_condition_variable_compare",
+        "if_condition_position_check",
+        "if_condition_collision_check",
+        "if_condition_key_pressed",
+        "if_condition_mouse_check",
+        "if_condition_random_chance",
+        "if_condition_expression",
+    ])
+    def test_condition_type_and_nested_actions_round_trip_clean(self, round_tripped, label):
+        before = CASES[label]
+        after = round_tripped[label]
+        issues = diff_events(before, after)
+        assert not issues, f"{label}: {issues}"
+
+    def test_condition_type_field_itself_is_preserved_not_reset_to_instance_count(self, round_tripped):
+        """The regression this follow-up fixes: before it, EVERY non-
+        instance_count condition_type silently reverted to instance_count
+        on load (B2's own documented 'remaining gap')."""
+        for label in ["if_condition_variable_compare", "if_condition_position_check",
+                      "if_condition_collision_check", "if_condition_key_pressed",
+                      "if_condition_mouse_check", "if_condition_random_chance",
+                      "if_condition_expression"]:
+            expected_type = CASES[label]["create"]["actions"][0]["parameters"]["condition_type"]
+            actual_type = _params(round_tripped, label)["condition_type"]
+            assert actual_type == expected_type, f"{label}: condition_type reverted to {actual_type!r}"
 
 
 class TestB3EventsWithNoBlockRoundTrip:

@@ -828,15 +828,106 @@ Blockly.Blocks['exit_event'] = {
 // when the comparison holds. Maps to the runtime's if_condition action with
 // condition_type=instance_count. Other condition types (variable_compare,
 // expression, etc.) are reachable via the traditional action picker.
+// docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md: the if_condition action supports 8
+// condition_types at runtime (action_executor.py's _evaluate_if_condition),
+// all 8 already authorable via the traditional ConditionalActionEditor
+// (events/conditional_editor.py) -- this block used to model only
+// instance_count, silently reverting any other condition_type to it the
+// moment an object synced into Blockly. One group of fields per type, shown
+// via the CONDITION_TYPE dropdown's validator (same setVisible pattern as
+// 'set_sprite' above); DO/ELSE stay common to every type.
+var IF_CONDITION_TYPES = [
+    ["count of object", "instance_count"],
+    ["variable", "variable_compare"],
+    ["my position", "position_check"],
+    ["collision at offset", "collision_check"],
+    ["key pressed", "key_pressed"],
+    ["mouse", "mouse_check"],
+    ["random chance", "random_chance"],
+    ["expression", "expression"]
+];
+var IF_CONDITION_COMPARE_OPS = [
+    ["==", "=="], ["!=", "!="], ["<", "<"], [">", ">"], ["<=", "<="], [">=", ">="]
+];
+// Canonical key names for the key_pressed condition -- deliberately NOT the
+// file-top ALL_KEYS list (that one is for keyboard EVENT blocks and uses
+// lshift/rshift/lctrl/... ). This condition's runtime check
+// (_evaluate_if_condition's key_pressed branch) and the Python
+// ConditionalActionEditor both use this smaller, generic set; matching it
+// exactly is what makes a project authored in either editor load correctly
+// in the other.
+var IF_CONDITION_KEYS = [
+    ["Space", "space"], ["Enter", "enter"], ["Escape", "escape"],
+    ["Left Arrow", "left"], ["Right Arrow", "right"],
+    ["Up Arrow", "up"], ["Down Arrow", "down"],
+    ["A", "a"], ["W", "w"], ["S", "s"], ["D", "d"],
+    ["Shift", "shift"], ["Control", "control"], ["Alt", "alt"]
+];
+var IF_CONDITION_MOUSE_CHECKS = [
+    ["Left button pressed", "Left button pressed"],
+    ["Right button pressed", "Right button pressed"],
+    ["Middle button pressed", "Middle button pressed"],
+    ["Over object", "Over object"],
+    ["In region", "In region"]
+];
+// Maps a CONDITION_TYPE value to the one input group it shows.
+var IF_CONDITION_GROUPS = {
+    "instance_count": "INSTANCE_COUNT_GROUP",
+    "variable_compare": "VARIABLE_COMPARE_GROUP",
+    "position_check": "POSITION_CHECK_GROUP",
+    "collision_check": "COLLISION_CHECK_GROUP",
+    "key_pressed": "KEY_PRESSED_GROUP",
+    "mouse_check": "MOUSE_CHECK_GROUP",
+    "random_chance": "RANDOM_CHANCE_GROUP",
+    "expression": "EXPRESSION_GROUP"
+};
+
 Blockly.Blocks['if_condition'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If count of")
+            .appendField("If")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_TYPES, this.validateConditionType.bind(this)), "CONDITION_TYPE");
+
+        this.appendDummyInput("INSTANCE_COUNT_GROUP")
+            .appendField("count of")
             .appendField(new Blockly.FieldTextInput("obj_coin"), "OBJECT_NAME")
-            .appendField(new Blockly.FieldDropdown([
-                ["==", "=="], ["!=", "!="], ["<", "<"], [">", ">"], ["<=", "<="], [">=", ">="]
-            ]), "OPERATOR")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_COMPARE_OPS), "OPERATOR")
             .appendField(new Blockly.FieldNumber(0, 0), "VALUE");
+
+        this.appendDummyInput("VARIABLE_COMPARE_GROUP")
+            .appendField("variable")
+            .appendField(new Blockly.FieldTextInput("score"), "VAR_NAME")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_COMPARE_OPS), "VAR_OPERATOR")
+            .appendField(new Blockly.FieldTextInput("0"), "VAR_VALUE");
+
+        this.appendDummyInput("POSITION_CHECK_GROUP")
+            .appendField(new Blockly.FieldDropdown([
+                ["x position", "x position"], ["y position", "y position"]
+            ]), "POS_CHECK_TYPE")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_COMPARE_OPS), "POS_OPERATOR")
+            .appendField(new Blockly.FieldNumber(0), "POS_VALUE");
+
+        this.appendDummyInput("COLLISION_CHECK_GROUP")
+            .appendField("with")
+            .appendField(new Blockly.FieldTextInput("obj_wall"), "COLLISION_OBJECT")
+            .appendField("offset x:")
+            .appendField(new Blockly.FieldNumber(0), "COLLISION_OFFSET_X")
+            .appendField("y:")
+            .appendField(new Blockly.FieldNumber(0), "COLLISION_OFFSET_Y");
+
+        this.appendDummyInput("KEY_PRESSED_GROUP")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_KEYS), "KEY_CHECK");
+
+        this.appendDummyInput("MOUSE_CHECK_GROUP")
+            .appendField(new Blockly.FieldDropdown(IF_CONDITION_MOUSE_CHECKS), "MOUSE_CHECK_FIELD");
+
+        this.appendDummyInput("RANDOM_CHANCE_GROUP")
+            .appendField(new Blockly.FieldNumber(50, 0, 100), "CHANCE")
+            .appendField("% chance");
+
+        this.appendDummyInput("EXPRESSION_GROUP")
+            .appendField(new Blockly.FieldTextInput("self.hp <= 0"), "EXPRESSION");
+
         this.appendStatementInput("DO")
             .setCheck(null)
             .appendField("then");
@@ -846,7 +937,22 @@ Blockly.Blocks['if_condition'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#FFAB19");
-        this.setTooltip("Run the nested actions when the chosen object's instance count matches the comparison, otherwise run the else actions");
+        this.setTooltip("Check a condition and run the then actions, otherwise the else actions");
+        // Show only the default type's group (mirrors 'set_sprite' above,
+        // which hides its non-default input the same way at the end of init).
+        this.updateShape_("instance_count");
+    },
+    updateShape_: function(conditionType) {
+        for (var type in IF_CONDITION_GROUPS) {
+            var input = this.getInput(IF_CONDITION_GROUPS[type]);
+            if (input) {
+                input.setVisible(type === conditionType);
+            }
+        }
+    },
+    validateConditionType: function(newValue) {
+        this.updateShape_(newValue);
+        return newValue;
     }
 };
 
