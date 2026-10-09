@@ -435,6 +435,48 @@ moment they touch a block.
   pattern the action-list editor already uses for this exact parameter),
   not a dropdown tweak.
 
+### Found 2026-10-10 from the audit tool's remaining 102 differences
+
+B12's symptom is gone: extension actions (Block World, LAN) now load as
+generated `custom_*` blocks and `action-lost` is 0. What remains, beyond
+B13's `directions` and the three LAN events (B3 remainder):
+
+- [ ] **B16 — Expressions in auto-generated blocks' number parameters become
+  0 (HIGH).** The dynamic-block `setBlockParameters` override in
+  `blockly_workspace.html` always builds a `math_number` from the value, so
+  a non-numeric value parses to 0. B4 fixed this only for hand-written
+  blocks (`connectNumberBlock`). Seen: `set_direction_speed` direction
+  `facing_angle+180` / `facing_angle` / `direction+90` → 0 (the raycast
+  samples' turning), speed `32/6` → 0, `if_collision` x/y `8*other.hspeed`
+  → 0, `draw_sprite` x/y `self.x + 3` → 0. Fix: route the dynamic path's
+  number params through the same number-or-text logic.
+- [ ] **B17 — Auto-generated boolean parameters read the text `'0'` as
+  true.** `change_instance.perform_events: '0'` → `True` (treasure). The
+  dynamic loader uses JS truthiness; `'0'`, `'false'`, `''` must be false.
+- [ ] **B18 — `test_variable` with a numeric GameMaker operation code never
+  fires, on the desktop engine itself.** plateforme_3's
+  `obj_monstre_volant_mort` caps vspeed with `operation: "2"` (kept by the
+  GMK import); `ActionExecutor._compare` only knows names/symbols, so it
+  always returns False. Blockly then turns `'2'` into `equal`. Fix in the
+  importer and/or `_compare` (and the export engines) — **confirm
+  GameMaker's code table first** (0 equal, 1 smaller, 2 larger, ... is
+  likely but must be checked against the GM8 format / gmk importer).
+- [ ] **B19 — `destroy_instance` with target `object` loads as "destroy
+  self".** maze_4: the loader picks `instance_destroy` vs
+  `instance_destroy_other` from `target` and collapses `object` (+
+  `target_object`) into self — the wrong instance is destroyed.
+- [ ] **B20 — A value missing from a fixed drop-down resets to its first
+  option.** `place_block.block: 'hotbar_block'` → `'brick'` (block_world_1/2,
+  where `hotbar_block` means "the selected hotbar slot"). Same family as
+  B14 (asset names); fix both by keeping an unknown saved value as an extra
+  option.
+- [ ] **B21 — `draw_health_bar` y2 468 → 470 (raycast_3).** The
+  hand-written block derives y2 from other fields; one value shifts by 2.
+  Investigate before classifying.
+- Harmless, no action: `'true'` → `True` on `set_view.visible`,
+  `enable_views.enable`, `enable_block_world_view.generate` (the engine
+  parses both), and `room_goto_next` → `next_room` (an alias).
+
 ## Suggested order
 
 - [x] **U0 — Safety net, landed `394ca579`.** `BlocklyWidget.
