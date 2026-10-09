@@ -7,7 +7,13 @@
 # earlier until upstreams publish 3.14 wheels.
 
 # Core GUI Framework
-PySide6>=6.4.0
+# <6.12: PySide6/shiboken6 6.12.0 (2026-10-08) over-releases Python's
+# True/False, so on Python 3.10/3.11 the interpreter aborts at exit
+# ("bool_dealloc: deallocating True or False" / "munmap_chunk(): invalid
+# pointer"). 3.12+ is immune (immortal bools, PEP 683). Every CI run went
+# red the moment 6.12.0 was published. Lift the cap once a fixed release
+# exists (test it on 3.10/3.11, e.g. via the Tests workflow's Unit job).
+PySide6>=6.4.0,<6.12
 
 # Image processing and manipulation
 Pillow>=9.0.0
