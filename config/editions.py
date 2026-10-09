@@ -14,6 +14,7 @@ EDITIONS = {
             "02_first_game",
             "03_pong",
             "04_breakout",
+            "15_fruit_fusion",
         ],
         # Welcome-tab sample games shown in this edition, by folder name under
         # samples/ (None = show all). Beginner hides the raycast_*,

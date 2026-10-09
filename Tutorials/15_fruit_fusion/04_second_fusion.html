@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Second Fusion</h1>
+
+    <div class="highlight">
+        <strong>Notice something:</strong> this whole phase is the <em>exact same
+        four steps</em> as Phase 2, just with "cherry" changed to "strawberry"
+        and the numbers changed from 1/2 to 2/3. Once you've built one fruit
+        tier, you already know how to build the next one.
+    </div>
+
+    <h2>Create the Strawberry Sprite and Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a sprite <code>spr_fruit_strawberry</code>, 26&times;26, a pink-red
+            circle (or import <code>Tutorials/15_fruit_fusion/assets/spr_fruit_strawberry.png</code>)</li>
+            <li>Create an object <code>obj_fruit_strawberry</code> with that sprite</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Outside room</span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+    </div>
+
+    <h2>Create the Strawberry Spawner</h2>
+    <div class="step">
+        <ol>
+            <li>Create an object <code>obj_spawn_strawberry</code> (no sprite)</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">120</span> steps</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Alarm 0</span><br>
+            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_strawberry</span> at a random x, y: <span class="block-num">0</span></span><br>
+            <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">120</span> steps</span>
+        </div>
+        <p>A slightly longer wait (<strong>120</strong> steps, 2 seconds) than the cherry
+        spawner &mdash; two fruit types falling at the same pace would be a lot to
+        watch at once.</p>
+        <ol>
+            <li>Open <code>room_main</code> and place one <code>obj_spawn_strawberry</code> anywhere</li>
+        </ol>
+    </div>
+
+    <h2>Catching a Strawberry</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_player</code>'s Blockly tab and add one more Collision event:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_fruit_strawberry</span><br>
+            <span class="block block-control block-indent">If <span class="block-num">held_level</span> equals <span class="block-num">2</span> then</span><br>
+            <span class="block block-instance block-indent2">Set variable <span class="block-num">held_level</span> to <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent2">Add to score <span class="block-num">20</span></span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-num">spr_basket_orange</span></span><br>
+            <span class="block block-control block-indent">Otherwise</span><br>
+            <span class="block block-score block-indent2">Add to score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>This is the same pattern as last phase: a matching catch (holding a
+        strawberry, level 2, catching a strawberry) fuses up to an orange
+        (level 3) and is worth more points, because it took more steps to get
+        there.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Catch a cherry, then catch a strawberry &rarr; the basket ends up an
+            <strong>orange</strong>, having scored <strong>10 + 20 = 30</strong> points</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" for the final fusion &mdash; this one wins the game.
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Winning</h1>
+
+    <p>One more fruit, one more fusion &mdash; and this time, fusing it all the
+    way up wins the game.</p>
+
+    <h2>Create the Orange Sprite and Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a sprite <code>spr_fruit_orange</code>, 32&times;32, an orange circle
+            (or import <code>Tutorials/15_fruit_fusion/assets/spr_fruit_orange.png</code>)</li>
+            <li>Create an object <code>obj_fruit_orange</code> with that sprite</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Outside room</span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+    </div>
+
+    <h2>Create the Orange Spawner</h2>
+    <div class="step">
+        <ol>
+            <li>Create an object <code>obj_spawn_orange</code> (no sprite)</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">150</span> steps</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Alarm 0</span><br>
+            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_orange</span> at a random x, y: <span class="block-num">0</span></span><br>
+            <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">150</span> steps</span>
+        </div>
+        <ol>
+            <li>Open <code>room_main</code> and place one <code>obj_spawn_orange</code> anywhere</li>
+        </ol>
+        <p>There is <strong>no "falling watermelon"</strong> sprite or spawner &mdash; a
+        watermelon is only ever something your basket becomes, never something
+        that falls from the sky. It's the goal, not an ingredient.</p>
+    </div>
+
+    <h2>Build the Win Room</h2>
+    <div class="step">
+        <ol>
+            <li>Create an object <code>obj_win_text</code> &mdash; no sprite needed</li>
+            <li>Open its Blockly tab and add these two events:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">YOU WIN! You made a watermelon!</span> at x: <span class="block-num">120</span> y: <span class="block-num">220</span></span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">Press SPACE to play again</span> at x: <span class="block-num">190</span> y: <span class="block-num">260</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: space</span><br>
+            <span class="block block-game block-indent">Restart Game</span>
+        </div>
+        <ol>
+            <li>Create a new room named <code>room_win</code></li>
+            <li>Set its background color to a bright, celebratory color (light green or gold)</li>
+            <li>Place one <code>obj_win_text</code> instance anywhere in it</li>
+        </ol>
+    </div>
+
+    <h2>Catching an Orange</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_player</code>'s Blockly tab and add the last Collision event:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_fruit_orange</span><br>
+            <span class="block block-control block-indent">If <span class="block-num">held_level</span> equals <span class="block-num">3</span> then</span><br>
+            <span class="block block-instance block-indent2">Set variable <span class="block-num">held_level</span> to <span class="block-num">4</span></span><br>
+            <span class="block block-score block-indent2">Add to score <span class="block-num">50</span></span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-num">spr_basket_watermelon</span></span><br>
+            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span><br>
+            <span class="block block-control block-indent">Otherwise</span><br>
+            <span class="block block-score block-indent2">Add to score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <div class="info" style="margin-top: 10px;">
+            <strong>What this does:</strong> same pattern as the first two fusions,
+            with one new line: the moment the fusion succeeds (an orange catching
+            an orange), <strong>Go to room room_win</strong> runs right there, inside
+            the <em>If</em> branch. There's no separate "check if I've won" step
+            anywhere else &mdash; winning happens exactly when the fourth fusion does.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Full Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Catch a cherry &rarr; strawberry (+10)</li>
+            <li>Catch a strawberry &rarr; orange (+20)</li>
+            <li>Catch an orange &rarr; <strong>watermelon &mdash; YOU WIN!</strong> (+50)</li>
+            <li>Press <strong>SPACE</strong> on the win screen to play again</li>
+        </ul>
+    </div>
+
+    <h2>You Built a Complete Game!</h2>
+    <p>Congratulations &mdash; that's a full merge game with:</p>
+    <ul>
+        <li>Player input (keyboard movement)</li>
+        <li>Three kinds of collision, each handled the same way</li>
+        <li>A variable that remembers what's being held</li>
+        <li>An If / Else block that decides between two outcomes</li>
+        <li>An object's sprite changing while the game runs</li>
+        <li>A score that grows, and a clear win screen</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Try this next:</strong> make the fruit fall faster (lower the
+        spawner's alarm numbers), give the basket a fourth spawner for an extra
+        fruit type before the watermelon, or add lives that go down when you
+        mismatch too many times in a row &mdash; every change is just a number or
+        a block you can edit and test.
+    </div>
+</body>
+</html>

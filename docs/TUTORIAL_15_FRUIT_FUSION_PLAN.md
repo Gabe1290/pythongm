@@ -138,9 +138,19 @@ page without relying on dense instructions.
 - [ ] **U1 — Reference project + regression tests.** `build_t15` +
       sprites + `tests/test_tutorial_reference_projects.py` coverage +
       checkpoint-zip wiring. *(in progress)*
-- [ ] **U2 — In-app tutorial pages, EN.** 5 HTML pages +
-      `Tutorials/index.json` entry + thumbnail + `config/editions.py`
-      whitelist entry.
+- [x] **U2 — In-app tutorial pages, EN (DONE 2026-10-09).** 5 HTML pages
+      (`01_introduction`, `02_moving_basket`, `03_first_fusion`,
+      `04_second_fusion`, `05_winning`) + 8 generated sample sprite assets
+      under `Tutorials/15_fruit_fusion/assets/` (reusing `build_t15`'s own
+      art helpers, so "Option B: load the sample sprite" matches the
+      reference project exactly) + a generated thumbnail +
+      `Tutorials/index.json` entry + `config/editions.py` beginner-edition
+      whitelist entry. Verified via the real `TutorialPanel` widget
+      (`tests/test_tutorial_panel_i18n_verification.py`'s existing
+      every-page-loads tests, which already iterate the full index) --
+      all 5 pages render with no error/placeholder branch, for every
+      shipped language via the English-root fallback (dedicated French
+      pages land in U3).
 - [ ] **U3 — In-app tutorial pages, FR** (translation, not new content) +
       `Tutorials/fr/index.json`.
 - [ ] **U4 — Student handout + worksheet, EN + FR**, with real screenshots
