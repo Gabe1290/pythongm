@@ -1849,6 +1849,10 @@
             'set_vspeed': 'move_set_vspeed',
             'stop_movement': 'move_stop',
             'start_moving_direction': 'move_direction',
+            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B11: the generator emits
+            // move_free but the loader had no entry, so the action vanished
+            // (or became the generic custom_move_free block) on load.
+            'move_free': 'move_free',
             'snap_to_grid': 'move_snap_to_grid',
             'move_grid': 'grid_move',
             'jump_to_position': 'move_jump_to',
@@ -2392,6 +2396,11 @@
                                      (params.vspeed !== undefined ? params.vspeed :
                                      (params.speed !== undefined ? params.speed : 0));
                     connectNumberBlock('SPEED', vspeedValue);
+                    break;
+
+                case 'move_free':
+                    connectNumberBlock('DIRECTION', paramOr(params.direction, 0));
+                    connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 
                 case 'move_direction':

@@ -278,8 +278,13 @@ moment they touch a block.
   fallback is now `<self>` ("keep current sprite") rather than an empty
   name. U0's lock catches it, but a real fix would load such names as a
   preserved "(missing)" option.
-- [ ] **B11 — `move_free` has no `actionToBlockType` entry (found fixing
-  B1).** The generator's `case 'move_free':` (free-direction movement, not
+- [x] **B11 — `move_free` has no `actionToBlockType` entry, landed (commit
+  "fix(blockly): B11", 2026-10-09).** Added the mapping, a loader case
+  restoring DIRECTION/SPEED, and dropped the inputs' `setCheck("Number")`
+  so an expression direction (a B4 text block) can connect. No sample uses
+  `move_free`, so the audit tool can't show it (stays 112); proof is
+  `TestB11MoveFreeRoundTrips` (both tests fail on the pre-fix page).
+  Original note: the generator's `case 'move_free':` (free-direction movement, not
   the 4-way `move_direction`/`start_moving_direction` block) emits
   `{action: 'move_free', ...}` on save, but `actionToBlockType` — the
   loader's action-name → block-type lookup — has no `'move_free'` key, so

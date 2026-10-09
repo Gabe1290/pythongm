@@ -279,11 +279,11 @@ Blockly.Blocks['move_direction'] = {
 // is restricted to 4 cardinal directions; this one accepts any angle in degrees)
 Blockly.Blocks['move_free'] = {
     init: function() {
+        // No setCheck("Number"): an authored expression ("direction+90")
+        // loads as a text block (audit B4), which a Number-only input refuses.
         this.appendValueInput("DIRECTION")
-            .setCheck("Number")
             .appendField("Move at direction");
         this.appendValueInput("SPEED")
-            .setCheck("Number")
             .appendField("with speed");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);

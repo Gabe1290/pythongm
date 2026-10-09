@@ -252,6 +252,14 @@ set them at all; a saved "<self>" showed as "<self> (missing)". The block
 now has SUBIMAGE/SPEED inputs (no Number type check, so a B4 expression
 text block can connect), a real "<self> (current)" dropdown choice, and the
 loader restores all three.
+
+## B11 -- move_free vanished on load
+
+The generator saves move_free (exact-angle movement), but the loader's
+actionToBlockType had no entry for it, so an authored move_free produced no
+block and was deleted by the next Blockly edit. Its inputs were also
+Number-only, which would have dropped an expression direction (B4's text
+block can't connect to them).
 """
 import json
 
@@ -433,6 +441,11 @@ CASES = {
         {"action": "set_sprite", "parameters": {"sprite": "<self>", "subimage": 0, "speed": "image_speed*2"}}]}},
     "set_sprite_defaults": {"create": {"actions": [
         {"action": "set_sprite", "parameters": {"sprite": "spr_a"}}]}},
+    # B11 -- move_free
+    "move_free_numbers": {"create": {"actions": [
+        {"action": "move_free", "parameters": {"direction": "45", "speed": "3"}}]}},
+    "move_free_expression_and_zero": {"create": {"actions": [
+        {"action": "move_free", "parameters": {"direction": "direction+90", "speed": 0}}]}},
 }
 
 # Minimal real-shaped ActionType definitions for the one dynamic (custom_*)
@@ -790,3 +803,16 @@ class TestB10SetSpriteFrameAndSpeed:
     def test_missing_frame_and_speed_default_to_dont_change(self, round_tripped):
         params = _params(round_tripped, "set_sprite_defaults")
         assert params["subimage"] == -1 and params["speed"] == -1
+
+
+class TestB11MoveFreeRoundTrips:
+    def test_move_free_survives_with_its_values(self, round_tripped):
+        action = _action(round_tripped, "move_free_numbers")
+        assert action["action"] == "move_free"
+        assert action["parameters"]["direction"] == 45
+        assert action["parameters"]["speed"] == 3
+
+    def test_expression_direction_and_zero_speed_survive(self, round_tripped):
+        params = _params(round_tripped, "move_free_expression_and_zero")
+        assert params["direction"] == "direction+90"
+        assert params["speed"] == 0
