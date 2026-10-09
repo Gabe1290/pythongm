@@ -256,16 +256,28 @@ moment they touch a block.
   `blockly_blocks.js`, in no toolbox (Thymio is programmed through its own
   panel); their generators save `{type: …}` rather than `{action: …}`, which
   the runtime's `execute_action` would ignore. Remove or wire up — decide.
-- [ ] **B10 — `set_sprite`'s loader never connects SUBIMAGE/SPEED at all
-  (found fixing B1).** `setBlockParameters`'s `case 'set_sprite':` only does
-  `block.setFieldValue(params.sprite, 'SPRITE')` — no `connectNumberBlock`
-  call for either input, unlike every sibling case. Unlike B1 this isn't
-  value-specific: **every** authored `subimage`/`speed`, zero or not, is
-  lost on load (falls through to `getInputValue`'s final `return
-  defaultValue`, i.e. -1/-1) the moment the object's events sync into
-  Blockly with no saved workspace XML. Fix: add the two missing
-  `connectNumberBlock('SUBIMAGE', paramOr(params.subimage, -1))` /
-  `('SPEED', paramOr(params.speed, -1))` calls.
+- [x] **B10 — `set_sprite` lost its frame and speed, landed (commit
+  "fix(blockly): B10", 2026-10-09).** Worse than recorded: the loader gap was
+  real, but the block students actually get is `blockly_workspace.html`'s own
+  `set_sprite`, which **overrides** `blockly_blocks.js`'s and had only a
+  sprite dropdown — no SUBIMAGE/SPEED inputs at all, so a student could not
+  set a frame or speed in Blockly, and a saved `<self>` showed as
+  "`<self>` (missing)". Added both inputs (no `setCheck("Number")`, so a B4
+  expression text block can connect — verified: with the check, an
+  expression speed silently became -1), a real "`<self>` (current)" choice
+  via a new optional `extraOptions` argument to `createAssetField`, -1
+  shadows on both toolbox entries, the two `connectNumberBlock` calls in the
+  loader, and fr/pl/de/it/uk labels. Audit tool: 176 → 112. Tests:
+  `TestB10SetSpriteFrameAndSpeed` (2 of its 3 fail on the pre-fix page).
+- [ ] **B14 — A saved asset name that isn't in the project can't be restored
+  by any asset dropdown (found fixing B10).** `createAssetField`'s
+  "(missing)" preservation only works for a value set while it was valid;
+  `setFieldValue` with a name not in `BLOCKLY_ASSET_LISTS` (deleted/renamed
+  sprite, object, sound, room) is rejected by Blockly and the field keeps
+  its first option. Pre-existing for every asset field; for `set_sprite` the
+  fallback is now `<self>` ("keep current sprite") rather than an empty
+  name. U0's lock catches it, but a real fix would load such names as a
+  preserved "(missing)" option.
 - [ ] **B11 — `move_free` has no `actionToBlockType` entry (found fixing
   B1).** The generator's `case 'move_free':` (free-direction movement, not
   the 4-way `move_direction`/`start_moving_direction` block) emits

@@ -356,7 +356,7 @@
                 <field name="COLOR">#00FF00</field>
             </block>
             <!-- No <field> here on purpose; see the OBJECT comment above. -->
-            <block type="set_sprite"></block>
+            <block type="set_sprite"><value name="SUBIMAGE"><shadow type="math_number"><field name="NUM">-1</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">-1</field></shadow></value></block>
             <block type="set_alpha">
                 <value name="ALPHA">
                     <shadow type="math_number"><field name="NUM">1.0</field></shadow>
@@ -574,7 +574,7 @@
          * deleted or renamed), and a "Custom name..." entry lets users type
          * an arbitrary name.
          */
-        function createAssetField(assetKey, defaultValue) {
+        function createAssetField(assetKey, defaultValue, extraOptions) {
             // Blockly calls optionsFn with `this` bound to the FieldDropdown,
             // so we can read the field's current value to preserve "stale"
             // names (assets that were deleted/renamed since the block was
@@ -585,7 +585,10 @@
             var optionsFn = function() {
                 var items = (window.BLOCKLY_ASSET_LISTS[assetKey] || []).slice();
                 items.sort();
-                var opts = [];
+                // extraOptions: fixed [label, value] choices listed before the
+                // asset names (set_sprite's "<self> (current)").
+                var opts = (extraOptions || []).slice();
+                var extraValues = opts.map(function(o) { return o[1]; });
                 for (var i = 0; i < items.length; i++) {
                     opts.push([items[i], items[i]]);
                 }
@@ -598,7 +601,8 @@
                 if (currentValue
                         && currentValue !== ASSET_CUSTOM_SENTINEL
                         && currentValue !== ''
-                        && items.indexOf(currentValue) === -1) {
+                        && items.indexOf(currentValue) === -1
+                        && extraValues.indexOf(currentValue) === -1) {
                     opts.push([currentValue + ' (missing)', currentValue]);
                 }
 
@@ -1608,7 +1612,21 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('set_sprite_prefix', window.BLOCKLY_LANG) || "Set sprite to")
-                    .appendField(createAssetField('sprites', ''), "SPRITE");
+                    .appendField(createAssetField('sprites', '', [[
+                        getBlockMessage('set_sprite_self', window.BLOCKLY_LANG) || "<self> (current)",
+                        '<self>']]), "SPRITE");
+                // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B10: this block (which
+                // overrides blockly_blocks.js's set_sprite) had no frame/speed
+                // inputs, so every authored subimage/speed was lost on load and
+                // students couldn't set them at all. -1 = "don't change", the
+                // runtime's own convention (runtime/action_appearance.py).
+                // No setCheck("Number"): an authored expression loads as a
+                // text block (B4), which a Number-only input would refuse.
+                this.appendValueInput("SUBIMAGE")
+                    .appendField(getBlockMessage('set_sprite_frame', window.BLOCKLY_LANG) || "frame:");
+                this.appendValueInput("SPEED")
+                    .appendField(getBlockMessage('set_sprite_speed', window.BLOCKLY_LANG) || "speed:");
+                this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
@@ -2583,7 +2601,11 @@
                     break;
 
                 case 'set_sprite':
+                    // B10: frame/speed were never restored (always -1 after a
+                    // load), and "<self>" now has its own dropdown choice.
                     if (params.sprite) block.setFieldValue(params.sprite, 'SPRITE');
+                    connectNumberBlock('SUBIMAGE', paramOr(params.subimage, -1));
+                    connectNumberBlock('SPEED', paramOr(params.speed, -1));
                     break;
 
                 case 'set_alpha':
@@ -2887,7 +2909,7 @@
                         '<block type="draw_text"><value name="TEXT"><shadow type="text"><field name="TEXT">Hello!</field></shadow></value><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>',
                         '<block type="draw_rectangle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="HEIGHT"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#FF0000</field></shadow></value></block>',
                         '<block type="draw_circle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="RADIUS"><shadow type="math_number"><field name="NUM">25</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#00FF00</field></shadow></value></block>',
-                        '<block type="set_sprite"></block>',
+                        '<block type="set_sprite"><value name="SUBIMAGE"><shadow type="math_number"><field name="NUM">-1</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">-1</field></shadow></value></block>',
                         '<block type="set_alpha"><value name="ALPHA"><shadow type="math_number"><field name="NUM">1.0</field></shadow></value></block>'
                     ]
                 },

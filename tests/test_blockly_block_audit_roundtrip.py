@@ -241,6 +241,17 @@ representation difference the audit tool's own comparator flags (a JSON
 string vs. the equivalent float), not a behaviour change -- the runtime
 accepts both forms identically. Not chased; same category as B1's own note
 about the bundled samples storing parameters as strings.
+
+## B10 -- set_sprite lost its frame and speed
+
+The set_sprite block students actually get (blockly_workspace.html's
+definition, which overrides blockly_blocks.js's) had a sprite dropdown and
+nothing else: no frame/speed inputs, so an authored subimage/speed was lost
+on every load (saved back as -1/-1, "don't change") and a student could not
+set them at all; a saved "<self>" showed as "<self> (missing)". The block
+now has SUBIMAGE/SPEED inputs (no Number type check, so a B4 expression
+text block can connect), a real "<self> (current)" dropdown choice, and the
+loader restores all three.
 """
 import json
 
@@ -415,6 +426,13 @@ CASES = {
         {"action": "change_instance", "parameters": {
             "object": "obj_enemy", "perform_events": True,
             "target": "other", "target_object": "obj_trigger"}}]}},
+    # B10 -- set_sprite frame/speed/<self>
+    "set_sprite_frame_speed": {"create": {"actions": [
+        {"action": "set_sprite", "parameters": {"sprite": "spr_b", "subimage": "2", "speed": "0.5"}}]}},
+    "set_sprite_self_expression": {"create": {"actions": [
+        {"action": "set_sprite", "parameters": {"sprite": "<self>", "subimage": 0, "speed": "image_speed*2"}}]}},
+    "set_sprite_defaults": {"create": {"actions": [
+        {"action": "set_sprite", "parameters": {"sprite": "spr_a"}}]}},
 }
 
 # Minimal real-shaped ActionType definitions for the one dynamic (custom_*)
@@ -443,8 +461,11 @@ def round_tripped():
     view = QWebEngineView()
     result = {}
 
+    # Asset dropdowns only accept names the project actually has; the IDE
+    # pushes them (BlocklyWidget.push_asset_lists), so the fixture does too.
     js = """(function(cases, dynamicDefs){
         registerCustomBlocks(dynamicDefs);
+        window.blocklyApi.setAssetLists({objects: [], sprites: ['spr_a', 'spr_b'], sounds: [], rooms: []});
         var out = {};
         for (var k in cases) {
             loadEventsData(cases[k]);
@@ -751,3 +772,21 @@ class TestB5UnmodelledParametersSurviveTheRoundTrip:
         params = _params(round_tripped, "move_direction_numeric_control")
         assert params["directions"] == 90  # 'up'
         assert params["speed"] == 4 and not isinstance(params["speed"], str)
+
+
+class TestB10SetSpriteFrameAndSpeed:
+    def test_frame_and_speed_survive(self, round_tripped):
+        params = _params(round_tripped, "set_sprite_frame_speed")
+        assert params["sprite"] == "spr_b"
+        assert params["subimage"] == 2
+        assert params["speed"] == 0.5
+
+    def test_self_and_zero_frame_and_expression_speed_survive(self, round_tripped):
+        params = _params(round_tripped, "set_sprite_self_expression")
+        assert params["sprite"] == "<self>"
+        assert params["subimage"] == 0
+        assert params["speed"] == "image_speed*2"
+
+    def test_missing_frame_and_speed_default_to_dont_change(self, round_tripped):
+        params = _params(round_tripped, "set_sprite_defaults")
+        assert params["subimage"] == -1 and params["speed"] == -1
