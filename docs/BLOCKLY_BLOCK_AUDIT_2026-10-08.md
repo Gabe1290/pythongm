@@ -245,6 +245,40 @@ moment they touch a block.
   `value_vspeed`, `value_mouse_x`, `value_mouse_y`, `math_arithmetic`,
   `math_single`, `logic_compare`, `logic_operation`, `logic_negate`,
   `logic_boolean`.
+
+  **Decided with the user 2026-10-09: make them all real, not hide them.**
+  Constraint for every unit: the text `getInputValue` saves must evaluate on
+  all three engines — desktop (`ActionExecutor._parse_value` /
+  `_evaluate_expression` / `_eval_bool_expression`), HTML5
+  (`engine.js` `gmExpressionValue` + the action-param evaluator near the
+  `gmIrandom` replace), Kivy (`export/Kivy/code_generator.py`
+  `_resolve_instance_names` + its function whitelist regex). Check each
+  before choosing a spelling; `math_random_int` → `irandom(...)` is the
+  precedent. Units, one commit each:
+  - [ ] **B6a — value blocks + B15.** `value_score/lives/health` → bare
+    `score`/`lives`/`health` (works on all three; `game.score` doesn't on
+    desktop); `value_hspeed/vspeed` → `self.hspeed`/`self.vspeed`;
+    `value_mouse_x/y` → needs the name resolved on every engine first
+    (desktop leaves bare `mouse_x` unresolved); `math_arithmetic` →
+    parenthesised `(A op B)` with `+ - * /` and `**` for power.
+  - [ ] **B6b — math functions on all three engines.** Add `sqrt`, `ln`,
+    `log10`, `exp`, `pow10` (or the spellings chosen) to every engine's
+    function set (desktop `_known_functions`, the function-detect regex,
+    `safe_namespace`, `_eval_bool_expression`'s namespace; HTML5 evaluator
+    scope; Kivy whitelist + generated helpers), then map every
+    `math_single` op (ROOT, ABS, NEG, LN, LOG10, EXP, POW10).
+  - [ ] **B6c — Logic blocks get a true/false slot: a `test_expression`
+    block.** Closes B2's remaining `test_expression` gap at the same time:
+    an "if ‹condition›" block with a CONDITION value input (no type check,
+    so an authored expression loads as a text block, per B4) and DO/ELSE.
+    New `getConditionValue` builds Python-syntax text from
+    `logic_compare` (== != < <= > >=), `logic_operation` (and/or),
+    `logic_negate` (not), `logic_boolean` (True/False) and any number
+    block via `getInputValue` — the syntax `_eval_bool_expression`
+    evaluates, HTML5 already converts (`and`/`or`/`not`/`True`/`False`),
+    and Kivy emits as Python. Loader: `actionToBlockType` entry + DO/ELSE.
+  - [ ] **B6d — re-run the audit tool and the full Blockly suite; check
+    a sample exports to HTML5 and Kivy with each new spelling.**
 - [ ] **B7 — `move_towards` is a placeholder (MEDIUM).** Block defined,
   `BLOCK_REGISTRY` says implemented, **no generator** — saves nothing. Hidden
   in beginner/intermediate, visible in the full preset.
