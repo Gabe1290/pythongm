@@ -210,11 +210,28 @@ page without relying on dense instructions.
         EN/FR parity confirmed programmatically before committing, no
         stripped-accent offenders), a rendered-PDF visual spot-check
         (both languages, images and accents render correctly).
-- [ ] **U7 — Publish** (`scripts/sync_wiki.sh push`) — outward-facing,
-      needs explicit approval first, same as every prior publish step in
-      this repo. (The `wiki/` files above are already committed to *this*
-      repo, matching every other tutorial's U0-U13 precedent -- only the
-      push to the separate live wiki repo is deferred.)
+- [x] **U7 — Publish (DONE 2026-10-09).** `scripts/sync_wiki.sh push`,
+      after explicit approval. Also included, by explicit approval, an
+      unrelated pre-existing drift catch-up: a "For teachers: Answer key"
+      pointer line on all 14 other tutorials' Worksheet pages, committed
+      to this repo back on 2026-09-23 (the "Standalone Answer Key page
+      added" note) but never actually pushed live until now. Verified
+      with `sync_wiki.sh check` afterward: no real content drift remains
+      (only the live wiki's own `.gitattributes`, already documented as
+      an expected, benign difference). This machine's `sync_wiki.sh` has
+      `WIKI_REMOTE` hardcoded to an HTTPS URL with no cached credentials
+      here (unlike `origin`, which uses SSH) -- worked around for this
+      session only via a scratchpad copy with `WIKI_REMOTE`/`REPO_ROOT`
+      patched to SSH / an absolute path, rather than changing the
+      committed script (which may be relied on working via HTTPS on
+      other machines).
+
+## Status: all units complete
+
+Tutorial 15 "Fruit Fusion" is fully shipped: the in-app tutorial (EN+FR,
+whitelisted for the beginner edition), the reference project with
+regression coverage, and the full illustrated teacher-resources set,
+published to the live wiki.
 
 ## Not in scope
 
