@@ -344,6 +344,12 @@ function generateActionCodeInner(block) {
                 then_actions: tvActions,
                 else_actions: tvElseActions
             }};
+        case 'test_expression':
+            return {action: 'test_expression', parameters: {
+                expression: getConditionValue(block, 'CONDITION'),
+                then_actions: collectStatementActions(block, 'DO'),
+                else_actions: collectStatementActions(block, 'ELSE')
+            }};
         case 'room_goto_next':
             return {action: 'next_room', parameters: {}};
         case 'room_goto_previous':
@@ -684,6 +690,55 @@ var VALUE_BLOCK_EXPRESSIONS = {
 var MATH_ARITHMETIC_OPS = {
     'ADD': '+', 'MINUS': '-', 'MULTIPLY': '*', 'DIVIDE': '/', 'POWER': '**'
 };
+
+// The actions stacked in a statement input (DO / ELSE).
+function collectStatementActions(block, inputName) {
+    var actions = [];
+    var inner = block.getInputTargetBlock(inputName);
+    while (inner) {
+        var action = generateActionCode(inner);
+        if (action) actions.push(action);
+        inner = inner.getNextBlock();
+    }
+    return actions;
+}
+
+// Blockly logic block -> Python-syntax condition text (audit B6c). Desktop's
+// _eval_bool_expression evaluates it, HTML5's gmExpressionValue converts
+// and/or/not/True/False, and Kivy emits it as Python. A number/value block
+// is used as-is (non-zero = true), a text block verbatim (an authored
+// expression), an empty slot is False.
+var LOGIC_COMPARE_OPS = {'EQ': '==', 'NEQ': '!=', 'LT': '<', 'LTE': '<=', 'GT': '>', 'GTE': '>='};
+
+function getConditionValue(block, inputName) {
+    var input = block.getInputTargetBlock(inputName);
+    if (!input) return 'False';
+    switch (input.type) {
+        case 'logic_boolean':
+            return input.getFieldValue('BOOL') === 'TRUE' ? 'True' : 'False';
+        case 'logic_negate':
+            return '(not ' + getConditionValue(input, 'BOOL') + ')';
+        case 'logic_operation':
+            var join = input.getFieldValue('OP') === 'OR' ? ' or ' : ' and ';
+            return '(' + getConditionValue(input, 'A') + join + getConditionValue(input, 'B') + ')';
+        case 'logic_compare':
+            var op = LOGIC_COMPARE_OPS[input.getFieldValue('OP')] || '==';
+            return '(' + getConditionOperand(input, 'A') + ' ' + op + ' ' + getConditionOperand(input, 'B') + ')';
+        case 'text':
+            var text = input.getFieldValue('TEXT');
+            return (text === null || text === undefined || text.trim() === '') ? 'False' : text;
+        default:
+            return String(getInputValue(block, inputName, 0));
+    }
+}
+
+// A comparison side: a nested logic block compares as its truth value,
+// anything else as the number/value expression getInputValue gives.
+function getConditionOperand(block, inputName) {
+    var input = block.getInputTargetBlock(inputName);
+    if (input && /^logic_/.test(input.type)) return getConditionValue(block, inputName);
+    return String(getInputValue(block, inputName, 0));
+}
 
 // Blockly's math_single OP field -> expression template ("%" = argument).
 var MATH_SINGLE_TEMPLATES = {

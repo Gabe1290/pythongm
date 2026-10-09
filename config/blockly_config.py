@@ -36,6 +36,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "if_condition", "name": "If Condition", "description": "Run actions only when a condition holds (e.g. instance_count == 0)", "implemented": True},
         {"type": "set_variable", "name": "Set Variable", "description": "Assign a value to a custom variable on the instance or globally", "implemented": True},
         {"type": "test_variable", "name": "Test Variable", "description": "Compare a variable against a value and run nested actions when true", "implemented": True},
+        {"type": "test_expression", "name": "If Condition (Logic)", "description": "Run nested actions when a condition built from Logic blocks (compare, and/or, not) is true", "implemented": True},
         {"type": "check_empty", "name": "Check Empty", "description": "True when (x, y) has no collision — gate following action(s) on grid movement", "implemented": True},
         {"type": "exit_event", "name": "Exit Event", "description": "Stop running the rest of this event's actions — typically paired with a test to commit on the first branch that succeeds", "implemented": True},
         {"type": "else_action", "name": "Else", "description": "Runs the next action only when the preceding test was false — pair with start_block/end_block to put more than one action on the else side", "implemented": True},
@@ -184,7 +185,7 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
     # Control
     "check_empty", "comment", "else_action", "end_block", "execute_code",
     "execute_script", "if_collision", "if_collision_at", "if_object_exists",
-    "repeat", "start_block", "test_chance", "test_expression", "test_question",
+    "repeat", "start_block", "test_chance", "test_question",
     # Game
     "draw_arrow", "draw_background", "draw_ellipse", "draw_line",
     "draw_scaled_text", "draw_sprite", "draw_variable", "fill_color",
@@ -222,6 +223,14 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
 # ============================================================================
 # CONFIGURATION DATA CLASS
 # ============================================================================
+
+
+# Actions that used to be in GENERATED_ACTION_NAMES and now have a
+# hand-written block (listed in BLOCK_REGISTRY instead). Every place that
+# enables "all generated actions" also enables these, so a preset or migrated
+# config keeps showing them exactly as before the block was written.
+# test_expression: docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6c.
+PROMOTED_TO_HAND_WRITTEN_BLOCKS: frozenset = frozenset({"test_expression"})
 
 @dataclass
 class BlocklyConfig:
@@ -307,7 +316,7 @@ class BlocklyConfig:
         config = cls(preset_name="full")
         for category, blocks in BLOCK_REGISTRY.items():
             config.enable_category(category)
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
         return config
 
     @classmethod
@@ -483,7 +492,7 @@ class BlocklyConfig:
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2):
         # every generated action already showed here, ungated, before this
         # fix. Trimming this preset to a smaller set is a separate decision.
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -533,7 +542,7 @@ class BlocklyConfig:
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -582,7 +591,7 @@ class BlocklyConfig:
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output", "Sound"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -629,7 +638,7 @@ class BlocklyConfig:
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -771,7 +780,7 @@ class BlocklyConfig:
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Output"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -924,7 +933,7 @@ class BlocklyConfig:
         # matched scope, but the pre-fix bug showed every generated action
         # regardless; trimming to the documented scope is a separate,
         # later decision (not made here).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -1072,7 +1081,7 @@ class BlocklyConfig:
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
-        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
 
         return config
 
@@ -1136,7 +1145,7 @@ def load_config() -> BlocklyConfig:
                     added = GENERATED_ACTION_NAMES - config.enabled_blocks
                     if added:
                         print(f"Blockly config migration: Adding {len(added)} generated action names: {added}")
-                        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+                        config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
                     config.config_version = 2
                     needs_save = True
 

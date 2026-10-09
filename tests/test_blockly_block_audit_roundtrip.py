@@ -271,6 +271,15 @@ desktop, HTML5 and Kivy all evaluate (engine side:
 test_blockly_value_expressions.py). The loader turns those exact texts (and the legacy
 game.* ones) back into the value blocks, and a text block carrying an
 expression now connects to Number-only inputs instead of being dropped.
+
+## B6c -- test_expression block: a true/false slot for the Logic blocks
+
+test_expression had no block (B2's remaining gap): it loaded as the
+generic custom block, which drops nested then/else actions, and the Logic
+blocks (compare, and/or, not, true/false) had nothing to plug into. The new
+"If <condition>" block saves Python-syntax condition text built from them
+(getConditionValue), with DO/ELSE; an authored expression loads as a text
+block. Engine side (desktop/Kivy/HTML5) in test_blockly_value_expressions.py.
 """
 import json
 
@@ -464,6 +473,15 @@ CASES = {
         {"action": "set_hspeed", "parameters": {"value": "self.hspeed"}}]}},
     "hspeed_arithmetic_expression": {"create": {"actions": [
         {"action": "set_hspeed", "parameters": {"value": "(score * 2)"}}]}},
+    # B6c -- test_expression (plateforme_3's real stomp test)
+    "test_expression_nested": {"create": {"actions": [
+        {"action": "test_expression", "parameters": {
+            "expression": "vspeed > 0 and y - vspeed < other.y+8",
+            "then_actions": [{"action": "set_vspeed", "parameters": {"value": "-6"}}],
+            "else_actions": [{"action": "set_hspeed", "parameters": {"value": "2"}}]}}]}},
+    "test_expression_flat": {"create": {"actions": [
+        {"action": "test_expression", "parameters": {"expression": "score > 3"}},
+        {"action": "set_hspeed", "parameters": {"value": "5"}}]}},
 }
 
 # Minimal real-shaped ActionType definitions for the one dynamic (custom_*)
@@ -536,6 +554,27 @@ def round_tripped():
             single.getInput('NUM').connection.connect(four.outputConnection);
             saved['single_' + op] = saveVia(single);
         });
+        // B6c: conditions built from Logic blocks in a test_expression block
+        function num(n) { var b = workspace.newBlock('math_number'); b.setFieldValue(String(n), 'NUM'); return b; }
+        function cmp(op, a, b) { var c = workspace.newBlock('logic_compare'); c.setFieldValue(op, 'OP');
+            c.getInput('A').connection.connect(a.outputConnection);
+            c.getInput('B').connection.connect(b.outputConnection); return c; }
+        function condOf(block) { var te = workspace.newBlock('test_expression');
+            if (block) te.getInput('CONDITION').connection.connect(block.outputConnection);
+            var v = generateActionCode(te).parameters.expression; te.dispose(true); return v; }
+        var andB = workspace.newBlock('logic_operation'); andB.setFieldValue('AND', 'OP');
+        andB.getInput('A').connection.connect(cmp('GT', workspace.newBlock('value_score'), num(10)).outputConnection);
+        var notB = workspace.newBlock('logic_negate');
+        notB.getInput('BOOL').connection.connect(cmp('EQ', workspace.newBlock('value_lives'), num(0)).outputConnection);
+        andB.getInput('B').connection.connect(notB.outputConnection);
+        saved.cond_and_not = condOf(andB);
+        var orB = workspace.newBlock('logic_operation'); orB.setFieldValue('OR', 'OP');
+        orB.getInput('A').connection.connect(cmp('LTE', workspace.newBlock('value_x'), num(5)).outputConnection);
+        orB.getInput('B').connection.connect(cmp('NEQ', workspace.newBlock('value_health'), num(100)).outputConnection);
+        saved.cond_or = condOf(orB);
+        var tB = workspace.newBlock('logic_boolean'); tB.setFieldValue('TRUE', 'BOOL');
+        saved.cond_true = condOf(tB);
+        saved.cond_empty = condOf(null);
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
@@ -912,3 +951,25 @@ class TestB6bMathSingle:
         assert saved["single_LOG10"] == "log10(4)"
         assert saved["single_EXP"] == "exp(4)"
         assert saved["single_POW10"] == "(10 ** (4))"
+
+
+class TestB6cTestExpressionBlock:
+    def test_logic_blocks_build_python_condition_text(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["cond_and_not"] == "((score > 10) and (not (lives == 0)))"
+        assert saved["cond_or"] == "((self.x <= 5) or (health != 100))"
+        assert saved["cond_true"] == "True"
+        assert saved["cond_empty"] == "False"
+
+    def test_authored_expression_and_nested_branches_survive(self, round_tripped):
+        params = _params(round_tripped, "test_expression_nested")
+        assert params["expression"] == "vspeed > 0 and y - vspeed < other.y+8"
+        assert [a["action"] for a in params["then_actions"]] == ["set_vspeed"]
+        assert [a["action"] for a in params["else_actions"]] == ["set_hspeed"]
+
+    def test_flat_gm_style_test_keeps_the_action_it_gates(self, round_tripped):
+        """An old-style test_expression (no nested lists) gates the NEXT
+        action at runtime; both must survive, in order."""
+        actions = round_tripped["test_expression_flat"]["create"]["actions"]
+        assert [a["action"] for a in actions] == ["test_expression", "set_hspeed"]
+        assert actions[0]["parameters"]["expression"] == "score > 3"

@@ -1903,6 +1903,9 @@
             // moment the object synced into Blockly.
             'if_condition': 'if_condition',
             'test_variable': 'test_variable',
+            // B6c: had no block at all (B2's remaining gap) -- loaded as the
+            // generic custom block, which drops nested then/else actions.
+            'test_expression': 'test_expression',
             // Audio actions (play_sound, stop_sound, play_music, stop_music,
             // set_volume) are intentionally NOT mapped here. They are owned by
             // the Audio Actions plugin and auto-generate into a single "Audio"
@@ -2605,6 +2608,17 @@
                     attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
                     break;
 
+                case 'test_expression':
+                    // The saved condition text loads as a text block (any
+                    // expression, including one the logic blocks produced).
+                    if (params.expression !== undefined && params.expression !== null &&
+                            String(params.expression).trim() !== '') {
+                        connectTextBlock('CONDITION', params.expression);
+                    }
+                    attachSubActionsToBlock(block, params.then_actions || [], 'DO');
+                    attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');
+                    break;
+
                 case 'sound_play':
                     if (params.sound) block.setFieldValue(params.sound, 'SOUND');
                     break;
@@ -2984,6 +2998,7 @@
                     blocks: [
                         '<block type="if_condition"><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
                         '<block type="set_variable"><field name="VARIABLE">score</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="test_expression"><value name="CONDITION"><block type="logic_compare"><field name="OP">GT</field><value name="A"><block type="value_score"></block></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block></value></block>',
                         '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="exit_event"></block>'
                     ]

@@ -1,4 +1,4 @@
-"""Engine side of Blockly audit B6a / B15 / B6b
+"""Engine side of Blockly audit B6a / B15 / B6b / B6c
 (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md).
 
 Blockly's value and arithmetic blocks save expression TEXT (self.hspeed,
@@ -132,3 +132,71 @@ def test_html5_expression_scope_has_the_math_functions():
     for name, fn in (("sqrt", "Math.sqrt"), ("ln", "Math.log"),
                      ("log10", "Math.log10"), ("exp", "Math.exp")):
         assert re.search(rf"\b{name}: \(x\) => gmSafeMath\({re.escape(fn)}, x\)", js), name
+
+
+# --- B6c: conditions the test_expression block saves
+CONDITIONS = {
+    "((score > 10) and (not (lives == 0)))": True,
+    "((score > 20) or (self.x >= 16))": True,
+    "((score > 20) and (lives == 2))": False,
+    "True": True, "False": False, "(not True)": False,
+}
+
+
+@pytest.mark.parametrize("expr,expected", CONDITIONS.items())
+def test_desktop_evaluates_logic_block_conditions(expr, expected):
+    from runtime.action_executor import ActionExecutor
+    ex = ActionExecutor(game_runner=SimpleNamespace(
+        score=12, lives=2, health=50, global_variables={}, current_room=None))
+    inst = SimpleNamespace(x=16, y=20, hspeed=2, vspeed=-1, object_name="o")
+    assert ex._eval_bool_expression(inst, expr) is expected
+
+
+@pytest.mark.parametrize("expr,expected", CONDITIONS.items())
+def test_kivy_logic_block_conditions_mean_the_same(expr, expected):
+    from export.Kivy.code_generator import _resolve_instance_names
+    code = _resolve_instance_names(expr)
+    main = SimpleNamespace(get_score=lambda: 12, get_lives=lambda: 2, get_health=lambda: 50)
+    env = {"__import__": lambda name: main, "self": SimpleNamespace(x=16, y=20)}
+    assert bool(eval(code, {"__builtins__": {}}, env)) is expected
+
+
+def _kivy_lines(*actions):
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=0)
+    for action in actions:
+        g.process_action(action, "step")
+    return g.get_code()
+
+
+def test_kivy_test_expression_runs_nested_branches():
+    """Before B6c, Kivy only opened a guard over the NEXT action and dropped
+    then/else -- which is all Blockly's block ever saves."""
+    code = _kivy_lines({"action_type": "test_expression", "parameters": {
+        "expression": "score > 3",
+        "then_actions": [{"action_type": "set_hspeed", "parameters": {"value": "4"}}],
+        "else_actions": [{"action_type": "set_hspeed", "parameters": {"value": "-4"}}]}})
+    tree = ast.parse(code)
+    ifs = [n for n in ast.walk(tree) if isinstance(n, ast.If)]
+    assert len(ifs) == 1
+    body_src = ast.unparse(ast.Module(body=ifs[0].body, type_ignores=[]))
+    else_src = ast.unparse(ast.Module(body=ifs[0].orelse, type_ignores=[]))
+    assert "self.hspeed = 4" in body_src
+    assert "self.hspeed = -4" in else_src
+
+
+def test_kivy_flat_test_expression_still_guards_the_next_action():
+    code = _kivy_lines(
+        {"action_type": "test_expression", "parameters": {"expression": "score > 3"}},
+        {"action_type": "set_hspeed", "parameters": {"value": "4"}})
+    tree = ast.parse(code)
+    ifs = [n for n in ast.walk(tree) if isinstance(n, ast.If)]
+    assert len(ifs) == 1
+    assert "self.hspeed = 4" in ast.unparse(ast.Module(body=ifs[0].body, type_ignores=[]))
+
+
+def test_html5_treats_test_expression_as_a_nested_conditional():
+    js = (REPO / "export/HTML5/templates/engine.js").read_text(encoding="utf-8")
+    block = js[js.index("static isConditionalAction(actionType)"):]
+    block = block[:block.index("}")]
+    assert "actionType === 'test_expression'" in block

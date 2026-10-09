@@ -609,7 +609,30 @@ class ActionCodeGenerator:
 
         elif action_type == 'test_expression':
             expr = _resolve_instance_names(params.get('expression', 'False'))
-            self._open_guard(f"if {expr}:")
+            then_actions = params.get('then_actions') or []
+            else_actions = params.get('else_actions') or []
+            if then_actions or else_actions:
+                # Blockly's test_expression block (audit B6c) saves nested
+                # branches; a guard alone would drop them and wrap the NEXT
+                # action instead.
+                self.add_line(f"if {expr}:")
+                self.push_indent()
+                self.add_line("pass")
+                for nested_action in then_actions:
+                    if isinstance(nested_action, dict):
+                        self.process_action(nested_action, event_type)
+                self.pop_indent()
+                if else_actions:
+                    self.add_line("else:")
+                    self.push_indent()
+                    self.add_line("pass")
+                    for nested_action in else_actions:
+                        if isinstance(nested_action, dict):
+                            self.process_action(nested_action, event_type)
+                    self.pop_indent()
+                self._complete_unit()
+            else:
+                self._open_guard(f"if {expr}:")
             return
 
         elif action_type == 'test_chance':

@@ -289,8 +289,22 @@ moment they touch a block.
     `MATH_SINGLE_TEMPLATES` for all seven ops. Tests: `TestB6bMathSingle` +
     the MATH cases in `tests/test_blockly_value_expressions.py` (17 of 20
     fail on the old code; abs/negate/power already worked).
-  - [ ] **B6c — Logic blocks get a true/false slot: a `test_expression`
-    block.** Closes B2's remaining `test_expression` gap at the same time:
+  - [x] **B6c — landed (commit "feat(blockly): B6c", 2026-10-10).** As
+    planned, plus two things found on the way: (1) **Kivy dropped nested
+    branches on `test_expression`** — it only opened a guard over the next
+    action, so the block's then/else would have vanished from Kivy exports;
+    now emits `if/else` when nested lists are present (flat GM-style still
+    guards the next action). HTML5 already ran nested branches. (2)
+    `test_expression` moved from `GENERATED_ACTION_NAMES` to
+    `BLOCK_REGISTRY`, which **silently removed it from six presets**
+    (platformer, grid_rpg, sokoban, testing, code_editor, blockly_editor)
+    that enable "every generated action" as a set — the full suite didn't
+    catch it, a direct preset check did. New
+    `PROMOTED_TO_HAND_WRITTEN_BLOCKS` is added wherever the generated set
+    is; pinned by a test. Conditions verified identical on all three
+    engines (HTML5 with the real engine.js). Audit tool 106 → 102,
+    **action-lost 4 → 0** (all four were `test_expression`). Original plan:
+    Closes B2's remaining `test_expression` gap at the same time:
     an "if ‹condition›" block with a CONDITION value input (no type check,
     so an authored expression loads as a text block, per B4) and DO/ELSE.
     New `getConditionValue` builds Python-syntax text from

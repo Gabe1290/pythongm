@@ -999,6 +999,29 @@ Blockly.Blocks['test_variable'] = {
     }
 };
 
+// "If <condition>" -- the slot the Logic blocks (compare, and/or, not,
+// true/false) plug into; saves the test_expression action
+// (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6c). CONDITION has no type
+// check so an authored expression loads as a text block (audit B4).
+Blockly.Blocks['test_expression'] = {
+    init: function() {
+        var lang = window.BLOCKLY_LANG;
+        this.appendValueInput("CONDITION")
+            .appendField(getBlockMessage('test_expression_if', lang) || "If");
+        this.appendStatementInput("DO")
+            .setCheck(null)
+            .appendField(getBlockMessage('test_expression_then', lang) || "then");
+        this.appendStatementInput("ELSE")
+            .setCheck(null)
+            .appendField(getBlockMessage('test_expression_else', lang) || "else");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#FFAB19");
+        this.setTooltip(getBlockMessage('test_expression_tooltip', lang) ||
+            "Run the nested actions when the condition is true, otherwise run the else actions");
+    }
+};
+
 // ============================================================================
 // ROOM BLOCKS
 // ============================================================================
