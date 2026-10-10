@@ -2608,7 +2608,13 @@
                     var tvPrefixed = (tvScope === 'global') ? ('global.' + tvName)
                         : (tvScope === 'other') ? ('other.' + tvName) : tvName;
                     block.setFieldValue(tvPrefixed, 'VARIABLE');
-                    if (params.operation) block.setFieldValue(params.operation, 'OPERATION');
+                    if (params.operation !== undefined && params.operation !== null && params.operation !== '') {
+                        // B18: GameMaker numeric codes ("2" = greater) -> names
+                        var gmOps = {'0': 'equal', '1': 'less', '2': 'greater',
+                                     '3': 'less_equal', '4': 'greater_equal', '5': 'not_equal'};
+                        var opName = gmOps[String(params.operation).trim()] || params.operation;
+                        block.setFieldValue(opName, 'OPERATION');
+                    }
                     connectNumberBlock('VALUE', paramOr(params.value, 0));
                     attachSubActionsToBlock(block, params.then_actions || [], 'DO');
                     attachSubActionsToBlock(block, params.else_actions || [], 'ELSE');

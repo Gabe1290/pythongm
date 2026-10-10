@@ -8,7 +8,7 @@ import math
 import re
 
 
-from runtime.gm_math import GM_MATH_FUNCTIONS
+from runtime.gm_math import GM_MATH_FUNCTIONS, normalize_gm_operation
 from typing import Dict, Any, List, Tuple
 from runtime.action_colors import _hex_to_rgb
 from core.logger import get_logger
@@ -373,6 +373,12 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
         # Apply action name aliases
         if action_name in self.ACTION_ALIASES:
             action_name = self.ACTION_ALIASES[action_name]
+
+        # GameMaker's numeric comparison codes ("2" = greater), kept by
+        # projects imported before the GMK importer translated them; every
+        # handler compares by NAME, so "2" never matched and the test was
+        # always false (Blockly audit B18 -- plateforme_3's speed cap).
+        parameters = normalize_gm_operation(action_name, parameters)
 
         if action_name not in self.action_handlers:
             logger.error(f"❌ Unknown action: {action_name}")

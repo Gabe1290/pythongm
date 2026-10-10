@@ -1,4 +1,5 @@
-"""GameMaker math functions available in expressions.
+"""GameMaker math functions available in expressions, plus the numeric
+comparison-code normalisation every action passes through.
 
 Shared by the action executor's expression evaluator and the condition
 evaluator (runtime/action_flow.py). Lives in its own module because
@@ -23,6 +24,19 @@ def _gm_math(fn):
             return 0
         return result if math.isfinite(result) else 0
     return safe
+
+
+def normalize_gm_operation(action_name, parameters):
+    """Translate a numeric GameMaker comparison code in ``operation`` to the
+    operator name every engine compares by (Blockly audit B18). Uses the GMK
+    importer's own table, so there is one source for the codes."""
+    from importers.gmk_mappings import GM_COMPARISON_OPS, GM_OPERATION_ACTIONS
+    if action_name not in GM_OPERATION_ACTIONS or not isinstance(parameters, dict):
+        return parameters
+    code = str(parameters.get("operation", "")).strip()
+    if code in GM_COMPARISON_OPS:
+        return {**parameters, "operation": GM_COMPARISON_OPS[code]}
+    return parameters
 
 
 GM_MATH_FUNCTIONS = {

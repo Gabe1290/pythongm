@@ -497,6 +497,9 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B18 -- numeric GameMaker operation code
+    "test_variable_numeric_operation": {"create": {"actions": [
+        {"action": "test_variable", "parameters": {"variable": "vspeed", "value": "24", "operation": "2"}}]}},
     # B7 -- move_towards
     "move_towards_numbers": {"create": {"actions": [
         {"action": "move_towards_point", "parameters": {"x": "320", "y": "240", "speed": "6"}}]}},
@@ -1028,3 +1031,8 @@ class TestB16GeneratedBlockExpressions:
         params = _params(round_tripped, "dynamic_direction_numbers")
         assert params["direction"] == 90
         assert params["speed"] == 0
+
+
+class TestB18NumericOperationCodes:
+    def test_code_2_loads_as_greater_and_saves_the_name(self, round_tripped):
+        assert _params(round_tripped, "test_variable_numeric_operation")["operation"] == "greater"

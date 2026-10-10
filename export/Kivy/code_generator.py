@@ -517,6 +517,9 @@ class ActionCodeGenerator:
         # Support both 'action_type' and 'action' keys
         action_type = action.get('action_type', action.get('action', ''))
         params = action.get('parameters', {})
+        # Numeric GameMaker comparison codes -> operator names (audit B18).
+        from runtime.gm_math import normalize_gm_operation
+        params = normalize_gm_operation(action_type, params)
 
         # A conditional's guarded unit just closed: an else_action here
         # attaches to it; anything else means enclosing pending conditionals

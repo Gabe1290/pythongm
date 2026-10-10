@@ -596,6 +596,18 @@ function spawnParticles(system, emitter, ptype, number) {
 // primitive custom variables. Returns the raw value; callers coerce
 // (test_expression -> bool, check_empty x/y -> number). Returns
 // undefined on empty/error so callers apply their own fallback.
+// GameMaker's numeric comparison codes ("2" = greater) -> operator names,
+// mirroring importers/gmk_mappings.py GM_COMPARISON_OPS (audit B18).
+const GM_COMPARISON_OPS = {'0': 'equal', '1': 'less', '2': 'greater',
+                           '3': 'less_equal', '4': 'greater_equal', '5': 'not_equal'};
+const GM_OPERATION_ACTIONS = new Set(['test_variable', 'test_score', 'test_lives',
+                                      'test_health', 'test_instance_count']);
+function gmNormalizeOperation(actionType, params) {
+    if (!GM_OPERATION_ACTIONS.has(actionType)) return params;
+    const code = String(params.operation === undefined ? '' : params.operation).trim();
+    return (code in GM_COMPARISON_OPS) ? Object.assign({}, params, {operation: GM_COMPARISON_OPS[code]}) : params;
+}
+
 function gmSafeMath(fn, x) {
     const r = fn(Number(x));
     return (typeof r === 'number' && isFinite(r)) ? r : 0;
@@ -1598,7 +1610,7 @@ class GameObject {
      */
     evaluateCondition(action, game) {
         const actionType = action.action;
-        const params = action.parameters || {};
+        const params = gmNormalizeOperation(actionType, action.parameters || {});
 
         switch (actionType) {
             case 'if_condition':
@@ -1931,7 +1943,7 @@ class GameObject {
 
     executeAction(action, game) {
         const actionType = action.action;
-        const params = action.parameters || {};
+        const params = gmNormalizeOperation(actionType, action.parameters || {});
 
         // Nested-format conditionals (then_actions/else_actions inside
         // parameters): evaluate and run the matching branch. The old

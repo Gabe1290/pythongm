@@ -122,12 +122,14 @@ def test_create_moving_instance_and_jump_to_random_codegen():
     assert "self.jump_to_random(" in code2
 
 
-def test_test_score_unknown_operation_mirrors_runtime():
+def test_test_score_numeric_operation_code_mirrors_runtime():
     """GMK numeric operation codes (a raw, un-translated GML operation
     index left over from an import — e.g. samples/plateforme_4's
     obj_personnage had a keyboard.up test_score action with
-    operation='1' instead of a named comparison) evaluate to False in the
-    IDE runtime; the generated guard must do the same, not crash or guess.
+    operation='1' instead of a named comparison). Until Blockly audit B18
+    every engine treated them as unknown (always False); now every engine
+    translates them through the importer's table ('1' = less), so the
+    generated guard must compare, matching the desktop runtime.
 
     Pinned directly against ActionCodeGenerator — see
     test_create_moving_instance_and_jump_to_random_codegen's docstring for
@@ -135,6 +137,20 @@ def test_test_score_unknown_operation_mirrors_runtime():
     gen = ActionCodeGenerator(base_indent=2)
     gen.process_action(
         {"action": "test_score", "parameters": {"value": "0", "operation": "1"}},
+        "create")
+    gen.process_action({"action": "reverse_horizontal", "parameters": {}}, "create")
+    code = gen.get_code()
+    compile(f"def _t(self):\n{code}\n", "<gen>", "exec")
+    assert "test_score: unknown operation" not in code
+    assert "< 0" in code
+
+
+def test_test_score_unknown_operation_mirrors_runtime():
+    """A genuinely unknown operation still evaluates to False in the IDE
+    runtime; the generated guard must do the same, not crash or guess."""
+    gen = ActionCodeGenerator(base_indent=2)
+    gen.process_action(
+        {"action": "test_score", "parameters": {"value": "0", "operation": "bogus"}},
         "create")
     gen.process_action({"action": "reverse_horizontal", "parameters": {}}, "create")
     code = gen.get_code()

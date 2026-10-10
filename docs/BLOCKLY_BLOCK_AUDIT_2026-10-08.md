@@ -457,8 +457,20 @@ B13's `directions` and the three LAN events (B3 remainder):
 - [ ] **B17 — Auto-generated boolean parameters read the text `'0'` as
   true.** `change_instance.perform_events: '0'` → `True` (treasure). The
   dynamic loader uses JS truthiness; `'0'`, `'false'`, `''` must be false.
-- [ ] **B18 — `test_variable` with a numeric GameMaker operation code never
-  fires, on the desktop engine itself.** plateforme_3's
+- [x] **B18 — landed (commit "fix(engine): B18", 2026-10-10).** The code
+  table already existed in the importer (`gmk_mappings.GM_COMPARISON_OPS`:
+  0 equal, 1 less, 2 greater, 3 less_equal, 4 greater_equal, 5 not_equal);
+  plateforme_3 predates it. Each engine now normalises the code at its single
+  action entry point (desktop `execute_action` via
+  `runtime/gm_math.normalize_gm_operation`, Kivy `process_action`, HTML5
+  `executeAction` + `evaluateCondition`), and the Blockly loader maps it for
+  the OPERATION dropdown. plateforme_3's dead flying monster now caps its
+  fall speed at 24 as its comment says. `test_kivy_parity_batch` pinned the
+  old always-false behaviour on purpose and was updated (a genuinely unknown
+  operation is still false on both). Tests: `tests/test_gm_operation_codes.py`
+  + `TestB18NumericOperationCodes`. Original:
+  `test_variable` with a numeric GameMaker operation code never
+  fires, on the desktop engine itself. plateforme_3's
   `obj_monstre_volant_mort` caps vspeed with `operation: "2"` (kept by the
   GMK import); `ActionExecutor._compare` only knows names/symbols, so it
   always returns False. Blockly then turns `'2'` into `equal`. Fix in the
