@@ -158,3 +158,16 @@ def test_every_preset_with_move_towards_point_shows_its_block():
                      if "move_towards_point" in cfg.enabled_blocks
                      and "move_towards" not in cfg.enabled_blocks)
     assert missing == []
+
+
+
+def test_every_preset_with_destroy_other_also_offers_destroy_all_of_object():
+    """Blockly audit B19: maze_4 (in the beginner edition) needs the new
+    instance_destroy_object block to round-trip its trigger object."""
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    missing = sorted(name for name, cfg in PRESETS.items()
+                     if "instance_destroy_other" in cfg.enabled_blocks
+                     and "instance_destroy_object" not in cfg.enabled_blocks)
+    assert missing == []

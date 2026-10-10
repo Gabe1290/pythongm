@@ -300,6 +300,12 @@ A saved sprite/object name the project no longer has (deleted, renamed) or
 an extension value like Block World's "hotbar_block" was rejected by the
 drop-down, which kept its first option. While saved data loads, an unknown
 value is now kept as an extra choice; outside loading, nothing changes.
+
+## B19 -- destroy_instance "all instances of an object" loaded as "destroy self"
+
+The loader only knew "destroy self" and "destroy other", so target "object"
+became self and the next save destroyed the wrong instance. New
+instance_destroy_object block ("Destroy all instances of <object>").
 """
 import json
 
@@ -504,6 +510,9 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B19 -- destroy every instance of an object
+    "destroy_instance_object": {"create": {"actions": [
+        {"action": "destroy_instance", "parameters": {"target": "object", "target_object": "trigger"}}]}},
     # B14 / B20 -- values a drop-down doesn't list
     "set_sprite_deleted_sprite": {"create": {"actions": [
         {"action": "set_sprite", "parameters": {"sprite": "spr_deleted", "subimage": "1", "speed": "1"}}]}},
@@ -1082,3 +1091,10 @@ class TestB14B20UnknownDropdownValues:
 
     def test_outside_loading_an_unknown_value_is_still_rejected(self, round_tripped):
         assert round_tripped["__value_blocks_saved"]["dropdown_outside_load"] != "spr_nowhere"
+
+
+class TestB19DestroyAllInstancesOfObject:
+    def test_target_object_survives(self, round_tripped):
+        params = _params(round_tripped, "destroy_instance_object")
+        assert params["target"] == "object"
+        assert params["target_object"] == "trigger"

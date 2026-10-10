@@ -90,6 +90,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     "Instance": [
         {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object", "implemented": True},
         {"type": "instance_destroy_other", "name": "Destroy Other", "description": "Destroy colliding object", "implemented": True},
+        {"type": "instance_destroy_object", "name": "Destroy All of Object", "description": "Destroy every instance of an object", "implemented": True},
         {"type": "instance_create", "name": "Create Instance", "description": "Spawn new object", "implemented": True},
         {"type": "instance_change", "name": "Change Instance", "description": "Transform into different object type", "implemented": True},
         {"type": "if_can_push", "name": "If Can Push", "description": "Sokoban-style push check", "implemented": True},
@@ -365,6 +366,7 @@ class BlocklyConfig:
         # Instance
         config.enable_block("instance_destroy")       # First Game, Breakout
         config.enable_block("instance_destroy_other") # First Game (star), Breakout (bricks)
+        config.enable_block("instance_destroy_object") # maze_4 (Blockly audit B19)
         config.enable_block("instance_create")        # First Game (star spawning)
         config.enable_block("instance_change")         # beginner sample game (transform object type)
 
@@ -1030,6 +1032,7 @@ class BlocklyConfig:
         # =====================================================================
         config.enable_block("instance_destroy")
         config.enable_block("instance_destroy_other")
+        config.enable_block("instance_destroy_object")
         config.enable_block("instance_create")
         config.enable_block("instance_change")
         config.enable_block("if_can_push")

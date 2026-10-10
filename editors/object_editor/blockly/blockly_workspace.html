@@ -451,6 +451,7 @@
         <category name="Instance" colour="#A65C81">
             <block type="instance_destroy"></block>
             <block type="instance_destroy_other"></block>
+            <block type="instance_destroy_object"></block>
             <!-- No <field name="OBJECT"> here on purpose; see the OBJECT comment above. -->
             <block type="instance_create">
                 <value name="X">
@@ -1342,6 +1343,22 @@
                 this.setNextStatement(true, null);
                 this.setColour("#A65C81");
                 this.setTooltip(getBlockMessage('instance_destroy_other_tooltip', window.BLOCKLY_LANG) || "Destroy the colliding instance");
+            }
+        };
+
+        // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B19: destroy_instance with
+        // target "object" (every instance of an object -- GameMaker's
+        // "Applies to: object") had no block, so it loaded as "destroy
+        // self" and the next save destroyed the wrong instance.
+        Blockly.Blocks['instance_destroy_object'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('instance_destroy_object', window.BLOCKLY_LANG) || "Destroy all instances of")
+                    .appendField(createAssetField('objects', ''), "OBJECT");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A65C81");
+                this.setTooltip(getBlockMessage('instance_destroy_object_tooltip', window.BLOCKLY_LANG) || "Destroy every instance of the chosen object");
             }
         };
 
@@ -2374,7 +2391,9 @@
             } else if (actionName === 'set_health') {
                 blockType = params.relative ? 'health_add' : 'health_set';
             } else if (actionName === 'destroy_instance') {
-                blockType = params.target === 'other' ? 'instance_destroy_other' : 'instance_destroy';
+                blockType = params.target === 'other' ? 'instance_destroy_other'
+                    : params.target === 'object' ? 'instance_destroy_object'  // B19
+                    : 'instance_destroy';
             }
 
             if (!blockType) {
@@ -2551,6 +2570,10 @@
                 case 'draw_lives':
                     connectNumberBlock('X', paramOr(params.x, 0));
                     connectNumberBlock('Y', paramOr(params.y, 0));
+                    break;
+
+                case 'instance_destroy_object':
+                    if (params.target_object) block.setFieldValue(params.target_object, 'OBJECT');
                     break;
 
                 case 'draw_health_bar':
@@ -3022,6 +3045,7 @@
                     blocks: [
                         '<block type="instance_destroy"></block>',
                         '<block type="instance_destroy_other"></block>',
+                        '<block type="instance_destroy_object"></block>',
                         '<block type="instance_create"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="if_can_push"><field name="OBJECT_TYPE">box</field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
                     ]

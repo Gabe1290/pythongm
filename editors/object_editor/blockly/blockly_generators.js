@@ -241,6 +241,9 @@ function generateActionCodeInner(block) {
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':
             return {action: 'destroy_instance', parameters: {target: 'other'}};
+        case 'instance_destroy_object':
+            return {action: 'destroy_instance', parameters: {
+                target: 'object', target_object: block.getFieldValue('OBJECT')}};
         case 'instance_create':
             // Bug fix: this case was missing entirely, so every "Create
             // instance of X at x: ... y: ..." block silently produced no

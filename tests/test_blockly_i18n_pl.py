@@ -100,7 +100,7 @@ def test_pl_table_sizes_match_plan_doc():
     records, so a future edit that silently drops entries is caught."""
     content = _js_source()
     expected = {
-        "BLOCK_MESSAGES": 239,  # +3 set_sprite (B10), +4 test_expression (B6c), +1 health bar height (B21)
+        "BLOCK_MESSAGES": 241,  # +3 set_sprite (B10), +4 test_expression (B6c), +1 health bar height (B21), +2 destroy-all (B19)
         "KEY_NAMES": 37,
         "CATEGORY_MESSAGES": 12,
         "BLOCKLY_MSG_TRANSLATIONS": 97,

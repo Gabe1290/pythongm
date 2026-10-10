@@ -478,8 +478,15 @@ B13's `directions` and the three LAN events (B3 remainder):
   importer and/or `_compare` (and the export engines) — **confirm
   GameMaker's code table first** (0 equal, 1 smaller, 2 larger, ... is
   likely but must be checked against the GM8 format / gmk importer).
-- [ ] **B19 — `destroy_instance` with target `object` loads as "destroy
-  self".** maze_4: the loader picks `instance_destroy` vs
+- [x] **B19 — landed (commit "fix(blockly): B19", 2026-10-10).** New
+  `instance_destroy_object` block ("Destroy all instances of ‹object›",
+  object drop-down, fr/pl/de/it/uk), generated as `target: object` +
+  `target_object`; the loader picks it for target `object`. Registry
+  Instance entry; every preset that enables "destroy other" enables it
+  (beginner ships maze_4, which needs it) — pinned by a test. Audit tool
+  65 → 64. Tests: `TestB19DestroyAllInstancesOfObject`. Original:
+  `destroy_instance` with target `object` loads as "destroy
+  self". maze_4: the loader picks `instance_destroy` vs
   `instance_destroy_other` from `target` and collapses `object` (+
   `target_object`) into self — the wrong instance is destroyed.
 - [x] **B20 — landed with B14 (commit "fix(blockly): B14/B20", 2026-10-10).**
