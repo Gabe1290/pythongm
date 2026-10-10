@@ -2039,7 +2039,11 @@ if dist > 0:
         elif action_type == 'change_instance':
             # Change the object type (sprite) of this instance
             new_object = params.get('object', params.get('new_object', ''))
-            perform_events = params.get('perform_events', True)
+            # B17: a literal True/False, decided by the same rule as the
+            # desktop engine (the raw value was pasted in, so "false"
+            # produced uncompilable code and "0" only worked by accident).
+            from runtime.gm_math import param_is_true
+            perform_events = param_is_true(params.get('perform_events'), True)
             if new_object:
                 return f"self.change_to('{new_object}', perform_events={perform_events})"
             else:

@@ -467,8 +467,18 @@ B13's `directions` and the three LAN events (B3 remainder):
   samples' turning), speed `32/6` → 0, `if_collision` x/y `8*other.hspeed`
   → 0, `draw_sprite` x/y `self.x + 3` → 0. Fix: route the dynamic path's
   number params through the same number-or-text logic.
-- [ ] **B17 — Auto-generated boolean parameters read the text `'0'` as
-  true.** `change_instance.perform_events: '0'` → `True` (treasure). The
+- [x] **B17 — landed (commit "fix(engine): B17", 2026-10-10).** Decided:
+  `'0'` means no. One rule, `runtime/gm_math.param_is_true` (False, 0, "0",
+  "false", "no", "" are false; missing = the default), used by the
+  desktop `change_instance` handler and the Kivy generator (now a literal
+  True/False — the raw value was pasted in, so "false" did not even
+  compile); HTML5 `gmParamIsTrue`; Blockly's generated-boolean loader.
+  treasure: transformed monsters now keep their motion instead of re-running
+  `monster`'s create event (new random direction), as the original GameMaker
+  game specifies; all 27 samples still smoke-run clean. Audit tool 64 → 60.
+  Tests: `tests/test_perform_events_param.py` + `TestB17BooleanTextZero`.
+  Original: auto-generated boolean parameters read the text `'0'` as
+  true. `change_instance.perform_events: '0'` → `True` (treasure). The
   dynamic loader uses JS truthiness; `'0'`, `'false'`, `''` must be false.
 - [x] **B18 — landed (commit "fix(engine): B18", 2026-10-10).** The code
   table already existed in the importer (`gmk_mappings.GM_COMPARISON_OPS`:

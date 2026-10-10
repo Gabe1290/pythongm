@@ -198,7 +198,9 @@ class SpawnMixin:
                            of that object in the current room).
         """
         new_object_name = parameters.get("object", "")
-        perform_events = parameters.get("perform_events", True)
+        # B17: the GMK import stores "no" as the text "0" (truthy in Python).
+        from runtime.gm_math import param_is_true
+        perform_events = param_is_true(parameters.get("perform_events"), True)
         target = parameters.get("target", "self")
         target_object = parameters.get("target_object", "")
 

@@ -26,6 +26,26 @@ def _gm_math(fn):
     return safe
 
 
+# Text a GameMaker import or a hand-edited project uses for "no". A missing
+# value is the parameter's default instead (Blockly audit B17).
+_FALSE_TEXT = {"0", "false", "no", ""}
+
+
+def param_is_true(value, default=True):
+    """Read a boolean action parameter the way GameMaker means it.
+
+    The GMK import stores checkboxes as the TEXT "0"/"1"; plain truthiness
+    read "0" as true (any non-empty string is), so e.g. change_instance's
+    "perform events: no" ran the events anyway (Blockly audit B17).
+    False, 0, "0", "false", "no" and "" are false; None means `default`.
+    """
+    if value is None:
+        return default
+    if isinstance(value, str):
+        return value.strip().lower() not in _FALSE_TEXT
+    return bool(value)
+
+
 def normalize_gm_operation(action_name, parameters):
     """Translate a numeric GameMaker comparison code in ``operation`` to the
     operator name every engine compares by (Blockly audit B18). Uses the GMK

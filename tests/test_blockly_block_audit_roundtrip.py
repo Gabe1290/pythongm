@@ -510,6 +510,9 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B17 -- generated boolean param stored as the text "0" (GMK import)
+    "change_instance_perform_events_text_zero": {"create": {"actions": [
+        {"action": "change_instance", "parameters": {"object": "obj_enemy", "perform_events": "0"}}]}},
     # B19 -- destroy every instance of an object
     "destroy_instance_object": {"create": {"actions": [
         {"action": "destroy_instance", "parameters": {"target": "object", "target_object": "trigger"}}]}},
@@ -1098,3 +1101,9 @@ class TestB19DestroyAllInstancesOfObject:
         params = _params(round_tripped, "destroy_instance_object")
         assert params["target"] == "object"
         assert params["target_object"] == "trigger"
+
+
+class TestB17BooleanTextZero:
+    def test_text_zero_loads_as_unticked(self, round_tripped):
+        """GameMaker's "no" is stored as the text "0"; JS truthiness ticked it."""
+        assert _params(round_tripped, "change_instance_perform_events_text_zero")["perform_events"] is False

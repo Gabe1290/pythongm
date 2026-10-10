@@ -609,6 +609,13 @@
             return '(' + end + ') - (' + start + ')';
         }
 
+        // Same rule as runtime/gm_math.param_is_true (audit B17).
+        function gmParamIsTrue(value) {
+            if (value === undefined || value === null) return false;
+            if (typeof value === 'string') return ['0', 'false', 'no', ''].indexOf(value.trim().toLowerCase()) === -1;
+            return !!value;
+        }
+
         function loadNumberInput(block, inputName, value) {
             var input = block.getInput(inputName);
             if (!input || !input.connection) return;
@@ -3417,7 +3424,8 @@
                     // value, so "facing_angle+180" loaded as 0.
                     loadNumberInput(block, fieldName, value);
                 } else if (param.param_type === 'boolean') {
-                    block.setFieldValue(value ? 'TRUE' : 'FALSE', fieldName);
+                    // B17: the text "0"/"false" means no (JS truthiness said yes).
+                    block.setFieldValue(gmParamIsTrue(value) ? 'TRUE' : 'FALSE', fieldName);
                 } else {
                     var field = block.getField(fieldName);
                     if (field) {

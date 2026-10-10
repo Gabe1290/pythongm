@@ -602,6 +602,15 @@ const GM_COMPARISON_OPS = {'0': 'equal', '1': 'less', '2': 'greater',
                            '3': 'less_equal', '4': 'greater_equal', '5': 'not_equal'};
 const GM_OPERATION_ACTIONS = new Set(['test_variable', 'test_score', 'test_lives',
                                       'test_health', 'test_instance_count']);
+// A boolean action parameter, read as GameMaker means it: the GMK import
+// stores "no" as the text "0" (Blockly audit B17; mirrors
+// runtime/gm_math.param_is_true).
+function gmParamIsTrue(value, dflt) {
+    if (value === undefined || value === null) return dflt;
+    if (typeof value === 'string') return ['0', 'false', 'no', ''].indexOf(value.trim().toLowerCase()) === -1;
+    return !!value;
+}
+
 function gmNormalizeOperation(actionType, params) {
     if (!GM_OPERATION_ACTIONS.has(actionType)) return params;
     const code = String(params.operation === undefined ? '' : params.operation).trim();
@@ -2971,7 +2980,7 @@ class GameObject {
                     console.warn(`change_instance: unknown object: ${newName}`);
                     break;
                 }
-                const performEvents = params.perform_events !== false;
+                const performEvents = gmParamIsTrue(params.perform_events, true);  // B17
                 let targets = [this];
                 if (params.target === 'other' && this._collision_other) {
                     targets = [this._collision_other];

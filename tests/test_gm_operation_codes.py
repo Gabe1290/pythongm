@@ -73,7 +73,8 @@ def test_html5_table_matches_the_importers_and_both_entry_points_use_it():
     table = dict(re.findall(r"'(\d)': '(\w+)'", js[js.index("const GM_COMPARISON_OPS"):
                                                     js.index("const GM_OPERATION_ACTIONS")]))
     assert table == GM_COMPARISON_OPS
-    actions_src = js[js.index("const GM_OPERATION_ACTIONS"):js.index("function gmNormalizeOperation")]
+    start = js.index("const GM_OPERATION_ACTIONS")
+    actions_src = js[start:js.index("]);", start)]
     assert set(re.findall(r"'(\w+)'", actions_src)) == GM_OPERATION_ACTIONS
     for entry in ("executeAction(action, game) {", "evaluateCondition(action, game) {"):
         body = js[js.index(entry):js.index(entry) + 200]
