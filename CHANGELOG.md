@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-10-10
+
+Classroom-reported fix: the Blockly tab could crash the whole compiled
+Linux build.
+
+### Fixed
+- The Linux build no longer bundles its own `libstdc++`/`libgcc_s`. On at
+  least one real machine, the bundled (older) copies shadowed the
+  system's newer ones, breaking Mesa's Intel GPU driver and, through it,
+  EGL/OpenGL context creation — which crashed the whole app the moment
+  the Blockly tab tried to open its embedded web view. The system's own
+  libraries are used instead now.
+- A missing-system-library pre-flight check (`ldd`, read-only) runs
+  before the Blockly tab ever constructs its web view, so a real gap on
+  some other machine now shows this tab's normal "not available"
+  fallback message instead of risking a crash.
+
 ## [1.5.0] - 2026-10-10
 
 A new tutorial, a full Blockly reliability pass, a new UI language, and
