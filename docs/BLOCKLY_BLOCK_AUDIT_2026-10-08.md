@@ -1,15 +1,15 @@
 # Blockly block audit — 2026-10-08
 
 Question asked: *are all the Blockly blocks connected to real code, or are some
-just placeholders?* Status: **review complete; U0, B1, B2 (+ its
-condition_type follow-up), B3 (partial), B4, B5 landed.** B6–B9 are still
-open, plus four new findings (B10, B11, B12, B13) turned up while fixing
-B1/B3/B5. B2 itself now closes 3 of its 4 named cases plus the
-condition_type follow-up described under its own bullet (the 4th,
-`test_expression`, needs a new block — see below), and B3 leaves the
-three LAN-multiplayer events open (see B3's own notes). The checkboxes
-below are the resume state; one unit ≈ one commit with its regression
-test.
+just placeholders?* Status: **CLOSED 2026-10-10 — every item (U0, B1–B21,
+the B6a–d sub-units and B3's LAN-event remainder) has landed; no checkbox is
+open.** `tools/audit_blockly_roundtrip.py` reports **0 differences across all
+98 bundled sample objects** (644 when the audit started): every sample object
+now loads into the Blockly tab and saves back with nothing lost. U0's lock
+stays as the safety net for anything the samples don't cover. Note: B9's
+original "remove the dead Thymio blocks" description was wrong and was not
+applied — see B9. Anything found after this is new work, not a resumption of
+this registry.
 
 ## How it was checked (re-runnable)
 
