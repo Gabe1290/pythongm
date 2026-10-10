@@ -2309,6 +2309,19 @@
                 }
             }
 
+            // Each event block was placed 150px below the previous one before
+            // its actions were attached, so any event with more than ~3
+            // actions overlapped the next one. Now that everything is built
+            // and rendered, re-stack the top blocks by their real heights,
+            // keeping their order (saving walks them top to bottom).
+            workspace.render();
+            var stackY = 50;
+            workspace.getTopBlocks(true).forEach(function(top) {
+                var xy = top.getRelativeToSurfaceXY();
+                top.moveBy(50 - xy.x, stackY - xy.y);
+                stackY += top.getHeightWidth().height + 30;
+            });
+
             // Re-enable change events
             ignoreChanges = false;
 

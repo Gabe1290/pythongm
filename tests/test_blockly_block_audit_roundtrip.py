@@ -690,6 +690,20 @@ def round_tripped():
             '<field name="NUM">4</field></shadow></value></block></statement></block></xml>');
         saved.direction_legacy_xml = JSON.parse(generatePythonCode()).create.actions[0].parameters.directions;
         workspace.clear();
+        // Layout: event blocks used to be placed 150px apart before their
+        // actions were attached, so a tall event overlapped the next one.
+        var six = [];
+        for (var i = 0; i < 6; i++) six.push({action: 'set_hspeed', parameters: {value: String(i)}});
+        loadEventsData({create: {actions: six}, step: {actions: [{action: 'set_vspeed', parameters: {value: '1'}}]}});
+        var rects = workspace.getTopBlocks(true).map(function(b) {
+            var xy = b.getRelativeToSurfaceXY(), hw = b.getHeightWidth();
+            return {top: xy.y, bottom: xy.y + hw.height};
+        });
+        var overlap = false;
+        for (var r = 1; r < rects.length; r++) { if (rects[r].top < rects[r - 1].bottom) overlap = true; }
+        saved.layout_top_blocks = rects.length;
+        saved.layout_overlap = overlap;
+        workspace.clear();
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
@@ -1194,3 +1208,12 @@ class TestB13DirectionGrid:
         """Old workspace XML stores <field name="DIRECTION">up</field>; the
         hidden legacy field ticks the matching box instead of defaulting."""
         assert round_tripped["__value_blocks_saved"]["direction_legacy_xml"] == 90
+
+
+class TestEventBlocksDoNotOverlap:
+    def test_a_tall_event_does_not_overlap_the_next(self, round_tripped):
+        """Found in the 2026-10-10 visual check: any event with more than
+        about three actions covered the next event block on load."""
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["layout_top_blocks"] == 2
+        assert saved["layout_overlap"] is False
