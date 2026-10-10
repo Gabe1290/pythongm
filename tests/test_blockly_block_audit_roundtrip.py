@@ -312,6 +312,13 @@ instance_destroy_object block ("Destroy all instances of <object>").
 Thymio's own panel saves {"action": "thymio_..."}; the Thymio Blockly
 generators saved {"type": ...}, so editing a Thymio object in the Blockly
 tab silently disabled every Thymio action. They now save "action".
+
+## Extension events (B3 remainder) -- LAN / file-exchange events vanished
+
+player_joined, network_game_started, network_message (and the other
+extension events) had no block. A generic event_extension block now takes
+them; the IDE pushes the names (BlocklyWidget._push_extension_events), and
+the fixture does the same.
 """
 import json
 
@@ -516,6 +523,11 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # extension events (B3 remainder)
+    "lan_player_joined": {"player_joined": {"actions": [
+        {"action": "set_hspeed", "parameters": {"value": "2"}}]}},
+    "lan_network_message_inactive": {"network_message": {"actions": [
+        {"action": "set_vspeed", "parameters": {"value": "3"}}]}},
     # B9 -- Thymio action under a Thymio event, as Thymio's panel saves it
     "thymio_move_forward": {"thymio_button_forward": {"actions": [
         {"action": "thymio_move_forward", "parameters": {"speed": 200}}]}},
@@ -585,6 +597,9 @@ def round_tripped():
     js = """(function(cases, dynamicDefs){
         registerCustomBlocks(dynamicDefs);
         window.blocklyApi.setAssetLists({objects: [], sprites: ['spr_a', 'spr_b'], sounds: [], rooms: []});
+        window.blocklyApi.setExtensionEvents(
+            ['player_joined', 'network_game_started', 'network_message'],
+            [['Player joined', 'player_joined']]);
         var out = {};
         for (var k in cases) {
             loadEventsData(cases[k]);
@@ -1122,3 +1137,15 @@ class TestB9ThymioActionsKeepTheActionKey:
     def test_thymio_action_saves_under_action(self, round_tripped):
         actions = round_tripped["thymio_move_forward"]["thymio_button_forward"]["actions"]
         assert actions == [{"action": "thymio_move_forward", "parameters": {"speed": 200}}]
+
+
+class TestExtensionEventsSurvive:
+    def test_an_active_extension_event_round_trips(self, round_tripped):
+        assert round_tripped["lan_player_joined"]["player_joined"]["actions"] == [
+            {"action": "set_hspeed", "parameters": {"value": 2}}]
+
+    def test_an_event_not_in_the_menu_still_round_trips(self, round_tripped):
+        """network_message isn't in the drop-down menu here (as for an
+        inactive extension); B14/B20 keep it while loading."""
+        assert round_tripped["lan_network_message_inactive"]["network_message"]["actions"] == [
+            {"action": "set_vspeed", "parameters": {"value": 3}}]

@@ -1593,6 +1593,31 @@
         // never existed. The dropdown's values are the literal event names
         // (createEventBlock/getEventType pass the field value straight
         // through -- no name-to-name translation table to keep in sync).
+        // Extension events (LAN / file-exchange multiplayer: player_joined,
+        // network_message, ...) had no block, so they vanished on load
+        // (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, B3 remainder). One generic
+        // block covers every extension's events: Python pushes every
+        // extension event name (EXTENSION_EVENT_NAMES, for the loader) and
+        // the ones of extensions ACTIVE in this project (EXTENSION_EVENT_MENU,
+        // the drop-down) via blocklyApi.setExtensionEvents.
+        window.EXTENSION_EVENT_NAMES = [];
+        window.EXTENSION_EVENT_MENU = [];
+        Blockly.Blocks['event_extension'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('event_extension_prefix', window.BLOCKLY_LANG) || "Extension event:")
+                    .appendField(new Blockly.FieldDropdown(function() {
+                        var menu = (window.EXTENSION_EVENT_MENU || []).slice();
+                        return menu.length ? menu : [["-", ""]];
+                    }), "EVENT_NAME");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#CC8800");
+                this.setTooltip(getBlockMessage('event_extension_tooltip', window.BLOCKLY_LANG) ||
+                    "Runs on an event provided by an extension active in this project (e.g. a network event)");
+            }
+        };
+
         Blockly.Blocks['event_other'] = {
             init: function() {
                 this.appendDummyInput()
@@ -2323,6 +2348,9 @@
             } else if (eventName.startsWith('collision_with_')) {
                 blockType = 'event_collision';
                 fields['OBJECT'] = eventName.replace('collision_with_', '');
+            } else if ((window.EXTENSION_EVENT_NAMES || []).indexOf(eventName) !== -1) {
+                blockType = 'event_extension';
+                fields['EVENT_NAME'] = eventName;
             } else if (OTHER_EVENT_NAMES.indexOf(eventName) !== -1) {
                 // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: every event with
                 // no dedicated block of its own goes through the single
@@ -2990,7 +3018,8 @@
                         // its first available option.
                         '<block type="event_collision"></block>',
                         '<block type="event_alarm"><field name="ALARM_NUM">0</field></block>',
-                        '<block type="event_other"><field name="EVENT_NAME">game_start</field></block>'
+                        '<block type="event_other"><field name="EVENT_NAME">game_start</field></block>',
+                        '<block type="event_extension"></block>'
                     ]
                 },
                 'Movement': {
@@ -3477,7 +3506,14 @@
         loadEventsData = whileLoadingSaved(loadEventsData);
         loadWorkspaceXml = whileLoadingSaved(loadWorkspaceXml);
 
+        function setExtensionEvents(allNames, menu) {
+            window.EXTENSION_EVENT_NAMES = allNames || [];
+            window.EXTENSION_EVENT_MENU = menu || [];
+            return window.EXTENSION_EVENT_NAMES.length;
+        }
+
         window.blocklyApi = {
+            setExtensionEvents: setExtensionEvents,
             getXml: getWorkspaceXml,
             loadXml: loadWorkspaceXml,
             getCode: generatePythonCode,

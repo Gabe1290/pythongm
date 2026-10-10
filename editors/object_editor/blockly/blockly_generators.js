@@ -60,6 +60,9 @@ function getEventType(block) {
         // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B3: the EVENT_NAME dropdown
         // value IS the real event name -- no lookup table to keep in sync.
         case 'event_other': return {event: block.getFieldValue('EVENT_NAME')};
+        case 'event_extension':
+            var extEvent = block.getFieldValue('EVENT_NAME');
+            return extEvent ? {event: extEvent} : null;
         // Thymio events
         case 'event_thymio_button_forward': return {event: 'thymio_button_forward'};
         case 'event_thymio_button_backward': return {event: 'thymio_button_backward'};

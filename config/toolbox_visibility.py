@@ -131,6 +131,24 @@ def visible_events(config, project_data: Optional[dict] = None) -> Set[str]:
     return result
 
 
+def extension_event_names() -> list:
+    """Every event an extension provides that has no dedicated Blockly block
+    of its own (Thymio's events do), so it loads into the generic
+    ``event_extension`` block (Blockly audit, B3 remainder)."""
+    from events.plugin_loader import extension_for_event
+    return sorted(name for name in EVENT_TYPES
+                  if extension_for_event(name) is not None and name not in EVENT_TO_BLOCKLY_MAP)
+
+
+def extension_event_menu(project_data: Optional[dict] = None) -> list:
+    """``[label, name]`` choices for the ``event_extension`` drop-down: only
+    the events of extensions active in this project."""
+    from events.plugin_loader import extension_for_event
+    active = active_extensions(project_data)
+    return [[EVENT_TYPES[name].display_name or name, name] for name in extension_event_names()
+            if extension_for_event(name)["folder"] in active]
+
+
 def toolbox_enabled_blocks(config, project_data: Optional[dict] = None) -> Set[str]:
     """The ``enabled_blocks`` list BlocklyWidget sends to the JS toolbox.
 
@@ -156,4 +174,5 @@ def toolbox_enabled_blocks(config, project_data: Optional[dict] = None) -> Set[s
     action_block_types = ({ACTION_TO_BLOCKLY_MAP.get(name, name) for name in ACTION_TYPES}
                           | set(ACTION_TYPES))
     non_action_entries = set(config.enabled_blocks) - action_block_types
-    return non_action_entries | resolved
+    extension_events = {"event_extension"} if extension_event_menu(project_data) else set()
+    return non_action_entries | resolved | extension_events

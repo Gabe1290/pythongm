@@ -48,13 +48,20 @@ def run_page(objs, assets):
                        for p in (a.parameters or [])]}
         for n, a in ACTION_TYPES.items()]
 
-    js = """(function(objs, assets){ var out = {};
+    # The IDE pushes the extension-event names (BlocklyWidget.
+    # _push_extension_events) so their events load into the generic
+    # event_extension block; do the same.
+    from config.toolbox_visibility import extension_event_names
+    ext_events = extension_event_names()
+
+    js = """(function(objs, assets, extEvents){ var out = {};
+      window.blocklyApi.setExtensionEvents(extEvents, []);
       for (var k in objs) {
         try { window.blocklyApi.setAssetLists(assets[k.split('/')[0]]);
               loadEventsData(objs[k]); out[k] = JSON.parse(generatePythonCode()); }
         catch (e) { out[k] = {__error__: String(e)}; }
       }
-      return JSON.stringify(out); })(%s, %s)""" % (json.dumps(objs), json.dumps(assets))
+      return JSON.stringify(out); })(%s, %s, %s)""" % (json.dumps(objs), json.dumps(assets), json.dumps(ext_events))
 
     view = QWebEngineView()
     result = {}

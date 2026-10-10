@@ -405,3 +405,30 @@ def test_registry_restart_game_entry_names_the_real_action():
     types = {b["type"] for blocks in BLOCK_REGISTRY.values() for b in blocks}
     assert "game_restart" not in types
     assert "restart_game" in types
+
+
+
+# --- extension events (Blockly audit, B3 remainder) --------------------------
+
+def test_extension_event_names_cover_the_multiplayer_events_but_not_thymio():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.toolbox_visibility import extension_event_names
+    names = set(extension_event_names())
+    assert {"player_joined", "network_game_started", "network_message",
+            "file_session_started"} <= names
+    assert not any(n.startswith("thymio_") for n in names)  # dedicated blocks
+
+
+def test_extension_event_block_only_when_an_extension_is_active():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    from config.toolbox_visibility import toolbox_enabled_blocks, extension_event_menu
+    plain = {"settings": {}, "assets": {"objects": {}}}
+    lan = {"settings": {"active_extensions": ["multiplayer_lan"]}, "assets": {"objects": {}}}
+    assert extension_event_menu(plain) == []
+    assert "event_extension" not in toolbox_enabled_blocks(PRESETS["beginner"], plain)
+    menu_names = {name for _label, name in extension_event_menu(lan)}
+    assert "player_joined" in menu_names and "file_session_started" not in menu_names
+    assert "event_extension" in toolbox_enabled_blocks(PRESETS["beginner"], lan)

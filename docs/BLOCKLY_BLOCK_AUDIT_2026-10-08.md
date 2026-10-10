@@ -589,7 +589,14 @@ B13's `directions` and the three LAN events (B3 remainder):
 1. B6, B7, B8, B9.
 2. B10, B11 (found while fixing B1), B12 (found while fixing B3), B13
    (found while fixing B5) — narrower scope than any of the above.
-3. The three deferred LAN-multiplayer events (B3's remainder) — needs
+3. ~~The three deferred LAN-multiplayer events (B3's remainder)~~ **Done
+   2026-10-10 (commit "feat(blockly): extension event block"):** one generic
+   `event_extension` block covers every extension event without a dedicated
+   block (12: LAN + file-exchange multiplayer); Python pushes all names (for
+   loading) and the active extensions' events (drop-down) via
+   `blocklyApi.setExtensionEvents`; the toolbox shows it only when an active
+   extension has events. Audit tool 60 → 53, event-dropped 0. Original:
+   The three deferred LAN-multiplayer events (B3's remainder) — needs
    per-event Blockly blocks, not `event_other`; a reasonable pairing with
    B12 if that turns out to need the same per-extension wiring investigation.
 

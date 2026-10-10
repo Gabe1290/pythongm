@@ -227,6 +227,7 @@ class BlocklyWidget(QWidget):
 
             # Register custom blocks from ActionType definitions
             self._register_custom_blocks()
+            self._push_extension_events()
 
             # Push project asset lists into Blockly so the dropdown fields
             # (object/sprite/sound/room) show real choices from this project.
@@ -245,6 +246,21 @@ class BlocklyWidget(QWidget):
             self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
             self.update_status(self.tr("Error loading Blockly"))
+
+    def _push_extension_events(self):
+        """Send the extension-event lists to the page (generic
+        event_extension block): every extension event name, so saved events
+        load, and the active extensions' events for the drop-down."""
+        try:
+            from config.toolbox_visibility import extension_event_names, extension_event_menu
+            payload = json.dumps([extension_event_names(),
+                                  extension_event_menu(self._find_project_data())])
+            self.web_view.page().runJavaScript(
+                "(function(){ if (window.blocklyApi && window.blocklyApi.setExtensionEvents) {"
+                f" var p = {payload}; return window.blocklyApi.setExtensionEvents(p[0], p[1]); }}"
+                " return 0; })()")
+        except Exception as e:
+            logger.debug(f"push extension events failed: {e}")
 
     def _register_custom_blocks(self):
         """Send ActionType definitions to JavaScript to auto-generate Blockly blocks"""
@@ -612,6 +628,7 @@ class BlocklyWidget(QWidget):
         # ended up in a preset's enabled_blocks).
         from config.toolbox_visibility import toolbox_enabled_blocks
         enabled_blocks = toolbox_enabled_blocks(config, self._find_project_data())
+        self._push_extension_events()
         enabled_categories = set(config.enabled_categories)
 
         # Let any registered extension hide its own blocks/categories when
