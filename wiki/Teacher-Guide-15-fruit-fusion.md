@@ -6,7 +6,7 @@
 
 ---
 
-Companion for the in-app tutorial (**Help > Tutorials > Fruit Fusion: Catch and Merge!**, 5 pages) and the matching student handout and worksheet. No earlier tutorial is required — this is a good first project, including for the youngest students (8-9), since it never requires reading dense instructions unassisted: every phase repeats the same four-step recipe with new names and numbers.
+Companion for the in-app tutorial (**Help > Tutorials > Fruit Fusion: Catch and Merge!**, 6 pages) and the matching student handout and worksheet. No earlier tutorial is required — this is a good first project, including for the youngest students (8-9), since it never requires reading dense instructions unassisted: every phase repeats the same four-step recipe with new names and numbers.
 
 ## Overview
 

@@ -6,7 +6,7 @@
 
 ---
 
-Accompagne le tutoriel intégré (**Aide > Tutoriels > Fusion de Fruits : Attrape et Fusionne !**, 5 pages) ainsi que la fiche élève et la feuille d'exercices correspondantes. Aucun tutoriel précédent n'est nécessaire — c'est un bon premier projet, y compris pour les plus jeunes élèves (8-9 ans), car il n'exige jamais de lire des instructions denses sans aide : chaque phase répète la même recette en quatre étapes avec de nouveaux noms et nombres.
+Accompagne le tutoriel intégré (**Aide > Tutoriels > Fusion de Fruits : Attrape et Fusionne !**, 6 pages) ainsi que la fiche élève et la feuille d'exercices correspondantes. Aucun tutoriel précédent n'est nécessaire — c'est un bon premier projet, y compris pour les plus jeunes élèves (8-9 ans), car il n'exige jamais de lire des instructions denses sans aide : chaque phase répète la même recette en quatre étapes avec de nouveaux noms et nombres.
 
 ## Aperçu
 

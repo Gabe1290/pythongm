@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+        th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; font-size: 11px; }
+        th { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Bonus: Import Ready-Made Art</h1>
+
+    <p>Your game already works with the shapes you drew yourself &mdash; this
+    page is completely optional. PyGameMaker also comes with a set of
+    ready-made pictures for this tutorial, in case you'd rather use those
+    instead of (or alongside) your own drawings.</p>
+
+    <h2>The Sprites You Can Swap In</h2>
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>What it's for</th></tr>
+            <tr><td><code>spr_basket_empty</code></td><td>The basket before it's holding anything</td></tr>
+            <tr><td><code>spr_basket_cherry</code></td><td>The basket holding a cherry</td></tr>
+            <tr><td><code>spr_basket_strawberry</code></td><td>The basket holding a strawberry</td></tr>
+            <tr><td><code>spr_basket_orange</code></td><td>The basket holding an orange</td></tr>
+            <tr><td><code>spr_basket_watermelon</code></td><td>The basket holding the winning watermelon</td></tr>
+            <tr><td><code>spr_fruit_cherry</code></td><td>The falling cherry</td></tr>
+            <tr><td><code>spr_fruit_strawberry</code></td><td>The falling strawberry</td></tr>
+            <tr><td><code>spr_fruit_orange</code></td><td>The falling orange</td></tr>
+        </table>
+    </div>
+
+    <h2>How to Import One</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click the sprite you want to replace (e.g. <code>spr_fruit_cherry</code>) in the Asset Tree</li>
+            <li>Choose <strong>Import Image...</strong></li>
+            <li>Browse to <code>Tutorials/15_fruit_fusion/assets/</code> and pick the
+            matching file &mdash; it has the exact same name as the sprite
+            (e.g. <code>spr_fruit_cherry.png</code>)</li>
+        </ol>
+        <p>Do this for as many of the eight sprites as you like. The game
+        doesn't care whether a sprite was drawn or imported &mdash; it works
+        exactly the same either way.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>If you don't see the assets folder:</strong> some school
+        computers run PyGameMaker as a single ready-made program instead of
+        from its own folder of files, and that program may not include this
+        tutorial's asset images in a place you can browse to. If
+        <code>Import Image...</code> doesn't find the folder, that's why &mdash;
+        ask your teacher, or just keep the drawings you made. There's nothing
+        wrong with hand-drawn fruit!
+    </div>
+</body>
+</html>

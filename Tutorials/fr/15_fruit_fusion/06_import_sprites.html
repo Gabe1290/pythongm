@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+        th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; font-size: 11px; }
+        th { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Bonus : Importer des images toutes faites</h1>
+
+    <p>Ton jeu fonctionne déjà avec les formes que tu as dessinées toi-même
+    &mdash; cette page est entièrement facultative. PyGameMaker est aussi
+    fourni avec un ensemble d'images toutes faites pour ce tutoriel, au cas
+    où tu préfèrerais les utiliser à la place de (ou en plus de) tes propres
+    dessins.</p>
+
+    <h2>Les sprites que tu peux remplacer</h2>
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>À quoi il sert</th></tr>
+            <tr><td><code>spr_basket_empty</code></td><td>Le panier avant qu'il ne tienne quelque chose</td></tr>
+            <tr><td><code>spr_basket_cherry</code></td><td>Le panier tenant une cerise</td></tr>
+            <tr><td><code>spr_basket_strawberry</code></td><td>Le panier tenant une fraise</td></tr>
+            <tr><td><code>spr_basket_orange</code></td><td>Le panier tenant une orange</td></tr>
+            <tr><td><code>spr_basket_watermelon</code></td><td>Le panier tenant la pastèque de la victoire</td></tr>
+            <tr><td><code>spr_fruit_cherry</code></td><td>La cerise qui tombe</td></tr>
+            <tr><td><code>spr_fruit_strawberry</code></td><td>La fraise qui tombe</td></tr>
+            <tr><td><code>spr_fruit_orange</code></td><td>L'orange qui tombe</td></tr>
+        </table>
+    </div>
+
+    <h2>Comment en importer un</h2>
+    <div class="step">
+        <ol>
+            <li>Fais un clic droit sur le sprite que tu veux remplacer (par exemple <code>spr_fruit_cherry</code>) dans l'Arbre des ressources</li>
+            <li>Choisis <strong>Importer une image...</strong></li>
+            <li>Navigue vers <code>Tutorials/15_fruit_fusion/assets/</code> et choisis
+            le fichier correspondant &mdash; il a exactement le même nom que le
+            sprite (par exemple <code>spr_fruit_cherry.png</code>)</li>
+        </ol>
+        <p>Fais ça pour autant des huit sprites que tu veux. Le jeu ne fait
+        aucune différence entre un sprite dessiné et un sprite importé
+        &mdash; il fonctionne exactement de la même façon dans les deux cas.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Si tu ne trouves pas le dossier des images :</strong> certains
+        ordinateurs d'école font tourner PyGameMaker comme un seul programme
+        tout prêt plutôt que depuis son propre dossier de fichiers, et ce
+        programme peut ne pas inclure les images de ce tutoriel dans un
+        endroit où tu peux naviguer. Si <code>Importer une image...</code> ne
+        trouve pas le dossier, c'est pour ça &mdash; demande à ton
+        enseignant·e, ou garde simplement les dessins que tu as faits. Il n'y
+        a rien de mal à des fruits dessinés à la main !
+    </div>
+</body>
+</html>
