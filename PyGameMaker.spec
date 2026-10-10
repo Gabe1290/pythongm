@@ -14,9 +14,45 @@ To build:
     pyinstaller PyGameMaker.spec
 """
 
+import os
 import sys
 from pathlib import Path
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
+
+
+def _exclude_shadowing_runtime_libs(binaries):
+    """Drop PyInstaller-bundled copies of libstdc++/libgcc_s from the Linux
+    build so the system's own copies are used instead.
+
+    Real classroom crash, 2026-10-10: a user's compiled Linux build died the
+    instant they opened the Blockly tab. Terminal output showed the actual
+    chain: PyInstaller's bundled (older) libstdc++.so.6 sits in the onefile's
+    extraction dir, which is searched before the system's real libstdc++ --
+    so when Mesa's Intel GPU driver stack tried to dlopen libigdgmm.so.12 (its
+    buffer-manager lib), it resolved against the bundled, too-old libstdc++
+    and failed ("version GLIBCXX_3.4.32 not found"). With Mesa's driver unable
+    to load, EGL/OpenGL context creation failed outright ("EGL not available",
+    "Failed to create RHI for backend: OpenGL"), and the Blockly tab -- the
+    one thing in this app that embeds a QWebEngineView, which needs an
+    RHI-backed window to composite into -- took the whole window's render
+    surface down with it (window vanishes; process lingers as a dead icon).
+    The same shadowing broke unrelated system GIO modules in the same log
+    (libdconfsettings.so / libgvfsdbus.so: undefined symbol errors) -- this
+    is a generic "bundled toolchain runtime shadows the system's newer one"
+    bug, not something specific to WebEngine or GPU code.
+
+    The system's libstdc++ only needs to be AT LEAST as new as what PySide6
+    was built against for this to be safe -- GCC's libstdc++ is strictly
+    backward-compatible, and the bug symptom itself (a library demanding a
+    *newer* GLIBCXX than the bundled copy provides) is direct evidence the
+    system copy is the newer one here, which is the common case on any
+    reasonably current Linux distro.
+    """
+    excluded_prefixes = ('libstdc++.so', 'libgcc_s.so')
+    return [
+        b for b in binaries
+        if not os.path.basename(b[0]).startswith(excluded_prefixes)
+    ]
 
 # Project paths
 project_dir = Path(SPECPATH)
@@ -147,6 +183,8 @@ a = Analysis(
     cipher=None,
     noarchive=False,
 )
+
+a.binaries = _exclude_shadowing_runtime_libs(a.binaries)
 
 # Add directory trees to datas (Tree works in all PyInstaller versions,
 # unlike raw directory paths in datas which require PyInstaller 6.0+).
