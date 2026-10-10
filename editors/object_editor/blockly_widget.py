@@ -5,6 +5,7 @@ Provides a Scratch-like block programming interface using Google Blockly
 """
 
 import json
+import sys
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -102,8 +103,76 @@ def blockly_message_file(language_code):
     name = _BLOCKLY_MESSAGE_FILES.get((language_code or "en").split("_")[0])
     if not name:
         return None
-    path = Path(__file__).resolve().parent / "blockly" / "lib" / name
+    # Same frozen-build check as _load_blockly_html below: Path(__file__) is
+    # not a reliable filesystem path for a pure-Python module bundled into a
+    # PyInstaller onefile's PYZ archive, so it can't be used to find sibling
+    # data files in a packaged build -- this one was missed when the function
+    # was added (2026-10-10), unlike _load_blockly_html which already gets
+    # this right. Low-impact in practice (a wrong path just means the
+    # message-file injection in _set_blockly_language silently no-ops, so
+    # Blockly's built-in blocks fall back to English instead of crashing),
+    # but worth being correct regardless.
+    if getattr(sys, 'frozen', False):
+        blockly_dir = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly"
+    else:
+        blockly_dir = Path(__file__).resolve().parent / "blockly"
+    path = blockly_dir / "lib" / name
     return path if path.exists() else None
+
+
+def qtwebengine_missing_libraries():
+    """Shared libraries libQt6WebEngineCore.so needs that the dynamic
+    linker can't resolve on this system, or None if the check itself isn't
+    possible/applicable (not Linux, ldd unavailable, or the library can't be
+    located -- fail silent in all of those, this is a diagnostic add-on, not
+    a gate).
+
+    Exists because QtWebEngineProcess failing to start from a missing
+    system library is a real, confirmed-possible failure mode for this
+    packaged app (see the long-standing comment in object_editor_main.py:
+    "uses QtWebEngine which can crash in some PyInstaller builds") that a
+    Python try/except cannot catch -- a subprocess that aborts because its
+    own dynamic linker failed takes the whole host process down with it in
+    some Qt/Chromium version combinations, not just the renderer. Checking
+    with `ldd` first (a safe, read-only operation -- nothing here executes
+    the WebEngine binaries themselves) lets the caller show a clear,
+    actionable fallback message instead of the whole app silently dying.
+    """
+    import shutil
+    import subprocess
+
+    if sys.platform.startswith('win') or sys.platform == 'darwin' or not shutil.which('ldd'):
+        return None
+
+    if getattr(sys, 'frozen', False):
+        base = Path(sys._MEIPASS)
+    else:
+        try:
+            import PySide6
+            base = Path(PySide6.__file__).resolve().parent
+        except ImportError:
+            return None
+        base = base.parent  # PySide6/__init__.py -> site-packages
+
+    candidates = sorted((base / "PySide6" / "Qt" / "lib").glob("libQt6WebEngineCore.so*"))
+    if not candidates:
+        candidates = sorted(base.glob("**/libQt6WebEngineCore.so*"))
+    if not candidates:
+        return None
+
+    try:
+        result = subprocess.run(
+            ["ldd", str(candidates[0])],
+            capture_output=True, text=True, timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+
+    missing = sorted({
+        line.split()[0] for line in result.stdout.splitlines()
+        if "not found" in line
+    })
+    return missing or None
 
 
 class BlocklyWidget(QWidget):

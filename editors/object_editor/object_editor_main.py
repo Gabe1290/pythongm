@@ -547,7 +547,20 @@ class ObjectEditor(BaseEditor):
         """Create the visual programming tab with Blockly"""
         try:
             # Lazy import to avoid crash if QtWebEngine is unavailable
-            from .blockly_widget import BlocklyVisualProgrammingTab
+            from .blockly_widget import BlocklyVisualProgrammingTab, qtwebengine_missing_libraries
+
+            # A QtWebEngineProcess that fails to start because a system
+            # shared library is missing can abort the WHOLE app, not just
+            # fail to load the Blockly page -- a Python try/except cannot
+            # catch that (classroom report, 2026-10-10: "clicking the
+            # Blockly tab" crashed the packaged Linux build outright). Check
+            # with ldd (safe, read-only) BEFORE ever constructing a
+            # QWebEngineView, so a real gap shows as this tab's usual
+            # fallback label instead of silently killing the IDE.
+            missing = qtwebengine_missing_libraries()
+            if missing:
+                raise RuntimeError(
+                    self.tr("Missing system libraries: {0}").format(", ".join(missing)))
 
             # Create Blockly visual programming tab
             self.blockly_tab = BlocklyVisualProgrammingTab()
