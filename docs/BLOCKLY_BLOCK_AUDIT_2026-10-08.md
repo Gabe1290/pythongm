@@ -443,6 +443,13 @@ moment they touch a block.
 
 ### Found 2026-10-10 from the audit tool's remaining 102 differences
 
+**Decided with the user 2026-10-10:** B13 → replace the direction drop-down
+with the action-list editor's 3×3 checkbox grid (several ticks = pick one at
+random); B17 → `'0'` means **no** on all three engines (matching GameMaker
+and the import's intent; check treasure still plays); B9 → remove the dead
+Thymio Blockly blocks and their 14 registry names; LAN events → add the three
+event blocks, provided by the LAN extension and shown only when it is active.
+
 B12's symptom is gone: extension actions (Block World, LAN) now load as
 generated `custom_*` blocks and `action-lost` is 0. What remains, beyond
 B13's `directions` and the three LAN events (B3 remainder):
