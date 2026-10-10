@@ -3404,6 +3404,47 @@
         };
 
         // Expose functions to Qt
+        // Audit B14/B20: a drop-down rejects a value its menu doesn't list
+        // and keeps its first option -- so a saved sprite/object/sound name
+        // the project no longer has, or an extension value like Block
+        // World's "hotbar_block", was silently replaced on load. While SAVED
+        // data is being loaded (and only then), an unknown value is kept as
+        // an extra choice instead, so it displays and saves back unchanged.
+        // A student picking from the menu still only gets the real options.
+        (function() {
+            var P = Blockly.FieldDropdown.prototype;
+            var origGetOptions = P.getOptions;
+            var origValidate = P.doClassValidation_;
+            P.getOptions = function(useCache) {
+                var opts = origGetOptions.call(this, useCache);
+                var kept = this.__pygmKeptOptions;
+                if (!kept || !kept.length) return opts;
+                var extra = kept.filter(function(k) {
+                    return !opts.some(function(o) { return o[1] === k[1]; });
+                });
+                return extra.length ? opts.concat(extra) : opts;
+            };
+            P.doClassValidation_ = function(newValue) {
+                if (window.__pygmLoadingSaved && newValue !== null && newValue !== undefined
+                        && String(newValue) !== ''
+                        && !origGetOptions.call(this, false).some(function(o) { return o[1] === newValue; })) {
+                    this.__pygmKeptOptions = (this.__pygmKeptOptions || []).concat([[String(newValue), newValue]]);
+                }
+                return origValidate.call(this, newValue);
+            };
+        })();
+
+        function whileLoadingSaved(fn) {
+            return function() {
+                var previous = window.__pygmLoadingSaved;
+                window.__pygmLoadingSaved = true;
+                try { return fn.apply(this, arguments); }
+                finally { window.__pygmLoadingSaved = previous; }
+            };
+        }
+        loadEventsData = whileLoadingSaved(loadEventsData);
+        loadWorkspaceXml = whileLoadingSaved(loadWorkspaceXml);
+
         window.blocklyApi = {
             getXml: getWorkspaceXml,
             loadXml: loadWorkspaceXml,

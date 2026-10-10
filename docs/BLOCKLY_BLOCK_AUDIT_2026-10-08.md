@@ -369,7 +369,8 @@ moment they touch a block.
   shadows on both toolbox entries, the two `connectNumberBlock` calls in the
   loader, and fr/pl/de/it/uk labels. Audit tool: 176 → 112. Tests:
   `TestB10SetSpriteFrameAndSpeed` (2 of its 3 fail on the pre-fix page).
-- [ ] **B14 — A saved asset name that isn't in the project can't be restored
+- [x] **B14 — landed with B20 (commit "fix(blockly): B14/B20", 2026-10-10).**
+  A saved asset name that isn't in the project can't be restored
   by any asset dropdown (found fixing B10).** `createAssetField`'s
   "(missing)" preservation only works for a value set while it was valid;
   `setFieldValue` with a name not in `BLOCKLY_ASSET_LISTS` (deleted/renamed
@@ -481,8 +482,14 @@ B13's `directions` and the three LAN events (B3 remainder):
   self".** maze_4: the loader picks `instance_destroy` vs
   `instance_destroy_other` from `target` and collapses `object` (+
   `target_object`) into self — the wrong instance is destroyed.
-- [ ] **B20 — A value missing from a fixed drop-down resets to its first
-  option.** `place_block.block: 'hotbar_block'` → `'brick'` (block_world_1/2,
+- [x] **B20 — landed with B14 (commit "fix(blockly): B14/B20", 2026-10-10).**
+  Generic fix: `Blockly.FieldDropdown.prototype` `doClassValidation_` /
+  `getOptions` are wrapped so that, only while saved data loads
+  (`loadEventsData` / `loadWorkspaceXml` run under `whileLoadingSaved`), an
+  unknown value is kept as an extra choice instead of being rejected;
+  outside loading a drop-down still rejects it (tested). Audit tool 75 → 73.
+  Tests: `TestB14B20UnknownDropdownValues`. A value missing from a fixed
+  drop-down resets to its first option. `place_block.block: 'hotbar_block'` → `'brick'` (block_world_1/2,
   where `hotbar_block` means "the selected hotbar slot"). Same family as
   B14 (asset names); fix both by keeping an unknown saved value as an extra
   option.

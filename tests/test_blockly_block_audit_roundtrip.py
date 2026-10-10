@@ -293,6 +293,13 @@ The generated custom_* blocks' loader always built a math_number, so
 "facing_angle+180" (the raycast samples' turning) or "32/6" loaded as 0.
 It now shares the hand-written loader's number-or-expression logic
 (loadNumberInput).
+
+## B14 / B20 -- a value a drop-down doesn't list was replaced on load
+
+A saved sprite/object name the project no longer has (deleted, renamed) or
+an extension value like Block World's "hotbar_block" was rejected by the
+drop-down, which kept its first option. While saved data loads, an unknown
+value is now kept as an extra choice; outside loading, nothing changes.
 """
 import json
 
@@ -497,6 +504,11 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B14 / B20 -- values a drop-down doesn't list
+    "set_sprite_deleted_sprite": {"create": {"actions": [
+        {"action": "set_sprite", "parameters": {"sprite": "spr_deleted", "subimage": "1", "speed": "1"}}]}},
+    "create_instance_deleted_object": {"create": {"actions": [
+        {"action": "create_instance", "parameters": {"object": "obj_deleted", "x": "5", "y": "6"}}]}},
     # B21 -- draw_health_bar height (raycast_3's real bar is 18 tall)
     "draw_health_bar_height_18": {"create": {"actions": [
         {"action": "draw_health_bar", "parameters": {
@@ -612,6 +624,11 @@ def round_tripped():
         var tB = workspace.newBlock('logic_boolean'); tB.setFieldValue('TRUE', 'BOOL');
         saved.cond_true = condOf(tB);
         saved.cond_empty = condOf(null);
+        // B14/B20: outside loading, a drop-down still rejects an unknown value
+        var probe = workspace.newBlock('set_sprite');
+        probe.setFieldValue('spr_nowhere', 'SPRITE');
+        saved.dropdown_outside_load = probe.getFieldValue('SPRITE');
+        probe.dispose(true);
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
@@ -1053,3 +1070,15 @@ class TestB21HealthBarHeight:
         params = _params(round_tripped, "draw_health_bar_height_18")
         assert [float(params[k]) for k in ("x1", "y1", "x2", "y2")] == [8, 450, 208, 468]
         assert params["back_color"] == "#401010" and params["bar_color"] == "#20c020"
+
+
+class TestB14B20UnknownDropdownValues:
+    def test_a_deleted_sprite_name_survives(self, round_tripped):
+        assert _params(round_tripped, "set_sprite_deleted_sprite")["sprite"] == "spr_deleted"
+
+    def test_a_deleted_object_name_survives(self, round_tripped):
+        params = _params(round_tripped, "create_instance_deleted_object")
+        assert params["object"] == "obj_deleted"
+
+    def test_outside_loading_an_unknown_value_is_still_rejected(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["dropdown_outside_load"] != "spr_nowhere"
