@@ -352,7 +352,23 @@ moment they touch a block.
   `instance_change` (action is `change_instance`; enabled in beginner),
   `game_restart` (action is `restart_game`), and the Thymio Events registry
   names lack the `event_` prefix of the real blocks.
-- [ ] **B9 — Thymio Blockly blocks are unreachable dead code (LOW).** Defined in
+- [x] **B9 — landed (commit "fix(blockly): B9", 2026-10-10); the original
+  description below was WRONG and the "remove" decision was not applied.**
+  On checking before deleting: the 14 Thymio registry names are live —
+  `PLUGIN_EVENT_BLOCKLY_MAP` maps each Thymio event to an identical name, so
+  they are the switches `get_available_events` uses to offer Thymio events,
+  and `ThymioConfigDialog`'s presets (Tools menu) toggle them; and the Thymio
+  block definitions are what the loader uses when a Thymio object's events
+  are shown in the Blockly tab. Removing either would have broken Thymio.
+  The real bug: the 28 Thymio action generators saved `{type: ...}` while
+  Thymio's panel, the engine and the Aseba exporter use `{action: ...}`, so
+  editing a Thymio object in the Blockly tab silently disabled every Thymio
+  action — and U0 missed it because the comparison accepted either key. Fix:
+  generators save `action`; `blockly_roundtrip.walk` now reports
+  `action-key-changed`, so U0 locks instead. Tests:
+  `TestB9ThymioActionsKeepTheActionKey` + a safety-net test. (B8's note
+  calling the Thymio registry names dead is corrected by this.) Original:
+  Thymio Blockly blocks are unreachable dead code (LOW). Defined in
   `blockly_blocks.js`, in no toolbox (Thymio is programmed through its own
   panel); their generators save `{type: …}` rather than `{action: …}`, which
   the runtime's `execute_action` would ignore. Remove or wire up — decide.

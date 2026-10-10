@@ -466,49 +466,49 @@ function generateActionCodeInner(block) {
         // THYMIO MOTOR ACTIONS
         // ============================================================================
         case 'thymio_set_motor_speed':
-            return {type: 'thymio_set_motor_speed', parameters: {
+            return {action: 'thymio_set_motor_speed', parameters: {
                 left_speed: getInputValue(block, 'LEFT_SPEED', 0),
                 right_speed: getInputValue(block, 'RIGHT_SPEED', 0)
             }};
         case 'thymio_move_forward':
-            return {type: 'thymio_move_forward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
+            return {action: 'thymio_move_forward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
         case 'thymio_move_backward':
-            return {type: 'thymio_move_backward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
+            return {action: 'thymio_move_backward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
         case 'thymio_turn_left':
-            return {type: 'thymio_turn_left', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
+            return {action: 'thymio_turn_left', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
         case 'thymio_turn_right':
-            return {type: 'thymio_turn_right', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
+            return {action: 'thymio_turn_right', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
         case 'thymio_stop_motors':
-            return {type: 'thymio_stop_motors', parameters: {}};
+            return {action: 'thymio_stop_motors', parameters: {}};
 
         // ============================================================================
         // THYMIO LED ACTIONS
         // ============================================================================
         case 'thymio_set_led_top':
-            return {type: 'thymio_set_led_top', parameters: {
+            return {action: 'thymio_set_led_top', parameters: {
                 red: getInputValue(block, 'RED', 0),
                 green: getInputValue(block, 'GREEN', 0),
                 blue: getInputValue(block, 'BLUE', 0)
             }};
         case 'thymio_set_led_bottom_left':
-            return {type: 'thymio_set_led_bottom_left', parameters: {
+            return {action: 'thymio_set_led_bottom_left', parameters: {
                 red: getInputValue(block, 'RED', 0),
                 green: getInputValue(block, 'GREEN', 0),
                 blue: getInputValue(block, 'BLUE', 0)
             }};
         case 'thymio_set_led_bottom_right':
-            return {type: 'thymio_set_led_bottom_right', parameters: {
+            return {action: 'thymio_set_led_bottom_right', parameters: {
                 red: getInputValue(block, 'RED', 0),
                 green: getInputValue(block, 'GREEN', 0),
                 blue: getInputValue(block, 'BLUE', 0)
             }};
         case 'thymio_set_led_circle':
-            return {type: 'thymio_set_led_circle', parameters: {
+            return {action: 'thymio_set_led_circle', parameters: {
                 led_index: parseInt(block.getFieldValue('LED_INDEX')),
                 intensity: getInputValue(block, 'INTENSITY', 32)
             }};
         case 'thymio_set_led_circle_all':
-            return {type: 'thymio_set_led_circle_all', parameters: {
+            return {action: 'thymio_set_led_circle_all', parameters: {
                 led0: getInputValue(block, 'LED0', 0),
                 led1: getInputValue(block, 'LED1', 0),
                 led2: getInputValue(block, 'LED2', 0),
@@ -519,38 +519,38 @@ function generateActionCodeInner(block) {
                 led7: getInputValue(block, 'LED7', 0)
             }};
         case 'thymio_leds_off':
-            return {type: 'thymio_leds_off', parameters: {}};
+            return {action: 'thymio_leds_off', parameters: {}};
 
         // ============================================================================
         // THYMIO SOUND ACTIONS
         // ============================================================================
         case 'thymio_play_tone':
-            return {type: 'thymio_play_tone', parameters: {
+            return {action: 'thymio_play_tone', parameters: {
                 frequency: getInputValue(block, 'FREQUENCY', 440),
                 duration: getInputValue(block, 'DURATION', 60)
             }};
         case 'thymio_play_system_sound':
-            return {type: 'thymio_play_system_sound', parameters: {
+            return {action: 'thymio_play_system_sound', parameters: {
                 sound_id: parseInt(block.getFieldValue('SOUND_ID'))
             }};
         case 'thymio_stop_sound':
-            return {type: 'thymio_stop_sound', parameters: {}};
+            return {action: 'thymio_stop_sound', parameters: {}};
 
         // ============================================================================
         // THYMIO SENSOR READING ACTIONS
         // ============================================================================
         case 'thymio_read_proximity':
-            return {type: 'thymio_read_proximity', parameters: {
+            return {action: 'thymio_read_proximity', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 variable: block.getFieldValue('VARIABLE')
             }};
         case 'thymio_read_ground':
-            return {type: 'thymio_read_ground', parameters: {
+            return {action: 'thymio_read_ground', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 variable: block.getFieldValue('VARIABLE')
             }};
         case 'thymio_read_button':
-            return {type: 'thymio_read_button', parameters: {
+            return {action: 'thymio_read_button', parameters: {
                 button: block.getFieldValue('BUTTON'),
                 variable: block.getFieldValue('VARIABLE')
             }};
@@ -568,7 +568,7 @@ function generateActionCodeInner(block) {
                 }
                 proxSubBlock = proxSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_proximity', parameters: {
+            return {action: 'thymio_if_proximity', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 comparison: block.getFieldValue('COMPARISON'),
                 threshold: getInputValue(block, 'THRESHOLD', 2000)
@@ -584,7 +584,7 @@ function generateActionCodeInner(block) {
                 }
                 groundDarkSubBlock = groundDarkSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_ground_dark', parameters: {
+            return {action: 'thymio_if_ground_dark', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 threshold: getInputValue(block, 'THRESHOLD', 300)
             }, sub_actions: groundDarkSubActions};
@@ -599,7 +599,7 @@ function generateActionCodeInner(block) {
                 }
                 groundLightSubBlock = groundLightSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_ground_light', parameters: {
+            return {action: 'thymio_if_ground_light', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 threshold: getInputValue(block, 'THRESHOLD', 300)
             }, sub_actions: groundLightSubActions};
@@ -614,7 +614,7 @@ function generateActionCodeInner(block) {
                 }
                 btnPressSubBlock = btnPressSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_button_pressed', parameters: {
+            return {action: 'thymio_if_button_pressed', parameters: {
                 button: block.getFieldValue('BUTTON')
             }, sub_actions: btnPressSubActions};
 
@@ -628,7 +628,7 @@ function generateActionCodeInner(block) {
                 }
                 btnRelSubBlock = btnRelSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_button_released', parameters: {
+            return {action: 'thymio_if_button_released', parameters: {
                 button: block.getFieldValue('BUTTON')
             }, sub_actions: btnRelSubActions};
 
@@ -642,7 +642,7 @@ function generateActionCodeInner(block) {
                 }
                 varSubBlock = varSubBlock.getNextBlock();
             }
-            return {type: 'thymio_if_variable', parameters: {
+            return {action: 'thymio_if_variable', parameters: {
                 variable: block.getFieldValue('VARIABLE'),
                 comparison: block.getFieldValue('COMPARISON'),
                 value: getInputValue(block, 'VALUE', 0)
@@ -652,7 +652,7 @@ function generateActionCodeInner(block) {
         // THYMIO TIMING ACTIONS
         // ============================================================================
         case 'thymio_set_timer_period':
-            return {type: 'thymio_set_timer_period', parameters: {
+            return {action: 'thymio_set_timer_period', parameters: {
                 timer_id: parseInt(block.getFieldValue('TIMER_ID')),
                 period: getInputValue(block, 'PERIOD', 1000)
             }};
@@ -661,17 +661,17 @@ function generateActionCodeInner(block) {
         // THYMIO VARIABLE ACTIONS
         // ============================================================================
         case 'thymio_set_variable':
-            return {type: 'thymio_set_variable', parameters: {
+            return {action: 'thymio_set_variable', parameters: {
                 variable: block.getFieldValue('VARIABLE'),
                 value: getInputValue(block, 'VALUE', 0)
             }};
         case 'thymio_increase_variable':
-            return {type: 'thymio_increase_variable', parameters: {
+            return {action: 'thymio_increase_variable', parameters: {
                 variable: block.getFieldValue('VARIABLE'),
                 amount: getInputValue(block, 'AMOUNT', 1)
             }};
         case 'thymio_decrease_variable':
-            return {type: 'thymio_decrease_variable', parameters: {
+            return {action: 'thymio_decrease_variable', parameters: {
                 variable: block.getFieldValue('VARIABLE'),
                 amount: getInputValue(block, 'AMOUNT', 1)
             }};

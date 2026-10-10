@@ -89,6 +89,12 @@ def walk(a_list, b_list, where: str, issues: List[Issue]):
         if an != bn:
             issues.append((where, 'action-lost' if bn is None else 'action-changed', an, bn))
             return
+        # The engine dispatches on the "action" key only; an action re-saved
+        # under "type" silently stops running (audit B9: the Thymio Blockly
+        # generators did exactly this, and comparing names alone missed it).
+        if ('action' in a) != ('action' in b):
+            issues.append((where, 'action-key-changed', an,
+                           'type' if 'action' in a else 'action'))
         ap, bp = a.get('parameters') or {}, b.get('parameters') or {}
         for k in sorted(set(ap) | set(bp)):
             if k in NESTED:

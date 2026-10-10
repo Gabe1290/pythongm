@@ -306,6 +306,12 @@ value is now kept as an extra choice; outside loading, nothing changes.
 The loader only knew "destroy self" and "destroy other", so target "object"
 became self and the next save destroyed the wrong instance. New
 instance_destroy_object block ("Destroy all instances of <object>").
+
+## B9 -- Thymio Blockly blocks saved {type: ...}, which the engine ignores
+
+Thymio's own panel saves {"action": "thymio_..."}; the Thymio Blockly
+generators saved {"type": ...}, so editing a Thymio object in the Blockly
+tab silently disabled every Thymio action. They now save "action".
 """
 import json
 
@@ -510,6 +516,9 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B9 -- Thymio action under a Thymio event, as Thymio's panel saves it
+    "thymio_move_forward": {"thymio_button_forward": {"actions": [
+        {"action": "thymio_move_forward", "parameters": {"speed": 200}}]}},
     # B17 -- generated boolean param stored as the text "0" (GMK import)
     "change_instance_perform_events_text_zero": {"create": {"actions": [
         {"action": "change_instance", "parameters": {"object": "obj_enemy", "perform_events": "0"}}]}},
@@ -1107,3 +1116,9 @@ class TestB17BooleanTextZero:
     def test_text_zero_loads_as_unticked(self, round_tripped):
         """GameMaker's "no" is stored as the text "0"; JS truthiness ticked it."""
         assert _params(round_tripped, "change_instance_perform_events_text_zero")["perform_events"] is False
+
+
+class TestB9ThymioActionsKeepTheActionKey:
+    def test_thymio_action_saves_under_action(self, round_tripped):
+        actions = round_tripped["thymio_move_forward"]["thymio_button_forward"]["actions"]
+        assert actions == [{"action": "thymio_move_forward", "parameters": {"speed": 200}}]

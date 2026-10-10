@@ -274,3 +274,14 @@ def test_false_text_still_counts_as_a_difference():
     before = {"create": {"actions": [{"action": "change_instance", "parameters": {"perform_events": "false"}}]}}
     after = {"create": {"actions": [{"action": "change_instance", "parameters": {"perform_events": False}}]}}
     assert diff_events(before, after) != []
+
+
+
+def test_an_action_resaved_under_type_is_a_loss():
+    """Audit B9: the engine only runs the "action" key, so a Blockly save
+    that writes {"type": ...} silently disables the action."""
+    from editors.object_editor.blockly_roundtrip import diff_events
+    before = {"create": {"actions": [{"action": "thymio_move_forward", "parameters": {"speed": 200}}]}}
+    after = {"create": {"actions": [{"type": "thymio_move_forward", "parameters": {"speed": 200}}]}}
+    issues = diff_events(before, after)
+    assert issues and issues[0][1] == "action-key-changed"
