@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-10
+
+A new tutorial, a full Blockly reliability pass, a new UI language, and
+classroom-reported fixes for two ways a student could get stuck with no
+way back to their work.
+
+### Added
+- **Tutorial 15 "Fruit Fusion"** — a new in-app tutorial (EN+FR), whitelisted
+  for the beginner edition, with a bundled reference project and a full
+  illustrated teacher-resources set (student handout, worksheet, teacher
+  guide and answer key, with real screenshots of the actual game) published
+  to the wiki.
+- **Polish (pl) UI translation** — the full interface, Blockly blocks
+  included.
+- An "if condition" Blockly block, real math functions (`sqrt`, `ln`,
+  `log10`, `exp`) on all three engines (desktop/HTML5/Kivy), and value
+  blocks for speed/mouse-position/comparisons/boolean logic that previously
+  silently saved as their default instead of the authored expression.
+- A generic extension-event Blockly block, so LAN and file-exchange
+  multiplayer events (`player_joined`, `network_message`, …) no longer
+  disappear from an object's event list when edited in Blockly.
+
+### Fixed
+- **Duplicate IDE instances could corrupt a shared project.** A student
+  relaunching the IDE after losing track of the (minimized) window could
+  end up with many processes open on the same project folder at once; each
+  one's independent saves silently accumulated into the folder instead of
+  overwriting each other, so Test Game loaded a mash-up of every instance's
+  edits rather than any one student's actual work. The IDE now refuses to
+  start a second instance on the same machine — a relaunch instead raises
+  the existing window.
+- **A modal dialog (e.g. the sprite editor's colour picker) could get
+  stuck behind the main window** if a student clicked the IDE while it was
+  open — on some window managers Qt's modality blocks input to the main
+  window but doesn't stop it from being raised, leaving both windows
+  effectively unusable. The IDE now re-raises its own modal dialog the
+  moment it notices this happened.
+- **A full Blockly round-trip audit closed with zero data-loss cases**
+  across all 98 bundled sample objects (down from 644 at the start):
+  typed-0 values, conditions, parameters, expressions and value blocks
+  that the Blockly tab silently dropped or replaced with a wrong default
+  on save/reload are now preserved exactly, across desktop, HTML5 and
+  Kivy exports. A new safety net also locks the Blockly tab (with an
+  on-screen explanation) if it ever detects it's about to lose data
+  loading an object authored outside Blockly, instead of losing it
+  silently.
+- The printable PDF/ODT handout and worksheet generators no longer render
+  an HTML comment marker as literal visible text on the page.
+- Two false claims caught while writing Tutorial 6's facing-direction
+  notes and other teacher-guide content.
+
 ## [1.4.0] - 2026-09-23
 
 New content plus reliability fixes: Block World crafting, a second
