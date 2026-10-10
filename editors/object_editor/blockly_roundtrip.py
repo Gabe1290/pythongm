@@ -15,6 +15,20 @@ Issue = Tuple[str, str, Any, Any]  # (where, kind, a, b)
 
 NESTED = ('then_actions', 'else_actions', 'sub_actions', 'actions')
 
+# Equivalent spellings that are not losses (each pinned against its source by
+# tests/test_blockly_round_trip_safety.py, since this module stays
+# dependency-free):
+# - action-name aliases the runtime resolves (ActionExecutor.ACTION_ALIASES)
+ACTION_NAME_ALIASES = {
+    'room_goto_next': 'next_room', 'goto_next_room': 'next_room',
+    'room_goto_previous': 'previous_room', 'goto_previous_room': 'previous_room',
+    'room_restart': 'restart_room', 'room_goto': 'goto_room',
+}
+# - GameMaker numeric comparison codes (importers/gmk_mappings.GM_COMPARISON_OPS),
+#   which every engine now translates (audit B18)
+GM_OPERATION_CODES = {'0': 'equal', '1': 'less', '2': 'greater',
+                      '3': 'less_equal', '4': 'greater_equal', '5': 'not_equal'}
+
 
 def norm(v):
     """Normalize a parameter value so representational differences (the
@@ -23,6 +37,11 @@ def norm(v):
         return v
     if isinstance(v, str):
         s = v.strip()
+        # "true" equals True: every engine reads it as true. Deliberately NOT
+        # "false" -> False: some parameters (change_instance perform_events,
+        # audit B17) use plain truthiness, where the text "false" is TRUE.
+        if s.lower() == 'true':
+            return True
         try:
             return float(s)
         except ValueError:
@@ -65,6 +84,8 @@ def walk(a_list, b_list, where: str, issues: List[Issue]):
         b = b_list[i] if i < len(b_list) else None
         an = a and (a.get('action') or a.get('type'))
         bn = b and (b.get('action') or b.get('type'))
+        an = ACTION_NAME_ALIASES.get(an, an)
+        bn = ACTION_NAME_ALIASES.get(bn, bn)
         if an != bn:
             issues.append((where, 'action-lost' if bn is None else 'action-changed', an, bn))
             return
@@ -74,6 +95,10 @@ def walk(a_list, b_list, where: str, issues: List[Issue]):
                 walk(ap.get(k), bp.get(k), f"{where}>{an}.{k}", issues)
             elif k not in bp:
                 issues.append((where, 'param-dropped', an, k))
+            elif k == 'operation' and (
+                    GM_OPERATION_CODES.get(str(ap[k]).strip(), ap[k])
+                    == GM_OPERATION_CODES.get(str(bp[k]).strip(), bp[k])):
+                continue
             elif k in ap and norm(ap[k]) != norm(bp[k]):
                 issues.append((where, 'param-changed', an, f"{k}: {ap[k]!r} -> {bp[k]!r}"))
 

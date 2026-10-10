@@ -234,3 +234,43 @@ class TestLoadEventsDataWiring:
         w.load_events_data(events)
 
         assert calls == [events]
+
+
+# --- equivalent spellings are not losses (also stops U0 locking objects
+# needlessly). Each table is a dependency-free copy, pinned to its source.
+
+def test_action_name_aliases_match_the_runtime():
+    from editors.object_editor.blockly_roundtrip import ACTION_NAME_ALIASES
+    from runtime.action_executor import ActionExecutor
+    for old, new in ACTION_NAME_ALIASES.items():
+        assert ActionExecutor.ACTION_ALIASES.get(old) == new, old
+
+
+def test_operation_codes_match_the_importer():
+    from editors.object_editor.blockly_roundtrip import GM_OPERATION_CODES
+    from importers.gmk_mappings import GM_COMPARISON_OPS
+    assert GM_OPERATION_CODES == GM_COMPARISON_OPS
+
+
+def test_equivalent_spellings_are_not_reported():
+    from editors.object_editor.blockly_roundtrip import diff_events
+    before = {"create": {"actions": [
+        {"action": "room_goto_next", "parameters": {}},
+        {"action": "test_variable", "parameters": {"variable": "v", "value": "1", "operation": "2"}},
+        {"action": "set_view", "parameters": {"visible": "true"}},
+    ]}}
+    after = {"create": {"actions": [
+        {"action": "next_room", "parameters": {}},
+        {"action": "test_variable", "parameters": {"variable": "v", "value": "1", "operation": "greater"}},
+        {"action": "set_view", "parameters": {"visible": True}},
+    ]}}
+    assert diff_events(before, after) == []
+
+
+def test_false_text_still_counts_as_a_difference():
+    """Not every parameter parses "false": change_instance's perform_events
+    uses plain truthiness, so "false" (true there) vs False is a real change."""
+    from editors.object_editor.blockly_roundtrip import diff_events
+    before = {"create": {"actions": [{"action": "change_instance", "parameters": {"perform_events": "false"}}]}}
+    after = {"create": {"actions": [{"action": "change_instance", "parameters": {"perform_events": False}}]}}
+    assert diff_events(before, after) != []
