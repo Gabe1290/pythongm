@@ -87,6 +87,25 @@ class DetachedBlocklyWindow(QMainWindow):
         event.accept()
 
 
+# IDE language code -> Blockly message file (Blockly's own naming), vendored
+# from blockly@12.3.1 (the version in lib/blockly_compressed.js).
+_BLOCKLY_MESSAGE_FILES = {
+    "en": "msg_en.js",
+    "de": "msg/de.js", "es": "msg/es.js", "fr": "msg/fr.js", "it": "msg/it.js",
+    "ja": "msg/ja.js", "pl": "msg/pl.js", "pt": "msg/pt.js", "ru": "msg/ru.js",
+    "sl": "msg/sl.js", "uk": "msg/uk.js", "zh": "msg/zh-hans.js",
+}
+
+
+def blockly_message_file(language_code):
+    """Path of the Blockly message file for an IDE language, or None."""
+    name = _BLOCKLY_MESSAGE_FILES.get((language_code or "en").split("_")[0])
+    if not name:
+        return None
+    path = Path(__file__).resolve().parent / "blockly" / "lib" / name
+    return path if path.exists() else None
+
+
 class BlocklyWidget(QWidget):
     """Widget containing the Blockly visual programming interface"""
 
@@ -319,6 +338,18 @@ class BlocklyWidget(QWidget):
         current_lang = language_manager.get_current_language()
 
         logger.debug(f"Setting Blockly language to: {current_lang}")
+
+        # Blockly's own built-in blocks (Logic, Math, ...) take their labels
+        # from Blockly.Msg, which the page only ever loaded in English
+        # (lib/msg_en.js) -- so a French student saw "and", "true", "square
+        # root". Inject the matching Blockly message file first; runJavaScript
+        # calls run in order, so it is in place before any block is created.
+        messages = blockly_message_file(current_lang)
+        if messages is not None:
+            try:
+                self.web_view.page().runJavaScript(messages.read_text(encoding='utf-8'))
+            except OSError as e:
+                logger.debug(f"Blockly message file not loaded ({messages}): {e}")
 
         # Call JavaScript function to set the language
         self.web_view.page().runJavaScript(

@@ -609,7 +609,10 @@ def round_tripped():
 
     # Asset dropdowns only accept names the project actually has; the IDE
     # pushes them (BlocklyWidget.push_asset_lists), so the fixture does too.
-    js = """(function(cases, dynamicDefs){
+    from editors.object_editor.blockly_widget import blockly_message_file
+    fr_messages = blockly_message_file("fr").read_text(encoding="utf-8")
+    en_messages = blockly_message_file("en").read_text(encoding="utf-8")
+    js = """(function(cases, dynamicDefs, frMessages, enMessages){
         registerCustomBlocks(dynamicDefs);
         window.blocklyApi.setAssetLists({objects: [], sprites: ['spr_a', 'spr_b'], sounds: [], rooms: []});
         window.blocklyApi.setExtensionEvents(
@@ -704,9 +707,18 @@ def round_tripped():
         saved.layout_top_blocks = rects.length;
         saved.layout_overlap = overlap;
         workspace.clear();
+        // Blockly's own blocks in the IDE language (2026-10-10 visual
+        // check): inject the French message file as BlocklyWidget does, read
+        // a Logic block's label, then restore English for any later check.
+        eval(frMessages);
+        var andFr = workspace.newBlock('logic_operation');
+        saved.logic_and_fr = andFr.getField('OP').getText();
+        andFr.dispose(true);
+        eval(enMessages);
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
-    })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
+    })(%s, %s, %s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS),
+                          json.dumps(fr_messages), json.dumps(en_messages))
 
     def loaded(_ok):
         view.page().runJavaScript(js, done)
@@ -1217,3 +1229,19 @@ class TestEventBlocksDoNotOverlap:
         saved = round_tripped["__value_blocks_saved"]
         assert saved["layout_top_blocks"] == 2
         assert saved["layout_overlap"] is False
+
+
+class TestBlocklyBuiltInBlocksFollowTheIdeLanguage:
+    def test_logic_block_reads_in_french(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["logic_and_fr"] == "et"
+
+
+def test_every_ide_language_has_a_blockly_message_file():
+    """Blockly's own blocks (Logic, Math, ...) take their labels from its
+    message file; the page used to load only English."""
+    from editors.object_editor.blockly_widget import blockly_message_file
+    codes = {p.name.split("_")[1].split(".")[0]
+             for p in (REPO_ROOT / "translations").glob("pygm2_*.qm")}
+    assert codes >= {"fr", "de", "zh"}
+    for code in sorted(codes | {"en"}):
+        assert blockly_message_file(code) is not None, code
