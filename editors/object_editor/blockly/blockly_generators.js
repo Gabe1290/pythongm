@@ -236,7 +236,7 @@ function generateActionCodeInner(block) {
             return {action: 'draw_health_bar', parameters: {
                 x1: hbX, y1: hbY,
                 x2: addExpr(hbX, getInputValue(block, 'WIDTH', 100)),
-                y2: addExpr(hbY, 20)}};
+                y2: addExpr(hbY, getInputValue(block, 'HEIGHT', 20))}};
         case 'instance_destroy':
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':

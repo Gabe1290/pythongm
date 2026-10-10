@@ -497,6 +497,11 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B21 -- draw_health_bar height (raycast_3's real bar is 18 tall)
+    "draw_health_bar_height_18": {"create": {"actions": [
+        {"action": "draw_health_bar", "parameters": {
+            "x1": "8", "y1": "450", "x2": "208", "y2": "468",
+            "back_color": "#401010", "bar_color": "#20c020"}}]}},
     # B18 -- numeric GameMaker operation code
     "test_variable_numeric_operation": {"create": {"actions": [
         {"action": "test_variable", "parameters": {"variable": "vspeed", "value": "24", "operation": "2"}}]}},
@@ -853,7 +858,12 @@ class TestB4ExpressionsInNumberSlots:
         expression) instead of building an evaluable expression string."""
         params = _params(round_tripped, "draw_health_bar_expression_x1")
         assert params["x1"] == "self.x"
-        assert params["x2"] == "(self.x) + (100)"
+        # B21: the width is now loaded as "(x2) - (x1)" when x1 is an
+        # expression (it used to fall back to 100, so the right edge moved
+        # whenever self.x != 10). Whatever self.x is, x2 must still be 110.
+        from types import SimpleNamespace
+        for x in (0, 10, 37.5):
+            assert eval(params["x2"], {}, {"self": SimpleNamespace(x=x)}) == 110
         assert float(params["y1"]) == 10.0
         assert float(params["y2"]) == 30.0
 
@@ -1036,3 +1046,10 @@ class TestB16GeneratedBlockExpressions:
 class TestB18NumericOperationCodes:
     def test_code_2_loads_as_greater_and_saves_the_name(self, round_tripped):
         assert _params(round_tripped, "test_variable_numeric_operation")["operation"] == "greater"
+
+
+class TestB21HealthBarHeight:
+    def test_a_non_default_height_survives(self, round_tripped):
+        params = _params(round_tripped, "draw_health_bar_height_18")
+        assert [float(params[k]) for k in ("x1", "y1", "x2", "y2")] == [8, 450, 208, 468]
+        assert params["back_color"] == "#401010" and params["bar_color"] == "#20c020"

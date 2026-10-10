@@ -166,6 +166,7 @@ const BLOCK_MESSAGES = {
         'draw_health_bar_prefix': 'Afficher barre de santé à x:',
         'draw_health_bar_y': 'y:',
         'draw_health_bar_width': 'largeur:',
+        'draw_health_bar_height': 'hauteur:',
         'draw_health_bar': 'afficher barre de santé x: %1 y: %2 largeur: %3 hauteur: %4',
         'draw_health_bar_tooltip': 'Affiche une barre de santé',
 
@@ -424,6 +425,7 @@ const BLOCK_MESSAGES = {
         'draw_health_bar_prefix': 'Wyświetl pasek zdrowia na x:',
         'draw_health_bar_y': 'y:',
         'draw_health_bar_width': 'szerokość:',
+        'draw_health_bar_height': 'wysokość:',
         'draw_health_bar': 'wyświetl pasek zdrowia x: %1 y: %2 szerokość: %3 wysokość: %4',
         'draw_health_bar_tooltip': 'Wyświetla pasek zdrowia',
         'instance_destroy': 'Zniszcz tę instancję',
@@ -673,6 +675,7 @@ const BLOCK_MESSAGES = {
         'draw_health_bar_prefix': 'Zeige Gesundheitsbalken bei x:',
         'draw_health_bar_y': 'y:',
         'draw_health_bar_width': 'Breite:',
+        'draw_health_bar_height': 'Höhe:',
         'draw_health_bar': 'zeige Gesundheitsbalken x: %1 y: %2 Breite: %3 Höhe: %4',
         'draw_health_bar_tooltip': 'Zeigt einen Gesundheitsbalken',
 
@@ -919,6 +922,7 @@ const BLOCK_MESSAGES = {
         'draw_health_bar_prefix': 'Mostra barra salute a x:',
         'draw_health_bar_y': 'y:',
         'draw_health_bar_width': 'larghezza:',
+        'draw_health_bar_height': 'altezza:',
         'draw_health_bar': 'mostra barra salute x: %1 y: %2 larghezza: %3 altezza: %4',
         'draw_health_bar_tooltip': 'Mostra una barra di salute',
 
@@ -1165,6 +1169,7 @@ const BLOCK_MESSAGES = {
         'draw_health_bar_prefix': 'Показати смугу здоров\'я в x:',
         'draw_health_bar_y': 'y:',
         'draw_health_bar_width': 'ширина:',
+        'draw_health_bar_height': 'висота:',
         'draw_health_bar': 'показати смугу здоров\'я x: %1 y: %2 ширина: %3 висота: %4',
         'draw_health_bar_tooltip': 'Показує смугу здоров\'я',
 

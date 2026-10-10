@@ -486,7 +486,16 @@ B13's `directions` and the three LAN events (B3 remainder):
   where `hotbar_block` means "the selected hotbar slot"). Same family as
   B14 (asset names); fix both by keeping an unknown saved value as an extra
   option.
-- [ ] **B21 — `draw_health_bar` y2 468 → 470 (raycast_3).** The
+- [x] **B21 — landed (commit "fix(blockly): B21", 2026-10-10).** The
+  block had no height input: the generator hardcoded y2 = y1 + 20 (the
+  translation tables already had a 4-field label with "hauteur"). Added
+  HEIGHT (fr/pl/de/it/uk labels); the loader now rebuilds width/height from
+  the saved corners via `cornerSpan` — numeric when both are numbers, else
+  `(end) - (start)` — instead of `(x2 - x1) || 100`, which also moved an
+  absolute right edge whenever x1 was an expression (B4's test pinned that
+  lossy result and was corrected). Audit tool 76 → 75. Tests:
+  `TestB21HealthBarHeight`. Original: `draw_health_bar` y2 468 → 470
+  (raycast_3). The
   hand-written block derives y2 from other fields; one value shifts by 2.
   Investigate before classifying.
 - Harmless, no action: `'true'` → `True` on `set_view.visible`,

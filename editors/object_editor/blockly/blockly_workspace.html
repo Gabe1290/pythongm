@@ -422,6 +422,9 @@
                 <value name="WIDTH">
                     <shadow type="math_number"><field name="NUM">100</field></shadow>
                 </value>
+                <value name="HEIGHT">
+                    <shadow type="math_number"><field name="NUM">20</field></shadow>
+                </value>
             </block>
         </category>
 
@@ -595,6 +598,16 @@
         // - B4/B16: anything else is an authored EXPRESSION ("direction+90",
         //   "facing_angle+180", "32/6"); a math_number would parse it to 0,
         //   so it loads as a text block, which getInputValue saves verbatim.
+        // Size between two saved corners (draw_health_bar's x1..x2 / y1..y2):
+        // numeric when both are numbers, else "(end) - (start)"; fallback
+        // when the end corner is missing.
+        function cornerSpan(start, end, fallback) {
+            if (end === undefined || end === null || String(end).trim() === '') return fallback;
+            var a = Number(start), b = Number(end);
+            if (String(start).trim() !== '' && !isNaN(a) && !isNaN(b)) return b - a;
+            return '(' + end + ') - (' + start + ')';
+        }
+
         function loadNumberInput(block, inputName, value) {
             var input = block.getInput(inputName);
             if (!input || !input.connection) return;
@@ -1267,8 +1280,11 @@
                 this.appendValueInput("Y")
                     .appendField(getBlockMessage('draw_health_bar_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("WIDTH")
-                    .setCheck("Number")
                     .appendField(getBlockMessage('draw_health_bar_width', window.BLOCKLY_LANG) || "width:");
+                // B21: the bar's height was hardcoded to 20 by the generator,
+                // so an authored bar of another height changed size on save.
+                this.appendValueInput("HEIGHT")
+                    .appendField(getBlockMessage('draw_health_bar_height', window.BLOCKLY_LANG) || "height:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
@@ -2538,9 +2554,14 @@
                     break;
 
                 case 'draw_health_bar':
-                    connectNumberBlock('X', params.x1 || 0);
-                    connectNumberBlock('Y', params.y1 || 0);
-                    connectNumberBlock('WIDTH', (params.x2 - params.x1) || 100);
+                    // B21: width/height come from the saved corners -- a plain
+                    // number when both corners are numbers, otherwise the
+                    // difference as an expression (loads as text, survives).
+                    var hbX1 = paramOr(params.x1, 0), hbY1 = paramOr(params.y1, 0);
+                    connectNumberBlock('X', hbX1);
+                    connectNumberBlock('Y', hbY1);
+                    connectNumberBlock('WIDTH', cornerSpan(hbX1, params.x2, 100));
+                    connectNumberBlock('HEIGHT', cornerSpan(hbY1, params.y2, 20));
                     break;
 
                 case 'instance_create':
@@ -2993,7 +3014,7 @@
                         '<block type="health_add"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
                         '<block type="draw_score"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
                         '<block type="draw_lives"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
-                        '<block type="draw_health_bar"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>'
+                        '<block type="draw_health_bar"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="HEIGHT"><shadow type="math_number"><field name="NUM">20</field></shadow></value></block>'
                     ]
                 },
                 'Instance': {
