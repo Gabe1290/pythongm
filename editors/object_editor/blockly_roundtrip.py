@@ -24,6 +24,39 @@ ACTION_NAME_ALIASES = {
     'room_goto_previous': 'previous_room', 'goto_previous_room': 'previous_room',
     'room_restart': 'restart_room', 'room_goto': 'goto_room',
 }
+# - start_moving_direction's "directions": a name and its angle are the same
+#   move, and a list is a random pick, so order doesn't matter (audit B13).
+#   Mirrors runtime/action_movement's direction_map.
+DIRECTION_ANGLES = {'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135, 'left': 180,
+                    'down-left': 225, 'down': 270, 'down-right': 315, 'stop': -1}
+
+
+def _direction_set(value):
+    """The set of angles a "directions" value means, or None when it isn't a
+    plain name/angle/list (e.g. an expression) -- then compare as written."""
+    import ast
+    if isinstance(value, str) and value.strip().startswith('['):
+        try:
+            value = ast.literal_eval(value.strip())
+        except (ValueError, SyntaxError):
+            return None
+    items = value if isinstance(value, list) else [value]
+    if not items:
+        return frozenset({-1})  # empty list = stop, as in the runtime
+    angles = set()
+    for item in items:
+        if isinstance(item, (int, float)) and not isinstance(item, bool):
+            angles.add(item % 360)
+        elif isinstance(item, str) and item.strip().lower() in DIRECTION_ANGLES:
+            angles.add(DIRECTION_ANGLES[item.strip().lower()])
+        else:
+            try:
+                angles.add(float(item) % 360)
+            except (TypeError, ValueError):
+                return None
+    return frozenset(angles)
+
+
 # - GameMaker numeric comparison codes (importers/gmk_mappings.GM_COMPARISON_OPS),
 #   which every engine now translates (audit B18)
 GM_OPERATION_CODES = {'0': 'equal', '1': 'less', '2': 'greater',
@@ -101,6 +134,9 @@ def walk(a_list, b_list, where: str, issues: List[Issue]):
                 walk(ap.get(k), bp.get(k), f"{where}>{an}.{k}", issues)
             elif k not in bp:
                 issues.append((where, 'param-dropped', an, k))
+            elif k == 'directions' and _direction_set(ap[k]) is not None \
+                    and _direction_set(ap[k]) == _direction_set(bp[k]):
+                continue
             elif k == 'operation' and (
                     GM_OPERATION_CODES.get(str(ap[k]).strip(), ap[k])
                     == GM_OPERATION_CODES.get(str(bp[k]).strip(), bp[k])):

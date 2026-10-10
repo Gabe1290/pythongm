@@ -285,3 +285,19 @@ def test_an_action_resaved_under_type_is_a_loss():
     after = {"create": {"actions": [{"type": "thymio_move_forward", "parameters": {"speed": 200}}]}}
     issues = diff_events(before, after)
     assert issues and issues[0][1] == "action-key-changed"
+
+
+
+@pytest.mark.parametrize("before,after,same", [
+    ("right", 0, True), (["down", "up"], ["up", "down"], True), ("['left', 'right']", ["right", "left"], True),
+    ([], "stop", True), ("up", 270, False), (["left", "right"], ["left"], False),
+    ("other.direction", 0, False),
+])
+def test_directions_compare_by_meaning(before, after, same):
+    """Audit B13: a name and its angle are the same move and a list is a
+    random pick (order-free); a real change -- or an expression -- still
+    counts."""
+    from editors.object_editor.blockly_roundtrip import diff_events
+    mk = lambda d: {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": d, "speed": 4}}]}}
+    assert (diff_events(mk(before), mk(after)) == []) is same

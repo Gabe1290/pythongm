@@ -445,8 +445,18 @@ moment they touch a block.
   likely needs each extension's own `actionToBlockType`-equivalent wiring
   (mirroring Thymio's pattern), not a one-line fix — hasn't been
   investigated beyond confirming it's real via the audit tool.
-- [ ] **B13 — `start_moving_direction.directions` can be an ARRAY, which
-  `move_direction` can't model at all (found fixing B5).** A patrolling
+- [x] **B13 — landed (commit "feat(blockly): B13", 2026-10-10).** As
+  decided: `move_direction` is a 3×3 checkbox grid (arrows, centre = stop;
+  default →); several ticks save a list (random patrol), a single direction
+  saves as before (angle or `stop`), none = `stop`. The loader reads every
+  form the runtime accepts (angle, name, list, stringified list); a hidden
+  legacy `DIRECTION` field keeps blocks from pre-grid workspace XML pointing
+  the right way (tested). `blockly_roundtrip` compares `directions` by the
+  set of angles they mean (name = its angle, list order-free), so U0 no
+  longer locks those objects. **Audit tool: 0 differences across all 98
+  sample objects** (from 644). Tests: `TestB13DirectionGrid` + a normaliser
+  test. Original: `start_moving_direction.directions` can be an ARRAY, which
+  `move_direction` can't model at all (found fixing B5). A patrolling
   monster picking a random direction from several (`["left", "right"]`,
   `["up", "down", "left", "right"]`, ...) is real, authored data — confirmed
   across 7 samples (`maze_3`/`4`'s three monster types, `plateforme_3`,

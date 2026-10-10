@@ -319,6 +319,14 @@ player_joined, network_game_started, network_message (and the other
 extension events) had no block. A generic event_extension block now takes
 them; the IDE pushes the names (BlocklyWidget._push_extension_events), and
 the fixture does the same.
+
+## B13 -- random patrol directions collapsed into one
+
+move_direction's single 4-way drop-down kept only the first entry of a
+list of directions (a patrol picking a random one each time). It is now a
+3x3 checkbox grid like the action-list editor's picker; a single direction
+saves as before; a hidden legacy DIRECTION field keeps blocks saved in old
+workspace XML pointing the right way.
 """
 import json
 
@@ -523,6 +531,13 @@ CASES = {
         {"action": "set_direction_speed", "parameters": {"direction": "facing_angle+180", "speed": "32/6"}}]}},
     "dynamic_direction_numbers": {"create": {"actions": [
         {"action": "set_direction_speed", "parameters": {"direction": "90", "speed": 0}}]}},
+    # B13 -- direction grid
+    "patrol_four_ways": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": ["down", "left", "right", "up"], "speed": "4"}}]}},
+    "patrol_stringified_list": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": "['left', 'right']", "speed": "2"}}]}},
+    "patrol_diagonal_angle": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": 315, "speed": "3"}}]}},
     # extension events (B3 remainder)
     "lan_player_joined": {"player_joined": {"actions": [
         {"action": "set_hspeed", "parameters": {"value": "2"}}]}},
@@ -665,6 +680,16 @@ def round_tripped():
         probe.setFieldValue('spr_nowhere', 'SPRITE');
         saved.dropdown_outside_load = probe.getFieldValue('SPRITE');
         probe.dispose(true);
+        // B13: a fresh toolbox block, and a block from pre-B13 workspace XML
+        var fresh = workspace.newBlock('move_direction');
+        saved.direction_fresh = generateActionCode(fresh).parameters.directions;
+        fresh.dispose(true);
+        loadWorkspaceXml('<xml xmlns="https://developers.google.com/blockly/xml">' +
+            '<block type="event_create"><statement name="DO"><block type="move_direction">' +
+            '<field name="DIRECTION">up</field><value name="SPEED"><shadow type="math_number">' +
+            '<field name="NUM">4</field></shadow></value></block></statement></block></xml>');
+        saved.direction_legacy_xml = JSON.parse(generatePythonCode()).create.actions[0].parameters.directions;
+        workspace.clear();
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS))
@@ -1149,3 +1174,23 @@ class TestExtensionEventsSurvive:
         inactive extension); B14/B20 keep it while loading."""
         assert round_tripped["lan_network_message_inactive"]["network_message"]["actions"] == [
             {"action": "set_vspeed", "parameters": {"value": 3}}]
+
+
+class TestB13DirectionGrid:
+    def test_a_random_patrol_keeps_every_direction(self, round_tripped):
+        params = _params(round_tripped, "patrol_four_ways")
+        assert sorted(params["directions"]) == ["down", "left", "right", "up"]
+
+    def test_a_stringified_list_loads_as_a_patrol(self, round_tripped):
+        assert sorted(_params(round_tripped, "patrol_stringified_list")["directions"]) == ["left", "right"]
+
+    def test_a_single_diagonal_angle_survives(self, round_tripped):
+        assert _params(round_tripped, "patrol_diagonal_angle")["directions"] == 315
+
+    def test_a_fresh_block_moves_right(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["direction_fresh"] == 0
+
+    def test_a_block_saved_before_the_grid_keeps_its_direction(self, round_tripped):
+        """Old workspace XML stores <field name="DIRECTION">up</field>; the
+        hidden legacy field ticks the matching box instead of defaulting."""
+        assert round_tripped["__value_blocks_saved"]["direction_legacy_xml"] == 90

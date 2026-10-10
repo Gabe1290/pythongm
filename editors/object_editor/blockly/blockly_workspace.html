@@ -616,6 +616,44 @@
             return !!value;
         }
 
+        // Direction(s) in any form start_moving_direction accepts -> grid
+        // names (audit B13): an angle, a name, a list, a stringified list.
+        // Returns null for a form the grid can't hold (an expression), which
+        // then keeps the default and U0's round-trip check locks the object.
+        function directionsToNames(dirs) {
+            if (dirs === undefined || dirs === null || dirs === '') return null;
+            if (typeof dirs === 'string') {
+                var t = dirs.trim();
+                if (t.charAt(0) === '[') {
+                    try { dirs = JSON.parse(t.replace(/'/g, '"')); } catch (e) { return null; }
+                } else {
+                    dirs = [t];
+                }
+            }
+            if (!Array.isArray(dirs)) dirs = [dirs];
+            var names = [];
+            for (var i = 0; i < dirs.length; i++) {
+                var d = dirs[i], name = null;
+                var asNumber = Number(d);
+                if (d !== '' && d !== null && !isNaN(asNumber)) {
+                    var angle = ((asNumber % 360) + 360) % 360;
+                    for (var n in DIRECTION_DEGREES) { if (DIRECTION_DEGREES[n] === angle) name = n; }
+                } else if (typeof d === 'string') {
+                    var lower = d.trim().toLowerCase();
+                    if (lower === 'stop' || DIRECTION_DEGREES[lower] !== undefined) name = lower;
+                }
+                if (name === null) return null;
+                names.push(name);
+            }
+            return names;
+        }
+
+        function setMoveDirections(block, names) {
+            MOVE_DIRECTION_FIELDS.forEach(function(f) {
+                block.setFieldValue(names.indexOf(f[1]) !== -1 ? 'TRUE' : 'FALSE', f[0]);
+            });
+        }
+
         function loadNumberInput(block, inputName, value) {
             var input = block.getInput(inputName);
             if (!input || !input.connection) return;
@@ -1018,19 +1056,36 @@
                 // note for why: an authored expression ("32/6") must be able
                 // to connect as a text block, which Blockly's Connection.
                 // connect() refuses outright against a "Number" check.
+                // Audit B13: a 3x3 grid of direction checkboxes (centre =
+                // stop), like the action-list editor's picker; several ticks
+                // make a random patrol. Was a single 4-way drop-down, which
+                // collapsed every multi-direction patrol into one direction.
+                var arrows = {DIR_UL: '\u2196', DIR_U: '\u2191', DIR_UR: '\u2197',
+                              DIR_L: '\u2190', DIR_STOP: '\u25A0', DIR_R: '\u2192',
+                              DIR_DL: '\u2199', DIR_D: '\u2193', DIR_DR: '\u2198'};
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('move_direction_prefix', window.BLOCKLY_LANG) || "Move");
+                for (var row = 0; row < 3; row++) {
+                    var line = this.appendDummyInput('DIR_ROW' + row);
+                    for (var col = 0; col < 3; col++) {
+                        var name = MOVE_DIRECTION_FIELDS[row * 3 + col][0];
+                        line.appendField(arrows[name])
+                            .appendField(new Blockly.FieldCheckbox(name === 'DIR_R' ? 'TRUE' : 'FALSE'), name);
+                    }
+                }
+                // Hidden legacy field: workspaces saved before B13 store the
+                // old drop-down as <field name="DIRECTION">up</field>. Loading
+                // sets this field, and its validator ticks the matching box,
+                // so those blocks keep their direction.
+                var legacy = new Blockly.FieldTextInput('');
+                legacy.setValidator(function(value) {
+                    var src = this.getSourceBlock();
+                    if (value && src) setMoveDirections(src, [value]);
+                    return '';
+                });
+                this.appendDummyInput('DIR_LEGACY').appendField(legacy, 'DIRECTION');
+                legacy.setVisible(false);
                 this.appendValueInput("SPEED")
-                    .appendField(getBlockMessage('move_direction_prefix', window.BLOCKLY_LANG) || "Move")
-                    // "stop" mirrors the runtime's start_moving_direction("stop")
-                    // shortcut for zeroing both speeds — without it imported
-                    // keyboard-nokey / collision-with-wall handlers produce a
-                    // "Cannot set the dropdown's value" Qt warning at load.
-                    .appendField(new Blockly.FieldDropdown([
-                        ["right", "right"],
-                        ["left", "left"],
-                        ["up", "up"],
-                        ["down", "down"],
-                        ["stop", "stop"]
-                    ]), "DIRECTION")
                     .appendField(getBlockMessage('move_direction_suffix', window.BLOCKLY_LANG) || "at speed");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
@@ -2517,32 +2572,13 @@
                     break;
 
                 case 'move_direction':
-                    // Handle both formats:
-                    // - Blockly format: {direction: 'right', speed: 4}
-                    // - Game format: {directions: [270], speed: 4.0} or {directions: 'right', speed: 4.0}
-                    var direction = params.direction || 'right';
-
-                    // If using game format with directions (array or number)
-                    if (params.directions !== undefined) {
-                        var dirs = params.directions;
-                        // Convert numeric direction to string
-                        if (typeof dirs === 'number') {
-                            if (dirs === 0 || dirs === 360) direction = 'right';
-                            else if (dirs === 90) direction = 'up';
-                            else if (dirs === 180) direction = 'left';
-                            else if (dirs === 270) direction = 'down';
-                        } else if (Array.isArray(dirs) && dirs.length > 0) {
-                            var d = dirs[0];
-                            if (d === 0 || d === 360) direction = 'right';
-                            else if (d === 90) direction = 'up';
-                            else if (d === 180) direction = 'left';
-                            else if (d === 270) direction = 'down';
-                        } else if (typeof dirs === 'string') {
-                            direction = dirs.toLowerCase();
-                        }
-                    }
-
-                    block.setFieldValue(direction, 'DIRECTION');
+                    // B13: every saved form (angle, name, list, stringified
+                    // list; "directions" or the old Blockly "direction" key)
+                    // ticks the matching grid boxes -- a list used to keep
+                    // only its first entry.
+                    var dirNames = directionsToNames(
+                        params.directions !== undefined ? params.directions : params.direction);
+                    if (dirNames) setMoveDirections(block, dirNames);
                     connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 

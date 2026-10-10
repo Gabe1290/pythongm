@@ -156,27 +156,24 @@ function generateActionCodeInner(block) {
         case 'move_stop':
             return {action: 'stop_movement', parameters: {}};
         case 'move_direction':
-            var dir = block.getFieldValue('DIRECTION');
+            // Audit B13: a 3x3 grid -- several ticks = the runtime picks one
+            // at random each time (a patrol). A single direction saves as
+            // before (an angle, or "stop" -- B5: stop is a real sentinel, not
+            // "move right"); nothing ticked is "stop" too (the runtime treats
+            // an empty list the same way).
             var speed = getInputValue(block, 'SPEED', 4);
-            // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: "stop" is a real
-            // sentinel the runtime zeroes both speeds for (not "move at 0
-            // degrees", i.e. right) -- falling through the degrees switch
-            // below silently turned every authored "stop" into "move
-            // right", a real behaviour change, not just a representation
-            // difference.
-            if (dir === 'stop') {
-                return {action: 'start_moving_direction', parameters: {directions: 'stop', speed: speed}};
+            var picked = MOVE_DIRECTION_FIELDS.filter(function(f) {
+                return block.getFieldValue(f[0]) === 'TRUE';
+            }).map(function(f) { return f[1]; });
+            var directions;
+            if (picked.length === 0 || (picked.length === 1 && picked[0] === 'stop')) {
+                directions = 'stop';
+            } else if (picked.length === 1) {
+                directions = DIRECTION_DEGREES[picked[0]];
+            } else {
+                directions = picked;
             }
-            // Convert direction string to numeric degrees for game compatibility
-            var directionDegrees;
-            switch (dir) {
-                case 'right': directionDegrees = 0; break;
-                case 'up': directionDegrees = 90; break;
-                case 'left': directionDegrees = 180; break;
-                case 'down': directionDegrees = 270; break;
-                default: directionDegrees = 0;
-            }
-            return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
+            return {action: 'start_moving_direction', parameters: {directions: directions, speed: speed}};
         case 'move_towards':
             // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B7: the block existed with
             // no generator, so it saved nothing at all.
@@ -753,6 +750,18 @@ function getConditionOperand(block, inputName) {
     if (input && /^logic_/.test(input.type)) return getConditionValue(block, inputName);
     return String(getInputValue(block, inputName, 0));
 }
+
+// move_direction's 3x3 grid (audit B13): checkbox field -> direction name,
+// in GameMaker's grid order (centre = stop), plus each name's angle.
+var MOVE_DIRECTION_FIELDS = [
+    ['DIR_UL', 'up-left'], ['DIR_U', 'up'], ['DIR_UR', 'up-right'],
+    ['DIR_L', 'left'], ['DIR_STOP', 'stop'], ['DIR_R', 'right'],
+    ['DIR_DL', 'down-left'], ['DIR_D', 'down'], ['DIR_DR', 'down-right']
+];
+var DIRECTION_DEGREES = {
+    'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135, 'left': 180,
+    'down-left': 225, 'down': 270, 'down-right': 315
+};
 
 // Blockly's math_single OP field -> expression template ("%" = argument).
 var MATH_SINGLE_TEMPLATES = {
