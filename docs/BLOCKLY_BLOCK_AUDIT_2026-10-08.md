@@ -408,8 +408,13 @@ moment they touch a block.
   this one is self-inflicted — the generator and the loader disagree about
   whether this block exists at all. Fix: add
   `'move_free': 'move_free'` to `actionToBlockType`.
-- [ ] **B12 — Several extension actions have no Blockly block at all (found
-  fixing B3).** Invisible before B3 because the events containing them
+- [x] **B12 — resolved (verified 2026-10-10, no separate fix).** With the
+  later loader fixes (B6c, B16, B14/B20) every extension action in the
+  samples — Block World's and LAN multiplayer's included — loads as its
+  generated `custom_*` block and round-trips: the audit tool's `action-lost`
+  count is 0 across all 98 sample objects. Original:
+  Several extension actions have no Blockly block at all (found
+  fixing B3). Invisible before B3 because the events containing them
   (`game_start`, `keyboard_press/shift`, ...) were dropped *entirely*; B3
   made them load far enough to reveal the gap underneath. Confirmed via the
   audit tool: `action-lost` went 32 → 36 after B3, all four new entries
