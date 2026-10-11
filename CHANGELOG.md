@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.5] - 2026-10-11
+
+### Fixed
+- Tools → Configure Action Blocks...: checking a single block that
+  wasn't on by default (like "Set Variable") could silently undo
+  itself before you ever clicked OK, and could also turn off other
+  blocks in the same category that were already enabled. Checking and
+  unchecking individual blocks now works correctly and actually saves.
+
 ## [1.5.4] - 2026-10-11
 
 The real fix for the recurring Test Game crash on Linux — 1.5.2's fix

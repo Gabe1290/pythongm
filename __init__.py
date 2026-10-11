@@ -18,7 +18,7 @@ import importlib
 import os
 import sys
 
-__version__ = "1.5.4"
+__version__ = "1.5.5"
 __author__ = "Gabriel Thullen"
 __description__ = "GameMaker-style IDE for creating 2D games in Python"
 

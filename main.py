@@ -319,7 +319,7 @@ def setup_application():
     app = QApplication(sys.argv)
 
     app.setApplicationName("PyGameMaker")
-    app.setApplicationVersion("1.5.4")
+    app.setApplicationVersion("1.5.5")
     app.setOrganizationName("PyGameMaker")
     app.setOrganizationDomain("pygamemaker.org")
 
