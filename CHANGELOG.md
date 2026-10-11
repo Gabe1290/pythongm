@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.6] - 2026-10-11
+
+### Fixed
+- A collision event's target object (e.g. "When colliding with
+  obj_fruit_cherry") could silently lose that object name when an
+  object's Blockly program loaded, so the whole collision handler
+  stopped matching real collisions — looking like the If/Else logic
+  inside it was broken, when the actual logic was fine all along.
+  Object/sprite/sound/room dropdown fields in Blockly now always load
+  correctly regardless of timing.
+
 ## [1.5.5] - 2026-10-11
 
 ### Fixed
