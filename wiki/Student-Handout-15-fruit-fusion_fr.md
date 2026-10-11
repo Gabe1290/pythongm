@@ -32,7 +32,7 @@ Un panier qui tient toujours un seul fruit, en commençant par une cerise. Des c
 - [ ] **5.** Crée un sprite `spr_fruit_cherry` (20x20, un cercle rouge) et un objet `obj_fruit_cherry` avec un événement **Quand créé** (*Définir vitesse verticale à 3*) et un événement **Hors de la salle** (*Détruire cette instance*). **Hors de la salle** n'est pas un bloc à part — dans la catégorie Events, sors le bloc **Autre événement :** et choisis « Hors de la salle » dans son menu déroulant.
 - [ ] **6.** Crée `obj_spawn_cherry` (sans sprite) avec un événement **Quand créé** (*Définir l'alarme 0 à 90*) et un événement **Alarme 0** (*Créer une instance de obj_fruit_cherry à x : entier aléatoire de 0 à 620, y : 0*, puis *Définir l'alarme 0 à 90* à nouveau). Place-en une dans `room_main`. (620 = largeur de la salle 640 moins la largeur de la cerise 20, pour qu'elle ne dépasse jamais du bord.)
 - [ ] **7.** Change le sprite de `obj_player` vers un nouveau sprite `spr_basket_cherry` (un panier avec une cerise dedans) — le panier commence maintenant en tenant déjà une cerise.
-- [ ] **8.** Dans `obj_player` : l'événement **Quand créé** fait *Définir le score à 0* et *Définir la variable held_level à 1* ; l'événement **Quand dessiner** fait *Dessiner le score à x 10, y 10*.
+- [ ] **8.** Avant cette étape : **Set Variable** n'est pas activé par défaut. Va dans `Outils > Configurer les blocs d'action...`, déroule **Control**, coche **Set Variable**, clique sur OK. Maintenant, dans `obj_player` : l'événement **Quand créé** fait *Définir le score à 0* et *Définir la variable held_level à 1* ; l'événement **Quand dessiner** fait *Dessiner le score à x 10, y 10*.
 - [ ] **9.** Crée un sprite `spr_basket_strawberry` (56x40, un panier avec une fraise dedans) — tu en auras besoin à l'étape suivante.
 - [ ] **10.** Ajoute **Quand collision avec obj_fruit_cherry** : *Si held_level est égal à 1 alors* [*définir held_level à 2*, *ajouter 10 au score*, *définir le sprite à spr_basket_strawberry*] *Sinon* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
 
@@ -77,6 +77,7 @@ la peine que lorsque tout ce qui précède fonctionne déjà.
 
 | Ce qui ne va pas | Cause la plus probable | Que faire |
 |---|---|---|
+| « Set Variable » n'apparaît pas dans la catégorie Control | Il n'est pas activé par défaut | `Outils > Configurer les blocs d'action...`, déroule **Control**, coche **Set Variable**, clique sur OK |
 | Le panier ne change jamais d'image | *Définir le sprite* manque dans la branche *Si*, ou le nom de sprite est faux | Vérifie le nom exact du sprite dans *Définir le sprite à* |
 | Attraper un fruit qui correspond ne donne que 1 point | `held_level` n'est pas vraiment égal au nombre que le *Si* vérifie, ou l'opérateur est faux | Vérifie que *Si held_level est égal à* utilise le bon nombre pour cette phase (1, puis 2, puis 3) |
 | Le panier reste bloqué sur une cerise pour toujours | La branche *Sinon* de la fusion a aussi changé `held_level` par erreur | Seule la branche *Si* doit toucher `held_level` et le sprite |

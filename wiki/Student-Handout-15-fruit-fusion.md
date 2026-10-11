@@ -32,7 +32,7 @@ A basket that always holds one fruit, starting with a cherry. Cherries, strawber
 - [ ] **5.** Create a sprite `spr_fruit_cherry` (20x20, a red circle) and an object `obj_fruit_cherry` with a **Create** event (*Set vertical speed 3*) and an **Outside Room** event (*Destroy this instance*). **Outside Room** is not its own block — in the Events category, drag out **Other event:** and pick "Outside Room" from its dropdown.
 - [ ] **6.** Create `obj_spawn_cherry` (no sprite) with a **Create** event (*Set alarm 0 to 90*) and an **Alarm 0** event (*Create instance of obj_fruit_cherry at x: random integer from 0 to 620, y: 0*, then *Set alarm 0 to 90* again). Place one in `room_main`. (620 = room width 640 minus the cherry's own width 20, so it never spawns hanging off the edge.)
 - [ ] **7.** Change `obj_player`'s sprite to a new sprite `spr_basket_cherry` (a bowl with a cherry in it) — the basket now starts out already holding a cherry.
-- [ ] **8.** In `obj_player`: **Create** event sets *score to 0* and *variable held_level to 1*; **Draw** event does *Draw score at x 10, y 10*.
+- [ ] **8.** Before this step: **Set Variable** is not turned on by default. Go to `Tools > Configure Action Blocks...`, expand **Control**, check **Set Variable**, click OK. Now in `obj_player`: **Create** event sets *score to 0* and *variable held_level to 1*; **Draw** event does *Draw score at x 10, y 10*.
 - [ ] **9.** Create a sprite `spr_basket_strawberry` (56x40, a bowl with a strawberry in it) — you'll need it in the next step.
 - [ ] **10.** Add **Collision with obj_fruit_cherry**: *If held_level equals 1 then* [*set held_level to 2*, *add 10 to score*, *set sprite to spr_basket_strawberry*] *Otherwise* [*add 1 to score*]; then *Destroy other instance*.
 
@@ -76,6 +76,7 @@ either way — this is only worth doing once everything above already works.
 
 | What is wrong | Most likely cause | What to do |
 |---|---|---|
+| "Set variable" is not in the Control category | It is not turned on by default | `Tools > Configure Action Blocks...`, expand **Control**, check **Set Variable**, click OK |
 | The basket never changes picture | `set_sprite` is missing from the *If* branch, or it points at the wrong sprite name | Check the exact sprite name in *Set sprite to* |
 | Catching a matching fruit only gives 1 point | `held_level` is not actually equal to the number the *If* checks, or the condition uses the wrong operator | Check *If held_level equals* uses the right number for that phase (1, then 2, then 3) |
 | The basket is stuck as a cherry forever | The merge's *Otherwise* branch accidentally changed `held_level` too | Only the *If* branch should touch `held_level` and the sprite |
