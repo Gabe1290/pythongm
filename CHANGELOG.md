@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-10-11
+
+Classroom-reported fix: "Test Game" could crash the whole compiled Linux
+build on the same machine the 1.5.1 Blockly fix was reported from.
+
+### Fixed
+- On Linux, Mesa's hardware GPU driver is now forced into software
+  rendering (`LIBGL_ALWAYS_SOFTWARE=1`) for the whole app. Test Game
+  runs pygame's window in the same process as Qt in a packaged build,
+  and on at least one real machine that led to a fatal X server error
+  when both tried to use the GPU at the same time. Forcing software
+  rendering means neither one touches the GPU at all, so there's
+  nothing left to conflict over.
+
 ## [1.5.1] - 2026-10-10
 
 Classroom-reported fix: the Blockly tab could crash the whole compiled
