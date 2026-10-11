@@ -333,19 +333,36 @@ class BaseBlockConfigDialog(QDialog):
         if not block_type:
             return
 
-        # Update config
-        is_checked = item.checkState(0) == Qt.Checked
+        check_state = item.checkState(0)
 
         # Check if it's a category
         if block_type in BLOCK_REGISTRY:
-            # Category toggled
-            if is_checked:
+            # Category items carry Qt.ItemIsAutoTristate (set in
+            # populate_tree), so checking/unchecking any ONE child makes Qt
+            # recompute the category's own checkbox and re-fire itemChanged
+            # for the CATEGORY item too -- a second, automatic call into
+            # this same method, for the same user click. When not every
+            # child in the category matches, that recompute lands on
+            # PartiallyChecked, which `== Qt.Checked` is False for -- so the
+            # category branch below used to take that as "the user
+            # unchecked the whole category" and called disable_category(),
+            # silently discarding the block the child branch had just
+            # enabled a moment earlier in the very same click (real
+            # classroom report, 2026-10-11: checking "Set Variable" alone
+            # never stuck, because Control already has other blocks enabled
+            # in every preset, so it's never NOT partially-checked here).
+            # PartiallyChecked is this automatic recompute, not a user
+            # action on the category checkbox itself -- the children's own
+            # on_item_changed calls already have enabled_blocks correct, so
+            # the only safe thing to do here is nothing.
+            if check_state == Qt.Checked:
                 self.config.enable_category(block_type)
-            else:
+            elif check_state == Qt.Unchecked:
                 self.config.disable_category(block_type)
+            # else: PartiallyChecked -- no-op, see above.
         else:
             # Individual block toggled
-            if is_checked:
+            if check_state == Qt.Checked:
                 self.config.enable_block(block_type)
             else:
                 self.config.disable_block(block_type)
