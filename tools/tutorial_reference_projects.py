@@ -791,11 +791,16 @@ def build_t15(root, phase=4):
                     else_actions=[act("set_score", value=1, relative=True)]),
                 act("destroy_instance", target="other")]
 
+    # Each spawner's irandom() upper bound is room width (640) minus that
+    # fruit's own sprite width, so a fruit can never spawn hanging off the
+    # room's right edge -- exact per-sprite, not one shared conservative
+    # number (classroom report, 2026-10-11: the tutorial itself used to just
+    # say "a random x" with no bound at all).
     if phase >= 2:
         p.obj("obj_fruit_cherry", "spr_fruit_cherry", falling_fruit("spr_fruit_cherry", 20, (210, 30, 30, 255)))
         p.obj("obj_spawn_cherry", "", {
             "create": {"actions": [act("set_alarm", alarm_number=0, steps=90)]},
-            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_cherry", x="irandom(580)", y=0),
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_cherry", x="irandom(620)", y=0),
                                     act("set_alarm", alarm_number=0, steps=90)]}})
         placements.append(("obj_spawn_cherry", 10, 10))
         player_ev["create"] = {"actions": [act("set_score", value=0),
@@ -811,7 +816,7 @@ def build_t15(root, phase=4):
               falling_fruit("spr_fruit_strawberry", 26, (235, 60, 90, 255)))
         p.obj("obj_spawn_strawberry", "", {
             "create": {"actions": [act("set_alarm", alarm_number=0, steps=120)]},
-            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_strawberry", x="irandom(580)", y=0),
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_strawberry", x="irandom(614)", y=0),
                                     act("set_alarm", alarm_number=0, steps=120)]}})
         placements.append(("obj_spawn_strawberry", 10, 50))
         player_ev["collision_with_obj_fruit_strawberry"] = {
@@ -822,7 +827,7 @@ def build_t15(root, phase=4):
         p.obj("obj_fruit_orange", "spr_fruit_orange", falling_fruit("spr_fruit_orange", 32, (250, 140, 20, 255)))
         p.obj("obj_spawn_orange", "", {
             "create": {"actions": [act("set_alarm", alarm_number=0, steps=150)]},
-            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_orange", x="irandom(580)", y=0),
+            "alarm_0": {"actions": [act("create_instance", object="obj_fruit_orange", x="irandom(608)", y=0),
                                     act("set_alarm", alarm_number=0, steps=150)]}})
         placements.append(("obj_spawn_orange", 10, 90))
         player_ev["collision_with_obj_fruit_orange"] = {

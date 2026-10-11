@@ -14,7 +14,7 @@ A basket that always holds one fruit, starting with a cherry. Cherries, strawber
 
 - [ ] **1.** Make a new project `FruitFusion`.
 - [ ] **2.** Create a sprite `spr_basket_empty` (56x40, a brown bowl shape) and an object `obj_player` with that sprite.
-- [ ] **3.** Rename the project's starting room (`room0`) to `room_main` and place `obj_player` near the bottom center.
+- [ ] **3.** Rename the project's starting room (`room0`) to `room_main`, set its **width to 640** and **height to 480** in its properties, and place `obj_player` near the bottom center.
 - [ ] **4.** In `obj_player`: **Keyboard: Left Arrow (held)** with *Set horizontal speed to -5*; **Right Arrow (held)** with *5*; **Keyboard: No key** with *Stop movement*.
 
 > DONE: **You should see:** press **F5**. Left and Right move the basket, and it stops when you let go.
@@ -23,8 +23,8 @@ A basket that always holds one fruit, starting with a cherry. Cherries, strawber
 
 ## Phase 2: First Fusion
 
-- [ ] **5.** Create a sprite `spr_fruit_cherry` (20x20, a red circle) and an object `obj_fruit_cherry` with a **Create** event (*Set vertical speed 3*) and an **Outside Room** event (*Destroy this instance*).
-- [ ] **6.** Create `obj_spawn_cherry` (no sprite) with a **Create** event (*Set alarm 0 to 90*) and an **Alarm 0** event (*Create instance of obj_fruit_cherry at a random x, y 0*, then *Set alarm 0 to 90* again). Place one in `room_main`.
+- [ ] **5.** Create a sprite `spr_fruit_cherry` (20x20, a red circle) and an object `obj_fruit_cherry` with a **Create** event (*Set vertical speed 3*) and an **Outside Room** event (*Destroy this instance*). **Outside Room** is not its own block — in the Events category, drag out **Other event:** and pick "Outside Room" from its dropdown.
+- [ ] **6.** Create `obj_spawn_cherry` (no sprite) with a **Create** event (*Set alarm 0 to 90*) and an **Alarm 0** event (*Create instance of obj_fruit_cherry at x: random integer from 0 to 620, y: 0*, then *Set alarm 0 to 90* again). Place one in `room_main`. (620 = room width 640 minus the cherry's own width 20, so it never spawns hanging off the edge.)
 - [ ] **7.** Change `obj_player`'s sprite to a new sprite `spr_basket_cherry` (a bowl with a cherry in it) — the basket now starts out already holding a cherry.
 - [ ] **8.** In `obj_player`: **Create** event sets *score to 0* and *variable held_level to 1*; **Draw** event does *Draw score at x 10, y 10*.
 - [ ] **9.** Create a sprite `spr_basket_strawberry` (56x40, a bowl with a strawberry in it) — you'll need it in the next step.
@@ -39,7 +39,7 @@ A basket that always holds one fruit, starting with a cherry. Cherries, strawber
 This phase repeats the exact same recipe as Phase 2, with "cherry" changed to "strawberry" and the numbers changed from 1/2 to 2/3.
 
 - [ ] **11.** Create a sprite `spr_fruit_strawberry` (26x26, a pink-red circle) and an object `obj_fruit_strawberry`, built exactly like `obj_fruit_cherry`.
-- [ ] **12.** Create `obj_spawn_strawberry` (alarm 0 to 120 this time) and place one in `room_main`.
+- [ ] **12.** Create `obj_spawn_strawberry` (alarm 0 to 120 this time; random x from 0 to 614, since the strawberry is 26 wide) and place one in `room_main`.
 - [ ] **13.** Create a sprite `spr_basket_orange` (56x40, a bowl with an orange in it) — you'll need it in the next step.
 - [ ] **14.** Add **Collision with obj_fruit_strawberry** on `obj_player`: *If held_level equals 2 then* [*set held_level to 3*, *add 20 to score*, *set sprite to spr_basket_orange*] *Otherwise* [*add 1 to score*]; then *Destroy other instance*.
 
@@ -50,7 +50,7 @@ This phase repeats the exact same recipe as Phase 2, with "cherry" changed to "s
 ## Phase 4: Winning
 
 - [ ] **15.** Create a sprite `spr_fruit_orange` (32x32, an orange circle) and an object `obj_fruit_orange`, built exactly like the others. There is no falling watermelon sprite or spawner — a watermelon is only ever something your basket becomes.
-- [ ] **16.** Create `obj_spawn_orange` (alarm 0 to 150) and place one in `room_main`.
+- [ ] **16.** Create `obj_spawn_orange` (alarm 0 to 150; random x from 0 to 608, since the orange is 32 wide) and place one in `room_main`.
 - [ ] **17.** Create `obj_win_text`. **Draw** event: *Draw text* "YOU WIN! You made a watermelon!" at x 120, y 220 and "Press SPACE to play again" at x 190, y 260. **Key press: space**: *Restart game*.
 - [ ] **18.** Create `room_win` with a bright background color, and place one `obj_win_text` instance in it.
 - [ ] **19.** Create a sprite `spr_basket_watermelon` (56x40, a bowl with a green, watermelon-striped circle in it) — you'll need it in the next step.

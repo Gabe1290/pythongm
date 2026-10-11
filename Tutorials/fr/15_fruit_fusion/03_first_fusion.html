@@ -60,6 +60,12 @@
         discrètement si elle atteint un jour le bas de la salle sans être
         attrapée &mdash; rien ne s'accumule jamais, et une nouvelle est toujours
         en route.</p>
+        <div class="info">
+            <strong>Pour trouver « Hors de la salle » :</strong> ce n'est pas un
+            bloc à part &mdash; dans la catégorie <strong>Events</strong> de la
+            palette Blockly, cherche le bloc <strong>Autre événement :</strong>,
+            pose-le, puis choisis « Hors de la salle » dans son menu déroulant.
+        </div>
     </div>
 
     <h2>Créer le générateur de cerises</h2>
@@ -76,11 +82,17 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarme 0</span><br>
-            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_cherry</span> à x : aléatoire, y : <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_cherry</span> à x : <span class="block-num">entier aléatoire de 0 à 620</span>, y : <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">90</span> pas</span>
         </div>
         <p>L'alarme se réinitialise elle-même chaque fois qu'elle se déclenche,
-        donc une nouvelle cerise arrive environ toutes les <strong>1,5 secondes</strong>.</p>
+        donc une nouvelle cerise arrive environ toutes les <strong>1,5 secondes</strong>.
+        Pour le <strong>x</strong>, glisse un bloc <strong>entier aléatoire de
+        ... à ...</strong> (catégorie Math) dans la fente x, avec
+        <strong>0</strong> et <strong>620</strong> &mdash; la salle fait
+        <strong>640</strong> de large et la cerise <strong>20</strong>, donc
+        620 (640&minus;20) est la position la plus à droite où elle rentre
+        encore entièrement dans la salle.</p>
         <ol>
             <li>Ouvrez <code>room_main</code> et placez une instance de
             <code>obj_spawn_cherry</code> n'importe où &mdash; elle ne sera pas visible

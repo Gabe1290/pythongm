@@ -50,6 +50,11 @@
             <span class="block block-event">Hors de la salle</span><br>
             <span class="block block-instance block-indent">Détruire cette instance</span>
         </div>
+        <div class="info">
+            Toujours le bloc <strong>Autre événement :</strong> (catégorie
+            Events) &mdash; choisis « Hors de la salle » dans son menu
+            déroulant.
+        </div>
     </div>
 
     <h2>Créer le générateur d'oranges</h2>
@@ -63,9 +68,12 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarme 0</span><br>
-            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_orange</span> à x : aléatoire, y : <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_orange</span> à x : <span class="block-num">entier aléatoire de 0 à 608</span>, y : <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">150</span> pas</span>
         </div>
+        <p><strong>608</strong> parce que l'orange fait <strong>32</strong> de
+        large : 640&minus;32 = 608 &mdash; même calcul que pour la cerise et la
+        fraise, juste avec la taille de ce fruit.</p>
         <ol>
             <li>Ouvrez <code>room_main</code> et placez une instance de
             <code>obj_spawn_orange</code> n'importe où</li>

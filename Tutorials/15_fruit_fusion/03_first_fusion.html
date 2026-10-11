@@ -59,6 +59,12 @@
         <p>The first event makes it fall. The second removes it quietly if it
         ever reaches the bottom of the room without being caught &mdash; nothing
         piles up, and a new one is always on the way.</p>
+        <div class="info">
+            <strong>Finding "Outside Room":</strong> it isn't its own block
+            &mdash; in the Blockly toolbox's <strong>Events</strong> category,
+            look for the <strong>Other event:</strong> block, drag it in, then
+            pick "Outside Room" from its dropdown.
+        </div>
     </div>
 
     <h2>Create the Cherry Spawner</h2>
@@ -74,11 +80,17 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarm 0</span><br>
-            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_cherry</span> at a random x, y: <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_cherry</span> at x: <span class="block-num">random integer from 0 to 620</span>, y: <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">90</span> steps</span>
         </div>
         <p>The alarm resets itself every time it fires, so a new cherry keeps
-        coming about every <strong>1.5 seconds</strong>.</p>
+        coming about every <strong>1.5 seconds</strong>. For the <strong>x</strong>,
+        drag a <strong>random integer from ... to ...</strong> block (Math
+        category) into the x slot, with <strong>0</strong> and
+        <strong>620</strong> &mdash; the room is <strong>640</strong> wide and
+        the cherry is <strong>20</strong>, so 620 (640&minus;20) is the
+        furthest right it can spawn while still fitting entirely inside the
+        room.</p>
         <ol>
             <li>Open <code>room_main</code> and place one <code>obj_spawn_cherry</code>
             anywhere &mdash; it won't be visible when you play.</li>

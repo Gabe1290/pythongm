@@ -52,6 +52,10 @@
             <span class="block block-event">Outside room</span><br>
             <span class="block block-instance block-indent">Destroy this instance</span>
         </div>
+        <div class="info">
+            Still the <strong>Other event:</strong> block (Events category)
+            &mdash; pick "Outside Room" from its dropdown.
+        </div>
     </div>
 
     <h2>Create the Strawberry Spawner</h2>
@@ -65,12 +69,13 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarm 0</span><br>
-            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_strawberry</span> at a random x, y: <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_strawberry</span> at x: <span class="block-num">random integer from 0 to 614</span>, y: <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">120</span> steps</span>
         </div>
         <p>A slightly longer wait (<strong>120</strong> steps, 2 seconds) than the cherry
         spawner &mdash; two fruit types falling at the same pace would be a lot to
-        watch at once.</p>
+        watch at once. The <strong>614</strong> (instead of 620) is because the
+        strawberry is <strong>26</strong> wide instead of 20: 640&minus;26 = 614.</p>
         <ol>
             <li>Open <code>room_main</code> and place one <code>obj_spawn_strawberry</code> anywhere</li>
         </ol>

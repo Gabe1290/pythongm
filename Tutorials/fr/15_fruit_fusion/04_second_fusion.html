@@ -52,6 +52,11 @@
             <span class="block block-event">Hors de la salle</span><br>
             <span class="block block-instance block-indent">Détruire cette instance</span>
         </div>
+        <div class="info">
+            Toujours le bloc <strong>Autre événement :</strong> (catégorie
+            Events) &mdash; choisis « Hors de la salle » dans son menu
+            déroulant.
+        </div>
     </div>
 
     <h2>Créer le générateur de fraises</h2>
@@ -65,12 +70,14 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarme 0</span><br>
-            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_strawberry</span> à x : aléatoire, y : <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Créer une instance de <span class="block-num">obj_fruit_strawberry</span> à x : <span class="block-num">entier aléatoire de 0 à 614</span>, y : <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Définir l'alarme <span class="block-num">0</span> à <span class="block-num">120</span> pas</span>
         </div>
         <p>Un délai légèrement plus long (<strong>120</strong> pas, 2 secondes) que
         le générateur de cerises &mdash; deux types de fruits tombant au même
-        rythme seraient beaucoup à surveiller à la fois.</p>
+        rythme seraient beaucoup à surveiller à la fois. Le <strong>614</strong>
+        (au lieu de 620) vient de la fraise qui fait <strong>26</strong> de
+        large au lieu de 20 : 640&minus;26 = 614.</p>
         <ol>
             <li>Ouvrez <code>room_main</code> et placez une instance de
             <code>obj_spawn_strawberry</code> n'importe où</li>

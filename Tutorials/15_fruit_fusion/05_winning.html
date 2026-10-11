@@ -49,6 +49,10 @@
             <span class="block block-event">Outside room</span><br>
             <span class="block block-instance block-indent">Destroy this instance</span>
         </div>
+        <div class="info">
+            Still the <strong>Other event:</strong> block (Events category)
+            &mdash; pick "Outside Room" from its dropdown.
+        </div>
     </div>
 
     <h2>Create the Orange Spawner</h2>
@@ -62,9 +66,12 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Alarm 0</span><br>
-            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_orange</span> at a random x, y: <span class="block-num">0</span></span><br>
+            <span class="block block-instance block-indent">Create instance of <span class="block-num">obj_fruit_orange</span> at x: <span class="block-num">random integer from 0 to 608</span>, y: <span class="block-num">0</span></span><br>
             <span class="block block-control block-indent">Set alarm <span class="block-num">0</span> to <span class="block-num">150</span> steps</span>
         </div>
+        <p><strong>608</strong> because the orange is <strong>32</strong> wide:
+        640&minus;32 = 608 &mdash; same calculation as the cherry and strawberry,
+        just with this fruit's size.</p>
         <ol>
             <li>Open <code>room_main</code> and place one <code>obj_spawn_orange</code> anywhere</li>
         </ol>
