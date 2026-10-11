@@ -1675,26 +1675,34 @@
 
         Blockly.Blocks['event_other'] = {
             init: function() {
+                var lang = window.BLOCKLY_LANG;
+                // Dropdown VALUES (the event names) are never translated --
+                // only the LABELS shown to the user are, via
+                // event_other_opt_<name> keys (blockly_i18n.js). English
+                // label here is the fallback when a key is missing.
+                var eventOptions = [
+                    ["Game Start", "game_start"],
+                    ["Game End", "game_end"],
+                    ["Room Start", "room_start"],
+                    ["Room End", "room_end"],
+                    ["Begin Step", "begin_step"],
+                    ["End Step", "end_step"],
+                    ["Draw GUI", "draw_gui"],
+                    ["Outside Room", "outside_room"],
+                    ["Intersect Boundary", "intersect_boundary"],
+                    ["No More Lives", "no_more_lives"],
+                    ["No More Health", "no_more_health"],
+                    ["Animation End", "animation_end"]
+                ].map(function(opt) {
+                    return [getBlockMessage('event_other_opt_' + opt[1], lang) || opt[0], opt[1]];
+                });
                 this.appendDummyInput()
-                    .appendField(getBlockMessage('event_other_prefix', window.BLOCKLY_LANG) || "Other event:")
-                    .appendField(new Blockly.FieldDropdown([
-                        ["Game Start", "game_start"],
-                        ["Game End", "game_end"],
-                        ["Room Start", "room_start"],
-                        ["Room End", "room_end"],
-                        ["Begin Step", "begin_step"],
-                        ["End Step", "end_step"],
-                        ["Draw GUI", "draw_gui"],
-                        ["Outside Room", "outside_room"],
-                        ["Intersect Boundary", "intersect_boundary"],
-                        ["No More Lives", "no_more_lives"],
-                        ["No More Health", "no_more_health"],
-                        ["Animation End", "animation_end"]
-                    ]), "EVENT_NAME");
+                    .appendField(getBlockMessage('event_other_prefix', lang) || "Other event:")
+                    .appendField(new Blockly.FieldDropdown(eventOptions), "EVENT_NAME");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#CC8800");
-                this.setTooltip(getBlockMessage('event_other_tooltip', window.BLOCKLY_LANG) || "Runs on an event with no dedicated block -- pick which one from the dropdown");
+                this.setTooltip(getBlockMessage('event_other_tooltip', lang) || "Runs on an event with no dedicated block -- pick which one from the dropdown");
             }
         };
 
