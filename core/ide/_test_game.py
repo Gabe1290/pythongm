@@ -176,22 +176,30 @@ class TestGameMixin:
             )
             logger.debug(f"🔍 Packaged detection: frozen={getattr(sys, 'frozen', False)}, exe_exists={exe_exists}, file_dir={file_dir}, is_packaged={is_packaged}")
 
-            if is_packaged:
-                # When packaged, run game in-process using the game runner
-                # This works because pygame is bundled in the package
-                self._minimize_for_test_game()
-                try:
-                    if self.game_runner.test_game(str(project_path), Config.get('language', 'en')):
-                        self.update_status(self.tr("Game closed"))
-                    else:
-                        self.update_status(self.tr("Game test failed"))
-                finally:
-                    self._restore_after_test_game()
-                return
-
-            # Run the game subprocess
             # Pass language code as second argument for runtime translations
             language = Config.get('language', 'en')
+
+            # Real classroom crash (2026-10-11), confirmed NOT fixed by
+            # forcing Mesa to software rendering: running the game IN-PROCESS
+            # for a packaged build (the old behaviour here, because there's
+            # no separate Python interpreter to launch runtime/run_game.py
+            # into) shares this process's X11/GLX/EGL state between Qt and
+            # SDL, and the X server fatally refuses the second toolkit's
+            # attempt to bind a GPU resource the first already holds
+            # ("BadAccess ... X_GLXMakeCurrent") -- a same-process resource
+            # conflict no Mesa env var can route around. A PyInstaller
+            # onefile's sys.executable is a real, directly re-runnable path
+            # to this SAME compiled binary, so a packaged build now gets
+            # genuine process isolation too: relaunch itself with a sentinel
+            # flag main.py checks for BEFORE any Qt import, routing straight
+            # to runtime.run_game's already-isolated entry point instead of
+            # constructing the IDE. Slower to start than the old in-process
+            # path (a onefile re-extracts its payload on every launch), but
+            # a few extra seconds beats a crash every time.
+            if is_packaged:
+                game_argv = [sys.executable, "--pygm-run-game", str(project_json), language]
+            else:
+                game_argv = [sys.executable, str(game_script), str(project_json), language]
 
             # Use Popen instead of run to avoid blocking the Qt event loop
             # This allows the IDE to remain responsive while the game runs
@@ -220,7 +228,7 @@ class TestGameMixin:
 
             try:
                 process = subprocess.Popen(
-                    [sys.executable, str(game_script), str(project_json), language],
+                    game_argv,
                     cwd=str(project_path),
                     env=env,
                     stdout=None,
@@ -458,13 +466,14 @@ class TestGameMixin:
 
     def debug_game(self):
         """Run game in debug mode with additional logging"""
-        if self.game_runner.is_game_running():
-            QMessageBox.information(
-                self,
-                self.tr("Game Running"),
-                self.tr("A game is already running. Please stop it first.")
-            )
-            return
+        if hasattr(self, '_game_process') and self._game_process is not None:
+            if self._game_process.poll() is None:  # Still running
+                QMessageBox.information(
+                    self,
+                    self.tr("Game Running"),
+                    self.tr("A game is already running. Please stop it first.")
+                )
+                return
 
         # Save project first
         if self.project_manager.is_dirty():
@@ -486,20 +495,16 @@ class TestGameMixin:
                     "For now, check the console for debug messages.")
         )
 
-        # Run game in test mode (debug mode to be implemented)
-        self._minimize_for_test_game()
-        try:
-            if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
-                self.update_status(self.tr("Game started in debug mode - Check console for debug output"))
-            else:
-                self.update_status(self.tr("Failed to start game"))
-                QMessageBox.warning(
-                    self,
-                    self.tr("Game Error"),
-                    self.tr("Failed to start the game. Check console for details.")
-                )
-        finally:
-            self._restore_after_test_game()
+        # Run game in test mode (debug mode to be implemented) through the
+        # same subprocess-isolated path test_game uses -- this used to call
+        # self.game_runner.test_game(...) directly, running the game
+        # IN-PROCESS unconditionally (not even gated behind the packaged/
+        # dev-mode check _run_project_json has), which is exactly the
+        # same-process Qt/SDL GPU-resource conflict _run_project_json was
+        # just fixed to avoid (see its own comment for the real crash this
+        # caused). self.game_runner (the IDE's own attribute, constructed on
+        # project load) is now unused by this class.
+        self._run_project_json(self.current_project_path)
 
     def _show_validation_warnings(self):
         """Validate project and show any warnings to the user"""

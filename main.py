@@ -31,6 +31,33 @@ if sys.version_info < (3, 10) or sys.version_info >= (3, 14):
     )
     sys.exit(1)
 
+# A packaged (PyInstaller onefile) build has no separate Python interpreter
+# to launch runtime/run_game.py into as a subprocess the way a source/dev
+# run does -- core/ide/_test_game.py's Test Game used to fall back to
+# running the game IN-PROCESS for packaged builds instead, sharing this
+# process (and its X11/GLX/EGL state) with Qt. That shared state is exactly
+# what caused a real, repeated classroom crash (2026-10-11): Qt's own EGL
+# probing at startup and pygame/SDL's GLX window creation on Test Game both
+# touch the same exclusive GPU resource in the one process, and the X
+# server fatally refuses the second one ("X Error of failed request:
+# BadAccess ... X_GLXMakeCurrent") -- confirmed to still happen even with
+# Mesa forced to software rendering (see the LIBGL_ALWAYS_SOFTWARE block
+# below, which fixed a *different*, now-separate crash but not this one),
+# so the conflict isn't about which Mesa driver loads, it's the two
+# toolkits sharing one process's connection to the graphics subsystem at
+# all. The only fix that's actually guaranteed to remove that sharing is
+# to not share the process: a packaged build now RELAUNCHES ITSELF
+# (sys.executable, for a PyInstaller onefile, is a real, directly
+# re-runnable path to this same executable) with this sentinel flag, and
+# that child process never touches Qt at all -- this check runs before any
+# Qt-related import or setup below, so "--pygm-run-game" takes a completely
+# separate code path through runtime.run_game's existing, already-isolated
+# entry point instead of constructing the IDE.
+if len(sys.argv) > 1 and sys.argv[1] == "--pygm-run-game":
+    sys.argv = [sys.argv[0]] + sys.argv[2:]
+    from runtime import run_game
+    run_game.main()  # always calls sys.exit() itself (0 on success, 1 on error)
+
 # Suppress pygame's pkg_resources deprecation warning (not our code)
 warnings.filterwarnings("ignore", message="pkg_resources is deprecated", category=UserWarning)
 
