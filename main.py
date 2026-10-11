@@ -51,6 +51,34 @@ if sys.platform == 'win32':
         if sys.stderr and hasattr(sys.stderr, 'buffer'):
             sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+# On Linux, force Mesa to render everything (Qt's own GL/EGL probing *and*
+# pygame/SDL's, which share this one process in a packaged build -- see
+# runtime/game_runner.py's "run in-process for packaged builds" path) through
+# its software rasterizer instead of a hardware DRI/GBM driver.
+#
+# Real classroom crash, 2026-10-10/11: a user's compiled Linux build died
+# clicking the Blockly tab (fixed separately: PyGameMaker was shadowing the
+# system's libstdc++, breaking Mesa's Intel driver's own dependencies) and
+# then, after that fix, died again clicking "Test Game" -- this time with no
+# shadowing involved, just "did not find extension DRI_Mesa version 1",
+# "EGL: Failed to initialize GBM device", and a fatal X BadAccess on
+# glXMakeCurrent. Test Game runs pygame's SDL window in the SAME process as
+# Qt for a packaged build (there's no separate Python interpreter to launch a
+# subprocess into), so SDL's own GLX probing contends with Qt's already-active
+# EGL/GBM session over the same hardware DRM device -- "private resource
+# denied" is exactly that kind of exclusive-access conflict. Forcing Mesa to
+# llvmpipe for the whole process means neither Qt's nor SDL's GL/EGL/GLX calls
+# ever touch the DRM/GBM device at all, so there's nothing left to contend
+# over. This is a direct extension of two choices this app already makes for
+# the same reason: QtWebEngine's Chromium flags already pass --disable-gpu,
+# and runtime/game_runner.py already forces SDL_RENDER_DRIVER=software --
+# both exist specifically to avoid needing a working hardware GL driver, since
+# this is a lightweight 2D IDE, not something that benefits from GPU
+# acceleration in the first place.
+if sys.platform not in ('win32', 'darwin'):
+    os.environ.setdefault('LIBGL_ALWAYS_SOFTWARE', '1')
+
+
 def _find_file_in_tree(base, filename):
     """Search for *filename* under *base* directory, return first match or None."""
     for root, _dirs, files in os.walk(base):
