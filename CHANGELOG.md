@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-10-11
+
+Continued fallout from the same classroom report's Linux build: two more
+real issues found in the terminal log after 1.5.1/1.5.2 landed.
+
+### Fixed
+- The Linux build no longer bundles its own `glib`/`gio`/`gobject`/
+  `gmodule`. Same shadowing bug as 1.5.1's `libstdc++` fix, one layer
+  down: the bundled copies were breaking the system's own GIO modules
+  (desktop integration conveniences like the GSettings/dconf backend
+  and GVFS trash support in file dialogs) with "undefined symbol"
+  errors. The system's own copies are used instead now.
+- Pressing Ctrl+C or Ctrl+V while an object's events panel had focus
+  could trigger Qt's "ambiguous shortcut" warning and behave
+  unpredictably, because the panel's own Copy/Paste shortcuts and the
+  main Edit menu's Copy/Paste were both bound window-wide to the same
+  keys. The panel's shortcuts are now scoped to itself, so both work
+  correctly depending on what has focus.
+
 ## [1.5.2] - 2026-10-11
 
 Classroom-reported fix: "Test Game" could crash the whole compiled Linux
