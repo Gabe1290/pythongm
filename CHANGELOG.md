@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.4] - 2026-10-11
+
+The real fix for the recurring Test Game crash on Linux — 1.5.2's fix
+addressed a symptom, not the cause.
+
+### Fixed
+- Test Game (and Debug Game, which had the same bug independently)
+  could still crash the whole compiled Linux build with a GLX error,
+  even after 1.5.2. The real cause: in a packaged build, the game used
+  to run in the same process as the IDE itself, and that process
+  shares one connection to the graphics system between two different
+  toolkits (Qt and pygame) that both need it — something no amount of
+  software-rendering tuning can fix, because the two are fighting over
+  the same resource, not over which driver handles it. Test Game and
+  Debug Game now always launch the game as a fully separate process,
+  the same way they already did on Windows and macOS. Starting a test
+  run takes a few seconds longer as a result, which is a worthwhile
+  trade for it working reliably every time.
+
 ## [1.5.3] - 2026-10-11
 
 Continued fallout from the same classroom report's Linux build: two more
