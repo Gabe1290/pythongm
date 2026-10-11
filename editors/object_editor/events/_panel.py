@@ -169,10 +169,26 @@ class ObjectEventsPanel(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardM
             self.move_down_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+Down")), self)
             self.move_down_shortcut.activated.connect(self.move_action_down)
 
+            # WidgetWithChildrenShortcut (not the QShortcut default of
+            # WindowShortcut) scopes these to this panel specifically --
+            # core/ide/_menu_builder.py's Edit menu already binds Ctrl+C/
+            # Ctrl+V window-wide for its own Copy/Paste actions, so leaving
+            # the default context meant both fired for the same keypress the
+            # instant an object editor was open, which Qt can't resolve
+            # (classroom report, 2026-10-11: "Ambiguous shortcut overload:
+            # Ctrl+C" printed to the terminal the moment Ctrl+C was pressed
+            # anywhere in the window). Scoping to this widget means Ctrl+C/
+            # Ctrl+V still works for action-list copy/paste when this panel
+            # has focus, and falls through to the menu's global Copy/Paste
+            # everywhere else, same as Ctrl+Up/Ctrl+Down already behave
+            # (no window-wide binding exists for those, so no ambiguity).
+            from PySide6.QtCore import Qt
             self.copy_action_shortcut = QShortcut(QKeySequence.StandardKey.Copy, self)
+            self.copy_action_shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
             self.copy_action_shortcut.activated.connect(self.copy_selected_action)
 
             self.paste_action_shortcut = QShortcut(QKeySequence.StandardKey.Paste, self)
+            self.paste_action_shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
             self.paste_action_shortcut.activated.connect(self.paste_selected_action)
         except Exception as e:
             logger.warning(f"Could not setup shortcuts: {e}")

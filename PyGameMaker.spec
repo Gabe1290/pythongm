@@ -21,8 +21,8 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 
 def _exclude_shadowing_runtime_libs(binaries):
-    """Drop PyInstaller-bundled copies of libstdc++/libgcc_s from the Linux
-    build so the system's own copies are used instead.
+    """Drop PyInstaller-bundled copies of libstdc++/libgcc_s and the glib
+    family from the Linux build so the system's own copies are used instead.
 
     Real classroom crash, 2026-10-10: a user's compiled Linux build died the
     instant they opened the Blockly tab. Terminal output showed the actual
@@ -36,19 +36,38 @@ def _exclude_shadowing_runtime_libs(binaries):
     one thing in this app that embeds a QWebEngineView, which needs an
     RHI-backed window to composite into -- took the whole window's render
     surface down with it (window vanishes; process lingers as a dead icon).
-    The same shadowing broke unrelated system GIO modules in the same log
-    (libdconfsettings.so / libgvfsdbus.so: undefined symbol errors) -- this
-    is a generic "bundled toolchain runtime shadows the system's newer one"
-    bug, not something specific to WebEngine or GPU code.
+    Fixed for libstdc++/libgcc_s (v1.5.1).
 
-    The system's libstdc++ only needs to be AT LEAST as new as what PySide6
-    was built against for this to be safe -- GCC's libstdc++ is strictly
-    backward-compatible, and the bug symptom itself (a library demanding a
-    *newer* GLIBCXX than the bundled copy provides) is direct evidence the
-    system copy is the newer one here, which is the common case on any
-    reasonably current Linux distro.
+    The SAME log line also showed unrelated system GIO modules failing:
+
+        libdconfsettings.so: undefined symbol: g_assertion_message_cmpint
+        libgvfscommon.so: undefined symbol: g_task_set_static_name
+
+    This is the identical shadowing bug, one layer down the dependency
+    graph: PyInstaller also bundles its own libglib-2.0/libgio-2.0/
+    libgobject-2.0/libgmodule-2.0 (pulled in transitively by a Qt plugin,
+    e.g. the networkinformation backend's libqglib.so), and those system
+    GIO modules -- which the system's own GLib discovers and dlopen()s by
+    scanning its modules directory at runtime, so they're never bundled by
+    us at all -- resolve against the bundled, shadowing copy instead of the
+    real system one they were actually compiled against. Confirmed still
+    present in a v1.5.2 build (which only fixed libstdc++), so this was
+    never actually fixed, just a second instance of the same mechanism
+    hiding behind the first one's fix. Same safety argument as libstdc++:
+    GLib keeps strict runtime back-compat, and a symbol a loader expects but
+    the bundled copy lacks is itself the evidence the system copy is the
+    newer, correct one to prefer.
+
+    These GIO modules are desktop-integration conveniences (GSettings/dconf
+    backend, GVFS trash/remote-mount support in file dialogs), not core app
+    functionality -- losing them is a confirmed real (if mostly cosmetic)
+    bug, not a theoretical one, so excluding the shadowing copy outright is
+    worth it even though the failure mode itself is fairly benign.
     """
-    excluded_prefixes = ('libstdc++.so', 'libgcc_s.so')
+    excluded_prefixes = (
+        'libstdc++.so', 'libgcc_s.so',
+        'libglib-2.0.so', 'libgio-2.0.so', 'libgobject-2.0.so', 'libgmodule-2.0.so',
+    )
     return [
         b for b in binaries
         if not os.path.basename(b[0]).startswith(excluded_prefixes)

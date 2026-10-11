@@ -6,8 +6,16 @@ bundling its own (older) libstdc++.so.6, which shadows the system's newer
 copy in the onefile's extraction dir -- breaking Mesa's Intel GPU driver
 (dlopen of libigdgmm.so.12 failed on a missing GLIBCXX symbol), which broke
 EGL/OpenGL context creation, which crashed the Blockly tab's QWebEngineView
-(the only thing in this app needing an RHI-backed window). See the function's
-own docstring in PyGameMaker.spec for the full chain.
+(the only thing in this app needing an RHI-backed window). Fixed in v1.5.1.
+
+The same log also showed system GIO modules failing the identical way one
+layer down (libdconfsettings.so / libgvfscommon.so: undefined symbol errors)
+-- PyInstaller bundles its own glib/gio/gobject/gmodule too (pulled in
+transitively by a Qt plugin), shadowing the system's. Confirmed STILL
+present in a v1.5.2 build (which only excluded libstdc++/libgcc_s), so this
+was a second, distinct instance of the same mechanism, not actually fixed
+by the first pass. See the function's own docstring in PyGameMaker.spec for
+the full chain on both.
 
 PyGameMaker.spec can't be imported or exec'd wholesale in a test -- calling
 Analysis() requires PyInstaller to actually scan the whole project and would
@@ -56,6 +64,22 @@ def test_bare_libstdcxx_is_excluded(exclude_fn):
 def test_bare_libgcc_s_is_excluded(exclude_fn):
     binaries = [("libgcc_s.so.1", "/some/src/libgcc_s.so.1", "BINARY")]
     assert exclude_fn(binaries) == []
+
+
+@pytest.mark.parametrize("name", [
+    "libglib-2.0.so.0", "libgio-2.0.so.0", "libgobject-2.0.so.0", "libgmodule-2.0.so.0",
+])
+def test_glib_family_is_excluded(exclude_fn, name):
+    binaries = [(name, f"/some/src/{name}", "BINARY")]
+    assert exclude_fn(binaries) == []
+
+
+def test_unrelated_glib_adjacent_library_is_kept(exclude_fn):
+    """libcairo-gobject.so.2 is also PyInstaller-bundled but isn't implicated
+    by anything in the actual bug report -- only the four core glib libs are
+    excluded, not everything with "glib"/"gobject" in its name."""
+    binaries = [("libcairo-gobject.so.2", "/some/src/libcairo-gobject.so.2", "BINARY")]
+    assert exclude_fn(binaries) == binaries
 
 
 def test_nested_qt_path_libstdcxx_is_still_excluded(exclude_fn):
