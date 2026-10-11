@@ -191,6 +191,7 @@ class BlocklyWidget(QWidget):
         self._loading = False
         self._page_ready = False
         self._pending_events_data = None
+        self._pending_workspace_xml = None
         # Set by _check_round_trip_safety whenever Blockly can't reproduce
         # the object's real events exactly (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md,
         # U0) -- the JS page is locked in that case, so editing here is a
@@ -330,6 +331,14 @@ class BlocklyWidget(QWidget):
                 pending = self._pending_events_data
                 self._pending_events_data = None
                 self.load_events_data(pending)
+
+            # Same for a pending workspace XML load (see load_workspace_xml's
+            # own comment for the real bug this queue fixes).
+            if self._pending_workspace_xml:
+                logger.debug("Loading pending workspace XML after page load")
+                pending_xml = self._pending_workspace_xml
+                self._pending_workspace_xml = None
+                self.load_workspace_xml(pending_xml)
 
             self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
@@ -514,6 +523,34 @@ class BlocklyWidget(QWidget):
         """Load workspace from XML"""
         if not xml:
             return
+
+        # Queue if the page hasn't finished loading yet -- mirrors
+        # load_events_data's own pending-data queue, which this lacked.
+        # Real classroom report, 2026-10-11: a saved collision event's
+        # "OBJECT" field (an asset-backed FieldDropdown, created via
+        # createAssetField) silently reverted to empty on load, corrupting
+        # the generated event key from "collision_with_obj_fruit_cherry" to
+        # "collision_with_" -- traced to this exact race: object_editor_main.py
+        # calls load_workspace_xml as soon as an object's saved data is
+        # available, with no check that the page is ready; if that happens
+        # before on_load_finished has run push_asset_lists(), the dropdown's
+        # option list (window.BLOCKLY_ASSET_LISTS) is still empty when
+        # Blockly.Xml.domToWorkspace restores the field, and Blockly's own
+        # FieldDropdown XML loading validates the saved value against the
+        # CURRENT (empty) option list and silently drops it instead of
+        # keeping it. Confirmed via a real headless-browser run of this
+        # exact generator against this exact saved XML: asset lists pushed
+        # before loading -> correct key; pushed after -> this exact bug.
+        if not self._page_ready:
+            self._pending_workspace_xml = xml
+            return
+
+        # Also refresh right before loading even when the page WAS already
+        # ready, matching load_events_data's own belt-and-braces re-push --
+        # an object/sprite/room created or renamed after this tab first
+        # became ready would otherwise leave the asset lists stale for any
+        # later load on the same already-open tab.
+        self.push_asset_lists()
 
         self._loading = True
         # Escape the XML for JavaScript
