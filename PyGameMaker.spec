@@ -79,7 +79,7 @@ main_script = project_dir / 'main.py'
 
 # Application metadata
 APP_NAME = 'PyGameMaker'
-VERSION = '1.5.6'
+VERSION = '1.5.7'
 
 # Collect all PySide6 data files (critical for Qt)
 pyside6_datas = collect_data_files('PySide6')

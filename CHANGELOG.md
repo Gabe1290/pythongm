@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.7] - 2026-10-12
+
+### Fixed
+- The Blockly "Go to room" action never actually worked — it silently
+  did nothing no matter which room was selected. It now switches rooms
+  correctly.
+
 ## [1.5.6] - 2026-10-11
 
 ### Fixed
