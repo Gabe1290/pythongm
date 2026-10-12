@@ -368,7 +368,19 @@ function generateActionCodeInner(block) {
         case 'room_restart':
             return {action: 'restart_room', parameters: {}};
         case 'room_goto':
-            return {action: 'goto_room', parameters: {room_name: block.getFieldValue('ROOM')}};
+            // Parameter key MUST be "room", not "room_name" -- matches
+            // events/action_types.py's goto_room ActionType schema (the
+            // canonical parameter name every other caller uses) and the
+            // LOADER case right below for this same block type
+            // (createActionBlock: `if (params.room) block.setFieldValue(...)`
+            // -- it already read "room", not "room_name"). The runtime
+            // handler (execute_goto_room_action, runtime/action_room.py)
+            // also reads parameters.get("room", ""), so a "room_name" key
+            // was never read by anything: this made every Blockly-authored
+            // "Go to room" block a silent, permanent no-op regardless of
+            // which room was selected (real classroom report, 2026-10-12:
+            // "the go to different room action does not work").
+            return {action: 'goto_room', parameters: {room: block.getFieldValue('ROOM')}};
         case 'room_if_next_exists':
             var nextExistsActions = [];
             var nextExistsBlock = block.getInputTargetBlock('DO');

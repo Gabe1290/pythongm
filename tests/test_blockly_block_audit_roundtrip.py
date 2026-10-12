@@ -389,6 +389,16 @@ CASES = {
         {"action": "if_previous_room_exists", "parameters": {
             "then_actions": [{"action": "previous_room", "parameters": {}}],
             "else_actions": [{"action": "restart_room", "parameters": {}}]}}]}},
+    # Real classroom report, 2026-10-12: the generator emitted "room_name"
+    # instead of the canonical "room" key (events/action_types.py's
+    # goto_room ActionType; the loader right below this CASES entry's own
+    # test already read "room" correctly), so every Blockly-authored "Go to
+    # room" block was a silent, permanent no-op -- confirming this via a
+    # round trip, not just a generator-output check, since the ORIGINAL bug
+    # report was "the block doesn't work", and a wrong key name on SAVE is
+    # indistinguishable from a wrong key name on LOAD without round-tripping.
+    "room_goto_action": {"create": {"actions": [
+        {"action": "goto_room", "parameters": {"room": "room_win"}}]}},
     # --- B2 follow-up: if_condition's other 7 condition_types ---
     "if_condition_variable_compare": {"create": {"actions": [
         {"action": "if_condition", "parameters": {
@@ -614,7 +624,7 @@ def round_tripped():
     en_messages = blockly_message_file("en").read_text(encoding="utf-8")
     js = """(function(cases, dynamicDefs, frMessages, enMessages){
         registerCustomBlocks(dynamicDefs);
-        window.blocklyApi.setAssetLists({objects: [], sprites: ['spr_a', 'spr_b'], sounds: [], rooms: []});
+        window.blocklyApi.setAssetLists({objects: [], sprites: ['spr_a', 'spr_b'], sounds: [], rooms: ['room_a', 'room_win']});
         window.blocklyApi.setExtensionEvents(
             ['player_joined', 'network_game_started', 'network_message'],
             [['Player joined', 'player_joined']]);
@@ -1220,6 +1230,24 @@ class TestB13DirectionGrid:
         """Old workspace XML stores <field name="DIRECTION">up</field>; the
         hidden legacy field ticks the matching box instead of defaulting."""
         assert round_tripped["__value_blocks_saved"]["direction_legacy_xml"] == 90
+
+
+class TestGotoRoomUsesTheCanonicalParameterKey:
+    """Real classroom report, 2026-10-12: a Blockly "Go to room" block
+    never actually changed rooms, no matter which room was selected. The
+    generator emitted "room_name"; the runtime handler
+    (execute_goto_room_action) and the loader for this same block both
+    read "room" -- the canonical key from events/action_types.py's
+    goto_room ActionType. Round-tripping catches either direction being
+    wrong, which a generator-only or loader-only check could each miss."""
+
+    def test_room_key_round_trips_not_room_name(self, round_tripped):
+        params = _params(round_tripped, "room_goto_action")
+        assert params.get("room") == "room_win", (
+            f"'room' missing/wrong after round-trip: {params!r}")
+        assert "room_name" not in params, (
+            "generator still emits the dead 'room_name' key nothing reads"
+        )
 
 
 class TestEventBlocksDoNotOverlap:
