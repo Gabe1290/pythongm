@@ -1439,6 +1439,142 @@ def test_t15_phase4_wins_via_the_real_action_list_not_a_hardcoded_test_shortcut(
     assert any(a["action"] == "goto_room" and a["parameters"]["room"] == "room_win" for a in then_actions)
 
 
+# ----------------------------------------------------------------- Tutorial 16
+
+def test_t16_phase1_basket_moves_left_and_right_and_stops_with_no_key(tmp_path):
+    path = trp.build_t16(tmp_path, 1)
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 15:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        if f >= 17:
+            xs.append(insts(r, "obj_player")[0].x)
+    play(path, script, 40)
+    assert len(set(xs)) == 1 and xs[0] > 304     # moved right, then stayed put
+
+
+def test_t16_phase1_has_no_fruit_or_bomb_objects_yet(tmp_path):
+    path = trp.build_t16(tmp_path, 1)
+    objects = trp.json.loads(path.read_text(encoding="utf-8"))["assets"]["objects"]
+    assert "obj_fruit" not in objects and "obj_bomb" not in objects
+
+
+def test_t16_phase2_fruit_and_bombs_are_placed_but_have_no_behaviour_yet(tmp_path):
+    path = trp.build_t16(tmp_path, 2)
+    counts = {}
+
+    def script(f, post, r, seen):
+        if f == 20:
+            counts["fruit"] = len(insts(r, "obj_fruit"))
+            counts["bombs"] = len(insts(r, "obj_bomb"))
+    play(path, script, 21)
+    assert counts == {"fruit": 5, "bombs": 2}
+
+
+def test_t16_phase3_catching_a_fruit_destroys_it_and_scores_ten(tmp_path):
+    path = trp.build_t16(tmp_path, 3)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 1:
+            insts(r, "obj_player")[0].x = trp.T16_FRUIT_XS[0]   # walk straight onto a fruit
+        if f == 5:
+            snap["score"] = r.score
+            snap["fruit_left"] = len(insts(r, "obj_fruit"))
+    play(path, script, 6)
+    assert snap["score"] == 10
+    assert snap["fruit_left"] == 4
+
+
+def test_t16_phase3_touching_a_bomb_restarts_the_room(tmp_path):
+    """Nothing is permanently lost -- a restart puts the basket, every fruit
+    and every bomb straight back where they started, score included."""
+    path = trp.build_t16(tmp_path, 3, bomb_xs=(304,))   # a bomb right where the basket starts
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 10:
+            snap["player_x"] = insts(r, "obj_player")[0].x
+            snap["fruit"] = len(insts(r, "obj_fruit"))
+            snap["bombs"] = len(insts(r, "obj_bomb"))
+            snap["score"] = r.score
+    play(path, script, 11)
+    assert snap["player_x"] == 304
+    assert snap["fruit"] == 5
+    assert snap["bombs"] == 1
+    assert snap["score"] == 0
+
+
+def test_t16_phase4_with_no_fruit_placed_the_win_room_appears_at_once(tmp_path):
+    """With zero obj_fruit instances, test_instance_count is already true on
+    the very first step -- mirrors Tutorial 9's identical edge case."""
+    rooms = []
+
+    def script(f, post, r, seen):
+        name = r.current_room.name if r.current_room else None
+        if not rooms or rooms[-1][1] != name:
+            rooms.append((f, name))
+    play(trp.build_t16(tmp_path, 4, fruit_xs=()), script, 20)
+    assert rooms[-1][1] == "room_win" and rooms[-1][0] <= 5
+
+
+def test_t16_phase4_catching_the_last_fruit_wins(tmp_path):
+    rooms = []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            insts(r, "obj_player")[0].x = trp.T16_FRUIT_XS[0]
+        name = r.current_room.name if r.current_room else None
+        if not rooms or rooms[-1] != name:
+            rooms.append(name)
+    play(trp.build_t16(tmp_path, 4, fruit_xs=trp.T16_FRUIT_XS[:1]), script, 10)
+    assert rooms == ["room_main", "room_win"]
+
+
+def test_t16_every_phase_checkpoint_loads_in_the_real_ide_project_loader(tmp_path):
+    from core.project_manager import ProjectManager
+    builder, names = trp.BUILDERS["16_fruit_basket"]
+    for i, name in enumerate(names, 1):
+        path = builder(tmp_path / f"{i}_{name}", i)
+        assert ProjectManager().load_project(str(path.parent))
+
+
+def test_t16_uses_no_variables_or_authored_conditionals_anywhere():
+    """The entire point of this tutorial: it's a complete game (movement,
+    collecting, avoiding, winning, restarting) built with zero
+    set_variable actions and zero if_condition/test_expression actions --
+    everything is a single pre-wired fire-and-forget action, plus exactly
+    one built-in check (test_instance_count) for the win condition."""
+    import tempfile
+    path = trp.build_t16(Path(tempfile.mkdtemp()), 4)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+
+    def walk_actions(actions):
+        for a in actions:
+            yield a["action"]
+            params = a.get("parameters", {})
+            for key in ("then_actions", "else_actions"):
+                if key in params:
+                    yield from walk_actions(params[key])
+
+    forbidden = {"set_variable", "if_condition", "test_expression"}
+    seen_actions = set()
+    for obj in data["assets"]["objects"].values():
+        for event in obj["events"].values():
+            event_lists = event.get("actions")
+            if event_lists is not None:
+                seen_actions.update(walk_actions(event_lists))
+            else:
+                for sub in event.values():   # keyboard/keyboard_press sub-events
+                    if isinstance(sub, dict) and "actions" in sub:
+                        seen_actions.update(walk_actions(sub["actions"]))
+    assert not (seen_actions & forbidden), seen_actions & forbidden
+    assert "test_instance_count" in seen_actions
+
+
 # ----------------------------------------------------------------- Tutorials 11-14 zips
 
 @pytest.mark.parametrize("folder", ["11_raycast_first_steps", "12_raycast_textures",

@@ -74,11 +74,15 @@ them by.
 ### Room layout (`room_main`, 640×480)
 
 - `obj_player` at (304, 430).
-- `obj_fruit` × 5 at y=430, x = 140, 220, 300, 380, 460.
-- `obj_bomb` × 2 at y=430, x = 40 and 600 — each over 100px from the
-  nearest fruit (the basket is 56px wide), so normal fruit-collecting
-  movement never brushes a bomb by accident; touching one is a deliberate
-  wander off the edge, not a hazard you have to dodge mid-collection.
+- `obj_fruit` × 5 at y=430, x = 60, 170, 400, 480, 540 — chosen to stay
+  clear of the basket's own 56px-wide starting box (a first draft placed a
+  fruit at x=300, 4px from the basket's start, so the basket "caught" it
+  just by existing — fixed by keeping every fruit at least one full
+  basket-width away from x=304).
+- `obj_bomb` × 2 at y=430, x = 10 and 600 — each at least 24px clear of the
+  nearest fruit, so normal fruit-collecting movement never brushes a bomb
+  by accident; touching one is a deliberate wander off the edge, not a
+  hazard you have to dodge mid-collection.
 
 ### Phases (5 pages, matching Tutorial 9's exact shape: intro + 4 build
 phases — the closest existing analog, since this is "Catch the Coins"

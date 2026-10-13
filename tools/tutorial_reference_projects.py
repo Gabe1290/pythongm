@@ -846,6 +846,75 @@ def build_t15(root, phase=4):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 16 - Fruit Basket: a complete game with zero variables   (phases 1..4)
+#
+# Companion to Tutorial 15 for students not ready for a held-fruit variable
+# yet. Fruit and bombs are placed once in the room and never move or
+# respawn, so nothing ever needs recycling (the thing that forces Tutorial
+# 9's set_variable y=0 reset) and there is no state to remember across a
+# catch (the thing that forces Tutorial 15's held_level variable). Every
+# mechanic is a single pre-wired action: destroy_instance + set_score for a
+# catch, restart_room for a bomb touch, test_instance_count for the win
+# check -- see docs/TUTORIAL_16_FRUIT_BASKET_PLAN.md.
+# ---------------------------------------------------------------------------
+
+T16_PHASES = ["moving_basket", "fruit_and_bombs", "catching_and_avoiding", "winning"]
+
+T16_FRUIT_XS = (60, 170, 400, 480, 540)
+T16_BOMB_XS = (10, 600)
+# Clearances, all checked against the player's 56px-wide box starting at
+# x=304 (so standing still never auto-catches a fruit, the bug a first
+# draft of this layout had with a fruit at x=300) and against each other
+# (so a fruit and a bomb never sit on top of one another): fruit positions
+# stay outside [304-82, 360] (82 = basket width 56 + fruit width 26), and
+# both bombs stay >=24px clear of the nearest fruit.
+
+
+def build_t16(root, phase=4, fruit_xs=T16_FRUIT_XS, bomb_xs=T16_BOMB_XS):
+    p = Project(root, "FruitBasket", 640, 480)
+    p.sprite_from_image("spr_basket", _basket_art(56, 40, None, 0), 56, 40)
+
+    player_ev = {"keyboard": {
+        "left": {"actions": [act("set_hspeed", speed=-5)]},
+        "right": {"actions": [act("set_hspeed", speed=5)]},
+        "nokey": {"actions": [act("stop_movement")]}}}
+    placements = [("obj_player", 304, 430)]
+
+    if phase >= 2:
+        p.sprite("spr_fruit", "circle", 26, 26, (90, 170, 60, 255))
+        p.sprite("spr_bomb", "circle", 26, 26, (40, 40, 40, 255))
+        p.obj("obj_fruit", "spr_fruit", {})
+        p.obj("obj_bomb", "spr_bomb", {})
+        placements += [("obj_fruit", x, 430) for x in fruit_xs]
+        placements += [("obj_bomb", x, 430) for x in bomb_xs]
+
+    if phase >= 3:
+        player_ev["create"] = {"actions": [act("set_score", value=0)]}
+        player_ev["draw"] = {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}
+        player_ev["collision_with_obj_fruit"] = {
+            "target_object": "obj_fruit",
+            "actions": [act("set_score", value=10, relative=True),
+                        act("destroy_instance", target="other")]}
+        player_ev["collision_with_obj_bomb"] = {
+            "target_object": "obj_bomb", "actions": [act("restart_room")]}
+
+    if phase >= 4:
+        player_ev["step"] = {"actions": [
+            act("test_instance_count", object="obj_fruit", number=0, operation="equal"),
+            act("start_block"), act("goto_room", room="room_win"), act("end_block")]}
+        p.obj("obj_win_text", "", {
+            "draw": {"actions": [act("draw_text", text='"YOU WIN!"', x=412, y=320),
+                                 act("draw_text", text='"Press SPACE to play again"', x=340, y=400)]},
+            "keyboard_press": {"space": {"actions": [act("restart_game")]}}})
+
+    p.obj("obj_player", "spr_basket", player_ev)
+    p.room("room_main", 640, 480, placements, "#cfe8ff")
+    if phase >= 4:
+        p.room("room_win", 640, 480, [("obj_win_text", 10, 10)], "#B0E8A0")
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -861,6 +930,7 @@ BUILDERS = {  # folder -> (builder, phase names)
     "13_raycast_goals_monsters": (build_t13, T13_PHASES),
     "14_raycast_hud_minimap": (build_t14, T14_PHASES),
     "15_fruit_fusion": (build_t15, T15_PHASES),
+    "16_fruit_basket": (build_t16, T16_PHASES),
 }
 
 
