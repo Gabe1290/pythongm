@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Fruit and Bombs</h1>
+
+    <p>Now we'll add the fruit to collect and the bombs to avoid. Unlike
+    some other games, nothing here falls or moves on its own &mdash; the
+    fruit and the bombs just sit in the room, waiting for the basket to
+    reach them.</p>
+
+    <h2>Create the Fruit Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Sprites</strong> &rarr; <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_fruit</code></li>
+            <li>Open the Sprite Editor and draw a 26&times;26 green circle. Save with <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Create the Bomb Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Repeat the steps above for a sprite called <code>spr_bomb</code></li>
+            <li>Draw a 26&times;26 dark circle so the bomb is easy to spot</li>
+        </ol>
+    </div>
+
+    <h2>Create the Fruit Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_fruit</code></li>
+            <li>Set the sprite to <code>spr_fruit</code></li>
+        </ol>
+        <p>That's it &mdash; no events yet. A fruit that just sits there
+        doesn't need any blocks of its own; all the behavior will live on
+        the basket in the next phase.</p>
+    </div>
+
+    <h2>Create the Bomb Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create another object called <code>obj_bomb</code></li>
+            <li>Set its sprite to <code>spr_bomb</code></li>
+        </ol>
+        <p>Same as the fruit &mdash; no events needed here either.</p>
+    </div>
+
+    <h2>Place Them in the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_main</code></li>
+            <li>Place <strong>5 fruit</strong> in a row along the bottom of
+            the room, leaving a clear gap between each one &mdash; but not
+            right on top of where the basket starts</li>
+            <li>Place <strong>2 bombs</strong>, one near the left edge and
+            one near the right edge, well away from any fruit</li>
+            <li>Make sure <code>obj_player</code> is still near the bottom
+            center, with some empty space around it</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Tip:</strong> Since nothing falls or respawns, exactly
+            where you place things is exactly where they'll be when you
+            press F5 &mdash; keep the bombs far from the fruit so collecting
+            everything never means you have to risk touching one.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>The fruit and bombs should be sitting still in the room</li>
+            <li>The basket can move left and right among them</li>
+            <li>Touching them does nothing yet &mdash; that's the next phase!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to wire up collecting and avoiding.
+    </div>
+</body>
+</html>

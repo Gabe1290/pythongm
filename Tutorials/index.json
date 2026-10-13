@@ -188,6 +188,20 @@
                 "05_winning.html",
                 "06_import_sprites.html"
             ]
+        },
+        {
+            "title": "Fruit Basket: Catch and Avoid!",
+            "folder": "16_fruit_basket",
+            "description": "Collect every fruit and dodge the bombs to win -- a complete game built with no variables at all.",
+            "thumbnail": "thumbnails/16_fruit_basket.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_basket.html",
+                "03_fruit_and_bombs.html",
+                "04_catching_and_avoiding.html",
+                "05_winning.html",
+                "06_import_sprites.html"
+            ]
         }
     ]
 }

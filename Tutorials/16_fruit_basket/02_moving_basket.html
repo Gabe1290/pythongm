@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: A Moving Basket</h1>
+
+    <p>Let's start with a basket that moves left and right with the arrow keys.</p>
+
+    <h2>Create a New Project</h2>
+    <div class="step">
+        <ol>
+            <li>Go to <code>File &gt; New Project</code></li>
+            <li>Name it <strong>FruitBasket</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create the Basket Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Sprites</strong> in the Asset Tree &rarr; <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_basket</code></li>
+            <li>Double-click it to open the Sprite Editor and set the size to <strong>56&times;40</strong></li>
+            <li>Draw a simple brown bowl shape, wider at the top</li>
+            <li>Press <strong>Ctrl+S</strong> to save</li>
+        </ol>
+        <div class="info">
+            Want to use a ready-made picture instead of drawing your own?
+            There's a bonus page about that at the very end of this
+            tutorial &mdash; for now, just draw something simple and move on.
+        </div>
+    </div>
+
+    <h2>Create the Basket Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_player</code></li>
+            <li>Set the sprite to <code>spr_basket</code></li>
+        </ol>
+    </div>
+
+    <h2>Place the Basket in the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Every new project already has a room called <code>room0</code>. Right-click it under <strong>Rooms</strong> and select <strong>Rename</strong></li>
+            <li>Rename it to <code>room_main</code></li>
+            <li>Open the room and, in its properties, set the <strong>width to 640</strong> and the <strong>height to 480</strong></li>
+            <li>Place <code>obj_player</code> near the <strong>bottom center</strong></li>
+        </ol>
+    </div>
+
+    <h2>Add Basket Movement</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_player</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+        </ol>
+    </div>
+
+    <h2>Move Left</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Move Right</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>Stop When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>You should have <strong>3 event blocks</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move the basket</li>
+            <li>It can drift off screen for now &mdash; fruit is coming next!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add the fruit and the bombs.
+    </div>
+</body>
+</html>

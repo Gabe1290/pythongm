@@ -84,9 +84,10 @@ them by.
   by accident; touching one is a deliberate wander off the edge, not a
   hazard you have to dodge mid-collection.
 
-### Phases (5 pages, matching Tutorial 9's exact shape: intro + 4 build
-phases — the closest existing analog, since this is "Catch the Coins"
-restructured as static pickups with no recycling)
+### Phases (5 build-phase pages + 1 optional bonus, matching Tutorial 9's
+and Tutorial 15's exact shape: intro + 4 build phases + an "import
+ready-made art" bonus page — the closest existing analog, since this is
+"Catch the Coins" restructured as static pickups with no recycling)
 
 1. **Introduction** — what you'll build, screenshot of the finished game.
 2. **Moving Basket** — room, `obj_player`, left/right/no-key movement.
@@ -98,6 +99,9 @@ restructured as static pickups with no recycling)
    bomb → restart room. The score display (`draw_score`) lands here too.
 5. **Winning** — the `test_instance_count` win check + win room, verbatim
    Tutorial 9 pattern with `obj_fruit` in place of `obj_coin`.
+6. **Bonus: Import Ready-Made Art** — optional, points at the three
+   generated sprites under `Tutorials/16_fruit_basket/assets/`, verbatim
+   Tutorial 15's bonus-page pattern scaled down to 3 sprites.
 
 ### Reference implementation
 
