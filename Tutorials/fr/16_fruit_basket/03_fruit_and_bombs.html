@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Fruits et bombes</h1>
+
+    <p>Maintenant nous allons ajouter les fruits à ramasser et les bombes à
+    éviter. Contrairement à d'autres jeux, rien ici ne tombe ou ne bouge
+    tout seul &mdash; les fruits et les bombes restent simplement dans la
+    salle, en attendant que le panier les atteigne.</p>
+
+    <h2>Créer le sprite du fruit</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> &rarr; <strong>Créer un nouveau sprite</strong></li>
+            <li>Nommez-le <code>spr_fruit</code></li>
+            <li>Ouvrez l'éditeur de sprite et dessinez un cercle vert de 26&times;26. Enregistrez avec <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Créer le sprite de la bombe</h2>
+    <div class="step">
+        <ol>
+            <li>Répétez les étapes ci-dessus pour un sprite nommé <code>spr_bomb</code></li>
+            <li>Dessinez un cercle sombre de 26&times;26 pour que la bombe soit facile à repérer</li>
+        </ol>
+    </div>
+
+    <h2>Créer l'objet fruit</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_fruit</code></li>
+            <li>Réglez le sprite sur <code>spr_fruit</code></li>
+        </ol>
+        <p>C'est tout &mdash; pas encore d'événements. Un fruit qui reste
+        simplement là n'a besoin d'aucun bloc à lui ; tout le comportement
+        vivra sur le panier à la phase suivante.</p>
+    </div>
+
+    <h2>Créer l'objet bombe</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un autre objet nommé <code>obj_bomb</code></li>
+            <li>Réglez son sprite sur <code>spr_bomb</code></li>
+        </ol>
+        <p>Comme pour le fruit &mdash; aucun événement n'est nécessaire ici non plus.</p>
+    </div>
+
+    <h2>Les placer dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_main</code></li>
+            <li>Placez <strong>5 fruits</strong> en rangée le long du bas de
+            la salle, en laissant un espace clair entre chacun &mdash; mais
+            pas juste à l'endroit où le panier démarre</li>
+            <li>Placez <strong>2 bombes</strong>, une près du bord gauche et
+            une près du bord droit, bien à l'écart de tout fruit</li>
+            <li>Assurez-vous que <code>obj_player</code> est toujours près du
+            centre en bas, avec de l'espace vide autour</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Astuce :</strong> Comme rien ne tombe ni ne réapparaît,
+            l'endroit exact où tu places les choses est exactement là où
+            elles seront quand tu appuies sur F5 &mdash; garde les bombes
+            loin des fruits pour que ramasser tout ne t'oblige jamais à
+            risquer d'en toucher une.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Les fruits et les bombes devraient rester immobiles dans la salle</li>
+            <li>Le panier peut se déplacer à gauche et à droite parmi eux</li>
+            <li>Les toucher ne fait rien encore &mdash; c'est la phase suivante !</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour relier le ramassage et l'évitement.
+    </div>
+</body>
+</html>

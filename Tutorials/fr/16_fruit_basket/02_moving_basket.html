@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Un panier qui se déplace</h1>
+
+    <p>Commençons par un panier qui se déplace à gauche et à droite avec les touches fléchées.</p>
+
+    <h2>Créer un nouveau projet</h2>
+    <div class="step">
+        <ol>
+            <li>Allez dans <code>Fichier &gt; Nouveau projet</code></li>
+            <li>Nommez-le <strong>FruitBasket</strong></li>
+        </ol>
+    </div>
+
+    <h2>Créer le sprite du panier</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> dans l'Arbre des ressources &rarr; <strong>Créer un nouveau sprite</strong></li>
+            <li>Nommez-le <code>spr_basket</code></li>
+            <li>Double-cliquez dessus pour ouvrir l'éditeur de sprite et réglez la taille à <strong>56&times;40</strong></li>
+            <li>Dessine un simple panier marron, plus large en haut</li>
+            <li>Appuyez sur <strong>Ctrl+S</strong> pour enregistrer</li>
+        </ol>
+        <div class="info">
+            Tu préfères utiliser une image toute faite plutôt que de dessiner
+            la tienne ? Il y a une page bonus à ce sujet tout à la fin de ce
+            tutoriel &mdash; pour l'instant, dessine simplement quelque chose
+            de simple et continue.
+        </div>
+    </div>
+
+    <h2>Créer l'objet panier</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_player</code></li>
+            <li>Réglez le sprite sur <code>spr_basket</code></li>
+        </ol>
+    </div>
+
+    <h2>Placer le panier dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Chaque nouveau projet contient déjà une salle nommée <code>room0</code>. Faites un clic droit dessus sous <strong>Rooms</strong> et sélectionnez <strong>Renommer</strong></li>
+            <li>Renommez-la <code>room_main</code></li>
+            <li>Ouvrez la salle et, dans ses propriétés, réglez la <strong>largeur à 640</strong> et la <strong>hauteur à 480</strong></li>
+            <li>Placez <code>obj_player</code> près du <strong>centre en bas</strong></li>
+        </ol>
+    </div>
+
+    <h2>Ajouter le déplacement du panier</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Se déplacer à gauche</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir vitesse horizontale à <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Se déplacer à droite</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Flèche droite (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir vitesse horizontale à <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>S'arrêter quand aucune touche n'est pressée</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Aucune touche</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Vous devriez avoir <strong>3 blocs d'événements</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Utilisez les touches <strong>Flèche gauche</strong> et <strong>Flèche droite</strong> pour déplacer le panier</li>
+            <li>Il peut sortir de l'écran pour le moment &mdash; les fruits arrivent ensuite !</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter les fruits et les bombes.
+    </div>
+</body>
+</html>

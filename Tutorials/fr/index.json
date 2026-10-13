@@ -188,6 +188,20 @@
                 "05_winning.html",
                 "06_import_sprites.html"
             ]
+        },
+        {
+            "title": "Panier de Fruits : Attrape et Évite !",
+            "folder": "16_fruit_basket",
+            "description": "Ramasse tous les fruits et évite les bombes pour gagner -- un jeu complet construit sans aucune variable.",
+            "thumbnail": "thumbnails/16_fruit_basket.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_basket.html",
+                "03_fruit_and_bombs.html",
+                "04_catching_and_avoiding.html",
+                "05_winning.html",
+                "06_import_sprites.html"
+            ]
         }
     ]
 }

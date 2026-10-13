@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Panier de fruits !</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/16_fruit_basket.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#127815;</p>
+        <p><strong>Ramasse tous les fruits &mdash; attention aux bombes !</strong></p>
+        <p>Déplace le panier à gauche et à droite, ramasse tous les fruits
+        pour gagner, et reste loin des bombes sinon tu devras recommencer
+        la salle.</p>
+    </div>
+
+    <h2>Ce que nous allons construire</h2>
+    <p>Un petit jeu complet : se déplacer, ramasser, éviter, et gagner. Le
+    jeu sera jouable à la fin de chaque phase, tu peux donc t'arrêter et
+    l'essayer quand tu veux.</p>
+
+    <h2>Comment fonctionne ce tutoriel</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Un panier qui se déplace</strong><br>
+        Crée un panier qui se déplace à gauche et à droite. Teste-le tout de suite !
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Fruits et bombes</strong><br>
+        Ajoute des fruits à ramasser et des bombes à éviter. Place-les dans la salle.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Ramasser et éviter</strong><br>
+        Ramasse les fruits pour des points ; touche une bombe et la salle recommence.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Gagner la partie</strong><br>
+        Ajoute un écran de victoire qui apparaît quand tous les fruits ont été ramassés.
+    </div>
+
+    <h2>Ce que tu vas apprendre</h2>
+    <ul>
+        <li>Créer des sprites, des objets et des salles</li>
+        <li>Utiliser les événements clavier pour contrôler le joueur</li>
+        <li>Détecter les collisions entre les objets</li>
+        <li>Suivre et afficher un score</li>
+        <li>Redémarrer une salle et utiliser les transitions de salle pour un écran de victoire</li>
+        <li>Utiliser le bloc <strong>If count of</strong> pour vérifier combien d'objets restent</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Pas besoin de variables !</strong> Chaque bloc de ce jeu est
+        une action simple, en une seule étape &mdash; se déplacer, ramasser,
+        éviter, gagner. Tu n'as jamais besoin de créer, de nommer, ou de te
+        souvenir d'une variable pour le construire.
+    </div>
+
+    <div class="highlight">
+        <strong>Temps requis :</strong> Environ 10 à 15 minutes
+    </div>
+
+    <div class="info">
+        <strong>Prêt ?</strong> Clique sur « Suivant » pour commencer la construction.
+    </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Ramasser et éviter</h1>
+
+    <p>Il est temps que les fruits et les bombes <em>fassent</em> vraiment quelque chose. Nous allons ajouter trois règles :</p>
+    <ul>
+        <li>Toucher un fruit : <strong>+10 au score</strong>, le fruit disparaît</li>
+        <li>Toucher une bombe : <strong>la salle recommence</strong> &mdash; rien
+        n'est perdu pour de bon, tu réessaies simplement</li>
+        <li>Le score est affiché à l'écran</li>
+    </ul>
+
+    <h2>Ouvrir l'objet panier</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Réinitialiser le score au démarrage de la partie</h2>
+    <div class="step">
+        <p>Ajoutez cet événement pour que le score commence à zéro à chaque fois :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-score block-indent">Définir score à <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Ramasser un fruit (compter le score et le détruire)</h2>
+    <div class="step">
+        <p>Ajoutez un événement <strong>Collision</strong> avec <code>obj_fruit</code> :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_fruit</span><br>
+            <span class="block block-score block-indent">Ajouter <span class="block-num">10</span> au score</span><br>
+            <span class="block block-instance block-indent">Détruire autre instance</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Détruire autre instance</strong> signifie « détruire
+        le fruit que nous venons de toucher » &mdash; pas le panier.</p>
+    </div>
+
+    <h2>Toucher une bombe (recommencer)</h2>
+    <div class="step">
+        <p>Ajoutez un autre événement <strong>Collision</strong>, cette fois avec <code>obj_bomb</code> :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_bomb</span><br>
+            <span class="block block-room block-indent">Redémarrer la salle</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Redémarrer la salle</strong> remet
+        tout exactement comme au début &mdash; le panier, chaque fruit, et
+        chaque bombe. Ce n'est pas une punition, juste un nouvel essai.</p>
+    </div>
+
+    <h2>Afficher le score à l'écran</h2>
+    <div class="step">
+        <p>Ajoutez un événement <strong>Quand dessiner</strong> pour que le score soit visible pendant que vous jouez :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Quand dessiner</span><br>
+            <span class="block block-score block-indent">Afficher score à x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Votre <code>obj_player</code> a maintenant :
+        <strong>Quand créé</strong>, <strong>Quand dessiner</strong>, <strong>deux collisions</strong>,
+        et les <strong>trois événements clavier</strong> de la Phase 1 &mdash; <strong>sept blocs d'événements au total</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Ramassez des fruits &rarr; <strong>le score augmente</strong>, le fruit disparaît</li>
+            <li>Touchez une bombe &rarr; <strong>la salle recommence</strong>, le score revient à zéro</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter l'écran de victoire.
+    </div>
+</body>
+</html>
