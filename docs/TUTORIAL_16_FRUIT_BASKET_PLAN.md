@@ -154,8 +154,19 @@ the same way as Tutorial 15.
       PDF/ODT noise in unrelated tutorials from `build_teacher_wiki.py`'s
       non-deterministic regeneration discarded via targeted
       `git checkout --`, per the documented landmine.
-- [ ] **U5 — Publish** (`scripts/sync_wiki.sh push`), only after explicit
-      approval — outward-facing, same as every prior publish step.
+- [x] **U5 — Publish (DONE).** `scripts/sync_wiki.sh push`, after explicit
+      approval. Verified with `sync_wiki.sh check` afterward: no real
+      content drift (only the live wiki's own `.gitattributes`, the same
+      documented benign difference Tutorial 15's own U7 noted).
+
+## Status: all units complete
+
+Tutorial 16 "Fruit Basket" is fully shipped: the in-app tutorial (EN+FR,
+whitelisted for the beginner edition alongside Tutorial 15), the reference
+project with regression coverage (including a dedicated guard that the
+whole game uses zero `set_variable`/`if_condition`/`test_expression`
+actions), and the full illustrated teacher-resources set, published to the
+live wiki.
 
 ## Not in scope
 
