@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.8] - 2026-10-14
+
+### Added
+- Tutorial 16, "Fruit Basket" — a new in-app tutorial (EN + FR) for
+  students not yet ready for Tutorial 15's held-fruit variable. A
+  complete catch/avoid/win game built entirely from single, pre-wired
+  actions (collision, destroy instance, score, restart room, a built-in
+  instance-count check) with no `set_variable` and no authored
+  if/else anywhere. Ships with a reference project, teacher handouts
+  (student/worksheet/teacher/answer key, EN + FR), and illustrated wiki
+  pages.
+
 ## [1.5.7] - 2026-10-12
 
 ### Fixed
