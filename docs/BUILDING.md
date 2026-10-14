@@ -4,28 +4,39 @@ This guide explains how to build standalone executables for PyGameMaker IDE.
 
 ## Build Options
 
-There are two build configurations available:
+There is one spec file, `PyGameMaker.spec` — the same one GitHub Actions
+uses and the same one a local build should use. It excludes Kivy purely to
+avoid OpenGL-detection failures and bloat on headless CI runners; a
+`PyGameMaker-full.spec` with Kivy bundled in used to exist but was removed
+(see git history) once it stopped doing anything useful — see the next
+section for why.
 
-| Configuration | Spec File | Kivy Included | EXE Export | Use Case |
-|---------------|-----------|---------------|------------|----------|
-| **Lite** | `PyGameMaker.spec` | No | No | GitHub Actions, CI/CD, smaller download |
-| **Full** | `PyGameMaker-full.spec` | Yes | Yes | Local builds for complete functionality |
+### A packaged IDE build cannot export games to a native executable (EXE/Linux/macOS), lite or full
 
-### Lite Build (CI/GitHub Actions)
+This is **not** a Kivy limitation and bundling Kivy back in would not fix
+it. Since 2026-08-17, native desktop game export (`export/desktop/
+pygame_desktop_exporter.py`) freezes the real `runtime/game_runner.py`
+engine via PyInstaller, invoked as `sys.executable -m PyInstaller ...` —
+and inside ANY PyInstaller-frozen build of the IDE, `sys.executable` IS
+the frozen PyGameMaker binary itself, not a real Python interpreter, so
+that command cannot run PyInstaller at all (the IDE now detects this and
+refuses up front with an explanation, rather than hanging and failing
+with a misleading error).
 
-The lite build excludes Kivy to avoid OpenGL detection issues on headless CI runners. Users of this build can:
+A packaged/portable PyGameMaker build (anything built from
+`PyGameMaker.spec`, including every binary GitHub Actions publishes) can:
 - Create and edit projects
-- Run games in the IDE preview
-- Export to HTML5
-- Export to other formats that don't require Kivy
+- Run games in the IDE preview (Test Game)
+- Export to HTML5 — this needs nothing installed and works from any build
+- Export to Android/iOS, which still use the separate Kivy-based pipeline
+  (`export/Kivy/`) and have their own dependency checks
 
-Users **cannot** export to Windows EXE unless they have Python + Kivy installed separately.
-
-### Full Build (Local)
-
-The full build includes Kivy, enabling complete EXE export functionality. This build must be done on a machine with:
-- A GPU (or graphics drivers that support OpenGL 2.0+)
-- Windows or macOS with VS Code or terminal access
+To export a game to a native Windows/Linux/macOS executable, **run
+PyGameMaker from its source checkout** instead of a packaged build (see
+"Building Locally" below for the same virtual-environment setup, or just
+`pip install -r requirements.txt && python main.py` without building
+anything) — the IDE's own `sys.executable` is then a real Python, which
+`-m PyInstaller` can run normally.
 
 ## Prerequisites
 
@@ -87,9 +98,7 @@ pip install -r requirements.txt
 pip install pyinstaller
 ```
 
-### Step 2: Choose Your Build Type
-
-#### Lite Build (faster, smaller, no Kivy)
+### Step 2: Build
 
 ```bash
 pyinstaller PyGameMaker.spec
@@ -97,17 +106,13 @@ pyinstaller PyGameMaker.spec
 
 Output: `dist/PyGameMaker.exe` (Windows) or `dist/PyGameMaker` (macOS/Linux)
 
-#### Full Build (slower, larger, includes Kivy)
-
-```bash
-pyinstaller PyGameMaker-full.spec
-```
-
-Output: Same locations, but with Kivy bundled (~300-500MB)
-
 ### Step 3: Test the Build
 
 Run the executable from the `dist/` folder to verify it works correctly.
+Remember that this packaged build — like every PyGameMaker binary GitHub
+Actions publishes — cannot itself export a game to a native executable
+(see "A packaged IDE build cannot export games..." above); that's expected,
+not a bug to chase here.
 
 ## GitHub Actions (Automated Builds)
 
@@ -129,14 +134,15 @@ The repository includes a GitHub Actions workflow (`.github/workflows/build.yml`
 
 ### CI Build Limitations
 
-GitHub Actions runners don't have GPUs, so:
-- Kivy is excluded (would fail OpenGL detection)
-- The resulting executables cannot export to EXE format
-- All other functionality works normally
+GitHub Actions runners don't have GPUs, so Kivy is excluded (would fail
+OpenGL detection) — this only affects the IDE's own Android/iOS export
+support, not native desktop game export, which no packaged build can do
+regardless (see "A packaged IDE build cannot export games..." above). All
+other functionality works normally.
 
 ## Build Configuration Details
 
-### PyGameMaker.spec (Lite)
+### PyGameMaker.spec
 
 ```python
 excludes=[
@@ -155,21 +161,6 @@ excludes=[
     'kivy_deps.sdl2',
 ]
 upx=False  # Disabled for faster CI builds
-```
-
-### PyGameMaker-full.spec (Full)
-
-```python
-# Kivy is NOT in excludes list
-# Additional hidden imports for Kivy
-hiddenimports.extend([
-    'kivy',
-    'kivy.app',
-    'kivy.uix',
-    'kivy.core',
-    'kivy.graphics',
-])
-upx=True  # Enabled for smaller final size
 ```
 
 ## Troubleshooting
@@ -207,11 +198,11 @@ For distribution, consider code signing with an Apple Developer certificate.
 
 Approximate sizes (may vary by version):
 
-| Platform | Lite Build | Full Build |
-|----------|------------|------------|
-| Windows | ~150-200 MB | ~350-450 MB |
-| macOS | ~180-220 MB | ~400-500 MB |
-| Linux | ~160-200 MB | ~380-480 MB |
+| Platform | Size |
+|----------|------|
+| Windows | ~150-200 MB |
+| macOS | ~180-220 MB |
+| Linux | ~160-200 MB |
 
 ## Distributing Builds
 
@@ -250,8 +241,7 @@ The Windows build uses `version_info.txt` for executable metadata. Update this f
 
 ## Related Files
 
-- `PyGameMaker.spec` - Lite build configuration
-- `PyGameMaker-full.spec` - Full build configuration
+- `PyGameMaker.spec` - Build configuration
 - `.github/workflows/build.yml` - CI/CD workflow
 - `requirements.txt` - Python dependencies
 - `version_info.txt` - Windows version metadata

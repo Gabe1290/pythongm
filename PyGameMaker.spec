@@ -1,12 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
 """
-PyInstaller spec file for PyGameMaker IDE - LITE BUILD (CI/GitHub Actions)
+PyInstaller spec file for PyGameMaker IDE
 
-This is the LITE build configuration used by GitHub Actions.
-Kivy is EXCLUDED because CI runners don't have GPUs (OpenGL detection fails).
-
-For a FULL build with Kivy (enables EXE export), use PyGameMaker-full.spec
-on a local machine with a GPU (Windows or macOS with VS Code).
+The same spec GitHub Actions uses and the one to use for a local build too
+-- there is no separate "full" spec any more. Kivy is EXCLUDED because CI
+runners don't have GPUs (OpenGL detection fails); this only affects the
+IDE's own Android/iOS export support (export/Kivy/), not native desktop
+game export (EXE/Linux/macOS), which no PyInstaller-frozen build of the
+IDE can do regardless of whether Kivy is bundled in -- see
+export/desktop/pygame_desktop_exporter.py's `_frozen_build_refusal` and
+docs/BUILDING.md for why (a frozen app's `sys.executable` is itself, not a
+real Python, so it cannot run PyInstaller as a subprocess module).
 
 See docs/BUILDING.md for complete documentation.
 

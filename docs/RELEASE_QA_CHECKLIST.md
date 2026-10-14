@@ -755,12 +755,19 @@ screenshots publish. Open <https://github.com/Gabe1290/pythongm/wiki>:
 ## 20. Packaged IDE (PyInstaller one-file build for students)
 
 Build **on** the target OS with `python3 scripts/build_pyinstaller.py`
-(spec: `PyGameMaker.spec` — CI/lite; `PyGameMaker-full.spec` adds Kivy so
-the packaged IDE can also do EXE export).
+(spec: `PyGameMaker.spec` — the only one; `PyGameMaker-full.spec` was
+removed, see docs/BUILDING.md).
 
 - L [ ] M [ ] W [ ] The IDE launches from the packaged one-file
   executable (`.app` bundle on macOS); **no empty directories** created
   in the launch folder.
+- L [ ] M [ ] W [ ] Exporting a game to a native executable (Windows/
+  Linux/macOS) from the **packaged** IDE refuses immediately with a clear
+  "not available from this packaged build... run from source / use HTML5"
+  message — not a 15-minute hang followed by a misleading "PyInstaller
+  not found" (real user-reported bug, fixed in
+  `export/desktop/pygame_desktop_exporter.py`'s `_frozen_build_refusal`,
+  1.5.8). HTML5 export must still work normally from the packaged build.
 - L [ ] M [ ] W [ ] Projects create / open; games run (F5) — the real
   pygame engine, not a fallback; room preview shows an appropriate
   message.

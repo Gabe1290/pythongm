@@ -161,7 +161,7 @@ class BasePygameDesktopExporter(BaseKivyExporter):
                        settings: Dict) -> bool:
         build_dir = None
         try:
-            refusal = self._host_platform_refusal()
+            refusal = self._frozen_build_refusal() or self._host_platform_refusal()
             if refusal:
                 self.export_complete.emit(False, refusal)
                 return False
@@ -236,6 +236,40 @@ class BasePygameDesktopExporter(BaseKivyExporter):
             return False
 
     # --- steps -----------------------------------------------------------
+    def _frozen_build_refusal(self) -> Optional[str]:
+        """Refuse up front when the IDE itself is a packaged/frozen build.
+
+        `_run_pyinstaller` shells out via ``sys.executable -m PyInstaller``
+        (the standard way to invoke it as a module). That only works when
+        ``sys.executable`` is a real Python interpreter -- inside a
+        PyInstaller-frozen IDE, ``sys.executable`` IS the frozen PyGameMaker
+        binary itself, which has no ``-m`` flag of its own; `main.py` just
+        starts a second IDE window with those extra, unrecognised argv
+        entries silently ignored by Qt. The user-visible result without this
+        guard: a 15-minute hang (the build's own timeout) followed by a
+        misleading "PyInstaller build failed" message, with a second IDE
+        window having mysteriously appeared in the meantime. See the module
+        docstring's "Exporting requires the IDE to run from source" note --
+        this makes that standing decision an explicit, immediate refusal
+        instead of a silent failure mode. (`_check_pyinstaller` alone can't
+        catch this: PyInstaller's own package is routinely bundled INTO the
+        frozen IDE, since CI's build environment has it installed to build
+        the IDE itself -- `import PyInstaller` genuinely succeeds there.)
+        """
+        if not getattr(sys, "frozen", False):
+            return None
+        return (
+            f"{self.platform_label} is not available from this packaged "
+            "build of PyGameMaker.\n\n"
+            "Building a game executable runs PyInstaller inside the same "
+            "Python that runs the IDE -- a packaged/portable PyGameMaker "
+            "has no such Python to run it in.\n\n"
+            "Run PyGameMaker from its source checkout instead "
+            "(pip install -r requirements.txt, then python main.py).\n\n"
+            "Or use the Web (HTML5) export, which needs nothing installed "
+            "and works from this build."
+        )
+
     def _host_platform_refusal(self) -> Optional[str]:
         """PyInstaller builds for the host only; refuse early and explain."""
         import platform
