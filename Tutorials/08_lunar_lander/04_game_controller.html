@@ -45,26 +45,26 @@
     <h2>Program the Controller (Blockly)</h2>
     <p>Double-click <code>obj_game_controller</code> and open the <strong>Blockly</strong> tab.</p>
 
-    <h2>1. Initialize Score (Create Event)</h2>
+    <h2>1. Initialize Score (When created)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create</span><br>
+            <span class="block block-event">When created</span><br>
             <span class="block block-score block-indent">Set Score <span class="block-val">0</span></span>
         </div>
-        <p>Find <strong>Create</strong> in <em>Events</em>.
+        <p>Find <strong>When created</strong> in <em>Events</em>.
         Add <strong>Set Score</strong> (from <em>Score</em>) with value <strong>0</strong>.
         This resets the score each time the room starts.</p>
     </div>
 
-    <h2>2. Draw HUD Text (Draw Event)</h2>
+    <h2>2. Draw HUD Text (When drawing)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Draw</span><br>
+            <span class="block block-event">When drawing</span><br>
             <span class="block block-draw block-indent">Set draw color <span class="block-val">#ffffff</span></span><br>
             <span class="block block-draw block-indent">Draw Text <span class="block-val">"Lunar Lander"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span><br>
             <span class="block block-draw block-indent">Draw Text <span class="block-val">"Land on the green pad!"</span> at <span class="block-val">10</span>, <span class="block-val">30</span></span>
         </div>
-        <p>Find <strong>Draw</strong> in <em>Events</em>.
+        <p>Find <strong>When drawing</strong> in <em>Events</em>.
         First add <strong>Set draw color</strong> (white) &mdash; text is drawn in black by default, which is invisible on a black room.
         Then add two <strong>Draw Text</strong> blocks (from <em>Drawing</em>) &mdash;
         one for the game title at position (10, 10) and one for the instructions at position (10, 30).</p>

@@ -37,14 +37,14 @@
         <span class="block block-move block-indent">Start moving in direction: left, right &mdash; Speed <span class="block-num">2</span></span><br>
         </div>
         <ol start="3"><li>Make it turn around when it reaches a wall:</li></ol>
-        <div class="blockly-group"><span class="block block-event">Collision with obj_wall</span><br>
+        <div class="blockly-group"><span class="block block-event">When colliding with obj_wall</span><br>
         <span class="block block-move block-indent">Reverse horizontal direction</span><br>
         </div>
         <p style="font-style: italic;">Place the monster in a long straight row (say, along the bottom corridor) so it has room to patrol.
         Solid blocks stop it just like the player.</p></div>
     <h2>Lose a Life</h2>
     <div class="step"><p>Back in <code>obj_player</code>, add two events:</p>
-        <div class="blockly-group"><span class="block block-event">Collision with obj_monster</span><br>
+        <div class="blockly-group"><span class="block block-event">When colliding with obj_monster</span><br>
         <span class="block block-move block-indent">Set lives to <span class="block-num">-1</span> (Relative)</span><br>
         <span class="block block-move block-indent">Restart room</span><br>
         </div>

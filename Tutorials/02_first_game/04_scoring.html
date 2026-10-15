@@ -64,11 +64,11 @@
             <li>Add these blocks:</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Create Event</span><br>
+            <span class="block block-event">When created</span><br>
             <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
         </div>
         <div class="blockly-group">
-            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-event">When drawing</span><br>
             <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
         </div>
     </div>
@@ -80,8 +80,14 @@
             <li>Add this event (keep the existing Create event):</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Outside Room</span><br>
+            <span class="block block-event">Other event: Outside Room</span><br>
             <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+        <div class="info">
+            <strong>Finding "Outside Room":</strong> it isn't its own block
+            &mdash; in the Blockly toolbox's <strong>Events</strong> category,
+            drag in the <strong>Other event:</strong> block, then pick
+            "Outside Room" from its dropdown.
         </div>
         <p>Stars that fall off the bottom of the screen are destroyed so they don't pile up in memory.</p>
     </div>

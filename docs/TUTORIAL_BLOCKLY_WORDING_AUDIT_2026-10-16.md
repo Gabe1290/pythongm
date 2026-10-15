@@ -149,6 +149,23 @@ collision EVENT on the crate rather than a condition on the player) —
 both are judgment calls beyond "match the existing words". **Needs a
 decision before touching this page.**
 
+**Refinement, found while fixing Part B in this same tutorial (left
+untouched, same as the rest of C1):** the mockup's visual class is
+`block-control` (a conditional, like `if_condition`), not `block-event` —
+so this is specifically `if_condition`'s `collision_check` sub-type being
+depicted, not the dead `if_collision` action, OR the tutorial is
+depicting a THIRD, different thing ("Check Collision" from a "Control"
+category) that hasn't been identified yet. `if_condition`'s
+`collision_check` *does* have real Blockly support now (this session's
+own B2 follow-up fix) — its real rendered text is `"If collision at
+offset with <object> offset x: <n> y: <n> then ... else ..."`, which the
+tutorial's "If colliding with obj_target" / "Check Collision" wording
+doesn't match either way. Whoever resolves C1 should first determine
+which of these three (dead `if_collision`, working `if_condition`
+`collision_check`, or something else named "Check Collision") the
+tutorial is actually supposed to describe, since the fix differs for
+each.
+
 ### C2. Tutorial 13: "Start block" / "End block" depict an action-list-only convention that doesn't exist in Blockly
 
 `start_block` / `end_block` are **not real Blockly block types at all**

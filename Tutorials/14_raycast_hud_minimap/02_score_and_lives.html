@@ -29,12 +29,12 @@
 </head>
 <body>
     <h1>Phase 1: Score and Lives</h1>
-    <p>In Lesson 13 the score changed, but you couldn't see it. The 3D view only draws the world; anything on top of it comes from a <strong>Draw</strong> event.</p>
-    <h2>Add a Draw Event</h2>
+    <p>In Lesson 13 the score changed, but you couldn't see it. The 3D view only draws the world; anything on top of it comes from a <strong>When drawing</strong> event.</p>
+    <h2>Add a When Drawing Event</h2>
     <div class="step"><ol>
-        <li>Open <code>obj_player</code> and add a <strong>Draw</strong> event</li>
+        <li>Open <code>obj_player</code> and add a <strong>When drawing</strong> event</li>
         <li>Add these actions:</li></ol>
-        <div class="blockly-group"><span class="block block-event">Draw</span><br>
+        <div class="blockly-group"><span class="block block-event">When drawing</span><br>
         <span class="block block-move block-indent">Set draw color <span class="block-text">#ffffff</span></span><br>
         <span class="block block-move block-indent">Draw score at x: <span class="block-num">8</span> y: <span class="block-num">8</span> caption <span class="block-text">Score: </span></span><br>
         <span class="block block-move block-indent">Draw lives at x: <span class="block-num">230</span> y: <span class="block-num">6</span> sprite <span class="block-text">spr_player</span></span><br>

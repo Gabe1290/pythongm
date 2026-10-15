@@ -76,8 +76,14 @@
         Give <strong>both</strong> <code>obj_coin</code> and <code>obj_enemy</code> this event, so anything that falls off the bottom
         reappears at the top:</p>
         <div class="blockly-group">
-            <span class="block block-event">Outside Room</span><br>
+            <span class="block block-event">Other event: Outside Room</span><br>
             <span class="block block-move block-indent">Set variable <code>y</code> to <span class="block-num">0</span></span>
+        </div>
+        <div class="info">
+            <strong>Finding "Outside Room":</strong> it isn't its own block
+            &mdash; in the Blockly toolbox's <strong>Events</strong> category,
+            drag in the <strong>Other event:</strong> block, then pick
+            "Outside Room" from its dropdown.
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Why?</strong> Now the only way to get rid of a coin is to catch it, so "catch every coin" always works &mdash;

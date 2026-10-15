@@ -71,16 +71,16 @@
         <ol>
             <li>Double-click <code>obj_crate</code> to open the Object Editor</li>
             <li>Click the <strong>Blockly</strong> tab</li>
-            <li>Add a <strong>Step</strong> event with an if/else check:</li>
+            <li>Add an <strong>Every step</strong> event with an if/else check:</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Step</span><br>
+            <span class="block block-event">Every step</span><br>
             <span class="block block-control block-indent">If colliding with <span class="block-val">obj_target</span></span><br>
             <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate_ok</span></span><br>
             <span class="block block-control block-indent">Else</span><br>
             <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate</span></span>
         </div>
-        <p>Find <strong>Step</strong> in the <em>Events</em> category.
+        <p>Find <strong>Every step</strong> in the <em>Events</em> category.
         Then find <strong>Check Collision</strong> in the <em>Control</em> category and type <code>obj_target</code>.
         Snap a <strong>Set Sprite</strong> block (from <em>Instance</em>) inside for the "then" case with <code>spr_crate_ok</code>.
         Add an <strong>Else</strong> section with another <strong>Set Sprite</strong> block for <code>spr_crate</code>.</p>
@@ -105,13 +105,13 @@
         <ol>
             <li>Double-click <code>obj_controller</code> to open the Object Editor</li>
             <li>Click the <strong>Blockly</strong> tab</li>
-            <li>Add a <strong>Draw</strong> event to show instructions:</li>
+            <li>Add a <strong>When drawing</strong> event to show instructions:</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Draw</span><br>
+            <span class="block block-event">When drawing</span><br>
             <span class="block block-draw block-indent">Draw Text <span class="block-val">"Push crates onto targets!"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
         </div>
-        <p>Find <strong>Draw</strong> in the <em>Events</em> category.
+        <p>Find <strong>When drawing</strong> in the <em>Events</em> category.
         Then find <strong>Draw Text</strong> in the <em>Drawing</em> category.
         Type <code>Push crates onto targets!</code> as the text, and set X to <strong>10</strong>, Y to <strong>10</strong>.</p>
     </div>

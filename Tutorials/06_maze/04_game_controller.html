@@ -65,10 +65,10 @@
     <h2>Reset Score at Start</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create Event</span><br>
+            <span class="block block-event">When created</span><br>
             <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
         </div>
-        <p>From <em>Events</em>, drag a <strong>Create Event</strong> block.
+        <p>From <em>Events</em>, drag a <strong>When created</strong> block.
         From <em>Score/Lives/Health</em>, snap <strong>Set Score</strong> inside and type <strong>0</strong>.</p>
         <p>This ensures the score starts at zero each time the room loads.</p>
     </div>
@@ -76,10 +76,10 @@
     <h2>Display Score on Screen</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-event">When drawing</span><br>
             <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
         </div>
-        <p>From <em>Events</em>, drag a <strong>Draw Event</strong> block.
+        <p>From <em>Events</em>, drag a <strong>When drawing</strong> block.
         From <em>Score/Lives/Health</em>, snap <strong>Draw Score</strong> inside.
         Set x to <strong>10</strong> and y to <strong>10</strong> (top-left corner).</p>
     </div>
@@ -92,8 +92,8 @@
     </div>
 
     <div class="highlight">
-        <strong>How it works:</strong> The Create Event runs once when the object appears in the room,
-        setting the score to 0. The Draw Event runs every frame and displays
+        <strong>How it works:</strong> The <strong>When created</strong> event runs once when the object appears in the room,
+        setting the score to 0. The <strong>When drawing</strong> event runs every frame and displays
         "Score: X" in the top-left corner. As the player collects coins,
         the score updates automatically!
     </div>
