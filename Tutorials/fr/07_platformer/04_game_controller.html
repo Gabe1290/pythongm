@@ -57,19 +57,19 @@
         </ol>
     </div>
 
-    <h2>Initialiser le score et les vies (Événement Démarrage du jeu)</h2>
+    <h2>Initialiser le score et les vies (Autre événement : Début du jeu)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Démarrage du jeu (Game Start)</span><br>
+            <span class="block block-event">Autre événement : Début du jeu</span><br>
             <span class="block block-score block-indent">Définir le score à <span class="block-val">0</span></span><br>
             <span class="block block-score block-indent">Définir les vies à <span class="block-val">3</span></span>
         </div>
-        <p>Trouvez <strong>Autres événements</strong> dans <em>Événements</em> et choisissez <strong>Game Start</strong> (démarrage du jeu).
+        <p>Trouvez <strong>Autres événements</strong> dans <em>Événements</em> et choisissez <strong>Début du jeu</strong>.
         Depuis <em>Score/Vies/Santé</em>, ajoutez <strong>Définir le score</strong> avec la valeur <strong>0</strong>
         et <strong>Définir les vies</strong> avec la valeur <strong>3</strong>.</p>
-        <div class="highlight"><strong>Pourquoi Game Start et pas Quand créé ?</strong> Un événement Quand créé se relance à chaque
-        redémarrage de la salle &mdash; et un piège redémarre la salle. Si les vies étaient réglées à 3 dans Création, chaque
-        piège vous rendrait vos vies et vous n'en manqueriez jamais. <strong>Game Start</strong> ne s'exécute qu'une fois, au début de la partie.</div>
+        <div class="highlight"><strong>Pourquoi Début du jeu et pas Quand créé ?</strong> Un événement Quand créé se relance à chaque
+        redémarrage de la salle &mdash; et un piège redémarre la salle. Si les vies étaient réglées à 3 dans Quand créé, chaque
+        piège vous rendrait vos vies et vous n'en manqueriez jamais. <strong>Début du jeu</strong> ne s'exécute qu'une fois, au début de la partie.</div>
     </div>
 
     <h2>Dessiner le score et les vies (Quand dessiner)</h2>
@@ -88,7 +88,7 @@
     <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Game Start + Dessiner)</li>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Début du jeu + Quand dessiner)</li>
         </ol>
     </div>
 
@@ -97,7 +97,7 @@
         <p>Maintenant ouvrez l'éditeur Blockly pour <code>obj_player</code> et mettez à jour la collision avec les pics.
         Trouvez le bloc de collision existant avec <code>obj_spike</code> et ajoutez un bloc avant le redémarrage :</p>
         <div class="blockly-group">
-            <span class="block block-event">Collision avec obj_spike</span><br>
+            <span class="block block-event">Quand collision avec obj_spike</span><br>
             <span class="block block-score block-indent">Ajouter aux vies <span class="block-val">-1</span></span><br>
             <span class="block block-room block-indent">Recommencer la salle</span>
         </div>

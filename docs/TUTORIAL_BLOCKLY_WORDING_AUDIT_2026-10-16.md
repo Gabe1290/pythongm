@@ -183,6 +183,43 @@ page) currently teach the wrong mental model for Blockly specifically
 **Needs a content rewrite** (remove the wrapper mockups, show the actions
 nested directly), not a word substitution — flagged, not done.
 
+## Part B — DONE (2026-10-16, commits `51815239`, `a8258360` + one more
+untagged follow-up in the same session). B1-B4 fixed across every file
+listed, both languages. Extra findings caught while fixing B1-B4 that
+weren't in the original list (same patterns, more instances than first
+spotted) — all fixed in the same pass:
+
+- `event_alarm`'s real text is `"When alarm <n> triggers"` /
+  `"Quand alarme <n> se déclenche"` — several mockups just said `"Alarm
+  0"` / `"Alarme 0"` (tutorials 2, 15).
+- `event_other`'s `"Other event: "` / `"Autre événement : "` prefix was
+  missing from more `No More Lives` / `Game Start` mockups than first
+  found (tutorials 4, 7, 13) — same root cause as B3/B4, just more
+  instances.
+- French `"Collision avec X"` (missing the `"Quand"` prefix entirely —
+  distinct from B2's `"En collision avec"` variant) across 11 more
+  files (tutorials 4, 5, 6, 7, 8).
+- French `"Au dessin"` (a third, different wrong wording for
+  `event_draw`, distinct from `"Événement Dessin"`) in tutorial 10.
+- Several bare `"in Create"` / lowercase `"draw event"` prepositional
+  leftovers that case-sensitive/exact-phrase greps missed on the first
+  pass (tutorials 2, 7, 11, 13, 14) — found by a second, case-insensitive
+  sweep. **Lesson for whoever does Part D: a single grep pass is not
+  enough for this kind of find — case variations and short prepositional
+  references ("in Create", "dans Créer") hide from phrase-exact
+  searches.**
+
+One item from the original list intentionally NOT done: "Round
+Resolved" (`Tutorials/10_file_exchange_multiplayer/05_winning_and_playing_again.html`,
+the `multiplayer_files` extension's own custom event,
+`extensions/multiplayer_files/__init__.py`'s `round_resolved`
+`EventType`) could not be confirmed either way — no dedicated Blockly
+block was found in the static files, consistent with the same
+dynamic-custom-block registration gap that hid `end_game` from the
+earlier Blockly audit's own tooling. Left as-is (plausibly correct: the
+extension-event mechanism gives its own events clean direct labels,
+unlike the core `event_other` fallback), not confirmed.
+
 ## Part D — Still unverified
 
 The automated scan (`Part A`'s method) flagged roughly 150 more phrases
