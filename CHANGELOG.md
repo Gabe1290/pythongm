@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The Export Game dialog now greys out export targets a packaged build
+  of the IDE cannot actually produce (Windows .exe, Linux binary, macOS
+  .app, iOS, and Android outside of WSL), instead of letting you select
+  one and only finding out after clicking Export. The label explains why
+  — run PyGameMaker from its Python source code, or use the Web (HTML5)
+  export, which works from any build. Android and iOS exports also gained
+  their own clear refusal if reached any other way.
+
 ## [1.5.9] - 2026-10-15
 
 ### Fixed
