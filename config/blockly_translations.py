@@ -17,7 +17,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Raum",
         "Values": "Werte",
         "Sound": "Klang",
-        "Output": "Ausgabe",
         "Particles": "Partikel",
     },
     "es": {
@@ -30,7 +29,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Sala",
         "Values": "Valores",
         "Sound": "Sonido",
-        "Output": "Salida",
         "Particles": "Partículas",
     },
     "fr": {
@@ -43,7 +41,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Salle",
         "Values": "Valeurs",
         "Sound": "Son",
-        "Output": "Sortie",
         "Particles": "Particules",
     },
     "it": {
@@ -56,7 +53,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Stanza",
         "Values": "Valori",
         "Sound": "Suono",
-        "Output": "Output",
         "Particles": "Particelle",
     },
     "ru": {
@@ -69,7 +65,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Комната",
         "Values": "Значения",
         "Sound": "Звук",
-        "Output": "Вывод",
         "Particles": "Частицы",
     },
     "sl": {
@@ -82,7 +77,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Soba",
         "Values": "Vrednosti",
         "Sound": "Zvok",
-        "Output": "Izhod",
         "Particles": "Delci",
     },
     "uk": {
@@ -95,7 +89,6 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Кімната",
         "Values": "Значення",
         "Sound": "Звук",
-        "Output": "Вивід",
         "Particles": "Частинки",
     },
 }

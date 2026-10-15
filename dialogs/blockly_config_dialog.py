@@ -32,7 +32,6 @@ BLOCKLY_CATEGORY_COLORS = {
     "Room": "#A6745C",
     "Values": "#5C68A6",
     "Sound": "#9966FF",
-    "Output": "#745CA6",
 }
 
 

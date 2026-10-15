@@ -24,6 +24,29 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
+### Blockly toolbox: `text`/`text_join` value blocks are unreachable (found 2026-10-15)
+
+While fixing `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md` (Score/Grid/
+Output category duplication), found a separate, smaller gap in the same
+file: `editors/object_editor/blockly/blockly_workspace.html`'s generic
+Blockly `text` (string literal) and `text_join` (string concatenation)
+value blocks exist only in the STATIC pre-load toolbox XML (the one
+`Blockly.inject()` uses for the very first paint), which every real page
+load immediately replaces with `generateToolboxXml()`'s output — and that
+generated `categories` dict has no entry for either block anywhere. So
+they were already unreachable in the live toolbox before this session
+(confirmed: same situation `execute_code` was in, which got fixed as part
+of the Output→Drawing merge since it was directly entangled with that
+change). Deliberately NOT fixed in that session: unlike `execute_code`,
+these are generic reusable VALUE blocks (meant to plug into any text-shadow
+slot across many categories), closer in kind to the unconditionally-
+appended `Math`/`Logic` categories than to an action-category merge — so
+giving them a home is a real toolbox-UX decision (their own category? fold
+into something else?), not a mechanical consequence of the category-naming
+fix. Pick a home and add the toolbox entry (both the generated `categories`
+dict and, for consistency, the static initial one) when someone decides
+where they belong.
+
 ### ~~Consolidate the two export UIs~~ (DONE 2026-07-12)
 - Done: File → Export Project… (Ctrl+E) and Build → Export Game… both
   open the single registry-driven dialog. ExportProjectDialog (and the

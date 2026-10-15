@@ -1,0 +1,240 @@
+"""Regression tests for docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md.
+
+User request: "The 'Configure Action Blocks...' sub menu should display a
+window that corresponds to the actual blockly editor Blocks... there is a
+'Score/Lives/Health' and a 'Score' categories. The 'Grid' category should
+be merged with the Movement category. ... 'Output' should be merged with
+'Drawing'."
+
+Root cause (see the plan doc for the full investigation): several
+ActionType.category strings in events/action_types.py didn't match any
+real hardcoded toolbox category in blockly_workspace.html's `categories`
+JS dict, so registerCustomBlocks() auto-generated brand-new stray toolbox
+categories for them ("Score" duplicating "Score/Lives/Health", "Grid"
+duplicating/siblinging "Movement") instead of merging in. "Output" vs
+"Drawing" was a separate, static, intentional split present identically
+in every source -- a plain consolidation, not a leak.
+
+While fixing the Output/Drawing merge, found a genuinely separate bug in
+the same code: the "execute_code" block had NO <block type="execute_code">
+entry anywhere in the real (post-load) toolbox -- it was undraggable, only
+present in the static pre-load toolbox XML that every real page load
+replaces. Fixed by adding it alongside output_message under the merged
+"Drawing" category.
+
+No Node/browser in CI, so the real toolbox's categories are checked by
+parsing blockly_workspace.html's JS source structurally -- the same
+established technique as test_toolbox_visibility.py's
+_js_hardcoded_action_block_types().
+"""
+import re
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+WORKSPACE_HTML = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
+                   "blockly_workspace.html")
+
+STRAY_NAMES = {"Score", "Grid", "Output"}
+
+
+def _real_toolbox_category_keys():
+    """Top-level keys of the dynamic `categories` JS dict -- the one
+    generateToolboxXml() actually builds the live toolbox from."""
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var categories = {")
+    end = text.index("// Add Math and Logic categories")
+    blob = text[start:end]
+    return re.findall(r"^\s*'([A-Za-z/ ]+)':\s*\{", blob, re.M)
+
+
+def _static_initial_toolbox_category_names():
+    """<category name="..."> in the static <xml id="toolbox"> block Blockly
+    is first injected with, before any real page load replaces it."""
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index('<xml id="toolbox"')
+    end = text.index("</xml>", start)
+    blob = text[start:end]
+    return re.findall(r'<category name="([^"]+)"', blob)
+
+
+def test_no_stray_categories_in_the_real_toolbox():
+    keys = _real_toolbox_category_keys()
+    assert not (set(keys) & STRAY_NAMES), keys
+    assert "Score/Lives/Health" in keys
+    assert "Drawing" in keys
+    assert "Movement" in keys
+
+
+def test_no_stray_categories_in_the_static_initial_toolbox():
+    """The static pre-load XML should stay consistent with the real one
+    too, even though generateToolboxXml() replaces it on every real page
+    load -- no reason to leave it describing a toolbox that no longer
+    exists."""
+    names = _static_initial_toolbox_category_names()
+    assert not (set(names) & STRAY_NAMES), names
+
+
+def test_execute_code_is_reachable_in_both_toolboxes():
+    """The bug found while fixing the Output/Drawing merge: execute_code
+    had no toolbox entry anywhere in the live (post-load) toolbox."""
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var categories = {")
+    end = text.index("// Add Math and Logic categories")
+    assert '<block type="execute_code">' in text[start:end]
+
+    static_start = text.index('<xml id="toolbox"')
+    static_end = text.index("</xml>", static_start)
+    assert '<block type="execute_code">' in text[static_start:static_end]
+
+
+def test_category_colors_map_has_score_lives_health():
+    """Dynamically-generated blocks (test_health etc., now category=
+    'Score/Lives/Health') get their individual block colour from this map,
+    independent of which toolbox category box they land in."""
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var categoryColors = {")
+    end = text.index("};", start)
+    blob = text[start:end]
+    assert "'Score/Lives/Health': '#5CA65C'" in blob
+    assert "'Output'" not in blob
+
+
+def _action_to_block_type_map():
+    """actionToBlockType: action name -> hardcoded Blockly block type.
+    registerCustomBlocks() skips any action already in here (`if
+    (actionToBlockType[actionName]) continue;`), so for these actions
+    ActionType.category is never consulted for toolbox placement at all --
+    only an action name ABSENT from this map can actually leak into a
+    stray dynamic category."""
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var actionToBlockType = {")
+    end = text.index("\n        };", start)
+    return set(re.findall(r"'([a-zA-Z0-9_]+)':\s*'[a-zA-Z0-9_]+'", text[start:end]))
+
+
+def test_no_leaking_action_type_carries_a_stray_category():
+    """events/action_types.py must not assign category= to any string that
+    doesn't correspond to a real toolbox category, for any action that can
+    actually leak (i.e. isn't already hardcoded-mapped) -- the exact bug
+    this was. Actions already in actionToBlockType (set_score, snap_to_grid,
+    ...) are a separate, harmless, purely-cosmetic mismatch: their
+    ActionType.category is never consulted for toolbox placement, since
+    registerCustomBlocks skips them outright -- not part of this bug and
+    not asserted here."""
+    from events.action_types import ACTION_TYPES
+    mapped = _action_to_block_type_map()
+    stray = {name: a.category for name, a in ACTION_TYPES.items()
+              if a.category in STRAY_NAMES and name not in mapped}
+    assert not stray, stray
+
+
+@pytest.mark.parametrize("name,expected_category", [
+    ("test_health", "Score/Lives/Health"),
+    ("show_highscore", "Score/Lives/Health"),
+    ("test_score", "Score/Lives/Health"),
+    ("test_lives", "Score/Lives/Health"),
+    ("clear_highscore", "Score/Lives/Health"),
+    ("test_alignment", "Movement"),
+])
+def test_specific_actions_moved_to_their_real_category(name, expected_category):
+    from events.action_types import ACTION_TYPES
+    assert ACTION_TYPES[name].category == expected_category
+
+
+def test_block_registry_has_no_output_category():
+    from config.blockly_config import BLOCK_REGISTRY
+    assert "Output" not in BLOCK_REGISTRY
+
+
+def test_block_registry_drawing_absorbed_output_blocks():
+    from config.blockly_config import BLOCK_REGISTRY
+    drawing_types = {b["type"] for b in BLOCK_REGISTRY["Drawing"]}
+    assert {"output_message", "execute_code"} <= drawing_types
+
+
+def test_block_registry_score_lives_health_absorbed_leaking_actions():
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for b in BLOCK_REGISTRY["Score/Lives/Health"]}
+    assert {"test_health", "test_score", "test_lives",
+            "show_highscore", "clear_highscore"} <= types
+
+
+def test_block_registry_movement_absorbed_test_alignment():
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for b in BLOCK_REGISTRY["Movement"]}
+    assert "test_alignment" in types
+
+
+def test_block_registry_game_no_longer_has_highscore_actions():
+    """show_highscore/clear_highscore moved OUT of "Game" (they never
+    really lived there in the live toolbox -- "Score" -- and now correctly
+    match their real "Score/Lives/Health" home)."""
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for b in BLOCK_REGISTRY["Game"]}
+    assert "show_highscore" not in types
+    assert "clear_highscore" not in types
+    # game_end/restart_game are a deliberate, separate, un-decided follow-up
+    # (see the plan doc) -- left exactly as they were.
+    assert types == {"game_end", "restart_game"}
+
+
+def test_execute_code_promoted_out_of_generated_action_names():
+    """execute_code now has a real hardcoded toolbox entry (test above), so
+    it is no longer "generated" by registerCustomBlocks -- it moved to
+    PROMOTED_TO_HAND_WRITTEN_BLOCKS, the existing mechanism for exactly
+    this (test_expression, move_towards already use it), so every preset
+    that unions "all generated + promoted" blocks keeps showing it."""
+    from config.blockly_config import GENERATED_ACTION_NAMES, PROMOTED_TO_HAND_WRITTEN_BLOCKS
+    assert "execute_code" not in GENERATED_ACTION_NAMES
+    assert "execute_code" in PROMOTED_TO_HAND_WRITTEN_BLOCKS
+
+
+def test_no_preset_references_the_stray_output_category():
+    """No BlocklyConfig preset's enabled_categories should name "Output"
+    any more -- it was folded into "Drawing" (which every such preset
+    already had, or now gets instead)."""
+    from config.blockly_config import BlocklyConfig
+    for attr in ("get_full", "get_beginner", "get_intermediate", "get_platformer",
+                 "get_grid_rpg", "get_sokoban", "get_testing",
+                 "get_implemented_only", "get_code_editor", "get_blockly_editor"):
+        config = getattr(BlocklyConfig, attr)()
+        assert "Output" not in config.enabled_categories, (attr, config.enabled_categories)
+
+
+def test_blockly_config_dialog_shows_no_stray_categories(qapp_for_dialog):
+    from dialogs.blockly_config_dialog import BlocklyConfigDialog
+    dlg = BlocklyConfigDialog()
+    try:
+        names = {dlg.tree.topLevelItem(i).text(0)
+                  for i in range(dlg.tree.topLevelItemCount())}
+    finally:
+        dlg.deleteLater()
+    # The dialog shows TRANSLATED category names (it runs under whatever
+    # language is active), but the stray English category keys this bug
+    # produced ("Score", "Grid", "Output") were never given their own
+    # translation entries, so they'd always render in raw English
+    # regardless of active language -- a literal match against the English
+    # stray names is still a correct check even if the real categories
+    # above are localized.
+    assert not (names & STRAY_NAMES), names
+
+
+@pytest.fixture
+def qapp_for_dialog():
+    from PySide6.QtWidgets import QApplication
+    return QApplication.instance() or QApplication([])
+
+
+def test_category_translations_have_no_output_entry():
+    """The "Output" category-name translation entries became dead once the
+    category itself was deleted from the toolbox."""
+    from config.blockly_translations import CATEGORY_TRANSLATIONS
+    for lang, table in CATEGORY_TRANSLATIONS.items():
+        assert "Output" not in table, lang
+
+
+def test_config_dialog_category_colors_has_no_output_entry():
+    from dialogs.blockly_config_dialog import BLOCKLY_CATEGORY_COLORS
+    assert "Output" not in BLOCKLY_CATEGORY_COLORS

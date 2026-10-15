@@ -1,6 +1,8 @@
 # Blockly toolbox / "Configure Action Blocks..." category mismatch
 
-Investigation only — **no code changes made yet**. Picks up the user's
+**Status: fixed 2026-10-15/16** (see "Resolution" at the bottom). The
+investigation below is kept verbatim as the record of how the root cause
+was found. Picks up the user's
 request: "The 'Configure Action Blocks...' sub menu should display a window
 that corresponds to the actual blockly editor Blocks... there is a
 'Score/Lives/Health' and a 'Score' categories. The 'Grid' category should be
@@ -161,9 +163,60 @@ for idx, m in enumerate(matches):
 "
 ```
 
-## Status
+## Status (superseded by Resolution below)
 
 Pure investigation, zero files edited. Next session: implement steps 1-6
 above, one commit per logical cluster (matching this repo's audit-commit
 discipline), with a regression test for each, full suite green before
 pushing.
+
+## Resolution (2026-10-15/16)
+
+All six proposed-fix steps implemented, `restart_game`/`game_end`
+deliberately left exactly as proposed (separate, undecided follow-up, not
+in the user's explicit ask).
+
+- **Step 1** (`events/action_types.py`): `test_health`, `show_highscore`,
+  `test_score`, `test_lives`, `clear_highscore` → `category=
+  "Score/Lives/Health"`; `test_alignment` → `category="Movement"`.
+- **Step 2** (`blockly_workspace.html` `categoryColors`): added
+  `'Score/Lives/Health': '#5CA65C'`.
+- **Step 3** (Output → Drawing, across all four files): done. Also found
+  and fixed a genuinely separate bug while merging: `execute_code` had NO
+  `<block type="execute_code">` entry anywhere in the real (post-load)
+  toolbox — only in the static pre-load XML every real page load replaces
+  — so it was undraggable. Fixed by adding it alongside `output_message`
+  under the merged "Drawing" category (both the generated `categories`
+  dict and the static initial toolbox), and moving it from
+  `GENERATED_ACTION_NAMES` to `PROMOTED_TO_HAND_WRITTEN_BLOCKS` (now a
+  real hardcoded block, same mechanism `test_expression`/`move_towards`
+  already use). The generic `text`/`text_join` value blocks turned out to
+  have the identical orphan problem but were deliberately NOT fixed —
+  logged in `TODO.md` instead, since where they belong is its own design
+  question, not a mechanical consequence of this fix.
+- **Step 4**: `show_highscore`/`clear_highscore` moved from BLOCK_REGISTRY
+  `"Game"` to `"Score/Lives/Health"`. `game_end`/`restart_game` left in
+  `"Game"` as proposed — explicitly deferred, not part of the user's ask.
+- **Step 5**: `test_health`/`test_score`/`test_lives` added to
+  BLOCK_REGISTRY under `"Score/Lives/Health"`; `test_alignment` added
+  under `"Movement"` — all four were previously entirely absent from
+  BLOCK_REGISTRY despite being real, visible toolbox blocks.
+- **Step 6**: `tests/test_blockly_category_mismatch_fix.py` (21 tests) —
+  real-toolbox category-key dump (static source parse, no Node needed),
+  static-vs-generated toolbox consistency, the `execute_code` orphan fix,
+  `BLOCK_REGISTRY` content checks, a live headless `BlocklyConfigDialog`
+  category dump, every `BlocklyConfig` preset's `enabled_categories`, and
+  the translation/color-map cleanups.
+- Also fixed in passing: the six `BlocklyConfig` presets (`get_beginner`,
+  `get_grid_rpg`, `get_sokoban`, `get_testing`, `get_code_editor`,
+  `get_blockly_editor`) that referenced `"Output"` in `enabled_categories`
+  — three already had `"Drawing"` too (just dropped the redundant
+  `"Output"`), three only had `"Output"` (swapped to `"Drawing"`; verified
+  behaviour-preserving since block-level visibility is governed separately
+  by `enabled_blocks`, not the category list, and none of those three
+  individually enabled any other Drawing block like `draw_text`).
+  `config/blockly_translations.py`'s `"Output"` entries removed from all 7
+  languages; `dialogs/blockly_config_dialog.py`'s `BLOCKLY_CATEGORY_COLORS`
+  `"Output"` entry removed.
+- Full suite green throughout; targeted blockly/toolbox/extension/thymio
+  subset (473 tests) and the new regression file verified on every step.

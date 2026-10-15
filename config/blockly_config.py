@@ -65,6 +65,11 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "bounce", "name": "Bounce", "description": "Bounce off solid objects", "implemented": True},
         {"type": "wrap_around_room", "name": "Wrap Around Room", "description": "Wrap to opposite side", "implemented": True},
         {"type": "move_to_contact", "name": "Move to Contact", "description": "Move until touching", "implemented": True},
+        # Real toolbox block (category="Movement" in action_types.py since
+        # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md), previously missing
+        # from BLOCK_REGISTRY entirely -- the config dialog couldn't show/
+        # hide it even though it was always a real, visible toolbox block.
+        {"type": "test_alignment", "name": "Test Grid Alignment", "description": "Conditional: true if the instance is aligned to a grid", "implemented": True},
     ],
     "Timing": [
         {"type": "set_alarm", "name": "Set Alarm", "description": "Set timer (0-11)", "implemented": True},
@@ -75,6 +80,11 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "draw_circle", "name": "Draw Circle", "description": "Draw filled circle", "implemented": True},
         {"type": "set_sprite", "name": "Set Sprite", "description": "Change sprite image", "implemented": True},
         {"type": "set_alpha", "name": "Set Transparency", "description": "Set alpha (0-1)", "implemented": True},
+        # Merged from the old standalone "Output" category -- both already
+        # real toolbox blocks under "Drawing" there too (see
+        # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md).
+        {"type": "output_message", "name": "Show Message", "description": "Display message dialog", "implemented": True},
+        {"type": "execute_code", "name": "Execute Code", "description": "Execute custom Python code", "implemented": True},
     ],
     "Score/Lives/Health": [
         {"type": "score_set", "name": "Set Score", "description": "Set score value", "implemented": True},
@@ -86,6 +96,18 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "draw_score", "name": "Draw Score", "description": "Display score text", "implemented": True},
         {"type": "draw_lives", "name": "Draw Lives", "description": "Display lives icons", "implemented": True},
         {"type": "draw_health_bar", "name": "Draw Health Bar", "description": "Display health bar", "implemented": True},
+        # The following five were previously missing from BLOCK_REGISTRY
+        # (test_health/test_score/test_lives) or filed under "Game"
+        # (show_highscore/clear_highscore) even though their real
+        # category="Score"/"Game" leaked into (or used to land in) a
+        # stray/mismatched toolbox category -- all five now carry
+        # category="Score/Lives/Health" in action_types.py and belong here
+        # (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md).
+        {"type": "test_health", "name": "Test Health", "description": "Conditional: compare current health against a value", "implemented": True},
+        {"type": "test_score", "name": "Test Score", "description": "Conditional: compare the score against a value", "implemented": True},
+        {"type": "test_lives", "name": "Test Lives", "description": "Conditional: compare the life count against a value", "implemented": True},
+        {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table", "implemented": True},
+        {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table", "implemented": True},
     ],
     "Instance": [
         {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object", "implemented": True},
@@ -119,15 +141,21 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "music_play", "name": "Play Music", "description": "Play background music", "implemented": True},
         {"type": "music_stop", "name": "Stop Music", "description": "Stop music", "implemented": True},
     ],
-    "Output": [
-        {"type": "output_message", "name": "Show Message", "description": "Display message dialog", "implemented": True},
-        {"type": "execute_code", "name": "Execute Code", "description": "Execute custom Python code", "implemented": True},
-    ],
+    # The old standalone "Output" category (output_message, execute_code)
+    # was merged into "Drawing" above -- see that key's comment and
+    # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md. show_highscore and
+    # clear_highscore moved from "Game" below to "Score/Lives/Health"
+    # above for the same reason (matching their real category= in
+    # action_types.py). "Game" keeping only game_end/restart_game (rather
+    # than also folding game_end into "Room", where it really lands in the
+    # live toolbox, or giving restart_game -- the one real toolbox block
+    # left in its own stray dynamic "Game" category -- a proper home) is a
+    # deliberate, separate follow-up: neither was part of the user's
+    # explicit merge request, and this config dialog's grouping doesn't
+    # have to mirror the live toolbox's category boxes 1:1 to be useful.
     "Game": [
         {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
         {"type": "restart_game", "name": "Restart Game", "description": "Restart from first room", "implemented": True},  # was "game_restart", a name no block had (Blockly audit B8)
-        {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table", "implemented": True},
-        {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table", "implemented": True},
     ],
 }
 # The 8 "Thymio *" categories moved to extensions/thymio/blockly_categories.py
@@ -184,7 +212,7 @@ BLOCK_DEPENDENCIES: Dict[str, List[str]] = {
 # set and fails loudly if this list and the JS disagree.
 GENERATED_ACTION_NAMES: frozenset = frozenset({
     # Control
-    "check_empty", "comment", "else_action", "end_block", "execute_code",
+    "check_empty", "comment", "else_action", "end_block",
     "execute_script", "if_collision", "if_collision_at", "if_object_exists",
     "repeat", "start_block", "test_chance", "test_question",
     # Game
@@ -193,16 +221,17 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
     "load_game", "open_webpage", "restart_game", "save_game", "set_color",
     "set_draw_color", "set_draw_font", "set_window_caption", "show_info",
     "show_video", "splash_show_image", "splash_show_text",
-    # Grid
-    "test_alignment",
     # Instance
     "change_instance", "create_moving_instance", "create_random_instance",
     "destroy_at_position", "set_image_index", "set_image_speed",
     "start_animation", "stop_animation", "test_instance_count",
-    # Movement
+    # Movement (test_alignment's category= was "Grid" until
+    # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md merged it here; it was
+    # always dynamically generated either way, only the comment grouping
+    # below changed)
     "bounce", "jump_to_random", "jump_to_start", "move_grid",
     "move_to_contact", "move_towards_point", "set_direction_speed",
-    "start_moving_direction",
+    "start_moving_direction", "test_alignment",
     # Particles
     "burst_particles", "clear_particles", "create_emitter",
     "create_particle_system", "create_particle_type", "destroy_emitter",
@@ -210,7 +239,10 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
     # Room
     "check_room", "game_end", "set_background", "set_background_color",
     "set_room_caption", "set_room_persistent", "set_room_speed",
-    # Score
+    # Score/Lives/Health (these five's category= was "Score" until
+    # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md merged it into the
+    # existing "Score/Lives/Health" category; still dynamically generated
+    # either way, only the comment grouping below changed)
     "clear_highscore", "show_highscore", "test_health", "test_lives",
     "test_score",
     # Timing
@@ -234,7 +266,16 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
 #   GENERATED_ACTION_NAMES; block and action share the name.
 # - move_towards (B7): the block for the move_towards_point action, which
 #   stays in GENERATED_ACTION_NAMES (the action-list editor gates on it).
-PROMOTED_TO_HAND_WRITTEN_BLOCKS: frozenset = frozenset({"test_expression", "move_towards"})
+# - execute_code (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md): always had
+#   its own hardcoded Blockly.Blocks['execute_code'] definition (and was
+#   already in actionToBlockType, so registerCustomBlocks always skipped
+#   it), but had NO <block type="execute_code"> toolbox entry anywhere --
+#   genuinely undraggable from the live toolbox. Fixed by adding one under
+#   "Drawing" (merged from the old "Output" category), which makes it a
+#   real hardcoded block like test_expression/move_towards, not a
+#   registerCustomBlocks-generated one -- moved out of
+#   GENERATED_ACTION_NAMES to here for the same reason those two are here.
+PROMOTED_TO_HAND_WRITTEN_BLOCKS: frozenset = frozenset({"test_expression", "move_towards", "execute_code"})
 
 @dataclass
 class BlocklyConfig:
@@ -439,7 +480,7 @@ class BlocklyConfig:
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
-            "Score/Lives/Health", "Instance", "Room", "Output", "Game",
+            "Score/Lives/Health", "Instance", "Room", "Game",
             "Control",
         }
 
@@ -593,7 +634,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output", "Sound"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -640,7 +681,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -782,7 +823,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Output"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -930,7 +971,7 @@ class BlocklyConfig:
         # Enable all categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Instance", "Room", "Game",
-            "Score/Lives/Health", "Drawing", "Timing", "Sound", "Output"
+            "Score/Lives/Health", "Drawing", "Timing", "Sound"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2) --
@@ -1083,7 +1124,7 @@ class BlocklyConfig:
         # Enable all categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
-            "Instance", "Room", "Values", "Sound", "Output", "Game"
+            "Instance", "Room", "Values", "Sound", "Game"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).

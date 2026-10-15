@@ -1559,7 +1559,7 @@ ACTION_TYPES = {
         name="test_health",
         display_name="Test Health",
         description="Conditional: compare current health against a value",
-        category="Score",
+        category="Score/Lives/Health",
         icon="❓💚",
         parameters=[
             ActionParameter(
@@ -1581,7 +1581,7 @@ ACTION_TYPES = {
         name="show_highscore",
         display_name="Show High-Score Table",
         description="Display the high-score table dialog",
-        category="Score",
+        category="Score/Lives/Health",
         icon="🏆",
         parameters=[
             ActionParameter(
@@ -1891,7 +1891,7 @@ ACTION_TYPES = {
         name="test_alignment",
         display_name="Test Grid Alignment",
         description="Conditional: true if the instance is aligned to a grid",
-        category="Grid",
+        category="Movement",
         icon="❓▦",
         parameters=[
             ActionParameter(
@@ -2224,7 +2224,7 @@ ACTION_TYPES = {
         name="test_score",
         display_name="Test Score",
         description="Conditional: compare the score against a value",
-        category="Score",
+        category="Score/Lives/Health",
         icon="❓🏆",
         parameters=[
             ActionParameter(name="value", display_name="Value", param_type="number", default_value=0, description="Value to compare against"),
@@ -2237,7 +2237,7 @@ ACTION_TYPES = {
         name="test_lives",
         display_name="Test Lives",
         description="Conditional: compare the life count against a value",
-        category="Score",
+        category="Score/Lives/Health",
         icon="❓❤️",
         parameters=[
             ActionParameter(name="value", display_name="Value", param_type="number", default_value=0, description="Value to compare against"),
@@ -2446,7 +2446,7 @@ ACTION_TYPES = {
         name="clear_highscore",
         display_name="Clear High-Score Table",
         description="Clear all high-score entries",
-        category="Score",
+        category="Score/Lives/Health",
         icon="🗑️🏆",
         parameters=[],
     ),
