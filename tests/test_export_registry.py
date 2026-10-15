@@ -21,26 +21,38 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from export.registry import EXPORT_TARGETS, ExportTarget  # noqa: E402
+from export.registry import EXPORT_TARGETS, ExportTarget, _FROZEN_SUFFIX  # noqa: E402
 
 EXPECTED_IDS = ["html5", "windows_exe", "linux", "macos", "android_apk", "ios",
                 "kivy_project", "source_zip"]
 
 # Every label a probe may return, exactly as the dialog always showed them.
+# The "- ⚠️ Run PyGameMaker..." frozen-build variants (added 2026-10-15,
+# see tests/test_export_frozen_build_availability.py) only appear when
+# sys.frozen is set, which this suite never is -- listed here anyway so
+# this dict stays an accurate, complete reference of every label a probe
+# can produce, not just the ones reachable in a non-frozen test run.
+# _FROZEN_SUFFIX itself is imported from export.registry (not redefined)
+# so the two can never silently drift apart.
 LEGACY_LABELS = {
     "html5": {"HTML5 (Web Browser) - ✅ Available"},
     "windows_exe": {"Windows Executable (.exe) - ✅ Available",
-                    "Windows Executable (.exe) - ⚠️ Requires Windows"},
+                    "Windows Executable (.exe) - ⚠️ Requires Windows",
+                    "Windows Executable (.exe)" + _FROZEN_SUFFIX},
     "linux": {"Linux Binary - ✅ Available",
-              "Linux Binary - ⚠️ Requires Linux"},
+              "Linux Binary - ⚠️ Requires Linux",
+              "Linux Binary" + _FROZEN_SUFFIX},
     "macos": {"macOS Application (.app) - ✅ Available",
-              "macOS Application (.app) - ⚠️ Requires macOS"},
+              "macOS Application (.app) - ⚠️ Requires macOS",
+              "macOS Application (.app)" + _FROZEN_SUFFIX},
     "android_apk": {"Android Package (.apk) - ✅ Available",
                     "Android Package (.apk) - ✅ Available (via WSL)",
                     "Android Package (.apk) - ⚠️ Requires WSL (not detected)",
-                    "Android Package (.apk) - ⚠️ Requires Linux or macOS"},
+                    "Android Package (.apk) - ⚠️ Requires Linux or macOS",
+                    "Android Package (.apk)" + _FROZEN_SUFFIX},
     "ios": {"iOS App (.ipa) - ✅ Available (macOS only)",
-            "iOS App (.ipa) - ⚠️ Requires macOS with Xcode"},
+            "iOS App (.ipa) - ⚠️ Requires macOS with Xcode",
+            "iOS App (.ipa)" + _FROZEN_SUFFIX},
     # From the retired File → Export Project dialog (2026-07-12): new
     # targets, so these labels are new translation keys (not legacy).
     "kivy_project": {"Kivy Source Project - ✅ Available"},

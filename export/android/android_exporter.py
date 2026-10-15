@@ -8,6 +8,7 @@ import subprocess
 import shutil
 import json
 import platform
+import sys
 from pathlib import Path
 from typing import Dict
 
@@ -170,6 +171,33 @@ class AndroidExporter(BaseKivyExporter):
                         )
                         return False
             else:
+                # Native Linux/macOS: buildozer runs via `sys.executable -m
+                # buildozer` (see the subprocess.Popen below) -- inside a
+                # packaged/frozen build of the IDE, sys.executable IS the
+                # frozen PyGameMaker binary, not a real Python, so that
+                # subprocess cannot actually run buildozer at all (same
+                # root cause as export/desktop/pygame_desktop_exporter.py's
+                # _frozen_build_refusal; export/registry.py's _android_probe
+                # already greys this target out in the dialog for exactly
+                # this case -- this is the belt-and-suspenders check for any
+                # other caller). The WSL branch above is unaffected: it
+                # never touches this process's own sys.executable.
+                if getattr(sys, 'frozen', False):
+                    self.export_complete.emit(
+                        False,
+                        "Android export is not available from this "
+                        "packaged build of PyGameMaker.\n\n"
+                        "Building an APK runs buildozer inside the same "
+                        "Python that runs the IDE -- a packaged/portable "
+                        "PyGameMaker has no such Python to run it in.\n\n"
+                        "Run PyGameMaker from its source checkout instead "
+                        "(pip install -r requirements.txt, then "
+                        "python main.py).\n\n"
+                        "Or use the Web (HTML5) export, which needs "
+                        "nothing installed and works from this build."
+                    )
+                    return False
+
                 # Native Linux/macOS dependency checks
                 if not self._check_buildozer():
                     self.export_complete.emit(

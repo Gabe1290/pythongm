@@ -162,8 +162,13 @@ class ExportMixin:
         # Export format options — one radio per registry target
         # (export/registry.py, the single source of truth for targets:
         # order, availability text, and which method runs the export).
-        # Unavailable targets stay selectable on purpose: their exporters
-        # explain what's missing (e.g. the Android WSL setup steps).
+        # An unavailable target is disabled (greyed out) rather than left
+        # selectable, per export/registry.py's own 2026-10-15 note: unlike
+        # "install WSL" or "run on Windows", "restart as a different build
+        # of the app" (the packaged-build case) has no in-dialog follow-up
+        # action, so there's nothing gained by letting the student pick it
+        # and find out one slow step later. The label itself still carries
+        # the explanation either way (e.g. "⚠️ Requires WSL (not detected)").
         from export.registry import EXPORT_TARGETS
 
         button_group = QButtonGroup(dialog)
@@ -173,10 +178,13 @@ class ExportMixin:
             # (the Android/WSL one is internally try/excepted), but a future
             # probe that does would otherwise leave the user with no options.
             try:
-                _available, label = target.probe()
+                available, label = target.probe()
             except Exception:
-                label = target.id
+                available, label = True, target.id
             radio = QRadioButton(self.tr(label))
+            radio.setEnabled(available)
+            if not available:
+                radio.setToolTip(self.tr(label))
             if index == 0:
                 radio.setChecked(True)  # html5 — available on every host
             button_group.addButton(radio, index)

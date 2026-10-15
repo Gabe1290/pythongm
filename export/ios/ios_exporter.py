@@ -95,6 +95,32 @@ class iOSExporter(QObject):
                 )
                 return False
 
+            # iOS builds shell out to `sys.executable -m pip` / `-m
+            # kivy_ios.toolchain` further down -- inside a packaged/frozen
+            # build of the IDE, sys.executable IS the frozen PyGameMaker
+            # binary, not a real Python, so those subprocesses cannot
+            # actually run anything (same root cause as export/desktop/
+            # pygame_desktop_exporter.py's _frozen_build_refusal;
+            # export/registry.py's _ios_probe already greys this target
+            # out in the dialog for exactly this case -- this is the
+            # belt-and-suspenders check for any other caller).
+            if getattr(sys, 'frozen', False):
+                self.export_complete.emit(
+                    False,
+                    "iOS export is not available from this packaged "
+                    "build of PyGameMaker.\n\n"
+                    "Building an iOS app runs kivy-ios and Xcode's "
+                    "toolchain inside the same Python that runs the IDE "
+                    "-- a packaged/portable PyGameMaker has no such "
+                    "Python to run it in.\n\n"
+                    "Run PyGameMaker from its source checkout instead "
+                    "(pip install -r requirements.txt, then "
+                    "python main.py).\n\n"
+                    "Or use the Web (HTML5) export, which needs nothing "
+                    "installed and works from this build."
+                )
+                return False
+
             if not self._check_xcode():
                 self.export_complete.emit(
                     False,
