@@ -38,10 +38,10 @@
     <h2>Track Whose Turn It Is</h2>
     <div class="step">
         <ol>
-            <li>Add to <code>obj_game</code>'s <strong>Create</strong> event
+            <li>Add to <code>obj_game</code>'s <strong>When created</strong> event
             (from Phase 1): set <code>last_round_acted</code> to
             <code>0</code> and <code>my_turn</code> to <code>0</code></li>
-            <li>Add a <strong>Step</strong> event:</li>
+            <li>Add a <strong>Every step</strong> event:</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-control">If <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> then</span><br>
@@ -52,7 +52,7 @@
         <p style="margin-top: 8px; font-style: italic;">The first published
         round is round <strong>1</strong>, not 0 &mdash; so X (the host)
         goes on the odd rounds, O on the even ones.</p>
-        <p style="margin-top: 4px;">Still in the same <strong>Step</strong>
+        <p style="margin-top: 4px;">Still in the same <strong>Every step</strong>
         event, right after: the player who is <em>not</em> on turn still
         needs to submit something, or the round would sit waiting out the
         full deadline every time:</p>

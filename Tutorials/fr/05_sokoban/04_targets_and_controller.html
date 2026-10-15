@@ -71,16 +71,16 @@
         <ol>
             <li>Double-cliquez sur <code>obj_crate</code> pour ouvrir l'éditeur d'objets</li>
             <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
-            <li>Ajoutez un événement <strong>Pas</strong> avec une vérification si/sinon :</li>
+            <li>Ajoutez un événement <strong>À chaque étape</strong> avec une vérification si/sinon :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Pas</span><br>
+            <span class="block block-event">À chaque étape</span><br>
             <span class="block block-control block-indent">Si en collision avec <span class="block-val">obj_target</span></span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate_ok</span></span><br>
             <span class="block block-control block-indent">Sinon</span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate</span></span>
         </div>
-        <p>Trouvez <strong>Pas</strong> dans la catégorie <em>Événements</em>.
+        <p>Trouvez <strong>À chaque étape</strong> dans la catégorie <em>Événements</em>.
         Puis trouvez <strong>Vérifier collision</strong> dans la catégorie <em>Contrôle</em> et tapez <code>obj_target</code>.
         Insérez un bloc <strong>Définir le sprite</strong> (depuis <em>Instance</em>) pour le cas « alors » avec <code>spr_crate_ok</code>.
         Ajoutez une section <strong>Sinon</strong> avec un autre bloc <strong>Définir le sprite</strong> pour <code>spr_crate</code>.</p>
@@ -108,13 +108,13 @@
         <ol>
             <li>Double-cliquez sur <code>obj_controller</code> pour ouvrir l'éditeur d'objets</li>
             <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
-            <li>Ajoutez un événement <strong>Événement Dessin</strong> pour afficher les instructions :</li>
+            <li>Ajoutez un événement <strong>Quand dessiner</strong> pour afficher les instructions :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Dessiner</span><br>
+            <span class="block block-event">Quand dessiner</span><br>
             <span class="block block-draw block-indent">Dessiner du texte <span class="block-val">"Poussez les caisses sur les cibles !"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
         </div>
-        <p>Trouvez <strong>Dessiner</strong> dans la catégorie <em>Événements</em>.
+        <p>Trouvez <strong>Quand dessiner</strong> dans la catégorie <em>Événements</em>.
         Puis trouvez <strong>Dessiner du texte</strong> dans la catégorie <em>Dessin</em>.
         Tapez <code>Poussez les caisses sur les cibles !</code> comme texte, et réglez X à <strong>10</strong>, Y à <strong>10</strong>.</p>
     </div>

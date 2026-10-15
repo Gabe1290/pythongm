@@ -37,7 +37,7 @@
         <li>You bump into the border walls and the three blocks in the middle instead of walking through them</li></ul></div>
     <h2>If Something Looks Wrong</h2>
     <table class="t"><tr><th>What you see</th><th>Likely cause</th></tr>
-    <tr><td>The normal top-down room</td><td>The Create event with <strong>Enable Raycast View</strong> is missing, or is on an object that isn't in the room</td></tr>
+    <tr><td>The normal top-down room</td><td>The When created event with <strong>Enable Raycast View</strong> is missing, or is on an object that isn't in the room</td></tr>
     <tr><td>You walk through walls</td><td>The <strong>When colliding with obj_wall</strong> event is missing, or <code>obj_wall</code> is not <strong>Solid</strong></td></tr>
     <tr><td>Walls look wrong or gaps appear</td><td>A wall block is off the 32-pixel grid, or <strong>Cell Size</strong> is not 32</td></tr>
     <tr><td>You turn the wrong way</td><td>Swap the <code>3</code> and <code>-3</code> on the two turning events</td></tr></table>

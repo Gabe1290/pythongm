@@ -65,10 +65,10 @@
     <h2>Réinitialiser le score au démarrage</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Événement Création</span><br>
+            <span class="block block-event">Quand créé</span><br>
             <span class="block block-score block-indent">Définir le score à <span class="block-num">0</span></span>
         </div>
-        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Événement Création</strong>.
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Quand créé</strong>.
         Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Définir le score</strong> à l'intérieur et tapez <strong>0</strong>.</p>
         <p>Cela garantit que le score commence à zéro à chaque chargement de la salle.</p>
     </div>
@@ -76,10 +76,10 @@
     <h2>Afficher le score à l'écran</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Événement Dessin</span><br>
+            <span class="block block-event">Quand dessiner</span><br>
             <span class="block block-score block-indent">Afficher le score à x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
         </div>
-        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Événement Dessin</strong>.
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Quand dessiner</strong>.
         Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Afficher le score</strong> à l'intérieur.
         Réglez x à <strong>10</strong> et y à <strong>10</strong> (coin supérieur gauche).</p>
     </div>
@@ -92,8 +92,8 @@
     </div>
 
     <div class="highlight">
-        <strong>Comment ça fonctionne :</strong> L'Événement Création s'exécute une fois lorsque l'objet apparaît dans la salle,
-        mettant le score à 0. L'Événement Dessin s'exécute à chaque image et affiche
+        <strong>Comment ça fonctionne :</strong> L'événement <strong>Quand créé</strong> s'exécute une fois lorsque l'objet apparaît dans la salle,
+        mettant le score à 0. L'événement <strong>Quand dessiner</strong> s'exécute à chaque image et affiche
         « Score : X » dans le coin supérieur gauche. Au fur et à mesure que le joueur collecte des pièces,
         le score se met à jour automatiquement !
     </div>

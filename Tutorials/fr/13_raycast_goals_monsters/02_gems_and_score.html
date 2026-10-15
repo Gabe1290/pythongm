@@ -40,19 +40,19 @@
         <div class="blockly-group"><span class="block block-event">Quand collision avec obj_player</span><br>
         <span class="block block-move block-indent">Détruire cette instance</span><br>
         </div>
-        <ol start="4"><li>Ajoutez un événement <strong>Destroy</strong> (destruction) à <code>obj_gem</code>. Il s'exécute chaque fois que la gemme disparaît :</li></ol>
-        <div class="blockly-group"><span class="block block-event">Destroy</span><br>
+        <ol start="4"><li>Ajoutez un événement <strong>Quand détruit</strong> (destruction) à <code>obj_gem</code>. Il s'exécute chaque fois que la gemme disparaît :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Quand détruit</span><br>
         <span class="block block-move block-indent">Ajouter au score <span class="block-num">10</span></span><br>
         </div></div>
     <h2>Préparer le score et les vies</h2>
     <div class="step"><ol>
-        <li>Ouvrez <code>obj_player</code> et ajoutez un événement <strong>Game Start</strong> (démarrage du jeu) :</li></ol>
-        <div class="blockly-group"><span class="block block-event">Game Start</span><br>
+        <li>Ouvrez <code>obj_player</code> et ajoutez un événement <strong>Autre événement : Début du jeu</strong> (démarrage du jeu) :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Autre événement : Début du jeu</span><br>
         <span class="block block-move block-indent">Définir le score à <span class="block-num">0</span></span><br>
         <span class="block block-move block-indent">Définir les vies à <span class="block-num">3</span></span><br>
         </div>
-        <div class="highlight"><strong>Pourquoi Game Start et pas Create ?</strong> Create se relance à chaque redémarrage de la salle &mdash; et nous redémarrerons la salle à chaque vie perdue.
-        Si les vies étaient réglées à 3 dans Create, vous récupéreriez vos trois vies à chaque mort. <strong>Game Start</strong> ne s'exécute qu'une fois, au début de la partie.</div></div>
+        <div class="highlight"><strong>Pourquoi Début du jeu et pas Quand créé ?</strong> Quand créé se relance à chaque redémarrage de la salle &mdash; et nous redémarrerons la salle à chaque vie perdue.
+        Si les vies étaient réglées à 3 dans Quand créé, vous récupéreriez vos trois vies à chaque mort. <strong>Début du jeu</strong> ne s'exécute qu'une fois, au début de la partie.</div></div>
     <h2>Placer les gemmes</h2>
     <div class="step"><p>Ouvrez la salle et placez quelques gemmes dans les couloirs dégagés, en dehors des blocs de mur.
     Dans cette leçon, le joueur démarre en haut à gauche, tourné vers la droite : placez la première gemme en ligne droite devant lui.</p></div>

@@ -40,19 +40,19 @@
         <div class="blockly-group"><span class="block block-event">When colliding with obj_player</span><br>
         <span class="block block-move block-indent">Destroy this instance</span><br>
         </div>
-        <ol start="4"><li>Add a <strong>Destroy</strong> event to <code>obj_gem</code>. It runs whenever the gem disappears:</li></ol>
-        <div class="blockly-group"><span class="block block-event">Destroy</span><br>
+        <ol start="4"><li>Add a <strong>When destroyed</strong> event to <code>obj_gem</code>. It runs whenever the gem disappears:</li></ol>
+        <div class="blockly-group"><span class="block block-event">When destroyed</span><br>
         <span class="block block-move block-indent">Add to score <span class="block-num">10</span></span><br>
         </div></div>
     <h2>Set Up Score and Lives</h2>
     <div class="step"><ol>
-        <li>Open <code>obj_player</code> and add a <strong>Game Start</strong> event:</li></ol>
-        <div class="blockly-group"><span class="block block-event">Game Start</span><br>
+        <li>Open <code>obj_player</code> and add an <strong>Other event: Game Start</strong> event:</li></ol>
+        <div class="blockly-group"><span class="block block-event">Other event: Game Start</span><br>
         <span class="block block-move block-indent">Set score to <span class="block-num">0</span></span><br>
         <span class="block block-move block-indent">Set lives to <span class="block-num">3</span></span><br>
         </div>
-        <div class="highlight"><strong>Why Game Start and not Create?</strong> Create runs again every time a room restarts &mdash; and we will restart the room whenever you lose a life.
-        If lives were set to 3 in Create, you would get all three lives back on every death. <strong>Game Start</strong> runs only once, when the game begins.</div></div>
+        <div class="highlight"><strong>Why Game Start and not When created?</strong> When created runs again every time a room restarts &mdash; and we will restart the room whenever you lose a life.
+        If lives were set to 3 in When created, you would get all three lives back on every death. <strong>Game Start</strong> runs only once, when the game begins.</div></div>
     <h2>Place the Gems</h2>
     <div class="step"><p>Open the room and place a few gems in the open corridors. Keep them off the wall blocks.
     In this lesson the player starts at the top-left, facing right, so put the first gem in a straight line ahead of it.</p></div>
