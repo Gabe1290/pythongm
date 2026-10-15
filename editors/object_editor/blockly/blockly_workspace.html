@@ -813,18 +813,18 @@
         Blockly.Blocks['event_create'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField(getBlockMessage('event_create', window.BLOCKLY_LANG) || "When object is created");
+                    .appendField(getBlockMessage('event_create', window.BLOCKLY_LANG) || "When created");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#CC8800");
-                this.setTooltip(getBlockMessage('event_create_tooltip', window.BLOCKLY_LANG) || "Runs when the object instance is created");
+                this.setTooltip(getBlockMessage('event_create_tooltip', window.BLOCKLY_LANG) || "Runs when the instance is created");
             }
         };
 
         Blockly.Blocks['event_step'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField(getBlockMessage('event_step', window.BLOCKLY_LANG) || "Every frame (step)");
+                    .appendField(getBlockMessage('event_step', window.BLOCKLY_LANG) || "Every step");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#CC8800");

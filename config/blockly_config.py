@@ -18,8 +18,8 @@ import json
 # Each block has: type, name, description, and implemented (True/False)
 BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     "Events": [
-        {"type": "event_create", "name": "Create Event", "description": "When object is created", "implemented": True},
-        {"type": "event_step", "name": "Step Event", "description": "Every frame", "implemented": True},
+        {"type": "event_create", "name": "Create Event", "description": "When created", "implemented": True},
+        {"type": "event_step", "name": "Step Event", "description": "Every step", "implemented": True},
         {"type": "event_draw", "name": "Draw Event", "description": "During drawing phase", "implemented": True},
         {"type": "event_destroy", "name": "Destroy Event", "description": "When object is destroyed", "implemented": True},
         {"type": "event_keyboard_nokey", "name": "No Key", "description": "No key pressed", "implemented": True},
