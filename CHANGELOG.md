@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.9] - 2026-10-15
+
+### Fixed
+- Exporting a game to a native Windows/Linux/macOS executable from a
+  **packaged** build of the IDE (the binaries this project publishes on
+  GitHub) now refuses immediately with a clear, actionable message
+  instead of silently failing. The packaged IDE's own `sys.executable`
+  is itself, not a real Python, so it cannot shell out to run
+  PyInstaller — previously this launched a second, spurious IDE window
+  and then reported a misleading "could not be copied" or "PyInstaller
+  build failed" error. Run PyGameMaker from its source checkout to
+  export a native executable, or use the Web (HTML5) export, which
+  works from any build.
+
 ## [1.5.8] - 2026-10-14
 
 ### Added
