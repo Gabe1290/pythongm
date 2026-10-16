@@ -81,3 +81,18 @@ def test_junior_edition_still_builds_the_hidden_tabs_data_model(_qapp, _edition)
     # Confirmed detached, not merely absent: the widget is still a real
     # child, just not inside the tab bar's current index range.
     assert editor.center_tabs.indexOf(editor.code_editor.parentWidget()) == -1
+
+
+@pytest.mark.parametrize("_edition", ["junior"], indirect=True)
+def test_junior_blockly_tab_actually_initialises(_qapp, _edition):
+    """With the other tabs removed, Blockly is already current, so the
+    lazy initialiser used to never run and the tab stayed an empty
+    placeholder (reported from a real junior session)."""
+    from PySide6.QtCore import QCoreApplication
+    from editors.object_editor.object_editor_main import ObjectEditor
+    editor = ObjectEditor()
+    QCoreApplication.processEvents()
+    assert editor._blockly_initialized
+    assert editor.center_tabs.count() == 1
+    assert editor.center_tabs.widget(0) is editor.blockly_tab
+    assert editor.center_tabs.widget(0) is not editor._blockly_placeholder

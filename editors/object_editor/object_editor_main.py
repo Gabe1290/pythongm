@@ -542,6 +542,16 @@ class ObjectEditor(BaseEditor):
             if hasattr(self, "code_tab_index"):
                 self.center_tabs.removeTab(self.center_tabs.indexOf(code_tab))
             self.center_tabs.removeTab(self._event_list_tab_index)
+            # Removing tabs shifted the indices. Blockly is now the only,
+            # already-current tab, so currentChanged never fires and its
+            # lazy initialisation (_on_center_tab_changed) would never run,
+            # leaving an empty placeholder. Re-point the index, forget the
+            # removed code tab, and initialise once construction finishes.
+            self._blockly_tab_index = self.center_tabs.indexOf(self._blockly_placeholder)
+            if hasattr(self, "code_tab_index"):
+                self.code_tab_index = -1
+            QTimer.singleShot(
+                0, lambda: self._on_center_tab_changed(self._blockly_tab_index))
 
         logger.debug("Adding tabs to layout...")
         layout.addWidget(self.center_tabs, 100)
