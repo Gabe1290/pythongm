@@ -24,6 +24,42 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
+### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
+
+Found while re-investigating `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`'s
+C1 (confirmed empirically, not inferred): every action in `GENERATED_ACTION_NAMES`
+(`if_collision`, `test_instance_count`, `start_block`, `end_block`,
+`else_action`, `restart_game`, every Drawing/Game/Particles/Views action
+from this week's category-mismatch work — ~80 entries) renders with
+identical, English-only block text regardless of the IDE's selected
+language. Root cause: `editors/object_editor/blockly_widget.py`'s
+`_register_custom_blocks()` pushes each `ActionType.display_name`/
+`description`/parameter `display_name` straight from the Python
+`ACTION_TYPES` dict (always English, no language parameter anywhere in
+the call) to `blockly_workspace.html`'s `registerCustomBlocks()`, which
+builds every block's label and field text directly from those raw
+strings — zero `getBlockMessage()`/`BLOCKLY_LANG` lookups anywhere in
+that function (confirmed by reading it end to end). Verified live:
+`if_collision`'s block face is byte-identical with `BLOCKLY_LANG` set to
+`'en'` vs `'fr'`.
+
+**Categorically different from, and much bigger than, any of this week's
+category-mismatch or wording-audit fixes** — those are all about
+HAND-WRITTEN blocks (`event_create`, `event_collision`, `score_set`, ...),
+which genuinely do have real, working per-language text via
+`BLOCK_MESSAGES`/`getBlockMessage()` (confirmed accurate, nothing here
+contradicts that). The gap is specifically every action with no
+hand-written block, in every one of the 10+ shipped UI languages.
+
+Two directions, not decided: (a) push a per-language `display_name`/
+parameter-label table from Python (mirroring how `BLOCK_MESSAGES` already
+works for hand-written blocks, scaled to ~80 generated actions × N
+languages — the ja/zh/pt UI-string translation arcs give a cost precedent
+for sizing this), or (b) build real hand-written blocks for the handful
+of generated actions that show up in tutorials/common authoring (reducing
+the untranslated surface without translating all ~80 at once). Not fixed
+here; this needs its own scoping decision before any code changes.
+
 ### ~~Blockly toolbox: "Particles" and "Views" are stray categories too~~ (DONE 2026-10-16)
 
 Done as `docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md` Issue A: both

@@ -127,7 +127,158 @@ not a missing translation in the block itself.
 - [ ] `Tutorials/fr/13_raycast_goals_monsters/02_gems_and_score.html` — "Destroy" → "Quand détruit"; "Game Start" → "Autre événement : Début du jeu"
 - [ ] `Tutorials/fr/13_raycast_goals_monsters/03_monster_and_lives.html` — "No More Lives" → "Autre événement : Plus de vies" (confirmed: `event_other_opt_no_more_lives` = "Plus de vies")
 
-## Part C — Deeper problems, NOT simple wording fixes (flagged, not resolved)
+## Part C — RE-INVESTIGATED (2026-10-16, later session): both original claims were wrong
+
+Before touching either page, both C1 and C2's premises were checked against
+the REAL live page (same `QWebEngineView` + `loadEventsData`/
+`generatePythonCode` round-trip technique `tests/
+test_blockly_block_audit_roundtrip.py` already uses, run as a throwaway
+script — not the earlier doc's fuzzy-scan/manual-grep method). **Both
+"has no real Blockly block" claims were factually wrong** — both blocks
+exist and round-trip perfectly. The real problem in both cases is
+`display_name`-level wording drift, the same class as every Part B fix,
+plus one genuinely new, much bigger finding made along the way. See
+"Part E" below before fixing anything described here.
+
+### C1, corrected: `if_collision` IS a real, working block — the audit named the wrong action
+
+`if_collision` (what `build_t05` actually uses) was confused with
+`if_collision_at` (a genuinely different action, the one the 2026-10-08
+Blockly audit found really is broken — `createActionBlock` unwraps it to
+its first nested action; `build_t05` never uses it at all). Verified live:
+`if_collision` → `custom_if_collision` round-trips the crate's full step
+event (if_collision/start_block/set_sprite/end_block/else_action/
+start_block/set_sprite/end_block) byte-for-byte, no data loss.
+
+Real rendered text (identical in EN and FR — see Part E):
+`"❓💥 If Collision X Offset: 0 Y Offset: 0 Against: obj_target Negate: ☐"`
+— nothing like the page's "If colliding with obj_target" mockup, and the
+prose's own instruction to "find **Check Collision** in the *Control*
+category" points at an action that doesn't exist anywhere in `ACTION_TYPES`
+at all (confirmed: `"check_collision" not in ACTION_TYPES`; it only
+appears as a dangling entry in `events/action_types.py`'s *other*,
+toolbox-visibility-only map, `ACTION_TO_BLOCKLY_MAP`).
+
+**Fix: a wording correction** (same shape as B1-B4), not a new block or a
+restructure. Update `Tutorials/05_sokoban/04_targets_and_controller.html`'s
+mockup + prose to depict the real 4-field block and drop the "Check
+Collision" reference.
+
+*(Side note, not blocking: four separate fields — X/Y Offset, Against,
+Negate — is a lot of surface for "is this crate exactly on a target," the
+same kind of clunky-for-the-audience tension B3 flagged for "Other event:
+Outside Room." A nicer dedicated block is a legitimate future idea, not
+required here.)*
+
+### C2, corrected: `start_block`/`end_block` ARE real blocks — AND a bigger, separate wording bug found on the same page
+
+Verified live: `Blockly.Blocks['custom_start_block']` /
+`['custom_end_block']` both exist, both round-trip correctly (confirmed
+as part of the C1 check above — the crate step event's real XML
+literally contains `<block type="custom_start_block">`). The
+`if_condition`-less "test, then a start/end-wrapped group, optionally an
+else and a second start/end-wrapped group" pattern Tutorials 5/9/13/16 all
+use for a multi-action branch IS the real, correct, working way to author
+this in Blockly today — not a fictional convention, contrary to the
+original claim.
+
+Real text: `"📂 Start Block"` / `"📁 End Block"` (capitalized, with icons) —
+`Tutorials/13_raycast_goals_monsters/04_the_exit.html` shows lowercase
+"Start block" / "End block" with no icon. Minor, same wording-fix class.
+
+**Bigger finding on the same page, NOT in the original audit's list at
+all:** the step's real action is `test_instance_count` (confirmed from
+`build_t13`'s actual JSON: `{"action": "test_instance_count", "object":
+"obj_gem", "number": "0", "operation": "equal"}`), whose real rendered
+text is `"❓🔢 Test Instance Count Object: obj_gem Number: 0 Comparison:
+equal"` — not "If count of obj_gem is equal to 0" as the EN page (and
+Tutorial 9's, and Tutorial 16's own) mockup says. This exact "If count of
+X is/is equal to N" phrasing is used identically across:
+
+- `Tutorials/09_catch_the_coins/05_winning.html` **and its 8 translated
+  variants** (de/es/fr/it/pt/ru/sl/uk — Tutorial 9 is one of the older,
+  fully-translated-into-10-languages tutorials)
+- `Tutorials/13_raycast_goals_monsters/04_the_exit.html` (EN only — the FR
+  page already uses different, closer-to-real wording: *"Tester le nombre
+  d'instances de obj_gem : égal à 0"*)
+- `Tutorials/16_fruit_basket/05_winning.html` **and its FR page** (this
+  tutorial's own `05_winning.html` was written this session, directly
+  copying Tutorial 9's established "If count of" phrasing as precedent —
+  so it inherited the same inaccuracy)
+
+The original audit's automated fuzzy scan evidently treated this as a
+near-enough match (shared keywords "count"/object name) and never
+promoted it out of "Part D: still unverified" into the confirmed list —
+a concrete example of exactly the false-negative risk Part D's own note
+already warned about, just in the other direction (a miss, not a false
+positive).
+
+**This one needs a decision, not just a fix** (see "Suggested order,
+updated" below) — "If count of X == N" is genuinely much friendlier
+wording than the real block's 3-field label, used in a flagship,
+10-language lesson. Unlike C1's offset/negate fields (truly optional
+detail most students never touch), this phrasing choice is closer to
+"deliberately simplified teaching language" than "inaccurate." Two real
+options, not a forced wording-match:
+  - **(a) Update every listed page to the real, verbose text** — fully
+    accurate, same mechanical pattern as every other fix here, but a
+    readability regression in a lesson aimed at young students, across 10
+    languages for Tutorial 9 alone.
+  - **(b) Give `test_instance_count` a real hand-written Blockly block**
+    with clean, direct "If count of `<object>` `<op>` `<n>`" phrasing —
+    matching what the tutorials already (and reasonably) describe, fixing
+    the mismatch by making the block match the teaching text instead of
+    the reverse. `if_condition`'s own `instance_count` `condition_type`
+    sub-mode (added by the 2026-10-08 Blockly audit's B2 fix) already
+    proves this exact clean phrasing is achievable in this engine — worth
+    checking first whether `if_condition`/`instance_count` could be reused
+    directly (one unified block, no start_block/end_block wrapper needed
+    at all) rather than building a second, parallel mechanism.
+
+## Part E — NEW finding, bigger than this whole audit: generated/custom Blockly blocks never localize, in any language
+
+Found while verifying C1 (confirmed empirically, not inferred): every
+action in `GENERATED_ACTION_NAMES` (`if_collision`, `test_instance_count`,
+`start_block`, `end_block`, `else_action`, `restart_game`, every
+Drawing/Game/Particles/Views action from this week's category-mismatch
+work, dozens more) renders with **identical, English-only text regardless
+of the IDE's selected language**. Root cause:
+`blockly_widget.py`'s `_register_custom_blocks()` pushes each
+`ActionType.display_name`/`description` straight from the Python
+`ACTION_TYPES` dict (always English) to
+`blockly_workspace.html`'s `registerCustomBlocks()`, which builds each
+block's label directly from that raw string — zero calls to
+`getBlockMessage()`/any per-language lookup anywhere in that function.
+Verified directly: `if_collision`'s block face is byte-identical with
+`BLOCKLY_LANG` set to `'en'` vs `'fr'`.
+
+This is **categorically different and much bigger** than B1-B4/this
+Part C's fixes, which are all about HAND-WRITTEN blocks (`event_create`,
+`event_collision`, `score_set`, ...) — those genuinely do have real,
+working per-language text via `BLOCK_MESSAGES`/`getBlockMessage()`,
+confirmed accurate; nothing here contradicts Part A/B's work. The gap is
+specifically the ~80-entry `GENERATED_ACTION_NAMES` set.
+
+**Direct consequence for fixing any tutorial page that depicts a
+generated block (C1, C2's `test_instance_count`, and likely more in Part
+D):** the honest, accurate thing for a translated (FR, or any other
+language) tutorial page's *mockup box* to show is the **real, English**
+block text — even on a French page — since that is genuinely what a
+French-language user's screen will show. Surrounding prose stays in the
+page's own language; only the literal "this is what the block looks like"
+box should show English for a generated action. This is a new rule Part
+D's re-scan (and anyone fixing C1/C2) needs to apply, not previously
+considered by the original audit.
+
+**Not fixed here — logged as its own, separate, large TODO.md item**
+(see there): deciding whether/how to localize generated blocks is a real
+engineering question (per-action translated `display_name`/parameter
+labels pushed per-language from Python, or a JS-side lookup table mirroring
+`BLOCK_MESSAGES`) affecting every non-English IDE language, not scoped to
+tutorials at all.
+
+## Part C (original) — superseded by the re-investigation above, kept for
+history:
 
 ### C1. Tutorial 5 (Sokoban): the crate-on-target check uses an action with no real Blockly block
 
@@ -229,10 +380,27 @@ quoted strings, negative numbers the normalizer mishandled — but not
 confirmed one by one). Re-run the scan after Part B/C are resolved and
 triage what's left; don't assume Part B+C is the complete list.
 
-## Suggested order
+## Suggested order (superseded version below is current)
 
-1. Part B1-B3 (mechanical text fixes, EN+FR, one tutorial-language pair
-   per commit — 8 tutorials × up to 2 languages).
-2. Part B4 (2 pages, needs the exact real FR text confirmed first).
-3. Decide and act on C1/C2 (or explicitly defer them as their own units).
-4. Re-run the automated scan for Part D and triage.
+1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
+2. ~~Decide and act on C1/C2~~ — superseded, see "Part C — RE-INVESTIGATED" above.
+3. ~~Re-run the automated scan for Part D and triage.~~ — still open.
+
+## Suggested order, updated (2026-10-16, after the C1/C2 re-investigation)
+
+1. **C1** — straightforward wording fix, ready now: `Tutorials/05_sokoban/
+   04_targets_and_controller.html` (EN only — Tutorial 5 has no FR page).
+2. **C2, the start_block/end_block casing half** — straightforward wording
+   fix, ready now: `Tutorials/13_raycast_goals_monsters/04_the_exit.html`
+   EN + FR.
+3. **C2, the `test_instance_count` half — needs the (a)/(b) decision above
+   before touching anything.** Affects `09_catch_the_coins/05_winning.html`
+   (EN + 8 translated variants), `13_raycast_goals_monsters/
+   04_the_exit.html` (EN; FR already closer to correct, re-check once the
+   decision is made), `16_fruit_basket/05_winning.html` (EN + FR).
+4. Re-run the automated scan for Part D, now explicitly applying Part E's
+   rule (a generated-block mockup should show English even on a
+   translated page) so the re-scan's own diffing doesn't flag correctly-
+   English generated-block mockups on FR/DE/... pages as mismatches.
+5. **Part E (generated blocks never localize) is its own large, separate
+   item — see its own `TODO.md` entry, not sequenced here.**
