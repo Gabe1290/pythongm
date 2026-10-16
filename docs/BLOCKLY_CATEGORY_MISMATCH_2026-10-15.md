@@ -220,3 +220,98 @@ in the user's explicit ask).
   `"Output"` entry removed.
 - Full suite green throughout; targeted blockly/toolbox/extension/thymio
   subset (473 tests) and the new regression file verified on every step.
+
+## Resolution, part 2 (2026-10-16): the "Game" category + text/text_join
+
+Picked up the two things part 1 deliberately left untouched. Presented as
+two decisions with options; user picked the recommended one for each:
+**B** (proper fix: split by what the actions actually are, give "Game" a
+real color) for the Game category, and **A** (own small always-on
+category, same as Math/Logic) for `text`/`text_join`.
+
+**The "Game" category was bigger than part 1 assumed.** Re-auditing
+`actionToBlockType` against every `ActionType.category == "Game"` found
+not 1 but **20** actions carrying that category, of which **19 genuinely
+leak** (not hardcoded-mapped) into one grey, uncolored, category-gating-
+exempt dynamic box: **11 are really Drawing actions**
+(`draw_arrow`, `draw_background`, `draw_ellipse`, `draw_line`,
+`draw_scaled_text`, `draw_sprite`, `draw_variable`, `fill_color`,
+`set_color`, `set_draw_color`, `set_draw_font`) and **9 are genuine
+game-lifecycle actions** (`restart_game`, `load_game`, `save_game`,
+`open_webpage`, `set_window_caption`, `show_info`, `show_video`,
+`splash_show_image`, `splash_show_text`). `game_end` already correctly
+lands in "Room" and was never part of the mess.
+
+- The 11 drawing-ish actions: `category=` changed `"Game"` -> `"Drawing"`
+  in `events/action_types.py`, merging in via the same mechanism as part
+  1's Score/Grid fixes.
+- The 9 lifecycle actions: left at `category="Game"`; `"Game"` itself
+  promoted from a stray dynamic fallback to a real, colored (`#607D8B`)
+  category in `blockly_workspace.html` (both the generated `categories`
+  dict and `categoryColors`).
+- `BLOCK_REGISTRY` (`config/blockly_config.py`) updated to match: the 11
+  drawing-ish actions added under `"Drawing"`; the 8 remaining lifecycle
+  actions (`restart_game` was already listed) added under `"Game"`;
+  `game_end` moved from `"Game"` to `"Room"` (where it always really
+  landed) -- the loose end part 1's "Resolution" explicitly deferred.
+
+**Regression found and fixed before it shipped: promoting "Game" to a
+real category silently hid its blocks in 4 presets.** The OLD stray-
+category rendering path (`blockly_workspace.html`'s second toolbox-
+building loop) filtered purely by `enabledBlocks` -- no `enabledCategories`
+check at all, since a stray category was never something a preset could
+even name to toggle. Making "Game" real moves it into the FIRST loop,
+which gates the whole category box on `enabledCategories.has('Game')`
+first. Auditing all 10 `BlocklyConfig` presets found `get_platformer`,
+`get_grid_rpg`, `get_sokoban` and `get_testing` all had the 9 lifecycle
+actions in `enabled_blocks` (via the blanket `GENERATED_ACTION_NAMES |
+PROMOTED_TO_HAND_WRITTEN_BLOCKS` union) but no `"Game"` in
+`enabled_categories` -- would have silently lost Restart Game and friends.
+`get_platformer` also lacked `"Drawing"` entirely. Fixed by adding the
+missing categories to each preset's `enabled_categories` literal (verified
+none of the four explicitly enable any of Drawing's OTHER, unrelated
+hardcoded blocks like `draw_text`/`output_message`, so this doesn't newly
+expose anything beyond what was intended).
+
+**Same regression risk existed for users' saved custom Blockly configs on
+disk**, which `load_config()`'s migration never addressed (only
+`enabled_blocks`, never `enabled_categories`). Since `"Game"` never
+existed as a real, toggleable category before this fix, NO saved config
+could ever have had it enabled. Fixed with a new `config_version < 3`
+migration (the existing `< 2` one stays for the original
+`GENERATED_ACTION_NAMES` gap): adds `"Game"` to `enabled_categories`
+whenever any of the 9 lifecycle actions is already in `enabled_blocks`.
+`BlocklyConfig.config_version`'s dataclass default bumped `2` -> `3` so
+freshly-constructed configs (already current) skip it.
+
+**`text`/`text_join`**: added as an always-on "Text" category
+(`#4FA8A8`), inserted right after "Math"/"Logic" in both the generated
+toolbox and the static pre-load one -- exact same unconditional-append
+precedent, not gated by any preset's `enabled_categories` (matching
+Math/Logic, which also have no `BLOCK_REGISTRY` entry).
+
+**Three more findings surfaced while writing the regression tests for
+this part, deliberately NOT fixed here** (reported to the user, logged in
+`TODO.md`):
+- `"Particles"` (8 actions) and `"Views"` (2 actions) are a separate,
+  not-yet-decided instance of the *exact same* stray-category bug --
+  clean, single-purpose groups, no mixed-category untangling needed,
+  structurally the simplest of the three found so far.
+- `get_platformer` has silently hidden its Control- and Timing-category
+  generated blocks (12 + 7 actions) since the preset was written --
+  unrelated to the stray-category bug class (Control/Timing are real,
+  correctly-named categories), just `enabled_categories` never listing
+  them despite `enabled_blocks` including their actions. Found while
+  scoping the new regression test tightly enough to not fail on this
+  unrelated, pre-existing gap.
+
+New tests: `tests/test_blockly_category_mismatch_fix.py` grew to 51 (from
+21); `tests/test_blockly_preset_generated_actions.py` gained 4 (the
+category/migration regression guards, deliberately scoped to only
+Game/Drawing -- see its own docstring for why a broader version was
+tried and reverted). `editors/object_editor/blockly/blockly_i18n.js`'s
+separate `CATEGORY_MESSAGES` table (5 languages, a different i18n system
+than part 1's `config/blockly_translations.py`) also had a dangling
+`"Output"` entry part 1 missed -- removed, with
+`test_blockly_i18n_{pl,uk}.py`'s pinned counts updated. Full suite:
+**6179 passed, 0 failed, 13 skipped.**

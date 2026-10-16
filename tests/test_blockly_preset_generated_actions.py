@@ -3,6 +3,7 @@ about the generated (no hand-written Blockly block) actions.
 """
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -59,6 +60,61 @@ def test_everything_presets_include_every_generated_action():
         assert not missing, f"{name} preset missing generated actions: {missing}"
 
 
+def _action_to_block_type_map():
+    """actionToBlockType: action name -> hardcoded Blockly block type. An
+    action in here is a hardcoded block whose real toolbox placement is
+    wherever its literal <block type> XML sits in blockly_workspace.html's
+    `categories` dict -- NOT derived from ActionType.category, which is
+    simply never consulted for it (confirmed: several hardcoded actions,
+    e.g. draw_score/draw_lives/draw_health_bar, carry a stale category=
+    "Score" left over from before docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md's
+    "Score"->"Score/Lives/Health" merge -- harmless since it's dead data
+    for them, but would be a false positive here if not excluded)."""
+    text = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
+            "blockly_workspace.html").read_text(encoding="utf-8")
+    start = text.index("var actionToBlockType = {")
+    end = text.index("\n        };", start)
+    return set(re.findall(r"'([a-zA-Z0-9_]+)':\s*'[a-zA-Z0-9_]+'", text[start:end]))
+
+
+
+
+def test_everything_presets_also_enable_the_categories_their_generated_actions_need():
+    """A generated action showing in enabled_blocks is not enough on its
+    own -- the real toolbox also gates the whole category box on
+    enabled_categories. docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+    "Resolution, part 2": promoting "Game" from a stray, category-gating-
+    exempt fallback to a real category silently hid its 9 actions in
+    get_platformer/get_grid_rpg/get_sokoban/get_testing until this was
+    caught and fixed; the 11 actions recategorized Game->Drawing hit the
+    same risk for get_platformer specifically (the one "everything" preset
+    that did not already have "Drawing" enabled).
+
+    Deliberately scoped to ONLY "Game" and "Drawing" -- the two categories
+    this fix actually touched -- not a sweeping audit of every category.
+    A broader version of this check (every category, not just these two)
+    was tried first and found the SAME gap already exists, independently,
+    for "Control" and "Timing" in get_platformer (pre-existing, unrelated
+    to this fix, never fixed here -- a separate finding, not silently
+    swept under this test)."""
+    from events.action_types import ACTION_TYPES
+    mapped = _action_to_block_type_map()
+    checked_categories = {"Game", "Drawing"}
+    presets = _presets()
+    for name in EVERYTHING_PRESETS:
+        cfg = presets[name]
+        missing = {}
+        for action_name in cfg.enabled_blocks:
+            if action_name in mapped:
+                continue
+            action = ACTION_TYPES.get(action_name)
+            if action is None or action.category not in checked_categories:
+                continue
+            if action.category not in cfg.enabled_categories:
+                missing.setdefault(action.category, []).append(action_name)
+        assert not missing, f"{name} preset: blocks enabled but their category is not: {missing}"
+
+
 def test_beginner_gained_exactly_the_three_decided_actions():
     presets = _presets()
     beginner = presets["beginner"]
@@ -111,25 +167,79 @@ def test_load_config_migrates_a_pre_unit2_saved_config_once(tmp_path, monkeypatc
     monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
 
     cfg = bc.load_config()
-    assert cfg.config_version == 2
+    assert cfg.config_version == 3
     assert bc.GENERATED_ACTION_NAMES <= cfg.enabled_blocks
     assert {"event_create", "move_set_hspeed"} <= cfg.enabled_blocks  # not clobbered
+    # restart_game (added by the version-1->2 migration) needs its real
+    # category too, which the version-2->3 migration adds in the same pass
+    # since this config started below version 2 either way.
+    assert "Game" in cfg.enabled_categories
 
     on_disk = json.loads(config_path.read_text(encoding="utf-8"))
-    assert on_disk["config_version"] == 2
+    assert on_disk["config_version"] == 3
     assert "restart_game" in on_disk["enabled_blocks"]
+    assert "Game" in on_disk["enabled_categories"]
 
-    # Loading again must not re-print/re-save the migration (version already 2).
+    # Loading again must not re-print/re-save the migration (version already current).
     saved_mtime = config_path.stat().st_mtime_ns
     cfg2 = bc.load_config()
-    assert cfg2.config_version == 2
+    assert cfg2.config_version == 3
     assert config_path.stat().st_mtime_ns == saved_mtime
+
+
+def test_load_config_migrates_a_version2_config_missing_the_game_category(tmp_path, monkeypatch):
+    """docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md "Resolution, part 2":
+    a config already migrated once under the OLD (Unit 2) scheme --
+    config_version == 2, restart_game already in enabled_blocks -- still
+    could never have had "Game" in enabled_categories, since it did not
+    exist as a real, toggleable category at that point. The version-2->3
+    migration must catch this case specifically (not just version-1
+    configs)."""
+    import config.blockly_config as bc
+
+    old_data = {
+        "enabled_blocks": sorted(bc.GENERATED_ACTION_NAMES | {"event_create"}),
+        "enabled_categories": ["Events"],
+        "preset_name": "custom",
+        "config_version": 2,
+    }
+    config_path = tmp_path / "blockly_config.json"
+    config_path.write_text(json.dumps(old_data), encoding="utf-8")
+    monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
+
+    cfg = bc.load_config()
+    assert cfg.config_version == 3
+    assert "Game" in cfg.enabled_categories
+
+    on_disk = json.loads(config_path.read_text(encoding="utf-8"))
+    assert on_disk["config_version"] == 3
+    assert "Game" in on_disk["enabled_categories"]
+
+
+def test_load_config_does_not_add_game_category_when_no_game_block_is_enabled(tmp_path, monkeypatch):
+    """The version-2->3 migration should not turn "Game" on for a config
+    that never had any game-lifecycle action enabled in the first place."""
+    import config.blockly_config as bc
+
+    old_data = {
+        "enabled_blocks": ["event_create", "move_set_hspeed"],
+        "enabled_categories": ["Events", "Movement"],
+        "preset_name": "custom",
+        "config_version": 2,
+    }
+    config_path = tmp_path / "blockly_config.json"
+    config_path.write_text(json.dumps(old_data), encoding="utf-8")
+    monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
+
+    cfg = bc.load_config()
+    assert cfg.config_version == 3
+    assert "Game" not in cfg.enabled_categories
 
 
 def test_fresh_config_is_already_current_version():
     from config.blockly_config import BlocklyConfig
-    assert BlocklyConfig.get_beginner().config_version == 2
-    assert BlocklyConfig(preset_name="custom").config_version == 2
+    assert BlocklyConfig.get_beginner().config_version == 3
+    assert BlocklyConfig(preset_name="custom").config_version == 3
 
 
 def test_promoting_test_expression_to_a_block_kept_every_preset_showing_it():

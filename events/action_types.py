@@ -1862,7 +1862,7 @@ ACTION_TYPES = {
         name="set_draw_font",
         display_name="Set Draw Font",
         description="Set the font and alignment for subsequent text drawing",
-        category="Game",
+        category="Drawing",
         icon="🔤",
         parameters=[
             ActionParameter(
@@ -1912,7 +1912,7 @@ ACTION_TYPES = {
         name="set_draw_color",
         display_name="Set Draw Color",
         description="Set the colour used by subsequent draw_* actions",
-        category="Game",
+        category="Drawing",
         icon="🎨",
         parameters=[
             ActionParameter(
@@ -1928,7 +1928,7 @@ ACTION_TYPES = {
         name="fill_color",
         display_name="Fill Screen Color",
         description="Fill the entire viewport with a solid colour",
-        category="Game",
+        category="Drawing",
         icon="🪣",
         parameters=[
             ActionParameter(
@@ -1965,7 +1965,7 @@ ACTION_TYPES = {
         name="draw_scaled_text",
         display_name="Draw Scaled Text",
         description="Draw text at an arbitrary scale",
-        category="Game",
+        category="Drawing",
         icon="🖍️",
         parameters=[
             ActionParameter(
@@ -2043,7 +2043,7 @@ ACTION_TYPES = {
         name="draw_line",
         display_name="Draw Line",
         description="Draw a line between two points",
-        category="Game",
+        category="Drawing",
         icon="📏",
         parameters=[
             ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Start X"),
@@ -2058,7 +2058,7 @@ ACTION_TYPES = {
         name="draw_ellipse",
         display_name="Draw Ellipse",
         description="Draw a filled or outlined ellipse within a bounding box",
-        category="Game",
+        category="Drawing",
         icon="🥚",
         parameters=[
             ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Left X"),
@@ -2074,7 +2074,7 @@ ACTION_TYPES = {
         name="draw_arrow",
         display_name="Draw Arrow",
         description="Draw an arrow from one point to another",
-        category="Game",
+        category="Drawing",
         icon="➡️",
         parameters=[
             ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Start X"),
@@ -2090,7 +2090,7 @@ ACTION_TYPES = {
         name="draw_sprite",
         display_name="Draw Sprite",
         description="Draw a sprite frame at a position",
-        category="Game",
+        category="Drawing",
         icon="🖼️",
         parameters=[
             ActionParameter(name="sprite", display_name="Sprite", param_type="sprite", default_value="", description="Sprite to draw"),
@@ -2105,7 +2105,7 @@ ACTION_TYPES = {
         name="draw_background",
         display_name="Draw Background",
         description="Draw a background image, optionally tiled across the screen",
-        category="Game",
+        category="Drawing",
         icon="🌄",
         parameters=[
             ActionParameter(name="background", display_name="Background", param_type="string", default_value="", description="Background asset name"),
@@ -2120,7 +2120,7 @@ ACTION_TYPES = {
         name="draw_variable",
         display_name="Draw Variable",
         description="Draw the value of a variable on screen",
-        category="Game",
+        category="Drawing",
         icon="🔢",
         parameters=[
             ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="X position"),
@@ -2165,7 +2165,7 @@ ACTION_TYPES = {
         name="set_color",
         display_name="Set Color",
         description="Set the draw colour and alpha for subsequent draws",
-        category="Game",
+        category="Drawing",
         icon="🎨",
         parameters=[
             ActionParameter(name="color", display_name="Color", param_type="color", default_value="#FFFFFF", description="RGB hex colour"),

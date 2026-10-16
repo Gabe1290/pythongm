@@ -1591,7 +1591,6 @@ const CATEGORY_MESSAGES = {
         'Room': 'Niveau',
         'Values': 'Valeurs',
         'Sound': 'Son',
-        'Output': 'Sortie',
         'Math': 'Maths',
         'Logic': 'Logique'
     },
@@ -1605,7 +1604,6 @@ const CATEGORY_MESSAGES = {
         'Room': 'Poziom',
         'Values': 'Wartości',
         'Sound': 'Dźwięk',
-        'Output': 'Wyjście',
         'Math': 'Matematyka',
         'Logic': 'Logika'
     },
@@ -1619,7 +1617,6 @@ const CATEGORY_MESSAGES = {
         'Room': 'Raum',
         'Values': 'Werte',
         'Sound': 'Klang',
-        'Output': 'Ausgabe',
         'Math': 'Mathematik',
         'Logic': 'Logik'
     },
@@ -1633,7 +1630,6 @@ const CATEGORY_MESSAGES = {
         'Room': 'Stanza',
         'Values': 'Valori',
         'Sound': 'Suono',
-        'Output': 'Uscita',
         'Math': 'Matematica',
         'Logic': 'Logica'
     },
@@ -1648,7 +1644,6 @@ const CATEGORY_MESSAGES = {
         'Room': 'Кімната',
         'Values': 'Значення',
         'Sound': 'Звук',
-        'Output': 'Вивід',
         'Math': 'Математика',
         'Logic': 'Логіка'
     }

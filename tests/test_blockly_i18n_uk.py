@@ -87,9 +87,9 @@ def test_category_messages_uk_only_has_category_names():
     uk_keys = _object_keys(content, "CATEGORY_MESSAGES", "uk")
     expected = {
         "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
-        "Instance", "Room", "Values", "Sound", "Output", "Math", "Logic",
+        "Instance", "Room", "Values", "Sound", "Math", "Logic",
     }
     assert uk_keys == expected, (
-        "CATEGORY_MESSAGES.uk should hold only the 12 toolbox category "
+        "CATEGORY_MESSAGES.uk should hold only the 11 toolbox category "
         f"names, not block-message keys; got {uk_keys}"
     )

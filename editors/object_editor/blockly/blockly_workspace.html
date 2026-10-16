@@ -520,6 +520,14 @@
             <block type="logic_boolean"></block>
         </category>
 
+        <!-- Text Category (generic string value blocks, always included
+             like Math/Logic -- docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+             "Resolution, part 2") -->
+        <category name="Text" colour="#4FA8A8">
+            <block type="text"></block>
+            <block type="text_join"></block>
+        </category>
+
         <!-- Sound Category -->
         <category name="Sound" colour="#9966FF">
             <!-- No <field> here on purpose; see the OBJECT comment above. -->
@@ -3198,6 +3206,22 @@
                         '<block type="value_mouse_y"></block>'
                     ]
                 },
+                // "Game" used to be a stray, uncolored, dynamically-created
+                // category -- 20 actions carried category="Game" in
+                // action_types.py (no matching hardcoded key here), so
+                // registerCustomBlocks() dumped them all into one ad hoc
+                // box. 11 of those were really Drawing actions (recategorized
+                // there instead, docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+                // "Resolution, part 2"); these 9 are genuinely game-lifecycle
+                // actions, so "Game" now gets a real, colored, recognized
+                // category here (empty blocks array -- all 9 are still
+                // dynamically generated, not hardcoded, so they merge in via
+                // customCategories the same way Score/Lives/Health's leaking
+                // actions do).
+                'Game': {
+                    color: '#607D8B',
+                    blocks: []
+                },
                 // NOTE: audio blocks are no longer hardcoded here. play_sound,
                 // stop_sound, play_music, stop_music and set_volume auto-generate
                 // into a single always-visible "Audio" category (see
@@ -3223,6 +3247,20 @@
             xml += '<block type="logic_operation"></block>';
             xml += '<block type="logic_negate"></block>';
             xml += '<block type="logic_boolean"></block>';
+            xml += '</category>';
+
+            // "Text" (always included, like Math/Logic): generic Blockly
+            // value blocks (string literal, string join) meant to drop into
+            // any text-shaped slot across every category, not tied to one
+            // action domain -- docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+            // "Resolution, part 2". Previously only existed in the static
+            // pre-load toolbox XML below (under the old "Output" category),
+            // which every real page load replaces -- genuinely unreachable
+            // in the live toolbox until this fix, the same orphan bug
+            // execute_code had.
+            xml += '<category name="' + getCategoryMessage('Text', window.BLOCKLY_LANG) + '" colour="#4FA8A8">';
+            xml += '<block type="text"></block>';
+            xml += '<block type="text_join"></block>';
             xml += '</category>';
 
             // Track which custom categories have been merged into hardcoded ones
@@ -3336,7 +3374,8 @@
                 'Room': '#A6745C',
                 'Sound': '#9966FF',
                 'Audio': '#9966FF',
-                'Timing': '#FF6B6B'
+                'Timing': '#FF6B6B',
+                'Game': '#607D8B'
             };
 
             for (var i = 0; i < actionDefs.length; i++) {

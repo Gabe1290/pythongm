@@ -85,6 +85,22 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md).
         {"type": "output_message", "name": "Show Message", "description": "Display message dialog", "implemented": True},
         {"type": "execute_code", "name": "Execute Code", "description": "Execute custom Python code", "implemented": True},
+        # Moved from "Game" -- these 11 were always real Drawing/draw-state
+        # blocks, just mislabeled category="Game" in action_types.py
+        # (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md "Resolution, part 2").
+        # Previously entirely absent from BLOCK_REGISTRY despite being real,
+        # visible toolbox blocks the config dialog couldn't show/hide.
+        {"type": "draw_arrow", "name": "Draw Arrow", "description": "Draw an arrow from one point to another", "implemented": True},
+        {"type": "draw_background", "name": "Draw Background", "description": "Draw a background image, optionally tiled across the screen", "implemented": True},
+        {"type": "draw_ellipse", "name": "Draw Ellipse", "description": "Draw a filled or outlined ellipse within a bounding box", "implemented": True},
+        {"type": "draw_line", "name": "Draw Line", "description": "Draw a line between two points", "implemented": True},
+        {"type": "draw_scaled_text", "name": "Draw Scaled Text", "description": "Draw text at an arbitrary scale", "implemented": True},
+        {"type": "draw_sprite", "name": "Draw Sprite", "description": "Draw a sprite frame at a position", "implemented": True},
+        {"type": "draw_variable", "name": "Draw Variable", "description": "Draw the value of a variable on screen", "implemented": True},
+        {"type": "fill_color", "name": "Fill Screen Color", "description": "Fill the entire viewport with a solid colour", "implemented": True},
+        {"type": "set_color", "name": "Set Color", "description": "Set the draw colour and alpha for subsequent draws", "implemented": True},
+        {"type": "set_draw_color", "name": "Set Draw Color", "description": "Set the colour used by subsequent draw_* actions", "implemented": True},
+        {"type": "set_draw_font", "name": "Set Draw Font", "description": "Set the font and alignment for subsequent text drawing", "implemented": True},
     ],
     "Score/Lives/Health": [
         {"type": "score_set", "name": "Set Score", "description": "Set score value", "implemented": True},
@@ -124,6 +140,12 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "room_goto", "name": "Go to Room", "description": "Go to specific room", "implemented": True},
         {"type": "room_if_next_exists", "name": "If Next Room Exists", "description": "Check if next room exists", "implemented": True},
         {"type": "room_if_previous_exists", "name": "If Previous Room Exists", "description": "Check if previous room exists", "implemented": True},
+        # Moved from "Game" -- game_end has always had category="Room" in
+        # action_types.py and already correctly merges into the real
+        # "Room" toolbox category; only its config-dialog BLOCK_REGISTRY
+        # entry was mismatched (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+        # "Resolution, part 2").
+        {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
     ],
     "Values": [
         {"type": "value_x", "name": "X Position", "description": "Get X coordinate", "implemented": True},
@@ -142,20 +164,23 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "music_stop", "name": "Stop Music", "description": "Stop music", "implemented": True},
     ],
     # The old standalone "Output" category (output_message, execute_code)
-    # was merged into "Drawing" above -- see that key's comment and
-    # docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md. show_highscore and
-    # clear_highscore moved from "Game" below to "Score/Lives/Health"
-    # above for the same reason (matching their real category= in
-    # action_types.py). "Game" keeping only game_end/restart_game (rather
-    # than also folding game_end into "Room", where it really lands in the
-    # live toolbox, or giving restart_game -- the one real toolbox block
-    # left in its own stray dynamic "Game" category -- a proper home) is a
-    # deliberate, separate follow-up: neither was part of the user's
-    # explicit merge request, and this config dialog's grouping doesn't
-    # have to mirror the live toolbox's category boxes 1:1 to be useful.
+    # was merged into "Drawing" above; show_highscore/clear_highscore moved
+    # to "Score/Lives/Health"; game_end moved to "Room" (see that key's
+    # comment); 11 drawing-ish actions moved to "Drawing" (see that key's
+    # comment) -- docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md "Resolution,
+    # part 2". What's left is "Game"'s real, correct membership: genuine
+    # game-lifecycle actions, now promoted from a stray/uncolored dynamic
+    # toolbox category to a real hardcoded one (blockly_workspace.html).
     "Game": [
-        {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
         {"type": "restart_game", "name": "Restart Game", "description": "Restart from first room", "implemented": True},  # was "game_restart", a name no block had (Blockly audit B8)
+        {"type": "load_game", "name": "Load Game", "description": "Restore room, score/lives/health, global variables, and instance states from a save file", "implemented": True},
+        {"type": "save_game", "name": "Save Game", "description": "Save the current room, score/lives/health, global variables, and instance states to a file", "implemented": True},
+        {"type": "open_webpage", "name": "Open Webpage", "description": "Open a URL in the default browser", "implemented": True},
+        {"type": "set_window_caption", "name": "Set Window Caption", "description": "Configure score/lives/health display in window title", "implemented": True},
+        {"type": "show_info", "name": "Show Game Info", "description": "Display the game information screen", "implemented": True},
+        {"type": "show_video", "name": "Show Video", "description": "Play a video file in your system's default video player", "implemented": True},
+        {"type": "splash_show_image", "name": "Splash: Show Image", "description": "Show a sprite full-screen and pause the game until the player dismisses it", "implemented": True},
+        {"type": "splash_show_text", "name": "Splash: Show Text", "description": "Show a message and pause the game until the player dismisses it", "implemented": True},
     ],
 }
 # The 8 "Thymio *" categories moved to extensions/thymio/blockly_categories.py
@@ -284,13 +309,14 @@ class BlocklyConfig:
     enabled_blocks: Set[str] = field(default_factory=set)
     enabled_categories: Set[str] = field(default_factory=set)
     preset_name: str = "full"
-    # Bumped to 2 when GENERATED_ACTION_NAMES (Unit 2) was added, so
-    # load_config() can tell a config saved before that change apart from
-    # one built fresh by current code (which already includes them) and
-    # migrate it exactly once. A config built directly by this module's own
-    # code (every get_*() preset, any fresh custom config) is current by
-    # construction, hence the default of 2, not 1.
-    config_version: int = 2
+    # Bumped to 2 when GENERATED_ACTION_NAMES (Unit 2) was added, then to 3
+    # when "Game" became a real, gated toolbox category (see load_config's
+    # migrations), so load_config() can tell a config saved before each
+    # change apart from one built fresh by current code (which already
+    # reflects them) and migrate it exactly once. A config built directly by
+    # this module's own code (every get_*() preset, any fresh custom config)
+    # is current by construction, hence the default of 3, not 1.
+    config_version: int = 3
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for JSON serialization"""
@@ -585,7 +611,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound", "Drawing", "Game"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -634,7 +660,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound", "Game"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -681,7 +707,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing", "Game"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -823,7 +849,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing", "Game"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -1195,6 +1221,25 @@ def load_config() -> BlocklyConfig:
                         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
                     config.config_version = 2
                     needs_save = True
+
+                # Migrate (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
+                # "Resolution, part 2"): "Game" went from a stray toolbox
+                # category -- exempt from category-gating, shown purely by
+                # enabled_blocks -- to a real one, gated like every other
+                # category. A config saved before this fix could have
+                # restart_game/save_game/etc. in enabled_blocks (via the
+                # migration above, or "full", or an explicit enable_block)
+                # with no way to have ever had "Game" in enabled_categories,
+                # since it did not exist as a real, toggleable category
+                # until now. Without this, those actions would silently
+                # vanish from the toolbox on the next load.
+                if config.config_version < 3:
+                    game_action_names = {b["type"] for b in BLOCK_REGISTRY["Game"]}
+                    if (game_action_names & config.enabled_blocks) and "Game" not in config.enabled_categories:
+                        print("Blockly config migration: Adding 'Game' category (now real, was a stray fallback)")
+                        config.enabled_categories.add("Game")
+                        needs_save = True
+                    config.config_version = 3
 
                 # Migrate: If using "full" preset, ensure all new blocks and categories are enabled
                 # This handles the case where new blocks/categories were added after config was saved

@@ -175,9 +175,143 @@ def test_block_registry_game_no_longer_has_highscore_actions():
     types = {b["type"] for b in BLOCK_REGISTRY["Game"]}
     assert "show_highscore" not in types
     assert "clear_highscore" not in types
-    # game_end/restart_game are a deliberate, separate, un-decided follow-up
-    # (see the plan doc) -- left exactly as they were.
-    assert types == {"game_end", "restart_game"}
+    # game_end/restart_game were the plan doc's "deliberate, separate,
+    # un-decided follow-up" -- since resolved (part 2, 2026-10-16):
+    # game_end moved to "Room" (where it always really landed); "Game"
+    # itself became a real category holding the 9 genuine game-lifecycle
+    # actions, restart_game included.
+    assert "game_end" not in types
+    assert types == {
+        "restart_game", "load_game", "save_game", "open_webpage",
+        "set_window_caption", "show_info", "show_video",
+        "splash_show_image", "splash_show_text",
+    }
+
+
+# --------------------------------------------------------------------------
+# "Resolution, part 2" (2026-10-16): the "Game" category promoted from a
+# stray, uncolored, category-gating-exempt dynamic fallback to a real one
+# (20 actions carried category="Game", not just restart_game as first
+# thought -- 11 were really Drawing actions, 9 are genuine game-lifecycle
+# ones); the orphaned text/text_join value blocks given their own always-on
+# "Text" category, same precedent as Math/Logic.
+# --------------------------------------------------------------------------
+
+GAME_LIFECYCLE_ACTIONS = {
+    "restart_game", "load_game", "save_game", "open_webpage",
+    "set_window_caption", "show_info", "show_video",
+    "splash_show_image", "splash_show_text",
+}
+DRAWING_RECATEGORIZED_ACTIONS = {
+    "draw_arrow", "draw_background", "draw_ellipse", "draw_line",
+    "draw_scaled_text", "draw_sprite", "draw_variable", "fill_color",
+    "set_color", "set_draw_color", "set_draw_font",
+}
+
+
+def test_game_is_a_real_toolbox_category_not_a_stray_one():
+    keys = _real_toolbox_category_keys()
+    assert "Game" in keys
+
+
+def test_game_category_has_a_real_color():
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var categoryColors = {")
+    end = text.index("};", start)
+    assert "'Game':" in text[start:end]
+
+
+@pytest.mark.parametrize("name,expected_category", [
+    ("draw_arrow", "Drawing"), ("draw_background", "Drawing"),
+    ("draw_ellipse", "Drawing"), ("draw_line", "Drawing"),
+    ("draw_scaled_text", "Drawing"), ("draw_sprite", "Drawing"),
+    ("draw_variable", "Drawing"), ("fill_color", "Drawing"),
+    ("set_color", "Drawing"), ("set_draw_color", "Drawing"),
+    ("set_draw_font", "Drawing"),
+])
+def test_drawing_ish_game_actions_recategorized(name, expected_category):
+    from events.action_types import ACTION_TYPES
+    assert ACTION_TYPES[name].category == expected_category
+
+
+def test_game_lifecycle_actions_still_carry_game_category():
+    """These 9 never needed an action_types.py change -- only promoting
+    "Game" itself to a real toolbox category."""
+    from events.action_types import ACTION_TYPES
+    for name in GAME_LIFECYCLE_ACTIONS:
+        assert ACTION_TYPES[name].category == "Game"
+
+
+def test_no_action_type_carries_game_except_the_real_lifecycle_set():
+    """Every LEAKING action (not already hardcoded-mapped -- see
+    _action_to_block_type_map) still carrying category="Game" must be one
+    of the 9 genuine lifecycle ones -- anything else slipping back in
+    would be a fresh instance of this exact bug. A handful of hardcoded/
+    mapped actions (draw_text, draw_rectangle, draw_circle, set_alpha,
+    show_message) also carry a stale category="Game" -- harmless, since
+    their real toolbox placement never consults that field at all (same
+    exclusion as test_no_leaking_action_type_carries_a_stray_category)."""
+    from events.action_types import ACTION_TYPES
+    mapped = _action_to_block_type_map()
+    still_game = {name for name, a in ACTION_TYPES.items()
+                  if a.category == "Game" and name not in mapped}
+    assert still_game == GAME_LIFECYCLE_ACTIONS
+
+
+def test_block_registry_drawing_absorbed_the_recategorized_actions():
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for b in BLOCK_REGISTRY["Drawing"]}
+    assert DRAWING_RECATEGORIZED_ACTIONS <= types
+
+
+def test_block_registry_room_absorbed_game_end():
+    from config.blockly_config import BLOCK_REGISTRY
+    types = {b["type"] for b in BLOCK_REGISTRY["Room"]}
+    assert "game_end" in types
+
+
+@pytest.mark.parametrize("preset_attr", [
+    "get_full", "get_beginner", "get_intermediate", "get_platformer",
+    "get_grid_rpg", "get_sokoban", "get_testing", "get_implemented_only",
+    "get_code_editor", "get_blockly_editor",
+])
+def test_no_preset_shows_game_blocks_without_enabling_the_game_category(preset_attr):
+    """The regression this part-2 fix almost shipped: promoting "Game" to a
+    real, gated category silently hid its blocks in any preset that relied
+    on the old stray-category's category-gating exemption without also
+    listing "Game" in enabled_categories."""
+    from config.blockly_config import BlocklyConfig
+    config = getattr(BlocklyConfig, preset_attr)()
+    if GAME_LIFECYCLE_ACTIONS & config.enabled_blocks:
+        assert "Game" in config.enabled_categories, preset_attr
+
+
+def test_config_version_bumped_for_the_game_category_migration():
+    from config.blockly_config import BlocklyConfig
+    assert BlocklyConfig().config_version >= 3
+
+
+def test_text_category_exists_in_both_toolboxes():
+    names = _static_initial_toolbox_category_names()
+    assert "Text" in names
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    assert "getCategoryMessage('Text'" in text
+
+
+def test_text_and_text_join_blocks_present_in_both_toolboxes():
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    # Dynamic (real, post-load) toolbox.
+    dyn_start = text.index("// Add Math and Logic categories")
+    dyn_end = text.index("// Generate categories based on config")
+    dyn_blob = text[dyn_start:dyn_end]
+    assert '<block type="text"></block>' in dyn_blob
+    assert '<block type="text_join"></block>' in dyn_blob
+    # Static (pre-load) toolbox.
+    static_start = text.index('<xml id="toolbox"')
+    static_end = text.index("</xml>", static_start)
+    static_blob = text[static_start:static_end]
+    assert '<block type="text"></block>' in static_blob
+    assert '<block type="text_join"></block>' in static_blob
 
 
 def test_execute_code_promoted_out_of_generated_action_names():

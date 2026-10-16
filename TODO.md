@@ -24,6 +24,54 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
+### Blockly toolbox: "Particles" and "Views" are stray categories too (found 2026-10-16)
+
+While fixing `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`'s "Game"
+category (same session, separate follow-up from the three user-named
+merges), a new regression test surfaced the exact same bug for two more
+groups: 8 particle actions (`create_particle_system`,
+`destroy_particle_system`, `clear_particles`, `create_particle_type`,
+`create_emitter`, `destroy_emitter`, `burst_particles`,
+`stream_particles`) carry `category="Particles"`, and 2 view actions
+(`enable_views`, `set_view`) carry `category="Views"` — neither
+`"Particles"` nor `"Views"` is a real hardcoded toolbox category key in
+`editors/object_editor/blockly/blockly_workspace.html`'s `categories` JS
+dict, so `registerCustomBlocks()` dumps both into their own stray,
+uncolored, category-gating-exempt dynamic boxes — the identical mechanism
+"Game" had (see `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`'s
+"Resolution, part 2"). Unlike "Game", both of these are already clean,
+single-purpose groups (no mixed-category untangling needed) — straight
+applications of the same promote-to-a-real-colored-category fix. Not yet
+fixed: flagged to the user as a separate decision, deliberately not
+bundled into the Game/Text work that found it.
+`tests/test_blockly_preset_generated_actions.py::test_everything_presets_also_enable_the_categories_their_generated_actions_need`
+is scoped to only "Game"/"Drawing" for this reason — it would also catch
+this gap if widened once/if this gets fixed.
+
+### Blockly `get_platformer` preset: Control/Timing generated blocks are silently hidden (found 2026-10-16)
+
+Separate, unrelated finding from the same regression-test-writing session
+as the "Particles"/"Views" entry above: `config/blockly_config.py`'s
+`get_platformer()` preset unions `GENERATED_ACTION_NAMES |
+PROMOTED_TO_HAND_WRITTEN_BLOCKS` into `enabled_blocks` like every other
+"everything" preset, which includes Control-category generated actions
+(`test_chance`, `if_collision`, `if_collision_at`, `if_object_exists`,
+`start_block`, `end_block`, `comment`, `check_empty`, `test_question`,
+`execute_script`, `else_action`, `repeat`) and Timing-category ones
+(`sleep`, `pause_timeline`, `set_timeline`, `set_timeline_position`,
+`set_timeline_speed`, `start_timeline`, `stop_timeline`) -- but its
+`enabled_categories` set has never included `"Control"` or `"Timing"`.
+Unlike the Game/Particles/Views bug class, `"Control"` and `"Timing"` ARE
+real, correctly-named, already-hardcoded toolbox categories -- this isn't
+a stray-category naming mismatch at all, just `get_platformer`'s own
+`enabled_categories` set being incomplete relative to what it enables at
+the block level, so these blocks have been silently invisible in the
+platformer preset's live toolbox for as long as this preset has existed.
+Not fixed here (found while scoping a regression test for an unrelated
+fix, not something this session set out to look for) -- worth auditing
+every OTHER preset for the same kind of "blocks enabled but their
+category isn't" gap before fixing just this one instance.
+
 ### Blockly toolbox: `text`/`text_join` value blocks are unreachable (found 2026-10-15)
 
 While fixing `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md` (Score/Grid/
