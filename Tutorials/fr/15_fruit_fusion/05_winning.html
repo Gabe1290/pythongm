@@ -97,7 +97,7 @@
         </div>
         <div class="blockly-group">
             <span class="block block-event">Touche pressée : Espace</span><br>
-            <span class="block block-game block-indent">Redémarrer le jeu</span>
+            <span class="block block-game block-indent">Restart Game</span>
         </div>
         <ol>
             <li>Créez une nouvelle salle nommée <code>room_win</code></li>
@@ -128,7 +128,7 @@
             <span class="block block-instance block-indent2">Définir la variable <span class="block-num">held_level</span> à <span class="block-num">4</span></span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">50</span></span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-num">spr_basket_watermelon</span></span><br>
-            <span class="block block-room block-indent2">Aller à la salle <span class="block-text">room_win</span></span><br>
+            <span class="block block-room block-indent2">Aller au niveau <span class="block-text">room_win</span></span><br>
             <span class="block block-control block-indent">Else</span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">1</span></span><br>
             <span class="block block-instance block-indent">Détruire autre instance</span>
@@ -136,7 +136,7 @@
         <div class="info" style="margin-top: 10px;">
             <strong>Ce que cela fait :</strong> le même schéma que les deux
             premières fusions, avec une nouvelle ligne : au moment où la fusion
-            réussit (une orange attrape une orange), <strong>Aller à la salle
+            réussit (une orange attrape une orange), <strong>Aller au niveau
             room_win</strong> s'exécute là, directement dans la branche <em>Si</em>.
             Il n'y a aucune étape séparée « vérifier si j'ai gagné » ailleurs
             &mdash; gagner se produit exactement quand la quatrième fusion se produit.
