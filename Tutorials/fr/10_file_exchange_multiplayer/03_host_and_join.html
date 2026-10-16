@@ -91,18 +91,18 @@
         <div class="blockly-group">
             <span class="block block-event">Quand dessiner</span><br>
             <span class="block block-control block-indent">Si <span class="block-text">global.waiting_for_players == 1</span> alors</span><br>
-            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
-            <span class="block block-draw block-indent2">Quitter l'événement</span>
+            <span class="block block-draw block-indent2">Dessiner texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
+            <span class="block block-draw block-indent2">Exit Event</span>
         </div>
         <div class="blockly-group">
-            <span class="block block-draw">Dessiner le texte <span class="block-text">"Vous êtes " + my_mark</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
+            <span class="block block-draw">Dessiner texte <span class="block-text">"Vous êtes " + my_mark</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> <code>global.waiting_for_players</code>
             vaut <code>1</code> tant que la partie n'a pas autant de joueurs
             que son réglage <strong>Joueurs max</strong> (ici, 2), puis
             <code>0</code> &mdash; pas besoin de compter les joueurs
-            vous-même. <strong>Quitter l'événement</strong> empêche la
+            vous-même. <strong>Exit Event</strong> empêche la
             grille de se dessiner tant qu'on attend, de la même façon que
             l'exemple fourni garde son écran « appuyez sur H / appuyez sur
             J » jusqu'à ce que quelqu'un se connecte.
