@@ -6037,6 +6037,11 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     </message>
     <message>
         <location filename="../core/ide_window.py" line="232"/>
+        <source>Create S&amp;prite...</source>
+        <translation>Créer un s&amp;prite...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="232"/>
         <source>Create &amp;Object...</source>
         <translation>Créer un &amp;objet...</translation>
     </message>
