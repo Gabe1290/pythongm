@@ -214,6 +214,7 @@ project_name/
 - [Tutorial: Lunar Lander Game](Tutorial-LunarLander) - Land a spacecraft using thrust and fuel management
 - [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 - [Teacher Resources](Teacher-Resources) - Student handouts, worksheets and teacher guides for the in-app tutorials
+- [Junior Edition: Student Handout](Junior-Student-Handout) and [Teacher Guide](Junior-Teacher-Guide) - Using the simplified Junior edition with 8-9 year olds
 
 ### Where do I find...?
 

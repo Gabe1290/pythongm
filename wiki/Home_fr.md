@@ -215,6 +215,7 @@ nom_du_projet/
 - [Tutoriel : Atterrissage Lunaire](Tutorial-LunarLander_fr) - Posez un vaisseau sur la lune
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 - [Ressources pour enseignants](Teacher-Resources_fr) - Fiches élèves, feuilles d'exercices et guides de l'enseignant·e pour les tutoriels intégrés
+- [Édition Junior : fiche de l'élève](Junior-Student-Handout_fr) et [guide de l'enseignant·e](Junior-Teacher-Guide_fr) - Utiliser l'édition Junior simplifiée avec des élèves de 8 à 9 ans
 
 ### Où trouver...?
 

@@ -336,7 +336,11 @@ def _merge_soft_wraps(lines):
     merged = []
     for line in lines:
         stripped = line.strip()
-        if stripped == "" or _BLOCK_START.match(stripped) or not merged:
+        # A line after a blank line starts a new paragraph; gluing it onto
+        # the blank line swallowed the separator, so a list before it was
+        # not closed until the paragraph after (rendered out of order).
+        if (stripped == "" or _BLOCK_START.match(stripped) or not merged
+                or merged[-1].strip() == ""):
             merged.append(line)
         else:
             merged[-1] = merged[-1].rstrip() + " " + stripped
