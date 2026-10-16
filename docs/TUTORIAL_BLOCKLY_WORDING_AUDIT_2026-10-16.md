@@ -489,32 +489,55 @@ live block text before touching any file:
   block doesn't carry. Confirmed this is a real app-translation fact
   (checked `blockly_i18n.js` directly), not a stylistic tutorial choice.
 
-**Open, next concrete item — NOT fixed here, deliberately deferred as
-its own unit of work:** the great majority of the remaining 278
-unmatched spans are one cluster, not scattered noise. `blockly_i18n.js`
-has an explicit code comment — `// Room blocks (using "Niveau" instead
-of "Salle")` — covering `room_goto_next`, `room_goto_previous`, and
-`room_restart`: these three blocks deliberately render French text
-using *"niveau"* ("level"), not *"salle"* ("room"), unlike every other
-room-related French block (`room_goto` itself, with an explicit target,
-says `"aller au niveau %1"` too — confirmed consistent) and unlike every
-other language (German `"Raum"`, Italian `"stanza"`, Ukrainian
-`"кімнату"` — all literally "room"). Grepping every FR tutorial's
-room-navigation mockups (`Aller à la salle` / `Aller au niveau` /
-`Recommencer la salle` / `Redémarrer la salle`) across ~15 files found
-real usage is inconsistently split roughly in half between the correct
-`"niveau"` phrasing (Tutorials 9, 16's `goto_room` mockups already say
-it right) and the incorrect `"salle"` phrasing (every `restart_room`
-mockup found — Tutorials 5, 6, 7, 8, 13, 16 — plus Tutorial 15's
-`goto_room` mockup). This is real, confirmed, and sizable enough
-(touches most of the remaining count) to deserve its own careful pass
-rather than a rushed sweep in the same session as everything above —
-each occurrence needs the surrounding prose checked too (several
-explicitly explain "la salle" as a concept to students, not just quote
-a block label), and `06_maze/03_coins_and_exit.html`/`04_game_
-controller.html` mix both the restart and goto-next blocks in ways that
-need reading in full before editing. The remainder past this cluster is
-the already-documented Part E generated-block localization gap.
+**UPDATE (same session, continued): the "niveau vs salle" cluster above
+is now FIXED (commit `21e18c43`).** Every FR tutorial's
+`room_goto_next`/`room_goto_previous`/`room_restart`/`room_goto`
+block-label and category-name reference now says "niveau", matching
+`blockly_i18n.js`'s deliberate choice; generic room-concept prose was
+left untouched. Two more confirmed findings landed in the same commit
+while in the area: Tutorial 13's "Set lives to -1 (Relative)" (EN+FR)
+described a UI state that doesn't exist — `set_lives` with
+`relative=True` swaps in an entirely different block (`lives_add`,
+"Add to lives"), it doesn't add a "(Relative)" note to the same
+block — and `restart_game` (generated/custom, never localizes per
+Part E) was rendered as "Redémarrer le jeu" in 5 French tutorials
+instead of the real literal "Restart Game". Count: 278 → 251 unmatched.
+
+**Open, next concrete items — NOT fixed here, deliberately deferred as
+their own units of work.** Re-scanning after the above found the
+remaining ~251 unmatched spans split into two further clusters, each
+sizable enough to deserve its own pass rather than a rushed sweep in the
+same session as everything above:
+
+1. **French mockups routinely add a definite article the real block
+   text omits.** Confirmed on several instances already (`"Inverser
+   le/la mouvement..."` vs real `"Inverser mouvement..."`,
+   `"Détruire l'autre instance"` vs real `"Détruire autre instance"` —
+   both already fixed where found) but the *same* pattern recurs on
+   `draw_score`/`draw_lives` (real FR: `"Afficher score à x:.../Afficher
+   vies à x:..."`, no `"le"/"les"`) and very likely `move_set_hspeed`/
+   `move_set_vspeed` and others not yet individually checked. Worth a
+   single systematic grep-and-fix pass across all FR tutorials rather
+   than fixing one at a time as encountered (which is how the ones above
+   were found — opportunistically, not exhaustively).
+2. **`set_variable`'s real rendered block is far more verbose than most
+   tutorial mockups show.** `set_variable` is unmapped in
+   `actionToBlockType` (confirmed by grep), so it always goes through
+   the generated path — real text is `"📝 Set Variable Variable: X
+   Value: Y Scope: self Relative: non"` (never localizes, per Part E) —
+   but mockups like `"Définir variable global.p2score relative +1"`
+   (Tutorial 3) show a drastically simplified form with none of the
+   Variable:/Value:/Scope: labels. Same shape as the `test_instance_
+   count` fix already landed for Tutorials 9/13/16 (C2), but
+   `set_variable` is used far more pervasively across the curriculum, so
+   this needs its own scoping pass to find every occurrence before
+   deciding whether to match the real verbose text everywhere (as
+   `test_instance_count` did) or something else — don't assume the
+   `test_instance_count` precedent transfers without checking the actual
+   footprint first.
+
+The remainder past these two clusters is the already-documented Part E
+generated-block localization gap.
 
 ## Suggested order (superseded version below is current)
 
