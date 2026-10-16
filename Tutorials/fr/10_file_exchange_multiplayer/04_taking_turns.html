@@ -60,7 +60,7 @@
         tour resterait bloqué en attendant tout le délai à chaque fois :</p>
         <div class="blockly-group">
             <span class="block block-control">Si <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> alors</span><br>
-            <span class="block block-network block-indent">Terminer le tour (échange de fichiers)</span><br>
+            <span class="block block-network block-indent">End Turn (File Exchange)</span><br>
             <span class="block block-control block-indent">Définir la variable <span class="block-text">last_round_acted</span> à <span class="block-text">global.round_number</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
@@ -79,12 +79,12 @@
         <strong>Définir la variable</strong> local par une vraie écriture
         réseau + soumission. Case (0,0), entièrement détaillée :</p>
         <div class="blockly-group">
-            <span class="block block-event">Souris : Bouton gauche pressé</span><br>
+            <span class="block block-event">Quand souris Left Button Pressed</span><br>
             <span class="block block-control block-indent">Si <span class="block-text">cell_0_0 == "" and my_turn == 1 and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> alors</span><br>
-            <span class="block block-network block-indent2">Définir une variable partagée (échange de fichiers)
-            nom :<span class="block-text">cell_0_0</span>
-            valeur :<span class="block-text">my_mark</span></span><br>
-            <span class="block block-network block-indent2">Terminer le tour (échange de fichiers)</span>
+            <span class="block block-network block-indent2">Set a Shared Variable (File Exchange)
+            Name:<span class="block-text">cell_0_0</span>
+            Value:<span class="block-text">my_mark</span></span><br>
+            <span class="block block-network block-indent2">End Turn (File Exchange)</span>
         </div>
         <p style="margin-top: 8px; font-style: italic;">Même forme pour les
         huit autres &mdash; les mêmes rectangles que le tableau de la
@@ -94,8 +94,7 @@
             propre symbole dans la variable partagée de cette case, en
             utilisant son nom littéral (le paramètre <strong>Nom</strong>
             est toujours un nom simplement tapé ici, jamais une expression
-            calculée), puis <strong>Terminer le tour (échange de
-            fichiers)</strong> le soumet.
+            calculée), puis <strong>End Turn (File Exchange)</strong> le soumet.
         </div>
     </div>
 
@@ -114,7 +113,7 @@
         mêmes positions que la Phase 1.</p>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> une variable définie avec
-            <strong>Définir une variable partagée (échange de fichiers)</strong>
+            <strong>Set a Shared Variable (File Exchange)</strong>
             est lisible <em>partout</em>, sur toutes les machines, en tant
             que <code>global.&lt;nom&gt;</code> &mdash; aucune action
             supplémentaire n'est nécessaire pour la récupérer, tant que le
