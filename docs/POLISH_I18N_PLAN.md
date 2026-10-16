@@ -233,12 +233,19 @@ for a brand-new language the monolithic form sidesteps entirely.
       (see landmine 8 below).
 - [x] P1.4 — checked for a legacy `translations/pygamemaker_pl.ts` stub —
       none exists; Polish never had one.
-- [ ] P1.5 — add `"pl"` to every hardcoded per-language test list (see
-      Guard tests); confirm `pl` is discoverable in
-      `LanguageManager._discover_languages()`.
-- [ ] P1.6 — guard tests: diacritics sweep, unfinished-entry sweep
-      (`tests/test_i18n_unfinished_pl.py`), live `QTranslator` resolution
-      across a representative sample, full suite green.
+- [x] P1.5 — `"pl"` confirmed already present in every hardcoded
+      per-language test list (`test_extension_ui_translations.py`,
+      `test_project_settings_extensions_translations.py`,
+      `test_tutorial_panel_i18n_verification.py`'s `LOCALIZED_LANGUAGES`);
+      `pl` → `('Polski', '🇵🇱')` is registered in
+      `LanguageManager.LANGUAGE_INFO` and `translations/pygm2_pl.{ts,qm}`
+      both exist, so it's discoverable. (Checkbox was stale — the work was
+      already done when P1.3/P3.4 landed; verified 2026-10-16 rather than
+      re-done.)
+- [x] P1.6 — guard tests all green (verified 2026-10-16):
+      `tests/test_i18n_unfinished_pl.py` (5), plus the three lists above
+      (52 tests total across this batch), including the diacritics/
+      unfinished-entry/live-`QTranslator` checks P1.6 called for.
 
 ### Phase 2 — Blockly block-level translation — **COMPLETE 2026-10-07**
 
