@@ -253,5 +253,6 @@ sessions** now that restyling is in scope.
   preset) remain, plus Phase 4 (Blockly workspace chrome, lowest
   priority). Phase 2 is next.
 - **2026-10-16, Phase 2 revised on user direction:** HTML5 is the only export a junior sees (File > Export as HTML5 + toolbar button; Export Game dialog hidden). Sprite editing stays available (double-click a sprite; Import Sprite kept). Gap: there is no 'new blank sprite' menu entry in any tier.
+- **2026-10-16, Create Sprite added** (Assets menu, all editions): blank 32x32 transparent PNG, opens the sprite editor; refuses a name that already exists.
 - **2026-10-16, Phase 2 done.** See Phase 2 above. Phase 3 (junior Blockly
   preset) is next.

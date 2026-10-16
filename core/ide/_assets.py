@@ -430,6 +430,13 @@ class AssetsMixin:
             return
         self.create_asset("rooms")
 
+    def create_sprite(self):
+        """Assets > Create Sprite: a blank 32x32 transparent sprite, opened
+        straight in the sprite editor so a student can draw from scratch."""
+        if not self.ensure_project_loaded("creating sprites"):
+            return
+        self.create_asset("sprites")
+
     def create_script(self):
         if not self.ensure_project_loaded("creating scripts"):
             return
@@ -474,6 +481,31 @@ class AssetsMixin:
         # Create the asset data directly
         self.create_asset_with_data(asset_type, name)
 
+    def _new_blank_sprite_data(self, asset_name: str) -> dict:
+        """Write a blank 32x32 transparent PNG and return its asset dict
+        (same shape an imported sprite gets)."""
+        from datetime import datetime
+        from PySide6.QtGui import QImage, QColor
+        size = 32
+        relative_path = f"sprites/{asset_name}.png"
+        dest = Path(self.current_project_path) / relative_path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        image = QImage(size, size, QImage.Format_ARGB32)
+        image.fill(QColor(0, 0, 0, 0))
+        if not image.save(str(dest), "PNG"):
+            raise OSError(f"could not write {dest}")
+        now = datetime.now().isoformat()
+        return {
+            'name': asset_name, 'asset_type': 'sprite',
+            'file_path': relative_path,
+            'width': size, 'height': size,
+            'origin_x': size // 2, 'origin_y': size // 2,
+            'precise': False, 'frames': 1,
+            'frame_width': size, 'frame_height': size,
+            'animation_type': 'single', 'speed': 10.0,
+            'imported': True, 'created': now, 'modified': now,
+        }
+
     def create_asset_with_data(self, asset_type: str, asset_name: str):
         """Create asset with proper data structure and save to project"""
         try:
@@ -500,6 +532,18 @@ class AssetsMixin:
                     'imported': True,
                     'events': {}
                 }
+            elif asset_type == 'sprites':
+                # Unlike the other types this writes an image file, so a
+                # name clash would silently destroy an existing drawing.
+                existing = ((self.current_project_data or {}).get('assets', {})
+                            .get('sprites', {}))
+                if asset_name in existing or (
+                        Path(self.current_project_path) / 'sprites' / f"{asset_name}.png").exists():
+                    QMessageBox.warning(
+                        self, self.tr("Name Already Used"),
+                        self.tr("A sprite called '{0}' already exists. Please choose another name.").format(asset_name))
+                    return
+                asset_data = self._new_blank_sprite_data(asset_name)
             elif (ext := get_asset_tree_category(asset_type)) is not None \
                     and ext.new_asset_template is not None:
                 asset_data = ext.new_asset_template(asset_name)
@@ -540,6 +584,9 @@ class AssetsMixin:
             # Save the project immediately to persist the new asset
             if self.project_manager.save_project():
                 self.update_status(self.tr("Created {0}").format(asset_name))
+
+                if asset_type == 'sprites':
+                    self.open_sprite_editor(asset_name, asset_data)
 
                 # Refresh any open room editors' object palette when a new object is created
                 if asset_type == 'objects':

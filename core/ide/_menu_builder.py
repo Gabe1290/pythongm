@@ -183,6 +183,7 @@ class MenuBuilderMixin:
         self.import_sprite_action = self.create_action(self.tr("Import &Sprite..."), None, self.import_sprite)
         self.import_sound_action = self.create_action(self.tr("Import &Sound..."), None, self.import_sound)
         self.import_background_action = self.create_action(self.tr("Import &Background..."), None, self.import_background)
+        self.create_sprite_action = self.create_action(self.tr("Create S&prite..."), None, self.create_sprite)
         self.create_object_action = self.create_action(self.tr("Create &Object..."), None, self.create_object)
         self.create_room_action = self.create_action(self.tr("Create &Room..."), None, self.create_room)
         self.create_room_action.setShortcut("Ctrl+R")
@@ -192,7 +193,8 @@ class MenuBuilderMixin:
         # Enable all asset actions regardless of project state
         asset_actions = [
             self.import_sprite_action, self.import_sound_action, self.import_background_action,
-            self.create_object_action, self.create_room_action, self.create_script_action, self.create_font_action
+            self.create_sprite_action, self.create_object_action, self.create_room_action,
+            self.create_script_action, self.create_font_action
         ]
         for action in asset_actions:
             action.setEnabled(True)
@@ -203,6 +205,7 @@ class MenuBuilderMixin:
         assets_menu.addAction(self.import_sound_action)
         assets_menu.addAction(self.import_background_action)
         assets_menu.addSeparator()
+        assets_menu.addAction(self.create_sprite_action)
         assets_menu.addAction(self.create_object_action)
         assets_menu.addAction(self.create_room_action)
         assets_menu.addAction(self.create_script_action)
