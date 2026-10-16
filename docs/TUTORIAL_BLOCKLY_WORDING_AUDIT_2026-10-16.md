@@ -380,6 +380,43 @@ quoted strings, negative numbers the normalizer mishandled — but not
 confirmed one by one). Re-run the scan after Part B/C are resolved and
 triage what's left; don't assume Part B+C is the complete list.
 
+### Re-scan attempt (2026-10-16, after C1/C2): tool built, output too
+### unreliable to triage — needs a better matcher, not a bigger effort
+
+Built a real ground-truth dump (`workspace.newBlock(type).toString(Infinity,
+false)` for all 320 block types, in `en` and `fr`, via the same
+`QWebEngineView` technique as the C1/C2 verification) and a regex-based
+matcher comparing every tutorial `<span class="block ...">` against it
+(EN pages checked against the `en` dump; FR pages against `fr` ∪ `en`,
+applying Part E's rule that a generated block's mockup should show English
+even on the FR page). **Result: 896 unmatched spans — overwhelmingly false
+positives, not a usable triage list.** Root cause confirmed on a sample: a
+block with a *statement* input (e.g. `event_create`'s "DO" slot for its
+body) renders via `toString()` as `"When created false"` — a spurious
+trailing `false` that isn't part of the real rendered label at all (pinned
+by re-reading `event_create`'s `init()` directly: just a label +
+`appendStatementInput("DO")`, nothing boolean). `toString(Infinity, false)`
+evidently stringifies an empty/unrendered statement connection as `false`
+when the block was built via `newBlock()` without a full `initSvg()`/render
+pass — an artifact of the dump method, not a real UI string. The regex
+matcher inherited this noise for every block with a body slot (most
+control-flow blocks), which is why even definitely-correct strings like
+`"When created"` and `"Every step"` failed to match.
+
+**Not fixed, not triaged — the 896-line output was discarded rather than
+acted on**, since treating that noise as real findings risks "fixing"
+tutorial text that was never wrong. A trustworthy re-scan needs either (a)
+rendering each block for real (`initSvg()` + a workspace actually inserted
+into the DOM, which the `getFieldValue`-based round-trip tests already do
+for the small cases checked by hand) rather than flattening `toString()`,
+or (b) extracting each block's field sequence structurally (walk
+`block.inputList`/`field` objects and join only real field text, skipping
+statement/value connections entirely) instead of string-matching the
+rendered label. Scoped as its own follow-up tool-building task, not
+resumed this session — the C1/C2 fixes already closed the two concretely
+known issues; this re-scan was specifically for finding *more*, and didn't
+produce anything trustworthy to add to that list.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
