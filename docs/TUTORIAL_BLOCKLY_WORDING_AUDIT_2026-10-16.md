@@ -814,6 +814,53 @@ push. The two genuinely open items (`set_variable` verbosity,
 the user before more tutorial text changes, not more investigation —
 a good natural stopping point for this audit.
 
+### CLOSED (2026-10-16, user decision): both remaining items done — 55 unmatched
+
+User decided both: rewrite the `set_variable` mockups to the verbose
+real text, **and** add a real angle field to `move_direction` rather
+than drop `direction_expr` from the curriculum.
+
+- **`set_variable`** (`a6df9442`): rewrote all ~22 occurrences (EN, FR,
+  and 2 stray pt files mirroring the EN/FR page structure) across
+  Tutorials 3, 9, 10, 15 to `"Set Variable Variable: X Value: Y Scope:
+  {self|global} Relative: {on|off}"`. Confirmed `custom_set_variable`
+  is genuinely what loads for this action with a live round-trip test
+  (not assumed), and cross-checked every value — including which
+  writes are `scope="global"` vs `self`, and which are
+  `relative=True` — against `tools/tutorial_reference_projects.py`'s
+  real `act("set_variable", ...)` calls rather than guessing.
+- **`direction_expr`** (`7fd92e5e`, code; `a6e11dbb`, the one tutorial
+  mockup it unblocked): added a visible `DIRECTION_EXPR` text field
+  ("or angle") to the `move_direction` Blockly block, wired into both
+  `setBlockParameters` (load) and `generateActionCodeInner` (save).
+  Verified behaviour-preserving with a live round trip (checkbox-only
+  blocks regenerate identically to before) before writing the
+  regression test (`TestB13DirectionGrid`'s new `patrol_direction_expr`
+  case). Translated the new field label into the same 5 languages that
+  already had this block's other strings (fr/pl/de/it/uk); the rest
+  fall back to English. One pre-existing pinned i18n count needed
+  bumping (`test_blockly_i18n_pl.py`, 257→258) — not a regression, the
+  expected effect of one new translated key. Tutorial 3 (Pong)'s ball
+  mockup, previously left untouched because it described a UI state
+  that didn't exist, now reads `"Move or angle 45 at speed 6"` across
+  EN/FR/pt — accurate, though **this one still won't match the Part D
+  scan tool**, for the same structural reason the raycast/HUD
+  multi-field actions don't (the matcher can't skip a 9-checkbox grid
+  to reach a later field) — manually verified correct instead, not a
+  tool gap worth chasing.
+
+Every full-suite run surfaced only pre-existing, already-documented
+raycast/`GameRunner` timing-sensitive flakiness (CLAUDE.md's own note
+on this test family) — each failure reproduced as flaky and passed
+cleanly in isolation across multiple re-runs, confirmed unrelated to
+either change.
+
+**Final count: 896 → 55 unmatched spans, 18 commits total across both
+sessions.** What's left (raycast/HUD multi-field em-dash summaries,
+confirmed fine; a handful of genuine one-offs) doesn't need a decision
+or more investigation — it's the already-settled tail. This audit is
+done.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
