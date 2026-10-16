@@ -104,7 +104,7 @@ only the first one is built.
 3. **Hide the Code Editor tab entirely** for the junior tier (not a
    Preferences toggle).
 
-## Proposed phases (none started)
+## Proposed phases
 
 ### Phase 0 — DONE (2026-10-16): scoping questions resolved, see above
 
@@ -126,7 +126,7 @@ isn't shown in this tier. 5 new tests
 (`tests/test_junior_edition_object_editor_tabs.py`), full suite green
 (6212 passed).
 
-### Phase 2 — extend `EDITIONS` with menu/toolbar curation
+### Phase 2 — DONE (2026-10-16): `EDITIONS` menu/toolbar curation
 
 Add a new key (e.g. `"menu_items"` or `"hidden_menu_actions"`) to the
 kid tier's entry in `config/editions.py`, consumed by
@@ -139,6 +139,21 @@ entry-points if any exist outside the Object Editor tab itself) — this
 sort is real work, not mechanical, and should be its own reviewed list
 before implementation, not decided inline while writing menu-builder
 code.
+
+**Shipped:** `"hidden_menu_actions"` / `"hidden_toolbar_actions"` on the
+junior tier, keyed by slot name (`create_action` now sets
+`QAction.objectName()` from the slot). `_apply_edition_menu_curation` removes
+them after extension contributions and tidies stray separators. The QActions
+still exist, so `update_ui_state()` is unaffected. **The keep/hide sort was
+made by Claude, not reviewed by the user** -- it is one frozenset in
+`config/editions.py`, trivially editable. Kept: new/open/save/save-as/close,
+recent, Test Game, Export Game, sprite/sound/background import, object/room
+creation, undo/redo/clipboard, Preferences (a teacher needs it to switch
+edition back), Restore Deleted Assets, Language, Help. Hidden: HTML5/Zip/
+Kivy/Project exports, Open Zip, GMK import, auto-save toggles/settings,
+Project Settings, Find/Replace, script/font creation, object/room package
+import, Debug/Build/Build-and-Run, Configure Action Blocks, and the
+maintenance tools. `tests/test_junior_edition_menu_curation.py`.
 
 ### Phase 2.5 — DONE (2026-10-16, commit `b92edb58`): visual restyling
 
@@ -237,3 +252,5 @@ sessions** now that restyling is in scope.
   Only Phase 2 (menu/toolbar curation) and Phase 3 (a junior Blockly
   preset) remain, plus Phase 4 (Blockly workspace chrome, lowest
   priority). Phase 2 is next.
+- **2026-10-16, Phase 2 done.** See Phase 2 above. Phase 3 (junior Blockly
+  preset) is next.

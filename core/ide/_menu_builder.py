@@ -142,6 +142,7 @@ class MenuBuilderMixin:
 
         # Auto-save as zip toggle
         self.auto_save_zip_action = QAction(self.tr("Auto-Save to Zip"), self)
+        self.auto_save_zip_action.setObjectName("toggle_auto_save_zip")
         self.auto_save_zip_action.setCheckable(True)
         self.auto_save_zip_action.setChecked(False)
         self.auto_save_zip_action.triggered.connect(self.toggle_auto_save_zip)
@@ -149,6 +150,7 @@ class MenuBuilderMixin:
 
         # Auto-save toggle (NEW)
         self.auto_save_action = QAction(self.tr("Enable Auto-Save"), self)
+        self.auto_save_action.setObjectName("toggle_auto_save")
         self.auto_save_action.setCheckable(True)
         self.auto_save_action.setChecked(True)  # Enabled by default
         self.auto_save_action.triggered.connect(self.toggle_auto_save)
@@ -156,6 +158,7 @@ class MenuBuilderMixin:
 
         # Auto-save settings
         auto_save_settings_action = QAction(self.tr("Auto-Save Settings..."), self)
+        auto_save_settings_action.setObjectName("show_auto_save_settings")
         auto_save_settings_action.triggered.connect(self.show_auto_save_settings)
         file_menu.addAction(auto_save_settings_action)
 
@@ -293,6 +296,34 @@ class MenuBuilderMixin:
             "build": self.build_menu, "tools": tools_menu, "help": help_menu,
         }
         apply_menu_contributions(self, self._extension_menus)
+        self._apply_edition_menu_curation(self._extension_menus.values())
+
+    def _apply_edition_menu_curation(self, menus):
+        """docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 2: drop the menu
+        entries the current edition lists in "hidden_menu_actions" (keyed
+        by slot name, see create_action). The QActions still exist on
+        self -- update_ui_state() and friends keep working -- they're just
+        not reachable from the menu, so this is purely a view change.
+        Separators left leading, trailing or doubled are removed too."""
+        from config.editions import get_current_edition
+        hidden = get_current_edition().get('hidden_menu_actions')
+        if not hidden:
+            return
+        for menu in menus:
+            for action in list(menu.actions()):
+                if action.objectName() in hidden:
+                    menu.removeAction(action)
+            previous_was_separator = True  # also drops a leading separator
+            for action in list(menu.actions()):
+                if action.isSeparator():
+                    if previous_was_separator:
+                        menu.removeAction(action)
+                    previous_was_separator = True
+                else:
+                    previous_was_separator = False
+            trailing = menu.actions()
+            if trailing and trailing[-1].isSeparator():
+                menu.removeAction(trailing[-1])
 
     def create_language_menu(self, menu):
         """Create language selection submenu"""
@@ -396,7 +427,9 @@ class MenuBuilderMixin:
         # always applies for the tier -- not conditional on "never
         # customized", since there's nothing to customize yet.
         from config.editions import get_current_edition
-        icon_size = get_current_edition().get('default_toolbar_icon_size', 16)
+        edition = get_current_edition()
+        hidden_toolbar = edition.get('hidden_toolbar_actions') or ()
+        icon_size = edition.get('default_toolbar_icon_size', 16)
         toolbar.setIconSize(QSize(icon_size, icon_size))
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
@@ -433,6 +466,8 @@ class MenuBuilderMixin:
             if icon is not None:
                 action.setIcon(icon)
             action.setToolTip(tooltip)
+            if action.objectName() in hidden_toolbar:
+                return
             toolbar.addAction(action)
 
         # Icon foreground that contrasts with the toolbar background, so
@@ -507,6 +542,11 @@ class MenuBuilderMixin:
             QAction: The created action
         """
         action = QAction(text, self)
+        # Stable key for edition menu curation (config/editions.py
+        # "hidden_menu_actions"): the slot's name, not the translated text.
+        slot_name = getattr(slot, '__name__', '')
+        if slot_name and not slot_name.startswith('<'):
+            action.setObjectName(slot_name)
 
         if shortcut:
             action.setShortcut(shortcut)
