@@ -539,6 +539,91 @@ same session as everything above:
 The remainder past these two clusters is the already-documented Part E
 generated-block localization gap.
 
+### UPDATE (new session, 2026-10-16): both clusters substantially fixed — 251 → 122 unmatched
+
+Picked back up with the rebuilt scan tool (scripts still in the
+scratchpad from the prior session — not committed, rebuild per the
+"Re-scan v2" section above if a future session needs them again). Four
+more commits, each gated by the focused test subset
+(`test_tutorial_panel_i18n_verification.py`, `test_sample_visible_text.py`,
+`test_raycast_tutorial_lessons.py`) and pushed immediately:
+
+- `dc9a8144` — the French article-insertion cluster: `move_set_hspeed`/
+  `move_set_vspeed`/`draw_score`/`draw_lives`'s real text omits "la"/
+  "le"/"les"; 36 occurrences across 12 files. 246 → 214.
+- `2668cb56` — a **new, bigger finding**, not previously logged: every
+  colon-suffixed French hand-written block
+  (`event_keyboard_held`/`_press`/`_release`) renders with **no space
+  before the colon** (`"Clavier:"`, not `"Clavier :"`) — confirmed this
+  is `blockly_i18n.js`'s consistent style throughout (every other
+  colon-suffixed FR label in that file does the same, e.g.
+  `draw_score_prefix: "Afficher score à x:"`), diverging from strict
+  French print typography but deliberate and uniform. Tutorials across
+  18 files had added the typographically "correct" space, making them
+  the actual outlier. ~60 occurrences fixed. 214 → 168.
+- `b13fb638` — `score_set`/`lives_set`/`set_sprite`'s same French-article
+  pattern (12 more files); `set_alarm`'s real text has a trailing unit
+  word (EN "steps"/FR "pas") most mockups dropped, plus FR mockups had
+  a stray "l'" the real text doesn't have; `score_set`'s real EN text is
+  "Set score to {val}" — 3 tutorials dropped "to"; `set_draw_color` is
+  generated/custom (never localizes, Part E) with real text "Set Draw
+  Color Color: {val}" — 4 EN tutorials used a different, wrong-case,
+  missing-field form, and the same 4 FR tutorials fully translated it.
+  168 → 128.
+- `506a4083` — Tutorial 8 (Lunar Lander) used the internal
+  variable-name shorthand "Set hspeed"/"Set vspeed" instead of the real
+  "Set horizontal/vertical speed to {val}"; Tutorial 4 (Breakout, FR)
+  used the wrong verb for `move_jump_to` ("Aller à x:" instead of the
+  real "Sauter à x:"). 128 → 122.
+
+**Remaining 122, triaged by folder — NOT fixed, next session's starting
+point:**
+
+1. **Tutorial 10 (File Exchange Multiplayer) alone accounts for 38 of
+   the 122** (28 FR + 10 EN) — by far the largest remaining concentration.
+   Spot-checked: a mix of the still-open `set_variable` cluster, the
+   Mouse event's dropdown options never being localized (a `Part
+   E`-shaped gap on a *hand-written* block, not generated — `event_
+   mouse`'s real FR text is `"Quand souris"` + the option itself
+   literally in English, e.g. `"Left Button Pressed"` — confirmed via
+   the dump; not investigated further this session), and this
+   extension's own `"Héberger une partie (échange de fichiers)"` /
+   `"Rejoindre une partie (échange de fichiers)"` actions, which may be
+   authored French-first the same way `extensions/multiplayer_lan/
+   actions.py` is (per the 2026-09-02/03 session notes in `CLAUDE.md`) —
+   **not verified**, needs its own look at `extensions/multiplayer_file_
+   exchange/actions.py` (or wherever this extension actually lives)
+   before assuming the same root cause applies.
+2. **The raycast/HUD multi-field macro actions** (`Enable Raycast
+   View`/`Activer la vue Raycast`, `Draw Minimap`/`Dessiner la
+   mini-carte`, `Set Direction & Speed`/`Définir direction et vitesse`,
+   `Set Gravity`/`Définir la gravité`, `Set Facing Angle`/`Définir
+   l'angle de vue`) — **likely scan-tool limitation, not real bugs**.
+   These mockups use an em-dash (`—`) to show a deliberately partial
+   subset of a many-parameter action's fields (`enable_raycast_view` has
+   a dozen+ params: textures, viewport height, render distance, ...) —
+   a reasonable pedagogical simplification this repo's own convention
+   already accepts elsewhere (`set_sprite` dropping frame/speed). The
+   regex matcher's nested-optional-suffix only allows stopping at a
+   *prefix* of the real field sequence, not an arbitrary subset with its
+   own separator punctuation, so it can't confirm these are fine the way
+   it confirmed `set_sprite` is — before spending more time here, a
+   smarter matcher (or just eyeballing each one by hand against its real
+   `events/action_types.py` parameter list) should resolve whether any
+   of these are genuinely wrong field names versus just untestable by
+   the current tool.
+3. The rest is small (`Terminer le tour`/`Round Resolved`, a couple of
+   `draw_line` calls, assorted 1-2 count stragglers) — likely one-at-a-
+   time spot-checks like the ones already fixed, not another cluster.
+
+**Part D is NOT closed** — 122 is real progress from 896, but item 1
+above (Tutorial 10) needs its own investigation before it can be fixed,
+and item 2 needs either a better tool or manual verification before
+concluding it's fine. Next session: start with Tutorial 10's extension
+(`extensions/multiplayer_file_exchange/` or equivalent — locate it
+first, don't assume the path), since it's the largest remaining chunk
+and the only one with a clear next action.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
