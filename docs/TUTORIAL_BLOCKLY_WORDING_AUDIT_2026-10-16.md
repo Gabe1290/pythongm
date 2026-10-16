@@ -701,6 +701,119 @@ focused-test gate before every push. Good stopping point — the
 remaining items are smaller and more scattered than anything fixed so
 far, so progress from here will be slower per commit.
 
+### UPDATE (continued, same thread): another seven commits, 99 → 73, and two items resolved for good
+
+- `draw_variable` fixed (`68dbdc1f`): same shape as `draw_line`, real
+  text `"Draw Variable X: {val} Y: {val} Variable: {val}"`; EN+FR Pong
+  score display used an unrelated structure.
+- **Item 3 above (the `show_message`/`output_message` "quoting"
+  flags) was a false lead — the real cause was the same French
+  article-insertion pattern as everywhere else**, just not checked
+  against this specific action yet: `output_message`'s real FR text is
+  `"Afficher message {val}"` (no `"un"`); 12 occurrences across 5 files
+  had `"Afficher UN message"` (`3e15ab37`). Lesson: when several
+  "unmatched" spans for one action cluster around a single language,
+  check the simple article/verb-drift hypothesis before assuming
+  something more exotic (quoting, encoding) is going on.
+- **Item 4 above (`draw_score`/`draw_lives` extra fields) resolved,
+  and it was real, not a dump gap** (`842528cf`): `events/
+  action_types.py` genuinely declares `caption`/`relative` on
+  `draw_score` and `sprite`/`relative` on `draw_lives`, but the
+  HAND-WRITTEN Blockly block for both (`blockly_workspace.html`) only
+  ever wires up X/Y — the extra `ActionParameter`s exist in the data
+  model with no visual field at all (the established "B5" pattern this
+  repo's own audit history already named). Confirmed no bundled sample
+  (`tools/tutorial_reference_projects.py`) ever sets `draw_lives`'s
+  sprite, and every `draw_score` caption value matches the
+  default — so dropping both from the mockup loses nothing. Also
+  fixed, same commits: `"Dessiner du texte"` → `"Dessiner texte"` (3
+  files) and a French-only translation artifact rendering `draw_text`'s
+  x/y as English `"at 10, 10"` instead of `"à x: 10 y: 10"`.
+- `exit_event` (generated, never localizes) was translated to
+  `"Quitter l'événement"` in Tutorial 10; real text is `"Exit Event"`
+  (`b6bc3a32`, same commit as 5 more `"Dessiner le texte"` → `"Dessiner
+  texte"` instances found in the same tutorial).
+- `score_add`'s real FR word order is label-then-value (`"Ajouter au
+  score {val}"`, confirmed directly from the block's `init()`: the
+  label is a plain field, the value is a *separate* `appendValueInput`
+  after it) — two tutorials had the value sandwiched in the middle
+  (`"Ajouter 1 au score"`) (`0c110098`).
+
+**New finding, NOT a tutorial-wording bug — a real Blockly round-trip
+gap, logged for its own fix, not touched here:** investigating
+`"Start moving in direction 45 at speed 6"` (Tutorial 3/Pong) found
+that `start_moving_direction`'s real data model supports an arbitrary
+numeric `direction_expr` (confirmed: `tools/tutorial_reference_
+projects.py`'s `build_t03` authors exactly `direction_expr="45"`, and
+`CLAUDE.md` documents HTML5/Kivy export parity work for this exact
+parameter), but the hand-written `move_direction` Blockly block
+(`blockly_workspace.html`) has **no field for it at all** — only a
+3×3 grid of compass-direction checkboxes, plus one `setVisible(false)`
+hidden legacy field that exists purely to silently absorb pre-B13
+saved data and tick a matching checkbox. A project authored with
+`direction_expr="45"` has no visual representation in the Blockly
+editor whatsoever — opening it would show every checkbox unticked,
+with the actual 45° value invisible and inert. The tutorial's mockup
+is honestly describing what the *sample* does, which is why this
+isn't a wording fix: rewriting the mockup to match "what the real
+block shows" would mean describing an unticked checkbox grid, which
+teaches nothing. This needs an actual decision (add a free-angle field
+to the Blockly block, or stop using `direction_expr` in bundled
+samples / the Blockly-authored curriculum) before any tutorial text
+changes — flagging for its own item, not fixing here. The matching
+`"Commencer à bouger (direction) : gauche, droite — Speed 2"` mockup in
+Tutorial 13 is a *different*, unrelated case (ticking the real `DIR_L`/
+`DIR_R` checkboxes is genuinely representable) and is not affected by
+this finding.
+
+**The raycast/HUD multi-field macro actions (item 5) are now
+confirmed, not just suspected, to be a scan-tool limitation, not a
+bug.** Checked `enable_raycast_view`'s real parameter count directly
+(`extensions/raycast_2_5d/actions.py`): **16 parameters** (enable,
+camera_object, fov, render_distance, cell_size, columns, 3 colors, 4
+textures, wall_textured, floor_cast_res, viewport_height). A mockup
+showing all 16 labeled fields would be unreadable in a tutorial; the
+existing em-dash-separated 2-4-field summaries are a necessary,
+deliberate compression, not an error — and they don't even preserve
+the real declared parameter order (`"Field of View, Cell Size, Render
+Distance"` vs. the real `fov, render_distance, cell_size`), which a
+stricter tool would also need to ignore. **Conclusion: do not attempt
+to "fix" these by matching real field order/count — leave as-is.**
+Future re-scans of this tutorial set should exclude
+`enable_raycast_view`/`draw_doom_hud`/`draw_minimap`/`set_direction_speed`/
+`set_gravity`/`set_facing_angle` from automated matching entirely
+rather than re-flagging them.
+
+**Remaining 73, re-triaged once more:**
+
+1. **`set_variable` verbosity is now by far the largest remaining
+   group** (~20 occurrences: Tutorial 10 heavily, plus Pong, Catch the
+   Coins, Fruit Fusion). Still the same open scoping question from
+   before: real text is `"📝 Set Variable Variable: X Value: Y Scope:
+   self Relative: non"`, far more verbose than every tutorial's
+   `"Set variable X to Y"`. **Do not blanket-apply the
+   `test_instance_count` "match real text everywhere" precedent without
+   asking first** — that decision was scoped to a handful of
+   occurrences across 3 tutorials; `set_variable` is used dozens of
+   times across nearly the entire curriculum, and rewriting every
+   instance to the 4-field verbose form would be a much larger
+   readability trade-off that deserves its own explicit confirmation,
+   not an assumed extension of a narrower earlier decision.
+2. **The `direction_expr` Blockly round-trip gap above** — needs a
+   design decision, not a wording fix.
+3. Everything else remaining is the already-resolved-as-fine raycast/
+   HUD group (item 5) plus a handful of genuine one-offs (`Round
+   Resolved` — confirmed a false positive, the dump simply doesn't
+   enumerate event blocks the same way; `… (score and lives as
+   before)` placeholder text) not worth individual tracking.
+
+Session total this thread (both continuations combined): **896 → 73
+unmatched spans**, 16 commits, full focused-test gate before every
+push. The two genuinely open items (`set_variable` verbosity,
+`direction_expr`'s missing Blockly field) both need a decision from
+the user before more tutorial text changes, not more investigation —
+a good natural stopping point for this audit.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.

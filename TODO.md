@@ -44,23 +44,34 @@ vs. a visual restyling pass too; hide vs. de-emphasize the Code Editor
 tab) that need a decision before Phase 1 starts. Read that doc's "Open
 scoping questions" section first.
 
-**B. (IN PROGRESS) Finish the Blockly tutorial-wording audit.**
-`docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md` has a working,
-verified re-scan tool (251 unmatched spans as of the last run) and names
-two concrete, already-scoped remaining clusters in its final sections:
-(1) French tutorial mockups routinely adding a definite article the real
-block text omits (several instances already fixed; the doc names
-`draw_score`/`draw_lives` as confirmed-but-unfixed, with `move_set_hspeed`/
-`move_set_vspeed` flagged as "likely, not yet checked"), and (2)
-`set_variable`'s real generated-block text being far more verbose
-(`Variable:`/`Value:`/`Scope:`/`Relative:` fields) than the simplified
-mockups used pervasively across the curriculum — needs its own footprint
-check before deciding how to fix. Re-run the scan script pattern documented
-in that doc's "Re-scan v2" section (the ground-truth dump + matcher were
-throwaway scripts in a scratchpad, not committed — rebuild them the same
-way, following the field-walking / nested-span-parsing approach described
-there, not the first toString()-based attempt that's also documented as
-a dead end).
+**B. (NEARLY DONE — 2 decisions needed, not more investigation) Finish
+the Blockly tutorial-wording audit.**
+`docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md` went from 896 to 73
+unmatched spans across 16 commits (two session continuations). What's
+left is NOT more scanning — it's two decisions only the user can make,
+both documented in that doc's final "UPDATE" section:
+1. **`set_variable` verbosity** (~20 occurrences, mostly Tutorial 10):
+   real text is the 4-field `"📝 Set Variable Variable: X Value: Y
+   Scope: self Relative: non"`; every tutorial uses a simplified
+   `"Set variable X to Y"`. Fixing this means rewriting dozens of
+   mockups across nearly the whole curriculum to the verbose form —
+   explicitly flagged as NOT a safe extension of the earlier
+   `test_instance_count` "match real text" precedent (that was 3
+   tutorials; this is nearly all of them) without asking first.
+2. **A real Blockly round-trip gap, not a wording bug**:
+   `start_moving_direction`'s `direction_expr` parameter (an arbitrary
+   numeric angle, used by Tutorial 3/Pong's ball) has **no field at
+   all** in the hand-written `move_direction` Blockly block — only a
+   3×3 compass-checkbox grid plus a hidden legacy field. A tutorial
+   mockup can't honestly show a block face that doesn't exist. Needs a
+   design decision (add a free-angle field, or stop using
+   `direction_expr` in the Blockly-authored curriculum) before any
+   tutorial text can be written.
+
+Rebuilding the re-scan tool (throwaway scripts, not committed) is
+documented step by step in that doc's "Re-scan v2"/"UPDATE" sections if
+a future session wants to re-verify the 73 count or hunt further —
+but the two items above are the real blockers, not scan-tool gaps.
 
 ### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
 
