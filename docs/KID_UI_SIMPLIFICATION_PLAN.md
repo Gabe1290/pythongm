@@ -192,7 +192,7 @@ users, but didn't block landing the mechanism itself.
 
 ### Phase 3 — DONE (2026-10-16): Blockly toolbox: a tier below `beginner`'s ~60 actions
 
-**Shipped:** `BlocklyConfig.get_junior()` = beginner minus `JUNIOR_REMOVED_BLOCKS` (15 code-like/niche blocks: execute_code/script, exit_event, test_variable, destroy_at_position, check_empty, test_alignment, test_chance, sleep, move_to_contact, if_object_exists, set_direction_speed, set_background, comment, set_window_caption). Chosen by scanning the actions the junior tutorials' reference projects (01-04, 15, 16) use; `instance_destroy_object` stays because a preset invariant pairs it with destroy_other. Junior inherits beginner's tutorials/samples (the open question resolved as 'inherit'). `tests/test_junior_blockly_preset.py`. Samples using a removed block still load; the block just can't be re-picked.
+**Shipped (revised: "tutorials only"):** `BlocklyConfig.JUNIOR_BLOCKS`, an explicit 46-block list derived from the junior tutorials (01-04, 15, 16) reference projects plus lesson text, pinned both ways by `tests/test_junior_blockly_preset.py` (every needed block present, nothing beyond). It is not a subset of beginner: it adds if_condition, set_variable, draw_variable, room_goto, set_sprite, which Pong and Fruit Fusion/Basket need and which junior cannot switch on itself (Configure Action Blocks is hidden). It drops if_collision, set_gravity, instance_change, move_direction, room_if_*, and all code-like blocks. Samples using dropped blocks still load; the block just cannot be re-picked.
 
 
 `BlocklyConfig.get_beginner()` already proves the preset mechanism

@@ -534,26 +534,51 @@ class BlocklyConfig:
 
         return config
 
-    # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 3. Blocks the junior tier
-    # drops from the beginner toolbox: code-like or niche ones that none
-    # of the junior tutorials (01-04, 15, 16 -- checked against
-    # tools/tutorial_reference_projects.py) ever use. Samples that use them
+    # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 3: the junior toolbox is
+    # exactly what the junior tutorials (01-04, 15, 16) use -- derived from
+    # tools/tutorial_reference_projects.py plus the block names the lesson
+    # pages teach, pinned by tests/test_junior_blockly_preset.py. Unlike
+    # beginner it includes if_condition / set_variable / draw_variable /
+    # room_goto / set_sprite: Pong and Fruit Fusion/Basket use them, and the
+    # junior tier hides "Configure Action Blocks", which is where Tutorial 15
+    # tells students to switch Set Variable on. Samples that use other blocks
     # still load and run; the block just can't be picked again.
-    JUNIOR_REMOVED_BLOCKS = frozenset({
-        "execute_code", "execute_script", "exit_event", "test_variable",
-        "destroy_at_position", "check_empty", "test_alignment",
-        "test_chance", "sleep", "move_to_contact", "if_object_exists",
-        "set_direction_speed", "set_background", "comment",
-        "set_window_caption",
+    JUNIOR_BLOCKS = frozenset({
+        # Events
+        "event_create", "event_step", "event_draw", "event_alarm",
+        "event_keyboard_held", "event_keyboard_nokey", "event_keyboard_press",
+        "event_collision", "event_other",
+        # Movement
+        "move_set_hspeed", "move_set_vspeed", "move_stop", "move_jump_to",
+        "jump_to_start", "start_moving_direction", "bounce",
+        "reverse_horizontal", "reverse_vertical",
+        # Timing
+        "set_alarm",
+        # Drawing
+        "draw_text", "draw_score", "draw_lives", "draw_variable",
+        "set_draw_color",
+        # Score / lives
+        "score_set", "score_add", "lives_set", "lives_add",
+        # Instances
+        "instance_create", "instance_destroy", "instance_destroy_other",
+        "instance_destroy_object",  # pinned by the destroy_other invariant
+        "set_sprite",
+        # Rooms and game
+        "room_restart", "room_goto", "game_end", "restart_game",
+        "show_highscore",
+        # Control and output
+        "if_condition", "set_variable", "test_expression",
+        "test_instance_count", "start_block", "end_block", "else_action",
+        "output_message",
     })
 
     @classmethod
     def get_junior(cls) -> 'BlocklyConfig':
-        """Junior preset (8-9 year olds) -- beginner minus JUNIOR_REMOVED_BLOCKS."""
+        """Junior preset (8-9 year olds): only the blocks the junior
+        tutorials use (JUNIOR_BLOCKS)."""
         config = cls.get_beginner()
         config.preset_name = "junior"
-        for block in cls.JUNIOR_REMOVED_BLOCKS:
-            config.disable_block(block)
+        config.enabled_blocks = set(cls.JUNIOR_BLOCKS)
         return config
 
     @classmethod
