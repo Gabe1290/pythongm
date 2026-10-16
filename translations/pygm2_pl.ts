@@ -6683,6 +6683,11 @@ Kliknij prawym przyciskiem na {1} i dodaj tam akcję.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="232"/>
+        <source>Create S&amp;prite...</source>
+        <translation>Utwórz s&amp;prite...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="232"/>
         <source>Create &amp;Object...</source>
         <translation>Utwórz &amp;obiekt...</translation>
     </message>
