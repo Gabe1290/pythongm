@@ -417,6 +417,105 @@ resumed this session — the C1/C2 fixes already closed the two concretely
 known issues; this re-scan was specifically for finding *more*, and didn't
 produce anything trustworthy to add to that list.
 
+### Re-scan v2 (2026-10-16, same session, continued): the structural
+### matcher built, trustworthy, landed real fixes — 278 unmatched spans
+### remain, mostly one well-scoped cluster
+
+Built approach (b) from the note above for real. `block.inputList`/
+`fieldRow` walked directly, with a principled per-field-type rule:
+`FieldLabel` → literal text; `FieldDropdown` → a full alternation over
+*every* option (`field.getOptions(false)`, not just whichever one
+happens to be the field's default — the first concrete bug this caught:
+`event_keyboard_held`'s default option is "Right Arrow", so a template
+built from only the default failed to match a mockup legitimately using
+"Left Arrow"), with asset-name dropdowns (`createAssetField`, populated
+from the live project, not a fixed vocabulary) detected and treated as a
+wildcard instead; `FieldCheckbox` → an alternation over how a checked/
+unchecked box can render as text; everything else (`FieldTextInput`,
+value inputs) → an explicit wildcard slot, present whether or not it has
+a default value (a plain "fields present but empty" case silently
+vanishing from the flattened text was the second bug — `custom_
+test_instance_count`'s "Object:" field disappeared entirely rather than
+leaving a slot to match against). A nested-optional suffix lets a mockup
+stop at any *prefix* of a block's real field sequence (tutorials
+routinely show only a block's primary field, omitting secondary/default
+params like `set_sprite`'s frame/speed — confirmed this is a deliberate,
+reasonable simplification throughout, not a wording bug, so the matcher
+needed to accept it rather than flag every such mockup).
+
+Also found and fixed a second, independent bug in the *scan's own span
+extractor*, not the matcher: the original regex-based extractor
+(`<span class="block[^"]*">(.*?)</span>`) is non-greedy, so on a mockup
+line with a nested value-highlighting span (`block-num`/`block-text`/
+`block-val`/`block-str`, e.g. `Draw text <span class="block-text">"Hi"
+</span> at x: <span class="block-num">10</span>`) it matched the
+*inner* span's closing tag, manufacturing a bogus standalone "10" or
+"obj_x" fragment in addition to (and polluting matching for) the real
+full-line text. Replaced with a proper `html.parser.HTMLParser`-based
+walker that tracks span-nesting depth and only emits text for the
+outermost line-level span (`block-event`/`block-move`/`block-control`/
+`block-instance`/`block-score`/`block-draw`/`block-view`/`block-game`/
+`block-room`/`block-network`/`block-output`), concatenating everything
+nested inside it. This alone cut the unmatched count from 896 to 382
+before any real fix landed — most of the first attempt's "noise" was
+actually this bug's fragments, not the `toString()` artifact diagnosed
+above (that artifact was real too, but smaller than this one).
+
+**Refinement sequence: 896 → 382 (span extractor fix) → 346 (strip the
+decorative icon prefix real blocks carry that mockups never show,
+confirmed zero emoji anywhere in `Tutorials/*.html`) → 284 (require a
+template's first token to be literal text, else a leading-wildcard
+template degenerates to matching any string once combined with the
+trailing-optional suffix) → 278 (after landing the fixes below).**
+
+**Real findings fixed** (commit `a54c5e3f`), each confirmed against the
+live block text before touching any file:
+- `else_action`'s real text is `"Else"` (generated/custom, never
+  localizes per Part E) — Tutorial 15 (Fruit Fusion) called it
+  `"Otherwise"` in EN and `"Sinon"` in FR, in both the mockup span and
+  the prose, across all 3 phase pages (`03_first_fusion.html`,
+  `04_second_fusion.html`, `05_winning.html`), both languages.
+- `custom_bounce`'s real text is just `"Bounce"` — zero parameters at
+  all (confirmed in `events/action_types.py`: `description="Bounce off
+  solid objects"`, `parameters=[]`). Tutorial 3 (Pong) mockups in both
+  EN and FR quoted that *description* as if it were the block's label:
+  `"Bounce against solid objects"` / `"Rebondir contre les objets
+  solides"`, 3 occurrences each in `02_paddles_and_ball.html`.
+- `instance_destroy_other`'s real FR text is `"Détruire autre
+  instance"` (no `"l'"`) and `reverse_horizontal`/`reverse_vertical`'s
+  real FR text omits the article (`"Inverser mouvement horizontal/
+  vertical"`, not `"le"`/`"la"`) — French mockups across Tutorials 2, 4,
+  7, and 15 had each independently added the definite article the real
+  block doesn't carry. Confirmed this is a real app-translation fact
+  (checked `blockly_i18n.js` directly), not a stylistic tutorial choice.
+
+**Open, next concrete item — NOT fixed here, deliberately deferred as
+its own unit of work:** the great majority of the remaining 278
+unmatched spans are one cluster, not scattered noise. `blockly_i18n.js`
+has an explicit code comment — `// Room blocks (using "Niveau" instead
+of "Salle")` — covering `room_goto_next`, `room_goto_previous`, and
+`room_restart`: these three blocks deliberately render French text
+using *"niveau"* ("level"), not *"salle"* ("room"), unlike every other
+room-related French block (`room_goto` itself, with an explicit target,
+says `"aller au niveau %1"` too — confirmed consistent) and unlike every
+other language (German `"Raum"`, Italian `"stanza"`, Ukrainian
+`"кімнату"` — all literally "room"). Grepping every FR tutorial's
+room-navigation mockups (`Aller à la salle` / `Aller au niveau` /
+`Recommencer la salle` / `Redémarrer la salle`) across ~15 files found
+real usage is inconsistently split roughly in half between the correct
+`"niveau"` phrasing (Tutorials 9, 16's `goto_room` mockups already say
+it right) and the incorrect `"salle"` phrasing (every `restart_room`
+mockup found — Tutorials 5, 6, 7, 8, 13, 16 — plus Tutorial 15's
+`goto_room` mockup). This is real, confirmed, and sizable enough
+(touches most of the remaining count) to deserve its own careful pass
+rather than a rushed sweep in the same session as everything above —
+each occurrence needs the surrounding prose checked too (several
+explicitly explain "la salle" as a concept to students, not just quote
+a block label), and `06_maze/03_coins_and_exit.html`/`04_game_
+controller.html` mix both the restart and goto-next blocks in ways that
+need reading in full before editing. The remainder past this cluster is
+the already-documented Part E generated-block localization gap.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
