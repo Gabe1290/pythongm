@@ -24,6 +24,45 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
+### Next session: two independent threads to choose from (noted 2026-10-16)
+
+Left here so a session on another machine can pick either one without
+needing the user to re-explain — neither depends on the other, so pick
+whichever fits the available time.
+
+**A. (NEW, unscoped) A plan to simplify the whole interface for 8-9
+year old students.** Nothing has been researched or written yet — this
+needs a real investigation first, not a guess: survey the current menu/
+toolbar structure and the Blockly toolbox's actual category/action count,
+read `config/editions.py` (there's already a `DEFAULT_EDITION`/
+`tutorial_folders` gating mechanism that hides some complexity for a
+"beginner" edition — check whether it goes far enough or a dedicated kid
+mode is a better fit), and probably take real screenshots (the
+`QWidget.grab()` offscreen technique documented in the 2026-08-10 CLAUDE.md
+session note) to judge actual visual density before proposing cuts. Write
+the plan doc the way this repo's other plan docs are written (e.g.
+`docs/POLISH_I18N_PLAN.md`, `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`)
+— verified against the real code and UI, not assumed — and commit the
+plan itself before any implementation starts.
+
+**B. (IN PROGRESS) Finish the Blockly tutorial-wording audit.**
+`docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md` has a working,
+verified re-scan tool (251 unmatched spans as of the last run) and names
+two concrete, already-scoped remaining clusters in its final sections:
+(1) French tutorial mockups routinely adding a definite article the real
+block text omits (several instances already fixed; the doc names
+`draw_score`/`draw_lives` as confirmed-but-unfixed, with `move_set_hspeed`/
+`move_set_vspeed` flagged as "likely, not yet checked"), and (2)
+`set_variable`'s real generated-block text being far more verbose
+(`Variable:`/`Value:`/`Scope:`/`Relative:` fields) than the simplified
+mockups used pervasively across the curriculum — needs its own footprint
+check before deciding how to fix. Re-run the scan script pattern documented
+in that doc's "Re-scan v2" section (the ground-truth dump + matcher were
+throwaway scripts in a scratchpad, not committed — rebuild them the same
+way, following the field-walking / nested-span-parsing approach described
+there, not the first toString()-based attempt that's also documented as
+a dead end).
+
 ### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
 
 Found while re-investigating `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`'s
