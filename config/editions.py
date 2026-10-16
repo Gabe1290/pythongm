@@ -52,14 +52,15 @@ EDITIONS = {
         # Phase 2: menu/toolbar entries hidden for this tier, keyed by the
         # action's slot name (QAction.objectName(), set in
         # core/ide/_menu_builder.py create_action). Kept: project
-        # new/open/save, Test Game, Export Game, sprite/sound/background
+        # new/open/save, Test Game, Export as HTML5 (the only export a junior
+        # sees; the multi-platform Export Game dialog is hidden), sprite/sound/background
         # import, object/room creation, undo/redo/clipboard, Preferences
         # (a teacher needs it to switch edition back), Restore Deleted
         # Assets, Language, Help. Hidden: file-format/target-specific
         # exports, GMK import, auto-save knobs, Find/Replace, scripts and
         # fonts, resource packages, debug/build, and the maintenance tools.
         "hidden_menu_actions": frozenset({
-            "export_html5", "export_project_zip", "export_kivy",
+            "export_game", "export_project_zip", "export_kivy",
             "export_project", "open_project_zip", "import_gmk_file",
             "toggle_auto_save_zip", "toggle_auto_save",
             "show_auto_save_settings", "project_settings",
@@ -71,7 +72,7 @@ EDITIONS = {
             "migrate_project_structure", "show_unused_assets_dialog",
             "clean_project", "show_orphaned_files_dialog",
         }),
-        "hidden_toolbar_actions": frozenset({"debug_game"}),
+        "hidden_toolbar_actions": frozenset({"debug_game", "export_game"}),
     },
     "beginner": {
         "name": "Beginner",

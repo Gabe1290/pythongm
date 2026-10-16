@@ -49,7 +49,7 @@ def test_junior_hides_advanced_entries_keeps_core(_qapp):
         hidden = EDITIONS["junior"]["hidden_menu_actions"]
         assert not (names & hidden)
         for keep in ("new_project", "open_project", "save_project", "test_game",
-                     "export_game", "preferences", "create_object",
+                     "export_html5", "preferences", "create_object",
                      "create_room", "import_sprite", "show_trash_dialog"):
             assert keep in names, keep
         # hidden actions still exist as attributes
@@ -58,6 +58,10 @@ def test_junior_hides_advanced_entries_keeps_core(_qapp):
         toolbar = ide.findChild(QToolBar, "MainToolbar")
         assert ide.test_game_action in toolbar.actions()
         assert ide.debug_game_action not in toolbar.actions()
+        assert ide.export_game_action not in toolbar.actions()
+        assert ide.export_html5_action in toolbar.actions()
+        for gone in ("export_game", "export_kivy", "export_project_zip"):
+            assert gone not in names, gone
     finally:
         ide.deleteLater()
 

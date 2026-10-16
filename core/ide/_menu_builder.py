@@ -485,6 +485,10 @@ class MenuBuilderMixin:
         _attach(self.test_game_action,   "SP_MediaPlay",         self.tr("Test Game (F5)"), icon=_green_play_icon())
         _attach(self.debug_game_action,  "SP_ComputerIcon",      self.tr("Debug Game (F6)"))
         _attach(self.export_game_action, "SP_DialogApplyButton", self.tr("Export Game…"))
+        if self.export_game_action.objectName() in hidden_toolbar:
+            # Junior tier: the one-click HTML5 export replaces the
+            # multi-platform dialog.
+            _attach(self.export_html5_action, "SP_DialogApplyButton", self.tr("Export as HTML5…"))
 
         toolbar.addSeparator()
 
