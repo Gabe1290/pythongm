@@ -85,12 +85,14 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Every step</span><br>
-            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
-            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span>
+            <span class="block block-control block-indent">Test Instance Count Object: <span class="block-text">obj_coin</span> Number: <span class="block-num">0</span> Comparison: equal</span><br>
+            <span class="block block-control block-indent">Start Block</span><br>
+            <span class="block block-room block-indent">Go to room <span class="block-text">room_win</span></span><br>
+            <span class="block block-control block-indent">End Block</span>
         </div>
 
         <div class="info" style="margin-top: 10px;">
-            <strong>Kaj to naredi:</strong> Blok <strong>If Count Of</strong> pogleda sobo
+            <strong>Kaj to naredi:</strong> Blok <strong>Test Instance Count</strong> pogleda sobo
             in prešteje, koliko instanc <code>obj_coin</code> je še živih. Ko ste jih
             pobrali vse, je števec nič, primerjava <code>== 0</code> je resnična, in dejanje
             <strong>Go to room</strong> se izvede.

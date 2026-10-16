@@ -85,12 +85,14 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Every step</span><br>
-            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
-            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span>
+            <span class="block block-control block-indent">Test Instance Count Object: <span class="block-text">obj_coin</span> Number: <span class="block-num">0</span> Comparison: equal</span><br>
+            <span class="block block-control block-indent">Start Block</span><br>
+            <span class="block block-room block-indent">Go to room <span class="block-text">room_win</span></span><br>
+            <span class="block block-control block-indent">End Block</span>
         </div>
 
         <div class="info" style="margin-top: 10px;">
-            <strong>Qué hace esto:</strong> El bloque <strong>If Count Of</strong> mira la sala
+            <strong>Qué hace esto:</strong> El bloque <strong>Test Instance Count</strong> mira la sala
             y cuenta cuántas instancias de <code>obj_coin</code> siguen vivas. Cuando las has
             atrapado todas, el conteo es cero, la comparación <code>== 0</code> es verdadera, y la
             acción <strong>Go to room</strong> se ejecuta.

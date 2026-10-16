@@ -85,12 +85,14 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Кожен крок</span><br>
-            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
-            <span class="block block-room block-indent2">Перейти до кімнати <span class="block-text">room_win</span></span>
+            <span class="block block-control block-indent">Test Instance Count Object: <span class="block-text">obj_coin</span> Number: <span class="block-num">0</span> Comparison: equal</span><br>
+            <span class="block block-control block-indent">Start Block</span><br>
+            <span class="block block-room block-indent">Перейти до кімнати <span class="block-text">room_win</span></span><br>
+            <span class="block block-control block-indent">End Block</span>
         </div>
 
         <div class="info" style="margin-top: 10px;">
-            <strong>Що це робить:</strong> Блок <strong>If Count Of</strong> дивиться на кімнату
+            <strong>Що це робить:</strong> Блок <strong>Test Instance Count</strong> дивиться на кімнату
             й рахує, скільки екземплярів <code>obj_coin</code> ще живі. Коли ви зібрали
             їх усі, лічильник дорівнює нулю, порівняння <code>== 0</code> істинне, і дія
             <strong>Перейти до кімнати</strong> виконується.

@@ -34,18 +34,18 @@
         <li>Dessinez une porte ou un portail bleu de <strong>16&times;16</strong>, <code>spr_goal</code>, et créez un <code>obj_goal</code> non solide</li>
         <li>Ajoutez un événement <strong>Quand collision avec obj_player</strong>. Il faut deux vérifications, une pour chaque cas :</li></ol>
         <div class="blockly-group"><span class="block block-event">Quand collision avec obj_player</span><br>
-        <span class="block block-move block-indent">Tester le nombre d'instances de <b>obj_gem</b> : <b>égal à</b> <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Test Instance Count Object: <b>obj_gem</b> Number: <span class="block-num">0</span> Comparison: <b>equal</b></span><br>
         <span class="block block-move block-indent">Start Block</span><br>
         <span class="block block-move block-indent">Afficher un message <span class="block-text">You win!</span></span><br>
         <span class="block block-move block-indent">Redémarrer le jeu</span><br>
         <span class="block block-move block-indent">End Block</span><br>
-        <span class="block block-move block-indent">Tester le nombre d'instances de <b>obj_gem</b> : <b>supérieur à</b> <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Test Instance Count Object: <b>obj_gem</b> Number: <span class="block-num">0</span> Comparison: <b>greater</b></span><br>
         <span class="block block-move block-indent">Start Block</span><br>
         <span class="block block-move block-indent">Afficher un message <span class="block-text">Collect all the gems first!</span></span><br>
         <span class="block block-move block-indent">End Block</span><br>
         </div>
-        <p style="font-style: italic;">L'action <strong>Tester le nombre d'instances</strong> demande « combien d'instances de <code>obj_gem</code> existent en ce moment ? ». Chaque gemme ramassée est détruite : quand le compte atteint 0, vous les avez toutes.
-        <br>Ses options : <strong>Object</strong> = <code>obj_gem</code>, <strong>Number</strong> = 0, <strong>Operation</strong> = equal / greater.</p></div>
+        <p style="font-style: italic;">L'action <strong>Test Instance Count</strong> demande « combien d'instances de <code>obj_gem</code> existent en ce moment ? ». Chaque gemme ramassée est détruite : quand le compte atteint 0, vous les avez toutes.
+        <br>Ses options : <strong>Object</strong> = <code>obj_gem</code>, <strong>Number</strong> = 0, <strong>Comparison</strong> = equal / greater.</p></div>
     <div class="highlight"><strong>Les messages sont entre guillemets.</strong> Le texte d'un message est mis entre guillemets pour qu'un tiret ou un signe plus ne soit pas pris pour un calcul. Vous pouvez écrire votre message en français : il s'affichera tel quel.</div>
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez !</h1>
     <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 !</strong></p>
