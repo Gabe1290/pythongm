@@ -88,18 +88,22 @@ def test_everything_presets_also_enable_the_categories_their_generated_actions_n
     get_platformer/get_grid_rpg/get_sokoban/get_testing until this was
     caught and fixed; the 11 actions recategorized Game->Drawing hit the
     same risk for get_platformer specifically (the one "everything" preset
-    that did not already have "Drawing" enabled).
+    that did not already have "Drawing" enabled). docs/
+    BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue A: the same promotion
+    for "Particles"/"Views" hit the identical risk for 7 of the 8
+    "everything" presets.
 
-    Deliberately scoped to ONLY "Game" and "Drawing" -- the two categories
-    this fix actually touched -- not a sweeping audit of every category.
-    A broader version of this check (every category, not just these two)
-    was tried first and found the SAME gap already exists, independently,
-    for "Control" and "Timing" in get_platformer (pre-existing, unrelated
-    to this fix, never fixed here -- a separate finding, not silently
-    swept under this test)."""
+    Deliberately scoped to ONLY "Game", "Drawing", "Particles" and "Views"
+    -- the categories these two fixes actually touched -- not a sweeping
+    audit of every category. A broader version of this check (every
+    category, not just these) was tried first and found the SAME gap
+    already exists, independently, for "Control" and "Timing" in
+    get_platformer (pre-existing, unrelated to either fix, not fixed here
+    -- see docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue B, a
+    separate, not-yet-started follow-up)."""
     from events.action_types import ACTION_TYPES
     mapped = _action_to_block_type_map()
-    checked_categories = {"Game", "Drawing"}
+    checked_categories = {"Game", "Drawing", "Particles", "Views"}
     presets = _presets()
     for name in EVERYTHING_PRESETS:
         cfg = presets[name]
@@ -167,23 +171,24 @@ def test_load_config_migrates_a_pre_unit2_saved_config_once(tmp_path, monkeypatc
     monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
 
     cfg = bc.load_config()
-    assert cfg.config_version == 3
+    assert cfg.config_version == 4
     assert bc.GENERATED_ACTION_NAMES <= cfg.enabled_blocks
     assert {"event_create", "move_set_hspeed"} <= cfg.enabled_blocks  # not clobbered
-    # restart_game (added by the version-1->2 migration) needs its real
-    # category too, which the version-2->3 migration adds in the same pass
-    # since this config started below version 2 either way.
-    assert "Game" in cfg.enabled_categories
+    # restart_game/burst_particles/set_view (added by the version-1->2
+    # migration) need their real categories too, which the version-2->3
+    # and version-3->4 migrations add in the same pass since this config
+    # started below version 2 either way.
+    assert {"Game", "Particles", "Views"} <= cfg.enabled_categories
 
     on_disk = json.loads(config_path.read_text(encoding="utf-8"))
-    assert on_disk["config_version"] == 3
+    assert on_disk["config_version"] == 4
     assert "restart_game" in on_disk["enabled_blocks"]
-    assert "Game" in on_disk["enabled_categories"]
+    assert {"Game", "Particles", "Views"} <= set(on_disk["enabled_categories"])
 
     # Loading again must not re-print/re-save the migration (version already current).
     saved_mtime = config_path.stat().st_mtime_ns
     cfg2 = bc.load_config()
-    assert cfg2.config_version == 3
+    assert cfg2.config_version == 4
     assert config_path.stat().st_mtime_ns == saved_mtime
 
 
@@ -208,17 +213,46 @@ def test_load_config_migrates_a_version2_config_missing_the_game_category(tmp_pa
     monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
 
     cfg = bc.load_config()
-    assert cfg.config_version == 3
+    assert cfg.config_version == 4
     assert "Game" in cfg.enabled_categories
 
     on_disk = json.loads(config_path.read_text(encoding="utf-8"))
-    assert on_disk["config_version"] == 3
+    assert on_disk["config_version"] == 4
     assert "Game" in on_disk["enabled_categories"]
 
 
-def test_load_config_does_not_add_game_category_when_no_game_block_is_enabled(tmp_path, monkeypatch):
-    """The version-2->3 migration should not turn "Game" on for a config
-    that never had any game-lifecycle action enabled in the first place."""
+def test_load_config_migrates_a_version3_config_missing_particles_and_views(tmp_path, monkeypatch):
+    """docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue A: same
+    situation as the version-2->3 "Game" migration, for a config already
+    at version 3 (migrated under THAT scheme) with particle/view actions
+    already in enabled_blocks but no way to have ever had "Particles"/
+    "Views" enabled, since neither existed as a real category yet."""
+    import config.blockly_config as bc
+
+    old_data = {
+        "enabled_blocks": ["event_create", "burst_particles", "set_view"],
+        "enabled_categories": ["Events"],
+        "preset_name": "custom",
+        "config_version": 3,
+    }
+    config_path = tmp_path / "blockly_config.json"
+    config_path.write_text(json.dumps(old_data), encoding="utf-8")
+    monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
+
+    cfg = bc.load_config()
+    assert cfg.config_version == 4
+    assert "Particles" in cfg.enabled_categories
+    assert "Views" in cfg.enabled_categories
+
+    on_disk = json.loads(config_path.read_text(encoding="utf-8"))
+    assert on_disk["config_version"] == 4
+    assert "Particles" in on_disk["enabled_categories"]
+    assert "Views" in on_disk["enabled_categories"]
+
+
+def test_load_config_does_not_add_game_or_particles_or_views_when_no_block_is_enabled(tmp_path, monkeypatch):
+    """The version migrations should not turn a category on for a config
+    that never had any of its actions enabled in the first place."""
     import config.blockly_config as bc
 
     old_data = {
@@ -232,14 +266,16 @@ def test_load_config_does_not_add_game_category_when_no_game_block_is_enabled(tm
     monkeypatch.setattr(bc, "get_config_path", lambda: config_path)
 
     cfg = bc.load_config()
-    assert cfg.config_version == 3
+    assert cfg.config_version == 4
     assert "Game" not in cfg.enabled_categories
+    assert "Particles" not in cfg.enabled_categories
+    assert "Views" not in cfg.enabled_categories
 
 
 def test_fresh_config_is_already_current_version():
     from config.blockly_config import BlocklyConfig
-    assert BlocklyConfig.get_beginner().config_version == 3
-    assert BlocklyConfig(preset_name="custom").config_version == 3
+    assert BlocklyConfig.get_beginner().config_version == 4
+    assert BlocklyConfig(preset_name="custom").config_version == 4
 
 
 def test_promoting_test_expression_to_a_block_kept_every_preset_showing_it():

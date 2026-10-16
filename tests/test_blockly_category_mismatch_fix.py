@@ -372,3 +372,97 @@ def test_category_translations_have_no_output_entry():
 def test_config_dialog_category_colors_has_no_output_entry():
     from dialogs.blockly_config_dialog import BLOCKLY_CATEGORY_COLORS
     assert "Output" not in BLOCKLY_CATEGORY_COLORS
+
+
+# --------------------------------------------------------------------------
+# docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue A (2026-10-16): the
+# same stray-category bug as "Game" above, for "Particles" (8 actions) and
+# "Views" (2 actions) -- both clean, single-purpose groups, no mixed-
+# category untangling needed.
+# --------------------------------------------------------------------------
+
+PARTICLES_ACTIONS = {
+    "create_particle_system", "destroy_particle_system", "clear_particles",
+    "create_particle_type", "create_emitter", "destroy_emitter",
+    "burst_particles", "stream_particles",
+}
+VIEWS_ACTIONS = {"enable_views", "set_view"}
+
+
+def test_particles_and_views_are_real_toolbox_categories_not_stray_ones():
+    keys = _real_toolbox_category_keys()
+    assert "Particles" in keys
+    assert "Views" in keys
+
+
+@pytest.mark.parametrize("category,color", [("Particles", "'#E67E22'"), ("Views", "'#34568B'")])
+def test_particles_and_views_have_real_colors(category, color):
+    text = WORKSPACE_HTML.read_text(encoding="utf-8")
+    start = text.index("var categoryColors = {")
+    end = text.index("};", start)
+    assert f"'{category}': {color}" in text[start:end]
+
+
+def test_no_action_type_carries_particles_or_views_outside_the_known_set():
+    """No mapped/hardcoded exclusion needed here (unlike Game) -- every
+    action carrying category="Particles"/"Views" genuinely leaks (verified
+    against actionToBlockType when this was scoped), so this is a plain
+    equality check."""
+    from events.action_types import ACTION_TYPES
+    still_particles = {name for name, a in ACTION_TYPES.items() if a.category == "Particles"}
+    still_views = {name for name, a in ACTION_TYPES.items() if a.category == "Views"}
+    assert still_particles == PARTICLES_ACTIONS
+    assert still_views == VIEWS_ACTIONS
+
+
+def test_block_registry_has_particles_and_views_categories():
+    from config.blockly_config import BLOCK_REGISTRY
+    assert {b["type"] for b in BLOCK_REGISTRY["Particles"]} == PARTICLES_ACTIONS
+    assert {b["type"] for b in BLOCK_REGISTRY["Views"]} == VIEWS_ACTIONS
+
+
+@pytest.mark.parametrize("preset_attr", [
+    "get_full", "get_beginner", "get_intermediate", "get_platformer",
+    "get_grid_rpg", "get_sokoban", "get_testing", "get_implemented_only",
+    "get_code_editor", "get_blockly_editor",
+])
+def test_no_preset_shows_particles_or_views_blocks_without_enabling_the_category(preset_attr):
+    """The same regression class the Game fix almost shipped: promoting a
+    stray category to a real one gates it on enabled_categories, which 7
+    of the 10 presets did not have for "Particles"/"Views" until this fix."""
+    from config.blockly_config import BlocklyConfig
+    config = getattr(BlocklyConfig, preset_attr)()
+    if PARTICLES_ACTIONS & config.enabled_blocks:
+        assert "Particles" in config.enabled_categories, preset_attr
+    if VIEWS_ACTIONS & config.enabled_blocks:
+        assert "Views" in config.enabled_categories, preset_attr
+
+
+def test_config_version_bumped_for_the_particles_views_migration():
+    from config.blockly_config import BlocklyConfig
+    assert BlocklyConfig().config_version >= 4
+
+
+def test_particles_already_has_real_translations_in_every_language():
+    """Unexpected find while writing this test: "Particles" already had a
+    real translation entry in all 7 languages in config/blockly_translations
+    .py's CATEGORY_TRANSLATIONS -- leftover from before this category was
+    ever wired up to the real toolbox. A pleasant bonus, not something
+    this fix added; get_translated_category (used by the config dialog)
+    picks it up automatically now that "Particles" is a real BLOCK_REGISTRY
+    key."""
+    from config.blockly_translations import CATEGORY_TRANSLATIONS, get_translated_category
+    for lang in CATEGORY_TRANSLATIONS:
+        assert "Particles" in CATEGORY_TRANSLATIONS[lang], lang
+    assert get_translated_category("Particles", "fr") == "Particules"
+
+
+def test_views_untranslated_is_a_deliberate_choice_not_a_gap():
+    """Unlike "Particles", "Views" has no translation anywhere -- same
+    deliberate scope decision as "Game"/"Text" in part 2, falling back to
+    literal English in every language rather than being treated as a
+    missing-translation bug. Documented here so a future i18n sweep
+    doesn't "fix" this without re-deciding it on purpose."""
+    from config.blockly_translations import CATEGORY_TRANSLATIONS
+    for lang, table in CATEGORY_TRANSLATIONS.items():
+        assert "Views" not in table, lang

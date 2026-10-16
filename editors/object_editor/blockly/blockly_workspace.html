@@ -3222,6 +3222,20 @@
                     color: '#607D8B',
                     blocks: []
                 },
+                // "Particles" and "Views" -- the same stray-category bug
+                // Game had, found while testing that fix (docs/
+                // BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md "Resolution, part
+                // 2" / docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue
+                // A). Both are clean, single-purpose groups -- no
+                // mixed-category untangling needed, unlike Game.
+                'Particles': {
+                    color: '#E67E22',
+                    blocks: []
+                },
+                'Views': {
+                    color: '#34568B',
+                    blocks: []
+                },
                 // NOTE: audio blocks are no longer hardcoded here. play_sound,
                 // stop_sound, play_music, stop_music and set_volume auto-generate
                 // into a single always-visible "Audio" category (see
@@ -3375,7 +3389,9 @@
                 'Sound': '#9966FF',
                 'Audio': '#9966FF',
                 'Timing': '#FF6B6B',
-                'Game': '#607D8B'
+                'Game': '#607D8B',
+                'Particles': '#E67E22',
+                'Views': '#34568B'
             };
 
             for (var i = 0; i < actionDefs.length; i++) {

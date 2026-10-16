@@ -182,6 +182,27 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "splash_show_image", "name": "Splash: Show Image", "description": "Show a sprite full-screen and pause the game until the player dismisses it", "implemented": True},
         {"type": "splash_show_text", "name": "Splash: Show Text", "description": "Show a message and pause the game until the player dismisses it", "implemented": True},
     ],
+    # "Particles" and "Views" were entirely absent from BLOCK_REGISTRY
+    # despite being real, visible (if uncolored/stray) toolbox blocks --
+    # docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue A, the same bug
+    # class as "Game" above, found while testing that fix. Both are clean,
+    # single-purpose groups -- no action_types.py category= changes needed,
+    # they already carried the right string; they just needed a real
+    # toolbox category to land in (blockly_workspace.html).
+    "Particles": [
+        {"type": "create_particle_system", "name": "Create Particle System", "description": "Create a particle system attached to this instance (replaces any existing one)", "implemented": True},
+        {"type": "destroy_particle_system", "name": "Destroy Particle System", "description": "Remove this instance's particle system, clearing all particles and emitters", "implemented": True},
+        {"type": "clear_particles", "name": "Clear Particles", "description": "Remove all active particles but keep particle types and emitters", "implemented": True},
+        {"type": "create_particle_type", "name": "Create Particle Type", "description": "Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)", "implemented": True},
+        {"type": "create_emitter", "name": "Create Emitter", "description": "Create a particle emitter area (returned id is stored for the next emitter-using action)", "implemented": True},
+        {"type": "destroy_emitter", "name": "Destroy Emitter", "description": "Destroy the most recently created emitter", "implemented": True},
+        {"type": "burst_particles", "name": "Burst Particles", "description": "Emit a one-time burst of particles from the most recently created emitter", "implemented": True},
+        {"type": "stream_particles", "name": "Stream Particles", "description": "Continuously emit particles every step from the most recently created emitter (0 to stop)", "implemented": True},
+    ],
+    "Views": [
+        {"type": "enable_views", "name": "Enable Views", "description": "Turn the room's camera/view system on or off (lets a level scroll when it is larger than the window)", "implemented": True},
+        {"type": "set_view", "name": "Set View", "description": "Configure a camera view: which part of the room it shows, where on screen it draws, and an object to follow", "implemented": True},
+    ],
 }
 # The 8 "Thymio *" categories moved to extensions/thymio/blockly_categories.py
 # (docs/THYMIO_EXTENSION_PLAN.md, Stage F) -- merged back into BLOCK_REGISTRY
@@ -310,13 +331,14 @@ class BlocklyConfig:
     enabled_categories: Set[str] = field(default_factory=set)
     preset_name: str = "full"
     # Bumped to 2 when GENERATED_ACTION_NAMES (Unit 2) was added, then to 3
-    # when "Game" became a real, gated toolbox category (see load_config's
-    # migrations), so load_config() can tell a config saved before each
-    # change apart from one built fresh by current code (which already
-    # reflects them) and migrate it exactly once. A config built directly by
-    # this module's own code (every get_*() preset, any fresh custom config)
-    # is current by construction, hence the default of 3, not 1.
-    config_version: int = 3
+    # when "Game" became a real, gated toolbox category, then to 4 for
+    # "Particles"/"Views" (see load_config's migrations), so load_config()
+    # can tell a config saved before each change apart from one built
+    # fresh by current code (which already reflects them) and migrate it
+    # exactly once. A config built directly by this module's own code
+    # (every get_*() preset, any fresh custom config) is current by
+    # construction, hence the default of 4, not 1.
+    config_version: int = 4
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for JSON serialization"""
@@ -559,7 +581,7 @@ class BlocklyConfig:
         # Output
         config.enable_block("execute_code")
 
-        config.enabled_categories.update({"Sound"})
+        config.enabled_categories.update({"Sound", "Particles", "Views"})
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2):
         # every generated action already showed here, ungated, before this
@@ -611,7 +633,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound", "Drawing", "Game"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound", "Drawing", "Game", "Particles", "Views"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -660,7 +682,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound", "Game"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound", "Game", "Particles", "Views"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -707,7 +729,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing", "Game"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing", "Game", "Particles", "Views"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -849,7 +871,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing", "Game"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing", "Game", "Particles", "Views"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -997,7 +1019,8 @@ class BlocklyConfig:
         # Enable all categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Instance", "Room", "Game",
-            "Score/Lives/Health", "Drawing", "Timing", "Sound"
+            "Score/Lives/Health", "Drawing", "Timing", "Sound",
+            "Particles", "Views"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2) --
@@ -1150,7 +1173,8 @@ class BlocklyConfig:
         # Enable all categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
-            "Instance", "Room", "Values", "Sound", "Game"
+            "Instance", "Room", "Values", "Sound", "Game",
+            "Particles", "Views"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
@@ -1240,6 +1264,26 @@ def load_config() -> BlocklyConfig:
                         config.enabled_categories.add("Game")
                         needs_save = True
                     config.config_version = 3
+
+                # Migrate (docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md
+                # Issue A): same situation as the version-2->3 migration
+                # above, for "Particles" and "Views" -- neither existed as
+                # a real, toggleable category before this fix, so a saved
+                # config could have their actions in enabled_blocks (via
+                # GENERATED_ACTION_NAMES) with no way to have ever had
+                # either category enabled.
+                if config.config_version < 4:
+                    particles_action_names = {b["type"] for b in BLOCK_REGISTRY["Particles"]}
+                    views_action_names = {b["type"] for b in BLOCK_REGISTRY["Views"]}
+                    if (particles_action_names & config.enabled_blocks) and "Particles" not in config.enabled_categories:
+                        print("Blockly config migration: Adding 'Particles' category (now real, was a stray fallback)")
+                        config.enabled_categories.add("Particles")
+                        needs_save = True
+                    if (views_action_names & config.enabled_blocks) and "Views" not in config.enabled_categories:
+                        print("Blockly config migration: Adding 'Views' category (now real, was a stray fallback)")
+                        config.enabled_categories.add("Views")
+                        needs_save = True
+                    config.config_version = 4
 
                 # Migrate: If using "full" preset, ensure all new blocks and categories are enabled
                 # This handles the case where new blocks/categories were added after config was saved

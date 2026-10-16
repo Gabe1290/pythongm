@@ -1,17 +1,28 @@
 # Plan: the two Blockly toolbox issues logged in TODO.md on 2026-10-16
 
 Two independent, unrelated follow-ups, both found (not fixed) while
-closing out `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`. Plan only —
-nothing here is implemented yet. Each is sized to be its own session/
-commit sequence; they don't depend on each other and can be done in
-either order.
+closing out `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`. Each is sized
+to be its own session/commit sequence; they don't depend on each other
+and can be done in either order.
 
-## Issue A — "Particles" and "Views" are stray toolbox categories
+## Issue A — "Particles" and "Views" are stray toolbox categories (DONE 2026-10-16)
 
 Same bug class as "Game" (part 2 of the category-mismatch fix), same
 fix shape, and simpler: both are already clean, single-purpose groups
 with no mixed-category untangling needed (unlike Game's 20-action,
-11-vs-9 split).
+11-vs-9 split). Implemented exactly as planned below, plus one pleasant
+surprise: `config/blockly_translations.py`'s `CATEGORY_TRANSLATIONS`
+already had real "Particles" entries in all 7 languages (leftover from
+before this category was ever wired up), so it renders translated in the
+config dialog immediately — "Views" has no translation anywhere and
+falls back to English, a deliberate choice matching "Game"/"Text" rather
+than a gap. `config_version` bumped to `4`. Preset audit found 7 of 10
+presets at risk (`get_intermediate`, `get_platformer`, `get_grid_rpg`,
+`get_sokoban`, `get_testing`, `get_code_editor`, `get_blockly_editor`),
+all fixed by adding the two categories to their `enabled_categories`
+literal. 18 new tests in `tests/test_blockly_category_mismatch_fix.py`
+(51 → 69) + 1 broadened + 2 new in
+`tests/test_blockly_preset_generated_actions.py`. Full suite green.
 
 ### Root cause (already confirmed, no further investigation needed)
 
