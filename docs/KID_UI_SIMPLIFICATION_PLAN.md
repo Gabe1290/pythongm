@@ -108,22 +108,23 @@ only the first one is built.
 
 ### Phase 0 — DONE (2026-10-16): scoping questions resolved, see above
 
-### Phase 1 — Object Editor: collapse the three-paradigm problem
+### Phase 1 — DONE (2026-10-16, commit `1fb96943`): Object Editor three-paradigm problem
 
-The single highest-value, most concrete fix found in this research.
-For the `"junior"` tier: hide the "📋 Event List" and "💻 Code Editor"
-tabs entirely when the active edition is `"junior"`, leaving Blockly as
-the only authoring surface — matching what every beginner tutorial
-already assumes the student is looking at. Needs: an edition check in
-`editors/object_editor/object_editor_main.py` at tab-creation time
-(`center_tabs.addTab` / `setTabEnabled`), a regression test confirming
-the hidden tabs don't silently break anything that reads from them
-(`custom_code_by_event`, the traditional event-list data model — check
-whether either is read by code paths the Blockly tab doesn't also feed,
-since removing *visibility* must not remove *data* a saved project
-still depends on), and a decision on what happens to a project that
-already has custom code in an event if later reopened in this tier (likely:
-still runs, tab just isn't shown — needs verifying, not assuming).
+`config/editions.py` gained the `"junior"` tier (inheriting beginner's
+tutorial/sample curation for now) with a new
+`"hide_advanced_object_editor_tabs"` flag.
+`editors/object_editor/object_editor_main.py` reads it right after both
+tabs are built and `removeTab()`s "📋 Event List" and "💻 Code Editor",
+leaving Blockly as the only authoring surface. `removeTab()` only
+detaches the widget from the tab bar — `self.actions_widget`/
+`self.code_editor`/`self.custom_code_by_event` and every signal
+connection stay real and intact, confirmed directly (`indexOf()` on the
+detached widget's parent returns -1, but `hasattr` on every
+data-carrying attribute is still true) — so a project with existing
+custom code still loads and runs correctly; the tab to edit it just
+isn't shown in this tier. 5 new tests
+(`tests/test_junior_edition_object_editor_tabs.py`), full suite green
+(6212 passed).
 
 ### Phase 2 — extend `EDITIONS` with menu/toolbar curation
 
@@ -223,4 +224,6 @@ sessions** now that restyling is in scope.
 
 - **2026-10-16, Phase 0 resolved.** User decisions: new `"junior"`
   tier; visual restyling in scope; hide the Code Editor tab entirely.
-  Plan doc updated in place (this commit). Phase 1 is next.
+- **2026-10-16, Phase 1 done** (`1fb96943`). See Phase 1 above. Phase
+  2.5 (visual restyling) or Phase 2 (menu/toolbar curation) is next —
+  neither depends on the other, pick either.
