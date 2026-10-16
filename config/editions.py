@@ -5,6 +5,41 @@ Controls which tutorials are shown and the default blockly preset for new projec
 """
 
 EDITIONS = {
+    # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 1: a tier below "beginner"
+    # for 8-9 year olds, simplifying UI chrome the edition system never
+    # touched before (menus, dialogs, the Object Editor's authoring
+    # surfaces) rather than just curating content. Inherits beginner's
+    # tutorial/sample curation for now (Phase 3 may give it its own,
+    # smaller Blockly preset later; "beginner" is a safe placeholder,
+    # not a final choice).
+    "junior": {
+        "name": "Junior",
+        "description": "Extra-simplified interface for young students",
+        "default_blockly_preset": "beginner",
+        "tutorial_folders": [
+            "01_getting_started",
+            "02_first_game",
+            "03_pong",
+            "04_breakout",
+            "15_fruit_fusion",
+            "16_fruit_basket",
+        ],
+        "sample_folders": [
+            "maze_1", "maze_2", "maze_3", "maze_4",
+            "plateforme_1", "plateforme_2", "plateforme_3",
+            "match3_1", "match3_2", "match3_3",
+            "views_1", "views_2",
+            "treasure",
+            "sky_strike_1",
+        ],
+        # Phase 1: the Object Editor's "Event List" and "Code Editor" tabs
+        # are hidden entirely, leaving Blockly as the only authoring
+        # surface a junior-tier student sees (editors/object_editor/
+        # object_editor_main.py reads this). Not present (or False) on
+        # every other tier -- get_current_edition().get(...) defaults to
+        # False for all of them.
+        "hide_advanced_object_editor_tabs": True,
+    },
     "beginner": {
         "name": "Beginner",
         "description": "Simplified interface with introductory tutorials",

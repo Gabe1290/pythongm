@@ -412,7 +412,7 @@ class ObjectEditor(BaseEditor):
 
         logger.debug("Adding traditional tab to center_tabs...")
         # ✅ TRANSLATABLE: Tab titles
-        self.center_tabs.addTab(traditional_tab, self.tr("📋 Event List"))
+        self._event_list_tab_index = self.center_tabs.addTab(traditional_tab, self.tr("📋 Event List"))
 
         logger.debug("Creating visual programming tab placeholder...")
         # Tab 2: Visual Programming with Blockly — deferred until tab is selected
@@ -528,6 +528,20 @@ class ObjectEditor(BaseEditor):
             logger.error(f"Error creating code editor tab: {e}")
             import traceback
             traceback.print_exc()
+
+        # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 1: the junior edition
+        # hides the "Event List" and "Code Editor" tabs entirely, leaving
+        # Blockly as the only authoring surface -- removeTab() only
+        # detaches the widget from the tab bar, it doesn't destroy it, so
+        # self.actions_widget/self.code_editor/self.custom_code_by_event
+        # and every signal connection above stay intact. A project that
+        # already has custom code in an event still loads and runs
+        # correctly; the tab to edit it is just not shown in this tier.
+        from config.editions import get_current_edition
+        if get_current_edition().get("hide_advanced_object_editor_tabs"):
+            if hasattr(self, "code_tab_index"):
+                self.center_tabs.removeTab(self.center_tabs.indexOf(code_tab))
+            self.center_tabs.removeTab(self._event_list_tab_index)
 
         logger.debug("Adding tabs to layout...")
         layout.addWidget(self.center_tabs, 100)
