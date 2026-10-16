@@ -140,32 +140,40 @@ sort is real work, not mechanical, and should be its own reviewed list
 before implementation, not decided inline while writing menu-builder
 code.
 
-### Phase 2.5 — visual restyling (NEW, in scope per Phase 0)
+### Phase 2.5 — DONE (2026-10-16, commit `b92edb58`): visual restyling
 
-What already exists, confirmed by reading it rather than assuming:
-`utils/theme_manager.py` + `utils/themes.json` is a real, working
-`QPalette`-based *color* theme system (`dark`/`light`/`default`
-today), applied once at startup via `ThemeManager.apply_theme()`. This
-is the right mechanism to extend for a kid-friendly high-contrast
-palette — add a 4th `"junior"` entry to `themes.json`, no new plumbing
-needed.
+**Correction to this phase's original research**: it claimed "there is
+no global font-size knob anywhere in the app" — wrong, found while
+implementing. `main.py`'s `setup_application()` already has a complete,
+working global-font pipeline (`Config.get_font_config()` →
+`app.setFont()`), just not edition-aware. Only the *icon*-size half of
+the original claim held up (no existing knob at all for that).
 
-What's genuinely new work, because nothing like it exists yet:
-**there is no global font-size or icon-size knob anywhere in the
-app.** `dialogs/preferences_dialog.py` has a font-size spinner, but it
-only controls the code/text editor's font, not the app's own chrome
-(menus, buttons, labels). Larger UI text/icons for the junior tier
-needs two new pieces: (a) a `QApplication.setFont()` call with a
-bigger point size, gated on edition, applied at the same startup point
-`ThemeManager.apply_theme()` already runs; (b) explicit
-`QToolBar.setIconSize(QSize(...))` on the main toolbar (`core/ide/
-_menu_builder.py`'s `addToolBar` call) for bigger click targets. Needs
-its own round of real screenshots (the `QWidget.grab()` offscreen
-technique already used elsewhere in this repo's i18n verification
-work) to judge whether a blanket app-wide font bump breaks any
-hardcoded-pixel layout before shipping it — several dialogs in this
-codebase size widgets with fixed pixel values, which a larger default
-font can clip or overlap.
+What shipped: a new `"junior"` entry in `utils/themes.json` (reusing the
+real `ThemeManager`/`QPalette` system `dark`/`light`/`default` already
+use — a high-contrast, kid-friendly palette, verified with a real
+round trip through `ThemeManager.apply_theme()`, not just JSON
+validation); a bigger default font (13pt vs. generic 10pt) and bigger
+main-toolbar icons (32px vs. 16px) for the tier. `config/editions.py`
+gained a `resolve_startup_visual_overrides(config_data)` helper so
+picking "Junior" never silently overrides a theme/font a teacher
+already chose explicitly via Preferences on a shared machine — it
+returns `None` for a setting the raw saved config shows was ever
+touched, falling back to the edition default only when genuinely
+unset. 12 new tests (`tests/test_junior_edition_visual_defaults.py`),
+full suite green (6224 passed).
+
+**Found, not fixed (logged in `TODO.md` instead, real scope creep):**
+Preferences' "UI Scale" spinner (`appearance.ui_scale`) is saved but
+never actually applied anywhere in the app — a genuine pre-existing
+dead-config bug, unrelated to this phase (this phase's font/icon work
+used its own explicit, narrower calls instead of trying to wire up
+`ui_scale` properly).
+
+**Not done, deliberately out of scope for this phase:** the planned
+screenshot pass to check whether the bigger font breaks any
+hardcoded-pixel dialog layout. Worth doing before this ships to real
+users, but didn't block landing the mechanism itself.
 
 ### Phase 3 — Blockly toolbox: a tier below `beginner`'s ~60 actions
 
@@ -224,6 +232,8 @@ sessions** now that restyling is in scope.
 
 - **2026-10-16, Phase 0 resolved.** User decisions: new `"junior"`
   tier; visual restyling in scope; hide the Code Editor tab entirely.
-- **2026-10-16, Phase 1 done** (`1fb96943`). See Phase 1 above. Phase
-  2.5 (visual restyling) or Phase 2 (menu/toolbar curation) is next —
-  neither depends on the other, pick either.
+- **2026-10-16, Phase 1 done** (`1fb96943`). See Phase 1 above.
+- **2026-10-16, Phase 2.5 done** (`b92edb58`). See Phase 2.5 above.
+  Only Phase 2 (menu/toolbar curation) and Phase 3 (a junior Blockly
+  preset) remain, plus Phase 4 (Blockly workspace chrome, lowest
+  priority). Phase 2 is next.

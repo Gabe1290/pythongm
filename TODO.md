@@ -33,17 +33,35 @@ real text; add a real angle field to `move_direction` rather than drop
 `direction_expr`) are implemented, tested, and pushed (896 → 55
 unmatched spans, 18 commits). Only thread A is open now.
 
-**A. (PLAN WRITTEN 2026-10-16, nothing implemented) Simplify the whole
+**A. (IN PROGRESS 2026-10-16 — Phases 0, 1, 2.5 done) Simplify the whole
 interface for 8-9 year old students.** `docs/KID_UI_SIMPLIFICATION_PLAN.md`
-has the research and a 5-phase proposal: the existing `config/editions.py`
-beginner tier only curates tutorials/samples/Blockly-preset, NOT the main
-menu (61 actions), the Object Editor's 3 parallel authoring tabs (Event
-List + Blockly + raw-Python Code Editor, none edition-gated), or the
-Blockly workspace chrome. Phase 0 is a set of open scoping questions
-(new "junior" tier vs. redefining "beginner"; visibility-reduction only
-vs. a visual restyling pass too; hide vs. de-emphasize the Code Editor
-tab) that need a decision before Phase 1 starts. Read that doc's "Open
-scoping questions" section first.
+has the research and a 5-phase proposal. Done so far: Phase 0 (a new
+"junior" edition tier, visual restyling in scope, Code Editor tab
+hidden entirely); Phase 1 (the Object Editor's Event List + Code
+Editor tabs hidden for the junior tier, Blockly the only authoring
+surface); Phase 2.5 (a high-contrast "junior" color theme, bigger
+default font, bigger toolbar icons). **Remaining: Phase 2** (sort all
+61 main-menu actions into keep/hide for the junior tier, extend
+`EDITIONS` + `core/ide/_menu_builder.py`), **Phase 3** (a junior-sized
+Blockly toolbox preset, smaller than `get_beginner()`'s ~60 actions),
+and **Phase 4** (Blockly workspace chrome, lowest priority). Also still
+open: a real screenshot pass to check the bigger default font doesn't
+clip any hardcoded-pixel dialog layout (flagged, not done, in Phase
+2.5's writeup).
+
+### Dead config: Preferences' "UI Scale" setting is saved but never applied (found 2026-10-16)
+
+Found while wiring up the junior edition's visual defaults
+(`docs/KID_UI_SIMPLIFICATION_PLAN.md` Phase 2.5) — unrelated to that
+work, not fixed there. `dialogs/preferences_dialog.py`'s "UI Scale"
+spinner writes `appearance.ui_scale` via `Config.set_appearance_config
+(ui_scale=...)`, and `Config.get_appearance_config()` reads it back
+with a real default (`1.0`) — but nothing in the app ever calls
+`get_appearance_config()['ui_scale']` and does anything with it. A user
+who sets "UI Scale: 1.5" in Preferences sees no change at all. Needs
+its own decision: wire it up for real (scaling fonts/icons/spacing
+proportionally app-wide), or remove the dead spinner so it stops
+promising something that doesn't happen.
 
 ### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
 
