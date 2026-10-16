@@ -39,6 +39,9 @@ EDITIONS = {
         # every other tier -- get_current_edition().get(...) defaults to
         # False for all of them.
         "hide_advanced_object_editor_tabs": True,
+        # Phase 4: strip Blockly's advanced right-click entries
+        # (editors/object_editor/blockly_widget.py -> ?junior=1).
+        "simplify_blockly_chrome": True,
         # Phase 2.5: visual defaults applied at startup (main.py) and for
         # the main toolbar (core/ide/_menu_builder.py) -- but only when
         # the user has never explicitly customized the matching setting

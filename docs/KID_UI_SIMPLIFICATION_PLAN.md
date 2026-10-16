@@ -209,7 +209,10 @@ content curation on top of three existing ones is probably
 over-fragmenting the curriculum for a cut this narrow, but worth
 confirming before Phase 3 starts.
 
-### Phase 4 — Blockly workspace chrome
+### Phase 4 — DONE (2026-10-16): Blockly workspace chrome
+
+**Shipped:** the junior edition (`simplify_blockly_chrome`) loads the page with `?junior=1`, which unregisters 11 right-click entries (collapse/expand, comment, disable, inline, help, workspace collapse/expand/comments, delete-all). Duplicate, Delete, Undo/Redo and Clean up stay. Verified in a real QtWebEngine page (12 registered entries -> 5). Not touched: zoom controls, trash can, wheel zoom -- all useful to kids. `tests/test_junior_blockly_chrome.py`.
+
 
 Lowest priority, highest uncertainty (this is Blockly's own stock UI,
 not this project's code) — a lighter pass once Phases 1-3 are live and
@@ -257,6 +260,7 @@ sessions** now that restyling is in scope.
   priority). Phase 2 is next.
 - **2026-10-16, Phase 2 revised on user direction:** HTML5 is the only export a junior sees (File > Export as HTML5 + toolbar button; Export Game dialog hidden). Sprite editing stays available (double-click a sprite; Import Sprite kept). Gap: there is no 'new blank sprite' menu entry in any tier.
 - **2026-10-16, Create Sprite added** (Assets menu, all editions): blank 32x32 transparent PNG, opens the sprite editor; refuses a name that already exists.
+- **2026-10-16, Phase 4 done -- all phases closed.** Still needs human eyes: nobody has run the junior edition in the real IDE (bigger font vs. hardcoded dialog layouts was never screenshot-checked).
 - **2026-10-16, Phase 3 done.** Phase 4 (Blockly workspace chrome) is the only phase left.
 - **2026-10-16, Phase 2 done.** See Phase 2 above. Phase 3 (junior Blockly
   preset) is next.

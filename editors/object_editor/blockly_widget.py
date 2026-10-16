@@ -90,6 +90,20 @@ class DetachedBlocklyWindow(QMainWindow):
 
 # IDE language code -> Blockly message file (Blockly's own naming), vendored
 # from blockly@12.3.1 (the version in lib/blockly_compressed.js).
+def blockly_url_query(language_code: str) -> str:
+    """Query string for blockly_workspace.html: the language, plus
+    ``junior=1`` when the current edition simplifies the Blockly chrome
+    (docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 4)."""
+    query = f"lang={language_code}"
+    try:
+        from config.editions import get_current_edition
+        if get_current_edition().get("simplify_blockly_chrome"):
+            query += "&junior=1"
+    except Exception:
+        pass
+    return query
+
+
 _BLOCKLY_MESSAGE_FILES = {
     "en": "msg_en.js",
     "de": "msg/de.js", "es": "msg/es.js", "fr": "msg/fr.js", "it": "msg/it.js",
@@ -286,7 +300,7 @@ class BlocklyWidget(QWidget):
                     logger.debug(f"Blockly lib contents: {list(lib_dir.iterdir())}")
 
             url = QUrl.fromLocalFile(str(blockly_html))
-            url.setQuery(f"lang={current_lang}")
+            url.setQuery(blockly_url_query(current_lang))
             logger.info(f"Blockly URL: {url.toString()}")
             self.web_view.setUrl(url)
         else:

@@ -1979,6 +1979,20 @@
             theme: darkTheme
         });
 
+        // docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 4: the junior edition
+        // (?junior=1) drops the right-click entries a young student has no
+        // use for. Duplicate, Delete, Undo/Redo and Clean up stay.
+        if (new URLSearchParams(window.location.search).get('junior') === '1') {
+            ['blockCollapseExpand', 'blockComment', 'blockDisable',
+             'blockInline', 'blockHelp', 'collapseWorkspace',
+             'expandWorkspace', 'commentCreate', 'commentDelete',
+             'commentDuplicate', 'workspaceDelete'].forEach(function(id) {
+                try {
+                    Blockly.ContextMenuRegistry.registry.unregister(id);
+                } catch (e) { /* not registered in this Blockly build */ }
+            });
+        }
+
         // Increase flyout bottom margin so the last block is fully visible when scrolling
         var flyout = workspace.getFlyout();
         if (flyout) {
