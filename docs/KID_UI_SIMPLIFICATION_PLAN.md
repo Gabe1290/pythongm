@@ -92,52 +92,29 @@ only the first one is built.
    same dict (see Phase 2 below) is far lower-risk than inventing a
    parallel mechanism.
 
-## Open scoping questions (need a decision before Phase 1 starts)
+## Phase 0 decisions (RESOLVED 2026-10-16, user confirmed)
 
-- **New edition tier, or redefine "beginner"?** Two options:
-  - **(a) Add a 4th tier** (e.g. `"junior"`) below `"beginner"`, so
-    existing beginner-edition users/docs are undisturbed and this is
-    purely additive. Safer, slower to pay off (two "simple-ish" tiers to
-    maintain).
-  - **(b) Fold the UI-chrome simplification directly into the existing
-    `"beginner"` tier.** Simpler data model, but changes what "beginner"
-    already means to any existing user/doc that assumes it's
-    tutorial/sample curation only.
-  - Recommendation: (a), given the existing beginner tier's docstring
-    ("Simplified interface with introductory tutorials") already
-    oversells what it does today — redefining it quietly would make that
-    gap worse, not better, until the gap itself is fixed.
-- **Does "simplify" include visual restyling** (larger fonts, rounder
-  icons, higher-contrast colors), or stay scoped to **reducing what's
-  visible** (fewer menu items, fewer tabs, fewer toolbox categories)?
-  This plan's Phase 2/3 below assume the latter (reduction, not
-  restyling) since it's lower-risk and matches principle 1 — but a
-  visual pass is a legitimate follow-on if the user wants it, sized
-  separately.
-- **Should the Code Editor tab be hidden, or just de-emphasized** (moved
-  behind a "Show advanced tab" toggle in Preferences)? Hiding is simpler
-  to build and test; de-emphasizing keeps a curious kid's escape hatch
-  open. No strong argument either way from the research — flagging for
-  the user to pick.
+1. **New `"junior"` tier**, not a redefinition of `"beginner"`. Purely
+   additive — existing beginner-edition users/docs are undisturbed.
+2. **Visual restyling is in scope**, not deferred. See Phase 2.5 below
+   for what already exists to build on (`utils/theme_manager.py`) and
+   what's genuinely new work (there is no existing global font-size or
+   icon-size knob — only a real `ThemeManager` + `themes.json` for
+   *color* palettes, confirmed by reading it directly).
+3. **Hide the Code Editor tab entirely** for the junior tier (not a
+   Preferences toggle).
 
 ## Proposed phases (none started)
 
-### Phase 0 — decide the open scoping questions above, write them back into this doc, commit
-
-Standard discipline for this repo (see `docs/POLISH_I18N_PLAN.md`,
-`docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md` for the precedent): the
-plan itself is a committed artifact before any code changes, and gets
-updated in place as decisions are made, not re-litigated from scratch in
-chat each session.
+### Phase 0 — DONE (2026-10-16): scoping questions resolved, see above
 
 ### Phase 1 — Object Editor: collapse the three-paradigm problem
 
 The single highest-value, most concrete fix found in this research.
-For the new tier (or redefined beginner, per the Phase-0 decision):
-hide the "📋 Event List" and "💻 Code Editor" tabs when the active
-edition is the kid tier, leaving Blockly as the only authoring surface
-— matching what every beginner tutorial already assumes the student is
-looking at. Needs: an edition check in
+For the `"junior"` tier: hide the "📋 Event List" and "💻 Code Editor"
+tabs entirely when the active edition is `"junior"`, leaving Blockly as
+the only authoring surface — matching what every beginner tutorial
+already assumes the student is looking at. Needs: an edition check in
 `editors/object_editor/object_editor_main.py` at tab-creation time
 (`center_tabs.addTab` / `setTabEnabled`), a regression test confirming
 the hidden tabs don't silently break anything that reads from them
@@ -162,20 +139,48 @@ sort is real work, not mechanical, and should be its own reviewed list
 before implementation, not decided inline while writing menu-builder
 code.
 
+### Phase 2.5 — visual restyling (NEW, in scope per Phase 0)
+
+What already exists, confirmed by reading it rather than assuming:
+`utils/theme_manager.py` + `utils/themes.json` is a real, working
+`QPalette`-based *color* theme system (`dark`/`light`/`default`
+today), applied once at startup via `ThemeManager.apply_theme()`. This
+is the right mechanism to extend for a kid-friendly high-contrast
+palette — add a 4th `"junior"` entry to `themes.json`, no new plumbing
+needed.
+
+What's genuinely new work, because nothing like it exists yet:
+**there is no global font-size or icon-size knob anywhere in the
+app.** `dialogs/preferences_dialog.py` has a font-size spinner, but it
+only controls the code/text editor's font, not the app's own chrome
+(menus, buttons, labels). Larger UI text/icons for the junior tier
+needs two new pieces: (a) a `QApplication.setFont()` call with a
+bigger point size, gated on edition, applied at the same startup point
+`ThemeManager.apply_theme()` already runs; (b) explicit
+`QToolBar.setIconSize(QSize(...))` on the main toolbar (`core/ide/
+_menu_builder.py`'s `addToolBar` call) for bigger click targets. Needs
+its own round of real screenshots (the `QWidget.grab()` offscreen
+technique already used elsewhere in this repo's i18n verification
+work) to judge whether a blanket app-wide font bump breaks any
+hardcoded-pixel layout before shipping it — several dialogs in this
+codebase size widgets with fixed pixel values, which a larger default
+font can clip or overlap.
+
 ### Phase 3 — Blockly toolbox: a tier below `beginner`'s ~60 actions
 
 `BlocklyConfig.get_beginner()` already proves the preset mechanism
-works and is well-exercised (it's the live default today). A kid tier
-doesn't need a new mechanism, just a new, smaller `get_<tier>()` preset
-— likely built the same way `get_beginner()` itself was built
+works and is well-exercised (it's the live default today). The junior
+tier doesn't need a new mechanism, just a new, smaller `get_junior()`
+preset — likely built the same way `get_beginner()` itself was built
 (grep every beginner-edition *sample's* `project.json` for actions
 actually used, per that method's own code comments, rather than
-guessing from category names). Scope question for Phase 0: does the kid
-tier need its *own* curated tutorial/sample set too (narrower than
-beginner's 6 tutorials), or does it inherit beginner's content and only
-cut the toolbox further? Likely inherits — a 4th content curation on
-top of three existing ones is probably over-fragmenting the curriculum
-for a cut this narrow, but worth confirming.
+guessing from category names). Open question, not yet resolved: does
+the junior tier need its *own* curated tutorial/sample set too
+(narrower than beginner's 6 tutorials), or does it inherit beginner's
+content and only cut the toolbox further? Likely inherits — a 4th
+content curation on top of three existing ones is probably
+over-fragmenting the curriculum for a cut this narrow, but worth
+confirming before Phase 3 starts.
 
 ### Phase 4 — Blockly workspace chrome
 
@@ -198,19 +203,24 @@ an approach.
   action used by a sample/tutorial already in the beginner curriculum
   stays exactly as-is; this is a visibility/curation problem, not a
   capabilities problem.
-- **No decision, yet, on visual restyling** (fonts/colors/icon size) —
-  explicitly deferred to the Phase-0 scoping question above.
-
 ## Honest sizing
 
 Phase 1 (Object Editor tabs) is a single well-scoped session: one
 file's edition check, one regression test file, done the way this
 repo's other single-cluster fixes have been (see the Blockly
 category-mismatch work this same week for the shape of "one finding,
-one commit, one test"). Phases 2 and 3 are each their own session-sized
+one commit, one test"). Phase 2.5 (restyling) is its own session —
+the `themes.json` color entry is cheap, but the font/icon-size work
+needs a real screenshot pass to catch layout breakage, which is the
+slow part. Phases 2 and 3 are each their own session-sized
 audit-then-fix pass (the 61-menu-action sort for Phase 2 especially —
 sorting real UI into "keep"/"cut" needs the user's judgment on several
 of them, not just mine). Phase 4 is open-ended and should be scoped
-properly only after seeing Phases 1-3 land. **Total: roughly 3-4
-sessions**, Phase 0's decisions made first so the rest doesn't get
-re-litigated partway through.
+properly only after seeing Phases 1-3 land. **Total: roughly 4-5
+sessions** now that restyling is in scope.
+
+## Session log
+
+- **2026-10-16, Phase 0 resolved.** User decisions: new `"junior"`
+  tier; visual restyling in scope; hide the Code Editor tab entirely.
+  Plan doc updated in place (this commit). Phase 1 is next.
