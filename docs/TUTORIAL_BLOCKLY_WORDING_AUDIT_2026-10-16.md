@@ -624,6 +624,83 @@ concluding it's fine. Next session: start with Tutorial 10's extension
 first, don't assume the path), since it's the largest remaining chunk
 and the only one with a clear next action.
 
+### UPDATE (continued, same thread): Tutorial 10 investigated and fixed — 122 → 99 unmatched
+
+The extension is `extensions/multiplayer_files/` (not `_file_exchange`).
+Confirmed via `extensions/multiplayer_files/actions.py` and a live dump:
+none of its 6 actions (`host_game_files`, `join_game_files`,
+`leave_game_files`, `set_shared_var_files`, `get_shared_var_files`,
+`end_turn_files`) are in `blockly_workspace.html`'s hardcoded
+`actionToBlockType` map, so — unlike the LAN multiplayer extension,
+which turned out to be authored French-first — these are all
+generated/custom blocks that never localize (Part E): real text is
+always the literal English `display_name` + field labels (e.g. `"Host
+a Game (File Exchange) Shared folder: X Max players: Y Player name:
+Z"`). The FR tutorial had fully translated every one of these action
+names and field labels across all 5 pages; fixed throughout, both in
+mockup spans and `<strong>` prose naming the block (commit `0b003160`).
+Also fixed in the same commit: `event_mouse`'s dropdown OPTIONS are
+never localized either (a hand-written block with an untranslated
+option list, not generated) — EN used `"Mouse: X"` instead of the real
+`"When mouse X"`; FR fully translated an option that never localizes.
+
+Two more small, concrete fixes landed right after (`a25e7b19`,
+`4b265728`): Tutorial 5 (Sokoban)'s core push mechanic was authored as
+**two** blocks (`"If Can Push facing"` containing a nested `"Push Other
+Instance 32"`), but `if_can_push` is a single, self-contained action
+with `object_type`/`direction`/`then_action`/`else_action` choice
+params — `"Push Other Instance"` was never a real action at all
+(confirmed: `push_back_instance` is a `runtime/collision.py`-internal
+physics function, not a Blockly action). Rewrote both EN and FR to the
+real one-block structure. Also caught a leftover `reverse_horizontal`
+miss from the earlier article sweep (Tutorial 13's `"Inverser
+horizontalement"`), and fixed `draw_line` (generated/custom, real text
+`"Draw Line X1: {val} Y1: {val} X2: {val} Y2: {val}"`) in Tutorial 10,
+which both languages had rendered as an unrelated `"from x:... to
+x:..."` structure.
+
+**Remaining 99, re-triaged:**
+
+1. **`set_variable` verbosity cluster is now the largest single group**
+   (~20 occurrences, concentrated in Tutorial 10 and scattered
+   elsewhere — Pong, Catch the Coins, Fruit Fusion). Still exactly the
+   scope question logged earlier: real text is `"📝 Set Variable
+   Variable: X Value: Y Scope: self Relative: non"`, far more verbose
+   than every tutorial's simplified `"Set variable X to Y"`/`"Définir
+   la variable X à Y"`. Not started.
+2. **`draw_variable` (generated, real text `"Draw Variable X: {val} Y:
+   {val} Variable: {val}"`)** — same shape as the now-fixed
+   `draw_line`, a handful of occurrences (Pong's score display,
+   File Exchange's cell/turn displays). Not started, but mechanically
+   identical to the `draw_line` fix just landed — probably the single
+   cheapest remaining win.
+3. **`show_message`/`output_message` quoting inconsistency** — real
+   field is a free-text wildcard (`"Show message {val}"`), so a bare
+   `"You win!"` vs a quoted `"\"You win!\""` are both structurally valid
+   matches; the handful still flagged are flagged for a different
+   reason (worth a second look — possibly a stray punctuation/encoding
+   difference, not a real wording bug). Not investigated.
+4. **`draw_score`/`draw_lives` with a trailing `caption`/`sprite` field**
+   (`14_raycast_hud_minimap/02_score_and_lives.html`) — these two
+   actions may have more real parameters than the `x`/`y` pair fixed
+   earlier in this session; needs checking against
+   `events/action_types.py` before assuming the tutorial is wrong (it
+   might be the dump/matcher that's incomplete here, same caution as
+   item 2 below).
+5. **The raycast/HUD multi-field macro actions — still the likely
+   scan-tool-limitation group from the prior note**, unchanged:
+   `Enable Raycast View`/`Draw Minimap`/`Set Direction & Speed`/`Set
+   Gravity`/`Set Facing Angle`, all using an em-dash to show a
+   deliberately partial field subset. Still not resolved either way.
+6. A handful of genuine one-offs left (`Round Resolved`, `Quitter
+   l'événement`, a `… (score and lives as before)` placeholder) —
+   worth individual spot-checks, not a cluster.
+
+Session total this thread: **896 → 99 unmatched spans**, 9 commits, full
+focused-test gate before every push. Good stopping point — the
+remaining items are smaller and more scattered than anything fixed so
+far, so progress from here will be slower per commit.
+
 ## Suggested order (superseded version below is current)
 
 1. ~~Part B1-B3~~ DONE. ~~Part B4~~ DONE.
