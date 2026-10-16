@@ -152,9 +152,9 @@
             <span class="block block-instance block-indent2">Définir la variable <span class="block-num">held_level</span> à <span class="block-num">2</span></span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">10</span></span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-num">spr_basket_strawberry</span></span><br>
-            <span class="block block-control block-indent">Sinon</span><br>
+            <span class="block block-control block-indent">Else</span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">1</span></span><br>
-            <span class="block block-instance block-indent">Détruire l'autre instance</span>
+            <span class="block block-instance block-indent">Détruire autre instance</span>
         </div>
         <div class="info" style="margin-top: 10px;">
             <strong>Ce que cela fait :</strong> <code>held_level</code> commence à
@@ -163,7 +163,7 @@
             <em>Si</em> s'exécute : le panier devient niveau 2 (une fraise), vous
             gagnez <strong>10</strong> points, et l'image du panier change. Si vous
             attrapez un jour une cerise alors que vous tenez déjà quelque chose de
-            plus gros, la correspondance échoue, donc la branche <em>Sinon</em>
+            plus gros, la correspondance échoue, donc la branche <em>Else</em>
             s'exécute à la place : juste <strong>1</strong> point, rien d'autre ne
             change. Dans tous les cas, la cerise attrapée (<em>l'autre</em>
             instance de la collision &mdash; pas le panier lui-même) disparaît.
