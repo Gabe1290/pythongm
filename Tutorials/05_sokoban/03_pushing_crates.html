@@ -62,13 +62,14 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">When colliding with obj_crate</span><br>
-            <span class="block block-control block-indent">If Can Push <span class="block-val">facing</span></span><br>
-            <span class="block block-move block-indent2">Push Other Instance <span class="block-val">32</span></span>
+            <span class="block block-control block-indent">If Can Push <span class="block-val">box</span> in direction <span class="block-val">facing</span> then <span class="block-val">push and move</span> else <span class="block-val">stop movement</span></span>
         </div>
         <p>Find <strong>Collision</strong> in <em>Events</em> and type <code>obj_crate</code>.
-        Then find <strong>If Can Push</strong> in <em>Control</em> &mdash; it checks whether the crate can be
-        pushed in the direction the player is moving. Inside the "then" section, snap a
-        <strong>Push Other Instance</strong> block with distance <strong>32</strong>.</p>
+        Then find <strong>If Can Push</strong> in <em>Control</em> &mdash; it's a single block that checks
+        whether the crate can be pushed in the direction the player is moving, and does the push itself:
+        <strong>Object Type</strong> <code>box</code>, <strong>Direction</strong> <code>facing</code>,
+        <strong>Then Action</strong> <code>push and move</code>, <strong>Else Action</strong>
+        <code>stop movement</code>.</p>
     </div>
 
     <div class="highlight">

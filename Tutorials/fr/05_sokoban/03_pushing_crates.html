@@ -62,13 +62,14 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Quand collision avec obj_crate</span><br>
-            <span class="block block-control block-indent">Si peut pousser <span class="block-val">facing</span></span><br>
-            <span class="block block-move block-indent2">Pousser l'autre instance <span class="block-val">32</span></span>
+            <span class="block block-control block-indent">Si peut pousser <span class="block-val">box</span> en direction <span class="block-val">facing</span> alors <span class="block-val">push and move</span> sinon <span class="block-val">stop movement</span></span>
         </div>
         <p>Trouvez <strong>Collision</strong> dans <em>Événements</em> et tapez <code>obj_crate</code>.
-        Puis trouvez <strong>Si peut pousser</strong> dans <em>Contrôle</em> &mdash; ce bloc vérifie si la caisse peut être
-        poussée dans la direction où le joueur se déplace. Dans la section « alors », insérez un
-        bloc <strong>Pousser l'autre instance</strong> avec une distance de <strong>32</strong>.</p>
+        Puis trouvez <strong>Si peut pousser</strong> dans <em>Contrôle</em> &mdash; c'est un seul bloc qui vérifie si la
+        caisse peut être poussée dans la direction où le joueur se déplace, et effectue lui-même le
+        déplacement : <strong>Object Type</strong> <code>box</code>, <strong>Direction</strong>
+        <code>facing</code>, <strong>Then Action</strong> <code>push and move</code>,
+        <strong>Else Action</strong> <code>stop movement</code>.</p>
     </div>
 
     <div class="highlight">
