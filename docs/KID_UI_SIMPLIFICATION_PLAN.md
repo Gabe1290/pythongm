@@ -190,7 +190,10 @@ screenshot pass to check whether the bigger font breaks any
 hardcoded-pixel dialog layout. Worth doing before this ships to real
 users, but didn't block landing the mechanism itself.
 
-### Phase 3 — Blockly toolbox: a tier below `beginner`'s ~60 actions
+### Phase 3 — DONE (2026-10-16): Blockly toolbox: a tier below `beginner`'s ~60 actions
+
+**Shipped:** `BlocklyConfig.get_junior()` = beginner minus `JUNIOR_REMOVED_BLOCKS` (15 code-like/niche blocks: execute_code/script, exit_event, test_variable, destroy_at_position, check_empty, test_alignment, test_chance, sleep, move_to_contact, if_object_exists, set_direction_speed, set_background, comment, set_window_caption). Chosen by scanning the actions the junior tutorials' reference projects (01-04, 15, 16) use; `instance_destroy_object` stays because a preset invariant pairs it with destroy_other. Junior inherits beginner's tutorials/samples (the open question resolved as 'inherit'). `tests/test_junior_blockly_preset.py`. Samples using a removed block still load; the block just can't be re-picked.
+
 
 `BlocklyConfig.get_beginner()` already proves the preset mechanism
 works and is well-exercised (it's the live default today). The junior
@@ -254,5 +257,6 @@ sessions** now that restyling is in scope.
   priority). Phase 2 is next.
 - **2026-10-16, Phase 2 revised on user direction:** HTML5 is the only export a junior sees (File > Export as HTML5 + toolbar button; Export Game dialog hidden). Sprite editing stays available (double-click a sprite; Import Sprite kept). Gap: there is no 'new blank sprite' menu entry in any tier.
 - **2026-10-16, Create Sprite added** (Assets menu, all editions): blank 32x32 transparent PNG, opens the sprite editor; refuses a name that already exists.
+- **2026-10-16, Phase 3 done.** Phase 4 (Blockly workspace chrome) is the only phase left.
 - **2026-10-16, Phase 2 done.** See Phase 2 above. Phase 3 (junior Blockly
   preset) is next.

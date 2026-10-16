@@ -534,6 +534,28 @@ class BlocklyConfig:
 
         return config
 
+    # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 3. Blocks the junior tier
+    # drops from the beginner toolbox: code-like or niche ones that none
+    # of the junior tutorials (01-04, 15, 16 -- checked against
+    # tools/tutorial_reference_projects.py) ever use. Samples that use them
+    # still load and run; the block just can't be picked again.
+    JUNIOR_REMOVED_BLOCKS = frozenset({
+        "execute_code", "execute_script", "exit_event", "test_variable",
+        "destroy_at_position", "check_empty", "test_alignment",
+        "test_chance", "sleep", "move_to_contact", "if_object_exists",
+        "set_direction_speed", "set_background", "comment",
+        "set_window_caption",
+    })
+
+    @classmethod
+    def get_junior(cls) -> 'BlocklyConfig':
+        """Junior preset (8-9 year olds) -- beginner minus JUNIOR_REMOVED_BLOCKS."""
+        config = cls.get_beginner()
+        config.preset_name = "junior"
+        for block in cls.JUNIOR_REMOVED_BLOCKS:
+            config.disable_block(block)
+        return config
+
     @classmethod
     def get_intermediate(cls) -> 'BlocklyConfig':
         """Intermediate preset — adds Sokoban, Maze, Platformer, Lunar Lander tutorials"""
@@ -1190,6 +1212,7 @@ class BlocklyConfig:
 PRESETS: Dict[str, BlocklyConfig] = {
     "full": BlocklyConfig.get_full(),
     "beginner": BlocklyConfig.get_beginner(),
+    "junior": BlocklyConfig.get_junior(),
     "intermediate": BlocklyConfig.get_intermediate(),
     "platformer": BlocklyConfig.get_platformer(),
     "grid_rpg": BlocklyConfig.get_grid_rpg(),

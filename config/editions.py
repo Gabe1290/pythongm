@@ -15,7 +15,7 @@ EDITIONS = {
     "junior": {
         "name": "Junior",
         "description": "Extra-simplified interface for young students",
-        "default_blockly_preset": "beginner",
+        "default_blockly_preset": "junior",
         "tutorial_folders": [
             "01_getting_started",
             "02_first_game",
