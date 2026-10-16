@@ -95,6 +95,12 @@ def _build_thymio_preset() -> BlocklyConfig:
         for block in blocks:
             config.enabled_blocks.add(block["type"])
     config.enabled_blocks.update({"start_block", "end_block", "else_action"})
+    # docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue B: these three
+    # are real Control-category blocks (category="Control" in
+    # events/action_types.py), gated like every other real category --
+    # enabling the blocks alone without also enabling "Control" left them
+    # silently invisible in the live toolbox.
+    config.enabled_categories.add("Control")
     return config
 
 

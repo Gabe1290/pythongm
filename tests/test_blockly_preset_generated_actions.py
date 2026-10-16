@@ -7,6 +7,8 @@ import re
 import sys
 from pathlib import Path
 
+import pytest
+
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
@@ -93,30 +95,70 @@ def test_everything_presets_also_enable_the_categories_their_generated_actions_n
     for "Particles"/"Views" hit the identical risk for 7 of the 8
     "everything" presets.
 
-    Deliberately scoped to ONLY "Game", "Drawing", "Particles" and "Views"
-    -- the categories these two fixes actually touched -- not a sweeping
-    audit of every category. A broader version of this check (every
-    category, not just these) was tried first and found the SAME gap
-    already exists, independently, for "Control" and "Timing" in
-    get_platformer (pre-existing, unrelated to either fix, not fixed here
-    -- see docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue B, a
-    separate, not-yet-started follow-up)."""
+    Originally scoped to ONLY "Game"/"Drawing"/"Particles"/"Views" -- the
+    categories those two fixes touched -- because a broader version (every
+    category) found a genuinely separate, unrelated bug: "Control" and
+    "Timing" silently missing from several presets despite their blocks
+    being enabled (Issue B). Now that Issue B is fixed too (2026-10-16,
+    all 7 affected presets + the "thymio" plugin preset), this checks
+    EVERY category again -- the full, unscoped audit -- across every
+    registered preset, not just the "everything" ones (Issue B's
+    "thymio" gap was in the plugin-loaded preset, outside
+    EVERYTHING_PRESETS entirely)."""
     from events.action_types import ACTION_TYPES
     mapped = _action_to_block_type_map()
-    checked_categories = {"Game", "Drawing", "Particles", "Views"}
     presets = _presets()
-    for name in EVERYTHING_PRESETS:
-        cfg = presets[name]
+    for name, cfg in presets.items():
         missing = {}
         for action_name in cfg.enabled_blocks:
             if action_name in mapped:
                 continue
             action = ACTION_TYPES.get(action_name)
-            if action is None or action.category not in checked_categories:
+            if action is None:
                 continue
             if action.category not in cfg.enabled_categories:
                 missing.setdefault(action.category, []).append(action_name)
         assert not missing, f"{name} preset: blocks enabled but their category is not: {missing}"
+
+
+# docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue B's full catalogue,
+# found by the repo-wide audit the general test above now runs permanently
+# -- pinned here so a future change to any of these presets is obviously
+# compared against the known-fixed baseline, not just "does the general
+# test still pass" (which a differently-shaped regression could still
+# satisfy by accident).
+ISSUE_B_CATALOGUE = {
+    "blockly_editor": {"Control"},
+    "code_editor": {"Control"},
+    "grid_rpg": {"Control", "Timing"},
+    "platformer": {"Control", "Timing"},
+    "sokoban": {"Control", "Timing"},
+    "testing": {"Control", "Timing", "Score/Lives/Health"},
+    "thymio": {"Control"},
+}
+
+
+@pytest.mark.parametrize("preset_name,categories", sorted(ISSUE_B_CATALOGUE.items()))
+def test_issue_b_catalogue_presets_now_have_their_missing_categories(preset_name, categories):
+    presets = _presets()
+    cfg = presets[preset_name]
+    missing = categories - cfg.enabled_categories
+    assert not missing, (preset_name, missing)
+
+
+def test_thymio_preset_control_blocks_have_the_control_category_enabled():
+    """extensions/thymio/blockly_categories.py's _build_thymio_preset()
+    explicitly adds start_block/end_block/else_action to enabled_blocks
+    (they're useful even in a Thymio-focused toolbox) but, before this
+    fix, never added "Control" -- the real category all three belong to
+    -- to enabled_categories, so they were silently invisible despite
+    being deliberately, explicitly enabled (not just swept in by the
+    generic GENERATED_ACTION_NAMES union every other Issue B preset
+    relied on)."""
+    presets = _presets()
+    thymio = presets["thymio"]
+    assert {"start_block", "end_block", "else_action"} <= thymio.enabled_blocks
+    assert "Control" in thymio.enabled_categories
 
 
 def test_beginner_gained_exactly_the_three_decided_actions():

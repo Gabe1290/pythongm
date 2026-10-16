@@ -102,7 +102,7 @@ no orphaned-block side-quest like `execute_code` was). One commit is
 plausible; split into two (Particles, then Views) only if the preset
 audit turns up enough per-category fixes to want separate review.
 
-## Issue B — preset `enabled_categories` can silently lag `enabled_blocks`
+## Issue B — preset `enabled_categories` can silently lag `enabled_blocks` (DONE 2026-10-16)
 
 Different bug class from Issue A: `"Control"` and `"Timing"` ARE real,
 correctly-named, already-hardcoded toolbox categories — this was never a
@@ -180,6 +180,49 @@ Audit-then-fix, same shape as the Score/Grid/Output/Game work already
 done this week. Could be one commit if the audit only confirms
 `get_platformer`; more if it finds siblings. Low risk — purely additive
 (`enabled_categories.add(...)`), never removes visibility from anything.
+
+### Resolution (2026-10-16)
+
+The audit found more than `get_platformer` alone — 6 `BlocklyConfig`
+presets plus the plugin-loaded `"thymio"` preset (outside `PRESETS`'
+`BlocklyConfig.get_*()` classmethods entirely, built by
+`extensions/thymio/blockly_categories.py`'s `_build_thymio_preset()`,
+confirmed as its own code path and its own root cause):
+
+| Preset | Missing categories |
+|---|---|
+| `blockly_editor` | Control |
+| `code_editor` | Control |
+| `grid_rpg` | Control, Timing |
+| `platformer` | Control, Timing |
+| `sokoban` | Control, Timing |
+| `testing` | Control, Timing, Score/Lives/Health |
+| `thymio` | Control |
+
+`beginner`, `full`, `implemented_only` and `intermediate` were already
+clean. Every gap matched Step 2's predicted signal — the action only ever
+reached `enabled_blocks` via the blanket `GENERATED_ACTION_NAMES |
+PROMOTED_TO_HAND_WRITTEN_BLOCKS` union, except `thymio`'s three Control
+blocks (`start_block`/`end_block`/`else_action`), which are explicitly,
+individually enabled in `_build_thymio_preset()` but *still* never had
+`"Control"` added alongside them — the same conclusion (category belongs
+in `enabled_categories`) applied regardless of which signal led there.
+Fixed by adding the missing categories to each preset's
+`enabled_categories` literal (`config/blockly_config.py`) and one line in
+`extensions/thymio/blockly_categories.py`.
+
+`tests/test_blockly_preset_generated_actions.py::
+test_everything_presets_also_enable_the_categories_their_generated_actions_need`
+widened from its Issue-A-only scope back to a full, permanent, unscoped
+audit across every registered preset (including `thymio`, which isn't in
+`EVERYTHING_PRESETS`) — the exact general-purpose regression test Step 3
+called for. Plus a pinned catalogue test (`ISSUE_B_CATALOGUE`,
+parametrized per preset) and a dedicated `thymio`-specific test for the
+"explicitly enabled blocks, category still missing" case. One pre-existing
+test (`tests/test_thymio_extension.py::
+test_thymio_categories_and_preset_register_through_the_extension`) had a
+too-strict `enabled_categories == {8 Thymio categories}` pin that needed
+updating to include `"Control"`. Full suite green throughout.
 
 ## Sequencing
 

@@ -748,7 +748,13 @@ def test_thymio_categories_and_preset_register_through_the_extension():
 
     cfg = PRESETS["thymio"]
     assert cfg.preset_name == "thymio"
-    assert cfg.enabled_categories == set(PLUGIN_BLOCK_CATEGORIES)
+    # "Control" is the real category of the three control-flow blocks
+    # enabled below (start_block/end_block/else_action) -- added
+    # alongside them, not one of the 8 Thymio-prefixed categories
+    # (docs/BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md Issue B: without
+    # it those three blocks were silently invisible in the live
+    # toolbox, despite being deliberately, explicitly enabled).
+    assert cfg.enabled_categories == set(PLUGIN_BLOCK_CATEGORIES) | {"Control"}
     # The exact get_thymio() shape: event_create + every category's blocks +
     # the three control-flow blocks -- not just "categories enabled" (the
     # ordering bug this module's docstring documents would leave

@@ -633,7 +633,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound", "Drawing", "Game", "Particles", "Views"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound", "Drawing", "Game", "Particles", "Views", "Control", "Timing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -682,7 +682,7 @@ class BlocklyConfig:
         config.enable_block("sound_play")
         config.enable_block("music_play")
 
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound", "Game", "Particles", "Views"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Drawing", "Sound", "Game", "Particles", "Views", "Control", "Timing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -729,7 +729,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing", "Game", "Particles", "Views"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Drawing", "Game", "Particles", "Views", "Control", "Timing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -871,7 +871,7 @@ class BlocklyConfig:
         config.enable_block("output_message")
         config.enable_block("execute_code")
 
-        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing", "Game", "Particles", "Views"}
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Drawing", "Game", "Particles", "Views", "Control", "Score/Lives/Health", "Timing"}
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
         config.enabled_blocks.update(GENERATED_ACTION_NAMES | PROMOTED_TO_HAND_WRITTEN_BLOCKS)
@@ -1020,7 +1020,7 @@ class BlocklyConfig:
         config.enabled_categories = {
             "Events", "Movement", "Instance", "Room", "Game",
             "Score/Lives/Health", "Drawing", "Timing", "Sound",
-            "Particles", "Views"
+            "Particles", "Views", "Control"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2) --
@@ -1174,7 +1174,7 @@ class BlocklyConfig:
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
             "Instance", "Room", "Values", "Sound", "Game",
-            "Particles", "Views"
+            "Particles", "Views", "Control"
         }
 
         # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
