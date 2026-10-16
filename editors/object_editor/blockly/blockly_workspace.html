@@ -1101,6 +1101,17 @@
                 });
                 this.appendDummyInput('DIR_LEGACY').appendField(legacy, 'DIRECTION');
                 legacy.setVisible(false);
+                // start_moving_direction's real "direction_expr" parameter
+                // (an arbitrary angle/expression, e.g. "45" or
+                // "other.direction") has no field at all on this block
+                // before this -- a project authored with it (the runtime
+                // gives it precedence over the checkbox grid, see
+                // execute_start_moving_direction_action) loaded with every
+                // checkbox unticked and the actual value invisible. Visible,
+                // optional field; leave empty to use the checkbox grid.
+                this.appendDummyInput('DIR_EXPR')
+                    .appendField(getBlockMessage('move_direction_expr_prefix', window.BLOCKLY_LANG) || "or angle")
+                    .appendField(new Blockly.FieldTextInput(''), 'DIRECTION_EXPR');
                 this.appendValueInput("SPEED")
                     .appendField(getBlockMessage('move_direction_suffix', window.BLOCKLY_LANG) || "at speed");
                 this.setPreviousStatement(true, null);
@@ -2616,6 +2627,13 @@
                     var dirNames = directionsToNames(
                         params.directions !== undefined ? params.directions : params.direction);
                     if (dirNames) setMoveDirections(block, dirNames);
+                    // direction_expr (an arbitrary angle/expression) takes
+                    // precedence over the checkbox grid at runtime -- see
+                    // execute_start_moving_direction_action -- so show it in
+                    // its own field rather than letting it vanish.
+                    if (params.direction_expr) {
+                        block.setFieldValue(String(params.direction_expr), 'DIRECTION_EXPR');
+                    }
                     connectNumberBlock('SPEED', paramOr(params.speed, 4));
                     break;
 

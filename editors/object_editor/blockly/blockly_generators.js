@@ -173,7 +173,8 @@ function generateActionCodeInner(block) {
             } else {
                 directions = picked;
             }
-            return {action: 'start_moving_direction', parameters: {directions: directions, speed: speed}};
+            var directionExpr = block.getFieldValue('DIRECTION_EXPR') || '';
+            return {action: 'start_moving_direction', parameters: {directions: directions, direction_expr: directionExpr, speed: speed}};
         case 'move_towards':
             // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B7: the block existed with
             // no generator, so it saved nothing at all.

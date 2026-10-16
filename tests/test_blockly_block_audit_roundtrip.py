@@ -548,6 +548,11 @@ CASES = {
         {"action": "start_moving_direction", "parameters": {"directions": "['left', 'right']", "speed": "2"}}]}},
     "patrol_diagonal_angle": {"create": {"actions": [
         {"action": "start_moving_direction", "parameters": {"directions": 315, "speed": "3"}}]}},
+    # direction_expr: a free-expression angle (e.g. samples/the Pong ball's
+    # 45) that the checkbox grid alone cannot represent -- previously had no
+    # field at all and silently vanished from the visible block.
+    "patrol_direction_expr": {"create": {"actions": [
+        {"action": "start_moving_direction", "parameters": {"directions": [], "direction_expr": "45", "speed": "6"}}]}},
     # extension events (B3 remainder)
     "lan_player_joined": {"player_joined": {"actions": [
         {"action": "set_hspeed", "parameters": {"value": "2"}}]}},
@@ -1230,6 +1235,16 @@ class TestB13DirectionGrid:
         """Old workspace XML stores <field name="DIRECTION">up</field>; the
         hidden legacy field ticks the matching box instead of defaulting."""
         assert round_tripped["__value_blocks_saved"]["direction_legacy_xml"] == 90
+
+    def test_direction_expr_survives_the_round_trip(self, round_tripped):
+        """direction_expr (an arbitrary angle/expression, e.g. Pong's ball
+        direction) takes precedence over the checkbox grid at runtime
+        (runtime/action_movement.py's execute_start_moving_direction_action)
+        but had no field on the block at all before this fix -- loading it
+        ticked nothing and the value was invisible (though not lost, thanks
+        to pygmExtraParams' B5 merge-back). It must now round-trip through
+        its own visible DIRECTION_EXPR field."""
+        assert _params(round_tripped, "patrol_direction_expr")["direction_expr"] == "45"
 
 
 class TestGotoRoomUsesTheCanonicalParameterKey:
