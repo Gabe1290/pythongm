@@ -124,7 +124,7 @@ class PreferencesDialog(QDialog):
 
         # Theme selection
         self.theme_combo = QComboBox()
-        self.theme_combo.addItems(["Default", "Dark", "Light"])
+        self.theme_combo.addItems(["Default", "Dark", "Light", "Junior"])
         theme_form.addRow(self.tr("Theme:"), self.theme_combo)
 
         # UI Scale

@@ -356,10 +356,18 @@ def setup_application():
     else:
         print("ℹ️ Using English (default)")
 
+    # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 2.5: an edition can declare
+    # its own visual defaults (theme, font size); resolve_startup_visual_
+    # overrides returns None for either one the user has already
+    # explicitly customized via Preferences, so picking "Junior" never
+    # silently overrides a teacher's own choice on a shared machine.
+    from config.editions import resolve_startup_visual_overrides
+    visual_overrides = resolve_startup_visual_overrides(Config._config_data)
+
     # Apply theme from config
     from utils.theme_manager import ThemeManager
     appearance_config = Config.get_appearance_config()
-    ThemeManager.apply_theme(appearance_config['theme'])
+    ThemeManager.apply_theme(visual_overrides['theme'] or appearance_config['theme'])
 
     # Set global font configuration
     font_config = Config.get_font_config()
@@ -378,7 +386,7 @@ def setup_application():
             app_font.setFamily("Ubuntu")
 
     # Set font size from config
-    app_font.setPointSize(font_config['size'])
+    app_font.setPointSize(visual_overrides['font_size'] or font_config['size'])
 
     # Apply font globally
     app.setFont(app_font)

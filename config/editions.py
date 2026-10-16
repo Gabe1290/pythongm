@@ -39,6 +39,16 @@ EDITIONS = {
         # every other tier -- get_current_edition().get(...) defaults to
         # False for all of them.
         "hide_advanced_object_editor_tabs": True,
+        # Phase 2.5: visual defaults applied at startup (main.py) and for
+        # the main toolbar (core/ide/_menu_builder.py) -- but only when
+        # the user has never explicitly customized the matching setting
+        # in Preferences (both call sites check the raw config for an
+        # existing 'appearance'/'font' entry first), so picking "Junior"
+        # never silently overrides a teacher's own choice on a shared
+        # machine.
+        "default_theme": "junior",
+        "default_font_size": 13,
+        "default_toolbar_icon_size": 32,
     },
     "beginner": {
         "name": "Beginner",
@@ -94,6 +104,31 @@ def get_current_edition():
     from utils.config import Config
     edition_key = Config.get("edition", DEFAULT_EDITION)
     return EDITIONS.get(edition_key, EDITIONS[DEFAULT_EDITION])
+
+
+def resolve_startup_visual_overrides(config_data):
+    """docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 2.5: what the current
+    edition's "default_theme"/"default_font_size" should override at
+    startup, given the raw saved config dict (``Config._config_data``,
+    passed in rather than read globally so this is testable without a
+    live ``Config`` singleton).
+
+    Returns ``{"theme": name_or_None, "font_size": size_or_None}`` --
+    ``None`` means "no override, use the normal saved/default value"
+    because the user has already explicitly set that value via
+    Preferences at some point (checked against the raw dict, not
+    ``Config.get_appearance_config()``/``get_font_config()``'s own
+    built-in fallbacks, which can't tell "never set" apart from
+    "explicitly set to the generic default").
+    """
+    edition_key = config_data.get("edition", DEFAULT_EDITION)
+    edition = EDITIONS.get(edition_key, EDITIONS[DEFAULT_EDITION])
+    appearance_explicitly_set = "theme" in config_data.get("appearance", {})
+    font_size_explicitly_set = "size" in config_data.get("font", {})
+    return {
+        "theme": None if appearance_explicitly_set else edition.get("default_theme"),
+        "font_size": None if font_size_explicitly_set else edition.get("default_font_size"),
+    }
 
 
 def filter_tutorials_for_edition(tutorials_list, base_tutorials_path=None):

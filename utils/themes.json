@@ -153,5 +153,80 @@
     "name": "Default",
     "style": "Fusion",
     "palette": null
+  },
+  "junior": {
+    "name": "Junior",
+    "style": "Fusion",
+    "colors": {
+      "window": "#fffdf4",
+      "window_text": "#1a1a1a",
+      "base": "#ffffff",
+      "alternate_base": "#fff6db",
+      "tooltip_base": "#fff6db",
+      "tooltip_text": "#1a1a1a",
+      "text": "#1a1a1a",
+      "button": "#bbdefb",
+      "button_text": "#0d2b45",
+      "bright_text": "#d32f2f",
+      "link": "#1565c0",
+      "highlight": "#ffca28",
+      "highlight_text": "#1a1a1a",
+      "disabled_text": "#8a8a8a",
+      "disabled_button_text": "#8a8a8a",
+
+      "panel_background": "#fffdf4",
+      "tree_background": "#ffffff",
+      "tree_alternate": "#fff6db",
+      "tree_hover": "#fff2b8",
+      "tree_selected": "#ffca28",
+      "tree_selected_text": "#1a1a1a",
+
+      "menu_background": "#fffdf4",
+      "menu_text": "#1a1a1a",
+      "menu_selected": "#ffca28",
+      "menu_selected_text": "#1a1a1a",
+      "menu_pressed": "#ffb300",
+      "menu_separator": "#e0d8b0",
+
+      "dropdown_background": "#ffffff",
+      "dropdown_border": "#90caf9",
+
+      "toolbar_background": "#e3f2fd",
+      "toolbar_button_hover": "#bbdefb",
+      "toolbar_button_pressed": "#64b5f6",
+
+      "tab_background": "#bbdefb",
+      "tab_selected": "#ffca28",
+      "tab_hover": "#90caf9",
+      "tab_text": "#0d2b45",
+      "tab_selected_text": "#1a1a1a",
+      "tab_pane": "#ffffff",
+      "tab_border": "#90caf9",
+
+      "input_background": "#ffffff",
+      "input_border": "#64b5f6",
+      "input_focus_border": "#1565c0",
+      "input_selection": "#ffca28",
+
+      "button_hover": "#90caf9",
+      "button_pressed": "#64b5f6",
+      "button_disabled": "#f0ead0",
+
+      "checkbox_background": "#ffffff",
+      "checkbox_checked": "#ffca28",
+      "checkbox_border": "#64b5f6",
+
+      "scrollbar_background": "#fffdf4",
+      "scrollbar_handle": "#bbdefb",
+      "scrollbar_handle_hover": "#90caf9",
+
+      "groupbox_border": "#64b5f6",
+
+      "statusbar_background": "#1565c0",
+      "statusbar_text": "#ffffff",
+
+      "border": "#64b5f6",
+      "border_light": "#90caf9"
+    }
   }
 }

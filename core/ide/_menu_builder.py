@@ -389,7 +389,15 @@ class MenuBuilderMixin:
         toolbar = self.addToolBar(self.tr("Main"))
         toolbar.setObjectName("MainToolbar")
         toolbar.setMovable(False)
-        toolbar.setIconSize(QSize(16, 16))
+        # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 2.5: bigger click
+        # targets for the junior tier. Unlike the theme/font defaults in
+        # main.py's setup_application(), there's no saved-preference
+        # knob for toolbar icon size to check against here, so this
+        # always applies for the tier -- not conditional on "never
+        # customized", since there's nothing to customize yet.
+        from config.editions import get_current_edition
+        icon_size = get_current_edition().get('default_toolbar_icon_size', 16)
+        toolbar.setIconSize(QSize(icon_size, icon_size))
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
         # Reuse the QAction instances from the menus so a single Qt object
