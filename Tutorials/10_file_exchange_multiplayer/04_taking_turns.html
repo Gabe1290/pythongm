@@ -45,9 +45,9 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-control">If <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> then</span><br>
-            <span class="block block-control block-indent">Set variable <span class="block-text">my_turn</span> to <span class="block-text">1</span></span><br>
+            <span class="block block-control block-indent">Set Variable Variable: my_turn Value: <span class="block-text">1</span> Scope: self Relative: off</span><br>
             <span class="block block-control">Else</span><br>
-            <span class="block block-control block-indent">Set variable <span class="block-text">my_turn</span> to <span class="block-text">0</span></span>
+            <span class="block block-control block-indent">Set Variable Variable: my_turn Value: <span class="block-text">0</span> Scope: self Relative: off</span>
         </div>
         <p style="margin-top: 8px; font-style: italic;">The first published
         round is round <strong>1</strong>, not 0 &mdash; so X (the host)
@@ -59,7 +59,7 @@
         <div class="blockly-group">
             <span class="block block-control">If <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> then</span><br>
             <span class="block block-network block-indent">End Turn (File Exchange)</span><br>
-            <span class="block block-control block-indent">Set variable <span class="block-text">last_round_acted</span> to <span class="block-text">global.round_number</span></span>
+            <span class="block block-control block-indent">Set Variable Variable: last_round_acted Value: <span class="block-text">global.round_number</span> Scope: self Relative: off</span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>What this does:</strong> a "pass" &mdash; submitted with

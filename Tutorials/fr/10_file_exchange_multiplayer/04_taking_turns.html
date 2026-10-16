@@ -47,9 +47,9 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-control">Si <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> alors</span><br>
-            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_turn</span> à <span class="block-text">1</span></span><br>
+            <span class="block block-control block-indent">Set Variable Variable: my_turn Value: <span class="block-text">1</span> Scope: self Relative: off</span><br>
             <span class="block block-control">Sinon</span><br>
-            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_turn</span> à <span class="block-text">0</span></span>
+            <span class="block block-control block-indent">Set Variable Variable: my_turn Value: <span class="block-text">0</span> Scope: self Relative: off</span>
         </div>
         <p style="margin-top: 8px; font-style: italic;">Le premier tour
         publié est le tour <strong>1</strong>, pas 0 &mdash; donc X (l'hôte)
@@ -61,7 +61,7 @@
         <div class="blockly-group">
             <span class="block block-control">Si <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> alors</span><br>
             <span class="block block-network block-indent">End Turn (File Exchange)</span><br>
-            <span class="block block-control block-indent">Définir la variable <span class="block-text">last_round_acted</span> à <span class="block-text">global.round_number</span></span>
+            <span class="block block-control block-indent">Set Variable Variable: last_round_acted Value: <span class="block-text">global.round_number</span> Scope: self Relative: off</span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> un « passe » &mdash; soumis
@@ -76,7 +76,7 @@
     <div class="step">
         <p>Ajoutez <code>my_turn == 1</code> comme condition à chacun des
         neuf clics de la Phase 1, et remplacez le
-        <strong>Définir la variable</strong> local par une vraie écriture
+        <strong>Set Variable</strong> local par une vraie écriture
         réseau + soumission. Case (0,0), entièrement détaillée :</p>
         <div class="blockly-group">
             <span class="block block-event">Quand souris Left Button Pressed</span><br>
