@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QSpinBox, QGroupBox, QFormLayout,
                                QComboBox, QDialogButtonBox, QTabWidget, QWidget,
                                QCheckBox, QDoubleSpinBox, QLineEdit, QFileDialog,
-                               QMessageBox)
+                               QMessageBox, QScrollArea, QFrame)
 from PySide6.QtGui import QFont
 from utils.config import Config
 
@@ -20,9 +20,9 @@ class PreferencesDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Preferences"))
         self.setMinimumWidth(600)
-        self.setMinimumHeight(500)
 
         self.setup_ui()
+        self._limit_height()
         self.load_current_settings()
         self.connect_signals()
 
@@ -41,6 +41,7 @@ class PreferencesDialog(QDialog):
         self.create_advanced_tab()
         self.create_extensions_tab()
 
+        self._make_tabs_scrollable()
         main_layout.addWidget(self.tabs)
 
         # Info label
@@ -53,6 +54,33 @@ class PreferencesDialog(QDialog):
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel | QDialogButtonBox.Apply
         )
         main_layout.addWidget(self.button_box)
+
+    def _make_tabs_scrollable(self):
+        """Wrap each tab page in a scroll area so a long page scrolls instead
+        of forcing the whole dialog taller than the IDE window."""
+        for index in range(self.tabs.count()):
+            page = self.tabs.widget(index)
+            title = self.tabs.tabText(index)
+            self.tabs.removeTab(index)
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setFrameShape(QFrame.NoFrame)
+            scroll.setWidget(page)
+            self.tabs.insertTab(index, scroll, title)
+
+    def _limit_height(self):
+        """Never taller than 75% of the IDE window (or of the screen when
+        there is no parent window)."""
+        parent = self.parent()
+        if parent is not None and parent.window() is not None:
+            reference = parent.window().height()
+        else:
+            screen = self.screen()
+            reference = screen.availableGeometry().height() if screen else 800
+        cap = max(300, int(reference * 0.75))
+        self.setMaximumHeight(cap)
+        self.setMinimumHeight(min(500, cap))
+        self.resize(self.width(), min(self.sizeHint().height(), cap))
 
     def create_general_tab(self):
         """Create the General settings tab with IDE edition selector"""
