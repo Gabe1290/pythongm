@@ -30,20 +30,17 @@ Left here so a session on another machine can pick either one without
 needing the user to re-explain — neither depends on the other, so pick
 whichever fits the available time.
 
-**A. (NEW, unscoped) A plan to simplify the whole interface for 8-9
-year old students.** Nothing has been researched or written yet — this
-needs a real investigation first, not a guess: survey the current menu/
-toolbar structure and the Blockly toolbox's actual category/action count,
-read `config/editions.py` (there's already a `DEFAULT_EDITION`/
-`tutorial_folders` gating mechanism that hides some complexity for a
-"beginner" edition — check whether it goes far enough or a dedicated kid
-mode is a better fit), and probably take real screenshots (the
-`QWidget.grab()` offscreen technique documented in the 2026-08-10 CLAUDE.md
-session note) to judge actual visual density before proposing cuts. Write
-the plan doc the way this repo's other plan docs are written (e.g.
-`docs/POLISH_I18N_PLAN.md`, `docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`)
-— verified against the real code and UI, not assumed — and commit the
-plan itself before any implementation starts.
+**A. (PLAN WRITTEN 2026-10-16, nothing implemented) Simplify the whole
+interface for 8-9 year old students.** `docs/KID_UI_SIMPLIFICATION_PLAN.md`
+has the research and a 5-phase proposal: the existing `config/editions.py`
+beginner tier only curates tutorials/samples/Blockly-preset, NOT the main
+menu (61 actions), the Object Editor's 3 parallel authoring tabs (Event
+List + Blockly + raw-Python Code Editor, none edition-gated), or the
+Blockly workspace chrome. Phase 0 is a set of open scoping questions
+(new "junior" tier vs. redefining "beginner"; visibility-reduction only
+vs. a visual restyling pass too; hide vs. de-emphasize the Code Editor
+tab) that need a decision before Phase 1 starts. Read that doc's "Open
+scoping questions" section first.
 
 **B. (IN PROGRESS) Finish the Blockly tutorial-wording audit.**
 `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md` has a working,
