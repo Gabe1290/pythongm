@@ -24,11 +24,13 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
-### Next session: two independent threads to choose from (noted 2026-10-16)
+### Next session: two threads, ORDER DECIDED — finish B before starting A (noted 2026-10-16)
 
-Left here so a session on another machine can pick either one without
-needing the user to re-explain — neither depends on the other, so pick
-whichever fits the available time.
+Left here so a session on another machine resumes the right one without
+needing the user to re-explain. **User decision (2026-10-16): finish B
+(the Blockly wording audit) first, then pick up A (kid UI
+simplification).** Not independent-pick-either anymore — do them in
+this order.
 
 **A. (PLAN WRITTEN 2026-10-16, nothing implemented) Simplify the whole
 interface for 8-9 year old students.** `docs/KID_UI_SIMPLIFICATION_PLAN.md`
