@@ -24,30 +24,30 @@ see `docs/PROJECT_STATUS.md`.)
 
 ## IDE features
 
-### Next session: pick up thread A (noted 2026-10-16, thread B closed 2026-10-16)
+### ~~Simplify the whole interface for 8-9 year old students~~ (DONE 2026-10-16)
 
-Thread B (the Blockly tutorial-wording audit,
-`docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`) is **DONE** — both
-decisions the user made (rewrite `set_variable` mockups to the verbose
-real text; add a real angle field to `move_direction` rather than drop
-`direction_expr`) are implemented, tested, and pushed (896 → 55
-unmatched spans, 18 commits). Only thread A is open now.
+`docs/KID_UI_SIMPLIFICATION_PLAN.md`'s full 5-phase proposal shipped: a
+new "junior" edition tier (visual restyling, Code Editor tab hidden);
+Phase 1 (Object Editor tabs curated to Blockly-only); Phase 2.5 (a
+high-contrast theme, bigger default font and toolbar icons); Phase 2
+(all 61 main-menu actions sorted into keep/hide, HTML5-only export,
+Export Game dialog hidden); Phase 3 (a junior-sized Blockly preset,
+`BlocklyConfig.JUNIOR_BLOCKS` — 46 blocks derived from the junior
+tutorials, not just a subset of `get_beginner()`); Phase 4 (Blockly
+workspace chrome — 11 right-click entries unregistered). Also shipped
+alongside it: a "Create Sprite" action (Assets menu, all editions) and
+a full junior student/teacher handout set (EN+FR, `docs/junior/`,
+published to the wiki).
 
-**A. (IN PROGRESS 2026-10-16 — Phases 0, 1, 2.5 done) Simplify the whole
-interface for 8-9 year old students.** `docs/KID_UI_SIMPLIFICATION_PLAN.md`
-has the research and a 5-phase proposal. Done so far: Phase 0 (a new
-"junior" edition tier, visual restyling in scope, Code Editor tab
-hidden entirely); Phase 1 (the Object Editor's Event List + Code
-Editor tabs hidden for the junior tier, Blockly the only authoring
-surface); Phase 2.5 (a high-contrast "junior" color theme, bigger
-default font, bigger toolbar icons). **Remaining: Phase 2** (sort all
-61 main-menu actions into keep/hide for the junior tier, extend
-`EDITIONS` + `core/ide/_menu_builder.py`), **Phase 3** (a junior-sized
-Blockly toolbox preset, smaller than `get_beginner()`'s ~60 actions),
-and **Phase 4** (Blockly workspace chrome, lowest priority). Also still
-open: a real screenshot pass to check the bigger default font doesn't
-clip any hardcoded-pixel dialog layout (flagged, not done, in Phase
-2.5's writeup).
+**Still open, not done here: a real screenshot pass to check the
+bigger default font doesn't clip any hardcoded-pixel dialog layout**
+(flagged in the plan doc's own Phase 2.5 writeup) — nobody has opened
+the junior edition in the running IDE and looked at it yet.
+
+(Thread B, the Blockly tutorial-wording audit,
+`docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`, closed the same
+day — both decisions the user made there are implemented, tested, and
+pushed, 896 → 55 unmatched spans, 18 commits.)
 
 ### Dead config: Preferences' "UI Scale" setting is saved but never applied (found 2026-10-16)
 
