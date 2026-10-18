@@ -58,7 +58,10 @@ def test_game_room_constructor_arms_pending_room_start():
 
 
 def test_change_room_rearms_pending_room_start():
-    body = _method_body("changeRoom")
+    # The actual switch logic moved into _changeRoomImmediate (2026-10-18,
+    # TODO.md's room-transition fade work); changeRoom itself (transition=
+    # 'none') delegates straight through to it unchanged.
+    body = _method_body("_changeRoomImmediate")
     assert "this.currentRoom._pendingRoomStart = true;" in body
 
 

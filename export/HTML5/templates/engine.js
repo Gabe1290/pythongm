@@ -2482,7 +2482,12 @@ class GameObject {
                 }
 
                 if (roomName && game.rooms[roomName]) {
-                    game.changeRoom(roomName);
+                    // transition: only goto_room's own explicit param
+                    // carries it (matching desktop's execute_goto_room_
+                    // action/change_room scope) -- the __next__/__previous__/
+                    // __restart__ sentinels above never set one, same as
+                    // desktop's next_room/previous_room/restart_room actions.
+                    game.changeRoom(roomName, false, params.transition || 'none');
                 }
                 break;
 
@@ -4279,6 +4284,10 @@ class GameRoom {
     }
 }
 
+// goto_room's transition='fade' duration -- matches desktop's
+// GameRunner._FADE_TRANSITION_SECONDS = 0.25 exactly.
+const FADE_TRANSITION_MS = 250;
+
 class Game {
     constructor() {
         console.log('🎮 Initializing game...');
@@ -4316,6 +4325,13 @@ class Game {
         this._audioPool = {};       // sound name -> [Audio] (play_sound)
         this._sleepUntil = 0;       // sleep action deadline
         this._gameStartFired = false;
+        // goto_room's transition='fade' (desktop: GameRunner.change_room /
+        // _fade_overlay, _FADE_TRANSITION_SECONDS=0.25). Non-blocking state
+        // machine (no blocking sleep in a browser's main thread, unlike
+        // desktop's pygame sub-loop): drawn as an overlay in gameLoop's
+        // render phase, which already runs every frame regardless of
+        // this._sleepUntil freezing gameplay stepping.
+        this._fadeTransition = null;
 
         // Language for translations (default English, can be set from gameData)
         this.language = 'en';
@@ -4742,6 +4758,8 @@ class Game {
         // Draw score, lives, health HUD
         this.drawHUD();
 
+        this._renderFadeTransition();
+
         if (this.paused) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -4767,6 +4785,39 @@ class Game {
         }
 
         requestAnimationFrame(() => this.gameLoop());
+    }
+
+    _renderFadeTransition() {
+        const t = this._fadeTransition;
+        if (!t) return;
+
+        let elapsed = Date.now() - t.startTime;
+        if (t.phase === 'out' && elapsed >= t.durationMs) {
+            // Midpoint: perform the actual room switch, then render the new
+            // room immediately (this frame's regular render() above already
+            // ran for the OLD room) so the fade-in doesn't start from a
+            // stale frame, then begin fading in.
+            this._changeRoomImmediate(t.targetRoom, t.forceRebuild);
+            if (this.currentRoom) {
+                this.currentRoom.updateViews();
+                this.currentRoom.render(this.ctx);
+                this.drawHUD();
+            }
+            t.phase = 'in';
+            t.startTime = Date.now();
+            elapsed = 0;
+        }
+
+        // fade-out: 0 -> 1 (revealing black); fade-in: 1 -> 0 (revealing
+        // the new room) -- the exact mirror of desktop's _fade_overlay.
+        const progress = Math.min(1, elapsed / t.durationMs);
+        const alpha = t.phase === 'out' ? progress : 1 - progress;
+        this.ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        if (t.phase === 'in' && elapsed >= t.durationMs) {
+            this._fadeTransition = null;
+        }
     }
 
     drawHUD() {
@@ -4849,7 +4900,31 @@ class Game {
     // persistent" check would otherwise reuse the very room instance being
     // discarded (its persistent flag hasn't changed just because a restart
     // was requested).
-    changeRoom(roomName, forceRebuild = false) {
+    changeRoom(roomName, forceRebuild = false, transition = 'none') {
+        // transition='fade': freeze gameplay stepping (reusing the same
+        // this._sleepUntil gate the 'sleep' action already uses -- render
+        // keeps running every frame regardless) for one fade-out, switch
+        // rooms at the midpoint, then one fade-in. Desktop's equivalent
+        // (GameRunner.change_room/_fade_overlay) blocks in a pygame
+        // sub-loop; a browser's main thread can't block, so this is a
+        // small state machine ticked from gameLoop's render phase instead
+        // -- see this._fadeTransition and the overlay draw in gameLoop().
+        if (transition === 'fade' && this.gameData.assets.rooms[roomName]) {
+            const durationMs = FADE_TRANSITION_MS;
+            this._fadeTransition = {
+                phase: 'out',
+                startTime: Date.now(),
+                durationMs: durationMs,
+                targetRoom: roomName,
+                forceRebuild: forceRebuild,
+            };
+            this._sleepUntil = Date.now() + durationMs * 2;
+            return;
+        }
+        this._changeRoomImmediate(roomName, forceRebuild);
+    }
+
+    _changeRoomImmediate(roomName, forceRebuild = false) {
         if (this.gameData.assets.rooms[roomName]) {
             // Clear keyboard state
             for (const key in this.keys) {

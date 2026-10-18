@@ -144,16 +144,20 @@ def test_process_movement_scales_by_room_speed_factor():
 
 def test_build_room_is_a_reusable_method():
     assert "buildRoom(roomName) {" in ENGINE
-    # loadGame's startup pass and changeRoom's rebuild path both go through it
+    # loadGame's startup pass and the room-rebuild path both go through it
     assert "this.rooms[roomName] = this.buildRoom(roomName);" in ENGINE
-    m = re.search(r"    changeRoom\(roomName, forceRebuild = false\)\s*\{(.*?)\n    \}",
+    # The actual switch logic moved into _changeRoomImmediate (2026-10-18,
+    # TODO.md's room-transition fade work) so changeRoom itself could gain
+    # a transition='fade' branch without touching this body at all --
+    # changeRoom(roomName, false, 'none') still delegates straight through.
+    m = re.search(r"    _changeRoomImmediate\(roomName, forceRebuild = false\)\s*\{(.*?)\n    \}",
                   ENGINE, re.S)
-    assert m, "changeRoom(roomName, forceRebuild) not found"
+    assert m, "_changeRoomImmediate(roomName, forceRebuild) not found"
     assert "this.rooms[roomName] = this.buildRoom(roomName);" in m.group(1)
 
 
 def test_change_room_reuses_only_visited_persistent_rooms():
-    m = re.search(r"    changeRoom\(roomName, forceRebuild = false\)\s*\{(.*?)\n    \}",
+    m = re.search(r"    _changeRoomImmediate\(roomName, forceRebuild = false\)\s*\{(.*?)\n    \}",
                   ENGINE, re.S)
     assert m
     body = m.group(1)

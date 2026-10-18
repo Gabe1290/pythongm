@@ -1425,7 +1425,8 @@ if dist > 0:
 
         elif action_type == 'goto_room' or action_type == 'room_goto':
             room_name = params.get('room', params.get('room_name', ''))
-            return f"from main import goto_room; goto_room('{room_name}')"
+            transition = params.get('transition', 'none')
+            return f"from main import goto_room; goto_room('{room_name}', '{transition}')"
 
         elif action_type == 'restart_room' or action_type == 'room_restart':
             # force_rebuild=True: the target IS the current room index, so

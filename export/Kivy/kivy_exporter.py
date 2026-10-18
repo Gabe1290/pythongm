@@ -693,12 +693,18 @@ def goto_previous_room():
         _game_app.goto_previous_room()
 
 
-def goto_room(room_name):
-    """Go to a specific room by name"""
+def goto_room(room_name, transition='none'):
+    """Go to a specific room by name.
+
+    transition: 'none' (default, instant) or 'fade' (fade to black,
+    switch, fade back in) -- matches desktop's execute_goto_room_action/
+    GameRunner.change_room exactly in scope: only this action's own
+    transition param carries it, next_room/previous_room/restart_room
+    never do."""
     global _room_transition_pending
     if _game_app and not _room_transition_pending:
         _room_transition_pending = True
-        _game_app.goto_room(room_name)
+        _game_app.goto_room(room_name, transition)
 
 
 def next_room_exists():
@@ -918,13 +924,13 @@ def show_message(message):
             _log("_on_overlay_dismiss called")
             _popup_open = False
             if _pending_room_switch is not None:
-                room_index, force_rebuild = _pending_room_switch
+                room_index, force_rebuild, transition = _pending_room_switch
                 _pending_room_switch = None
                 _log(f"_on_overlay_dismiss: deferred room switch to {{room_index}}")
                 a2 = get_game_app()
                 if a2:
                     Clock.schedule_once(
-                        lambda dt: a2._switch_to_room(room_index, force_rebuild), 0)
+                        lambda dt: a2._switch_to_room(room_index, force_rebuild, transition), 0)
             else:
                 _log("_on_overlay_dismiss: resuming game loop")
                 a2 = get_game_app()
@@ -963,13 +969,13 @@ def show_message(message):
         Window.unbind(on_key_down=on_key_down)
 
         if _pending_room_switch is not None:
-            room_index, force_rebuild = _pending_room_switch
+            room_index, force_rebuild, transition = _pending_room_switch
             _pending_room_switch = None
             _log(f"on_dismiss: deferred room switch to index {{room_index}}")
             a2 = get_game_app()
             if a2:
                 Clock.schedule_once(
-                    lambda dt: a2._switch_to_room(room_index, force_rebuild), 0)
+                    lambda dt: a2._switch_to_room(room_index, force_rebuild, transition), 0)
         else:
             _log("on_dismiss: resuming game loop (no room switch)")
             a2 = get_game_app()
@@ -1215,6 +1221,29 @@ class _MsgOverlay(Widget):
         return False
 
 
+# goto_room's transition='fade' duration, in ticks at the ~60fps
+# _fade_tick runs -- matches desktop's _FADE_TRANSITION_SECONDS=0.25 * 60.
+_FADE_FRAMES = 15
+
+
+class _FadeOverlay(Widget):
+    """Full-screen black overlay for the room-transition fade. Pre-created
+    and reused (same "always exists, only Color.a changes" pattern as
+    _MsgOverlay above) -- only GameApp._raise_fade_overlay ever adds/
+    removes it from the widget tree, to control its draw order relative
+    to whichever scene is current."""
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.size_hint = (1, 1)
+        with self.canvas:
+            self._color = Color(0, 0, 0, 0)
+            Rectangle(pos=(-500, -500), size=(19999, 19999))
+
+    def set_alpha(self, alpha):
+        self._color.a = alpha
+
+
 class GameApp(App):
     """Main game application"""
 
@@ -1225,6 +1254,13 @@ class GameApp(App):
         self.scene_container = None
         self.dpad = None
         self.update_event = None
+
+        # goto_room transition='fade' state -- see _start_fade_out/_fade_tick.
+        self._fade_overlay = None
+        self._fade_phase = None    # None | 'out' | 'in'
+        self._fade_step = 0
+        self._fade_pending_switch = None
+        self._fade_clock_event = None
 
         # set_room_persistent support: a persistent room's scene instance is
         # cached here (keyed by room index) when left, and reused instead of
@@ -1395,22 +1431,28 @@ class GameApp(App):
         else:
             show_message("Already at first room")
 
-    def goto_room(self, room_name):
+    def goto_room(self, room_name, transition='none'):
         """Switch to a specific room by name"""
         if room_name in ROOM_ORDER:
             index = ROOM_ORDER.index(room_name)
-            self._switch_to_room(index)
+            self._switch_to_room(index, transition=transition)
         else:
             show_message(f"Room '{{room_name}}' not found")
 
-    def _switch_to_room(self, room_index, force_rebuild=False):
+    def _switch_to_room(self, room_index, force_rebuild=False, transition='none'):
         """Internal method to switch rooms.
 
         force_rebuild=True bypasses the persistent-room cache entirely (ask
         for a fresh instance and don't cache the one being left) — used by
         restart_room, since it targets the CURRENT room index and would
         otherwise re-cache-then-reuse the very instance it's meant to
-        discard."""
+        discard.
+
+        transition='fade': mirrors desktop's GameRunner.change_room/
+        _fade_overlay (fade to black, switch, fade back in) -- only
+        goto_room's own explicit transition param ever passes this;
+        next_room/previous_room/restart_room/restart_game never do,
+        matching desktop's scope exactly."""
         global _pending_room_switch
         _log(f"_switch_to_room({{room_index}}, force_rebuild={{force_rebuild}}) called")
         if room_index < 0 or room_index >= len(ROOM_ORDER):
@@ -1420,7 +1462,7 @@ class GameApp(App):
         # If a message popup is open, defer the room switch until it's dismissed
         if _popup_open:
             _log("_switch_to_room: popup open, deferring")
-            _pending_room_switch = (room_index, force_rebuild)
+            _pending_room_switch = (room_index, force_rebuild, transition)
             return
 
         # Stop update loop before switching
@@ -1428,9 +1470,83 @@ class GameApp(App):
             Clock.unschedule(self.update_event)
             self.update_event = None
 
-        _log(f"_switch_to_room: scheduling _do_room_switch({{room_index}})")
-        Clock.schedule_once(
-            lambda dt: self._do_room_switch(room_index, force_rebuild), 0)
+        if transition == 'fade':
+            _log(f"_switch_to_room: scheduling fade-out to {{room_index}}")
+            Clock.schedule_once(
+                lambda dt: self._start_fade_out(room_index, force_rebuild), 0)
+        else:
+            _log(f"_switch_to_room: scheduling _do_room_switch({{room_index}})")
+            Clock.schedule_once(
+                lambda dt: self._do_room_switch(room_index, force_rebuild), 0)
+
+    def _fade_container(self):
+        return self.scene_container if IS_ANDROID else self.root_layout
+
+    def _ensure_fade_overlay(self):
+        """Pre-created, reused black overlay for the fade transition (same
+        "always exists, only its Color.a changes" pattern as _MsgOverlay
+        above). Created lazily so a project that never uses transition=
+        'fade' never builds it at all."""
+        if self._fade_overlay is None:
+            self._fade_overlay = _FadeOverlay()
+        return self._fade_overlay
+
+    def _raise_fade_overlay(self):
+        """Widgets added later render on top -- _do_room_switch's own
+        add_widget(new_scene) would otherwise end up drawn OVER a fade
+        overlay added earlier, hiding it mid-transition. Called right
+        after every widget-tree change the fade touches."""
+        overlay = self._fade_overlay
+        container = self._fade_container()
+        if overlay is None or container is None:
+            return
+        if overlay in container.children:
+            container.remove_widget(overlay)
+        container.add_widget(overlay)
+
+    def _start_fade_out(self, room_index, force_rebuild):
+        overlay = self._ensure_fade_overlay()
+        self._raise_fade_overlay()
+        overlay.set_alpha(0)
+        self._fade_phase = 'out'
+        self._fade_step = 0
+        self._fade_pending_switch = (room_index, force_rebuild)
+        if self._fade_clock_event:
+            Clock.unschedule(self._fade_clock_event)
+        self._fade_clock_event = Clock.schedule_interval(self._fade_tick, 1.0 / 60.0)
+
+    def _fade_tick(self, dt):
+        """Ticked at ~60fps by Clock.schedule_interval; FADE_FRAMES total
+        steps per phase (~0.25s at 60fps, matching desktop's
+        _FADE_TRANSITION_SECONDS=0.25) rather than wall-clock time, so a
+        dropped/slow frame just takes one more tick instead of skipping
+        visible steps -- same per-frame-step model as desktop's
+        _fade_overlay (`for step in range(frame_count)`)."""
+        overlay = self._fade_overlay
+        if overlay is None or self._fade_phase is None:
+            return False
+
+        self._fade_step += 1
+        progress = min(1.0, self._fade_step / _FADE_FRAMES)
+
+        if self._fade_phase == 'out':
+            overlay.set_alpha(progress)
+            if progress >= 1.0:
+                room_index, force_rebuild = self._fade_pending_switch
+                self._fade_pending_switch = None
+                self._do_room_switch(room_index, force_rebuild)
+                self._raise_fade_overlay()
+                self._fade_phase = 'in'
+                self._fade_step = 0
+            return True
+
+        # phase == 'in'
+        overlay.set_alpha(1.0 - progress)
+        if progress >= 1.0:
+            self._fade_phase = None
+            self._fade_clock_event = None
+            return False
+        return True
 
     def _do_room_switch(self, room_index, force_rebuild=False):
         """Switch to a new room with clean remove/add.
