@@ -8,7 +8,9 @@ from pathlib import Path
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
                                QPushButton, QLabel, QMessageBox, QListWidget,
-                               QListWidgetItem, QTreeWidget, QTreeWidgetItem)
+                               QListWidgetItem, QTreeWidget, QTreeWidgetItem,
+                               QTableWidget, QTableWidgetItem, QHeaderView,
+                               QAbstractItemView, QDialogButtonBox)
 from PySide6.QtCore import Qt
 
 from .asset_utils import validate_asset_name
@@ -100,6 +102,166 @@ class AssetRenameDialog(QDialog):
             return
 
         self.new_name = new_name
+        self.accept()
+
+
+class BatchRenameDialog(QDialog):
+    """Rename several assets at once (docs/ASSET_MANAGER_PLAN.md's
+    deliberately-deferred batch rename). Each row gets its own editable
+    "New Name" field, pre-filled with the current name, plus an optional
+    "Find and replace in names" helper that rewrites every row's New Name
+    field at once -- the two batch-rename UX patterns (type each one by
+    hand, or substitute a common substring across many) in one dialog
+    rather than forcing a choice.
+
+    ``name_exists_fn(new_name, asset_type) -> bool`` is injected (not
+    imported), mirroring AssetOperations.asset_name_exists's per-category
+    scoping, so this stays testable without a live project tree.
+
+    Chain/swap renames within the batch (one row's new name equal to
+    another row's CURRENT name, which is itself being renamed away) are
+    rejected as a plain external-name collision -- supporting that
+    correctly needs a two-phase apply (temporary names first), which the
+    common parallel-rename case doesn't need.
+    """
+
+    def __init__(self, items, name_exists_fn, parent=None):
+        """items: list of (asset_type, current_name) tuples, singular
+        asset_type (e.g. "sprite") matching AssetTreeItem.asset_type."""
+        super().__init__(parent)
+        self.items = list(items)
+        self._name_exists_fn = name_exists_fn
+        self.renames = {}  # {(asset_type, current_name): new_name}; only rows that changed
+        self._new_name_items = []
+        self.setup_ui()
+
+    def setup_ui(self):
+        self.setWindowTitle(self.tr("Rename {0} Assets").format(len(self.items)))
+        self.setModal(True)
+        self.resize(560, 420)
+
+        layout = QVBoxLayout(self)
+
+        helper_row = QHBoxLayout()
+        helper_row.addWidget(QLabel(self.tr("Find:")))
+        self.find_edit = QLineEdit()
+        helper_row.addWidget(self.find_edit)
+        helper_row.addWidget(QLabel(self.tr("Replace:")))
+        self.replace_edit = QLineEdit()
+        helper_row.addWidget(self.replace_edit)
+        apply_btn = QPushButton(self.tr("Apply to All"))
+        apply_btn.clicked.connect(self._apply_find_replace)
+        helper_row.addWidget(apply_btn)
+        layout.addLayout(helper_row)
+
+        self.table = QTableWidget(len(self.items), 3)
+        self.table.setHorizontalHeaderLabels(
+            [self.tr("Type"), self.tr("Current Name"), self.tr("New Name")])
+        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.table.verticalHeader().setVisible(False)
+        self.table.setSelectionMode(QAbstractItemView.NoSelection)
+
+        for row, (asset_type, current_name) in enumerate(self.items):
+            type_item = QTableWidgetItem(asset_type)
+            type_item.setFlags(type_item.flags() & ~Qt.ItemIsEditable)
+            self.table.setItem(row, 0, type_item)
+
+            current_item = QTableWidgetItem(current_name)
+            current_item.setFlags(current_item.flags() & ~Qt.ItemIsEditable)
+            self.table.setItem(row, 1, current_item)
+
+            new_item = QTableWidgetItem(current_name)
+            self.table.setItem(row, 2, new_item)
+            self._new_name_items.append(new_item)
+
+        self.table.itemChanged.connect(self._validate)
+        layout.addWidget(self.table)
+
+        self.status_label = QLabel("")
+        self.status_label.setWordWrap(True)
+        self.status_label.setStyleSheet("color: #c00;")
+        layout.addWidget(self.status_label)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.button_box.accepted.connect(self._accept_renames)
+        self.button_box.rejected.connect(self.reject)
+        layout.addWidget(self.button_box)
+
+        self._validate()
+
+    def _apply_find_replace(self):
+        find_text = self.find_edit.text()
+        if not find_text:
+            return
+        replace_text = self.replace_edit.text()
+        self.table.blockSignals(True)
+        try:
+            for item in self._new_name_items:
+                item.setText(item.text().replace(find_text, replace_text))
+        finally:
+            self.table.blockSignals(False)
+        self._validate()
+
+    def _planned_renames(self):
+        """{(asset_type, current_name): new_name} for every row whose New
+        Name differs from Current Name -- an unchanged row is left alone,
+        not an error."""
+        planned = {}
+        for row, (asset_type, current_name) in enumerate(self.items):
+            new_name = self._new_name_items[row].text().strip()
+            if new_name != current_name:
+                planned[(asset_type, current_name)] = new_name
+        return planned
+
+    def _validate(self, *_args):
+        planned = self._planned_renames()
+        errors = []
+
+        for (asset_type, current_name), new_name in planned.items():
+            is_valid, error_msg = validate_asset_name(new_name)
+            if not is_valid:
+                errors.append(self.tr("{0}: {1}").format(current_name, error_msg))
+
+        # Two renamed rows (same asset type) landing on the same new name.
+        seen = set()
+        for (asset_type, current_name), new_name in planned.items():
+            key = (asset_type, new_name)
+            if key in seen:
+                errors.append(self.tr("Two assets would both be named '{0}'").format(new_name))
+            seen.add(key)
+
+        # A renamed row landing on a name an UN-renamed row of this batch
+        # already has.
+        unchanged_names = {
+            (asset_type, current_name)
+            for asset_type, current_name in self.items
+            if (asset_type, current_name) not in planned
+        }
+        for (asset_type, current_name), new_name in planned.items():
+            if (asset_type, new_name) in unchanged_names:
+                errors.append(self.tr(
+                    "'{0}' is already used by another asset in this batch"
+                ).format(new_name))
+
+        # Collision with an asset outside this batch (or with another
+        # batch row that's also being renamed away -- see class docstring:
+        # chain renames aren't supported, so this check is deliberately
+        # NOT exempted for a name "vacated" by another row in the batch).
+        for (asset_type, current_name), new_name in planned.items():
+            if self._name_exists_fn(new_name, asset_type):
+                errors.append(self.tr(
+                    "'{0}' is already used by an existing {1}"
+                ).format(new_name, asset_type))
+
+        self.status_label.setText("\n".join(errors[:5]))
+        ok_button = self.button_box.button(QDialogButtonBox.Ok)
+        ok_button.setEnabled(not errors)
+        return not errors
+
+    def _accept_renames(self):
+        if not self._validate():
+            return
+        self.renames = self._planned_renames()
         self.accept()
 
 

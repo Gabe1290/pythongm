@@ -7,7 +7,7 @@ Core tree widget focusing on UI management and delegating operations
 import json
 from pathlib import Path
 from typing import Dict, List, Optional
-from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox, QFileDialog, QDialog
 from PySide6.QtCore import Qt, Signal, QSize, QRect
 from PySide6.QtGui import QAction, QPainter, QPalette
 
@@ -376,6 +376,10 @@ class AssetTreeWidget(QTreeWidget):
         ]
         if len(selected_assets) > 1 and not item.is_category:
             bulk_menu = QMenu(self)
+            bulk_rename_action = QAction(
+                self.tr("✏️ Rename {0} Selected...").format(len(selected_assets)), self)
+            bulk_rename_action.triggered.connect(self.bulk_rename_selected)
+            bulk_menu.addAction(bulk_rename_action)
             bulk_delete_action = QAction(
                 self.tr("🗑️ Delete {0} Selected").format(len(selected_assets)), self)
             bulk_delete_action.triggered.connect(self.bulk_delete_selected)
@@ -870,6 +874,70 @@ class AssetTreeWidget(QTreeWidget):
 
         for item in list(items):
             self.operations.delete_asset_confirmed(item)
+
+    def bulk_rename_selected(self):
+        """Rename every selected (non-category) asset in one dialog --
+        docs/ASSET_MANAGER_PLAN.md's deliberately-deferred batch rename,
+        the "different UI shape than delete's uniform 'remove all of
+        these'" item: each asset needs its OWN new name, so the dialog
+        shows one editable row per asset (pre-filled with its current
+        name) plus an optional find/replace-in-names helper that rewrites
+        every row at once -- covers both "type each new name by hand" and
+        "substitute a common substring across many" without forcing a
+        choice between them. Each renamed asset still goes through the
+        exact same AssetOperations rename path
+        (perform_asset_rename/get_updated_asset_data/
+        refresh_asset_item_after_rename) a single rename does.
+
+        Chain/swap renames within one batch (A -> B where B is itself
+        being renamed away) are deliberately rejected by the dialog's own
+        validation as a name collision -- supporting them correctly would
+        need a two-phase apply (temporary names first); the common batch-
+        rename case (parallel renames, e.g. a shared prefix substitution)
+        doesn't need that complexity.
+        """
+        items = [
+            it for it in self.selectedItems()
+            if isinstance(it, AssetTreeItem) and not it.is_category
+        ]
+        if not items:
+            return
+        if len(items) == 1:
+            # Not actually a bulk case -- keep the simpler single-item dialog.
+            self.operations.rename_asset(items[0])
+            return
+
+        from .asset_dialogs import BatchRenameDialog
+        pairs = [(it.asset_type, it.asset_name) for it in items]
+        dialog = BatchRenameDialog(pairs, self.operations.asset_name_exists, self)
+        if dialog.exec() != QDialog.Accepted or not dialog.renames:
+            return
+
+        by_key = {(it.asset_type, it.asset_name): it for it in items}
+        renamed_count = 0
+        failures = []
+        for (asset_type, current_name), new_name in dialog.renames.items():
+            item = by_key.get((asset_type, current_name))
+            if item is None:
+                continue
+            if self.operations.perform_asset_rename(item.asset_data, new_name):
+                updated_asset_data = self.operations.get_updated_asset_data(new_name, asset_type)
+                if updated_asset_data:
+                    item.asset_data = updated_asset_data
+                self.operations.refresh_asset_item_after_rename(item, new_name)
+                self.asset_renamed.emit(current_name, new_name, asset_type)
+                renamed_count += 1
+            else:
+                failures.append(f"{asset_type}/{current_name}")
+
+        if failures:
+            QMessageBox.warning(
+                self,
+                self.tr("Some Renames Failed"),
+                self.tr(
+                    "{0} asset(s) renamed successfully.\n\nThese failed:\n{1}"
+                ).format(renamed_count, "\n".join(f"  • {f}" for f in failures)),
+            )
 
     def rename_asset(self, item):
         """Rename an asset - delegates to operations handler"""
