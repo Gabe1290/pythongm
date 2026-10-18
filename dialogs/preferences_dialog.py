@@ -160,6 +160,9 @@ class PreferencesDialog(QDialog):
         self.scale_spin.setRange(0.5, 2.0)
         self.scale_spin.setSingleStep(0.1)
         self.scale_spin.setSuffix("x")
+        self.scale_spin.setToolTip(self.tr(
+            "Scales the application's base text size. Takes effect after "
+            "restarting the IDE."))
         theme_form.addRow(self.tr("UI Scale:"), self.scale_spin)
 
         # Show tooltips

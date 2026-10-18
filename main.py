@@ -385,8 +385,15 @@ def setup_application():
         else:  # Linux
             app_font.setFamily("Ubuntu")
 
-    # Set font size from config
-    app_font.setPointSize(visual_overrides['font_size'] or font_config['size'])
+    # Set font size from config, scaled by the user's "UI Scale" preference
+    # (Preferences > Appearance). Qt widget layouts generally size off the
+    # application font, so this is the one global hook that makes the
+    # 0.5x-2.0x spinner actually do something; it does not independently
+    # rescale toolbar icons or hardcoded-pixel dialog layouts.
+    from utils.config import resolve_scaled_font_size
+    base_font_size = visual_overrides['font_size'] or font_config['size']
+    ui_scale = appearance_config.get('ui_scale', 1.0)
+    app_font.setPointSize(resolve_scaled_font_size(base_font_size, ui_scale))
 
     # Apply font globally
     app.setFont(app_font)

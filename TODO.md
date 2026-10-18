@@ -49,19 +49,53 @@ the junior edition in the running IDE and looked at it yet.
 day — both decisions the user made there are implemented, tested, and
 pushed, 896 → 55 unmatched spans, 18 commits.)
 
-### Dead config: Preferences' "UI Scale" setting is saved but never applied (found 2026-10-16)
+### ~~Dead config: Preferences' "UI Scale" setting is saved but never applied~~ (DONE 2026-10-18)
 
 Found while wiring up the junior edition's visual defaults
 (`docs/KID_UI_SIMPLIFICATION_PLAN.md` Phase 2.5) — unrelated to that
 work, not fixed there. `dialogs/preferences_dialog.py`'s "UI Scale"
-spinner writes `appearance.ui_scale` via `Config.set_appearance_config
-(ui_scale=...)`, and `Config.get_appearance_config()` reads it back
-with a real default (`1.0`) — but nothing in the app ever calls
-`get_appearance_config()['ui_scale']` and does anything with it. A user
-who sets "UI Scale: 1.5" in Preferences sees no change at all. Needs
-its own decision: wire it up for real (scaling fonts/icons/spacing
-proportionally app-wide), or remove the dead spinner so it stops
-promising something that doesn't happen.
+spinner wrote `appearance.ui_scale` via `Config.set_appearance_config
+(ui_scale=...)`, and `Config.get_appearance_config()` read it back with
+a real default (`1.0`) — but nothing in the app ever called
+`get_appearance_config()['ui_scale']` and did anything with it.
+
+**Decision: wire it up for real**, scoped narrower than "scaling fonts/
+icons/spacing proportionally app-wide" (that would mean touching every
+hardcoded-pixel dialog layout and toolbar icon, a much bigger and
+riskier job than this spinner's own 0.5x-2.0x range implies). Instead,
+reused the exact mechanism `main.py` already applies font family/size
+through at startup (`app.setFont(...)`): the resolved base font point
+size (junior-edition default or the user's own Font Size setting) is
+now scaled by `ui_scale` before being handed to `QFont`, via a new pure
+`utils.config.resolve_scaled_font_size(base_size, ui_scale)` (clamped to
+a 6pt floor so an extreme 0.5x-on-8pt combination can't produce an
+unusably tiny app font). Qt widget layouts generally size off the
+application font, so this makes the spinner do something real without
+independently rescaling toolbar icons or hardcoded-pixel layouts — an
+honest, narrower scope, documented in a tooltip on the spinner itself.
+Follows font family/size's own existing "takes effect after restart"
+convention (never live-applied in `apply_settings()` either); only
+`theme` is special-cased to apply immediately.
+
+Caught and fixed a real bug in the first draft: the new module-level
+helper function was pasted into the middle of the `Config` class body,
+dedenting and silently truncating it — `get_advanced_config`/
+`set_advanced_config`/`get_project_ui_state`/`update_project_ui_state`
+all ended up outside the class (still syntactically valid — a bare
+`@classmethod`-decorated top-level function compiles fine, so
+`py_compile` didn't catch it), breaking `Config.get_advanced_config()`
+and crashing the Preferences dialog's `load_current_settings()` outright.
+Caught immediately by the full `test_allow_multiple_instances_setting.py`
+suite (12 failures), not by the new targeted tests — same lesson as the
+multiplayer `connection_lost` landmine documented elsewhere in this repo's
+session notes: run the whole suite after any edit to a large class-based
+module, not just the tests aimed at the change.
+
+`tests/test_ui_scale_preference.py` (10 tests): the scaling helper's
+behavior incl. the floor clamp, an AST-based check that `main.py`
+actually calls it (mutation-resistant — a commented-out call wouldn't
+satisfy a plain string-presence assertion), and a mocked-`save()`
+round-trip through `Config`. Full suite: 6268 passed, 0 failed.
 
 ### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
 

@@ -322,6 +322,7 @@ class Config:
         cls._config_data['appearance'].update(kwargs)
         cls.save()
 
+
     @classmethod
     def get_advanced_config(cls):
         """Get advanced configuration"""
@@ -357,6 +358,15 @@ class Config:
         state = all_state.setdefault(str(project_path), {})
         state.update(updates)
         cls.save()
+
+
+def resolve_scaled_font_size(base_size, ui_scale):
+    """Scale a base application font point size by the "UI Scale"
+    preference (Preferences > Appearance, 0.5x-2.0x). Clamped to a sane
+    minimum so an extreme combination (e.g. an 8pt base font at 0.5x)
+    never produces an unusably tiny global font."""
+    return max(6, round(base_size * ui_scale))
+
 
 # Initialize config on import
 Config.load()
