@@ -769,7 +769,7 @@ Other:
   `thymio_play_system_sound`'s description instead of silently misleading.
   `tests/test_thymio_sound_honesty.py`.
 
-## ~~Runtime features called out in code~~ (DONE — both items closed; Kivy/HTML5 fade-transition export parity remains deliberately deferred, see below)
+## ~~Runtime features called out in code~~ (DONE — both items closed; Kivy/HTML5 fade-transition export parity DONE 2026-10-18, see below)
 
 - ~~**Background auto-scroll on `set_background`**~~ (DONE 2026-07-16,
   deferred-items plan tier 2, item 6) — `execute_set_background_action`
@@ -782,29 +782,72 @@ Other:
   auto-tiles once either speed is nonzero) serving room-config-authored
   backgrounds and `set_view`; the gap really was just this one action
   never writing to it, confirming the plan's re-scoping note ("smaller
-  than it looked"). `foreground` stays acknowledged-but-not-applied — the
-  legacy single-background path has no draw-in-front-of-instances
-  support at all (only the newer multi-layer `backgrounds` room format
-  does, via `_render_bg_layers`), which is unrelated pre-existing scope,
-  not part of this fix. Regression: `tests/test_background_scroll.py` (6
+  than it looked"). Regression: `tests/test_background_scroll.py` (6
   tests) plus an end-to-end case that calls the real
   `GameRoom._render_legacy_background` across several frames and checks
   the scroll offset actually accumulates and wraps.
+  ~~`foreground` stays acknowledged-but-not-applied — the legacy
+  single-background path has no draw-in-front-of-instances support at
+  all~~ **this note was ALREADY STALE when written here on 2026-07-16 —
+  corrected 2026-10-18, no code change needed.** A separate, later
+  commit (`6ddc0e2d`, 2026-08-09, "finish the room-background/scrolling
+  actions") wired `foreground` onto `GameRoom.background_foreground`
+  and taught `_render_room` to call `_render_legacy_background` either
+  before or after the instance-draw pass depending on it (`runtime/
+  room.py`) — real support, on all three render targets, confirmed by
+  re-reading the code and re-running the existing coverage rather than
+  trusting this note: desktop has a dedicated, already-passing
+  `TestBackgroundForeground` class in `tests/
+  test_room_background_scroll_actions.py` (`test_background_behind_
+  instances_by_default` / `test_background_in_front_of_instances_when_
+  foreground`, pixel-sampling proof); Kivy has `_bg_image_group` moved
+  between `canvas.before`/`canvas.after` (`tests/
+  test_kivy_room_actions.py::test_set_background_foreground_moves_
+  group_to_canvas_after`); HTML5 dispatches `_drawDynamicBackground`
+  before or after the instance pass based on `dynamicBgForeground`
+  (`export/HTML5/templates/engine.js`). This was the third stale-TODO-
+  note correction found this session (after the GMK-importer `multi_
+  choice` one) — the `6ddc0e2d` fix simply post-dated this note and
+  nobody removed the now-wrong caveat afterward.
 - ~~**Room transition effects**~~ (DONE 2026-07-15, deferred-items plan
   tier 1) — `goto_room`'s `transition` parameter now supports `'fade'`
   (fade to black, switch, fade back in — `GameRunner.change_room`/
   `_fade_overlay`, `runtime/game_runner.py`). Any other value (including
-  the default `'none'`) stays instant, unchanged. **Desktop pygame
-  runtime only** — Kivy/HTML5 exports still switch instantly; no bundled
-  sample currently exercises `transition` at all (only the `execute_code`
-  `self.goto_room_target = ...` pattern and the `next_room`/
-  `previous_room`/`restart_room` sentinels, none of which carry a
-  transition param), so there's nothing to verify export parity against
-  yet — scoped to desktop until a sample or user need shows up. Caught a
-  real bug in its own first draft: the fade-in/fade-out alpha ramp was
-  inverted (screen went black and stayed black) until
+  the default `'none'`) stays instant, unchanged. Caught a real bug in
+  its own first draft: the fade-in/fade-out alpha ramp was inverted
+  (screen went black and stayed black) until
   `tests/test_room_transition_fade.py`'s pixel-sampling test (plus a
   10-frame visual montage) caught it.
+  - ~~**Desktop pygame runtime only** — Kivy/HTML5 exports still switch
+    instantly~~ **DONE 2026-10-18.** HTML5: `Game.changeRoom` keeps its
+    signature/behaviour for `transition='none'` (now delegating to a new
+    `_changeRoomImmediate`, the renamed original body) and, for
+    `'fade'`, starts a non-blocking state machine (`this._fadeTransition`)
+    ticked and drawn from `gameLoop`'s existing render phase — a browser
+    can't block the main thread the way desktop's pygame sub-loop does,
+    so the switch itself happens at the fade-out/fade-in midpoint instead
+    of inside a blocking call. Kivy: `GameApp._start_fade_out`/
+    `_fade_tick`, driven by `Clock.schedule_interval` at ~60fps
+    (`_FADE_FRAMES=15` steps per phase, not wall-clock time, so a slow
+    frame just takes one more tick rather than skipping visible steps);
+    a pre-created `_FadeOverlay` widget (same "always exists, only
+    `Color.a` changes" pattern as the existing `_MsgOverlay`) is
+    explicitly re-raised to the top of the widget tree after every
+    widget-tree change the fade touches, since Kivy renders the
+    most-recently-added child on top and `_do_room_switch`'s own
+    `add_widget(new_scene)` would otherwise bury it mid-transition. Both
+    targets: only `goto_room`'s own explicit `transition` param can
+    request a fade — `next_room`/`previous_room`/`restart_room`/
+    `restart_game` never do, matching desktop's
+    `execute_goto_room_action`/`change_room` scope exactly.
+    `tests/test_html5_room_transition_fade.py` (10 tests: source-level
+    assertions, no Node.js in CI, plus a real `HTML5Exporter` round-trip)
+    and `tests/test_kivy_room_transition_fade.py` (11 tests: codegen,
+    compile-check, and a real headless execution of the generated
+    `main.py`'s `GameApp` driving `_fade_tick` frame by frame — the fade
+    phase transitions, the midpoint room switch, the overlay staying on
+    top of the newly switched scene, and that `next_room`/`restart_room`
+    are unaffected). Full suite: 6305 passed, 0 failed.
 
 ## Translations / i18n
 
