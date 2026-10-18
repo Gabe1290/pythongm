@@ -97,41 +97,65 @@ actually calls it (mutation-resistant — a commented-out call wouldn't
 satisfy a plain string-presence assertion), and a mocked-`save()`
 round-trip through `Config`. Full suite: 6268 passed, 0 failed.
 
-### Blockly: generated/custom blocks never localize, in any non-English language (found 2026-10-16)
+### ~~Blockly: generated/custom blocks never localize, in any non-English language~~ (DONE 2026-10-18, French only — see follow-up below)
 
 Found while re-investigating `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`'s
 C1 (confirmed empirically, not inferred): every action in `GENERATED_ACTION_NAMES`
 (`if_collision`, `test_instance_count`, `start_block`, `end_block`,
 `else_action`, `restart_game`, every Drawing/Game/Particles/Views action
-from this week's category-mismatch work — ~80 entries) renders with
+from this week's category-mismatch work — 79 entries) rendered with
 identical, English-only block text regardless of the IDE's selected
 language. Root cause: `editors/object_editor/blockly_widget.py`'s
-`_register_custom_blocks()` pushes each `ActionType.display_name`/
+`_register_custom_blocks()` pushed each `ActionType.display_name`/
 `description`/parameter `display_name` straight from the Python
 `ACTION_TYPES` dict (always English, no language parameter anywhere in
 the call) to `blockly_workspace.html`'s `registerCustomBlocks()`, which
 builds every block's label and field text directly from those raw
 strings — zero `getBlockMessage()`/`BLOCKLY_LANG` lookups anywhere in
-that function (confirmed by reading it end to end). Verified live:
-`if_collision`'s block face is byte-identical with `BLOCKLY_LANG` set to
-`'en'` vs `'fr'`.
+that function. Separate table/surface from `config/blockly_translations.py`
+(the "Configure Action Blocks" dialog, fixed earlier the same day) —
+the two translate the same action name independently.
 
-**Categorically different from, and much bigger than, any of this week's
-category-mismatch or wording-audit fixes** — those are all about
-HAND-WRITTEN blocks (`event_create`, `event_collision`, `score_set`, ...),
-which genuinely do have real, working per-language text via
-`BLOCK_MESSAGES`/`getBlockMessage()` (confirmed accurate, nothing here
-contradicts that). The gap is specifically every action with no
-hand-written block, in every one of the 10+ shipped UI languages.
+**Decision: direction (a)**, a per-language table — reusing the existing
+generic `registerCustomBlocks()` pipeline (no new JS, no per-block
+duplication) by substituting translated strings into the same JSON
+fields on the Python side before sending; `blockly_workspace.html`
+needed zero changes. New `config/blockly_generated_block_i18n.py`
+(`ACTION_TRANSLATIONS`, `PARAM_LABEL_TRANSLATIONS`, English-falling-back
+lookup functions), wired into `_register_custom_blocks()`.
 
-Two directions, not decided: (a) push a per-language `display_name`/
-parameter-label table from Python (mirroring how `BLOCK_MESSAGES` already
-works for hand-written blocks, scaled to ~80 generated actions × N
-languages — the ja/zh/pt UI-string translation arcs give a cost precedent
-for sizing this), or (b) build real hand-written blocks for the handful
-of generated actions that show up in tutorials/common authoring (reducing
-the untranslated surface without translating all ~80 at once). Not fixed
-here; this needs its own scoping decision before any code changes.
+**Scoped to French only this pass**, matching this project's established
+"French first, English-fallback the rest" precedent. The action-level
+`display_name`/`description` text (79 actions) cost nothing fresh — every
+one already had a real French translation in either
+`config.blockly_translations.BLOCK_TRANSLATIONS` (31, from the Configure
+dialog fix — Game/Views/Particles/Timing actions are both dialog-listed
+*and* canvas-generated) or `tools/action_ref_i18n.py`'s `ACTIONS_FR` (the
+other 48, the wiki action reference) — ported mechanically, not
+retranslated. Parameter FIELD labels had no existing source anywhere, but
+collapsed from 181 per-action-param instances to 119 DISTINCT English
+strings (many actions share "Speed"/"Object"/"X"/"Y" etc.), making fresh
+translation tractable in one sitting.
+
+**Follow-up, not done here:** the other 9+ shipped languages (de/uk/ru/
+it/es/pt/sl can mechanically reuse their own `tools/action_ref_i18n.py`
+`ACTIONS_<LANG>` table for the action-level half exactly as fr did here —
+zero fresh cost there; ja/zh/pl have no existing action-reference
+translation at all, so even that half would be fresh work for those
+three). Every language's 119 param labels need fresh translation
+regardless — there is no existing source for them in any language yet.
+Budget per language roughly like the param-label set here (tractable in
+one sitting) plus however many of the 79 action-level pairs that
+language's own `tools/action_ref_i18n.py` table is missing (check via
+the same 3-way cross-reference script this session used: `BLOCK_
+TRANSLATIONS` → `ACTIONS_<LANG>` → fresh).
+
+`tests/test_blockly_generated_block_i18n.py` (8 tests): 100% coverage of
+the 79 actions / 119 param labels, English/unknown-language fallback, a
+real `BlocklyWidget` driven with French active asserting the actual JSON
+payload `_register_custom_blocks()` sends contains translated text, and
+a confirmation hand-written blocks (already correctly localized via
+`BLOCK_MESSAGES`) are unaffected. Full suite: 6276 passed, 0 failed.
 
 ### ~~Blockly toolbox: "Particles" and "Views" are stray categories too~~ (DONE 2026-10-16)
 

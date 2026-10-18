@@ -374,9 +374,26 @@ class BlocklyWidget(QWidget):
             logger.debug(f"push extension events failed: {e}")
 
     def _register_custom_blocks(self):
-        """Send ActionType definitions to JavaScript to auto-generate Blockly blocks"""
+        """Send ActionType definitions to JavaScript to auto-generate Blockly blocks.
+
+        Translates the block's label, tooltip, and every parameter's
+        inline field label for the current IDE language before sending --
+        blockly_workspace.html's registerCustomBlocks() treats these as
+        opaque strings, so no JS changes are needed; see
+        config/blockly_generated_block_i18n.py for the translation tables
+        and TODO.md's "Blockly: generated/custom blocks never localize"
+        entry for the gap this closes (French only so far).
+        """
         try:
             from events.action_types import ACTION_TYPES
+            from core.language_manager import get_language_manager
+            from config.blockly_generated_block_i18n import (
+                get_translated_action_display_name,
+                get_translated_action_description,
+                get_translated_param_label,
+            )
+
+            current_lang = get_language_manager().get_current_language() or 'en'
 
             action_defs = []
             for name, action_type in ACTION_TYPES.items():
@@ -384,7 +401,7 @@ class BlocklyWidget(QWidget):
                 for p in (action_type.parameters or []):
                     param_dict = {
                         'name': p.name,
-                        'display_name': p.display_name,
+                        'display_name': get_translated_param_label(p.display_name, current_lang),
                         'param_type': p.param_type,
                         'default_value': p.default_value,
                     }
@@ -394,8 +411,10 @@ class BlocklyWidget(QWidget):
 
                 action_defs.append({
                     'name': name,
-                    'display_name': action_type.display_name,
-                    'description': action_type.description,
+                    'display_name': get_translated_action_display_name(
+                        name, current_lang, action_type.display_name),
+                    'description': get_translated_action_description(
+                        name, current_lang, action_type.description),
                     'category': action_type.category,
                     'icon': action_type.icon or '',
                     'parameters': params,
