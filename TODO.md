@@ -212,14 +212,37 @@ to both the generated `categories` dict and the static pre-load toolbox.
   `tests/test_find_replace.py` (20 tests) — the dialog's search/replace logic
   against a real `QPlainTextEdit`, plus the IDE-level dispatch via the
   established `PyGameMakerIDE.method(stub, ...)` unbound-call pattern.
-- **Scoped narrower than the original note, intentionally:** only
-  `editors/script_editor.py`'s `QPlainTextEdit` (the sole real code-editing
-  widget in the app — verified nothing else uses `QPlainTextEdit`) is wired
-  up. "Room editor scripts, event scripts" (the `execute_code` action's
-  `QTextEdit` inside `editors/object_editor/gm80_action_dialog.py`, a modal
-  per-action dialog, not an editor tab `_active_editor()` can see) and
-  project-wide search (asset names, identifiers) are **not** covered —
-  genuinely separate follow-up work, not silently dropped scope.
+- **Scoped narrower than the original note, intentionally — then extended
+  2026-10-18.** Initially only `editors/script_editor.py`'s `QPlainTextEdit`
+  was wired up. ~~"Room editor scripts, event scripts" (the `execute_code`
+  action's `QTextEdit`... a modal per-action dialog, not an editor tab
+  `_active_editor()` can see)~~ **DONE.** Investigation found the lead was
+  partly stale: the dialog a regular (non-Thymio) object's execute_code/
+  execute_script action actually opens is `events/action_editor.py`'s
+  `ActionConfigDialog` (via `events/conditional_editor.py`'s
+  `create_action_dialog`), not `GM80ActionDialog` — that one is Thymio-
+  extension-only (`editors/object_editor/gm80_action_dialog.py`). Both are
+  real, separate modal `QDialog`s with a bare `QTextEdit` for "code" (and,
+  for `ActionConfigDialog`, "text") parameters, and both have the identical
+  problem: being modal (`exec()`/`setModal(True)`), the main IDE window's
+  Edit > Find... action (`Qt.WindowShortcut` context) can never fire while
+  either is open, no matter how `_active_editor()` were extended — a
+  dialog-owned `QShortcut` is the only way to reach it. Fixed both: each
+  now installs its own Ctrl+F/Ctrl+H `QShortcut` (`_install_find_replace_
+  shortcuts`), targeting whichever of its own multi-line param widgets
+  currently has focus (falling back to the first one), reusing the exact
+  same `dialogs/find_replace_dialog.py` `FindReplaceDialog` the script
+  editor does — no changes needed to that dialog itself, since both
+  `QTextEdit` and `QPlainTextEdit` already share the same `find()`/
+  `textCursor()` interface it relies on. `tests/
+  test_find_replace_action_dialogs.py` (12 tests) covers both dialogs:
+  target resolution (code param present/absent, focus preference across
+  more than one multi-line param), the shortcut actually firing, a
+  no-target no-op (not a crash), and dialog-instance reuse across repeated
+  presses. **Still not covered: project-wide search (asset names,
+  identifiers)** — genuinely separate, much larger follow-up work (a new
+  search surface across every asset/script, not a Find/Replace extension),
+  not silently dropped.
 
 ### ~~Asset Manager~~ (DONE 2026-08-09, all 4 tiers)
 - Was: `Tools → Asset Manager...`.
@@ -229,8 +252,36 @@ to both the generated `categories` dict and the static pre-load toolbox.
 - **"Move" scoped out**: the app's asset model has no folder hierarchy (each
   category is a flat list), so there's nothing a bulk move would relocate
   between — dropped rather than inventing a folder system to give it meaning.
-  Batch rename deferred as its own separately-schedulable feature (a
-  different UI shape than delete's uniform "remove all of these").
+  ~~Batch rename deferred as its own separately-schedulable feature (a
+  different UI shape than delete's uniform "remove all of these").~~
+  **DONE 2026-10-18.** New `widgets/asset_tree/asset_dialogs.py`'s
+  `BatchRenameDialog`: one editable "New Name" row per selected asset,
+  pre-filled with its current name, plus an optional "Find/Replace in
+  names" helper that rewrites every row at once — covers both "type each
+  new name by hand" and "substitute a common substring across many"
+  without forcing a choice, which is what made this a genuinely different
+  UI shape from delete's uniform confirmation. Live validation (per-name
+  format, no two rows landing on the same new name, no collision with an
+  unchanged batch row or with an asset outside the batch) disables OK
+  until clean. `AssetTreeWidget.bulk_rename_selected` wires it into the
+  same reduced multi-select context menu `bulk_delete_selected` already
+  uses, and applies each changed row through the identical
+  `AssetOperations` rename path (`perform_asset_rename`/
+  `get_updated_asset_data`/`refresh_asset_item_after_rename`) a single
+  rename uses — a single selected item still falls through to the
+  ordinary single-asset rename dialog. **Documented limitation, by
+  design, not a bug:** a chain/swap rename within one batch (row A's new
+  name equal to row B's CURRENT name, where B is itself being renamed
+  away) is rejected as a plain external-name collision rather than
+  silently mis-applied — supporting it correctly needs a two-phase apply
+  (temporary names first), which the common case (parallel renames, e.g.
+  a shared-prefix substitution) doesn't need; do two separate batch
+  passes for that instead. `tests/test_asset_tree_bulk_rename.py` (17
+  tests): the dialog's validation/find-replace logic in isolation (no
+  live project needed, `name_exists_fn` injected), the documented
+  chain-rename rejection, and a real `AssetTreeWidget` + `ProjectManager`/
+  `AssetManager` round-trip against a real temp project (single-selection
+  fallback, multi-selection apply, cancel-does-nothing).
 - Shipped: `utils/asset_usage.py` usage tracking, wired into the delete
   confirmation (Tier 1); `AssetTreeWidget.apply_asset_filter` name-substring
   filter box (Tier 2); `ExtendedSelection` multi-select + one combined
