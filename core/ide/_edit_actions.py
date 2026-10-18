@@ -133,11 +133,16 @@ class EditActionsMixin:
         logger.debug("Duplicate action (no room editor active)")
 
     def _find_target_text_edit(self):
-        """The text-edit widget Find/Replace searches — currently the
-        Script Editor's code_edit (a QPlainTextEdit) only. Room editor
-        scripts / event scripts (execute_code action dialogs, a separate
-        QTextEdit inside gm80_action_dialog.py) aren't wired in yet; see
-        TODO.md's Find/Replace entry."""
+        """The text-edit widget Find/Replace searches from the main IDE
+        window's Edit menu — the Script Editor's code_edit (a
+        QPlainTextEdit) only. Room/event-script execute_code dialogs
+        (ActionConfigDialog / GM80ActionDialog) are modal, so they can
+        never be reached through this dispatch at all (a modal child
+        dialog is the active window while open, so this window's
+        Qt.WindowShortcut-context Ctrl+F action can't fire) — each owns
+        its own independent Ctrl+F/Ctrl+H QShortcut instead (2026-10-18,
+        TODO.md's Find/Replace entry). Project-wide search (asset names,
+        identifiers) is a separate, still-open gap."""
         editor = self._active_editor()
         if editor is not None and hasattr(editor, 'code_edit'):
             return editor.code_edit

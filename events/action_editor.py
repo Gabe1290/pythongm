@@ -5,14 +5,14 @@ Action editor dialogs for configuring action parameters
 
 from typing import Dict, Any, List
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
+    QApplication, QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
     QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
     QWidget, QScrollArea, QFormLayout, QMessageBox,
     QGroupBox, QRadioButton, QButtonGroup, QGridLayout,
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtGui import QFont, QColor, QKeySequence, QShortcut
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -483,6 +483,60 @@ class ActionConfigDialog(QDialog):
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
+
+        self._install_find_replace_shortcuts()
+
+    # ------------------------------------------------------------------
+    # Find / Replace for this dialog's multi-line ("code"/"text") params
+    # ------------------------------------------------------------------
+    #
+    # This dialog is modal (setModal(True), exec()), so it becomes the
+    # active window while open -- the main IDE window's Edit > Find...
+    # QAction (Qt.WindowShortcut context by default) never fires while a
+    # child dialog is modal. Ctrl+F/Ctrl+H need their own shortcuts owned
+    # by this dialog instead. See TODO.md's Find/Replace entry. A nested
+    # then/else action (configure_nested_action) opens its own recursive
+    # ActionConfigDialog, which goes through this same setup_ui() and gets
+    # its own independent shortcuts.
+
+    def _code_text_edits(self):
+        """Every multi-line QTextEdit parameter widget in this dialog
+        ("code" execute_code/execute_script, "text" free-form comments),
+        in the order they were created."""
+        return [w for w in self.param_widgets.values() if isinstance(w, QTextEdit)]
+
+    def _find_target_text_edit(self):
+        """Prefer whichever QTextEdit currently has focus; fall back to
+        the first one, so Ctrl+F works immediately after the dialog opens
+        without requiring a click into the field first."""
+        text_edits = self._code_text_edits()
+        if not text_edits:
+            return None
+        focused = QApplication.focusWidget()
+        if focused in text_edits:
+            return focused
+        return text_edits[0]
+
+    def _install_find_replace_shortcuts(self):
+        find_shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
+        find_shortcut.activated.connect(lambda: self._show_find_dialog(show_replace=False))
+        replace_shortcut = QShortcut(QKeySequence("Ctrl+H"), self)
+        replace_shortcut.activated.connect(lambda: self._show_find_dialog(show_replace=True))
+
+    def _show_find_dialog(self, show_replace: bool):
+        target = self._find_target_text_edit()
+        if target is None:
+            return
+        if getattr(self, '_find_dialog', None) is None:
+            from dialogs.find_replace_dialog import FindReplaceDialog
+            self._find_dialog = FindReplaceDialog(self)
+        self._find_dialog.set_target(target)
+        self._find_dialog.set_replace_visible(show_replace)
+        self._find_dialog.show()
+        self._find_dialog.raise_()
+        self._find_dialog.activateWindow()
+        self._find_dialog.find_field.setFocus()
+        self._find_dialog.find_field.selectAll()
 
     def configure_nested_action(self, param_name: str, action_name: str):
         """Open configuration dialog for nested action"""

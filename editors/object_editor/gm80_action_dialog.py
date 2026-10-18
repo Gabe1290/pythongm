@@ -6,13 +6,13 @@ Provides parameter input for GM8.0 actions
 
 from typing import Dict, Any, Optional
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
+    QApplication, QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
     QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox,
     QComboBox, QTextEdit, QPushButton, QLabel,
     QDialogButtonBox, QGroupBox, QColorDialog, QWidget,
     QRadioButton, QButtonGroup,
 )
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtGui import QFont, QColor, QKeySequence, QShortcut
 
 from actions import ActionDefinition, ActionParameter
 
@@ -89,6 +89,58 @@ class GM80ActionDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+
+        self._install_find_replace_shortcuts()
+
+    # ------------------------------------------------------------------
+    # Find / Replace for this dialog's "code"-type parameter(s)
+    # ------------------------------------------------------------------
+    #
+    # This dialog is modal (exec()), so it becomes the active window while
+    # open -- the main IDE window's Edit > Find... QAction (Qt.WindowShortcut
+    # context by default) never fires while a child dialog is modal, no
+    # matter how core/ide/_edit_actions.py's _active_editor() is extended.
+    # Ctrl+F/Ctrl+H need their own shortcuts owned by this dialog instead.
+    # See TODO.md's Find/Replace entry.
+
+    def _code_text_edits(self):
+        """Every "code"-type parameter widget in this dialog, in the order
+        they were created (execute_code's single code param today; works
+        for any future action with more than one "code" parameter too)."""
+        return [w for w in self.param_widgets.values() if isinstance(w, QTextEdit)]
+
+    def _find_target_text_edit(self):
+        """Prefer whichever code-param QTextEdit currently has focus;
+        fall back to the first one, so Ctrl+F works immediately after the
+        dialog opens without requiring a click into the field first."""
+        code_edits = self._code_text_edits()
+        if not code_edits:
+            return None
+        focused = QApplication.focusWidget()
+        if focused in code_edits:
+            return focused
+        return code_edits[0]
+
+    def _install_find_replace_shortcuts(self):
+        find_shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
+        find_shortcut.activated.connect(lambda: self._show_find_dialog(show_replace=False))
+        replace_shortcut = QShortcut(QKeySequence("Ctrl+H"), self)
+        replace_shortcut.activated.connect(lambda: self._show_find_dialog(show_replace=True))
+
+    def _show_find_dialog(self, show_replace: bool):
+        target = self._find_target_text_edit()
+        if target is None:
+            return
+        if getattr(self, '_find_dialog', None) is None:
+            from dialogs.find_replace_dialog import FindReplaceDialog
+            self._find_dialog = FindReplaceDialog(self)
+        self._find_dialog.set_target(target)
+        self._find_dialog.set_replace_visible(show_replace)
+        self._find_dialog.show()
+        self._find_dialog.raise_()
+        self._find_dialog.activateWindow()
+        self._find_dialog.find_field.setFocus()
+        self._find_dialog.find_field.selectAll()
 
     def _build_applies_to_group(self) -> QGroupBox:
         """Build the GM-style "Applies to" Self/Other/Object selector.

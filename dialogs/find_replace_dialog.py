@@ -6,13 +6,21 @@ Edit → Find and Replace... (Ctrl+H) menu entries removed in rc.11's
 "Not Implemented" placeholder stubs and tracked the real feature in
 TODO.md instead.
 
-Scope (deferred-items plan, Tier 2 item 5): the code editor
-(``editors/script_editor.py``'s ``QPlainTextEdit``) only, for this first
-pass. Room editor scripts / event scripts (execute_code action dialogs)
-are a separate widget (``QTextEdit`` inside
-``editors/object_editor/gm80_action_dialog.py``) not wired to this dialog
-yet — tracked as a follow-up in TODO.md rather than silently expanded
-into scope this pass didn't budget for.
+Original scope (deferred-items plan, Tier 2 item 5): the code editor
+(``editors/script_editor.py``'s ``QPlainTextEdit``) only. Extended
+2026-10-18 (TODO.md's Find/Replace follow-up) to the execute_code/
+execute_script/comment ``QTextEdit`` parameter widgets inside the two
+real per-action config dialogs — ``events/action_editor.py``'s
+``ActionConfigDialog`` (the regular, non-Thymio path) and
+``editors/object_editor/gm80_action_dialog.py``'s ``GM80ActionDialog``
+(Thymio only). Both are modal, so they own their own Ctrl+F/Ctrl+H
+``QShortcut``s rather than going through
+``core/ide/_edit_actions.py``'s ``_active_editor()`` dispatch — a modal
+child dialog is the active window while open, so the main IDE window's
+Edit > Find... action (``Qt.WindowShortcut`` context) can never fire
+while one is up, no matter how ``_active_editor()`` were extended.
+Project-wide search (asset names, identifiers) remains unaddressed —
+see TODO.md.
 """
 
 from PySide6.QtGui import QTextCursor, QTextDocument
