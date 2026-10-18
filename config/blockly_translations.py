@@ -9,6 +9,7 @@ Based on Scratch and Blockly standard French translations
 CATEGORY_TRANSLATIONS = {
     "de": {
         "Events": "Ereignisse",
+        "Control": "Steuerung",
         "Movement": "Bewegung",
         "Timing": "Zeitsteuerung",
         "Drawing": "Zeichnen",
@@ -17,10 +18,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Raum",
         "Values": "Werte",
         "Sound": "Klang",
+        "Game": "Spiel",
         "Particles": "Partikel",
+        "Views": "Ansichten",
     },
     "es": {
         "Events": "Eventos",
+        "Control": "Control",
         "Movement": "Movimiento",
         "Timing": "Temporizador",
         "Drawing": "Dibujo",
@@ -29,10 +33,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Sala",
         "Values": "Valores",
         "Sound": "Sonido",
+        "Game": "Juego",
         "Particles": "Partículas",
+        "Views": "Vistas",
     },
     "fr": {
         "Events": "Événements",
+        "Control": "Contrôle",
         "Movement": "Mouvement",
         "Timing": "Minuterie",
         "Drawing": "Dessin",
@@ -41,10 +48,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Salle",
         "Values": "Valeurs",
         "Sound": "Son",
+        "Game": "Jeu",
         "Particles": "Particules",
+        "Views": "Vues",
     },
     "it": {
         "Events": "Eventi",
+        "Control": "Controllo",
         "Movement": "Movimento",
         "Timing": "Temporizzazione",
         "Drawing": "Disegno",
@@ -53,10 +63,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Stanza",
         "Values": "Valori",
         "Sound": "Suono",
+        "Game": "Gioco",
         "Particles": "Particelle",
+        "Views": "Viste",
     },
     "ru": {
         "Events": "События",
+        "Control": "Управление",
         "Movement": "Движение",
         "Timing": "Таймер",
         "Drawing": "Рисование",
@@ -65,10 +78,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Комната",
         "Values": "Значения",
         "Sound": "Звук",
+        "Game": "Игра",
         "Particles": "Частицы",
+        "Views": "Виды",
     },
     "sl": {
         "Events": "Dogodki",
+        "Control": "Nadzor",
         "Movement": "Gibanje",
         "Timing": "Časovnik",
         "Drawing": "Risanje",
@@ -77,10 +93,13 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Soba",
         "Values": "Vrednosti",
         "Sound": "Zvok",
+        "Game": "Igra",
         "Particles": "Delci",
+        "Views": "Pogledi",
     },
     "uk": {
         "Events": "Події",
+        "Control": "Керування",
         "Movement": "Рух",
         "Timing": "Таймер",
         "Drawing": "Малювання",
@@ -89,7 +108,9 @@ CATEGORY_TRANSLATIONS = {
         "Room": "Кімната",
         "Values": "Значення",
         "Sound": "Звук",
+        "Game": "Гра",
         "Particles": "Частинки",
+        "Views": "Перегляди",
     },
 }
 
@@ -436,6 +457,92 @@ BLOCK_TRANSLATIONS = {
     "stop_timeline": {
         "name": {"de": "Timeline stoppen", "es": "Detener línea de tiempo", "fr": "Arrêter timeline", "it": "Ferma timeline", "ru": "Остановить таймлайн", "sl": "Ustavi časovnico", "uk": "Зупинити таймлайн"},
         "description": {"de": "Timeline stoppen und zurücksetzen", "es": "Detener y reiniciar línea de tiempo", "fr": "Arrêter et réinitialiser timeline", "it": "Ferma e reimposta timeline", "ru": "Остановить и сбросить таймлайн", "sl": "Ustavi in ponastavi časovnico", "uk": "Зупинити та скинути таймлайн"}
+    },
+
+    # Control
+    "if_condition": {
+        "name": {"de": "Falls-Bedingung", "es": "Condición Si", "fr": "Condition Si", "it": "Condizione Se", "ru": "Условие Если", "sl": "Pogoj Če", "uk": "Умова Якщо"},
+        "description": {"de": "Führt Aktionen nur aus, wenn eine Bedingung erfüllt ist (z. B. instance_count == 0)", "es": "Ejecuta acciones solo cuando se cumple una condición (p. ej. instance_count == 0)", "fr": "Exécute des actions seulement si une condition est vraie (ex. instance_count == 0)", "it": "Esegue le azioni solo quando una condizione è vera (es. instance_count == 0)", "ru": "Выполняет действия только при выполнении условия (например, instance_count == 0)", "sl": "Izvede dejanja samo, če je pogoj izpolnjen (npr. instance_count == 0)", "uk": "Виконує дії лише тоді, коли умова виконується (напр. instance_count == 0)"}
+    },
+    "set_variable": {
+        "name": {"de": "Variable setzen", "es": "Definir Variable", "fr": "Définir Variable", "it": "Imposta Variabile", "ru": "Задать переменную", "sl": "Nastavi spremenljivko", "uk": "Встановити змінну"},
+        "description": {"de": "Weist einer eigenen Variable der Instanz oder global einen Wert zu", "es": "Asigna un valor a una variable personalizada de la instancia o global", "fr": "Attribue une valeur à une variable personnalisée de l'instance ou globale", "it": "Assegna un valore a una variabile personalizzata dell'istanza o globale", "ru": "Присваивает значение собственной переменной экземпляра или глобальной", "sl": "Dodeli vrednost lastni spremenljivki primerka ali globalni spremenljivki", "uk": "Присвоює значення власній змінній екземпляра або глобальній змінній"}
+    },
+    "test_variable": {
+        "name": {"de": "Variable prüfen", "es": "Comprobar Variable", "fr": "Tester Variable", "it": "Verifica Variabile", "ru": "Проверить переменную", "sl": "Preveri spremenljivko", "uk": "Перевірити змінну"},
+        "description": {"de": "Vergleicht eine Variable mit einem Wert und führt verschachtelte Aktionen aus, wenn wahr", "es": "Compara una variable con un valor y ejecuta acciones anidadas si es verdadero", "fr": "Compare une variable à une valeur et exécute les actions imbriquées si vrai", "it": "Confronta una variabile con un valore ed esegue le azioni annidate se vero", "ru": "Сравнивает переменную со значением и выполняет вложенные действия при истине", "sl": "Primerja spremenljivko z vrednostjo in izvede vgnezdena dejanja, če je resnično", "uk": "Порівнює змінну зі значенням і виконує вкладені дії, якщо істина"}
+    },
+    "test_expression": {
+        "name": {"de": "Falls-Bedingung (Logik)", "es": "Condición Si (Lógica)", "fr": "Condition Si (Logique)", "it": "Condizione Se (Logica)", "ru": "Условие Если (Логика)", "sl": "Pogoj Če (Logika)", "uk": "Умова Якщо (Логіка)"},
+        "description": {"de": "Führt verschachtelte Aktionen aus, wenn eine aus Logik-Blöcken (Vergleich, Und/Oder, Nicht) gebaute Bedingung wahr ist", "es": "Ejecuta acciones anidadas cuando una condición construida con bloques de Lógica (comparar, y/o, no) es verdadera", "fr": "Exécute les actions imbriquées quand une condition construite avec des blocs Logique (comparaison, et/ou, non) est vraie", "it": "Esegue le azioni annidate quando una condizione costruita con blocchi Logica (confronto, e/o, non) è vera", "ru": "Выполняет вложенные действия, когда условие, построенное из блоков Логики (сравнение, и/или, не), истинно", "sl": "Izvede vgnezdena dejanja, ko je pogoj, sestavljen iz blokov Logika (primerjava, in/ali, ne), resničen", "uk": "Виконує вкладені дії, коли умова, побудована з блоків Логіки (порівняння, і/або, ні), є істинною"}
+    },
+    "check_empty": {
+        "name": {"de": "Leerplatz prüfen", "es": "Comprobar Vacío", "fr": "Vérifier Vide", "it": "Verifica Vuoto", "ru": "Проверить пустоту", "sl": "Preveri prazno", "uk": "Перевірити порожнечу"},
+        "description": {"de": "Wahr, wenn (x, y) keine Kollision hat — steuert nachfolgende Aktion(en) bei Gitterbewegung", "es": "Verdadero cuando (x, y) no tiene colisión — condiciona la(s) acción(es) siguiente(s) en movimiento de cuadrícula", "fr": "Vrai quand (x, y) n'a aucune collision — conditionne la/les action(s) suivante(s) en déplacement sur grille", "it": "Vero quando (x, y) non ha collisioni — condiziona le azioni successive nel movimento a griglia", "ru": "Истина, если (x, y) не имеет столкновения — управляет следующими действиями при движении по сетке", "sl": "Resnično, ko (x, y) nima trka — pogojuje naslednja dejanja pri premikanju po mreži", "uk": "Істина, якщо (x, y) не має зіткнення — керує наступними діями при русі по сітці"}
+    },
+    "exit_event": {
+        "name": {"de": "Ereignis beenden", "es": "Salir del Evento", "fr": "Quitter l'Événement", "it": "Esci dall'Evento", "ru": "Выйти из события", "sl": "Zapusti dogodek", "uk": "Вийти з події"},
+        "description": {"de": "Stoppt die Ausführung der restlichen Aktionen dieses Ereignisses — meist mit einem Test kombiniert, um beim ersten erfolgreichen Zweig abzubrechen", "es": "Detiene la ejecución del resto de las acciones de este evento — normalmente combinado con una prueba para detenerse en la primera rama exitosa", "fr": "Arrête l'exécution des actions restantes de cet événement — généralement associé à un test pour s'arrêter à la première branche réussie", "it": "Interrompe l'esecuzione delle azioni rimanenti di questo evento — di solito abbinato a un test per fermarsi al primo ramo riuscito", "ru": "Останавливает выполнение оставшихся действий этого события — обычно сочетается с проверкой для остановки на первой успешной ветке", "sl": "Ustavi izvajanje preostalih dejanj tega dogodka — običajno v paru s testom za ustavitev pri prvi uspešni veji", "uk": "Зупиняє виконання решти дій цієї події — зазвичай поєднується з перевіркою, щоб зупинитися на першій успішній гілці"}
+    },
+    "else_action": {
+        "name": {"de": "Sonst", "es": "Si no", "fr": "Sinon", "it": "Altrimenti", "ru": "Иначе", "sl": "Sicer", "uk": "Інакше"},
+        "description": {"de": "Führt die nächste Aktion nur aus, wenn der vorherige Test falsch war — mit Block-Start/-Ende kombinieren, um mehr als eine Aktion auf die Sonst-Seite zu legen", "es": "Ejecuta la siguiente acción solo cuando la prueba anterior fue falsa — combínalo con Iniciar/Finalizar Bloque para poner más de una acción en el lado 'si no'", "fr": "Exécute l'action suivante seulement si le test précédent était faux — associer à Début/Fin de Bloc pour mettre plus d'une action du côté sinon", "it": "Esegue l'azione successiva solo se il test precedente era falso — abbinare a Inizio/Fine Blocco per mettere più di un'azione sul lato altrimenti", "ru": "Выполняет следующее действие, только если предыдущая проверка была ложной — сочетайте с началом/концом блока, чтобы добавить более одного действия в ветку «иначе»", "sl": "Izvede naslednje dejanje samo, če je bil prejšnji test neresničen — združi z začetkom/koncem bloka, da postaviš več kot eno dejanje na stran sicer", "uk": "Виконує наступну дію лише тоді, коли попередня перевірка була хибною — поєднуйте з початком/кінцем блоку, щоб додати більше однієї дії в гілку «інакше»"}
+    },
+    "start_block": {
+        "name": {"de": "Block-Start", "es": "Iniciar Bloque", "fr": "Début de Bloc", "it": "Inizio Blocco", "ru": "Начало блока", "sl": "Začetek bloka", "uk": "Початок блоку"},
+        "description": {"de": "Gruppiert mehrere Aktionen, sodass eine vorherige Bedingung für alle gilt, nicht nur für die nächste", "es": "Agrupa varias acciones para que una condición anterior se aplique a todas ellas, no solo a la siguiente", "fr": "Regroupe plusieurs actions pour qu'une condition précédente s'applique à toutes, pas seulement à la suivante", "it": "Raggruppa più azioni in modo che una condizione precedente si applichi a tutte, non solo alla successiva", "ru": "Группирует несколько действий, чтобы предыдущее условие применялось ко всем им, а не только к следующему", "sl": "Združi več dejanj, tako da prejšnji pogoj velja za vsa, ne le za naslednje", "uk": "Групує кілька дій, щоб попередня умова застосовувалася до всіх них, а не лише до наступної"}
+    },
+    "end_block": {
+        "name": {"de": "Block-Ende", "es": "Finalizar Bloque", "fr": "Fin de Bloc", "it": "Fine Blocco", "ru": "Конец блока", "sl": "Konec bloka", "uk": "Кінець блоку"},
+        "description": {"de": "Schließt eine Block-Start-Gruppe", "es": "Cierra un grupo de Iniciar Bloque", "fr": "Ferme un groupe Début de Bloc", "it": "Chiude un gruppo Inizio Blocco", "ru": "Закрывает группу «Начало блока»", "sl": "Zapre skupino Začetek bloka", "uk": "Закриває групу «Початок блоку»"}
+    },
+
+    # Game
+    "restart_game": {
+        "name": {"de": "Spiel neu starten", "es": "Reiniciar Juego", "fr": "Redémarrer le Jeu", "it": "Riavvia Gioco", "ru": "Перезапустить игру", "sl": "Znova zaženi igro", "uk": "Перезапустити гру"},
+        "description": {"de": "Startet im ersten Raum neu", "es": "Reinicia desde la primera sala", "fr": "Redémarre depuis la première salle", "it": "Riavvia dalla prima stanza", "ru": "Перезапускает с первой комнаты", "sl": "Znova zažene od prve sobe", "uk": "Перезапускає з першої кімнати"}
+    },
+    "load_game": {
+        "name": {"de": "Spiel laden", "es": "Cargar Juego", "fr": "Charger la Partie", "it": "Carica Partita", "ru": "Загрузить игру", "sl": "Naloži igro", "uk": "Завантажити гру"},
+        "description": {"de": "Stellt Raum, Punkte/Leben/Gesundheit, globale Variablen und Instanzzustände aus einer Spielstanddatei wieder her", "es": "Restaura la sala, puntuación/vidas/salud, variables globales y estados de instancia desde un archivo guardado", "fr": "Restaure la salle, le score/vies/santé, les variables globales et les états d'instance depuis un fichier de sauvegarde", "it": "Ripristina stanza, punteggio/vite/salute, variabili globali e stati delle istanze da un file di salvataggio", "ru": "Восстанавливает комнату, очки/жизни/здоровье, глобальные переменные и состояния экземпляров из файла сохранения", "sl": "Obnovi sobo, točke/življenja/zdravje, globalne spremenljivke in stanja primerkov iz datoteke shranjevanja", "uk": "Відновлює кімнату, рахунок/життя/здоров'я, глобальні змінні та стани екземплярів із файлу збереження"}
+    },
+    "save_game": {
+        "name": {"de": "Spiel speichern", "es": "Guardar Juego", "fr": "Sauvegarder la Partie", "it": "Salva Partita", "ru": "Сохранить игру", "sl": "Shrani igro", "uk": "Зберегти гру"},
+        "description": {"de": "Speichert den aktuellen Raum, Punkte/Leben/Gesundheit, globale Variablen und Instanzzustände in einer Datei", "es": "Guarda la sala actual, puntuación/vidas/salud, variables globales y estados de instancia en un archivo", "fr": "Enregistre la salle actuelle, le score/vies/santé, les variables globales et les états d'instance dans un fichier", "it": "Salva la stanza attuale, punteggio/vite/salute, variabili globali e stati delle istanze in un file", "ru": "Сохраняет текущую комнату, очки/жизни/здоровье, глобальные переменные и состояния экземпляров в файл", "sl": "Shrani trenutno sobo, točke/življenja/zdravje, globalne spremenljivke in stanja primerkov v datoteko", "uk": "Зберігає поточну кімнату, рахунок/життя/здоров'я, глобальні змінні та стани екземплярів у файл"}
+    },
+    "open_webpage": {
+        "name": {"de": "Webseite öffnen", "es": "Abrir Página Web", "fr": "Ouvrir une Page Web", "it": "Apri Pagina Web", "ru": "Открыть веб-страницу", "sl": "Odpri spletno stran", "uk": "Відкрити вебсторінку"},
+        "description": {"de": "Öffnet eine URL im Standardbrowser", "es": "Abre una URL en el navegador predeterminado", "fr": "Ouvre une URL dans le navigateur par défaut", "it": "Apre un URL nel browser predefinito", "ru": "Открывает URL в браузере по умолчанию", "sl": "Odpre URL v privzetem brskalniku", "uk": "Відкриває URL у браузері за замовчуванням"}
+    },
+    "set_window_caption": {
+        "name": {"de": "Fenstertitel festlegen", "es": "Definir Título de Ventana", "fr": "Définir le Titre de Fenêtre", "it": "Imposta Titolo Finestra", "ru": "Задать заголовок окна", "sl": "Nastavi naslov okna", "uk": "Встановити заголовок вікна"},
+        "description": {"de": "Konfiguriert die Anzeige von Punkte/Leben/Gesundheit im Fenstertitel", "es": "Configura la visualización de puntuación/vidas/salud en el título de la ventana", "fr": "Configure l'affichage du score/vies/santé dans le titre de la fenêtre", "it": "Configura la visualizzazione di punteggio/vite/salute nel titolo della finestra", "ru": "Настраивает отображение очков/жизней/здоровья в заголовке окна", "sl": "Nastavi prikaz točk/življenj/zdravja v naslovu okna", "uk": "Налаштовує відображення рахунку/життів/здоров'я в заголовку вікна"}
+    },
+    "show_info": {
+        "name": {"de": "Spielinfo anzeigen", "es": "Mostrar Info del Juego", "fr": "Afficher Infos du Jeu", "it": "Mostra Info Gioco", "ru": "Показать информацию об игре", "sl": "Prikaži info igre", "uk": "Показати інформацію про гру"},
+        "description": {"de": "Zeigt den Spielinformationsbildschirm an", "es": "Muestra la pantalla de información del juego", "fr": "Affiche l'écran d'informations du jeu", "it": "Mostra la schermata informazioni del gioco", "ru": "Отображает экран информации об игре", "sl": "Prikaže zaslon z informacijami o igri", "uk": "Відображає екран інформації про гру"}
+    },
+    "show_video": {
+        "name": {"de": "Video abspielen", "es": "Mostrar Vídeo", "fr": "Afficher une Vidéo", "it": "Mostra Video", "ru": "Показать видео", "sl": "Prikaži video", "uk": "Показати відео"},
+        "description": {"de": "Spielt eine Videodatei im Standard-Videoplayer deines Systems ab", "es": "Reproduce un archivo de vídeo en el reproductor predeterminado de tu sistema", "fr": "Lit un fichier vidéo dans le lecteur vidéo par défaut du système", "it": "Riproduce un file video nel lettore video predefinito del sistema", "ru": "Воспроизводит видеофайл в видеопроигрывателе системы по умолчанию", "sl": "Predvaja video datoteko v privzetem video predvajalniku sistema", "uk": "Відтворює відеофайл у стандартному відеоплеєрі системи"}
+    },
+    "splash_show_image": {
+        "name": {"de": "Startbild: Bild anzeigen", "es": "Splash: Mostrar Imagen", "fr": "Splash : Afficher une Image", "it": "Splash: Mostra Immagine", "ru": "Заставка: показать изображение", "sl": "Uvodna slika: prikaži sliko", "uk": "Заставка: показати зображення"},
+        "description": {"de": "Zeigt einen Sprite im Vollbild und pausiert das Spiel, bis der Spieler es schließt", "es": "Muestra un sprite a pantalla completa y pausa el juego hasta que el jugador lo cierre", "fr": "Affiche un sprite en plein écran et met le jeu en pause jusqu'à ce que le joueur le ferme", "it": "Mostra uno sprite a schermo intero e mette in pausa il gioco finché il giocatore non lo chiude", "ru": "Показывает спрайт на весь экран и приостанавливает игру, пока игрок его не закроет", "sl": "Prikaže sprite čez cel zaslon in zaustavi igro, dokler je igralec ne zapre", "uk": "Показує спрайт на весь екран і призупиняє гру, доки гравець її не закриє"}
+    },
+    "splash_show_text": {
+        "name": {"de": "Startbild: Text anzeigen", "es": "Splash: Mostrar Texto", "fr": "Splash : Afficher un Texte", "it": "Splash: Mostra Testo", "ru": "Заставка: показать текст", "sl": "Uvodna slika: prikaži besedilo", "uk": "Заставка: показати текст"},
+        "description": {"de": "Zeigt eine Nachricht an und pausiert das Spiel, bis der Spieler sie schließt", "es": "Muestra un mensaje y pausa el juego hasta que el jugador lo cierre", "fr": "Affiche un message et met le jeu en pause jusqu'à ce que le joueur le ferme", "it": "Mostra un messaggio e mette in pausa il gioco finché il giocatore non lo chiude", "ru": "Показывает сообщение и приостанавливает игру, пока игрок его не закроет", "sl": "Prikaže sporočilo in zaustavi igro, dokler je igralec ne zapre", "uk": "Показує повідомлення і призупиняє гру, доки гравець її не закриє"}
+    },
+
+    # Views
+    "enable_views": {
+        "name": {"de": "Ansichten aktivieren", "es": "Activar Vistas", "fr": "Activer les Vues", "it": "Attiva Viste", "ru": "Включить виды", "sl": "Omogoči poglede", "uk": "Увімкнути перегляди"},
+        "description": {"de": "Schaltet das Kamera-/Ansichtssystem des Raums ein oder aus (lässt ein Level scrollen, wenn es größer als das Fenster ist)", "es": "Activa o desactiva el sistema de cámara/vista de la sala (permite desplazar un nivel más grande que la ventana)", "fr": "Active ou désactive le système de caméra/vue de la salle (permet à un niveau de défiler s'il est plus grand que la fenêtre)", "it": "Attiva o disattiva il sistema di telecamera/vista della stanza (consente lo scorrimento di un livello più grande della finestra)", "ru": "Включает или выключает систему камеры/вида комнаты (позволяет прокручивать уровень, если он больше окна)", "sl": "Vklopi ali izklopi sistem kamere/pogleda sobe (omogoči drsenje nivoja, ki je večji od okna)", "uk": "Вмикає або вимикає систему камери/перегляду кімнати (дозволяє прокручувати рівень, якщо він більший за вікно)"}
+    },
+    "set_view": {
+        "name": {"de": "Ansicht festlegen", "es": "Definir Vista", "fr": "Définir une Vue", "it": "Imposta Vista", "ru": "Задать вид", "sl": "Nastavi pogled", "uk": "Встановити перегляд"},
+        "description": {"de": "Konfiguriert eine Kameraansicht: welcher Teil des Raums gezeigt wird, wo sie auf dem Bildschirm zeichnet, und ein zu verfolgendes Objekt", "es": "Configura una vista de cámara: qué parte de la sala muestra, dónde se dibuja en pantalla y un objeto a seguir", "fr": "Configure une vue de caméra : quelle partie de la salle elle montre, où elle s'affiche à l'écran, et un objet à suivre", "it": "Configura una vista della telecamera: quale parte della stanza mostra, dove disegna sullo schermo e un oggetto da seguire", "ru": "Настраивает вид камеры: какую часть комнаты показывает, где рисует на экране и объект для слежения", "sl": "Nastavi pogled kamere: kateri del sobe prikazuje, kje na zaslonu riše, in predmet, ki naj mu sledi", "uk": "Налаштовує вид камери: яку частину кімнати показує, де малює на екрані та об'єкт для стеження"}
     },
 }
 

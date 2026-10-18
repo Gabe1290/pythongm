@@ -699,6 +699,60 @@ Other:
 
 ## Translations / i18n
 
+### ~~Configure Action Blocks dialog: "Control"/"Game"/"Views" shown in English~~ (DONE 2026-10-18)
+
+User report: "the Configure Action Blocks dialog still shows some labels
+(like 'Control', 'Set Variable') in English even in a non-English IDE."
+Root cause was wider than the two named labels: `config/
+blockly_translations.py`'s `CATEGORY_TRANSLATIONS` had NO entry for the
+"Control"/"Game"/"Views" categories in any of the 7 languages (de/es/fr/
+it/ru/sl/uk) -- not a missing-block gap, the category label itself fell
+back to English -- and `BLOCK_TRANSLATIONS` had no entry for any of their
+20 child blocks either (9 Control + 9 Game + 2 Views), so every block
+inside those 3 categories showed raw English regardless of active
+language. This reverses a deliberate scope decision made in
+`docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md`/`docs/
+BLOCKLY_REMAINING_CATEGORY_ISSUES_PLAN.md` ("Game"/"Views" left
+untranslated on purpose, part 2) -- that call predated this bug report and
+is superseded by it. Fixed: all 3 categories + their 20 blocks now have
+real name/description translations in all 7 languages.
+`tests/test_blockly_config_dialog_control_game_views_i18n.py` (incl. a
+live `BlocklyConfigDialog` driven with French active); the old
+`test_views_untranslated_is_a_deliberate_choice_not_a_gap` in
+`tests/test_blockly_category_mismatch_fix.py` was rewritten to assert the
+opposite, with a note explaining the reversal.
+
+**Narrower, milder gap still open, NOT fixed here:** 32 more blocks lack a
+translation, but inside categories whose own label IS already translated
+(so the dialog mostly reads correctly, just a handful of individual block
+names/descriptions inside it fall back to English) --
+Events (`event_other`), Movement (`move_free`, `set_speed`,
+`set_direction`, `grid_move`, `bounce`, `wrap_around_room`,
+`move_to_contact`, `test_alignment`), Drawing (`execute_code`,
+`draw_arrow`, `draw_background`, `draw_ellipse`, `draw_line`,
+`draw_scaled_text`, `draw_sprite`, `fill_color`, `set_color`,
+`set_draw_color`, `set_draw_font`), Score/Lives/Health (`test_health`,
+`test_score`, `test_lives`, `show_highscore`, `clear_highscore`), Instance
+(`instance_destroy_object`, `instance_change`, `if_can_push`), Room
+(`room_goto_previous`, `room_if_next_exists`, `room_if_previous_exists`,
+`game_end`). Same mechanism (`BLOCK_TRANSLATIONS` entries, 7 languages ×
+32 blocks × 2 fields), just a bigger batch, deliberately deferred rather
+than rushed. Re-run the gap check before picking this up:
+```python
+from config.blockly_config import BLOCK_REGISTRY
+from config.blockly_translations import BLOCK_TRANSLATIONS
+missing = {cat: [b["type"] for b in blocks if b["type"] not in BLOCK_TRANSLATIONS]
+           for cat, blocks in BLOCK_REGISTRY.items()}
+missing = {k: v for k, v in missing.items() if v}
+```
+This is separate from, and much narrower than, the "Blockly: generated/
+custom blocks never localize" entry above -- that one is about the LIVE
+Blockly workspace canvas (`blockly_workspace.html`/`blockly_i18n.js`); this
+one is about the Configure Action Blocks dialog only
+(`config/blockly_translations.py`, consumed by `dialogs/
+_block_config_dialog_base.py`) -- two separate i18n tables for two
+separate UI surfaces.
+
 ### pt/ja/zh (and es/pt/`de`-split) have drifted behind `fr` by 11 contexts / hundreds of messages
 
 Found 2026-10-07 while planning the Polish translation (`docs/POLISH_I18N_PLAN.md`):

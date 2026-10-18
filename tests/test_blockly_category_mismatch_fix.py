@@ -457,12 +457,21 @@ def test_particles_already_has_real_translations_in_every_language():
     assert get_translated_category("Particles", "fr") == "Particules"
 
 
-def test_views_untranslated_is_a_deliberate_choice_not_a_gap():
-    """Unlike "Particles", "Views" has no translation anywhere -- same
-    deliberate scope decision as "Game"/"Text" in part 2, falling back to
-    literal English in every language rather than being treated as a
-    missing-translation bug. Documented here so a future i18n sweep
-    doesn't "fix" this without re-deciding it on purpose."""
-    from config.blockly_translations import CATEGORY_TRANSLATIONS
+def test_control_game_views_now_have_real_category_translations():
+    """Superseded 2026-10-18 (docs/BLOCKLY_CONFIG_DIALOG_I18N_2026-10-18.md):
+    this test used to assert the OPPOSITE -- that "Views" (and, by the same
+    part-2 decision, "Game"/"Control") were DELIBERATELY left untranslated
+    in the Configure Action Blocks dialog. That decision is reversed: a user
+    reported the dialog showing "Control"/"Set Variable" in English in a
+    non-English IDE, and investigating showed the gap was much wider than
+    those two labels -- 3 whole categories (Control/Game/Views) had NO
+    translation at all, category label included. All 3 are now translated
+    in all 7 languages; see get_translated_category."""
+    from config.blockly_translations import CATEGORY_TRANSLATIONS, get_translated_category
     for lang, table in CATEGORY_TRANSLATIONS.items():
-        assert "Views" not in table, lang
+        assert "Control" in table, lang
+        assert "Game" in table, lang
+        assert "Views" in table, lang
+    assert get_translated_category("Control", "fr") == "Contrôle"
+    assert get_translated_category("Game", "fr") == "Jeu"
+    assert get_translated_category("Views", "fr") == "Vues"
