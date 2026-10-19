@@ -1,9 +1,9 @@
 # Plan: simplifying the whole interface for 8-9 year old students
 
-Written 2026-10-16. **Nothing implemented yet — this is the research +
-proposal only**, per the user's explicit request to produce a plan
-before touching code. Logged as open work in `TODO.md` (thread A) before
-this doc existed; supersedes that pointer now that the research is done.
+Written 2026-10-16. **All phases (0-4) shipped 2026-10-16**; see the
+phase sections and session log below, and `TODO.md` ("Simplify the whole
+interface...") for what is still open (screenshot pass, translations of
+the new menu entry, handout review).
 
 ## The ask, as given
 

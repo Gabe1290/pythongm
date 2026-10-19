@@ -36,13 +36,28 @@ Export Game dialog hidden); Phase 3 (a junior-sized Blockly preset,
 tutorials, not just a subset of `get_beginner()`); Phase 4 (Blockly
 workspace chrome — 11 right-click entries unregistered). Also shipped
 alongside it: a "Create Sprite" action (Assets menu, all editions) and
-a full junior student/teacher handout set (EN+FR, `docs/junior/`,
-published to the wiki).
+a full junior student/teacher handout set (EN+FR, `docs/junior/`, with
+editable `.odt` files; wiki pages built into `wiki/` by
+`scripts/build_junior_wiki.py`, **not yet published to the live wiki** —
+waiting on the user's review, then `scripts/sync_wiki.sh push`).
+Fixed after first real use: the object editor's Blockly tab never
+initialised when the other two tabs were removed, and the Preferences
+dialog is now capped at 75% of the IDE window height.
 
-**Still open, not done here: a real screenshot pass to check the
-bigger default font doesn't clip any hardcoded-pixel dialog layout**
-(flagged in the plan doc's own Phase 2.5 writeup) — nobody has opened
-the junior edition in the running IDE and looked at it yet.
+**Still open from this work:**
+- A systematic screenshot pass for the bigger default font clipping
+  hardcoded-pixel dialog layouts (the user has opened the junior edition
+  and found two issues, both fixed, but only Preferences and the object
+  editor have been looked at).
+- The object editor's left "Standard" events panel is still shown in
+  junior; deliberately left for now (user decision 2026-10-16).
+- The new Assets > Create Sprite menu entry is translated only in fr and
+  pl; de/es/it/pt/ru/sl/uk/ja/zh show it in English (the "Name Already
+  Used" dialog text is untranslated everywhere).
+- Junior handout/guide wiki pages exist in EN + FR only; the other seven
+  wiki languages have none.
+- Waiting on the user's review of `docs/junior/*.odt`, then fold edits
+  back into the `.md` sources (`docs/TUTORIAL_HANDOUT_WORKFLOW.md`).
 
 (Thread B, the Blockly tutorial-wording audit,
 `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`, closed the same
