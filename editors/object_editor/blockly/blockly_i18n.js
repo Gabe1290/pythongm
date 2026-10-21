@@ -1584,73 +1584,66 @@ function setBlocklyLanguage(lang) {
     console.log('Blockly language set to:', window.BLOCKLY_LANG);
 }
 
-// Category name translations
+// Category name translations. Keyed by the Scratch-sized toolbox DISPLAY
+// GROUP names (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1) -- the old
+// fine-grained category keys (Movement, Timing, Room, Game, Drawing,
+// Particles, Score/Lives/Health, Instance, Values, Math, Logic, Text) are
+// no longer looked up anywhere (getCategoryMessage's only callers are
+// generateToolboxXml's group-emission code, which now passes a group
+// name), so they were replaced rather than kept alongside the new ones.
+// 'Control' is a genuinely new addition here, not a rename -- it had no
+// translation in this table even before this change (a pre-existing gap,
+// fixed in passing since this table was already being touched).
 const CATEGORY_MESSAGES = {
     'fr': {
-        'Events': 'Événements',
-        'Movement': 'Mouvement',
-        'Timing': 'Minuterie',
-        'Drawing': 'Dessin',
-        'Score/Lives/Health': 'Score/Vies/Santé',
-        'Instance': 'Instance',
-        'Room': 'Niveau',
-        'Values': 'Valeurs',
+        'Motion': 'Mouvement',
+        'Looks': 'Apparence',
         'Sound': 'Son',
-        'Math': 'Maths',
-        'Logic': 'Logique'
+        'Events': 'Événements',
+        'Control': 'Contrôle',
+        'Sensing': 'Détection',
+        'Operators': 'Opérateurs',
+        'Variables': 'Variables'
     },
     'pl': {
-        'Events': 'Zdarzenia',
-        'Movement': 'Ruch',
-        'Timing': 'Czasomierz',
-        'Drawing': 'Rysowanie',
-        'Score/Lives/Health': 'Wynik/Życia/Zdrowie',
-        'Instance': 'Instancja',
-        'Room': 'Poziom',
-        'Values': 'Wartości',
+        'Motion': 'Ruch',
+        'Looks': 'Wygląd',
         'Sound': 'Dźwięk',
-        'Math': 'Matematyka',
-        'Logic': 'Logika'
+        'Events': 'Zdarzenia',
+        'Control': 'Sterowanie',
+        'Sensing': 'Czujniki',
+        'Operators': 'Operatory',
+        'Variables': 'Zmienne'
     },
     'de': {
-        'Events': 'Ereignisse',
-        'Movement': 'Bewegung',
-        'Timing': 'Zeitsteuerung',
-        'Drawing': 'Zeichnen',
-        'Score/Lives/Health': 'Punkte/Leben/Gesundheit',
-        'Instance': 'Instanz',
-        'Room': 'Raum',
-        'Values': 'Werte',
+        'Motion': 'Bewegung',
+        'Looks': 'Aussehen',
         'Sound': 'Klang',
-        'Math': 'Mathematik',
-        'Logic': 'Logik'
+        'Events': 'Ereignisse',
+        'Control': 'Steuerung',
+        'Sensing': 'Fühlen',
+        'Operators': 'Operatoren',
+        'Variables': 'Variablen'
     },
     'it': {
-        'Events': 'Eventi',
-        'Movement': 'Movimento',
-        'Timing': 'Temporizzazione',
-        'Drawing': 'Disegno',
-        'Score/Lives/Health': 'Punteggio/Vite/Salute',
-        'Instance': 'Istanza',
-        'Room': 'Stanza',
-        'Values': 'Valori',
+        'Motion': 'Movimento',
+        'Looks': 'Aspetto',
         'Sound': 'Suono',
-        'Math': 'Matematica',
-        'Logic': 'Logica'
+        'Events': 'Eventi',
+        'Control': 'Controllo',
+        'Sensing': 'Sensori',
+        'Operators': 'Operatori',
+        'Variables': 'Variabili'
     },
     'uk': {
-        // Categories
-        'Events': 'Події',
-        'Movement': 'Рух',
-        'Timing': 'Таймінг',
-        'Drawing': 'Малювання',
-        'Score/Lives/Health': 'Рахунок/Життя/Здоров\'я',
-        'Instance': 'Екземпляр',
-        'Room': 'Кімната',
-        'Values': 'Значення',
+        'Motion': 'Рух',
+        'Looks': 'Вигляд',
         'Sound': 'Звук',
-        'Math': 'Математика',
-        'Logic': 'Логіка'
+        'Events': 'Події',
+        'Control': 'Керування',
+        'Sensing': 'Сенсори',
+        'Operators': 'Оператори',
+        'Variables': 'Змінні'
     }
 };
 

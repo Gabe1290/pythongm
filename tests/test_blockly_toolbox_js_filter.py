@@ -69,7 +69,13 @@ def test_unmerged_custom_categories_are_now_filtered():
     assert re.search(
         r"enabledBlocks\.has\(blockType\)\s*\|\|\s*enabledBlocks\.has\(baseName\)",
         unmerged_loop), "unmerged loop doesn't filter per block like the merged path does"
-    assert "filteredBlocks.join('')" in unmerged_loop
+    # 2026-10-21 (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1): the
+    # filtered blocks are now pooled into a display-group bucket rather
+    # than joined straight into the XML string at this point -- the
+    # actual <category> emission (and its own .join('')) moved to
+    # emitGroup() at the end of the function. The filtering this test
+    # guards is unchanged; only its destination moved.
+    assert "pushToGroup(customName, filteredBlocks);" in unmerged_loop
 
 
 def test_merged_path_filter_is_unchanged():

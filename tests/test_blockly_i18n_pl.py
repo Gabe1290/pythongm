@@ -102,7 +102,13 @@ def test_pl_table_sizes_match_plan_doc():
     expected = {
         "BLOCK_MESSAGES": 258,  # +3 set_sprite (B10), +4 test_expression (B6c), +1 health bar height (B21), +2 destroy-all (B19), +2 extension event, +14 event_other (prefix+tooltip+12 dropdown options), +1 move_direction_expr_prefix
         "KEY_NAMES": 37,
-        "CATEGORY_MESSAGES": 11,
+        # 8, not the pre-2026-10-21 11: CATEGORY_MESSAGES is now keyed by
+        # the Scratch-sized toolbox DISPLAY GROUP names (docs/
+        # BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1), not the old
+        # fine-grained category names -- Math/Logic/Text lost their own
+        # category entirely (pooled into Operators) rather than just
+        # being renamed, and Control gained one it never had before.
+        "CATEGORY_MESSAGES": 8,
         "BLOCKLY_MSG_TRANSLATIONS": 97,
     }
     for tbl, count in expected.items():

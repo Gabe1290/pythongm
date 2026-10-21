@@ -1,15 +1,13 @@
 # Blockly Scratch-parity plan: fewer categories + student-defined blocks
 
-Status: **planning only, nothing implemented yet.** Written 2026-10-18 on
-explicit request, from the attached Scratch screenshot (Motion, Looks,
-Sound, Events, Control, Sensing, Operators, Variables, My Blocks — 9 flat
-categories, the last one for student-defined blocks).
+Status: Written 2026-10-18. **Feature 1 shipped 2026-10-21** (see its own
+section below). Feature 2 (My Blocks) not started.
 
 Two separate features, sequenced so the second lands into the shape the
 first produces:
 
-1. Reduce the Blockly toolbox's category count toward Scratch's model.
-2. Let a student define their own reusable block ("My Blocks").
+1. ✅ Reduce the Blockly toolbox's category count toward Scratch's model — DONE.
+2. Let a student define their own reusable block ("My Blocks") — not started.
 
 Both are scoped for the existing desktop IDE editor (`editors/
 object_editor/blockly_widget.py` + `blockly_workspace.html`). Neither
@@ -19,20 +17,81 @@ design choice, not an oversight.
 
 ---
 
-## Open decision the user should confirm before work starts
+## Open decision — resolved 2026-10-21
 
-**"Reduce the number of categories to one like for Scratch" is read here
-as "reduce to a small, Scratch-sized set (the screenshot's ~9
-categories)," not "merge everything into a single literal category."**
-The screenshot shows Scratch's own *multiple* categories as the
-reference model, which only makes sense under that reading. If "one
-category, period" was actually meant, say so — it changes Feature 1's
-scope substantially (see the "if literally one category" aside at the
-end of that section).
+"Reduce the number of categories to one like for Scratch" was confirmed
+to mean Scratch's small category *count* (the screenshot's ~9), not a
+literal single category — the proposed mapping was accepted as written,
+with one change: `Score/Lives/Health` merges into `Variables` rather
+than staying its own category.
 
 ---
 
-## Feature 1: fewer, Scratch-sized categories
+## Feature 1: fewer, Scratch-sized categories — ✅ DONE 2026-10-21
+
+**Confirmed by the user:** "reduce to one like for Scratch" meant
+Scratch's small category *count*, the proposed mapping is accepted as
+written, and `Score/Lives/Health` merges into `Variables` (not kept as
+its own 10th category, resolving the one open question this plan left).
+
+Shipped exactly the "presentation-only grouping layer" design below:
+- `config/blockly_config.py`'s `TOOLBOX_CATEGORY_GROUPS` +
+  `display_category()` — the canonical mapping. Every other
+  category-keyed mechanism (presets' `enabled_categories`,
+  `action_types.py`'s `category=`, `register_block_categories`)
+  confirmed unchanged.
+- `blockly_workspace.html`'s hand-mirrored JS copy
+  (`TOOLBOX_CATEGORY_GROUPS`/`toolboxGroupOf()`), consulted by
+  `generateToolboxXml()` — the function now pools each fine-grained
+  category's already-filtered blocks into a `groupBuckets` accumulator
+  via `pushToGroup()` instead of emitting a `<category>` tag
+  immediately, then emits one tag per group at the end, in a fixed
+  `TOOLBOX_GROUP_ORDER` (Motion/Looks/Sound/Events/Control/Sensing/
+  Operators/Variables, Scratch's own order) so the toolbox reads the
+  same way every time. The always-on Math/Logic/Text categories pool
+  into `Operators` the same way. A category absent from the mapping
+  (an extension's own, e.g. Thymio's 8) falls through to its own
+  standalone group unchanged, appended after the fixed 8.
+- A 9-color palette (`TOOLBOX_GROUP_COLORS`) loosely following Scratch's
+  own category colors; a dynamically-generated block's own body color
+  (`registerCustomBlocks`) now prefers its group's color too, for visual
+  consistency between a block and the drawer it lives in.
+- `editors/object_editor/blockly/blockly_i18n.js`'s `CATEGORY_MESSAGES`
+  rekeyed from the 11 old fine-grained names to the 8 new group names,
+  for all 5 languages that table covers (fr/pl/de/it/uk) — including a
+  `Control` entry that table never had before (a pre-existing gap,
+  fixed in passing since the table was already being touched). Reused
+  this session's own earlier `config/blockly_translations.py` wording
+  for `Control` where the two tables now overlap (Contrôle/Steuerung/
+  Controllo/Керування) for cross-table consistency.
+- `tests/test_blockly_toolbox_category_groups.py` (28 tests): the
+  Python mapping's exact shape, the Score/Lives/Health→Variables pin,
+  unmapped-category fallback behaviour, a Python/JS drift guard (the
+  two hand-written copies must stay identical), structural checks on
+  the new `generateToolboxXml` grouping logic (no Node.js in CI, same
+  tier `tests/test_blockly_toolbox_js_filter.py` already established
+  for this exact function), and per-language translation coverage for
+  all 8 groups. 6 pre-existing tests (across `test_blockly_toolbox_js_
+  filter.py`, `test_blockly_category_mismatch_fix.py`,
+  `test_blockly_i18n_pl.py`, `test_blockly_i18n_uk.py`) updated for the
+  new category shape rather than left asserting the old one. Full
+  suite: 6354 passed, 0 failed.
+
+**Deliberately not done in this pass, flagged rather than silently
+skipped:** the ~115 hand-written block definitions in
+`blockly_blocks.js` each set their OWN body color via a literal
+`this.setColour("#HEX")` call, independent of the toolbox category
+dict — confirmed these **already don't match** the toolbox's own
+per-category colors even before this change (e.g. `event_create`'s
+body is `#FFD500` while the old "Events" toolbox category itself was
+`#CC8800`), so this is a pre-existing cosmetic inconsistency, not one
+this change introduces or worsens. Recoloring all 115 to match their
+new group is a real, mechanical, separately-schedulable follow-up
+(no shared color constant to edit once — every call site is a literal
+hex string) if full Scratch-style "every block in a category is that
+category's color" fidelity is wanted later.
+
+---
 
 ### Current state (verified by reading the code, not assumed)
 

@@ -294,8 +294,13 @@ def test_config_version_bumped_for_the_game_category_migration():
 def test_text_category_exists_in_both_toolboxes():
     names = _static_initial_toolbox_category_names()
     assert "Text" in names
+    # 2026-10-21 (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1): the live
+    # toolbox no longer gives Text its own <category> -- it pools into
+    # 'Operators' alongside Values/Math/Logic (TOOLBOX_CATEGORY_GROUPS).
+    # Its blocks still exist and are still reachable (see the next test);
+    # only the standalone category label is gone, by design.
     text = WORKSPACE_HTML.read_text(encoding="utf-8")
-    assert "getCategoryMessage('Text'" in text
+    assert "pushToGroup('Text'," in text
 
 
 def test_text_and_text_join_blocks_present_in_both_toolboxes():

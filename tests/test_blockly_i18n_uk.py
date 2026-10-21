@@ -83,13 +83,18 @@ def test_block_messages_uk_has_event_create():
 
 
 def test_category_messages_uk_only_has_category_names():
+    """2026-10-21 (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1):
+    CATEGORY_MESSAGES is now keyed by the Scratch-sized toolbox DISPLAY
+    GROUP names, not the old fine-grained category names -- Math/Logic/
+    Text lost their own category entirely (pooled into Operators) rather
+    than being renamed, and Control gained an entry it never had before."""
     content = _js_source()
     uk_keys = _object_keys(content, "CATEGORY_MESSAGES", "uk")
     expected = {
-        "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
-        "Instance", "Room", "Values", "Sound", "Math", "Logic",
+        "Motion", "Looks", "Sound", "Events", "Control", "Sensing",
+        "Operators", "Variables",
     }
     assert uk_keys == expected, (
-        "CATEGORY_MESSAGES.uk should hold only the 11 toolbox category "
+        "CATEGORY_MESSAGES.uk should hold only the 8 toolbox display-group "
         f"names, not block-message keys; got {uk_keys}"
     )

@@ -209,6 +209,58 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
 # at extension-load time via register_block_categories().
 
 
+# ============================================================================
+# TOOLBOX CATEGORY GROUPING (display only)
+# ============================================================================
+#
+# Collapses BLOCK_REGISTRY's 13 fine-grained categories into a Scratch-sized
+# set for the TOOLBOX ONLY -- docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1.
+# Every other category-keyed mechanism (BlocklyConfig presets'
+# enabled_categories, action_types.py's category= strings, extension
+# registration via register_block_categories) is UNCHANGED and keeps
+# operating on the original fine-grained names below -- this mapping is
+# consulted ONLY by the toolbox-rendering code (blockly_workspace.html's
+# generateToolboxXml, which keeps its own mirrored copy of this same
+# mapping -- see that file for why a live Python->JS data bridge wasn't
+# used for a small, static, non-user-configurable constant).
+#
+# "My Blocks" is intentionally absent: it has no BLOCK_REGISTRY members at
+# all (a later feature -- student-defined custom blocks -- populates it
+# directly in the toolbox, not through this registry).
+#
+# A category not listed here (an extension's own, e.g. Thymio's 8, merged
+# in later via register_block_categories) falls through to its own
+# standalone toolbox category, unchanged from today's behaviour -- see
+# display_category()'s docstring.
+TOOLBOX_CATEGORY_GROUPS: Dict[str, List[str]] = {
+    "Motion": ["Movement", "Views"],
+    "Looks": ["Drawing", "Particles"],
+    "Sound": ["Sound"],
+    "Events": ["Events"],
+    "Control": ["Control", "Timing", "Room", "Game"],
+    "Sensing": ["Instance"],
+    "Operators": ["Values"],
+    "Variables": ["Score/Lives/Health"],
+}
+
+# Reverse lookup: original fine-grained category -> its toolbox display
+# group. Built once at import time.
+_CATEGORY_TO_GROUP: Dict[str, str] = {
+    original: group
+    for group, originals in TOOLBOX_CATEGORY_GROUPS.items()
+    for original in originals
+}
+
+
+def display_category(category: str) -> str:
+    """The toolbox display group a BLOCK_REGISTRY/action category renders
+    under. Falls back to the category itself when it isn't part of
+    TOOLBOX_CATEGORY_GROUPS (an extension's own category, or any future
+    core category nobody has sorted into a group yet) -- never raises,
+    never silently drops a category from the toolbox."""
+    return _CATEGORY_TO_GROUP.get(category, category)
+
+
 def get_implemented_blocks() -> Set[str]:
     """Get set of all implemented block types"""
     implemented = set()

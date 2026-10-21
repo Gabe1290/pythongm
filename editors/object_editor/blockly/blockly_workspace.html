@@ -3089,9 +3089,73 @@
 
         }
 
+        // Scratch-sized toolbox category grouping (display only) --
+        // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1. Mirrors
+        // config/blockly_config.py's TOOLBOX_CATEGORY_GROUPS exactly (kept
+        // as a second hand-written copy rather than piped from Python,
+        // same call this app already makes for CATEGORY_MESSAGES below --
+        // a small, static, non-user-configurable constant isn't worth a
+        // data bridge; tests/test_toolbox_category_groups.py pins the two
+        // copies identical). Every fine-grained category below keeps
+        // gating blocks exactly as before (enabledBlocks/enabledCategories
+        // checks are unchanged) -- this mapping only changes which
+        // <category> tag a fine category's already-filtered blocks end up
+        // under. A fine category not listed here (an extension's own,
+        // e.g. Thymio's 8, merged in later on the Python side) falls
+        // through to toolboxGroupOf() as its own standalone group,
+        // unchanged from today.
+        var TOOLBOX_CATEGORY_GROUPS = {
+            'Motion': ['Movement', 'Views'],
+            'Looks': ['Drawing', 'Particles'],
+            'Sound': ['Sound', 'Audio'],
+            'Events': ['Events'],
+            'Control': ['Control', 'Timing', 'Room', 'Game'],
+            'Sensing': ['Instance'],
+            'Operators': ['Values', 'Math', 'Logic', 'Text'],
+            'Variables': ['Score/Lives/Health']
+            // 'My Blocks' intentionally absent -- populated directly by a
+            // later feature (student-defined custom blocks), not through
+            // this mapping.
+        };
+
+        var TOOLBOX_GROUP_COLORS = {
+            'Motion': '#4C97FF',
+            'Looks': '#9966FF',
+            'Sound': '#CF63CF',
+            'Events': '#FFBF00',
+            'Control': '#FFAB19',
+            'Sensing': '#5CB1D6',
+            'Operators': '#59C059',
+            'Variables': '#FF8C1A',
+            'My Blocks': '#FF6680'
+        };
+
+        // Fixed emission order (Scratch's own order) so the toolbox reads
+        // the same way every time, independent of object iteration order.
+        // Anything not in this list (an unmapped/extension category, or
+        // 'My Blocks' once it has content) is appended afterward, in the
+        // order generateToolboxXml() encounters it.
+        var TOOLBOX_GROUP_ORDER = ['Motion', 'Looks', 'Sound', 'Events',
+            'Control', 'Sensing', 'Operators', 'Variables'];
+
+        var _categoryToGroup = {};
+        for (var _groupName in TOOLBOX_CATEGORY_GROUPS) {
+            var _members = TOOLBOX_CATEGORY_GROUPS[_groupName];
+            for (var _mi = 0; _mi < _members.length; _mi++) {
+                _categoryToGroup[_members[_mi]] = _groupName;
+            }
+        }
+
+        function toolboxGroupOf(categoryName) {
+            return _categoryToGroup[categoryName] || categoryName;
+        }
+
         function generateToolboxXml(config) {
             /**
-             * Generate toolbox XML based on configuration
+             * Generate toolbox XML based on configuration. Fine-grained
+             * categories are filtered exactly as before; TOOLBOX_CATEGORY_
+             * GROUPS/toolboxGroupOf() above only change which merged
+             * <category> tag the filtered blocks are emitted under.
              */
             var enabledBlocks = new Set(config.enabled_blocks || []);
             var enabledCategories = new Set(config.enabled_categories || []);
@@ -3099,7 +3163,20 @@
             // If no config provided, show all blocks
             var showAll = enabledBlocks.size === 0;
 
-            var xml = '<xml id="toolbox" style="display: none">';
+            // groupName -> array of block XML strings, accumulated below
+            // instead of being written straight to the output XML, so
+            // every fine-grained category mapped to the same group can be
+            // pooled into one <category> tag.
+            var groupBuckets = {};
+            function pushToGroup(categoryName, blockXmlList) {
+                var group = toolboxGroupOf(categoryName);
+                if (!groupBuckets[group]) {
+                    groupBuckets[group] = [];
+                }
+                for (var bi = 0; bi < blockXmlList.length; bi++) {
+                    groupBuckets[group].push(blockXmlList[bi]);
+                }
+            }
 
             // Define all categories and their blocks
             var categories = {
@@ -3280,34 +3357,30 @@
                 // above (docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md).
             };
 
-            // Add Math and Logic categories (always included)
-            xml += '<category name="' + getCategoryMessage('Math', window.BLOCKLY_LANG) + '" colour="#5C68A6">';
-            xml += '<block type="math_number"><field name="NUM">0</field></block>';
-            xml += '<block type="math_arithmetic"></block>';
-            xml += '<block type="math_single"></block>';
-            xml += '<block type="math_random_int"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>';
-            xml += '</category>';
-
-            xml += '<category name="' + getCategoryMessage('Logic', window.BLOCKLY_LANG) + '" colour="#5CA65C">';
-            xml += '<block type="logic_compare"></block>';
-            xml += '<block type="logic_operation"></block>';
-            xml += '<block type="logic_negate"></block>';
-            xml += '<block type="logic_boolean"></block>';
-            xml += '</category>';
-
-            // "Text" (always included, like Math/Logic): generic Blockly
-            // value blocks (string literal, string join) meant to drop into
-            // any text-shaped slot across every category, not tied to one
-            // action domain -- docs/BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md
-            // "Resolution, part 2". Previously only existed in the static
-            // pre-load toolbox XML below (under the old "Output" category),
-            // which every real page load replaces -- genuinely unreachable
-            // in the live toolbox until this fix, the same orphan bug
-            // execute_code had.
-            xml += '<category name="' + getCategoryMessage('Text', window.BLOCKLY_LANG) + '" colour="#4FA8A8">';
-            xml += '<block type="text"></block>';
-            xml += '<block type="text_join"></block>';
-            xml += '</category>';
+            // Add Math and Logic categories (always included, regardless
+            // of preset), plus Text (same "always included" treatment,
+            // generic value blocks meant to drop into any text-shaped
+            // slot across every category -- docs/
+            // BLOCKLY_CATEGORY_MISMATCH_2026-10-15.md "Resolution, part
+            // 2"). All three now pool into 'Operators' (see
+            // TOOLBOX_CATEGORY_GROUPS above) instead of being emitted as
+            // standalone categories.
+            pushToGroup('Math', [
+                '<block type="math_number"><field name="NUM">0</field></block>',
+                '<block type="math_arithmetic"></block>',
+                '<block type="math_single"></block>',
+                '<block type="math_random_int"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>'
+            ]);
+            pushToGroup('Logic', [
+                '<block type="logic_compare"></block>',
+                '<block type="logic_operation"></block>',
+                '<block type="logic_negate"></block>',
+                '<block type="logic_boolean"></block>'
+            ]);
+            pushToGroup('Text', [
+                '<block type="text"></block>',
+                '<block type="text_join"></block>'
+            ]);
 
             // Track which custom categories have been merged into hardcoded ones
             var mergedCustomCats = {};
@@ -3347,11 +3420,9 @@
                     mergedCustomCats[categoryName] = true;
                 }
 
-                // Only add category if it has blocks
+                // Only pool the category if it has blocks
                 if (categoryBlocks.length > 0) {
-                    xml += '<category name="' + getCategoryMessage(categoryName, window.BLOCKLY_LANG) + '" colour="' + category.color + '">';
-                    xml += categoryBlocks.join('');
-                    xml += '</category>';
+                    pushToGroup(categoryName, categoryBlocks);
                 }
             }
 
@@ -3375,10 +3446,32 @@
                     }
                 }
                 if (filteredBlocks.length > 0) {
-                    xml += '<category name="' + getCategoryMessage(customName, window.BLOCKLY_LANG) + '" colour="' + custom.color + '">';
-                    xml += filteredBlocks.join('');
-                    xml += '</category>';
+                    pushToGroup(customName, filteredBlocks);
                 }
+            }
+
+            // Emit one <category> per display group, in TOOLBOX_GROUP_ORDER
+            // (so the toolbox reads the same way every time), then anything
+            // left over (an unmapped/extension category, or 'My Blocks'
+            // once it has content) in whatever order it was encountered.
+            var xml = '<xml id="toolbox" style="display: none">';
+            var emittedGroups = {};
+            function emitGroup(groupName) {
+                if (emittedGroups[groupName]) return;
+                emittedGroups[groupName] = true;
+                var blocks = groupBuckets[groupName];
+                if (!blocks || blocks.length === 0) return;
+                var displayName = getCategoryMessage(groupName, window.BLOCKLY_LANG);
+                var color = TOOLBOX_GROUP_COLORS[groupName] || '#888888';
+                xml += '<category name="' + displayName + '" colour="' + color + '">';
+                xml += blocks.join('');
+                xml += '</category>';
+            }
+            for (var oi = 0; oi < TOOLBOX_GROUP_ORDER.length; oi++) {
+                emitGroup(TOOLBOX_GROUP_ORDER[oi]);
+            }
+            for (var leftoverGroup in groupBuckets) {
+                emitGroup(leftoverGroup);
             }
 
             xml += '</xml>';
@@ -3449,7 +3542,12 @@
 
                 // Create block definition
                 (function(bt, d) {
-                    var color = categoryColors[d.category] || '#888888';
+                    // Prefer the block's new Scratch-sized toolbox GROUP
+                    // color (so a dragged block's own body matches the
+                    // drawer it came from); categoryColors stays as the
+                    // fallback for anything toolboxGroupOf() doesn't
+                    // resolve (an extension's own category).
+                    var color = TOOLBOX_GROUP_COLORS[toolboxGroupOf(d.category)] || categoryColors[d.category] || '#888888';
                     var params = d.parameters || [];
 
                     Blockly.Blocks[bt] = {
