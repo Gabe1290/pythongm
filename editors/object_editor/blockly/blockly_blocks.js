@@ -61,7 +61,7 @@ Blockly.Blocks['event_create'] = {
             .appendField("When created");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when the object is created");
     }
 };
@@ -72,7 +72,7 @@ Blockly.Blocks['event_step'] = {
             .appendField("Every step");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs every frame");
     }
 };
@@ -83,7 +83,7 @@ Blockly.Blocks['event_draw'] = {
             .appendField("When drawing");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs during the draw phase");
     }
 };
@@ -94,7 +94,7 @@ Blockly.Blocks['event_destroy'] = {
             .appendField("When destroyed");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when the object is destroyed");
     }
 };
@@ -107,7 +107,7 @@ Blockly.Blocks['event_keyboard_nokey'] = {
             .appendField("Keyboard: No key");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when no keyboard key is pressed");
     }
 };
@@ -118,7 +118,7 @@ Blockly.Blocks['event_keyboard_anykey'] = {
             .appendField("Keyboard: Any key");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when any keyboard key is pressed");
     }
 };
@@ -131,7 +131,7 @@ Blockly.Blocks['event_keyboard_held'] = {
             .appendField("(held)");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs continuously while the key is held down");
     }
 };
@@ -143,7 +143,7 @@ Blockly.Blocks['event_keyboard_press'] = {
             .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs once when the key is first pressed");
     }
 };
@@ -155,7 +155,7 @@ Blockly.Blocks['event_keyboard_release'] = {
             .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs once when the key is released");
     }
 };
@@ -174,7 +174,7 @@ Blockly.Blocks['event_mouse'] = {
             ]), "BUTTON");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs on mouse events");
     }
 };
@@ -186,7 +186,7 @@ Blockly.Blocks['event_collision'] = {
             .appendField(new Blockly.FieldTextInput("obj_wall"), "OBJECT");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when colliding with another object");
     }
 };
@@ -204,7 +204,7 @@ Blockly.Blocks['event_alarm'] = {
             .appendField("triggers");
         this.appendStatementInput("DO")
             .setCheck(null);
-        this.setColour("#FFD500");
+        this.setColour("#FFBF00");
         this.setTooltip("Runs when the alarm reaches zero");
     }
 };
@@ -220,7 +220,7 @@ Blockly.Blocks['move_set_hspeed'] = {
             .appendField("Set horizontal speed to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Set horizontal movement speed");
     }
 };
@@ -232,7 +232,7 @@ Blockly.Blocks['move_set_vspeed'] = {
             .appendField("Set vertical speed to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Set vertical movement speed");
     }
 };
@@ -243,7 +243,7 @@ Blockly.Blocks['move_stop'] = {
             .appendField("Stop movement");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Stop all movement");
     }
 };
@@ -270,7 +270,7 @@ Blockly.Blocks['move_direction'] = {
             .appendField("at speed");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Move in a direction. 'stop' sets both speeds to 0.");
     }
 };
@@ -288,7 +288,7 @@ Blockly.Blocks['move_free'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Move at an exact direction (0=right, 90=up, 180=left, 270=down) with the given speed");
     }
 };
@@ -301,7 +301,7 @@ Blockly.Blocks['set_speed'] = {
             .appendField("Set speed to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Change movement speed magnitude while keeping the current direction");
     }
 };
@@ -315,7 +315,7 @@ Blockly.Blocks['set_direction'] = {
             .appendField(new Blockly.FieldLabel("(degrees)"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Change direction angle (0=right, 90=up, 180=left, 270=down) while keeping the current speed");
     }
 };
@@ -334,7 +334,7 @@ Blockly.Blocks['move_towards'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Move towards a point");
     }
 };
@@ -349,7 +349,7 @@ Blockly.Blocks['move_snap_to_grid'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Align position to grid");
     }
 };
@@ -368,7 +368,7 @@ Blockly.Blocks['move_jump_to'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Instantly move to position");
     }
 };
@@ -384,7 +384,7 @@ Blockly.Blocks['grid_stop_if_no_keys'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Stop if no arrow keys are pressed (grid-based)");
     }
 };
@@ -402,7 +402,7 @@ Blockly.Blocks['grid_check_keys_and_move'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Check arrow keys and restart grid movement");
     }
 };
@@ -420,7 +420,7 @@ Blockly.Blocks['grid_if_on_grid'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Execute actions if on grid alignment");
     }
 };
@@ -437,7 +437,7 @@ Blockly.Blocks['set_gravity'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Apply gravity to this instance");
     }
 };
@@ -449,7 +449,7 @@ Blockly.Blocks['set_friction'] = {
             .appendField("Set friction to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Set movement friction");
     }
 };
@@ -460,7 +460,7 @@ Blockly.Blocks['reverse_horizontal'] = {
             .appendField("Reverse horizontal movement");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Reverse horizontal direction");
     }
 };
@@ -471,7 +471,7 @@ Blockly.Blocks['reverse_vertical'] = {
             .appendField("Reverse vertical movement");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Reverse vertical direction");
     }
 };
@@ -486,7 +486,7 @@ Blockly.Blocks['wrap_around_room'] = {
             .appendField("vertical");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5C81A6");
+        this.setColour("#4C97FF");
         this.setTooltip("Wrap instance to opposite side when leaving room boundaries");
     }
 };
@@ -511,7 +511,7 @@ Blockly.Blocks['set_alarm'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#FF6B6B");
+        this.setColour("#FFAB19");
         this.setTooltip("Set an alarm to trigger after specified steps");
     }
 };
@@ -534,7 +534,7 @@ Blockly.Blocks['draw_text'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9B59B6");
+        this.setColour("#9966FF");
         this.setTooltip("Draw text on screen");
     }
 };
@@ -559,7 +559,7 @@ Blockly.Blocks['draw_rectangle'] = {
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9B59B6");
+        this.setColour("#9966FF");
         this.setTooltip("Draw a filled rectangle");
     }
 };
@@ -581,7 +581,7 @@ Blockly.Blocks['draw_circle'] = {
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9B59B6");
+        this.setColour("#9966FF");
         this.setTooltip("Draw a filled circle");
     }
 };
@@ -605,7 +605,7 @@ Blockly.Blocks['set_sprite'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9B59B6");
+        this.setColour("#9966FF");
         this.setTooltip("Change the sprite or modify current sprite animation. Use <self> to modify the current sprite's animation.");
         // Hide sprite name input initially since default is <self>
         this.getInput("SPRITE_NAME_INPUT").setVisible(false);
@@ -629,7 +629,7 @@ Blockly.Blocks['set_alpha'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9B59B6");
+        this.setColour("#9966FF");
         this.setTooltip("Set sprite transparency (0=invisible, 1=solid)");
     }
 };
@@ -645,7 +645,7 @@ Blockly.Blocks['score_set'] = {
             .appendField("Set score to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Set the score");
     }
 };
@@ -657,7 +657,7 @@ Blockly.Blocks['score_add'] = {
             .appendField("Add to score");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Add or subtract from score");
     }
 };
@@ -669,7 +669,7 @@ Blockly.Blocks['lives_set'] = {
             .appendField("Set lives to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Set the number of lives");
     }
 };
@@ -681,7 +681,7 @@ Blockly.Blocks['lives_add'] = {
             .appendField("Add to lives");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Add or subtract lives");
     }
 };
@@ -693,7 +693,7 @@ Blockly.Blocks['health_set'] = {
             .appendField("Set health to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Set the health");
     }
 };
@@ -705,7 +705,7 @@ Blockly.Blocks['health_add'] = {
             .appendField("Add to health");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Add or subtract health");
     }
 };
@@ -721,7 +721,7 @@ Blockly.Blocks['draw_score'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Display the score");
     }
 };
@@ -737,7 +737,7 @@ Blockly.Blocks['draw_lives'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Display lives as icons");
     }
 };
@@ -756,7 +756,7 @@ Blockly.Blocks['draw_health_bar'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#5CA65C");
+        this.setColour("#FF8C1A");
         this.setTooltip("Draw a health bar");
     }
 };
@@ -771,7 +771,7 @@ Blockly.Blocks['instance_destroy'] = {
             .appendField("Destroy this instance");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A65C81");
+        this.setColour("#5CB1D6");
         this.setTooltip("Destroy the current instance");
     }
 };
@@ -782,7 +782,7 @@ Blockly.Blocks['instance_destroy_other'] = {
             .appendField("Destroy other instance");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A65C81");
+        this.setColour("#5CB1D6");
         this.setTooltip("Destroy the colliding instance");
     }
 };
@@ -800,7 +800,7 @@ Blockly.Blocks['instance_create'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A65C81");
+        this.setColour("#5CB1D6");
         this.setTooltip("Create a new instance");
     }
 };
@@ -1032,7 +1032,7 @@ Blockly.Blocks['room_goto_next'] = {
             .appendField("Go to next room");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Go to the next room");
     }
 };
@@ -1043,7 +1043,7 @@ Blockly.Blocks['room_restart'] = {
             .appendField("Restart room");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Restart the current room");
     }
 };
@@ -1055,7 +1055,7 @@ Blockly.Blocks['room_goto'] = {
             .appendField(new Blockly.FieldTextInput("room0"), "ROOM");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Go to a specific room");
     }
 };
@@ -1066,7 +1066,7 @@ Blockly.Blocks['room_goto_previous'] = {
             .appendField("Go to previous room");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Go to the previous room");
     }
 };
@@ -1083,7 +1083,7 @@ Blockly.Blocks['room_if_next_exists'] = {
             .appendField("else");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Execute the then actions if there is a next room, otherwise the else actions");
     }
 };
@@ -1100,7 +1100,7 @@ Blockly.Blocks['room_if_previous_exists'] = {
             .appendField("else");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#A6745C");
+        this.setColour("#FFAB19");
         this.setTooltip("Execute the then actions if there is a previous room, otherwise the else actions");
     }
 };
@@ -1113,7 +1113,7 @@ Blockly.Blocks['value_x'] = {
     init: function() {
         this.appendDummyInput().appendField("x position");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get x position");
     }
 };
@@ -1122,7 +1122,7 @@ Blockly.Blocks['value_y'] = {
     init: function() {
         this.appendDummyInput().appendField("y position");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get y position");
     }
 };
@@ -1131,7 +1131,7 @@ Blockly.Blocks['value_hspeed'] = {
     init: function() {
         this.appendDummyInput().appendField("horizontal speed");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get horizontal speed");
     }
 };
@@ -1140,7 +1140,7 @@ Blockly.Blocks['value_vspeed'] = {
     init: function() {
         this.appendDummyInput().appendField("vertical speed");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get vertical speed");
     }
 };
@@ -1149,7 +1149,7 @@ Blockly.Blocks['value_score'] = {
     init: function() {
         this.appendDummyInput().appendField("score");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get current score");
     }
 };
@@ -1158,7 +1158,7 @@ Blockly.Blocks['value_lives'] = {
     init: function() {
         this.appendDummyInput().appendField("lives");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get current lives");
     }
 };
@@ -1167,7 +1167,7 @@ Blockly.Blocks['value_health'] = {
     init: function() {
         this.appendDummyInput().appendField("health");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get current health");
     }
 };
@@ -1176,7 +1176,7 @@ Blockly.Blocks['value_mouse_x'] = {
     init: function() {
         this.appendDummyInput().appendField("mouse x");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get mouse x position");
     }
 };
@@ -1185,7 +1185,7 @@ Blockly.Blocks['value_mouse_y'] = {
     init: function() {
         this.appendDummyInput().appendField("mouse y");
         this.setOutput(true, "Number");
-        this.setColour("#5C68A6");
+        this.setColour("#59C059");
         this.setTooltip("Get mouse y position");
     }
 };
@@ -1201,7 +1201,7 @@ Blockly.Blocks['sound_play'] = {
             .appendField(new Blockly.FieldTextInput("snd_jump"), "SOUND");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9966FF");
+        this.setColour("#CF63CF");
         this.setTooltip("Play a sound effect");
     }
 };
@@ -1213,7 +1213,7 @@ Blockly.Blocks['music_play'] = {
             .appendField(new Blockly.FieldTextInput("bgm_main"), "MUSIC");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9966FF");
+        this.setColour("#CF63CF");
         this.setTooltip("Play background music");
     }
 };
@@ -1224,7 +1224,7 @@ Blockly.Blocks['music_stop'] = {
             .appendField("Stop music");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#9966FF");
+        this.setColour("#CF63CF");
         this.setTooltip("Stop background music");
     }
 };
@@ -1240,7 +1240,7 @@ Blockly.Blocks['output_message'] = {
             .appendField("Show message");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#745CA6");
+        this.setColour("#9966FF");
         this.setTooltip("Show a message");
     }
 };
@@ -1254,7 +1254,7 @@ Blockly.Blocks['execute_code'] = {
             .appendField(new Blockly.FieldTextInput("# code here"), "CODE");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour("#4A90D9");  // Blue color for code blocks
+        this.setColour("#9966FF");  // Blue color for code blocks
         this.setTooltip("Execute custom Python code");
     }
 };

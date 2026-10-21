@@ -77,19 +77,22 @@ Shipped exactly the "presentation-only grouping layer" design below:
   new category shape rather than left asserting the old one. Full
   suite: 6354 passed, 0 failed.
 
-**Deliberately not done in this pass, flagged rather than silently
-skipped:** the ~115 hand-written block definitions in
-`blockly_blocks.js` each set their OWN body color via a literal
-`this.setColour("#HEX")` call, independent of the toolbox category
-dict — confirmed these **already don't match** the toolbox's own
-per-category colors even before this change (e.g. `event_create`'s
-body is `#FFD500` while the old "Events" toolbox category itself was
-`#CC8800`), so this is a pre-existing cosmetic inconsistency, not one
-this change introduces or worsens. Recoloring all 115 to match their
-new group is a real, mechanical, separately-schedulable follow-up
-(no shared color constant to edit once — every call site is a literal
-hex string) if full Scratch-style "every block in a category is that
-category's color" fidelity is wanted later.
+**Follow-up done 2026-10-21 (same day, on explicit ask):** the 73 CORE
+(non-Thymio) hand-written block definitions in `blockly_blocks.js` were
+recolored to match their new group's toolbox color — each block's
+`this.setColour("#HEX")` call is a literal, independent string (no
+shared constant to edit once), so this was a scripted, per-block-scoped
+edit (find each `Blockly.Blocks['name'] = {...}` span, replace only
+that span's own color), not a blind global find-and-replace: 2 of the
+12 old per-category colors (`#FF6B6B`, `#9B59B6`) happen to coincide
+with colors genuinely still used by untouched Thymio blocks, which a
+naive whole-file replace would have corrupted. Thymio's own ~42 blocks
+(a separate category set, out of scope per this plan) were verified
+unchanged. `tests/test_blockly_block_body_colors.py` (22 tests) pins
+every core block's color against its group, confirms Thymio's colors
+are untouched (including the two colliding values), and confirms no
+core block still carries a stale pre-recolor color. Full suite: 6376
+passed, 0 failed.
 
 ---
 
