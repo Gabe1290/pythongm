@@ -1603,7 +1603,8 @@ const CATEGORY_MESSAGES = {
         'Control': 'Contrôle',
         'Sensing': 'Détection',
         'Operators': 'Opérateurs',
-        'Variables': 'Variables'
+        'Variables': 'Variables',
+        'My Blocks': 'Mes Blocs'
     },
     'pl': {
         'Motion': 'Ruch',
@@ -1613,7 +1614,8 @@ const CATEGORY_MESSAGES = {
         'Control': 'Sterowanie',
         'Sensing': 'Czujniki',
         'Operators': 'Operatory',
-        'Variables': 'Zmienne'
+        'Variables': 'Zmienne',
+        'My Blocks': 'Moje Bloki'
     },
     'de': {
         'Motion': 'Bewegung',
@@ -1623,7 +1625,8 @@ const CATEGORY_MESSAGES = {
         'Control': 'Steuerung',
         'Sensing': 'Fühlen',
         'Operators': 'Operatoren',
-        'Variables': 'Variablen'
+        'Variables': 'Variablen',
+        'My Blocks': 'Meine Blöcke'
     },
     'it': {
         'Motion': 'Movimento',
@@ -1633,7 +1636,8 @@ const CATEGORY_MESSAGES = {
         'Control': 'Controllo',
         'Sensing': 'Sensori',
         'Operators': 'Operatori',
-        'Variables': 'Variabili'
+        'Variables': 'Variabili',
+        'My Blocks': 'I Miei Blocchi'
     },
     'uk': {
         'Motion': 'Рух',
@@ -1643,7 +1647,8 @@ const CATEGORY_MESSAGES = {
         'Control': 'Керування',
         'Sensing': 'Сенсори',
         'Operators': 'Оператори',
-        'Variables': 'Змінні'
+        'Variables': 'Змінні',
+        'My Blocks': 'Мої Блоки'
     }
 };
 

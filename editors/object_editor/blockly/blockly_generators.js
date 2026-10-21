@@ -15,12 +15,19 @@ function generatePythonCode() {
 function generatePyGameMakerCode(workspace) {
     var events = {};
     var topBlocks = workspace.getTopBlocks(true);
+    // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2 ("My Blocks"): indexed
+    // once per generation run, before any event is walked, so a call
+    // appearing anywhere can resolve its definition regardless of block
+    // order on the canvas. procedures_defnoreturn blocks are themselves
+    // skipped by getEventType's default case below (no case names them),
+    // so a definition never produces its own spurious event.
+    var customBlockDefs = indexCustomBlockDefs(workspace);
 
     for (var i = 0; i < topBlocks.length; i++) {
         var block = topBlocks[i];
         var eventType = getEventType(block);
         if (eventType) {
-            var code = generateBlockCode(block);
+            var code = generateBlockCode(block, customBlockDefs);
 
             // Handle keyboard and alarm events with nested format
             // Output: {"keyboard": {"right": {"actions": [...]}}} or {"alarm": {"alarm_0": {"actions": [...]}}}
@@ -82,19 +89,151 @@ function getEventType(block) {
     }
 }
 
-function generateBlockCode(eventBlock) {
-    var actions = [];
+function generateBlockCode(eventBlock, customBlockDefs) {
     var doBlock = eventBlock.getInputTargetBlock('DO');
+    return {actions: walkTopLevelActionChain(doBlock, customBlockDefs || {}, false)};
+}
 
-    while (doBlock) {
-        var action = generateActionCode(doBlock);
-        if (action) {
-            actions.push(action);
+// ============================================================================
+// CUSTOM BLOCKS ("My Blocks") -- docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2
+// ============================================================================
+//
+// A student-defined block (Blockly's native procedures_defnoreturn/
+// procedures_callnoreturn -- the vendored library already ships the whole
+// feature, definition UI included, see lib/blocks_compressed.js) is pure
+// authoring sugar: a call is expanded into its definition's own action
+// list AT GENERATION TIME, right here, with each declared parameter
+// substituted by its call-site value. The *saved* project data therefore
+// only ever contains ordinary, already-understood actions -- no new
+// action type, no runtime changes, no HTML5/Kivy codegen changes needed.
+//
+// v1 scope, deliberately narrower than Scratch's own procedures: a call
+// is only expanded when it appears as a TOP-LEVEL action directly inside
+// an event or another custom block's own top-level body -- walkTopLevel
+// ActionChain is the single place calls are ever expanded. A call nested
+// inside an if_condition/test_variable then/else branch is NOT expanded
+// (those branches walk via plain generateActionCode, whose own
+// procedures_callnoreturn case below returns a clear "not supported
+// here" sentinel instead of silently dropping it). A custom block
+// calling ANOTHER custom block is handled the same way (insideDefinition
+// becomes true while walking a definition's own body) -- this sidesteps
+// needing cycle detection entirely, by construction, rather than
+// building a call-stack/depth-cap mechanism for a case v1 doesn't support
+// anyway. Both restrictions, and reporter-style (value-returning) custom
+// blocks, are logged as explicit follow-ups in the plan doc, not
+// forgotten scope.
+
+// Every procedures_defnoreturn block on the workspace, keyed by name ->
+// {argNames: [...], bodyBlock: <first body block, or null if empty>}.
+// Built once per generation run (see generatePyGameMakerCode).
+function indexCustomBlockDefs(workspace) {
+    var defs = {};
+    var topBlocks = workspace.getTopBlocks(true);
+    for (var i = 0; i < topBlocks.length; i++) {
+        var block = topBlocks[i];
+        if (block.type === 'procedures_defnoreturn') {
+            var name = block.getFieldValue('NAME');
+            // getVars() is procedures_defnoreturn's own standard accessor
+            // for its parameter name list (confirmed against the vendored
+            // source: `getVars: function() { return this.arguments_; }`).
+            var argNames = (typeof block.getVars === 'function') ? block.getVars() : [];
+            defs[name] = {
+                argNames: argNames,
+                bodyBlock: block.getInputTargetBlock('STACK')
+            };
         }
-        doBlock = doBlock.getNextBlock();
+    }
+    return defs;
+}
+
+// Walks a top-level action chain (an event's DO stack, or a custom
+// block's own STACK body) into an actions array, expanding any
+// procedures_callnoreturn call found directly in the chain. This is the
+// ONLY place a call is ever expanded -- every other walker in this file
+// (if_condition/test_variable branches, etc.) uses plain
+// generateActionCode, so a call placed there hits that function's own
+// procedures_callnoreturn case instead (a clear "not supported here"
+// sentinel, not silent expansion).
+function walkTopLevelActionChain(startBlock, customBlockDefs, insideDefinition) {
+    var actions = [];
+    var block = startBlock;
+    while (block) {
+        if (block.type === 'procedures_callnoreturn') {
+            actions = actions.concat(
+                expandCustomBlockCall(block, customBlockDefs, insideDefinition));
+        } else {
+            var action = generateActionCode(block);
+            if (action) {
+                actions.push(action);
+            }
+        }
+        block = block.getNextBlock();
+    }
+    return actions;
+}
+
+function expandCustomBlockCall(callBlock, customBlockDefs, insideDefinition) {
+    var name = callBlock.getFieldValue('NAME');
+    var def = customBlockDefs[name];
+
+    if (insideDefinition) {
+        // v1 scope: never expand a call found inside ANOTHER custom
+        // block's own body, whether or not `name` really exists --
+        // distinguishing the two keeps an author from being told a real
+        // block "doesn't exist" when the actual issue is the nesting
+        // restriction.
+        return [{
+            action: def ? '__pygm_custom_block_nesting_unsupported__'
+                        : '__pygm_undefined_custom_block__',
+            parameters: {name: name}
+        }];
+    }
+    if (!def) {
+        // A call whose definition was deleted/renamed (or never existed,
+        // e.g. a corrupted save) -- surfaced as a real, visible
+        // unrecognized action (the same amber-highlighted convention
+        // events/plugin_loader.extension_for_action already uses for an
+        // unknown extension action) rather than silently vanishing.
+        return [{action: '__pygm_undefined_custom_block__', parameters: {name: name}}];
     }
 
-    return {actions: actions};
+    var argValues = {};
+    for (var i = 0; i < def.argNames.length; i++) {
+        argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
+    }
+
+    var bodyActions = walkTopLevelActionChain(def.bodyBlock, customBlockDefs, true);
+    return bodyActions.map(function(action) {
+        return substituteCustomBlockArgs(action, argValues);
+    });
+}
+
+// Deep-substitutes every `{{PYGM_ARG:<name>}}` placeholder (see
+// getInputValue's 'variables_get' case) inside a generated action's
+// parameters with its call-site value. A placeholder can appear
+// mid-string (a parameter dropped into a math_arithmetic expression, for
+// instance, builds a larger expression string around it), so this is a
+// substring replace, not an exact-match swap.
+function substituteCustomBlockArgs(value, argValues) {
+    if (typeof value === 'string') {
+        var result = value;
+        for (var name in argValues) {
+            var placeholder = '{{PYGM_ARG:' + name + '}}';
+            if (result.indexOf(placeholder) !== -1) {
+                result = result.split(placeholder).join(String(argValues[name]));
+            }
+        }
+        return result;
+    } else if (Array.isArray(value)) {
+        return value.map(function(v) { return substituteCustomBlockArgs(v, argValues); });
+    } else if (value && typeof value === 'object') {
+        var out = {};
+        for (var k in value) {
+            out[k] = substituteCustomBlockArgs(value[k], argValues);
+        }
+        return out;
+    }
+    return value;
 }
 
 // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: draw_health_bar models x2/y2 as
@@ -689,6 +828,28 @@ function generateActionCodeInner(block) {
                 amount: getInputValue(block, 'AMOUNT', 1)
             }};
 
+        // ============================================================================
+        // CUSTOM BLOCKS ("My Blocks") -- docs/BLOCKLY_SCRATCH_PARITY_PLAN.md
+        // Feature 2. Reached ONLY when one of these appears somewhere
+        // walkTopLevelActionChain doesn't cover (an if_condition/
+        // test_variable then/else branch, most likely) -- every top-level
+        // position (an event's own DO stack, or a custom block's own
+        // STACK body) is intercepted by that function before
+        // generateActionCode is ever called on these block types, so a
+        // call there is always properly expanded, never reaching this
+        // case at all.
+        case 'procedures_callnoreturn':
+            return {action: '__pygm_custom_block_nesting_unsupported__',
+                    parameters: {name: block.getFieldValue('NAME')}};
+        // A definition hat dragged somewhere it can't act as a top-level
+        // workspace block (e.g. plugged into a statement input) -- not a
+        // real authoring path Blockly's own connection-checking should
+        // ever allow, but surfaced rather than silently producing nothing
+        // if it somehow happens.
+        case 'procedures_defnoreturn':
+            return {action: '__pygm_custom_block_definition_misplaced__',
+                    parameters: {name: block.getFieldValue('NAME')}};
+
         default:
             return null;
     }
@@ -800,6 +961,35 @@ function getInputValue(block, inputName, defaultValue) {
             // the identical bug shape and a future caller would hit it.
             var text = input.getFieldValue('TEXT');
             return (text === null || text === undefined) ? defaultValue : text;
+        } else if (input.type === 'variables_get') {
+            // A custom block's own parameter reporter, dropped into a
+            // value socket inside the definition's body (docs/
+            // BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2) -- the ONLY way a
+            // variables_get block can appear anywhere in this app, since
+            // nothing else registers Blockly's generic variable blocks.
+            // Resolved to a placeholder substituteCustomBlockArgs replaces
+            // with the real call-site value when the enclosing definition
+            // is expanded; a reporter encountered OUTSIDE any expansion
+            // (variables_get's field value is a variable ID per the
+            // vendored source's own getVariableById(id).getName() pattern,
+            // not the name directly) still degrades to a visible,
+            // non-crashing placeholder string rather than silently
+            // vanishing if the ID never resolves.
+            var varId = input.getFieldValue('VAR');
+            var varName = varId;
+            try {
+                if (input.workspace && typeof input.workspace.getVariableById === 'function') {
+                    var varModel = input.workspace.getVariableById(varId);
+                    if (varModel) {
+                        if (typeof varModel.getName === 'function') {
+                            varName = varModel.getName();
+                        } else if (varModel.name) {
+                            varName = varModel.name;
+                        }
+                    }
+                }
+            } catch (e) { /* fall back to the raw field value */ }
+            return '{{PYGM_ARG:' + varName + '}}';
         } else if (VALUE_BLOCK_EXPRESSIONS[input.type]) {
             // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6a/B15: spellings every
             // engine evaluates (desktop _parse_value, HTML5 gmExpressionValue

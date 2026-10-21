@@ -1,13 +1,17 @@
 # Blockly Scratch-parity plan: fewer categories + student-defined blocks
 
-Status: Written 2026-10-18. **Feature 1 shipped 2026-10-21** (see its own
-section below). Feature 2 (My Blocks) not started.
+Status: Written 2026-10-18. **Both features shipped 2026-10-21** (see
+their own sections below for what landed, what was deliberately scoped
+narrower, and what's deferred). The plan's whole code-level scope is
+done; what's left is the "needs human eyes" verification flagged in
+Feature 2's own section, and the explicitly-deferred follow-ups each
+section lists.
 
 Two separate features, sequenced so the second lands into the shape the
 first produces:
 
 1. ✅ Reduce the Blockly toolbox's category count toward Scratch's model — DONE.
-2. Let a student define their own reusable block ("My Blocks") — not started.
+2. ✅ Let a student define their own reusable block ("My Blocks") — DONE, narrower v1 scope (see below).
 
 Both are scoped for the existing desktop IDE editor (`editors/
 object_editor/blockly_widget.py` + `blockly_workspace.html`). Neither
@@ -249,7 +253,104 @@ intended.
 
 ---
 
-## Feature 2: student-defined custom blocks ("My Blocks")
+## Feature 2: student-defined custom blocks ("My Blocks") — ✅ DONE 2026-10-21
+
+Shipped the Blockly-side-only design below, exactly as recommended, with
+one scope narrowing found necessary during implementation (see "v1 scope
+note" further down).
+
+- **Toolbox**: `blockly_workspace.html` adds `<category name="My Blocks"
+  ... custom="PROCEDURE"></category>` to the generated toolbox XML —
+  Blockly's own built-in `flyoutCategory` populates it dynamically
+  (every `procedures_defnoreturn` on the workspace, plus its own "Make a
+  Block" button), confirmed present in the vendored
+  `lib/blocks_compressed.js`/`blockly_compressed.js`, no bespoke UI
+  built. An explicit `workspace.registerToolboxCategoryCallback(...)`
+  call was added as a defensive safety net alongside the auto-
+  registration the vendored core appears to already perform on every
+  workspace (confirmed by reading the minified source: a
+  `this.registerToolboxCategoryCallback(CATEGORY_NAME..., 
+  internalFlyoutCategory...)` call reached from workspace construction)
+  — cheap and harmless either way, since the call just overwrites a
+  name's callback. Excluded from the `junior` tier by product decision
+  (reusing the same `?junior=1` check this file already uses elsewhere),
+  per the plan's own leaning.
+- **Codegen** (`blockly_generators.js`): a call is expanded into its
+  definition's own action list at generation time — `indexCustomBlockDefs`
+  builds a `{name: {argNames, bodyBlock}}` index once per generation run;
+  `walkTopLevelActionChain` (replacing `generateBlockCode`'s old inline
+  loop) expands any `procedures_callnoreturn` it meets directly, with
+  each declared parameter substituted via `getInputValue`'s new
+  `variables_get` case (a parameter reporter dropped into a value
+  socket resolves to a `{{PYGM_ARG:<name>}}` placeholder,
+  `substituteCustomBlockArgs` deep-substring-replaces it with the real
+  call-site value afterward). The saved project data only ever contains
+  ordinary actions — confirmed no runtime, HTML5, or Kivy changes were
+  needed, the whole point of this design.
+- **API grounded in the real vendored source, not just memory**: every
+  method/field name this relies on
+  (`getFieldValue('NAME')`/`getVars()`→`this.arguments_`/
+  `getInputTargetBlock('STACK')`/`ARG0,ARG1,...`/`variables_get`'s
+  `field_variable` + `workspace.getVariableById(id).getName()`) was
+  confirmed by grepping `lib/blocks_compressed.js`/
+  `blockly_compressed.js` directly before writing any code, not assumed.
+- **v1 scope note — narrower than the plan originally sketched, decided
+  during implementation, not silently cut**: a custom-block call is only
+  expanded when it's a TOP-LEVEL action directly inside an event or
+  another custom block's own body. Nesting a call inside an
+  if_condition/test_variable then/else branch, or inside ANOTHER custom
+  block (recursion/cycles), is explicitly **not** expanded — both
+  surface as a clear, visible sentinel action
+  (`__pygm_custom_block_nesting_unsupported__` /
+  `__pygm_undefined_custom_block__`, reusing the existing amber
+  "unrecognized action" convention) rather than being silently dropped.
+  This was chosen specifically because ~15 other call sites across the
+  generator (if_condition/test_variable branches, several Thymio
+  conditionals) all share the same long-standing "one block walked ->
+  exactly one action pushed" contract; teaching all of them to handle a
+  call expanding to zero-or-many actions would have been a much larger,
+  riskier change touching a lot of already-battle-tested code, for a
+  nesting capability Scratch's own UI doesn't make especially obvious
+  either. A useful side effect: restricting calls to the top level means
+  **no cycle detection/depth cap was needed at all** — a cycle is
+  structurally impossible when calls can't nest.
+- **Translations**: the Blockly-native definition/call block UI is
+  already translated for free (all 11 shipped languages, confirmed by
+  grepping `lib/msg/<lang>.js`). "My Blocks" itself (the category label)
+  added to `CATEGORY_MESSAGES` for the 5 languages that table covers
+  (fr/pl/de/it/uk) — `Mes Blocs`/`Meine Blöcke`/`I Miei Blocchi`/
+  `Moje Bloki`/`Мої Блоки`.
+- **Tests**: `tests/test_blockly_custom_blocks.py` (22 tests) — the
+  vendored-API pin (so a future Blockly upgrade that renames something
+  this relies on is caught instead of silently breaking), toolbox
+  registration/junior-exclusion/i18n, and the full codegen chain
+  (indexing, expansion, substitution, the nesting/undefined sentinels,
+  the sentinel names confirmed to not collide with any real
+  `ActionType`). No Node.js in CI, same structural tier this repo
+  already established for this editor's JS. 3 pre-existing tests
+  (`test_blockly_i18n_pl.py`, `test_blockly_i18n_uk.py` ×2,
+  `test_blockly_toolbox_category_groups.py`) updated for the 9th
+  category. Full suite: 6398 passed, 0 failed.
+- **Deferred, logged not forgotten**: reporter-style (value-returning)
+  custom blocks (`procedures_defreturn`/`callreturn`); nested/recursive
+  calls (would need a real two-pass or call-stack design, deliberately
+  avoided above); per-object (vs. project-wide) custom blocks; a
+  bundled sample/tutorial teaching "make your own block" (this repo's
+  own established convention for a new teaching feature, not done this
+  session — a real scope of its own).
+- **Needs human eyes, genuinely unverified — the most important caveat
+  on this feature**: no Node.js/browser available in this environment,
+  so none of this was ever actually executed. The core mechanism (drag
+  a parameter reporter into a socket inside Blockly's own mutator
+  dialog, confirm it really produces a `variables_get` block resolving
+  the way this code assumes, confirm a dragged "My Blocks" call
+  actually expands correctly into a running game) has not been watched
+  working in a real IDE session. This is squarely in the same category
+  as this project's other standing "needs a human/real browser" items
+  (`docs/PROJECT_STATUS.md`'s manual-QA backlog) — flagged rather than
+  claimed solid.
+
+---
 
 ### Current state
 

@@ -1979,6 +1979,26 @@
             theme: darkTheme
         });
 
+        // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2 ("My Blocks"):
+        // the vendored Blockly core appears to self-register this
+        // callback on every workspace already (confirmed in lib/
+        // blockly_compressed.js: a `this.registerToolboxCategoryCallback(
+        // ..., internalFlyoutCategory...)` call reached from workspace
+        // construction) -- this explicit call is a harmless, defensive
+        // safety net in case that self-registration doesn't fire for any
+        // reason, not load-bearing on its own; registerToolboxCategoryCallback
+        // just overwrites a name's callback, so calling it twice is safe.
+        try {
+            if (Blockly.Procedures && typeof Blockly.Procedures.flyoutCategory === 'function') {
+                workspace.registerToolboxCategoryCallback(
+                    Blockly.PROCEDURE_CATEGORY_NAME || 'PROCEDURE',
+                    Blockly.Procedures.flyoutCategory
+                );
+            }
+        } catch (e) {
+            console.warn('My Blocks (procedures) category callback not available:', e);
+        }
+
         // docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 4: the junior edition
         // (?junior=1) drops the right-click entries a young student has no
         // use for. Duplicate, Delete, Undo/Redo and Clean up stay.
@@ -3472,6 +3492,27 @@
             }
             for (var leftoverGroup in groupBuckets) {
                 emitGroup(leftoverGroup);
+            }
+
+            // "My Blocks" -- docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2.
+            // Unlike every other group, this one isn't driven by filtered
+            // BLOCK_REGISTRY blocks at all (custom="PROCEDURE" tells
+            // Blockly's own built-in flyoutCategory to populate it
+            // dynamically from whatever procedures_defnoreturn blocks
+            // exist on the workspace, plus its own "Make a Block"
+            // button), so it's always shown rather than only-if-non-empty
+            // -- that button is how a block gets created in the first
+            // place. Excluded from the junior tier by product decision
+            // (abstraction/parameterization is a harder concept than the
+            // junior preset's premise of sequencing pre-made actions),
+            // reusing the same ?junior=1 query-param check this file
+            // already uses to trim right-click menu entries for that tier.
+            var isJunior = new URLSearchParams(window.location.search).get('junior') === '1';
+            if (!isJunior) {
+                var myBlocksName = getCategoryMessage('My Blocks', window.BLOCKLY_LANG);
+                var myBlocksColor = TOOLBOX_GROUP_COLORS['My Blocks'];
+                xml += '<category name="' + myBlocksName + '" colour="' + myBlocksColor +
+                       '" custom="PROCEDURE"></category>';
             }
 
             xml += '</xml>';

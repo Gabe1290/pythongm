@@ -40,7 +40,9 @@ def _object_keys(content, dict_name, lang):
                 break
         i += 1
     sub = block[start_i : i + 1]
-    return set(re.findall(r"^\s*'([a-zA-Z0-9_/]+)':", sub, re.MULTILINE))
+    # [a-zA-Z0-9_/ ]: category names can contain '/' (Score/Lives/Health,
+    # pre-existing) and, since 2026-10-21, a space ('My Blocks').
+    return set(re.findall(r"^\s*'([a-zA-Z0-9_/ ]+)':", sub, re.MULTILINE))
 
 
 def _lang_keys(content, dict_name):
@@ -83,18 +85,19 @@ def test_block_messages_uk_has_event_create():
 
 
 def test_category_messages_uk_only_has_category_names():
-    """2026-10-21 (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 1):
+    """2026-10-21 (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Features 1+2):
     CATEGORY_MESSAGES is now keyed by the Scratch-sized toolbox DISPLAY
     GROUP names, not the old fine-grained category names -- Math/Logic/
     Text lost their own category entirely (pooled into Operators) rather
-    than being renamed, and Control gained an entry it never had before."""
+    than being renamed, Control gained an entry it never had before, and
+    'My Blocks' (Feature 2, same day) is a new 9th entry."""
     content = _js_source()
     uk_keys = _object_keys(content, "CATEGORY_MESSAGES", "uk")
     expected = {
         "Motion", "Looks", "Sound", "Events", "Control", "Sensing",
-        "Operators", "Variables",
+        "Operators", "Variables", "My Blocks",
     }
     assert uk_keys == expected, (
-        "CATEGORY_MESSAGES.uk should hold only the 8 toolbox display-group "
+        "CATEGORY_MESSAGES.uk should hold only the 9 toolbox display-group "
         f"names, not block-message keys; got {uk_keys}"
     )

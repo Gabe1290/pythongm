@@ -186,9 +186,15 @@ def test_generate_toolbox_xml_uses_push_to_group_not_direct_emission():
     assert "pushToGroup(categoryName, categoryBlocks);" in body
     assert "pushToGroup(customName, filteredBlocks);" in body
     assert "function emitGroup(groupName)" in body
-    # The grouped emission is the ONLY place a <category> tag is built in
-    # the live (dynamic) toolbox path.
-    assert body.count("xml += '<category name=") == 1
+    # Exactly two places build a <category> tag in the live (dynamic)
+    # toolbox path: emitGroup() (every BLOCK_REGISTRY-driven group) and
+    # the special-cased 'My Blocks' emission right after it (Feature 2,
+    # 2026-10-21) -- not driven by groupBuckets at all (custom="PROCEDURE"
+    # tells Blockly's own flyoutCategory to populate it dynamically), so
+    # it can't go through the same pushToGroup/emitGroup path as every
+    # other category.
+    assert body.count("xml += '<category name=") == 2
+    assert 'custom="PROCEDURE"' in body
 
 
 def test_generated_block_body_colour_prefers_the_group_colour():
@@ -208,7 +214,7 @@ def _i18n_source():
 
 
 @pytest.mark.parametrize("lang", ["fr", "pl", "de", "it", "uk"])
-def test_category_messages_has_all_eight_groups_translated(lang):
+def test_category_messages_has_all_nine_groups_translated(lang):
     src = _i18n_source()
     start = src.index("const CATEGORY_MESSAGES")
     end = src.index("\n};", start)
@@ -217,7 +223,7 @@ def test_category_messages_has_all_eight_groups_translated(lang):
     lang_end = block.index("}", lang_start)
     lang_block = block[lang_start:lang_end]
     for group in ("Motion", "Looks", "Sound", "Events", "Control",
-                   "Sensing", "Operators", "Variables"):
+                   "Sensing", "Operators", "Variables", "My Blocks"):
         assert f"'{group}':" in lang_block, f"{lang} missing a translation for {group!r}"
 
 
