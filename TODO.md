@@ -254,10 +254,25 @@ to both the generated `categories` dict and the static pre-load toolbox.
   target resolution (code param present/absent, focus preference across
   more than one multi-line param), the shortcut actually firing, a
   no-target no-op (not a crash), and dialog-instance reuse across repeated
-  presses. **Still not covered: project-wide search (asset names,
-  identifiers)** — genuinely separate, much larger follow-up work (a new
-  search surface across every asset/script, not a Find/Replace extension),
-  not silently dropped.
+  presses. ~~**Still not covered: project-wide search (asset names,
+  identifiers)**~~ **DONE 2026-10-22.** `Edit → Find in Project...`
+  (Ctrl+Shift+F, `core/ide/_edit_actions.py`'s `find_in_project`) — a new,
+  separate search surface (not a Find/Replace extension) covering every
+  asset name, object field (sprite/parent/mask, collision target), action
+  name and parameter (including inside nested `then_actions`/
+  `else_actions`/`sub_actions` and the `keyboard`/`keyboard_press`/
+  `keyboard_release` container events), room field (background, instance,
+  tile), and script code (line-numbered) across the whole project.
+  `utils/project_search.py`'s `search_project()` is the pure walker (a
+  deliberately separate tree-walk from `utils/asset_usage.py`'s typed
+  exact-match lookups, to avoid risking that module's tested behaviour);
+  `dialogs/project_search_dialog.py` is a non-modal, rebound-on-each-show
+  dialog (same pattern as `FindReplaceDialog`) with a 250ms debounced live
+  results list and double-click-to-open via the existing
+  `on_asset_double_clicked` dispatch. Known limitation, inherent to static
+  analysis: a reference built up at runtime inside `execute_code`/
+  `execute_script` (string concatenation, a variable) can't be found, only
+  literal text. `tests/test_project_search.py` (26 tests).
 
 ### ~~Asset Manager~~ (DONE 2026-08-09, all 4 tiers)
 - Was: `Tools → Asset Manager...`.

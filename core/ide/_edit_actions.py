@@ -172,3 +172,28 @@ class EditActionsMixin:
     def find_replace(self):
         """Edit → Find and Replace... (Ctrl+H)."""
         self._show_find_dialog(show_replace=True)
+
+    def find_in_project(self):
+        """Edit → Find in Project... (Ctrl+Shift+F).
+
+        TODO.md's "project-wide search (asset names, identifiers)" item,
+        logged separately when Find/Replace (a single text editor's own
+        search) shipped 2026-10-18 -- searches every asset name, object
+        field, action parameter, room field, and script body across the
+        whole project (utils/project_search.search_project), not just
+        the currently open editor. Reuses the same non-modal, rebound-
+        on-each-show pattern _show_find_dialog already established.
+        """
+        if not getattr(self, 'current_project_data', None):
+            self.status_bar.showMessage(
+                self.tr("Find in Project needs an open project"), 3000)
+            return
+        if getattr(self, '_project_search_dialog', None) is None:
+            from dialogs.project_search_dialog import ProjectSearchDialog
+            self._project_search_dialog = ProjectSearchDialog(self)
+        self._project_search_dialog.set_project_data(self.current_project_data)
+        self._project_search_dialog.show()
+        self._project_search_dialog.raise_()
+        self._project_search_dialog.activateWindow()
+        self._project_search_dialog.search_field.setFocus()
+        self._project_search_dialog.search_field.selectAll()

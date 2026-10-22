@@ -178,6 +178,8 @@ class MenuBuilderMixin:
         edit_menu.addSeparator()
         edit_menu.addAction(self.create_action(self.tr("&Find..."), "Ctrl+F", self.find))
         edit_menu.addAction(self.create_action(self.tr("Find and &Replace..."), "Ctrl+H", self.find_replace))
+        edit_menu.addAction(self.create_action(
+            self.tr("Find in &Project..."), "Ctrl+Shift+F", self.find_in_project))
 
         # Store references to all asset actions and enable them
         self.import_sprite_action = self.create_action(self.tr("Import &Sprite..."), None, self.import_sprite)
