@@ -2,31 +2,47 @@
 BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2.
 
 Design: a custom block (Blockly's native procedures_defnoreturn/
-procedures_callnoreturn -- the vendored library already ships the whole
-feature, confirmed present in lib/blocks_compressed.js/
-blockly_compressed.js) is pure authoring sugar, expanded into its
-definition's own action list AT GENERATION TIME
+procedures_callnoreturn/procedures_defreturn/procedures_callreturn --
+the vendored library already ships the whole feature, confirmed present
+in lib/blocks_compressed.js/blockly_compressed.js) is pure authoring
+sugar, expanded into its definition's own action list (no-return) or
+return expression (reporter) AT GENERATION TIME
 (editors/object_editor/blockly/blockly_generators.js). The saved project
-data only ever contains ordinary actions -- no new action type, no
-runtime/HTML5/Kivy engine changes.
+data only ever contains ordinary actions/expression strings -- no new
+action type, no runtime/HTML5/Kivy engine changes.
 
-v1 scope (deliberately narrower than Scratch's own procedures, see the
-plan doc): a call is only expanded when it's a TOP-LEVEL action directly
-inside an event or another custom block's own body -- nesting a call
-inside an if_condition/test_variable then/else branch, or inside another
-custom block (recursion), is explicitly NOT supported and surfaces as a
-visible sentinel action rather than silently vanishing or infinite-
-looping. Reporter-style (value-returning) custom blocks are deferred
-too.
+Nesting is fully supported (2026-10-22 follow-up, see the plan doc's
+"Follow-up: nesting + reporters" section): a call inside an
+if_condition/test_variable/thymio_if_* branch, or inside another custom
+block's own body, expands exactly like a top-level one --
+walkActionChain (renamed from walkTopLevelActionChain, since it's no
+longer just for the top level) is the only place a chain of sibling
+statement blocks is ever walked, and a `callStack` of in-progress
+custom-block names catches any cycle (direct self-recursion or a longer
+A -> B -> A chain) instead of recursing forever at generation time, with
+a depth cap (MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) as a separate guard
+against pathologically deep but acyclic nesting.
+
+Reporter-style (value-returning) custom blocks -- procedures_defreturn/
+procedures_callreturn -- are also done, resolved on the expression side
+(getInputValue/evaluateValueBlock) rather than the action side. A pure
+reporter (empty STACK, just a RETURN/"VALUE" expression) resolves to an
+expression string with its own parameters substituted. A reporter whose
+STACK has statements is a real, inherent limitation of this action-based
+architecture (no way to "run these actions, then use this value" from a
+single expression socket) -- not resolved, and surfaced as a visible
+placeholder rather than silently dropped.
 
 No Node.js in CI (this repo's established convention for this editor's
 JS), so this is a structural/source check, not an execution test --
 cross-referenced against the exact vendored Blockly API this was written
 against (confirmed by grepping lib/blocks_compressed.js directly, not
 assumed from memory): block.getFieldValue('NAME'), block.getVars() ->
-this.arguments_, block.getInputTargetBlock('STACK'), ARG0/ARG1/... value
-inputs on the call block, and variables_get's field_variable 'VAR'
-resolved via workspace.getVariableById(id).getName().
+this.arguments_, block.getInputTargetBlock('STACK')/('VALUE' for a
+reporter's return expression -- NOT 'RETURN'), ARG0/ARG1/... value
+inputs on the call block, procedures_callreturn's setOutput(true) (no
+statement connectors), and variables_get's field_variable 'VAR' resolved
+via workspace.getVariableById(id).getName().
 
 **Genuinely unverified, flagged rather than silently claimed solid**:
 whether dragging a parameter reporter into a socket inside a real
@@ -66,7 +82,8 @@ def _ws_source():
 
 def test_vendored_blockly_still_ships_procedures_blocks():
     src = BLOCKS_COMPRESSED.read_text(encoding="utf-8")
-    for block_type in ("procedures_defnoreturn", "procedures_callnoreturn"):
+    for block_type in ("procedures_defnoreturn", "procedures_callnoreturn",
+                       "procedures_defreturn", "procedures_callreturn"):
         assert f'"{block_type}"' in src
 
 
@@ -76,6 +93,23 @@ def test_vendored_blockly_still_uses_the_assumed_api_shape():
     assert 'getFieldValue("NAME")' in src
     assert 'getVars:function(){returnthis.arguments_}' in src.replace(" ", "")
     assert '"ARG"+' in src.replace(" ", "")
+
+
+def test_vendored_defreturn_return_socket_is_named_value_not_return():
+    """Confirmed directly against the vendored source before writing any
+    code against it: procedures_defreturn's return-value input is named
+    "VALUE" (under the PROCEDURES_DEFRETURN_RETURN label), not "RETURN"."""
+    src = BLOCKS_COMPRESSED.read_text(encoding="utf-8")
+    assert 'appendValueInput("VALUE")' in src.replace(" ", "")
+    assert "PROCEDURES_DEFRETURN_RETURN" in src
+
+
+def test_vendored_callreturn_is_output_type_with_no_statement_connectors():
+    """procedures_callreturn is setOutput(true) -- it can never be dragged
+    into a statement slot, so no action-list handling is needed for it on
+    the codegen side (it can only ever reach a value socket)."""
+    src = BLOCKS_COMPRESSED.read_text(encoding="utf-8")
+    assert 'setOutput(!0)' in src.replace(" ", "")
 
 
 def test_vendored_blockly_ships_translated_procedures_strings():
@@ -149,10 +183,20 @@ def test_definitions_are_indexed_by_name_from_top_blocks():
     start = src.index("function indexCustomBlockDefs(workspace) {")
     end = src.index("\n}", start)
     body = src[start:end]
-    assert "block.type === 'procedures_defnoreturn'" in body
+    assert "block.type === 'procedures_defnoreturn' || block.type === 'procedures_defreturn'" in body
     assert "block.getFieldValue('NAME')" in body
     assert "block.getVars()" in body
     assert "block.getInputTargetBlock('STACK')" in body
+
+
+def test_reporter_definitions_are_indexed_with_their_return_block():
+    src = _gen_source()
+    start = src.index("function indexCustomBlockDefs(workspace) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "isReporter" in body
+    assert "block.getInputTargetBlock('VALUE')" in body
+    assert "returnBlock" in body
 
 
 def test_definitions_never_produce_their_own_event():
@@ -171,7 +215,7 @@ def test_generate_block_code_uses_the_expand_aware_walker():
     start = src.index("function generateBlockCode(eventBlock, customBlockDefs) {")
     end = src.index("\n}", start)
     body = src[start:end]
-    assert "walkTopLevelActionChain(" in body
+    assert "walkActionChain(" in body
 
 
 def test_pygamemaker_code_builds_the_index_once_up_front():
@@ -183,15 +227,29 @@ def test_pygamemaker_code_builds_the_index_once_up_front():
     assert "generateBlockCode(block, customBlockDefs)" in body
 
 
-def test_walk_top_level_action_chain_expands_calls_inline():
+def test_walk_action_chain_expands_calls_inline():
     src = _gen_source()
-    start = src.index("function walkTopLevelActionChain(")
+    start = src.index("function walkActionChain(")
     end = src.index("\n}", start)
     body = src[start:end]
     assert "block.type === 'procedures_callnoreturn'" in body
     assert "expandCustomBlockCall(" in body
     # Every other block still goes through the ordinary single-action path.
-    assert "generateActionCode(block)" in body
+    assert "generateActionCode(block, customBlockDefs, callStack)" in body
+
+
+def test_walk_action_chain_is_the_only_statement_chain_walker():
+    """Every nested DO/ELSE/sub_actions site routes through walkActionChain
+    now (the 2026-10-22 nesting follow-up) instead of a hand-rolled while
+    loop -- confirms the old per-site duplication is actually gone, not
+    just that walkActionChain itself works."""
+    src = _gen_source()
+    start = src.index("function generateActionCodeInner(")
+    end = src.index("\n        default:\n            return null;", start)
+    body = src[start:end]
+    assert body.count("walkActionChain(block.getInputTargetBlock(") >= 12
+    # The old per-branch while-loop pattern must not remain anywhere.
+    assert "getNextBlock();\n            }" not in body
 
 
 def test_expand_custom_block_call_substitutes_positional_args():
@@ -203,17 +261,27 @@ def test_expand_custom_block_call_substitutes_positional_args():
     assert "substituteCustomBlockArgs(" in body
 
 
-def test_expand_custom_block_call_refuses_to_nest():
-    """The v1 scope decision that avoids needing cycle detection
-    entirely: a call found while already inside another definition's
-    body is never expanded, regardless of whether its own target exists."""
+def test_expand_custom_block_call_detects_cycles_via_the_call_stack():
+    """Nesting is now fully supported (2026-10-22), so what guards
+    against infinite generation-time recursion is explicit cycle
+    detection via callStack, not a blanket nesting refusal."""
     src = _gen_source()
     start = src.index("function expandCustomBlockCall(")
     end = src.index("\n}", start)
     body = src[start:end]
-    assert "insideDefinition" in body
-    assert "__pygm_custom_block_nesting_unsupported__" in body
+    assert "callStack.indexOf(name) !== -1" in body
+    assert "__pygm_custom_block_cycle_detected__" in body
+    assert "callStack.concat([name])" in body
     assert "__pygm_undefined_custom_block__" in body
+
+
+def test_expand_custom_block_call_caps_expansion_depth():
+    src = _gen_source()
+    start = src.index("function expandCustomBlockCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "callStack.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH" in body
+    assert "__pygm_custom_block_too_deeply_nested__" in body
 
 
 def test_undefined_call_target_is_surfaced_not_dropped():
@@ -235,9 +303,21 @@ def test_substitute_args_is_a_deep_substring_replace():
     assert "result.split(placeholder).join(" in body
 
 
-def test_get_input_value_resolves_variables_get_through_the_workspace():
+def test_get_input_value_delegates_to_evaluate_value_block():
+    """getInputValue is now a thin (block, inputName) -> resolved-target
+    wrapper so evaluateValueBlock can also be called directly on a
+    definition's own RETURN block (evaluateCustomBlockReporterCall), not
+    just via a parent's named input."""
     src = _gen_source()
     start = src.index("function getInputValue(block, inputName, defaultValue) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "evaluateValueBlock(block.getInputTargetBlock(inputName), defaultValue)" in body
+
+
+def test_evaluate_value_block_resolves_variables_get_through_the_workspace():
+    src = _gen_source()
+    start = src.index("function evaluateValueBlock(input, defaultValue) {")
     end = src.index("return defaultValue;\n}", start) + len("return defaultValue;\n}")
     body = src[start:end]
     assert "input.type === 'variables_get'" in body
@@ -247,30 +327,86 @@ def test_get_input_value_resolves_variables_get_through_the_workspace():
     assert "{{PYGM_ARG:' + varName + '}}" in body
 
 
-def test_procedures_blocks_have_a_fallback_case_for_unsupported_positions():
-    """generateActionCodeInner's own switch (reached only when these
-    appear somewhere walkTopLevelActionChain doesn't cover, e.g. an
-    if_condition branch) must not silently return null for either block
-    type -- a dropped custom-block call would be invisible to the author."""
+def test_evaluate_value_block_resolves_reporter_calls():
     src = _gen_source()
-    start = src.index("function generateActionCodeInner(block) {")
+    start = src.index("function evaluateValueBlock(input, defaultValue) {")
+    end = src.index("return defaultValue;\n}", start) + len("return defaultValue;\n}")
+    body = src[start:end]
+    assert "input.type === 'procedures_callreturn'" in body
+    assert "evaluateCustomBlockReporterCall(input, defaultValue)" in body
+
+
+def test_reporter_call_resolution_covers_undefined_cycle_depth_and_side_effects():
+    src = _gen_source()
+    start = src.index("function evaluateCustomBlockReporterCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "!def || !def.isReporter" in body
+    assert "{{PYGM_UNDEFINED_REPORTER:" in body
+    assert "CURRENT_REPORTER_CALL_STACK.indexOf(name) !== -1" in body
+    assert "{{PYGM_REPORTER_CYCLE:" in body
+    assert "CURRENT_REPORTER_CALL_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH" in body
+    assert "{{PYGM_REPORTER_TOO_DEEP:" in body
+    assert "def.bodyBlock" in body
+    assert "{{PYGM_REPORTER_SIDE_EFFECTS:" in body
+    assert "evaluateValueBlock(def.returnBlock, defaultValue)" in body
+    assert "substituteCustomBlockArgs(exprValue, argValues)" in body
+
+
+def test_reporter_call_stack_is_pushed_and_popped_around_evaluation():
+    """Confirms the reporter cycle-detection stack is actually maintained
+    (push before recursing into the definition's own RETURN expression,
+    pop after) rather than just declared and never touched."""
+    src = _gen_source()
+    start = src.index("function evaluateCustomBlockReporterCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "CURRENT_REPORTER_CALL_STACK.push(name)" in body
+    assert "CURRENT_REPORTER_CALL_STACK.pop()" in body
+
+
+def test_generation_run_resets_the_reporter_module_state():
+    src = _gen_source()
+    start = src.index("function generatePyGameMakerCode(workspace) {")
+    end = src.index("\nfunction getEventType", start)
+    body = src[start:end]
+    assert "CURRENT_CUSTOM_BLOCK_DEFS = customBlockDefs" in body
+    assert "CURRENT_REPORTER_CALL_STACK = []" in body
+
+
+def test_procedures_blocks_have_a_fallback_case_for_unsupported_positions():
+    """generateActionCodeInner's own switch (reached only when a call
+    somehow bypasses walkActionChain -- a code-path bug, not a normal
+    authoring scenario, since nesting is now fully supported there) must
+    not silently return null for any of the four procedures_* block
+    types -- a dropped custom-block call/definition would be invisible
+    to the author."""
+    src = _gen_source()
+    start = src.index("function generateActionCodeInner(")
     end = src.index("\n}", src.index("default:\n            return null;", start))
     body = src[start:end]
     assert "case 'procedures_callnoreturn':" in body
-    assert "__pygm_custom_block_nesting_unsupported__" in body
+    assert "case 'procedures_callreturn':" in body
+    assert "__pygm_custom_block_call_not_expanded__" in body
     assert "case 'procedures_defnoreturn':" in body
+    assert "case 'procedures_defreturn':" in body
     assert "__pygm_custom_block_definition_misplaced__" in body
 
 
 def test_sentinel_action_names_are_not_real_registered_actions():
     """The sentinel names must never collide with a real ActionType, or
     they'd silently execute as something else instead of rendering as
-    the intended visible 'unrecognized action' indicator."""
+    the intended visible 'unrecognized action' indicator. (The
+    expression-side PYGM_UNDEFINED_REPORTER/PYGM_REPORTER_* placeholders
+    are never action names -- they're embedded in a parameter's own
+    expression string -- so they don't need this check.)"""
     from events.action_types import ACTION_TYPES
     sentinels = [
         "__pygm_undefined_custom_block__",
-        "__pygm_custom_block_nesting_unsupported__",
+        "__pygm_custom_block_call_not_expanded__",
         "__pygm_custom_block_definition_misplaced__",
+        "__pygm_custom_block_cycle_detected__",
+        "__pygm_custom_block_too_deeply_nested__",
     ]
     for name in sentinels:
         assert name not in ACTION_TYPES

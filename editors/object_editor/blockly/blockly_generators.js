@@ -18,10 +18,17 @@ function generatePyGameMakerCode(workspace) {
     // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2 ("My Blocks"): indexed
     // once per generation run, before any event is walked, so a call
     // appearing anywhere can resolve its definition regardless of block
-    // order on the canvas. procedures_defnoreturn blocks are themselves
-    // skipped by getEventType's default case below (no case names them),
-    // so a definition never produces its own spurious event.
+    // order on the canvas. procedures_defnoreturn/defreturn blocks are
+    // themselves skipped by getEventType's default case below (no case
+    // names them), so a definition never produces its own spurious event.
     var customBlockDefs = indexCustomBlockDefs(workspace);
+    // Reporter (procedures_callreturn) resolution reads this module-level
+    // mirror from inside getInputValue/evaluateValueBlock, which aren't
+    // threaded customBlockDefs as a parameter (see the big comment above
+    // evaluateCustomBlockReporterCall). Reset the call stack here too, so
+    // a stale entry can never survive across two separate generation runs.
+    CURRENT_CUSTOM_BLOCK_DEFS = customBlockDefs;
+    CURRENT_REPORTER_CALL_STACK = [];
 
     for (var i = 0; i < topBlocks.length; i++) {
         var block = topBlocks[i];
@@ -91,7 +98,7 @@ function getEventType(block) {
 
 function generateBlockCode(eventBlock, customBlockDefs) {
     var doBlock = eventBlock.getInputTargetBlock('DO');
-    return {actions: walkTopLevelActionChain(doBlock, customBlockDefs || {}, false)};
+    return {actions: walkActionChain(doBlock, customBlockDefs || {}, [])};
 }
 
 // ============================================================================
@@ -99,70 +106,114 @@ function generateBlockCode(eventBlock, customBlockDefs) {
 // ============================================================================
 //
 // A student-defined block (Blockly's native procedures_defnoreturn/
-// procedures_callnoreturn -- the vendored library already ships the whole
-// feature, definition UI included, see lib/blocks_compressed.js) is pure
-// authoring sugar: a call is expanded into its definition's own action
-// list AT GENERATION TIME, right here, with each declared parameter
-// substituted by its call-site value. The *saved* project data therefore
-// only ever contains ordinary, already-understood actions -- no new
-// action type, no runtime changes, no HTML5/Kivy codegen changes needed.
+// procedures_callnoreturn/procedures_defreturn/procedures_callreturn --
+// the vendored library already ships the whole feature, definition UI
+// included, see lib/blocks_compressed.js) is pure authoring sugar: a
+// call is expanded into its definition's own action list (no-return) or
+// return expression (reporter) AT GENERATION TIME, right here, with each
+// declared parameter substituted by its call-site value. The *saved*
+// project data therefore only ever contains ordinary, already-understood
+// actions and expression strings -- no new action type, no runtime
+// changes, no HTML5/Kivy codegen changes needed.
 //
-// v1 scope, deliberately narrower than Scratch's own procedures: a call
-// is only expanded when it appears as a TOP-LEVEL action directly inside
-// an event or another custom block's own top-level body -- walkTopLevel
-// ActionChain is the single place calls are ever expanded. A call nested
-// inside an if_condition/test_variable then/else branch is NOT expanded
-// (those branches walk via plain generateActionCode, whose own
-// procedures_callnoreturn case below returns a clear "not supported
-// here" sentinel instead of silently dropping it). A custom block
-// calling ANOTHER custom block is handled the same way (insideDefinition
-// becomes true while walking a definition's own body) -- this sidesteps
-// needing cycle detection entirely, by construction, rather than
-// building a call-stack/depth-cap mechanism for a case v1 doesn't support
-// anyway. Both restrictions, and reporter-style (value-returning) custom
-// blocks, are logged as explicit follow-ups in the plan doc, not
-// forgotten scope.
+// Nesting is fully supported: walkActionChain is used for every action
+// chain in this file, not just an event's own top-level DO stack -- an
+// if_condition/test_variable/thymio_if_* branch, and a custom block's own
+// STACK body, all walk through it, so a call anywhere expands correctly
+// to zero-or-many actions instead of being refused. `callStack` is the
+// list of custom-block names currently being expanded on the path from
+// the nearest top-level chain down to here; expandCustomBlockCall pushes
+// onto it before walking a definition's own body and pops after, so a
+// call that would re-enter a name already on the stack (direct
+// self-recursion, or a longer A -> B -> A cycle) is caught and refused
+// with a visible sentinel INSTEAD of generation recursing forever --
+// this is the cycle detection the nesting restriction used to make
+// unnecessary by construction. MAX_CUSTOM_BLOCK_EXPANSION_DEPTH is a
+// defense-in-depth cap independent of that: a long chain of distinct,
+// non-cyclic custom blocks calling each other could still expand into a
+// pathologically large action list, so depth is capped even though no
+// cycle is present.
+//
+// Reporter-style (value-returning) custom blocks -- procedures_defreturn/
+// procedures_callreturn -- are resolved on the EXPRESSION side instead
+// (getInputValue/evaluateValueBlock below), since a reporter call can
+// appear inside any value socket, not just a statement chain. A pure
+// reporter (its own STACK is empty -- just a RETURN value) expands to an
+// expression string with its own parameters substituted, exactly like a
+// no-return call's action parameters. A reporter whose STACK has
+// statements (side effects before computing the return value) is NOT
+// resolved -- there is no way to "run these actions, then use this
+// value" from inside a single expression socket in this action-based
+// architecture, so it is a real, inherent limitation of the model, not
+// a scoping choice made for expedience. It is surfaced as a visible,
+// non-crashing placeholder string rather than silently dropped or
+// silently treated as 0. Reporter calls get their OWN call stack
+// (CURRENT_REPORTER_CALL_STACK, module-level -- getInputValue's ~60
+// existing call sites across this file take only (block, inputName,
+// defaultValue), and threading an extra parameter through every one of
+// them for this would be a much larger, riskier change than the
+// contained action-side threading above) for the same cycle-detection
+// reason, entirely independent of the action-level one: a no-return
+// custom block and a reporter are different block types that can never
+// substitute for each other, so the two kinds of cycle can't cross.
 
-// Every procedures_defnoreturn block on the workspace, keyed by name ->
-// {argNames: [...], bodyBlock: <first body block, or null if empty>}.
-// Built once per generation run (see generatePyGameMakerCode).
+// Defense-in-depth against a pathologically deep (but acyclic) chain of
+// custom blocks calling custom blocks -- cycles themselves are already
+// fully prevented by callStack/CURRENT_REPORTER_CALL_STACK below.
+var MAX_CUSTOM_BLOCK_EXPANSION_DEPTH = 50;
+
+// Every procedures_defnoreturn/procedures_defreturn block on the
+// workspace, keyed by name -> {argNames: [...], bodyBlock: <first body
+// block, or null if empty>, returnBlock: <the RETURN value's block, or
+// null>, isReporter: bool}. Built once per generation run (see
+// generatePyGameMakerCode).
 function indexCustomBlockDefs(workspace) {
     var defs = {};
     var topBlocks = workspace.getTopBlocks(true);
     for (var i = 0; i < topBlocks.length; i++) {
         var block = topBlocks[i];
-        if (block.type === 'procedures_defnoreturn') {
+        if (block.type === 'procedures_defnoreturn' || block.type === 'procedures_defreturn') {
             var name = block.getFieldValue('NAME');
-            // getVars() is procedures_defnoreturn's own standard accessor
-            // for its parameter name list (confirmed against the vendored
-            // source: `getVars: function() { return this.arguments_; }`).
+            // getVars() is the standard accessor (shared by both def
+            // types) for the parameter name list (confirmed against the
+            // vendored source: `getVars: function() { return
+            // this.arguments_; }`).
             var argNames = (typeof block.getVars === 'function') ? block.getVars() : [];
+            var isReporter = block.type === 'procedures_defreturn';
             defs[name] = {
                 argNames: argNames,
-                bodyBlock: block.getInputTargetBlock('STACK')
+                bodyBlock: block.getInputTargetBlock('STACK'),
+                // The return value socket's input name is "VALUE", NOT
+                // "RETURN" -- confirmed directly against the vendored
+                // source (procedures_defreturn's init swaps in
+                // `this.appendValueInput("VALUE")` under the
+                // PROCEDURES_DEFRETURN_RETURN label); defnoreturn has no
+                // such input at all.
+                returnBlock: isReporter ? block.getInputTargetBlock('VALUE') : null,
+                isReporter: isReporter
             };
         }
     }
     return defs;
 }
 
-// Walks a top-level action chain (an event's DO stack, or a custom
-// block's own STACK body) into an actions array, expanding any
-// procedures_callnoreturn call found directly in the chain. This is the
-// ONLY place a call is ever expanded -- every other walker in this file
-// (if_condition/test_variable branches, etc.) uses plain
-// generateActionCode, so a call placed there hits that function's own
-// procedures_callnoreturn case instead (a clear "not supported here"
-// sentinel, not silent expansion).
-function walkTopLevelActionChain(startBlock, customBlockDefs, insideDefinition) {
+// Walks an action chain (an event's own DO stack, a custom block's own
+// STACK body, or any nested statement input such as if_condition's
+// DO/ELSE) into an actions array, expanding any procedures_callnoreturn
+// call found anywhere in the chain. This is the ONLY function that ever
+// walks a chain of sibling statement blocks in this file -- every nested
+// DO/ELSE/sub_actions case in generateActionCodeInner calls this instead
+// of looping by hand, so a call nested at any depth is expanded exactly
+// like a top-level one.
+function walkActionChain(startBlock, customBlockDefs, callStack) {
     var actions = [];
     var block = startBlock;
     while (block) {
         if (block.type === 'procedures_callnoreturn') {
             actions = actions.concat(
-                expandCustomBlockCall(block, customBlockDefs, insideDefinition));
+                expandCustomBlockCall(block, customBlockDefs, callStack));
         } else {
-            var action = generateActionCode(block);
+            var action = generateActionCode(block, customBlockDefs, callStack);
             if (action) {
                 actions.push(action);
             }
@@ -172,22 +223,10 @@ function walkTopLevelActionChain(startBlock, customBlockDefs, insideDefinition) 
     return actions;
 }
 
-function expandCustomBlockCall(callBlock, customBlockDefs, insideDefinition) {
+function expandCustomBlockCall(callBlock, customBlockDefs, callStack) {
     var name = callBlock.getFieldValue('NAME');
     var def = customBlockDefs[name];
 
-    if (insideDefinition) {
-        // v1 scope: never expand a call found inside ANOTHER custom
-        // block's own body, whether or not `name` really exists --
-        // distinguishing the two keeps an author from being told a real
-        // block "doesn't exist" when the actual issue is the nesting
-        // restriction.
-        return [{
-            action: def ? '__pygm_custom_block_nesting_unsupported__'
-                        : '__pygm_undefined_custom_block__',
-            parameters: {name: name}
-        }];
-    }
     if (!def) {
         // A call whose definition was deleted/renamed (or never existed,
         // e.g. a corrupted save) -- surfaced as a real, visible
@@ -196,13 +235,26 @@ function expandCustomBlockCall(callBlock, customBlockDefs, insideDefinition) {
         // unknown extension action) rather than silently vanishing.
         return [{action: '__pygm_undefined_custom_block__', parameters: {name: name}}];
     }
+    if (callStack.indexOf(name) !== -1) {
+        // Direct self-recursion (A calls A) or a longer cycle (A -> B ->
+        // A) -- callStack holds every name currently being expanded on
+        // the path down to here, so re-entering one is unambiguous proof
+        // of a cycle regardless of how long the chain is. Refused with a
+        // visible sentinel rather than recursing forever at generation
+        // time.
+        return [{action: '__pygm_custom_block_cycle_detected__',
+                 parameters: {name: name, call_stack: callStack.concat([name]).join(' -> ')}}];
+    }
+    if (callStack.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) {
+        return [{action: '__pygm_custom_block_too_deeply_nested__', parameters: {name: name}}];
+    }
 
     var argValues = {};
     for (var i = 0; i < def.argNames.length; i++) {
         argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
     }
 
-    var bodyActions = walkTopLevelActionChain(def.bodyBlock, customBlockDefs, true);
+    var bodyActions = walkActionChain(def.bodyBlock, customBlockDefs, callStack.concat([name]));
     return bodyActions.map(function(action) {
         return substituteCustomBlockArgs(action, argValues);
     });
@@ -234,6 +286,68 @@ function substituteCustomBlockArgs(value, argValues) {
         return out;
     }
     return value;
+}
+
+// Reporter (procedures_defreturn/procedures_callreturn) resolution --
+// module-level rather than threaded through getInputValue's ~60 existing
+// call sites (see the big comment block above). Set once per generation
+// run by generatePyGameMakerCode, right alongside the customBlockDefs
+// index it already builds.
+var CURRENT_CUSTOM_BLOCK_DEFS = {};
+var CURRENT_REPORTER_CALL_STACK = [];
+
+// A procedures_callreturn block dropped into a value socket --
+// getInputValue/evaluateValueBlock's own case delegates here. Returns an
+// expression string (or defaultValue / a visible placeholder), never an
+// action -- a reporter can never appear anywhere but a value socket
+// (Blockly's own connection typing: procedures_callreturn is
+// setOutput(true), no previous/nextStatement, confirmed against the
+// vendored source), so there is no statement-side counterpart to this
+// function the way expandCustomBlockCall has one.
+function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
+    var name = callBlock.getFieldValue('NAME');
+    var def = CURRENT_CUSTOM_BLOCK_DEFS[name];
+
+    if (!def || !def.isReporter) {
+        // Deleted/renamed, or the name now belongs to a no-return block
+        // (a callreturn block desynced from its definition) -- visible,
+        // non-crashing placeholder, same spirit as
+        // __pygm_undefined_custom_block__ on the action side.
+        return '{{PYGM_UNDEFINED_REPORTER:' + name + '}}';
+    }
+    if (CURRENT_REPORTER_CALL_STACK.indexOf(name) !== -1) {
+        return '{{PYGM_REPORTER_CYCLE:' + name + '}}';
+    }
+    if (CURRENT_REPORTER_CALL_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) {
+        return '{{PYGM_REPORTER_TOO_DEEP:' + name + '}}';
+    }
+    if (def.bodyBlock) {
+        // The reporter's own STACK has statements before its RETURN
+        // value -- an inherent limitation of this action-based
+        // architecture, not a v1 scoping choice: there is no mechanism
+        // to "run these actions, then use this value" from inside a
+        // single expression socket. Flagged rather than silently
+        // dropping the side effects or silently treating the call as 0.
+        return '{{PYGM_REPORTER_SIDE_EFFECTS:' + name + '}}';
+    }
+    if (!def.returnBlock) {
+        // An empty RETURN socket -- Blockly's own procedures_ifreturn
+        // warning mechanism already flags this on the definition block
+        // itself (PROCEDURES_IFRETURN_WARNING); nothing more useful to
+        // produce on the call side than the caller's own default.
+        return defaultValue;
+    }
+
+    var argValues = {};
+    for (var i = 0; i < def.argNames.length; i++) {
+        argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
+    }
+
+    CURRENT_REPORTER_CALL_STACK.push(name);
+    var exprValue = evaluateValueBlock(def.returnBlock, defaultValue);
+    CURRENT_REPORTER_CALL_STACK.pop();
+
+    return substituteCustomBlockArgs(exprValue, argValues);
 }
 
 // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B4: draw_health_bar models x2/y2 as
@@ -268,8 +382,8 @@ function parseScopedVariable(raw) {
     return {name: name, scope: scope};
 }
 
-function generateActionCode(block) {
-    var result = generateActionCodeInner(block);
+function generateActionCode(block, customBlockDefs, callStack) {
+    var result = generateActionCodeInner(block, customBlockDefs, callStack);
     // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: merge back whatever the
     // LOAD side (createActionBlock, blockly_workspace.html) saw but this
     // block's own case below never mentions -- translations, an "applies
@@ -286,7 +400,7 @@ function generateActionCode(block) {
     return result;
 }
 
-function generateActionCodeInner(block) {
+function generateActionCodeInner(block, customBlockDefs, callStack) {
     switch (block.type) {
         case 'move_set_hspeed':
             return {action: 'set_hspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
@@ -343,16 +457,11 @@ function generateActionCodeInner(block) {
         case 'grid_check_keys_and_move':
             return {action: 'check_keys_and_move', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), speed: getInputValue(block, 'SPEED', 4)}};
         case 'grid_if_on_grid':
-            // This is a wrapper action - collect inner actions
-            var innerActions = [];
-            var innerBlock = block.getInputTargetBlock('DO');
-            while (innerBlock) {
-                var innerAction = generateActionCode(innerBlock);
-                if (innerAction) {
-                    innerActions.push(innerAction);
-                }
-                innerBlock = innerBlock.getNextBlock();
-            }
+            // This is a wrapper action - collect inner actions (via
+            // walkActionChain so a custom-block call nested here expands
+            // instead of being refused -- see the big comment above
+            // walkActionChain/expandCustomBlockCall).
+            var innerActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'if_on_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), then_actions: innerActions}};
         case 'score_set':
             return {action: 'set_score', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
@@ -403,24 +512,10 @@ function generateActionCodeInner(block) {
             // Collect nested actions from the DO/ELSE slots (common to every
             // condition_type), then the fields for whichever type is
             // selected -- see blockly_blocks.js for the 8 types and why.
-            var ifCondActions = [];
-            var ifCondInner = block.getInputTargetBlock('DO');
-            while (ifCondInner) {
-                var ifCondAction = generateActionCode(ifCondInner);
-                if (ifCondAction) {
-                    ifCondActions.push(ifCondAction);
-                }
-                ifCondInner = ifCondInner.getNextBlock();
-            }
-            var ifCondElseActions = [];
-            var ifCondElseInner = block.getInputTargetBlock('ELSE');
-            while (ifCondElseInner) {
-                var ifCondElseAction = generateActionCode(ifCondElseInner);
-                if (ifCondElseAction) {
-                    ifCondElseActions.push(ifCondElseAction);
-                }
-                ifCondElseInner = ifCondElseInner.getNextBlock();
-            }
+            // walkActionChain (not a raw while-loop) so a custom-block call
+            // nested in either branch expands correctly.
+            var ifCondActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
+            var ifCondElseActions = walkActionChain(block.getInputTargetBlock('ELSE'), customBlockDefs, callStack);
             var ifCondType = block.getFieldValue('CONDITION_TYPE');
             var ifCondParams = {
                 condition_type: ifCondType,
@@ -467,25 +562,10 @@ function generateActionCodeInner(block) {
             }};
         case 'test_variable':
             // Same nested-action pattern as if_condition: collect DO/ELSE
-            // slot statements and let the runtime branch.
-            var tvActions = [];
-            var tvInner = block.getInputTargetBlock('DO');
-            while (tvInner) {
-                var tvAction = generateActionCode(tvInner);
-                if (tvAction) {
-                    tvActions.push(tvAction);
-                }
-                tvInner = tvInner.getNextBlock();
-            }
-            var tvElseActions = [];
-            var tvElseInner = block.getInputTargetBlock('ELSE');
-            while (tvElseInner) {
-                var tvElseAction = generateActionCode(tvElseInner);
-                if (tvElseAction) {
-                    tvElseActions.push(tvElseAction);
-                }
-                tvElseInner = tvElseInner.getNextBlock();
-            }
+            // slot statements (via walkActionChain, so a nested custom-block
+            // call expands) and let the runtime branch.
+            var tvActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
+            var tvElseActions = walkActionChain(block.getInputTargetBlock('ELSE'), customBlockDefs, callStack);
             var tv = parseScopedVariable(block.getFieldValue('VARIABLE'));
             return {action: 'test_variable', parameters: {
                 variable: tv.name,
@@ -498,8 +578,8 @@ function generateActionCodeInner(block) {
         case 'test_expression':
             return {action: 'test_expression', parameters: {
                 expression: getConditionValue(block, 'CONDITION'),
-                then_actions: collectStatementActions(block, 'DO'),
-                else_actions: collectStatementActions(block, 'ELSE')
+                then_actions: collectStatementActions(block, 'DO', customBlockDefs, callStack),
+                else_actions: collectStatementActions(block, 'ELSE', customBlockDefs, callStack)
             }};
         case 'room_goto_next':
             return {action: 'next_room', parameters: {}};
@@ -522,46 +602,14 @@ function generateActionCodeInner(block) {
             // "the go to different room action does not work").
             return {action: 'goto_room', parameters: {room: block.getFieldValue('ROOM')}};
         case 'room_if_next_exists':
-            var nextExistsActions = [];
-            var nextExistsBlock = block.getInputTargetBlock('DO');
-            while (nextExistsBlock) {
-                var nextExistsAction = generateActionCode(nextExistsBlock);
-                if (nextExistsAction) {
-                    nextExistsActions.push(nextExistsAction);
-                }
-                nextExistsBlock = nextExistsBlock.getNextBlock();
-            }
-            var nextExistsElseActions = [];
-            var nextExistsElseBlock = block.getInputTargetBlock('ELSE');
-            while (nextExistsElseBlock) {
-                var nextExistsElseAction = generateActionCode(nextExistsElseBlock);
-                if (nextExistsElseAction) {
-                    nextExistsElseActions.push(nextExistsElseAction);
-                }
-                nextExistsElseBlock = nextExistsElseBlock.getNextBlock();
-            }
+            var nextExistsActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
+            var nextExistsElseActions = walkActionChain(block.getInputTargetBlock('ELSE'), customBlockDefs, callStack);
             return {action: 'if_next_room_exists', parameters: {
                 then_actions: nextExistsActions, else_actions: nextExistsElseActions
             }};
         case 'room_if_previous_exists':
-            var prevExistsActions = [];
-            var prevExistsBlock = block.getInputTargetBlock('DO');
-            while (prevExistsBlock) {
-                var prevExistsAction = generateActionCode(prevExistsBlock);
-                if (prevExistsAction) {
-                    prevExistsActions.push(prevExistsAction);
-                }
-                prevExistsBlock = prevExistsBlock.getNextBlock();
-            }
-            var prevExistsElseActions = [];
-            var prevExistsElseBlock = block.getInputTargetBlock('ELSE');
-            while (prevExistsElseBlock) {
-                var prevExistsElseAction = generateActionCode(prevExistsElseBlock);
-                if (prevExistsElseAction) {
-                    prevExistsElseActions.push(prevExistsElseAction);
-                }
-                prevExistsElseBlock = prevExistsElseBlock.getNextBlock();
-            }
+            var prevExistsActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
+            var prevExistsElseActions = walkActionChain(block.getInputTargetBlock('ELSE'), customBlockDefs, callStack);
             return {action: 'if_previous_room_exists', parameters: {
                 then_actions: prevExistsActions, else_actions: prevExistsElseActions
             }};
@@ -711,15 +759,7 @@ function generateActionCodeInner(block) {
         // THYMIO CONDITION ACTIONS (with sub_actions)
         // ============================================================================
         case 'thymio_if_proximity':
-            var proxSubActions = [];
-            var proxSubBlock = block.getInputTargetBlock('DO');
-            while (proxSubBlock) {
-                var proxAction = generateActionCode(proxSubBlock);
-                if (proxAction) {
-                    proxSubActions.push(proxAction);
-                }
-                proxSubBlock = proxSubBlock.getNextBlock();
-            }
+            var proxSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_proximity', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 comparison: block.getFieldValue('COMPARISON'),
@@ -727,73 +767,33 @@ function generateActionCodeInner(block) {
             }, sub_actions: proxSubActions};
 
         case 'thymio_if_ground_dark':
-            var groundDarkSubActions = [];
-            var groundDarkSubBlock = block.getInputTargetBlock('DO');
-            while (groundDarkSubBlock) {
-                var groundDarkAction = generateActionCode(groundDarkSubBlock);
-                if (groundDarkAction) {
-                    groundDarkSubActions.push(groundDarkAction);
-                }
-                groundDarkSubBlock = groundDarkSubBlock.getNextBlock();
-            }
+            var groundDarkSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_ground_dark', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 threshold: getInputValue(block, 'THRESHOLD', 300)
             }, sub_actions: groundDarkSubActions};
 
         case 'thymio_if_ground_light':
-            var groundLightSubActions = [];
-            var groundLightSubBlock = block.getInputTargetBlock('DO');
-            while (groundLightSubBlock) {
-                var groundLightAction = generateActionCode(groundLightSubBlock);
-                if (groundLightAction) {
-                    groundLightSubActions.push(groundLightAction);
-                }
-                groundLightSubBlock = groundLightSubBlock.getNextBlock();
-            }
+            var groundLightSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_ground_light', parameters: {
                 sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
                 threshold: getInputValue(block, 'THRESHOLD', 300)
             }, sub_actions: groundLightSubActions};
 
         case 'thymio_if_button_pressed':
-            var btnPressSubActions = [];
-            var btnPressSubBlock = block.getInputTargetBlock('DO');
-            while (btnPressSubBlock) {
-                var btnPressAction = generateActionCode(btnPressSubBlock);
-                if (btnPressAction) {
-                    btnPressSubActions.push(btnPressAction);
-                }
-                btnPressSubBlock = btnPressSubBlock.getNextBlock();
-            }
+            var btnPressSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_button_pressed', parameters: {
                 button: block.getFieldValue('BUTTON')
             }, sub_actions: btnPressSubActions};
 
         case 'thymio_if_button_released':
-            var btnRelSubActions = [];
-            var btnRelSubBlock = block.getInputTargetBlock('DO');
-            while (btnRelSubBlock) {
-                var btnRelAction = generateActionCode(btnRelSubBlock);
-                if (btnRelAction) {
-                    btnRelSubActions.push(btnRelAction);
-                }
-                btnRelSubBlock = btnRelSubBlock.getNextBlock();
-            }
+            var btnRelSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_button_released', parameters: {
                 button: block.getFieldValue('BUTTON')
             }, sub_actions: btnRelSubActions};
 
         case 'thymio_if_variable':
-            var varSubActions = [];
-            var varSubBlock = block.getInputTargetBlock('DO');
-            while (varSubBlock) {
-                var varAction = generateActionCode(varSubBlock);
-                if (varAction) {
-                    varSubActions.push(varAction);
-                }
-                varSubBlock = varSubBlock.getNextBlock();
-            }
+            var varSubActions = walkActionChain(block.getInputTargetBlock('DO'), customBlockDefs, callStack);
             return {action: 'thymio_if_variable', parameters: {
                 variable: block.getFieldValue('VARIABLE'),
                 comparison: block.getFieldValue('COMPARISON'),
@@ -830,23 +830,36 @@ function generateActionCodeInner(block) {
 
         // ============================================================================
         // CUSTOM BLOCKS ("My Blocks") -- docs/BLOCKLY_SCRATCH_PARITY_PLAN.md
-        // Feature 2. Reached ONLY when one of these appears somewhere
-        // walkTopLevelActionChain doesn't cover (an if_condition/
-        // test_variable then/else branch, most likely) -- every top-level
-        // position (an event's own DO stack, or a custom block's own
-        // STACK body) is intercepted by that function before
-        // generateActionCode is ever called on these block types, so a
-        // call there is always properly expanded, never reaching this
-        // case at all.
+        // Feature 2. A procedures_callnoreturn is normally intercepted by
+        // walkActionChain BEFORE generateActionCode is ever called on it --
+        // every statement-chain position in this file (an event's own DO
+        // stack, a custom block's own STACK body, and every nested DO/ELSE/
+        // sub_actions branch) walks through that function now, so a call
+        // anywhere is always properly expanded. This case is reached only
+        // if some future statement-chain site is added without routing
+        // through walkActionChain -- a code-path bug, not a normal
+        // authoring scenario -- so it's a defensive fallback, not live
+        // behaviour: surfaced visibly rather than silently producing
+        // nothing if it somehow happens.
         case 'procedures_callnoreturn':
-            return {action: '__pygm_custom_block_nesting_unsupported__',
+            return {action: '__pygm_custom_block_call_not_expanded__',
+                    parameters: {name: block.getFieldValue('NAME')}};
+        // A reporter call (procedures_callreturn) is output-type (Blockly's
+        // own connection checking: setOutput(true), no previous/
+        // nextStatement -- confirmed against the vendored source) and so
+        // can never be dragged into a statement slot in the first place;
+        // reached only if that invariant is ever violated.
+        case 'procedures_callreturn':
+            return {action: '__pygm_custom_block_call_not_expanded__',
                     parameters: {name: block.getFieldValue('NAME')}};
         // A definition hat dragged somewhere it can't act as a top-level
         // workspace block (e.g. plugged into a statement input) -- not a
         // real authoring path Blockly's own connection-checking should
         // ever allow, but surfaced rather than silently producing nothing
-        // if it somehow happens.
+        // if it somehow happens. Covers both the no-return and reporter
+        // definition hats.
         case 'procedures_defnoreturn':
+        case 'procedures_defreturn':
             return {action: '__pygm_custom_block_definition_misplaced__',
                     parameters: {name: block.getFieldValue('NAME')}};
 
@@ -876,16 +889,12 @@ var MATH_ARITHMETIC_OPS = {
     'ADD': '+', 'MINUS': '-', 'MULTIPLY': '*', 'DIVIDE': '/', 'POWER': '**'
 };
 
-// The actions stacked in a statement input (DO / ELSE).
-function collectStatementActions(block, inputName) {
-    var actions = [];
-    var inner = block.getInputTargetBlock(inputName);
-    while (inner) {
-        var action = generateActionCode(inner);
-        if (action) actions.push(action);
-        inner = inner.getNextBlock();
-    }
-    return actions;
+// The actions stacked in a statement input (DO / ELSE) -- a thin
+// (block, inputName)-ergonomic wrapper around walkActionChain, which
+// every other nested DO/ELSE/sub_actions site in this file calls
+// directly on an already-resolved start block instead.
+function collectStatementActions(block, inputName, customBlockDefs, callStack) {
+    return walkActionChain(block.getInputTargetBlock(inputName), customBlockDefs, callStack);
 }
 
 // Blockly logic block -> Python-syntax condition text (audit B6c). Desktop's
@@ -943,8 +952,16 @@ var MATH_SINGLE_TEMPLATES = {
     'LN': 'ln(%)', 'LOG10': 'log10(%)', 'EXP': 'exp(%)', 'POW10': '(10 ** (%))'
 };
 
+// getInputValue resolves a named value socket on `block`; evaluateValueBlock
+// does the actual work given the already-resolved target block directly --
+// factored apart so evaluateCustomBlockReporterCall can evaluate a
+// reporter definition's own RETURN block (captured once at index time,
+// not reached via any parent's named input) through the exact same logic.
 function getInputValue(block, inputName, defaultValue) {
-    var input = block.getInputTargetBlock(inputName);
+    return evaluateValueBlock(block.getInputTargetBlock(inputName), defaultValue);
+}
+
+function evaluateValueBlock(input, defaultValue) {
     if (input) {
         if (input.type === 'math_number') {
             // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B1: `|| defaultValue`
@@ -990,6 +1007,12 @@ function getInputValue(block, inputName, defaultValue) {
                 }
             } catch (e) { /* fall back to the raw field value */ }
             return '{{PYGM_ARG:' + varName + '}}';
+        } else if (input.type === 'procedures_callreturn') {
+            // A reporter-style custom block call dropped into a value
+            // socket (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2,
+            // deferred item 4) -- see evaluateCustomBlockReporterCall's
+            // own comment for what this does and does not support.
+            return evaluateCustomBlockReporterCall(input, defaultValue);
         } else if (VALUE_BLOCK_EXPRESSIONS[input.type]) {
             // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B6a/B15: spellings every
             // engine evaluates (desktop _parse_value, HTML5 gmExpressionValue

@@ -79,12 +79,18 @@ def test_instance_create_case_emits_create_instance_action():
 
 
 def test_get_input_value_resolves_math_random_int():
+    """getInputValue itself is now a thin wrapper delegating to
+    evaluateValueBlock (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22
+    nesting+reporters follow-up refactored it so a reporter definition's
+    own RETURN block can be evaluated directly, not just via a parent's
+    named input) -- the actual per-block-type logic, math_random_int
+    included, lives in evaluateValueBlock."""
     content = _js_source()
-    m = re.search(r"function getInputValue\(.*?\n\}", content, re.S)
-    assert m, "could not locate getInputValue"
+    m = re.search(r"function evaluateValueBlock\(.*?\n\}", content, re.S)
+    assert m, "could not locate evaluateValueBlock"
     body = m.group(0)
     assert "math_random_int" in body, (
-        "getInputValue doesn't special-case Blockly's standard "
+        "evaluateValueBlock doesn't special-case Blockly's standard "
         "math_random_int block -- nesting it (as the tutorial instructs) "
         "into any Number-type socket silently falls back to the default "
         "value instead of a real random expression"

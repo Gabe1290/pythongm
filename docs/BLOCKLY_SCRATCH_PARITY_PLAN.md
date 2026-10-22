@@ -331,13 +331,12 @@ note" further down).
   (`test_blockly_i18n_pl.py`, `test_blockly_i18n_uk.py` ×2,
   `test_blockly_toolbox_category_groups.py`) updated for the 9th
   category. Full suite: 6398 passed, 0 failed.
-- **Deferred, logged not forgotten**: reporter-style (value-returning)
-  custom blocks (`procedures_defreturn`/`callreturn`); nested/recursive
-  calls (would need a real two-pass or call-stack design, deliberately
-  avoided above); per-object (vs. project-wide) custom blocks; a
-  bundled sample/tutorial teaching "make your own block" (this repo's
-  own established convention for a new teaching feature, not done this
-  session — a real scope of its own).
+- **Deferred items 4 and 5 — ✅ DONE 2026-10-22.** Both resolved in the
+  same session, see "Follow-up: nesting + reporters" below for the full
+  design. Still deferred, logged not forgotten: per-object (vs.
+  project-wide) custom blocks; a bundled sample/tutorial teaching "make
+  your own block" (this repo's own established convention for a new
+  teaching feature — a real scope of its own).
 - **Needs human eyes, genuinely unverified — the most important caveat
   on this feature**: no Node.js/browser available in this environment,
   so none of this was ever actually executed. The core mechanism (drag
@@ -349,6 +348,90 @@ note" further down).
   as this project's other standing "needs a human/real browser" items
   (`docs/PROJECT_STATUS.md`'s manual-QA backlog) — flagged rather than
   claimed solid.
+
+#### Follow-up: nesting + reporters — ✅ DONE 2026-10-22
+
+Both items 4 and 5 from the "treated at a later date" retrospective
+list, resolved in the same `blockly_generators.js`:
+
+- **Nesting (item 5).** The v1 "never expand inside another chain"
+  restriction is gone. `walkTopLevelActionChain` was renamed
+  `walkActionChain` and is now the ONLY place any chain of sibling
+  statement blocks is ever walked in this file — every nested DO/ELSE/
+  sub_actions site that used to hand-roll its own `while` loop calling
+  `generateActionCode` directly (`if_condition`, `test_variable`,
+  `test_expression`, `grid_if_on_grid`, `room_if_next_exists`,
+  `room_if_previous_exists`, and all six `thymio_if_*` blocks — 12 sites)
+  now calls `walkActionChain` instead, so a custom-block call nested at
+  any depth — inside a conditional branch, inside another custom block's
+  own body, or both — expands exactly like a top-level one.
+  `generateActionCode`/`generateActionCodeInner` had `customBlockDefs`
+  and `callStack` threaded through as explicit parameters to make this
+  work (the bounded ~15-site surface the original plan anticipated).
+  Cycle detection replaces the old "can't happen by construction"
+  argument: `callStack` is the list of custom-block names currently
+  being expanded on the path down to the current call;
+  `expandCustomBlockCall` refuses (with a visible
+  `__pygm_custom_block_cycle_detected__` sentinel, not infinite
+  generation-time recursion) a call that would re-enter a name already
+  on the stack, which catches direct self-recursion and any longer
+  `A -> B -> A` cycle alike. A separate `MAX_CUSTOM_BLOCK_EXPANSION_DEPTH`
+  (50) cap guards the orthogonal case a name-based check can't:
+  pathologically deep but acyclic nesting (`__pygm_custom_block_too_
+  deeply_nested__`). The old nesting-refusal sentinel
+  (`__pygm_custom_block_nesting_unsupported__`) no longer describes real
+  behaviour, since nesting is supported; it was renamed to
+  `__pygm_custom_block_call_not_expanded__` and now exists only as a
+  defensive fallback in `generateActionCodeInner`'s own switch, reached
+  only if some future statement-chain site is added without routing
+  through `walkActionChain` — a code-path bug, not a live authoring
+  scenario.
+- **Reporters (item 4).** `procedures_defreturn`/`procedures_callreturn`
+  are resolved on the EXPRESSION side (`getInputValue`, refactored to
+  delegate to a new `evaluateValueBlock(inputBlock, defaultValue)` so the
+  same logic can evaluate a definition's own `VALUE` input directly, not
+  just a named socket on a parent block) rather than the action side,
+  since a reporter call can appear in any value socket, not just a
+  statement chain. Confirmed against the vendored source before writing
+  any code: `procedures_defreturn`'s return-value input is named
+  `"VALUE"`, not `"RETURN"` (`this.appendValueInput("VALUE")` under the
+  `PROCEDURES_DEFRETURN_RETURN` label); `procedures_callreturn` is
+  `setOutput(true)` with no statement connectors, confirmed via
+  `grep`, so it can never be dragged into a statement slot in the first
+  place and needs no action-list handling. `indexCustomBlockDefs` now
+  indexes both def types, capturing `returnBlock`/`isReporter` alongside
+  the existing `argNames`/`bodyBlock`. A **pure** reporter (empty
+  `STACK`, just a `RETURN` value) resolves to an expression string with
+  its own `ARG0..` parameters substituted — reusing the exact same
+  `{{PYGM_ARG:<name>}}` placeholder + `substituteCustomBlockArgs`
+  mechanism the no-return side already established, since a reporter's
+  `RETURN` expression references its own parameters via the identical
+  `variables_get` block. A reporter whose `STACK` has statements is
+  **not** resolved — not a scoping choice but an inherent limit of this
+  action-based architecture (there's no way to "run these actions, then
+  use this value" from inside a single expression socket) — surfaced as
+  a visible `{{PYGM_REPORTER_SIDE_EFFECTS:<name>}}` placeholder rather
+  than silently dropping the side effects or treating the call as 0.
+  Undefined/cyclic/too-deep reporter calls get their own analogous
+  placeholders (`{{PYGM_UNDEFINED_REPORTER:...}}`,
+  `{{PYGM_REPORTER_CYCLE:...}}`, `{{PYGM_REPORTER_TOO_DEEP:...}}`).
+  Reporter cycle detection uses its own module-level
+  `CURRENT_REPORTER_CALL_STACK` (set once per generation run alongside
+  the existing `customBlockDefs` index) rather than a threaded
+  parameter: `getInputValue` has roughly 60 existing call sites across
+  this file taking only `(block, inputName, defaultValue)`, and
+  threading a new parameter through every one of them would have been a
+  much larger, riskier change than the contained action-side threading
+  above — and the two call stacks can never cross anyway, since a
+  no-return custom block and a reporter are different block types that
+  can't substitute for each other.
+- **Tests**: `tests/test_blockly_custom_blocks.py` extended (reporter
+  indexing/resolution, nested-call expansion through a conditional
+  branch, nested custom-block-calling-custom-block, cycle detection,
+  the depth cap, the renamed/new sentinel set re-checked against
+  `ACTION_TYPES` for collisions). Same "no Node.js in CI" structural
+  tier as the rest of this feature — **still genuinely unverified in a
+  real browser**, same caveat as the rest of Feature 2.
 
 ---
 
@@ -491,8 +574,9 @@ only if a real teaching need for recursion shows up later.
    "make your own block" end to end — this repo's established
    convention is to pair every new teaching feature with a sample/
    tutorial, not ship it as an untaught capability.
-7. (Explicitly deferred, not v1) reporter-style value-returning custom
-   blocks.
+7. ~~(Explicitly deferred, not v1) reporter-style value-returning custom
+   blocks.~~ **DONE 2026-10-22** — see "Follow-up: nesting + reporters"
+   above.
 
 ---
 
@@ -514,7 +598,10 @@ preferences" section) rather than landing either as one large commit.
 - Export/runtime engine changes of any kind (both features are
   authoring-time/IDE-only by design — see each feature's own "why no
   engine changes" reasoning above).
-- Reporter-style (value-returning) custom blocks.
+- ~~Reporter-style (value-returning) custom blocks.~~ **DONE 2026-10-22**
+  — see "Follow-up: nesting + reporters" above (with the one real
+  architectural limit it couldn't remove: a reporter whose own body has
+  side-effecting statements, not just a return value).
 - Per-object custom blocks.
 - Redesigning the Thymio extension's own category set (8 categories,
   merged in separately via `register_block_categories`) — out of scope
