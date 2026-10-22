@@ -64,6 +64,8 @@ WORKSPACE_HTML = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
 I18N_JS = (REPO_ROOT / "editors" / "object_editor" / "blockly" / "blockly_i18n.js")
 BLOCKS_COMPRESSED = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
                       "lib" / "blocks_compressed.js")
+BLOCKLY_COMPRESSED = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
+                       "lib" / "blockly_compressed.js")
 
 
 def _gen_source():
@@ -219,11 +221,16 @@ def test_generate_block_code_uses_the_expand_aware_walker():
 
 
 def test_pygamemaker_code_builds_the_index_once_up_front():
+    """indexCustomBlockDefs itself is called from inside
+    prepareCustomBlockDefsForGeneration now (the 2026-10-22 project-wide-
+    sharing follow-up), not directly from generatePyGameMakerCode -- it
+    also merges in every shared definition from another object, which
+    generatePyGameMakerCode needs just as much as a local-only index."""
     src = _gen_source()
     start = src.index("function generatePyGameMakerCode(workspace) {")
     end = src.index("\nfunction getEventType", start)
     body = src[start:end]
-    assert "indexCustomBlockDefs(workspace)" in body
+    assert "prepareCustomBlockDefsForGeneration(workspace).merged" in body
     assert "generateBlockCode(block, customBlockDefs)" in body
 
 
@@ -366,12 +373,178 @@ def test_reporter_call_stack_is_pushed_and_popped_around_evaluation():
 
 
 def test_generation_run_resets_the_reporter_module_state():
+    """The reset moved into prepareCustomBlockDefsForGeneration (the
+    2026-10-22 project-wide-sharing follow-up), called by BOTH
+    generatePyGameMakerCode and generateCustomBlocksExportJson, so
+    neither can prepare customBlockDefs differently from the other."""
     src = _gen_source()
-    start = src.index("function generatePyGameMakerCode(workspace) {")
-    end = src.index("\nfunction getEventType", start)
+    start = src.index("function prepareCustomBlockDefsForGeneration(workspace) {")
+    end = src.index("\n}", start)
     body = src[start:end]
-    assert "CURRENT_CUSTOM_BLOCK_DEFS = customBlockDefs" in body
+    assert "CURRENT_CUSTOM_BLOCK_DEFS = merged" in body
     assert "CURRENT_REPORTER_CALL_STACK = []" in body
+
+
+def test_pygamemaker_code_and_export_share_the_same_preparation_function():
+    src = _gen_source()
+    gen_start = src.index("function generatePyGameMakerCode(workspace) {")
+    gen_end = src.index("\nfunction getEventType", gen_start)
+    assert "prepareCustomBlockDefsForGeneration(workspace)" in src[gen_start:gen_end]
+
+    export_start = src.index("function generateCustomBlocksExportJson(workspace) {")
+    export_end = src.index("\n}", export_start)
+    export_body = src[export_start:export_end]
+    assert "prepareCustomBlockDefsForGeneration(workspace)" in export_body
+
+
+# ---------------------------------------------------------------------------
+# Project-wide custom block sharing (2026-10-22 follow-up) -- each object's
+# Blockly workspace lives on its own separate page with its own isolated
+# JS state (confirmed via blockly_widget.py/object_editor_main.py: the
+# workspace XML is saved/loaded per object, nothing merges another
+# object's blocks in), so without the mechanism below a custom block
+# defined in object A is invisible when editing object B -- contradicting
+# this feature's own original "Scope: project-level... shared by every
+# object" decision. See docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's "Follow-up:
+# nesting + reporters" / sharing section for the full design.
+# ---------------------------------------------------------------------------
+
+def test_merge_shared_custom_block_defs_lets_local_win_on_collision():
+    src = _gen_source()
+    start = src.index("function mergeSharedCustomBlockDefs(localDefs) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "SHARED_CUSTOM_BLOCKS" in body
+    assert "bodyBlock: null" in body
+    assert "returnBlock: null" in body
+    assert "bodyActionsTemplate: entry.body_actions" in body
+    assert "returnExprTemplate" in body
+    # Local defs are assigned into `merged` AFTER the shared ones, in the
+    # same object -- an object-literal/plain-assignment loop ordering
+    # that lets a later key win, which is exactly how "local wins" is
+    # implemented here (no explicit `if` needed).
+    local_loop = body.index("for (var localName in localDefs)")
+    shared_loop = body.index("for (var sharedName in SHARED_CUSTOM_BLOCKS)")
+    assert shared_loop < local_loop
+
+
+def test_expand_custom_block_call_uses_the_template_for_a_shared_def():
+    """A shared (cross-object) def has bodyBlock===null -- confirms
+    expandCustomBlockCall branches to bodyActionsTemplate instead of
+    trying to walk a nonexistent block."""
+    src = _gen_source()
+    start = src.index("function expandCustomBlockCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "def.bodyBlock\n        ? walkActionChain" in body or "def.bodyBlock ? walkActionChain" in body
+    assert "def.bodyActionsTemplate || []" in body
+
+
+def test_reporter_call_resolves_shared_templates_too():
+    src = _gen_source()
+    start = src.index("function evaluateCustomBlockReporterCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "hasSideEffectingBody" in body
+    assert "def.bodyActionsTemplate && def.bodyActionsTemplate.length" in body
+    assert "hasReturnExpr" in body
+    assert "def.returnExprTemplate !== null" in body
+    assert "exprValue = def.bodyBlock" in body
+    assert "def.returnExprTemplate" in body
+
+
+def test_set_shared_custom_blocks_parses_and_tolerates_bad_json():
+    src = _gen_source()
+    start = src.index("function setSharedCustomBlocks(json) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "JSON.parse(json)" in body
+    assert "catch (e)" in body
+    assert "SHARED_CUSTOM_BLOCKS = {}" in body
+
+
+def test_export_json_only_exports_local_defs_not_shared_pass_throughs():
+    """Confirms generateCustomBlocksExportJson iterates prepared.local
+    (indexCustomBlockDefs' own return value), not prepared.merged -- a
+    shared/external def must never be echoed back out as if this
+    workspace owned it."""
+    src = _gen_source()
+    start = src.index("function generateCustomBlocksExportJson(workspace) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "for (var name in prepared.local)" in body
+    assert "walkActionChain(def.bodyBlock, prepared.merged, [name])" in body
+
+
+def test_build_shared_custom_block_flyout_items_matches_xml_flyout_category_shape():
+    """XML shape confirmed directly against the vendored source's
+    xmlFlyoutCategory function (the one actually driving the "PROCEDURE"
+    category, since Blockly.Procedures.flyoutCategory turned out not to
+    be real public dotted API -- see the workspace.html comment this
+    mirrors): <block type="procedures_call(no)return" gap="16">
+    <mutation name="..."><arg name="..."/></mutation></block>."""
+    src = _gen_source()
+    start = src.index("function buildSharedCustomBlockFlyoutItems(ws) {")
+    end = src.index("\nfunction escapeCustomBlockXmlAttr", start)
+    body = src[start:end]
+    assert '<block type="' in body
+    assert "gap=\"16\"" in body or 'gap="16"' in body
+    assert '<mutation name="' in body
+    assert '<arg name="' in body
+    assert "procedures_callreturn" in body and "procedures_callnoreturn" in body
+    assert "Blockly.utils.xml.textToDom(" in body
+
+
+def test_build_shared_custom_block_flyout_items_skips_locally_defined_names():
+    src = _gen_source()
+    start = src.index("function buildSharedCustomBlockFlyoutItems(ws) {")
+    end = src.index("\nfunction escapeCustomBlockXmlAttr", start)
+    body = src[start:end]
+    assert "if (localNames[name]) continue;" in body
+
+
+def test_escape_custom_block_xml_attr_handles_the_dangerous_characters():
+    src = _gen_source()
+    start = src.index("function escapeCustomBlockXmlAttr(s) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    for needle in ("&amp;", "&quot;", "&lt;", "&gt;"):
+        assert needle in body
+
+
+def test_toolbox_wraps_whatever_is_already_registered_not_the_unreal_public_api():
+    """The pre-existing guard (`if (Blockly.Procedures && typeof
+    Blockly.Procedures.flyoutCategory === 'function')`) assumed a public
+    dotted API that doesn't actually exist in this vendored build -- the
+    only occurrence of that exact string anywhere in blocks_compressed.js
+    is inside a deprecation-warning MESSAGE, not real code (confirmed by
+    grep). The fix reads back whatever workspace.getToolboxCategoryCallback
+    already has registered for "PROCEDURE" (self-registered by the
+    vendored core at workspace construction, confirmed separately) and
+    wraps THAT, with the old check kept only as a defensive fallback."""
+    body = _ws_source()
+    assert "workspace.getToolboxCategoryCallback(procedureCategoryName)" in body
+    assert "workspace.registerToolboxCategoryCallback(procedureCategoryName, function(ws) {" in body
+    assert "buildSharedCustomBlockFlyoutItems(ws)" in body
+
+
+def test_vendored_flyoutcategory_string_is_only_ever_a_warning_message():
+    """Pins the finding that justified the fix above -- if a future
+    Blockly upgrade ever makes Blockly.Procedures.flyoutCategory real
+    public API, this test (not a runtime surprise) is what should catch
+    the vendored-source assumption going stale. The literal string lives
+    in blockly_compressed.js (the core engine), not blocks_compressed.js
+    (the block definitions) -- confirmed by grep before writing this."""
+    src = BLOCKLY_COMPRESSED.read_text(encoding="utf-8")
+    idx = src.find("Blockly.Procedures.flyoutCategory")
+    assert idx != -1, "expected the string to still exist at least once"
+    assert "deprecat" in src[max(0, idx - 200):idx].lower()
+
+
+def test_blockly_api_exposes_the_new_sharing_entry_points():
+    body = _ws_source()
+    assert "setSharedCustomBlocks: setSharedCustomBlocks" in body
+    assert "getCustomBlocksExport: function() { return generateCustomBlocksExportJson(workspace); }" in body
 
 
 def test_procedures_blocks_have_a_fallback_case_for_unsupported_positions():

@@ -1269,6 +1269,41 @@ class ProjectManager(QObject):
         """Check if the project has unsaved changes (compatibility method)"""
         return self.is_dirty_flag
 
+    def update_custom_blocks_registry(self, source_object: str, exported_defs: Optional[dict]):
+        """Merge one object's exported "My Blocks" definitions into the
+        project-wide registry (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's
+        2026-10-22 project-wide-sharing follow-up).
+
+        current_project_data['custom_blocks'] is a plain top-level key
+        (not under 'assets' -- it's derived metadata about objects'
+        Blockly workspaces, not an asset type of its own), so it rides
+        through save/load for free: load_project does a wholesale
+        ``self.current_project_data = project_data`` with no key
+        allowlist, and _prepare_project_data_for_save only ever mutates
+        specific 'assets' subtrees, never filters other top-level keys.
+
+        Called from core/ide/_editor_lifecycle.py's on_editor_save_requested
+        whenever an object is saved -- NOT live on every keystroke (no
+        cross-tab broadcast; see blockly_generators.js's own comment on
+        SHARED_CUSTOM_BLOCKS for why that's an accepted, documented
+        limitation rather than an oversight). Every existing registry
+        entry previously sourced from this object is replaced wholesale
+        (it may have renamed/deleted a definition since the last save);
+        entries sourced from every OTHER object are left untouched.
+        """
+        if self.current_project_data is None:
+            return
+        registry = self.current_project_data.setdefault('custom_blocks', {})
+        for stale_name in [name for name, entry in registry.items()
+                            if isinstance(entry, dict) and entry.get('source_object') == source_object]:
+            del registry[stale_name]
+        for name, entry in (exported_defs or {}).items():
+            if not isinstance(entry, dict):
+                continue
+            merged_entry = dict(entry)
+            merged_entry['source_object'] = source_object
+            registry[name] = merged_entry
+        self.mark_dirty()
 
     def save_project_as(self, new_path: Path) -> bool:
         """Save project to a new location"""

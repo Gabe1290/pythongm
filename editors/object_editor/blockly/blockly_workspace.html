@@ -1979,21 +1979,46 @@
             theme: darkTheme
         });
 
-        // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2 ("My Blocks"):
-        // the vendored Blockly core appears to self-register this
-        // callback on every workspace already (confirmed in lib/
-        // blockly_compressed.js: a `this.registerToolboxCategoryCallback(
-        // ..., internalFlyoutCategory...)` call reached from workspace
-        // construction) -- this explicit call is a harmless, defensive
-        // safety net in case that self-registration doesn't fire for any
-        // reason, not load-bearing on its own; registerToolboxCategoryCallback
-        // just overwrites a name's callback, so calling it twice is safe.
+        // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md Feature 2 ("My Blocks"), and
+        // the 2026-10-22 project-wide-sharing follow-up: the vendored
+        // Blockly core self-registers a "PROCEDURE" category callback on
+        // every workspace already (confirmed in lib/blockly_compressed.js:
+        // a `this.registerToolboxCategoryCallback(CATEGORY_NAME...,
+        // internalFlyoutCategory...)` call reached from workspace
+        // construction, and workspace.getToolboxCategoryCallback/
+        // registerToolboxCategoryCallback are real, unmangled WorkspaceSvg
+        // prototype methods -- NOT Blockly.Procedures.flyoutCategory as a
+        // public dotted property, which turned out NOT to be real: the
+        // only occurrence of that exact string in the vendored library is
+        // inside a deprecation-warning MESSAGE, not actual code). So
+        // rather than assume our own replacement callback and call the
+        // (likely nonexistent) public function, this reads back whatever
+        // is ALREADY registered for "PROCEDURE" and wraps it, appending
+        // flyout entries for every project-wide SHARED custom block
+        // (blockly_generators.js's buildSharedCustomBlockFlyoutItems) so a
+        // block defined in another object can actually be dragged in here
+        // too -- without this, mergeSharedCustomBlockDefs's codegen-side
+        // merge would be unreachable in practice, since a
+        // procedures_callnoreturn/callreturn block can only be authored by
+        // dragging one from this exact flyout.
         try {
-            if (Blockly.Procedures && typeof Blockly.Procedures.flyoutCategory === 'function') {
-                workspace.registerToolboxCategoryCallback(
-                    Blockly.PROCEDURE_CATEGORY_NAME || 'PROCEDURE',
-                    Blockly.Procedures.flyoutCategory
-                );
+            var procedureCategoryName = Blockly.PROCEDURE_CATEGORY_NAME || 'PROCEDURE';
+            if (typeof workspace.getToolboxCategoryCallback === 'function') {
+                var originalProcedureFlyout = workspace.getToolboxCategoryCallback(procedureCategoryName);
+                if (typeof originalProcedureFlyout === 'function') {
+                    workspace.registerToolboxCategoryCallback(procedureCategoryName, function(ws) {
+                        var items = originalProcedureFlyout(ws) || [];
+                        return items.concat(buildSharedCustomBlockFlyoutItems(ws));
+                    });
+                } else if (Blockly.Procedures && typeof Blockly.Procedures.flyoutCategory === 'function') {
+                    // Defensive fallback in case a future Blockly build
+                    // really does expose flyoutCategory publicly and
+                    // self-registration ever stops happening.
+                    workspace.registerToolboxCategoryCallback(procedureCategoryName, function(ws) {
+                        var items = Blockly.Procedures.flyoutCategory(ws) || [];
+                        return items.concat(buildSharedCustomBlockFlyoutItems(ws));
+                    });
+                }
             }
         } catch (e) {
             console.warn('My Blocks (procedures) category callback not available:', e);
@@ -3831,7 +3856,14 @@
             setAssetLists: setAssetLists,
             // NEW: Lock/unlock block editing (docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md, U0)
             setLocked: setLocked,
-            isLocked: function() { return workspaceLocked; }
+            isLocked: function() { return workspaceLocked; },
+            // Project-wide custom block sharing (docs/
+            // BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up):
+            // receives the project-level registry (blockly_widget.py's
+            // push_shared_custom_blocks) and exports this workspace's own
+            // definitions for Python to fold back into it.
+            setSharedCustomBlocks: setSharedCustomBlocks,
+            getCustomBlocksExport: function() { return generateCustomBlocksExportJson(workspace); }
         };
     </script>
 </body>

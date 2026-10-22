@@ -21,14 +21,15 @@ function generatePyGameMakerCode(workspace) {
     // order on the canvas. procedures_defnoreturn/defreturn blocks are
     // themselves skipped by getEventType's default case below (no case
     // names them), so a definition never produces its own spurious event.
-    var customBlockDefs = indexCustomBlockDefs(workspace);
-    // Reporter (procedures_callreturn) resolution reads this module-level
-    // mirror from inside getInputValue/evaluateValueBlock, which aren't
+    // prepareCustomBlockDefsForGeneration merges in every project-wide
+    // SHARED definition (another object's own custom blocks, pushed into
+    // this page via setSharedCustomBlocks) alongside this workspace's own
+    // local ones, and seeds the module-level reporter-resolution state
+    // (CURRENT_CUSTOM_BLOCK_DEFS/CURRENT_REPORTER_CALL_STACK) that
+    // getInputValue/evaluateValueBlock read from, since they aren't
     // threaded customBlockDefs as a parameter (see the big comment above
-    // evaluateCustomBlockReporterCall). Reset the call stack here too, so
-    // a stale entry can never survive across two separate generation runs.
-    CURRENT_CUSTOM_BLOCK_DEFS = customBlockDefs;
-    CURRENT_REPORTER_CALL_STACK = [];
+    // evaluateCustomBlockReporterCall).
+    var customBlockDefs = prepareCustomBlockDefsForGeneration(workspace).merged;
 
     for (var i = 0; i < topBlocks.length; i++) {
         var block = topBlocks[i];
@@ -162,6 +163,209 @@ function generateBlockCode(eventBlock, customBlockDefs) {
 // fully prevented by callStack/CURRENT_REPORTER_CALL_STACK below.
 var MAX_CUSTOM_BLOCK_EXPANSION_DEPTH = 50;
 
+// ----------------------------------------------------------------------
+// PROJECT-WIDE CUSTOM BLOCK SHARING (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md,
+// 2026-10-22 follow-up)
+// ----------------------------------------------------------------------
+//
+// Each object's Blockly workspace lives on its own separate page with its
+// own isolated JS state (confirmed against editors/object_editor/
+// blockly_widget.py / object_editor_main.py: workspace XML is saved and
+// loaded per object, and nothing ever merges another object's blocks into
+// this one) -- so without this, a custom block defined in object A is
+// completely invisible when editing object B, contradicting this
+// feature's own original design decision ("Scope: project-level...
+// shared by every object"). SHARED_CUSTOM_BLOCKS holds the project-wide
+// registry Python maintains (core/project_manager.py's
+// update_custom_blocks_registry, called whenever an object is saved) in
+// current_project_data['custom_blocks'], pushed into this page via
+// setSharedCustomBlocks at load time (blockly_widget.py's
+// push_shared_custom_blocks) -- so even an object whose own editor has
+// never been opened this session still has its blocks available,
+// because the registry is read from the already-loaded project data, not
+// from any other object's live workspace.
+//
+// Each registry entry is a fully pre-resolved TEMPLATE: its own nested
+// calls already expanded (via generateCustomBlocksExportJson, run inside
+// the SOURCE object's own workspace the last time IT generated code),
+// with only that definition's own {{PYGM_ARG:<name>}} placeholders left
+// unsubstituted so a future call site -- in this object or any other --
+// can still supply its own argument values. This is why a shared
+// definition never needs the calling page's own Blockly blocks to
+// resolve: expandCustomBlockCall/evaluateCustomBlockReporterCall treat a
+// null bodyBlock/returnBlock (the merged-in shape below) as a signal to
+// use bodyActionsTemplate/returnExprTemplate directly instead of walking
+// real blocks.
+//
+// Known limitation, by design rather than oversight: because each
+// object's export is computed independently from whatever snapshot of
+// OTHER objects' templates was pushed into its page at ITS last save,
+// there's no live cross-tab broadcast -- a block changed in object A
+// becomes visible to object B once B's editor is next opened (or
+// reopened), not instantly while both are open simultaneously. A genuine
+// cross-object cycle (A's block calls B's which calls back into A's) is
+// consequently never a crash risk (nothing recomputes recursively across
+// objects at generation time, since each side only ever consumes an
+// already-resolved template, never a live block) -- at worst a call sees
+// a one-generation-stale template, never an infinite loop. A same-object
+// cycle is still actively caught by callStack/CURRENT_REPORTER_CALL_STACK
+// exactly as before; this only concerns the cross-object case those
+// can't see.
+var SHARED_CUSTOM_BLOCKS = {};
+
+// Called from blocklyApi.setSharedCustomBlocks (blockly_widget.py's
+// push_shared_custom_blocks). Safe to call repeatedly; the project-wide
+// registry is always replaced wholesale, never merged incrementally.
+function setSharedCustomBlocks(json) {
+    try {
+        SHARED_CUSTOM_BLOCKS = JSON.parse(json) || {};
+    } catch (e) {
+        SHARED_CUSTOM_BLOCKS = {};
+    }
+    return Object.keys(SHARED_CUSTOM_BLOCKS).length;
+}
+
+// Merges this workspace's own local definitions (indexCustomBlockDefs'
+// own return value -- unchanged, still local-only) with every
+// project-wide shared definition from SHARED_CUSTOM_BLOCKS, in the shape
+// expandCustomBlockCall/evaluateCustomBlockReporterCall already expect. A
+// LOCAL definition always wins on a name collision: nothing stops two
+// objects naming a block the same (Blockly's own duplicate-name
+// prevention -- findLegalName -- is workspace-local only), so a genuine
+// cross-object collision resolves to "whichever object saved to the
+// registry most recently wins" for every OTHER object calling it -- a
+// known, documented sharp edge, not a crash risk.
+function mergeSharedCustomBlockDefs(localDefs) {
+    var merged = {};
+    for (var sharedName in SHARED_CUSTOM_BLOCKS) {
+        var entry = SHARED_CUSTOM_BLOCKS[sharedName];
+        if (!entry) continue;
+        merged[sharedName] = {
+            argNames: entry.arg_names || [],
+            bodyBlock: null,
+            returnBlock: null,
+            isReporter: !!entry.is_reporter,
+            bodyActionsTemplate: entry.body_actions || [],
+            returnExprTemplate: (entry.return_expr !== undefined) ? entry.return_expr : null
+        };
+    }
+    for (var localName in localDefs) {
+        merged[localName] = localDefs[localName];
+    }
+    return merged;
+}
+
+// Indexes local defs, merges in shared ones, and (re)seeds the
+// module-level reporter-resolution state in one place, so
+// generatePyGameMakerCode and generateCustomBlocksExportJson can never
+// prepare customBlockDefs differently from each other.
+function prepareCustomBlockDefsForGeneration(workspace) {
+    var localDefs = indexCustomBlockDefs(workspace);
+    var merged = mergeSharedCustomBlockDefs(localDefs);
+    CURRENT_CUSTOM_BLOCK_DEFS = merged;
+    CURRENT_REPORTER_CALL_STACK = [];
+    return {local: localDefs, merged: merged};
+}
+
+// The project-wide-sharing counterpart to generatePyGameMakerCode: for
+// every LOCAL definition on this workspace only (never a merged-in
+// shared one -- re-exporting a pass-through copy of another object's
+// own block would be redundant and could only ever go stale sooner),
+// pre-resolve it ONCE into a template using the exact same walkActionChain/
+// evaluateValueBlock machinery a real call site uses, so its own nested
+// calls are already expanded -- just with this definition's OWN
+// {{PYGM_ARG:<name>}} placeholders left unsubstituted for a future call
+// site to fill in. Returns a JSON string; blocklyApi.getCustomBlocksExport
+// (mirroring getXml's own cached-pull pattern in blockly_widget.py) is
+// how Python retrieves it.
+function generateCustomBlocksExportJson(workspace) {
+    var prepared = prepareCustomBlockDefsForGeneration(workspace);
+    var exported = {};
+    for (var name in prepared.local) {
+        var def = prepared.local[name];
+        exported[name] = {
+            arg_names: def.argNames,
+            is_reporter: def.isReporter,
+            body_actions: walkActionChain(def.bodyBlock, prepared.merged, [name]),
+            return_expr: (def.isReporter && def.returnBlock)
+                ? evaluateValueBlock(def.returnBlock, '')
+                : null
+        };
+    }
+    return JSON.stringify(exported);
+}
+
+// The "My Blocks" flyout's own counterpart to the codegen merge above:
+// Blockly.Procedures.allProcedures only ever sees THIS workspace's own
+// local blocks, so without this, a shared definition from another
+// object could be CALLED (via the codegen merge above) but never
+// actually DRAGGED IN in the first place -- making it entirely
+// unreachable in practice, since a procedures_callnoreturn/callreturn
+// block can only be authored by dragging one from this flyout (Blockly
+// has no other way to create one). Returns an array of <block> XML
+// Elements in the exact shape Blockly's own internalFlyoutCategory
+// produces for a local definition -- confirmed against the vendored
+// source's xmlFlyoutCategory function: <block type="procedures_call(no)
+// return" gap="16"><mutation name="..."><arg name="..."/>...</mutation>
+// </block> -- parsed via the same Blockly.utils.xml.textToDom this file's
+// own workspace loader already uses elsewhere, so a dragged-in shared
+// call block is indistinguishable from a local one to the rest of
+// Blockly's own call-site-sync machinery (mutationToDom/domToMutation).
+// Skips any shared name that collides with a LOCAL definition (which
+// already gets its own real flyout entry from the wrapped original
+// callback; showing it twice would be confusing, and
+// mergeSharedCustomBlockDefs already means local wins at the codegen
+// level too, so the two must agree).
+function buildSharedCustomBlockFlyoutItems(ws) {
+    var names = Object.keys(SHARED_CUSTOM_BLOCKS || {});
+    if (names.length === 0) return [];
+
+    var localNames = {};
+    try {
+        if (window.Blockly && Blockly.Procedures && typeof Blockly.Procedures.allProcedures === 'function') {
+            var procs = Blockly.Procedures.allProcedures(ws);
+            procs[0].concat(procs[1]).forEach(function(p) { localNames[p[0]] = true; });
+        } else {
+            // allProcedures isn't reliably exposed as public dotted API in
+            // this vendored build (the same reason the pre-existing
+            // Blockly.Procedures.flyoutCategory guard below is defensive,
+            // not assumed) -- fall back to indexCustomBlockDefs, which
+            // this file already trusts for the same "what's defined
+            // locally" answer.
+            localNames = indexCustomBlockDefs(ws);
+        }
+    } catch (e) { /* on any failure, show every shared block rather than hide all of them */ }
+
+    var xmlParts = [];
+    for (var i = 0; i < names.length; i++) {
+        var name = names[i];
+        if (localNames[name]) continue;
+        var entry = SHARED_CUSTOM_BLOCKS[name];
+        if (!entry) continue;
+        var blockType = entry.is_reporter ? 'procedures_callreturn' : 'procedures_callnoreturn';
+        var argsXml = (entry.arg_names || []).map(function(argName) {
+            return '<arg name="' + escapeCustomBlockXmlAttr(argName) + '"></arg>';
+        }).join('');
+        xmlParts.push(
+            '<block type="' + blockType + '" gap="16">' +
+            '<mutation name="' + escapeCustomBlockXmlAttr(name) + '">' + argsXml + '</mutation>' +
+            '</block>'
+        );
+    }
+    if (xmlParts.length === 0) return [];
+    try {
+        var dom = Blockly.utils.xml.textToDom('<xml>' + xmlParts.join('') + '</xml>');
+        return Array.prototype.slice.call(dom.childNodes);
+    } catch (e) {
+        return [];
+    }
+}
+
+function escapeCustomBlockXmlAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+                     .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 // Every procedures_defnoreturn/procedures_defreturn block on the
 // workspace, keyed by name -> {argNames: [...], bodyBlock: <first body
 // block, or null if empty>, returnBlock: <the RETURN value's block, or
@@ -254,7 +458,15 @@ function expandCustomBlockCall(callBlock, customBlockDefs, callStack) {
         argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
     }
 
-    var bodyActions = walkActionChain(def.bodyBlock, customBlockDefs, callStack.concat([name]));
+    // A local definition has a real bodyBlock to walk; a project-wide
+    // SHARED one (mergeSharedCustomBlockDefs) carries null bodyBlock/
+    // returnBlock and a pre-resolved bodyActionsTemplate instead -- its
+    // own nested calls were already expanded when the SOURCE object last
+    // exported it (generateCustomBlocksExportJson), so there's nothing
+    // further to walk here.
+    var bodyActions = def.bodyBlock
+        ? walkActionChain(def.bodyBlock, customBlockDefs, callStack.concat([name]))
+        : (def.bodyActionsTemplate || []);
     return bodyActions.map(function(action) {
         return substituteCustomBlockArgs(action, argValues);
     });
@@ -291,8 +503,8 @@ function substituteCustomBlockArgs(value, argValues) {
 // Reporter (procedures_defreturn/procedures_callreturn) resolution --
 // module-level rather than threaded through getInputValue's ~60 existing
 // call sites (see the big comment block above). Set once per generation
-// run by generatePyGameMakerCode, right alongside the customBlockDefs
-// index it already builds.
+// (or export) run by prepareCustomBlockDefsForGeneration, which both
+// generatePyGameMakerCode and generateCustomBlocksExportJson call.
 var CURRENT_CUSTOM_BLOCK_DEFS = {};
 var CURRENT_REPORTER_CALL_STACK = [];
 
@@ -321,7 +533,15 @@ function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
     if (CURRENT_REPORTER_CALL_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) {
         return '{{PYGM_REPORTER_TOO_DEEP:' + name + '}}';
     }
-    if (def.bodyBlock) {
+    // A local definition carries a real bodyBlock/returnBlock pair; a
+    // project-wide SHARED one (mergeSharedCustomBlockDefs) carries null
+    // for both and a pre-resolved returnExprTemplate instead -- "has
+    // side-effecting statements" / "has a return expression" are
+    // answered from whichever shape this def actually is.
+    var hasSideEffectingBody = def.bodyBlock
+        ? true
+        : !!(def.bodyActionsTemplate && def.bodyActionsTemplate.length);
+    if (hasSideEffectingBody) {
         // The reporter's own STACK has statements before its RETURN
         // value -- an inherent limitation of this action-based
         // architecture, not a v1 scoping choice: there is no mechanism
@@ -330,7 +550,10 @@ function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
         // dropping the side effects or silently treating the call as 0.
         return '{{PYGM_REPORTER_SIDE_EFFECTS:' + name + '}}';
     }
-    if (!def.returnBlock) {
+    var hasReturnExpr = def.bodyBlock
+        ? !!def.returnBlock
+        : (def.returnExprTemplate !== null && def.returnExprTemplate !== undefined);
+    if (!hasReturnExpr) {
         // An empty RETURN socket -- Blockly's own procedures_ifreturn
         // warning mechanism already flags this on the definition block
         // itself (PROCEDURES_IFRETURN_WARNING); nothing more useful to
@@ -344,7 +567,9 @@ function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
     }
 
     CURRENT_REPORTER_CALL_STACK.push(name);
-    var exprValue = evaluateValueBlock(def.returnBlock, defaultValue);
+    var exprValue = def.bodyBlock
+        ? evaluateValueBlock(def.returnBlock, defaultValue)
+        : def.returnExprTemplate;
     CURRENT_REPORTER_CALL_STACK.pop();
 
     return substituteCustomBlockArgs(exprValue, argValues);

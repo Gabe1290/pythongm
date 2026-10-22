@@ -1087,6 +1087,20 @@ class ObjectEditor(BaseEditor):
             except Exception as e:
                 logger.debug(f"Could not get Blockly workspace: {e}")
 
+            # Transient (not persisted on the object itself): this
+            # object's own exported "My Blocks" definitions, for
+            # on_editor_save_requested (core/ide/_editor_lifecycle.py) to
+            # fold into the project-wide registry
+            # (current_project_data['custom_blocks']) and strip back out
+            # before the object's own record is saved. docs/
+            # BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up.
+            try:
+                custom_blocks_export = self.blockly_tab.get_custom_blocks_export()
+                if custom_blocks_export:
+                    object_data['_custom_blocks_export'] = custom_blocks_export
+            except Exception as e:
+                logger.debug(f"Could not get custom blocks export: {e}")
+
         return object_data
 
     def validate_data(self) -> tuple[bool, str]:

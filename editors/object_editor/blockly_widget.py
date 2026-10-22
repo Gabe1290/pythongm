@@ -218,6 +218,14 @@ class BlocklyWidget(QWidget):
         # returned "" and the Blockly layout was never saved (audit M16).
         self._last_xml = ""
 
+        # Project-wide custom block sharing (docs/
+        # BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up): this
+        # workspace's own definitions, pre-resolved to templates, refreshed
+        # asynchronously the same way _last_xml is -- get_custom_blocks_export
+        # returns this cached value synchronously for the same reason
+        # get_workspace_xml does.
+        self._last_custom_blocks_export: Dict[str, Any] = {}
+
         # Debounce timer for auto-apply: dragging a block fires many BLOCK_MOVE
         # events; coalesce them into a single events-panel update once the user
         # has stopped editing for a moment.
@@ -335,6 +343,12 @@ class BlocklyWidget(QWidget):
             # Push project asset lists into Blockly so the dropdown fields
             # (object/sprite/sound/room) show real choices from this project.
             self.push_asset_lists()
+
+            # Same for the project-wide custom-block registry (docs/
+            # BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up) --
+            # another object's "My Blocks" definitions, so this workspace
+            # can call them too.
+            self.push_shared_custom_blocks()
 
             # Apply saved configuration to toolbox
             self._apply_saved_configuration()
@@ -491,6 +505,11 @@ class BlocklyWidget(QWidget):
             self._auto_apply_timer.start()
             # Keep the saved-XML cache current with the user's edits (audit M16)
             self._refresh_cached_xml()
+            # Same pattern for this workspace's own exported custom blocks
+            # (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up) --
+            # a renamed/added/removed "My Blocks" definition should be
+            # reflected the next time this object is saved.
+            self._refresh_cached_custom_blocks_export()
             self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
         except json.JSONDecodeError as e:
             # Keep self.events_data at the last successful parse so a transient
@@ -552,6 +571,68 @@ class BlocklyWidget(QWidget):
         self._refresh_cached_xml()
         return cached
 
+    def _refresh_cached_custom_blocks_export(self):
+        """Asynchronously pull this workspace's own exported "My Blocks"
+        definitions (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22
+        follow-up) into self._last_custom_blocks_export.
+
+        Exact mirror of _refresh_cached_xml's own cached-pull pattern, for
+        the same reason: runJavaScript's result callback fires on a later
+        event-loop turn, so a synchronous save path can't await it."""
+        if not self._page_ready:
+            return
+
+        def _store(result):
+            if not result:
+                return
+            try:
+                parsed = json.loads(result)
+                if isinstance(parsed, dict):
+                    self._last_custom_blocks_export = parsed
+            except json.JSONDecodeError as e:
+                logger.debug(f"_refresh_cached_custom_blocks_export: bad JSON: {e}")
+
+        try:
+            self.web_view.page().runJavaScript(
+                "window.blocklyApi.getCustomBlocksExport()",
+                _store,
+            )
+        except Exception as e:
+            logger.debug(f"_refresh_cached_custom_blocks_export failed: {e}")
+
+    def get_custom_blocks_export(self) -> Dict[str, Any]:
+        """Return this workspace's own cached custom-block export (for
+        saving) -- mirrors get_workspace_xml's synchronous-by-necessity
+        cached-value pattern exactly."""
+        cached = self._last_custom_blocks_export
+        self._refresh_cached_custom_blocks_export()
+        return cached
+
+    def push_shared_custom_blocks(self):
+        """Push the project-wide custom-block registry (docs/
+        BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up) into this
+        workspace, so "My Blocks" (both the toolbox flyout and code
+        generation) can see every OTHER object's definitions too, not just
+        this object's own. Safe to call repeatedly; local definitions
+        always win on a name collision (mergeSharedCustomBlockDefs in
+        blockly_generators.js), so pushing this object's own
+        previously-saved entries back in unfiltered is harmless."""
+        if not self._page_ready:
+            return
+        try:
+            project_data = self._find_project_data()
+            registry = (project_data or {}).get('custom_blocks') or {}
+            payload = json.dumps(registry)
+            script = (
+                "(function(){"
+                "if (window.blocklyApi && typeof window.blocklyApi.setSharedCustomBlocks === 'function') {"
+                f"return window.blocklyApi.setSharedCustomBlocks({payload});"
+                "} return 0; })()"
+            )
+            self.web_view.page().runJavaScript(script)
+        except Exception as e:
+            logger.debug(f"push_shared_custom_blocks failed: {e}")
+
     def load_workspace_xml(self, xml: str):
         """Load workspace from XML"""
         if not xml:
@@ -582,8 +663,11 @@ class BlocklyWidget(QWidget):
         # ready, matching load_events_data's own belt-and-braces re-push --
         # an object/sprite/room created or renamed after this tab first
         # became ready would otherwise leave the asset lists stale for any
-        # later load on the same already-open tab.
+        # later load on the same already-open tab. Same for the project-wide
+        # custom-block registry, so a call block referencing a shared
+        # definition resolves on the very next generation after load.
         self.push_asset_lists()
+        self.push_shared_custom_blocks()
 
         self._loading = True
         # Escape the XML for JavaScript
@@ -599,6 +683,7 @@ class BlocklyWidget(QWidget):
             # save before any further edit still persists it (audit M16).
             self._last_xml = xml
             self._refresh_cached_xml()
+            self._refresh_cached_custom_blocks_export()
 
         self.web_view.page().runJavaScript(
             f"window.blocklyApi.loadXml('{escaped_xml}')",
@@ -1031,6 +1116,12 @@ class BlocklyVisualProgrammingTab(QWidget):
     def load_workspace_xml(self, xml: str):
         """Load workspace from XML"""
         self.blockly_widget.load_workspace_xml(xml)
+
+    def get_custom_blocks_export(self) -> Dict[str, Any]:
+        """Get this object's exported custom-block definitions for saving
+        into the project-wide registry (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md,
+        2026-10-22 follow-up)."""
+        return self.blockly_widget.get_custom_blocks_export()
 
     def push_asset_lists(self):
         """Refresh the dropdown choices for object/sprite/sound/room fields

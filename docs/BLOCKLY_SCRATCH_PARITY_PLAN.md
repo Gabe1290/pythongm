@@ -433,6 +433,140 @@ list, resolved in the same `blockly_generators.js`:
   tier as the rest of this feature — **still genuinely unverified in a
   real browser**, same caveat as the rest of Feature 2.
 
+#### Follow-up: project-wide sharing (item 6) — ✅ DONE 2026-10-22
+
+A retrospective note from the session that built Feature 2 described
+"per-object custom blocks" as deferred because the shipped feature was
+already "project-wide/shared." **That description was never actually
+true, and this follow-up is what makes it true.** Verified by reading
+`editors/object_editor/blockly_widget.py`/`object_editor_main.py` before
+writing any code: each object's Blockly workspace is its own separate
+page with its own isolated JS state — the workspace XML is saved into
+and loaded from THAT object's own `object_data['blockly_workspace']`
+field, and nothing anywhere merged another object's blocks in. So a
+custom block defined in object A was, in fact, 100% invisible when
+editing object B — the opposite of "shared" — contradicting this
+feature's own original design decision ("Scope: project-level... shared
+by every object"). Confirmed with the user before building a feature
+this size on a corrected premise (see the session's own clarifying
+question): build the real thing, not just fix the doc.
+
+- **Persistence — a plain top-level project key, no new save/load
+  plumbing needed.** `current_project_data['custom_blocks']` (NOT under
+  `assets` — it's derived metadata about objects' Blockly workspaces, not
+  an asset type of its own) rides through `save_project`/`load_project`
+  for free: `load_project` does a wholesale `self.current_project_data =
+  project_data` with no key allowlist, and `_prepare_project_data_for_save`
+  only ever mutates specific `assets` subtrees, never filters other
+  top-level keys. `ProjectManager.update_custom_blocks_registry(
+  source_object, exported_defs)` (`core/project_manager.py`) is the only
+  write path: replaces every existing entry previously sourced from
+  `source_object` (so a renamed/deleted definition doesn't linger) and
+  leaves every other object's entries untouched.
+- **No live cross-tab broadcast — a deliberate, documented
+  simplification, not an oversight.** The registry updates only when an
+  object is SAVED (`core/ide/_editor_lifecycle.py`'s
+  `on_editor_save_requested`, which pops a transient
+  `object_data['_custom_blocks_export']` key — attached by
+  `object_editor_main.py`'s `get_data()` — and folds it in before the
+  object's own record continues through the ordinary save), not live on
+  every keystroke. So a block changed in object A becomes visible to
+  object B once B's editor is next opened (or reopened), not instantly
+  while both are open simultaneously. Reads never depend on any other
+  object's editor being open at all, which is the thing that makes this
+  tractable: `current_project_data['custom_blocks']` is already fully
+  populated from disk the moment a project loads, long before any
+  individual object's editor is lazily constructed.
+- **Each registry entry is a pre-resolved TEMPLATE, computed once by the
+  SOURCE object's own workspace.** `generateCustomBlocksExportJson`
+  (`blockly_generators.js`) re-walks each of a workspace's own LOCAL
+  definitions through the exact same `walkActionChain`/`evaluateValueBlock`
+  machinery a real call site uses, so the definition's own nested calls
+  are already expanded — only that definition's OWN
+  `{{PYGM_ARG:<name>}}` placeholders are left unsubstituted, for a future
+  call site (in this object or any other) to fill in. This is why a
+  shared definition never needs the CALLING page's own Blockly blocks to
+  resolve: `expandCustomBlockCall`/`evaluateCustomBlockReporterCall` treat
+  a null `bodyBlock`/`returnBlock` (the shape `mergeSharedCustomBlockDefs`
+  builds for an entry from `SHARED_CUSTOM_BLOCKS`) as a signal to use
+  `bodyActionsTemplate`/`returnExprTemplate` directly instead of walking
+  real blocks that don't exist on this page.
+  - **Consequence, by design: a genuine cross-object cycle (A's block
+    calls B's which calls back into A's) is never a crash risk.** Nothing
+    recomputes recursively across objects at generation time — each side
+    only ever consumes an already-resolved template from a PRIOR save, so
+    at worst a call sees a one-generation-stale template, never an
+    infinite loop. A same-object cycle is still actively caught by
+    `callStack`/`CURRENT_REPORTER_CALL_STACK` exactly as the nesting
+    follow-up above built; this only concerns the cross-object case those
+    can't see in the first place.
+  - **Known sharp edge: a genuine cross-object name collision is
+    last-write-wins, not prevented.** Blockly's own duplicate-name guard
+    (`findLegalName`) is workspace-local only — nothing stops two objects
+    naming a block the same. `mergeSharedCustomBlockDefs` always lets a
+    LOCAL definition win over a shared one when generating THAT object's
+    own code, but across two objects that never locally define the same
+    name, whichever one saved to the registry most recently wins for
+    everyone else calling it. Documented, not silently surprising;
+    acceptable for a kid-focused IDE where names are meant to be
+    project-unique identifiers anyway.
+- **The toolbox flyout extension — without this, the whole mechanism
+  would be unreachable in practice.** A `procedures_callnoreturn`/
+  `callreturn` block can only ever be authored by dragging one out of the
+  "My Blocks" flyout; `Blockly.Procedures.allProcedures` (which drives
+  that flyout) only ever sees a workspace's own local blocks. So
+  `buildSharedCustomBlockFlyoutItems` (`blockly_generators.js`) appends
+  flyout entries for every project-wide shared definition not already
+  locally defined, in the exact XML shape confirmed against the vendored
+  source's `xmlFlyoutCategory` function (`<block type="procedures_call
+  (no)return" gap="16"><mutation name="..."><arg name="..."/></mutation>
+  </block>`), parsed via `Blockly.utils.xml.textToDom` (already used
+  elsewhere in this app's own loader, so not a new dependency on an
+  unverified API).
+  - **A real finding, not an assumption carried over from the original
+    Feature 2 session: `Blockly.Procedures.flyoutCategory` is NOT real
+    public dotted API in this vendored build.** The only occurrence of
+    that exact string anywhere in `blockly_compressed.js` is inside a
+    deprecation-warning MESSAGE, not actual code (confirmed by `grep`
+    before writing anything that depended on it) — meaning the ORIGINAL
+    Feature 2 session's defensive `if (Blockly.Procedures && typeof
+    Blockly.Procedures.flyoutCategory === 'function')` guard almost
+    certainly never actually ran, relying entirely on the vendored core's
+    own self-registration (confirmed separately: `this.
+    registerToolboxCategoryCallback(CATEGORY_NAME..., 
+    internalFlyoutCategory...)`, called from workspace construction).
+    Fixed properly this time: `workspace.getToolboxCategoryCallback`/
+    `registerToolboxCategoryCallback` ARE real, unmangled `WorkspaceSvg`
+    prototype methods (confirmed directly), so the new code reads back
+    whatever is ALREADY registered for `"PROCEDURE"` and wraps THAT,
+    keeping the old (likely-dead) check only as a defensive fallback in
+    case a future Blockly build ever makes `flyoutCategory` real public
+    API.
+- **Tests**: `tests/test_blockly_custom_blocks.py` extended further
+  (merge/template shape, the flyout XML shape and name-collision
+  skipping, the `Blockly.Procedures.flyoutCategory`-is-only-a-warning-
+  string finding pinned so a future Blockly upgrade that makes it real
+  gets caught instead of silently reintroducing the same dead-code risk).
+  New `tests/test_custom_blocks_sharing.py` (29 tests) covers the Python
+  side: the registry's merge/collision/dirty semantics including a REAL
+  save+load round trip proving `custom_blocks` survives on disk, every
+  new `BlocklyWidget` push/pull method (mirroring
+  `tests/test_blockly_workspace_xml.py`'s own cached-value pattern for
+  `get_workspace_xml`), and `on_editor_save_requested`'s wiring (unbound-
+  method-on-a-stub, mirroring `tests/test_room_editor_sprite_metadata_
+  refresh.py`'s established pattern for this exact method) including that
+  a raising registry update never blocks the object's own save. Full
+  suite: 6472 passed, 0 failed (the raycast smoke-test failures seen
+  mid-session were pre-existing timing flakiness, confirmed unrelated by
+  re-running them in isolation — no raycast/runtime code was touched).
+- **Needs human eyes, genuinely unverified — same standing caveat as the
+  rest of Feature 2**: nobody has watched two real object editors open
+  side by side, defined a block in one, reopened the other, and dragged
+  the shared call in from the flyout. The JS mechanics (merge shape,
+  flyout XML, the toolbox-callback read-and-wrap) are all grounded in the
+  vendored source rather than assumed, but none of it has executed in an
+  actual browser.
+
 ---
 
 ### Current state
@@ -523,6 +657,12 @@ only if a real teaching need for recursion shows up later.
   all sprites" vs. "for this sprite only"); starting project-wide
   (shared by every object) is simpler and avoids per-object duplication
   for v1. Revisit if students actually want object-local blocks.
+  ~~Note: v1's actual implementation never built the cross-object
+  sharing this decision called for — each object's workspace ended up
+  fully isolated by accident of its own save/load architecture, the
+  opposite of "shared."~~ **Corrected 2026-10-22** — see "Follow-up:
+  project-wide sharing (item 6)" above; real cross-object sharing is now
+  built, matching this original decision for real.
 - **Toolbox integration**: a new "My Blocks" category (the empty slot
   Feature 1's `TOOLBOX_CATEGORY_GROUPS` already reserves), populated via
   Blockly's own built-in `Blockly.Procedures.flyoutCategory` — which
@@ -602,7 +742,10 @@ preferences" section) rather than landing either as one large commit.
   — see "Follow-up: nesting + reporters" above (with the one real
   architectural limit it couldn't remove: a reporter whose own body has
   side-effecting statements, not just a return value).
-- Per-object custom blocks.
+- ~~Per-object custom blocks.~~ **Project-wide sharing DONE 2026-10-22**
+  — see "Follow-up: project-wide sharing (item 6)" above. The narrower
+  "for THIS object only" restriction mode (Scratch's other option)
+  remains genuinely out of scope, not revisited.
 - Redesigning the Thymio extension's own category set (8 categories,
   merged in separately via `register_block_categories`) — out of scope
   unless explicitly asked; it's a different audience/context than the

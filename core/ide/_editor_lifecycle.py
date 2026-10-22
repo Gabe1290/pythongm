@@ -514,6 +514,23 @@ class EditorLifecycleMixin:
             asset_data['name'] = asset_name
             asset_data['asset_type'] = asset_type_field  # SINGULAR form
 
+            # Project-wide custom block sharing (docs/
+            # BLOCKLY_SCRATCH_PARITY_PLAN.md, 2026-10-22 follow-up): an
+            # object editor's get_data() (editors/object_editor/
+            # object_editor_main.py) attaches this object's own exported
+            # "My Blocks" definitions under a transient key -- pop it out
+            # here (it's project-level metadata, not part of the object's
+            # own saved record) and fold it into the project-wide registry
+            # before the object's own data continues through the save
+            # below.
+            custom_blocks_export = asset_data.pop('_custom_blocks_export', None)
+            if custom_blocks_export is not None:
+                try:
+                    self.project_manager.update_custom_blocks_registry(
+                        asset_name, custom_blocks_export)
+                except Exception as e:
+                    logger.debug(f"update_custom_blocks_registry failed: {e}")
+
             # Re-check the asset's file now that its editor has (re)written it.
             # This heals a stale "(not imported)" / file_missing badge left from
             # a load when the file was still absent — e.g. a sprite whose art
