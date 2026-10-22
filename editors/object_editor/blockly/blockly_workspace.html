@@ -2038,6 +2038,46 @@
             });
         }
 
+        // docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up, item
+        // 7: "for THIS object only" -- Scratch's OTHER custom-block
+        // scoping option (project-wide sharing being the first, already
+        // built). Not exposed anywhere in the "Make a Block" dialog
+        // itself (that's vanilla Blockly here, not the scratch-blocks
+        // fork Scratch's own checkbox comes from), so a right-click entry
+        // on the definition block is the lowest-risk way to add it --
+        // same ContextMenuRegistry API already used just above for the
+        // junior-edition removals, exact field shape (displayText/
+        // preconditionFn/callback/scopeType/id/weight) confirmed against
+        // a real built-in registration (blockDelete) in the vendored
+        // source, not guessed. Automatically never shown for My Blocks'
+        // own junior exclusion (the category itself is absent there), so
+        // no extra ?junior=1 guard is needed on top.
+        try {
+            Blockly.ContextMenuRegistry.registry.register({
+                id: 'pygmToggleCustomBlockPrivate',
+                scopeType: Blockly.ContextMenuRegistry.ScopeType.BLOCK,
+                weight: 100,
+                preconditionFn: function(scope) {
+                    var block = scope.block;
+                    if (!block || (block.type !== 'procedures_defnoreturn' &&
+                                    block.type !== 'procedures_defreturn')) {
+                        return 'hidden';
+                    }
+                    return 'enabled';
+                },
+                displayText: function(scope) {
+                    return isCustomBlockPrivate(scope.block)
+                        ? 'Share this block with other objects'
+                        : 'Keep this block private to this object';
+                },
+                callback: function(scope) {
+                    toggleCustomBlockPrivate(scope.block);
+                }
+            });
+        } catch (e) {
+            console.warn('Custom-block private/shared toggle not available:', e);
+        }
+
         // Increase flyout bottom margin so the last block is fully visible when scrolling
         var flyout = workspace.getFlyout();
         if (flyout) {
@@ -2103,6 +2143,23 @@
         var ignoreChanges = false;  // Flag to prevent infinite loops during sync
         workspace.addChangeListener(function(event) {
             if (ignoreChanges || workspaceLocked) return;
+            // Project-wide custom-block name collisions (docs/
+            // BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up, item 6):
+            // real prevention, not just documentation of the sharp edge --
+            // guarded by the SAME ignoreChanges/workspaceLocked check above,
+            // so a programmatic workspace LOAD (which also fires
+            // BLOCK_CREATE/BLOCK_CHANGE for every restored block/field) never
+            // silently renames something a student already saved; this only
+            // ever fires for a genuine live edit.
+            if (event.type === Blockly.Events.BLOCK_CREATE) {
+                var createdType = _blockTypeOfCreateEvent(event);
+                if (createdType === 'procedures_defnoreturn' || createdType === 'procedures_defreturn') {
+                    disambiguateCustomBlockNameAgainstShared(event.blockId);
+                }
+            } else if (event.type === Blockly.Events.BLOCK_CHANGE &&
+                       event.element === 'field' && event.name === 'NAME') {
+                disambiguateCustomBlockNameAgainstShared(event.blockId);
+            }
             if (event.type == Blockly.Events.BLOCK_CHANGE ||
                 event.type == Blockly.Events.BLOCK_CREATE ||
                 event.type == Blockly.Events.BLOCK_DELETE ||
@@ -2113,6 +2170,22 @@
                 }
             }
         });
+
+        function _blockTypeOfCreateEvent(event) {
+            // A BLOCK_CREATE event's own .json carries the type of the block
+            // that was actually created (confirmed against the vendored
+            // BlockCreate event class: this.json = save(...) always includes
+            // "type") -- a cheap pre-filter so disambiguateCustomBlockName
+            // AgainstShared (blockly_generators.js) isn't called for every
+            // single block creation regardless of type.
+            try {
+                if (event.json && event.json.type) return event.json.type;
+                var block = workspace.getBlockById(event.blockId);
+                return block ? block.type : null;
+            } catch (e) {
+                return null;
+            }
+        }
 
         // ============ EVENTS TO BLOCKS CONVERTER (Bidirectional Sync) ============
 

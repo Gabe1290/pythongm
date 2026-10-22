@@ -201,6 +201,69 @@ def test_reporter_definitions_are_indexed_with_their_return_block():
     assert "returnBlock" in body
 
 
+def test_definitions_are_indexed_with_their_private_flag():
+    """2026-10-22 item 7: 'for THIS object only' is read straight off
+    the definition block, not stored anywhere else."""
+    src = _gen_source()
+    start = src.index("function indexCustomBlockDefs(workspace) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "isPrivate: isCustomBlockPrivate(block)" in body
+
+
+def test_is_and_toggle_custom_block_private_use_block_data():
+    """block.data is a plain string every Blockly Block already has and
+    that already round-trips through workspace XML save/load for free
+    (confirmed against the vendored blockToDom/domToBlock: both handle a
+    <data> child element) -- no new persistence mechanism needed, and no
+    mutator-field change to the vendored procedures_defnoreturn/defreturn
+    block definitions themselves."""
+    src = _gen_source()
+    start = src.index("function isCustomBlockPrivate(block) {")
+    end = src.index("\n}", start)
+    is_private_body = src[start:end]
+    assert "block.data === 'private'" in is_private_body
+
+    start = src.index("function toggleCustomBlockPrivate(block) {")
+    end = src.index("\n}", start)
+    toggle_body = src[start:end]
+    assert "block.data = wasPrivate ? null : 'private'" in toggle_body
+    # A plain property write fires no Blockly event on its own -- the
+    # toggle must fire one explicitly or nothing marks the workspace
+    # dirty / re-runs generation. BlockChange/fire/isEnabled confirmed as
+    # real Blockly.Events module members (not assumed).
+    assert "Blockly.Events.isEnabled()" in toggle_body
+    assert "new Blockly.Events.BlockChange(" in toggle_body
+    assert "Blockly.Events.fire(" in toggle_body
+
+
+def test_export_json_skips_private_definitions():
+    """A private definition must never reach update_custom_blocks_registry
+    at all -- skipped at export time, not filtered out on the Python
+    side."""
+    src = _gen_source()
+    start = src.index("function generateCustomBlocksExportJson(workspace) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "if (def.isPrivate) {\n            continue;\n        }" in body
+
+
+def test_context_menu_registers_the_private_toggle():
+    """Exact field shape (id/scopeType/weight/preconditionFn/displayText/
+    callback) confirmed against a real built-in Blockly registration
+    (blockDelete) in the vendored source, not guessed -- and reuses the
+    SAME Blockly.ContextMenuRegistry API the pre-existing junior-edition
+    right-click removals just above it already rely on."""
+    body = _ws_source()
+    start = body.index("id: 'pygmToggleCustomBlockPrivate'")
+    end = body.index("});", start)
+    section = body[start:end]
+    assert "scopeType: Blockly.ContextMenuRegistry.ScopeType.BLOCK" in section
+    assert "procedures_defnoreturn" in section and "procedures_defreturn" in section
+    assert "isCustomBlockPrivate(scope.block)" in section
+    assert "toggleCustomBlockPrivate(scope.block)" in section
+
+
 def test_definitions_never_produce_their_own_event():
     """procedures_defnoreturn has no case in getEventType's switch, so the
     default (return null) already skips it at the true top level -- no
@@ -242,7 +305,21 @@ def test_walk_action_chain_expands_calls_inline():
     assert "block.type === 'procedures_callnoreturn'" in body
     assert "expandCustomBlockCall(" in body
     # Every other block still goes through the ordinary single-action path.
-    assert "generateActionCode(block, customBlockDefs, callStack)" in body
+    assert "generateActionCode(block, customBlockDefs, callStack, hoisted)" in body
+
+
+def test_walk_action_chain_hoists_actions_for_both_branches():
+    """Reporter side-effect hoisting (2026-10-22, item 4): both the
+    procedures_callnoreturn branch and the ordinary-action branch set up
+    their own fresh hoist sink and splice its contents in BEFORE the
+    statement's own result."""
+    src = _gen_source()
+    start = src.index("function walkActionChain(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "CURRENT_HOIST_SINK = hoistedForCall" in body
+    assert "actions.concat(hoistedForCall).concat(expanded)" in body
+    assert "actions = actions.concat(hoisted);" in body
 
 
 def test_walk_action_chain_is_the_only_statement_chain_walker():
@@ -350,14 +427,31 @@ def test_reporter_call_resolution_covers_undefined_cycle_depth_and_side_effects(
     body = src[start:end]
     assert "!def || !def.isReporter" in body
     assert "{{PYGM_UNDEFINED_REPORTER:" in body
-    assert "CURRENT_REPORTER_CALL_STACK.indexOf(name) !== -1" in body
+    assert "CURRENT_EXPANSION_STACK.indexOf(name) !== -1" in body
     assert "{{PYGM_REPORTER_CYCLE:" in body
-    assert "CURRENT_REPORTER_CALL_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH" in body
+    assert "CURRENT_EXPANSION_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH" in body
     assert "{{PYGM_REPORTER_TOO_DEEP:" in body
     assert "def.bodyBlock" in body
     assert "{{PYGM_REPORTER_SIDE_EFFECTS:" in body
     assert "evaluateValueBlock(def.returnBlock, defaultValue)" in body
     assert "substituteCustomBlockArgs(exprValue, argValues)" in body
+
+
+def test_reporter_with_side_effects_is_hoisted_not_refused():
+    """The 2026-10-22 follow-up (item 4): a side-effecting reporter body
+    is walked/reused and pushed onto CURRENT_HOIST_SINK, substituted with
+    this call's own argument values -- "run the actions, then use the
+    value" -- rather than unconditionally returning the SIDE_EFFECTS
+    placeholder. That placeholder now only fires when there's no hoist
+    sink available at all (hasSideEffectingBody && !CURRENT_HOIST_SINK)."""
+    src = _gen_source()
+    start = src.index("function evaluateCustomBlockReporterCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "hasSideEffectingBody && !CURRENT_HOIST_SINK" in body
+    assert "CURRENT_HOIST_SINK.push(hoistedActions[h])" in body
+    assert "walkActionChain(def.bodyBlock, CURRENT_CUSTOM_BLOCK_DEFS," in body
+    assert "CURRENT_EXPANSION_STACK.slice()" in body
 
 
 def test_reporter_call_stack_is_pushed_and_popped_around_evaluation():
@@ -368,8 +462,8 @@ def test_reporter_call_stack_is_pushed_and_popped_around_evaluation():
     start = src.index("function evaluateCustomBlockReporterCall(")
     end = src.index("\n}", start)
     body = src[start:end]
-    assert "CURRENT_REPORTER_CALL_STACK.push(name)" in body
-    assert "CURRENT_REPORTER_CALL_STACK.pop()" in body
+    assert "CURRENT_EXPANSION_STACK.push(name)" in body
+    assert "CURRENT_EXPANSION_STACK.pop()" in body
 
 
 def test_generation_run_resets_the_reporter_module_state():
@@ -382,7 +476,8 @@ def test_generation_run_resets_the_reporter_module_state():
     end = src.index("\n}", start)
     body = src[start:end]
     assert "CURRENT_CUSTOM_BLOCK_DEFS = merged" in body
-    assert "CURRENT_REPORTER_CALL_STACK = []" in body
+    assert "CURRENT_EXPANSION_STACK = []" in body
+    assert "CURRENT_HOIST_SINK = null" in body
 
 
 def test_pygamemaker_code_and_export_share_the_same_preparation_function():
@@ -436,8 +531,21 @@ def test_expand_custom_block_call_uses_the_template_for_a_shared_def():
     start = src.index("function expandCustomBlockCall(")
     end = src.index("\n}", start)
     body = src[start:end]
-    assert "def.bodyBlock\n        ? walkActionChain" in body or "def.bodyBlock ? walkActionChain" in body
+    assert "def.bodyBlock\n            ? walkActionChain" in body or "def.bodyBlock ? walkActionChain" in body
     assert "def.bodyActionsTemplate || []" in body
+
+
+def test_expand_custom_block_call_mirrors_its_name_into_the_expansion_stack():
+    """2026-10-22 item 4: expandCustomBlockCall pushes/pops the SAME
+    CURRENT_EXPANSION_STACK a side-effecting reporter checks, so a cycle
+    crossing both mechanisms (A calls reporter R which calls A again) is
+    caught -- not just a same-mechanism A->A or R->R cycle."""
+    src = _gen_source()
+    start = src.index("function expandCustomBlockCall(")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "CURRENT_EXPANSION_STACK.push(name)" in body
+    assert "CURRENT_EXPANSION_STACK.pop()" in body
 
 
 def test_reporter_call_resolves_shared_templates_too():
@@ -545,6 +653,59 @@ def test_blockly_api_exposes_the_new_sharing_entry_points():
     body = _ws_source()
     assert "setSharedCustomBlocks: setSharedCustomBlocks" in body
     assert "getCustomBlocksExport: function() { return generateCustomBlocksExportJson(workspace); }" in body
+
+
+# ---------------------------------------------------------------------------
+# Live cross-object name-collision prevention (2026-10-22 follow-up, item 6)
+# ---------------------------------------------------------------------------
+
+def test_change_listener_checks_definition_create_and_name_change():
+    """Both ways a definition's name can end up colliding: a fresh
+    "Make a Block" (BLOCK_CREATE) and editing an existing one's NAME
+    field (BLOCK_CHANGE, element 'field', name 'NAME') -- both guarded by
+    the SAME ignoreChanges/workspaceLocked check already protecting
+    onBlocksChanged, so a programmatic workspace load never triggers
+    this."""
+    src = _ws_source()
+    start = src.index("workspace.addChangeListener(function(event) {")
+    end = src.index("\n        });", start)
+    body = src[start:end]
+    assert "if (ignoreChanges || workspaceLocked) return;" in body
+    assert "disambiguateCustomBlockNameAgainstShared(event.blockId)" in body
+    assert "event.type === Blockly.Events.BLOCK_CREATE" in body
+    assert "event.element === 'field' && event.name === 'NAME'" in body
+
+
+def test_block_create_event_type_is_read_from_its_own_json():
+    src = _ws_source()
+    start = src.index("function _blockTypeOfCreateEvent(event) {")
+    end = src.index("\n        }", start)
+    body = src[start:end]
+    assert "event.json && event.json.type" in body
+    assert "workspace.getBlockById(event.blockId)" in body
+
+
+def test_disambiguate_renames_and_warns_on_a_real_collision():
+    src = _gen_source()
+    start = src.index("function disambiguateCustomBlockNameAgainstShared(blockId) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "procedures_defnoreturn" in body and "procedures_defreturn" in body
+    assert "SHARED_CUSTOM_BLOCKS[name]" in body
+    # Loops to the next free "<name>_<n>" suffix, mirroring Blockly's own
+    # local findLegalName behaviour, extended to the shared registry.
+    assert "while (SHARED_CUSTOM_BLOCKS[candidate])" in body
+    assert "block.setFieldValue(candidate, 'NAME')" in body
+    assert "block.setWarningText(" in body
+    assert "existing.source_object" in body
+
+
+def test_disambiguate_is_a_noop_for_a_block_with_no_collision():
+    src = _gen_source()
+    start = src.index("function disambiguateCustomBlockNameAgainstShared(blockId) {")
+    end = src.index("\n}", start)
+    body = src[start:end]
+    assert "if (!existing) {\n        return;\n    }" in body
 
 
 def test_procedures_blocks_have_a_fallback_case_for_unsupported_positions():

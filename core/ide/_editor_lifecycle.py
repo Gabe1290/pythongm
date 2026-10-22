@@ -526,8 +526,27 @@ class EditorLifecycleMixin:
             custom_blocks_export = asset_data.pop('_custom_blocks_export', None)
             if custom_blocks_export is not None:
                 try:
-                    self.project_manager.update_custom_blocks_registry(
+                    collisions = self.project_manager.update_custom_blocks_registry(
                         asset_name, custom_blocks_export)
+                    for collided_name, other_object in collisions:
+                        logger.warning(
+                            f"Custom block '{collided_name}' saved in "
+                            f"'{asset_name}' has the same name as one already "
+                            f"defined in '{other_object}' -- '{asset_name}'s "
+                            f"version now wins wherever '{collided_name}' is "
+                            f"called from another object.")
+                        self.update_status(self.tr(
+                            "Warning: custom block \"{0}\" conflicts with one "
+                            "already defined in \"{1}\" — rename one of them "
+                            "to avoid confusing results.").format(
+                                collided_name, other_object), 8000)
+                    # Live cross-tab broadcast (docs/
+                    # BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up,
+                    # item 5): push the just-updated registry into every
+                    # OTHER currently open object editor's Blockly workspace
+                    # immediately, instead of leaving it to pick up the
+                    # change only the next time that tab is reopened.
+                    self._broadcast_shared_custom_blocks()
                 except Exception as e:
                     logger.debug(f"update_custom_blocks_registry failed: {e}")
 
@@ -609,6 +628,30 @@ class EditorLifecycleMixin:
             traceback.print_exc()
             QMessageBox.warning(self, self.tr("Save Error"),
                               self.tr("Failed to save {0}: {1}").format(asset_name, e))
+
+    def _broadcast_shared_custom_blocks(self):
+        """Push the just-updated project-wide custom-block registry into
+        every OTHER currently open object editor's Blockly workspace right
+        now (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up,
+        item 5) -- rather than leaving a block defined in object A
+        invisible to an already-open object B's editor until B's tab is
+        closed and reopened.
+
+        ``open_editors`` holds every open editor regardless of tabbed vs.
+        floated/detached state (float_editor only moves the editor WIDGET
+        out of the tab strip into its own window; it never removes the
+        entry from open_editors), so iterating it alone covers both.
+        Calling push_shared_custom_blocks on the just-saved object's own
+        editor too is harmless -- it's already documented as safe to call
+        repeatedly."""
+        for editor in list(getattr(self, 'open_editors', {}).values()):
+            blockly_tab = getattr(editor, 'blockly_tab', None)
+            if blockly_tab is None:
+                continue
+            try:
+                blockly_tab.push_shared_custom_blocks()
+            except Exception as e:
+                logger.debug(f"push_shared_custom_blocks broadcast failed: {e}")
 
     def on_editor_close_requested(self, asset_name: str):
         """Handle close request from editors.

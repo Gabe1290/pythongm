@@ -1123,6 +1123,14 @@ class BlocklyVisualProgrammingTab(QWidget):
         2026-10-22 follow-up)."""
         return self.blockly_widget.get_custom_blocks_export()
 
+    def push_shared_custom_blocks(self):
+        """Refresh this workspace's view of the project-wide custom-block
+        registry. Used both at load time and for the live cross-tab
+        broadcast (core/ide/_editor_lifecycle.py's
+        _broadcast_shared_custom_blocks) -- safe to call any time."""
+        if hasattr(self, 'blockly_widget') and self.blockly_widget:
+            self.blockly_widget.push_shared_custom_blocks()
+
     def push_asset_lists(self):
         """Refresh the dropdown choices for object/sprite/sound/room fields
         from the current project. Safe to call any time."""

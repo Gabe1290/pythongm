@@ -25,8 +25,8 @@ function generatePyGameMakerCode(workspace) {
     // SHARED definition (another object's own custom blocks, pushed into
     // this page via setSharedCustomBlocks) alongside this workspace's own
     // local ones, and seeds the module-level reporter-resolution state
-    // (CURRENT_CUSTOM_BLOCK_DEFS/CURRENT_REPORTER_CALL_STACK) that
-    // getInputValue/evaluateValueBlock read from, since they aren't
+    // (CURRENT_CUSTOM_BLOCK_DEFS/CURRENT_EXPANSION_STACK/CURRENT_HOIST_SINK)
+    // that getInputValue/evaluateValueBlock read from, since they aren't
     // threaded customBlockDefs as a parameter (see the big comment above
     // evaluateCustomBlockReporterCall).
     var customBlockDefs = prepareCustomBlockDefsForGeneration(workspace).merged;
@@ -141,26 +141,47 @@ function generateBlockCode(eventBlock, customBlockDefs) {
 // appear inside any value socket, not just a statement chain. A pure
 // reporter (its own STACK is empty -- just a RETURN value) expands to an
 // expression string with its own parameters substituted, exactly like a
-// no-return call's action parameters. A reporter whose STACK has
-// statements (side effects before computing the return value) is NOT
-// resolved -- there is no way to "run these actions, then use this
-// value" from inside a single expression socket in this action-based
-// architecture, so it is a real, inherent limitation of the model, not
-// a scoping choice made for expedience. It is surfaced as a visible,
-// non-crashing placeholder string rather than silently dropped or
-// silently treated as 0. Reporter calls get their OWN call stack
-// (CURRENT_REPORTER_CALL_STACK, module-level -- getInputValue's ~60
-// existing call sites across this file take only (block, inputName,
-// defaultValue), and threading an extra parameter through every one of
-// them for this would be a much larger, riskier change than the
-// contained action-side threading above) for the same cycle-detection
-// reason, entirely independent of the action-level one: a no-return
-// custom block and a reporter are different block types that can never
-// substitute for each other, so the two kinds of cycle can't cross.
+// no-return call's action parameters.
+//
+// A reporter whose STACK has statements (side effects before computing
+// the return value) IS resolved too (2026-10-22 follow-up): its body is
+// walked/reused the same way a no-return call's body is, and the
+// resulting (argument-substituted) actions are HOISTED -- spliced into
+// the enclosing action list immediately before whatever action is
+// actually consuming the reporter's return value (walkActionChain sets
+// up a fresh hoist sink, CURRENT_HOIST_SINK, for every single statement
+// it walks). This is genuinely "run these actions, then use this value"
+// from inside what started as one expression socket, not a workaround --
+// made possible by walkActionChain already being the universal chain
+// walker everywhere (the nesting follow-up above), so there's always
+// somewhere to splice hoisted actions in, however deeply nested the
+// reporter call is. The one case that's still NOT resolved, narrowed
+// from "every side-effecting reporter call" to just this one: a
+// reporter's own RETURN expression, evaluated once at EXPORT time to
+// build another definition's reusable TEMPLATE (generateCustomBlocks
+// ExportJson), has no action list to hoist into at all -- surfaced as
+// the same visible, non-crashing placeholder string as before, just for
+// a much narrower case.
+//
+// Reporter calls get their OWN cycle-detection stack, CURRENT_EXPANSION_
+// STACK (module-level -- getInputValue's ~60 existing call sites across
+// this file take only (block, inputName, defaultValue), and threading an
+// extra parameter through every one of them for this would be a much
+// larger, riskier change than the contained action-side threading
+// above) -- but, since reporter hoisting now actually walks a
+// side-effecting body (which can itself call a no-return custom block,
+// or another reporter), this stack is SHARED with the action side too:
+// expandCustomBlockCall mirrors its own callStack pushes into it, so a
+// cycle that crosses BOTH mechanisms (A calls reporter R calls A again,
+// or R calls no-return block A which calls R again) is caught exactly
+// like a same-mechanism cycle, not just R->R or A->A. A custom-block
+// NAME uniquely identifies either kind of definition (indexCustomBlockDefs
+// keys both into the same dict), so one shared stack is the correct,
+// not merely convenient, way to track this.
 
 // Defense-in-depth against a pathologically deep (but acyclic) chain of
 // custom blocks calling custom blocks -- cycles themselves are already
-// fully prevented by callStack/CURRENT_REPORTER_CALL_STACK below.
+// fully prevented by callStack/CURRENT_EXPANSION_STACK below.
 var MAX_CUSTOM_BLOCK_EXPANSION_DEPTH = 50;
 
 // ----------------------------------------------------------------------
@@ -197,20 +218,25 @@ var MAX_CUSTOM_BLOCK_EXPANSION_DEPTH = 50;
 // use bodyActionsTemplate/returnExprTemplate directly instead of walking
 // real blocks.
 //
-// Known limitation, by design rather than oversight: because each
-// object's export is computed independently from whatever snapshot of
-// OTHER objects' templates was pushed into its page at ITS last save,
-// there's no live cross-tab broadcast -- a block changed in object A
-// becomes visible to object B once B's editor is next opened (or
-// reopened), not instantly while both are open simultaneously. A genuine
-// cross-object cycle (A's block calls B's which calls back into A's) is
-// consequently never a crash risk (nothing recomputes recursively across
-// objects at generation time, since each side only ever consumes an
-// already-resolved template, never a live block) -- at worst a call sees
-// a one-generation-stale template, never an infinite loop. A same-object
-// cycle is still actively caught by callStack/CURRENT_REPORTER_CALL_STACK
-// exactly as before; this only concerns the cross-object case those
-// can't see.
+// Each object's export is computed independently from whatever snapshot
+// of OTHER objects' templates was pushed into its page. A block changed
+// in object A is pushed into every OTHER currently open object editor's
+// workspace immediately on save (core/ide/_editor_lifecycle.py's
+// _broadcast_shared_custom_blocks, 2026-10-22 follow-up item 5) -- not
+// instantly while A's OWN edit is still in progress mid-keystroke, since
+// the export only happens at save, but there is no more "reopen the tab
+// to see it" gap for a tab that was already open. A genuine cross-object
+// cycle (A's block calls B's which calls back into A's) is consequently
+// still never a crash risk regardless of how promptly the push happens:
+// nothing recomputes recursively across OBJECTS at generation time,
+// since each side only ever consumes an already-resolved template, never
+// a live block -- at worst a call sees a one-generation-stale template,
+// never an infinite loop. A same-object cycle (including one that now
+// crosses between a reporter and a no-return call, since reporter
+// side-effect hoisting started walking real bodies -- see the big
+// comment above MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) is still actively
+// caught by callStack/CURRENT_EXPANSION_STACK; this paragraph only
+// concerns the cross-OBJECT case those can't see.
 var SHARED_CUSTOM_BLOCKS = {};
 
 // Called from blocklyApi.setSharedCustomBlocks (blockly_widget.py's
@@ -229,12 +255,15 @@ function setSharedCustomBlocks(json) {
 // own return value -- unchanged, still local-only) with every
 // project-wide shared definition from SHARED_CUSTOM_BLOCKS, in the shape
 // expandCustomBlockCall/evaluateCustomBlockReporterCall already expect. A
-// LOCAL definition always wins on a name collision: nothing stops two
-// objects naming a block the same (Blockly's own duplicate-name
-// prevention -- findLegalName -- is workspace-local only), so a genuine
-// cross-object collision resolves to "whichever object saved to the
-// registry most recently wins" for every OTHER object calling it -- a
-// known, documented sharp edge, not a crash risk.
+// LOCAL definition always wins on a name collision -- this is now
+// mostly theoretical rather than a real sharp edge, since
+// disambiguateCustomBlockNameAgainstShared (2026-10-22 follow-up, item
+// 6) actively renames a NEW local definition the moment its name would
+// collide with a shared one (Blockly's own duplicate-name prevention --
+// findLegalName -- is workspace-local only, so that live check is what
+// extends it project-wide); the remaining cases this merge rule quietly
+// covers are a collision that already existed before that check shipped,
+// or one introduced by hand-editing project.json outside the IDE.
 function mergeSharedCustomBlockDefs(localDefs) {
     var merged = {};
     for (var sharedName in SHARED_CUSTOM_BLOCKS) {
@@ -263,7 +292,8 @@ function prepareCustomBlockDefsForGeneration(workspace) {
     var localDefs = indexCustomBlockDefs(workspace);
     var merged = mergeSharedCustomBlockDefs(localDefs);
     CURRENT_CUSTOM_BLOCK_DEFS = merged;
-    CURRENT_REPORTER_CALL_STACK = [];
+    CURRENT_EXPANSION_STACK = [];
+    CURRENT_HOIST_SINK = null;
     return {local: localDefs, merged: merged};
 }
 
@@ -283,13 +313,38 @@ function generateCustomBlocksExportJson(workspace) {
     var exported = {};
     for (var name in prepared.local) {
         var def = prepared.local[name];
+        // "For THIS object only" (item 7): a private definition is never
+        // published project-wide -- skipped here, not filtered out on
+        // the Python side, so it never even reaches
+        // update_custom_blocks_registry. Calls to it from elsewhere IN
+        // THIS SAME object's own workspace are completely unaffected
+        // (prepared.local/prepared.merged still include it; only the
+        // EXPORT is skipped).
+        if (def.isPrivate) {
+            continue;
+        }
+        // return_expr is a standalone, reusable TEMPLATE -- not part of
+        // any real action list a side-effecting nested reporter call
+        // could hoist into -- so CURRENT_HOIST_SINK is explicitly nulled
+        // around this one call (not left at whatever a PRIOR
+        // walkActionChain call happened to set it to) so
+        // evaluateCustomBlockReporterCall's own "no sink available"
+        // fallback behaves deterministically here.
+        var previousSink = CURRENT_HOIST_SINK;
+        CURRENT_HOIST_SINK = null;
+        var returnExpr;
+        try {
+            returnExpr = (def.isReporter && def.returnBlock)
+                ? evaluateValueBlock(def.returnBlock, '')
+                : null;
+        } finally {
+            CURRENT_HOIST_SINK = previousSink;
+        }
         exported[name] = {
             arg_names: def.argNames,
             is_reporter: def.isReporter,
             body_actions: walkActionChain(def.bodyBlock, prepared.merged, [name]),
-            return_expr: (def.isReporter && def.returnBlock)
-                ? evaluateValueBlock(def.returnBlock, '')
-                : null
+            return_expr: returnExpr
         };
     }
     return JSON.stringify(exported);
@@ -366,11 +421,58 @@ function escapeCustomBlockXmlAttr(s) {
                      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// Real, LIVE prevention for cross-object custom-block name collisions
+// (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up, item 6 --
+// previously "last-write-wins, not prevented"). Called from blockly_
+// workspace.html's own change listener whenever a procedures_defnoreturn/
+// defreturn block is created, or its NAME field edited -- both already
+// guarded there by the same ignoreChanges/workspaceLocked check that
+// suppresses this during a programmatic workspace LOAD, so reopening a
+// project never silently renames something already saved; this only
+// ever fires for a genuine live edit.
+//
+// If the current name already belongs to a project-wide SHARED
+// definition (SHARED_CUSTOM_BLOCKS, sourced from a DIFFERENT object --
+// this object's own prior save of the SAME name is impossible to collide
+// with itself here, since mergeSharedCustomBlockDefs always lets the
+// LOCAL block win at generation time regardless of what the registry
+// echoes back), renames it to the next available "<name>_<n>" suffix --
+// mirroring Blockly's own local findLegalName behaviour (workspace-local
+// only), just extended to the project-wide registry -- and leaves a
+// visible warning balloon (block.setWarningText, the same mechanism
+// procedures_ifreturn's own PROCEDURES_IFRETURN_WARNING already uses)
+// explaining why, since silently renaming something a student just
+// typed with no feedback would be exactly the kind of "stop lying to
+// users" silence this codebase avoids elsewhere.
+function disambiguateCustomBlockNameAgainstShared(blockId) {
+    var block = workspace.getBlockById(blockId);
+    if (!block) return;
+    if (block.type !== 'procedures_defnoreturn' && block.type !== 'procedures_defreturn') return;
+
+    var name = block.getFieldValue('NAME');
+    var existing = SHARED_CUSTOM_BLOCKS[name];
+    if (!existing) {
+        return;
+    }
+
+    var candidate = name;
+    var n = 2;
+    while (SHARED_CUSTOM_BLOCKS[candidate]) {
+        candidate = name + '_' + n;
+        n++;
+    }
+    block.setFieldValue(candidate, 'NAME');
+    block.setWarningText(
+        'Renamed to "' + candidate + '" because "' + name + '" is already ' +
+        'used by a custom block in another object (' +
+        (existing.source_object || '?') + ').');
+}
+
 // Every procedures_defnoreturn/procedures_defreturn block on the
 // workspace, keyed by name -> {argNames: [...], bodyBlock: <first body
 // block, or null if empty>, returnBlock: <the RETURN value's block, or
-// null>, isReporter: bool}. Built once per generation run (see
-// generatePyGameMakerCode).
+// null>, isReporter: bool, isPrivate: bool}. Built once per generation
+// run (see generatePyGameMakerCode).
 function indexCustomBlockDefs(workspace) {
     var defs = {};
     var topBlocks = workspace.getTopBlocks(true);
@@ -394,11 +496,60 @@ function indexCustomBlockDefs(workspace) {
                 // PROCEDURES_DEFRETURN_RETURN label); defnoreturn has no
                 // such input at all.
                 returnBlock: isReporter ? block.getInputTargetBlock('VALUE') : null,
-                isReporter: isReporter
+                isReporter: isReporter,
+                // "For THIS object only" (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's
+                // 2026-10-22 follow-up, item 7 -- Scratch's OTHER custom-
+                // block scoping option, project-wide sharing being the
+                // first). isCustomBlockPrivate reads block.data, a plain
+                // string field every Blockly Block already has and that
+                // already round-trips through workspace XML save/load
+                // for free (confirmed against the vendored source:
+                // blockToDom/domToBlock both serialize a <data> child
+                // element) -- no new persistence mechanism needed. This
+                // flag only affects generateCustomBlocksExportJson
+                // (whether to publish this definition project-wide); it
+                // never affects local generation, so calls to a private
+                // block from elsewhere IN THE SAME object's own workspace
+                // are completely unaffected.
+                isPrivate: isCustomBlockPrivate(block)
             };
         }
     }
     return defs;
+}
+
+// Toggled via the "Keep this block private to this object" / "Share
+// this block with other objects" right-click entry blockly_workspace.html
+// registers for procedures_defnoreturn/defreturn blocks
+// (pygmToggleCustomBlockPrivate). A plain string on block.data rather
+// than a dedicated mutator field (Blockly's own "Make a Block" dialog
+// has no such checkbox -- that's a scratch-blocks-only fork feature,
+// confirmed absent from this vendored plain-Blockly build) -- the
+// lowest-risk way to add persistent per-block state without touching
+// the vendored procedures_defnoreturn/defreturn block definitions
+// themselves (which already manage their OWN mutation-based XML
+// serialization; a second, independent field needs no coordination
+// with that).
+function isCustomBlockPrivate(block) {
+    return !!(block && block.data === 'private');
+}
+
+function toggleCustomBlockPrivate(block) {
+    if (!block) return;
+    var wasPrivate = isCustomBlockPrivate(block);
+    block.data = wasPrivate ? null : 'private';
+    // A plain property write fires no Blockly event by itself (unlike
+    // setFieldValue/setCommentText) -- without firing one explicitly,
+    // nothing would mark the workspace dirty or re-run generation, so
+    // the toggle would silently have no effect until some UNRELATED
+    // edit happened to trigger it. Blockly.Events.BlockChange/fire/
+    // isEnabled are confirmed real members of the Blockly.Events module
+    // object (grep of the vendored source, not assumed -- unlike
+    // Blockly.Procedures.flyoutCategory, which turned out NOT to be).
+    if (typeof Blockly !== 'undefined' && Blockly.Events && Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockChange(
+            block, 'data', null, wasPrivate ? 'private' : null, block.data));
+    }
 }
 
 // Walks an action chain (an event's own DO stack, a custom block's own
@@ -409,15 +560,36 @@ function indexCustomBlockDefs(workspace) {
 // DO/ELSE/sub_actions case in generateActionCodeInner calls this instead
 // of looping by hand, so a call nested at any depth is expanded exactly
 // like a top-level one.
+//
+// Also the place HOISTED actions actually land (docs/
+// BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up, item 4): a
+// side-effecting reporter used inside an action's own parameter value,
+// or inside a custom-block call's own argument expression, pushes its
+// body's actions into a hoist sink (CURRENT_HOIST_SINK) that this
+// function sets up for EACH statement individually and splices in
+// immediately before that statement's own result -- "run these actions,
+// then use the value" from inside what started as a single expression
+// socket, the thing this architecture was previously said to have no
+// way to do.
 function walkActionChain(startBlock, customBlockDefs, callStack) {
     var actions = [];
     var block = startBlock;
     while (block) {
         if (block.type === 'procedures_callnoreturn') {
-            actions = actions.concat(
-                expandCustomBlockCall(block, customBlockDefs, callStack));
+            var hoistedForCall = [];
+            var previousSinkForCall = CURRENT_HOIST_SINK;
+            CURRENT_HOIST_SINK = hoistedForCall;
+            var expanded;
+            try {
+                expanded = expandCustomBlockCall(block, customBlockDefs, callStack);
+            } finally {
+                CURRENT_HOIST_SINK = previousSinkForCall;
+            }
+            actions = actions.concat(hoistedForCall).concat(expanded);
         } else {
-            var action = generateActionCode(block, customBlockDefs, callStack);
+            var hoisted = [];
+            var action = generateActionCode(block, customBlockDefs, callStack, hoisted);
+            actions = actions.concat(hoisted);
             if (action) {
                 actions.push(action);
             }
@@ -458,15 +630,29 @@ function expandCustomBlockCall(callBlock, customBlockDefs, callStack) {
         argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
     }
 
-    // A local definition has a real bodyBlock to walk; a project-wide
-    // SHARED one (mergeSharedCustomBlockDefs) carries null bodyBlock/
-    // returnBlock and a pre-resolved bodyActionsTemplate instead -- its
-    // own nested calls were already expanded when the SOURCE object last
-    // exported it (generateCustomBlocksExportJson), so there's nothing
-    // further to walk here.
-    var bodyActions = def.bodyBlock
-        ? walkActionChain(def.bodyBlock, customBlockDefs, callStack.concat([name]))
-        : (def.bodyActionsTemplate || []);
+    // Mirrored into CURRENT_EXPANSION_STACK (the one tracker shared with
+    // the reporter side -- see evaluateCustomBlockReporterCall) so a
+    // side-effecting REPORTER encountered while walking this no-return
+    // block's own body can correctly detect a cycle back through THIS
+    // name too, not just through another reporter -- a real risk only
+    // since reporter side-effect hoisting (item 4) started actually
+    // walking a reporter's own body instead of refusing it outright.
+    var newCallStack = callStack.concat([name]);
+    CURRENT_EXPANSION_STACK.push(name);
+    var bodyActions;
+    try {
+        // A local definition has a real bodyBlock to walk; a project-wide
+        // SHARED one (mergeSharedCustomBlockDefs) carries null bodyBlock/
+        // returnBlock and a pre-resolved bodyActionsTemplate instead --
+        // its own nested calls were already expanded when the SOURCE
+        // object last exported it (generateCustomBlocksExportJson), so
+        // there's nothing further to walk here.
+        bodyActions = def.bodyBlock
+            ? walkActionChain(def.bodyBlock, customBlockDefs, newCallStack)
+            : (def.bodyActionsTemplate || []);
+    } finally {
+        CURRENT_EXPANSION_STACK.pop();
+    }
     return bodyActions.map(function(action) {
         return substituteCustomBlockArgs(action, argValues);
     });
@@ -505,8 +691,32 @@ function substituteCustomBlockArgs(value, argValues) {
 // call sites (see the big comment block above). Set once per generation
 // (or export) run by prepareCustomBlockDefsForGeneration, which both
 // generatePyGameMakerCode and generateCustomBlocksExportJson call.
+//
+// CURRENT_EXPANSION_STACK (renamed from CURRENT_REPORTER_CALL_STACK,
+// 2026-10-22, item 4) is now shared with the no-return/action side too
+// (expandCustomBlockCall mirrors its own pushes into it): a custom-block
+// NAME uniquely identifies either a no-return or a reporter definition
+// (indexCustomBlockDefs keys both into the SAME dict), so one shared
+// "currently expanding" tracker correctly catches every cycle shape --
+// R->R, A->A, A->R->A, R->A->R -- not just reporter-to-reporter. That
+// cross-mechanism case became real the moment reporter side-effect
+// hoisting below started actually walking a reporter's own body instead
+// of refusing it outright; before that, a side-effecting reporter's body
+// was never touched, so no cycle through it was reachable either.
+//
+// CURRENT_HOIST_SINK is the array walkActionChain hands to whichever
+// single action/call is currently being generated -- evaluateCustomBlock
+// ReporterCall pushes a side-effecting reporter's own (argument-
+// substituted) body actions onto it instead of refusing them, "running
+// the actions, then using the value" from inside what started as one
+// expression socket. null when there is no such action-list context to
+// hoist into (building another definition's own return-expression
+// TEMPLATE at export time) -- the one genuinely remaining case this
+// can't resolve, narrowed from "every side-effecting reporter call" to
+// just that one.
 var CURRENT_CUSTOM_BLOCK_DEFS = {};
-var CURRENT_REPORTER_CALL_STACK = [];
+var CURRENT_EXPANSION_STACK = [];
+var CURRENT_HOIST_SINK = null;
 
 // A procedures_callreturn block dropped into a value socket --
 // getInputValue/evaluateValueBlock's own case delegates here. Returns an
@@ -515,7 +725,9 @@ var CURRENT_REPORTER_CALL_STACK = [];
 // (Blockly's own connection typing: procedures_callreturn is
 // setOutput(true), no previous/nextStatement, confirmed against the
 // vendored source), so there is no statement-side counterpart to this
-// function the way expandCustomBlockCall has one.
+// function the way expandCustomBlockCall has one. Side-effecting bodies
+// are hoisted into CURRENT_HOIST_SINK as a side effect of this call,
+// not returned as part of the expression string.
 function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
     var name = callBlock.getFieldValue('NAME');
     var def = CURRENT_CUSTOM_BLOCK_DEFS[name];
@@ -527,10 +739,10 @@ function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
         // __pygm_undefined_custom_block__ on the action side.
         return '{{PYGM_UNDEFINED_REPORTER:' + name + '}}';
     }
-    if (CURRENT_REPORTER_CALL_STACK.indexOf(name) !== -1) {
+    if (CURRENT_EXPANSION_STACK.indexOf(name) !== -1) {
         return '{{PYGM_REPORTER_CYCLE:' + name + '}}';
     }
-    if (CURRENT_REPORTER_CALL_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) {
+    if (CURRENT_EXPANSION_STACK.length >= MAX_CUSTOM_BLOCK_EXPANSION_DEPTH) {
         return '{{PYGM_REPORTER_TOO_DEEP:' + name + '}}';
     }
     // A local definition carries a real bodyBlock/returnBlock pair; a
@@ -541,36 +753,60 @@ function evaluateCustomBlockReporterCall(callBlock, defaultValue) {
     var hasSideEffectingBody = def.bodyBlock
         ? true
         : !!(def.bodyActionsTemplate && def.bodyActionsTemplate.length);
-    if (hasSideEffectingBody) {
-        // The reporter's own STACK has statements before its RETURN
-        // value -- an inherent limitation of this action-based
-        // architecture, not a v1 scoping choice: there is no mechanism
-        // to "run these actions, then use this value" from inside a
-        // single expression socket. Flagged rather than silently
-        // dropping the side effects or silently treating the call as 0.
+    if (hasSideEffectingBody && !CURRENT_HOIST_SINK) {
+        // No action-list context available to hoist into (e.g. this
+        // call is reached while building ANOTHER definition's own
+        // return-expression template at export time, not while
+        // generating a real action) -- the one case this genuinely
+        // can't resolve, narrowed from every side-effecting reporter
+        // call to just this one. Flagged rather than silently dropping
+        // the side effects or silently treating the call as 0.
         return '{{PYGM_REPORTER_SIDE_EFFECTS:' + name + '}}';
     }
     var hasReturnExpr = def.bodyBlock
         ? !!def.returnBlock
         : (def.returnExprTemplate !== null && def.returnExprTemplate !== undefined);
-    if (!hasReturnExpr) {
-        // An empty RETURN socket -- Blockly's own procedures_ifreturn
-        // warning mechanism already flags this on the definition block
-        // itself (PROCEDURES_IFRETURN_WARNING); nothing more useful to
-        // produce on the call side than the caller's own default.
-        return defaultValue;
-    }
 
     var argValues = {};
     for (var i = 0; i < def.argNames.length; i++) {
         argValues[def.argNames[i]] = getInputValue(callBlock, 'ARG' + i, '');
     }
 
-    CURRENT_REPORTER_CALL_STACK.push(name);
-    var exprValue = def.bodyBlock
-        ? evaluateValueBlock(def.returnBlock, defaultValue)
-        : def.returnExprTemplate;
-    CURRENT_REPORTER_CALL_STACK.pop();
+    CURRENT_EXPANSION_STACK.push(name);
+    var exprValue;
+    try {
+        if (hasSideEffectingBody) {
+            // Walk (local) or reuse (shared template) the side-effecting
+            // body, substitute THIS call's own argument values into it,
+            // and push the result onto the active hoist sink -- these
+            // actions will run immediately before whatever action is
+            // consuming this reporter's return value.
+            var rawBodyActions = def.bodyBlock
+                ? walkActionChain(def.bodyBlock, CURRENT_CUSTOM_BLOCK_DEFS,
+                                   CURRENT_EXPANSION_STACK.slice())
+                : (def.bodyActionsTemplate || []);
+            var hoistedActions = rawBodyActions.map(function(a) {
+                return substituteCustomBlockArgs(a, argValues);
+            });
+            for (var h = 0; h < hoistedActions.length; h++) {
+                CURRENT_HOIST_SINK.push(hoistedActions[h]);
+            }
+        }
+        if (!hasReturnExpr) {
+            // An empty RETURN socket -- Blockly's own procedures_ifreturn
+            // warning mechanism already flags this on the definition
+            // block itself (PROCEDURES_IFRETURN_WARNING); nothing more
+            // useful to produce on the call side than the caller's own
+            // default.
+            exprValue = defaultValue;
+        } else {
+            exprValue = def.bodyBlock
+                ? evaluateValueBlock(def.returnBlock, defaultValue)
+                : def.returnExprTemplate;
+        }
+    } finally {
+        CURRENT_EXPANSION_STACK.pop();
+    }
 
     return substituteCustomBlockArgs(exprValue, argValues);
 }
@@ -607,20 +843,39 @@ function parseScopedVariable(raw) {
     return {name: name, scope: scope};
 }
 
-function generateActionCode(block, customBlockDefs, callStack) {
-    var result = generateActionCodeInner(block, customBlockDefs, callStack);
-    // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: merge back whatever the
-    // LOAD side (createActionBlock, blockly_workspace.html) saw but this
-    // block's own case below never mentions -- translations, an "applies
-    // to" target, a colour, anything the hand-written block simply has no
-    // field for. Keys the case DID explicitly set always win (the merge
-    // order below puts them on top), since those reflect the block's real
-    // current state, not the stale original.
-    if (result && result.parameters && block.pygmExtraParams) {
-        var merged = {};
-        for (var k in block.pygmExtraParams) merged[k] = block.pygmExtraParams[k];
-        for (var k2 in result.parameters) merged[k2] = result.parameters[k2];
-        result.parameters = merged;
+// hoistedOut: an array (walkActionChain's own, freshly created per
+// statement) that any side-effecting reporter used inside THIS block's
+// own parameter values pushes its hoisted body actions into (docs/
+// BLOCKLY_SCRATCH_PARITY_PLAN.md's 2026-10-22 follow-up, item 4) --
+// exposed to the deeply-nested getInputValue/evaluateCustomBlockReporter
+// Call call chain via the module-level CURRENT_HOIST_SINK mirror (not
+// threaded as a parameter through those ~60 call sites, same reasoning
+// as CURRENT_CUSTOM_BLOCK_DEFS/CURRENT_EXPANSION_STACK above), saved and
+// restored here so a NESTED generateActionCode call (e.g. for an
+// if_condition's own DO/ELSE statements, triggered while THIS call's own
+// generateActionCodeInner is still running) can't leak its own sink into
+// this one's later field evaluations.
+function generateActionCode(block, customBlockDefs, callStack, hoistedOut) {
+    var previousSink = CURRENT_HOIST_SINK;
+    CURRENT_HOIST_SINK = hoistedOut || [];
+    var result;
+    try {
+        result = generateActionCodeInner(block, customBlockDefs, callStack);
+        // docs/BLOCKLY_BLOCK_AUDIT_2026-10-08.md B5: merge back whatever the
+        // LOAD side (createActionBlock, blockly_workspace.html) saw but this
+        // block's own case below never mentions -- translations, an "applies
+        // to" target, a colour, anything the hand-written block simply has no
+        // field for. Keys the case DID explicitly set always win (the merge
+        // order below puts them on top), since those reflect the block's real
+        // current state, not the stale original.
+        if (result && result.parameters && block.pygmExtraParams) {
+            var merged = {};
+            for (var k in block.pygmExtraParams) merged[k] = block.pygmExtraParams[k];
+            for (var k2 in result.parameters) merged[k2] = result.parameters[k2];
+            result.parameters = merged;
+        }
+    } finally {
+        CURRENT_HOIST_SINK = previousSink;
     }
     return result;
 }

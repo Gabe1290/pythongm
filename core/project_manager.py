@@ -1269,7 +1269,7 @@ class ProjectManager(QObject):
         """Check if the project has unsaved changes (compatibility method)"""
         return self.is_dirty_flag
 
-    def update_custom_blocks_registry(self, source_object: str, exported_defs: Optional[dict]):
+    def update_custom_blocks_registry(self, source_object: str, exported_defs: Optional[dict]) -> list:
         """Merge one object's exported "My Blocks" definitions into the
         project-wide registry (docs/BLOCKLY_SCRATCH_PARITY_PLAN.md's
         2026-10-22 project-wide-sharing follow-up).
@@ -1283,17 +1283,47 @@ class ProjectManager(QObject):
         specific 'assets' subtrees, never filters other top-level keys.
 
         Called from core/ide/_editor_lifecycle.py's on_editor_save_requested
-        whenever an object is saved -- NOT live on every keystroke (no
-        cross-tab broadcast; see blockly_generators.js's own comment on
-        SHARED_CUSTOM_BLOCKS for why that's an accepted, documented
-        limitation rather than an oversight). Every existing registry
-        entry previously sourced from this object is replaced wholesale
-        (it may have renamed/deleted a definition since the last save);
-        entries sourced from every OTHER object are left untouched.
+        whenever an object is saved. Live cross-tab broadcast (pushing the
+        updated registry into every OTHER currently open object editor's
+        Blockly workspace immediately, not just at that tab's next open)
+        is handled by the caller via BlocklyWidget.push_shared_custom_blocks
+        -- this method only owns the registry's own data, not notifying
+        other widgets. Every existing registry entry previously sourced
+        from this object is replaced wholesale (it may have renamed/
+        deleted a definition since the last save); entries sourced from
+        every OTHER object are left untouched.
+
+        Returns a list of (name, other_source_object) collisions: a name
+        this save just (re)claimed that was already registered under a
+        DIFFERENT object. The save still proceeds either way (the
+        project-wide-sharing design's "local always wins at generation
+        time" rule means there's no ambiguity about WHICH definition a
+        caller inside this object resolves to) -- cross-object name
+        collisions are also actively prevented live, client-side, while
+        typing (blockly_generators.js's disambiguateCustomBlockName
+        AgainstShared, confirmed grounded in the vendored Blockly change-
+        event API but never executed in a real browser); this return
+        value is a second, fully-testable layer of defense for whatever
+        that live check can't see (e.g. a project.json hand-edited
+        outside the IDE, or an object saved in a session where the
+        colliding name was never pushed into its page yet) -- the
+        caller surfaces it as a visible warning instead of staying
+        silent about a name that quietly started resolving to someone
+        else's definition.
         """
         if self.current_project_data is None:
-            return
+            return []
         registry = self.current_project_data.setdefault('custom_blocks', {})
+
+        collisions = []
+        for name, entry in (exported_defs or {}).items():
+            if not isinstance(entry, dict):
+                continue
+            existing = registry.get(name)
+            existing_source = existing.get('source_object') if isinstance(existing, dict) else None
+            if existing_source and existing_source != source_object:
+                collisions.append((name, existing_source))
+
         for stale_name in [name for name, entry in registry.items()
                             if isinstance(entry, dict) and entry.get('source_object') == source_object]:
             del registry[stale_name]
@@ -1304,6 +1334,7 @@ class ProjectManager(QObject):
             merged_entry['source_object'] = source_object
             registry[name] = merged_entry
         self.mark_dirty()
+        return collisions
 
     def save_project_as(self, new_path: Path) -> bool:
         """Save project to a new location"""

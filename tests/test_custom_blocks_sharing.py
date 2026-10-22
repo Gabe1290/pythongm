@@ -106,15 +106,56 @@ class TestUpdateCustomBlocksRegistry:
         assert registry["give_point"]["source_object"] == "obj_player"
 
     def test_cross_object_name_collision_is_last_write_wins_not_a_crash(self, project_manager, temp_project_dir):
-        """A genuine name collision across two objects isn't prevented
-        (Blockly's own duplicate-name guard is workspace-local only) --
-        documented sharp edge, not a crash."""
+        """The save itself still proceeds either way -- local always wins
+        at generation time regardless of which object's entry sits in
+        the registry (mergeSharedCustomBlockDefs' own rule) -- so there
+        is no ambiguity to block the save over, only something worth
+        surfacing (see the collision-detection tests below)."""
         project_manager.load_project(temp_project_dir)
         project_manager.update_custom_blocks_registry("obj_a", {"helper": {"arg_names": ["x"]}})
         project_manager.update_custom_blocks_registry("obj_b", {"helper": {"arg_names": ["y", "z"]}})
         registry = project_manager.current_project_data["custom_blocks"]
         assert registry["helper"]["source_object"] == "obj_b"
         assert registry["helper"]["arg_names"] == ["y", "z"]
+
+    def test_collision_is_detected_and_reported(self, project_manager, temp_project_dir):
+        """2026-10-22 item 6 (defense-in-depth layer, Python side): a
+        name collision across two objects is DETECTED and returned, not
+        just silently resolved -- the live client-side prevention
+        (blockly_generators.js's disambiguateCustomBlockNameAgainstShared)
+        is the primary layer but can't be executed/verified without a
+        real browser; this layer is."""
+        project_manager.load_project(temp_project_dir)
+        project_manager.update_custom_blocks_registry("obj_a", {"helper": {"arg_names": ["x"]}})
+        collisions = project_manager.update_custom_blocks_registry(
+            "obj_b", {"helper": {"arg_names": ["y", "z"]}})
+        assert collisions == [("helper", "obj_a")]
+
+    def test_no_collision_reports_an_empty_list(self, project_manager, temp_project_dir):
+        project_manager.load_project(temp_project_dir)
+        project_manager.update_custom_blocks_registry("obj_a", {"helper": {"arg_names": ["x"]}})
+        collisions = project_manager.update_custom_blocks_registry(
+            "obj_b", {"other_name": {"arg_names": []}})
+        assert collisions == []
+
+    def test_resaving_the_same_object_is_never_its_own_collision(self, project_manager, temp_project_dir):
+        """Re-saving obj_a's own "helper" (e.g. after a harmless unrelated
+        edit) must not be reported as colliding with itself."""
+        project_manager.load_project(temp_project_dir)
+        project_manager.update_custom_blocks_registry("obj_a", {"helper": {"arg_names": ["x"]}})
+        collisions = project_manager.update_custom_blocks_registry(
+            "obj_a", {"helper": {"arg_names": ["x", "y"]}})
+        assert collisions == []
+
+    def test_multiple_simultaneous_collisions_are_all_reported(self, project_manager, temp_project_dir):
+        project_manager.load_project(temp_project_dir)
+        project_manager.update_custom_blocks_registry("obj_a", {
+            "foo": {"arg_names": []}, "bar": {"arg_names": []},
+        })
+        collisions = project_manager.update_custom_blocks_registry("obj_b", {
+            "foo": {"arg_names": []}, "bar": {"arg_names": []}, "baz": {"arg_names": []},
+        })
+        assert sorted(collisions) == [("bar", "obj_a"), ("foo", "obj_a")]
 
     def test_ignores_non_dict_entries_defensively(self, project_manager, temp_project_dir):
         project_manager.load_project(temp_project_dir)
@@ -360,26 +401,47 @@ def _ide_cls():
     return PyGameMakerIDE
 
 
-def _make_stub_ide(project_data):
+def _make_stub_ide(project_data, open_editors=None):
     from PySide6.QtWidgets import QTabWidget
 
     pm = MagicMock()
     pm.update_asset.return_value = True
     pm.save_project.return_value = True
     pm.get_current_project_data.return_value = project_data
+    # Real ProjectManager.update_custom_blocks_registry always returns a
+    # list (possibly empty) of collisions -- matching that here so the
+    # collision-reporting loop in on_editor_save_requested behaves the
+    # same way it would against the real method, not an unconfigured
+    # MagicMock (which isn't iterable and would abort the whole try
+    # block, including the broadcast call, before either ever runs).
+    pm.update_custom_blocks_registry.return_value = []
 
-    return SimpleNamespace(
+    status_messages = []
+    stub = SimpleNamespace(
         project_manager=pm,
         current_project_data=project_data,
         current_project_path=None,
-        update_status=lambda *a, **k: None,
+        update_status=lambda msg, *a, **k: status_messages.append(msg),
+        status_messages=status_messages,
         update_window_title=lambda *a, **k: None,
         asset_tree=MagicMock(),
         properties_panel=MagicMock(),
         editor_tabs=QTabWidget(),
         _refresh_blockly_asset_lists=lambda: None,
         refresh_object_sprites=MagicMock(),
+        open_editors=open_editors if open_editors is not None else {},
+        tr=lambda text: text,
     )
+    # on_editor_save_requested calls self._broadcast_shared_custom_blocks()
+    # -- a plain attribute lookup on this SimpleNamespace stub, which
+    # (unlike the Cls.method(stub, ...) unbound-call pattern used to
+    # invoke on_editor_save_requested itself) does NOT fall back to
+    # PyGameMakerIDE's real method. Bind the real implementation to this
+    # exact stub, mirroring how refresh_object_sprites/
+    # _refresh_blockly_asset_lists above are already explicitly provided
+    # rather than relied upon via class-level lookup.
+    stub._broadcast_shared_custom_blocks = lambda: _ide_cls()._broadcast_shared_custom_blocks(stub)
+    return stub
 
 
 class TestOnEditorSaveRequestedWiresCustomBlocksExport:
@@ -442,6 +504,126 @@ class TestOnEditorSaveRequestedWiresCustomBlocksExport:
 
         stub.project_manager.update_asset.assert_called_once()
         stub.project_manager.save_project.assert_called_once()
+
+    def test_collisions_are_surfaced_as_a_visible_status_warning(self, qapp):
+        """2026-10-22 item 6 (defense-in-depth layer): a collision
+        ProjectManager reports must not stay silent -- shown via
+        update_status, not just logged where only a developer would
+        see it."""
+        project_data = {"assets": {"objects": {"obj_math": {"name": "obj_math"}}}}
+        stub = _make_stub_ide(project_data)
+        stub.project_manager.update_custom_blocks_registry.return_value = [
+            ("square", "obj_other"),
+        ]
+
+        object_data = {
+            "name": "obj_math", "sprite": "", "events": {},
+            "_custom_blocks_export": {"square": {"arg_names": ["n"]}},
+        }
+        _ide_cls().on_editor_save_requested(stub, "obj_math", object_data)
+
+        assert any("square" in msg and "obj_other" in msg
+                   for msg in stub.status_messages)
+
+    def test_no_collisions_means_no_warning_message(self, qapp):
+        project_data = {"assets": {"objects": {"obj_math": {"name": "obj_math"}}}}
+        stub = _make_stub_ide(project_data)
+
+        object_data = {
+            "name": "obj_math", "sprite": "", "events": {},
+            "_custom_blocks_export": {"square": {"arg_names": ["n"]}},
+        }
+        _ide_cls().on_editor_save_requested(stub, "obj_math", object_data)
+
+        assert not any("conflicts" in msg for msg in stub.status_messages)
+
+    def test_saving_broadcasts_to_every_other_open_object_editor(self, qapp):
+        """2026-10-22 item 5: a block changed in object A must reach
+        object B's ALREADY-OPEN editor immediately, not just the next
+        time B's tab is reopened."""
+        project_data = {"assets": {"objects": {
+            "obj_a": {"name": "obj_a"}, "obj_b": {"name": "obj_b"},
+        }}}
+        editor_a = SimpleNamespace(blockly_tab=MagicMock())
+        editor_b = SimpleNamespace(blockly_tab=MagicMock())
+        non_object_editor = SimpleNamespace()  # e.g. a room editor -- no blockly_tab
+        stub = _make_stub_ide(project_data, open_editors={
+            "objects:obj_a": editor_a,
+            "objects:obj_b": editor_b,
+            "rooms:rm_test": non_object_editor,
+        })
+
+        object_data = {
+            "name": "obj_a", "sprite": "", "events": {},
+            "_custom_blocks_export": {"square": {"arg_names": ["n"]}},
+        }
+        _ide_cls().on_editor_save_requested(stub, "obj_a", object_data)
+
+        editor_a.blockly_tab.push_shared_custom_blocks.assert_called_once()
+        editor_b.blockly_tab.push_shared_custom_blocks.assert_called_once()
+
+    def test_broadcast_is_not_attempted_when_nothing_was_exported(self, qapp):
+        """No _custom_blocks_export key at all -- e.g. a sprite or room
+        save -- must not even try to broadcast."""
+        project_data = {"assets": {"objects": {"obj_a": {"name": "obj_a"}}}}
+        editor_a = SimpleNamespace(blockly_tab=MagicMock())
+        stub = _make_stub_ide(project_data, open_editors={"objects:obj_a": editor_a})
+
+        object_data = {"name": "obj_a", "sprite": "", "events": {}}
+        _ide_cls().on_editor_save_requested(stub, "obj_a", object_data)
+
+        editor_a.blockly_tab.push_shared_custom_blocks.assert_not_called()
+
+    def test_a_raising_broadcast_target_does_not_abort_the_others(self, qapp):
+        project_data = {"assets": {"objects": {
+            "obj_a": {"name": "obj_a"}, "obj_b": {"name": "obj_b"},
+        }}}
+        editor_a = SimpleNamespace(blockly_tab=MagicMock())
+        editor_a.blockly_tab.push_shared_custom_blocks.side_effect = RuntimeError("boom")
+        editor_b = SimpleNamespace(blockly_tab=MagicMock())
+        stub = _make_stub_ide(project_data, open_editors={
+            "objects:obj_a": editor_a, "objects:obj_b": editor_b,
+        })
+
+        object_data = {
+            "name": "obj_a", "sprite": "", "events": {},
+            "_custom_blocks_export": {"square": {"arg_names": ["n"]}},
+        }
+        _ide_cls().on_editor_save_requested(stub, "obj_a", object_data)
+
+        editor_b.blockly_tab.push_shared_custom_blocks.assert_called_once()
+
+
+class TestBroadcastSharedCustomBlocks:
+    """Direct unit coverage of _broadcast_shared_custom_blocks itself,
+    separate from exercising it through the full save path above."""
+
+    def test_covers_tabbed_and_floated_editors_alike(self, qapp):
+        """float_editor only moves the editor WIDGET out of the tab
+        strip into its own window; it never removes the entry from
+        open_editors (core/ide/_editor_lifecycle.py's own float_editor) --
+        so a single iteration over open_editors already covers both
+        tabbed and floated/detached editors with no separate check."""
+        editor_tabbed = SimpleNamespace(blockly_tab=MagicMock())
+        editor_floated = SimpleNamespace(blockly_tab=MagicMock())
+        stub = SimpleNamespace(open_editors={
+            "objects:obj_tabbed": editor_tabbed,
+            "objects:obj_floated": editor_floated,
+        })
+
+        _ide_cls()._broadcast_shared_custom_blocks(stub)
+
+        editor_tabbed.blockly_tab.push_shared_custom_blocks.assert_called_once()
+        editor_floated.blockly_tab.push_shared_custom_blocks.assert_called_once()
+
+    def test_skips_editors_with_no_blockly_tab(self, qapp):
+        sprite_editor = SimpleNamespace()  # no blockly_tab attribute at all
+        stub = SimpleNamespace(open_editors={"sprites:spr_x": sprite_editor})
+        _ide_cls()._broadcast_shared_custom_blocks(stub)  # must not raise
+
+    def test_missing_open_editors_is_a_safe_noop(self, qapp):
+        stub = SimpleNamespace()
+        _ide_cls()._broadcast_shared_custom_blocks(stub)  # must not raise
 
 
 # ---------------------------------------------------------------------------

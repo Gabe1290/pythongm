@@ -406,17 +406,24 @@ list, resolved in the same `blockly_generators.js`:
   `{{PYGM_ARG:<name>}}` placeholder + `substituteCustomBlockArgs`
   mechanism the no-return side already established, since a reporter's
   `RETURN` expression references its own parameters via the identical
-  `variables_get` block. A reporter whose `STACK` has statements is
+  `variables_get` block. ~~A reporter whose `STACK` has statements is
   **not** resolved — not a scoping choice but an inherent limit of this
   action-based architecture (there's no way to "run these actions, then
   use this value" from inside a single expression socket) — surfaced as
   a visible `{{PYGM_REPORTER_SIDE_EFFECTS:<name>}}` placeholder rather
-  than silently dropping the side effects or treating the call as 0.
+  than silently dropping the side effects or treating the call as 0.~~
+  **Corrected 2026-10-22 — this framing was wrong.** It IS resolvable,
+  via hoisting; see "Follow-up: reporter side-effect hoisting, live
+  broadcast, collision prevention (items 4/5/6)" further below. The
+  `{{PYGM_REPORTER_SIDE_EFFECTS:<name>}}` placeholder now only fires for
+  the one case that genuinely has no action list to hoist into (building
+  another definition's own return-expression template at export time).
   Undefined/cyclic/too-deep reporter calls get their own analogous
   placeholders (`{{PYGM_UNDEFINED_REPORTER:...}}`,
   `{{PYGM_REPORTER_CYCLE:...}}`, `{{PYGM_REPORTER_TOO_DEEP:...}}`).
-  Reporter cycle detection uses its own module-level
-  `CURRENT_REPORTER_CALL_STACK` (set once per generation run alongside
+  Reporter cycle detection uses its own module-level stack (renamed
+  `CURRENT_EXPANSION_STACK`, now shared with the action side too — see
+  the same follow-up; set once per generation run alongside
   the existing `customBlockDefs` index) rather than a threaded
   parameter: `getInputValue` has roughly 60 existing call sites across
   this file taking only `(block, inputName, defaultValue)`, and
@@ -497,10 +504,13 @@ question): build the real thing, not just fix the doc.
     only ever consumes an already-resolved template from a PRIOR save, so
     at worst a call sees a one-generation-stale template, never an
     infinite loop. A same-object cycle is still actively caught by
-    `callStack`/`CURRENT_REPORTER_CALL_STACK` exactly as the nesting
+    `callStack`/`CURRENT_EXPANSION_STACK` (renamed from
+    `CURRENT_REPORTER_CALL_STACK` and now shared with the reporter side
+    too — see "Follow-up: reporter side-effect hoisting, live broadcast,
+    collision prevention" further below) exactly as the nesting
     follow-up above built; this only concerns the cross-object case those
     can't see in the first place.
-  - **Known sharp edge: a genuine cross-object name collision is
+  - ~~**Known sharp edge: a genuine cross-object name collision is
     last-write-wins, not prevented.** Blockly's own duplicate-name guard
     (`findLegalName`) is workspace-local only — nothing stops two objects
     naming a block the same. `mergeSharedCustomBlockDefs` always lets a
@@ -509,7 +519,10 @@ question): build the real thing, not just fix the doc.
     name, whichever one saved to the registry most recently wins for
     everyone else calling it. Documented, not silently surprising;
     acceptable for a kid-focused IDE where names are meant to be
-    project-unique identifiers anyway.
+    project-unique identifiers anyway.~~ **Actively prevented 2026-10-22**
+    — see the same follow-up section below; a collision is now renamed
+    live client-side the moment it would occur, with a save-time
+    detection layer as defense in depth.
 - **The toolbox flyout extension — without this, the whole mechanism
   would be unreachable in practice.** A `procedures_callnoreturn`/
   `callreturn` block can only ever be authored by dragging one out of the
@@ -648,6 +661,111 @@ pairs with one).
   confirmed it produces the game the README promises — same standing
   caveat as the rest of Feature 2, now extended to this sample's own
   instructions.
+
+#### Follow-up: reporter side-effect hoisting, live broadcast, collision prevention (items 4/5/6) — ✅ DONE 2026-10-22
+
+Three narrower items that surfaced while building the follow-ups above,
+all resolved in the same session.
+
+- **Item 4 — a side-effecting reporter is now resolved, not refused.**
+  The previous session's own framing ("not a scoping choice, an
+  inherent limit of this action-based architecture") turned out to be
+  wrong: it IS buildable, via HOISTING. `walkActionChain` now sets up a
+  fresh `CURRENT_HOIST_SINK` array for every single statement it walks
+  (both branches: a plain action via the now 4-parameter
+  `generateActionCode(block, customBlockDefs, callStack, hoistedOut)`,
+  and a `procedures_callnoreturn` call); `evaluateCustomBlockReporterCall`
+  walks (local) or reuses (shared template) a side-effecting reporter's
+  own body, substitutes THIS call's argument values into it, and pushes
+  the result onto that sink instead of returning the old
+  `{{PYGM_REPORTER_SIDE_EFFECTS:...}}` placeholder — the hoisted actions
+  then run immediately before whatever action actually consumes the
+  reporter's return value. This composes at any nesting depth (a
+  reporter used inside another reporter's own argument, inside a
+  no-return custom block's argument, inside an `if_condition` branch)
+  because `walkActionChain` is already the universal chain walker
+  everywhere (the nesting follow-up's own precondition). The ONE case
+  still genuinely unresolved, narrowed from "every side-effecting
+  reporter call" to just this one: a reporter's own RETURN expression,
+  evaluated once at EXPORT time to build another definition's reusable
+  TEMPLATE (`generateCustomBlocksExportJson`), has no action list to
+  hoist into at all — `CURRENT_HOIST_SINK` is explicitly nulled around
+  that one call so the placeholder fallback still fires there,
+  deterministically.
+  - **A real new risk this introduced, found and fixed before it could
+    bite: cross-mechanism cycles.** Before this fix, a side-effecting
+    reporter's body was never touched, so a cycle running THROUGH one
+    (no-return block A calls reporter R calls back into A) was
+    structurally unreachable. Now that R's body is actually walked, it
+    is reachable — so `CURRENT_REPORTER_CALL_STACK` was renamed
+    `CURRENT_EXPANSION_STACK` and is now SHARED with the action side:
+    `expandCustomBlockCall` mirrors its own `callStack` pushes into it,
+    so a cycle crossing both mechanisms is caught exactly like a
+    same-mechanism one. A custom-block NAME uniquely identifies either
+    kind of definition (`indexCustomBlockDefs` keys both into the same
+    dict), which is what makes one shared stack correct, not merely
+    convenient.
+- **Item 5 — shared custom blocks now broadcast live, not just at
+  reopen.** `core/ide/_editor_lifecycle.py`'s new
+  `_broadcast_shared_custom_blocks` pushes the just-updated registry
+  into every OTHER currently open object editor's workspace immediately
+  after `update_custom_blocks_registry` succeeds (`open_editors` already
+  covers tabbed AND floated/detached editors alike — `float_editor`
+  only moves the editor widget out of the tab strip, it never removes
+  the `open_editors` entry). A block changed in object A now reaches an
+  already-open object B's editor without B's tab needing to close and
+  reopen. Doesn't change the underlying template-snapshot architecture
+  (still a push of a resolved snapshot, not a live recomputation), so
+  the cross-object-cycle safety argument from the original project-wide-
+  sharing follow-up is unaffected — just prompter.
+- **Item 6 — cross-object name collisions are now actively prevented,
+  live, not merely documented.** `disambiguateCustomBlockNameAgainstShared`
+  (`blockly_generators.js`), wired into the SAME `workspace.
+  addChangeListener` callback `onBlocksChanged` already uses (so it's
+  automatically guarded by the same `ignoreChanges`/`workspaceLocked`
+  check that suppresses this during a programmatic workspace LOAD — a
+  reopened project is never silently renamed), fires whenever a
+  `procedures_defnoreturn`/`defreturn` block is created or its `NAME`
+  field edited. If the name already belongs to a SHARED definition
+  (sourced from a different object), it's renamed to the next free
+  `"<name>_<n>"` suffix — mirroring Blockly's own local `findLegalName`
+  behaviour, just extended to the project-wide registry — with a
+  visible warning balloon (`block.setWarningText`, the exact mechanism
+  `procedures_ifreturn`'s own `PROCEDURES_IFRETURN_WARNING` already
+  uses) explaining why, rather than silently renaming something a
+  student just typed. **A second, fully-testable layer of defense in
+  depth, since the live JS layer can't be executed/verified without a
+  real browser**: `ProjectManager.update_custom_blocks_registry` now
+  also detects and returns any collision (a name this save just
+  reclaimed that was already registered under a different object), and
+  `on_editor_save_requested` surfaces each one as a visible status-bar
+  warning — the save still proceeds (local always wins at generation
+  time regardless of which object's entry sits in the registry, so
+  there's no ambiguity to block the save over), but the collision is no
+  longer silent. Genuine full PREVENTION (blocking the save until
+  renamed) was deliberately not built — it would need a modal
+  interrupt-the-save flow, a materially bigger UX change with no way to
+  verify it in this environment; the live client-side rename is the
+  real prevention layer, this is the net this project can test without
+  a browser.
+- **Tests**: `tests/test_blockly_custom_blocks.py` extended further (51
+  tests total — hoisting composition, the renamed/shared expansion
+  stack, the collision-prevention change-listener wiring and rename/
+  warning logic, the vendored `BlockChange`/`BlockCreate` event field
+  names pinned against the real source). `tests/
+  test_custom_blocks_sharing.py` extended (41 tests — registry
+  collision detection/reporting, the save-time warning, the live
+  broadcast reaching every open editor including floated ones, a
+  raising broadcast target not blocking the others). Full suite: 6510
+  passed, 0 failed (1 unrelated pre-existing flaky test confirmed
+  passing in isolation, same one flagged in the previous follow-up).
+- **Needs human eyes, unchanged in kind, now covering more surface**:
+  nobody has watched a side-effecting reporter actually hoist in a real
+  browser, watched two open editors broadcast live to each other, or
+  watched the live rename-and-warning actually fire when typing a
+  colliding name. All of it is grounded in the vendored Blockly source
+  and fully covered structurally, same standing caveat as the rest of
+  this feature.
 
 ---
 
