@@ -76,6 +76,13 @@ EDITIONS = {
             "clean_project", "show_orphaned_files_dialog",
         }),
         "hidden_toolbar_actions": frozenset({"debug_game", "export_game"}),
+        # Phase 2: asset-tree sidebar categories hidden for this tier
+        # (widgets/asset_tree/asset_tree_widget.py setup_categories reads
+        # this), keyed by the category's plural asset_type. Scripts/Fonts
+        # are code-authoring surfaces a junior student shouldn't need;
+        # Playgrounds is the Thymio extension's category, out of scope
+        # for this tier.
+        "hidden_asset_categories": frozenset({"scripts", "fonts", "playgrounds"}),
     },
     "beginner": {
         "name": "Beginner",

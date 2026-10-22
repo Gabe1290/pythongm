@@ -232,6 +232,9 @@ class AssetTreeWidget(QTreeWidget):
 
     def setup_categories(self):
         """Setup default asset categories with separators"""
+        from config.editions import get_current_edition
+        hidden_categories = get_current_edition().get("hidden_asset_categories", frozenset())
+
         categories = [
             ("sprites", self.tr("Sprites")),
             ("sounds", self.tr("Sounds")),
@@ -247,6 +250,22 @@ class AssetTreeWidget(QTreeWidget):
             ("scripts", self.tr("Scripts")),
             ("fonts", self.tr("Fonts"))
         ]
+
+        # Drop any category hidden for the current edition (e.g. Junior
+        # hides Scripts/Fonts/Playgrounds), then collapse any separator
+        # left dangling (leading, trailing, or doubled-up) by the removal.
+        categories = [
+            item for item in categories
+            if item == "separator" or item[0] not in hidden_categories
+        ]
+        cleaned_categories = []
+        for item in categories:
+            if item == "separator" and (not cleaned_categories or cleaned_categories[-1] == "separator"):
+                continue
+            cleaned_categories.append(item)
+        if cleaned_categories and cleaned_categories[-1] == "separator":
+            cleaned_categories.pop()
+        categories = cleaned_categories
 
         for item in categories:
             if item == "separator":
