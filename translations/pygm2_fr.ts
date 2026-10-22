@@ -10288,6 +10288,11 @@ Voulez-vous quand même enregistrer ?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>My Blocks — Lesson 1</source>
+            <translation>Mes Blocs — Leçon 1</translation>
+        </message>
+
+        <message>
             <source>2.5 D — Level 4</source>
             <translation>2.5 D — Niveau 4</translation>
         </message>

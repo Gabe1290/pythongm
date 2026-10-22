@@ -1,0 +1,30 @@
+{
+  "name": "obj_hud",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "8",
+            "y": "8",
+            "caption": "Score: ",
+            "caption_translations": {
+              "fr": "Score : "
+            }
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00",
+  "parent": ""
+}

@@ -2652,6 +2652,11 @@ Katerega želite odpreti?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>My Blocks — Lesson 1</source>
+            <translation>Moji Bloki — Lekcija 1</translation>
+        </message>
+
+        <message>
             <source>2.5 D — Level 4</source>
             <translation>2.5 D — Stopnja 4</translation>
         </message>

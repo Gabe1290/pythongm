@@ -77,6 +77,16 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/fichier_1", "File Exchange — Tic-Tac-Toe"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
+    # docs/BLOCKLY_SCRATCH_PARITY_PLAN.md item 7: the bundled sample
+    # pairing Feature 2 ("My Blocks") with a hands-on lesson — three
+    # collision events share an obviously-repeated 2-action shape
+    # (destroy the coin + add its points), and the README walks the
+    # student through replacing the repetition with one custom block.
+    # Intentionally absent from junior/beginner's sample_folders
+    # whitelist (config/editions.py) — My Blocks is itself excluded from
+    # junior's toolbox, so teaching it there would point at a feature
+    # that tier doesn't have.
+    ("samples/mon_bloc_1", "My Blocks — Lesson 1"),
     # `treasure` and `maze_4` were dropped after rc.12 user testing, then
     # RE-ADDED 2026-07-16 once the GMK importer hardening closed the bugs
     # that had made them unreliable (GM "Applies to" targeting, sprite

@@ -53,7 +53,8 @@ SAMPLES = ["maze_1", "maze_2", "maze_3", "maze_4",
            "reseau_4",
            "fichier_1",
            "treasure",
-           "sky_strike_1"]
+           "sky_strike_1",
+           "mon_bloc_1"]
 
 
 class _Collector(logging.Handler):

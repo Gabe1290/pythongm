@@ -9527,6 +9527,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>My Blocks — Lesson 1</source>
+            <translation>Mis Bloques — Lección 1</translation>
+        </message>
+
+        <message>
             <source>2.5 D — Level 4</source>
             <translation>2.5 D — Nivel 4</translation>
         </message>

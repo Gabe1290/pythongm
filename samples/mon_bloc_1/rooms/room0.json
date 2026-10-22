@@ -1,0 +1,79 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 480,
+  "height": 360,
+  "background_color": "#1b1f2a",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instances": [
+    {
+      "object_name": "obj_joueur",
+      "x": 228,
+      "y": 300,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_hud",
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_bronze",
+      "x": 60,
+      "y": 60,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_bronze",
+      "x": 380,
+      "y": 100,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_argent",
+      "x": 160,
+      "y": 40,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_argent",
+      "x": 320,
+      "y": 220,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_or",
+      "x": 420,
+      "y": 60,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    },
+    {
+      "object_name": "obj_piece_or",
+      "x": 40,
+      "y": 240,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0
+    }
+  ],
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00",
+  "imported": true
+}

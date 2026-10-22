@@ -1,0 +1,356 @@
+{
+  "name": "mon_bloc_1",
+  "version": "1.0.0",
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00",
+  "settings": {
+    "window_title": "",
+    "window_width": 480,
+    "window_height": 360,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_joueur": {
+        "name": "spr_joueur",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_joueur.png",
+        "width": 24,
+        "height": 24,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 24,
+        "frame_height": 24,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00"
+      },
+      "spr_piece_bronze": {
+        "name": "spr_piece_bronze",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_piece_bronze.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00"
+      },
+      "spr_piece_argent": {
+        "name": "spr_piece_argent",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_piece_argent.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00"
+      },
+      "spr_piece_or": {
+        "name": "spr_piece_or",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_piece_or.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_joueur": {
+        "name": "obj_joueur",
+        "asset_type": "object",
+        "sprite": "spr_joueur",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "keyboard": {
+            "up": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "up",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "down": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "down",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "left",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "right",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "nokey": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "stop",
+                    "speed": "8"
+                  }
+                }
+              ]
+            }
+          },
+          "create": {
+            "actions": []
+          },
+          "collision_with_obj_piece_bronze": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "5",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_piece_bronze"
+          },
+          "collision_with_obj_piece_argent": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "10",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_piece_argent"
+          },
+          "collision_with_obj_piece_or": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "25",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_piece_or"
+          }
+        },
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "parent": ""
+      },
+      "obj_piece_bronze": {
+        "name": "obj_piece_bronze",
+        "asset_type": "object",
+        "sprite": "spr_piece_bronze",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "parent": ""
+      },
+      "obj_piece_argent": {
+        "name": "obj_piece_argent",
+        "asset_type": "object",
+        "sprite": "spr_piece_argent",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "parent": ""
+      },
+      "obj_piece_or": {
+        "name": "obj_piece_or",
+        "asset_type": "object",
+        "sprite": "spr_piece_or",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "parent": ""
+      },
+      "obj_hud": {
+        "name": "obj_hud",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "draw": {
+            "actions": [
+              {
+                "action": "draw_score",
+                "parameters": {
+                  "x": "8",
+                  "y": "8",
+                  "caption": "Score: ",
+                  "caption_translations": {
+                    "fr": "Score : "
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "parent": ""
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 480,
+        "height": 360,
+        "background_color": "#1b1f2a",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "created": "2026-10-22T12:00:00",
+        "modified": "2026-10-22T12:00:00",
+        "imported": true,
+        "instance_count": 8,
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

@@ -2491,6 +2491,11 @@ Do you want to save anyway?</source>
 </context>
 <context>
     <name>WelcomeTab</name>
+        <message>
+            <source>My Blocks — Lesson 1</source>
+            <translation>我的方块 — 第一课</translation>
+        </message>
+
     <message>
         <location filename="../widgets/welcome_tab.py" line="86"/>
         <source>Welcome to PyGameMaker IDE</source>

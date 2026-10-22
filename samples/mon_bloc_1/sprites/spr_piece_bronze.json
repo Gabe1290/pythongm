@@ -1,0 +1,18 @@
+{
+  "name": "spr_piece_bronze",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_piece_bronze.png",
+  "width": 16,
+  "height": 16,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 16,
+  "frame_height": 16,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00"
+}

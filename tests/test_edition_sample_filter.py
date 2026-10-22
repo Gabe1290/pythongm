@@ -73,16 +73,21 @@ def test_unknown_edition_key_shows_all(monkeypatch):
 
 def test_beginner_whitelist_matches_the_shipped_non_raycast_samples():
     """The beginner list should be exactly the real sample folders minus
-    raycast_*, block_world_*, multiplayer_lan_*, reseau_* and fichier_*
-    (the first two change the view shape and are the most advanced; the
-    multiplayer samples -- both socket-based and file-exchange -- need
-    two separate processes/machines to demonstrate, not a beginner
-    activity), so no shipped beginner sample is accidentally omitted and
-    no stale folder lingers."""
+    raycast_*, block_world_*, multiplayer_lan_*, reseau_*, fichier_* and
+    mon_bloc_1 (the first two change the view shape and are the most
+    advanced; the multiplayer samples -- both socket-based and
+    file-exchange -- need two separate processes/machines to
+    demonstrate, not a beginner activity; mon_bloc_1 teaches "My Blocks",
+    a Blockly feature excluded from beginner's own toolbox preset, so a
+    beginner student couldn't follow its lesson at all), so no shipped
+    beginner sample is accidentally omitted and no stale folder
+    lingers."""
     shipped = sorted(p.name for p in (REPO_ROOT / "samples").iterdir()
                      if (p / "project.json").exists())
     _advanced_prefixes = ("raycast", "block_world", "multiplayer_lan", "reseau", "fichier")
-    expected = [s for s in shipped if not s.startswith(_advanced_prefixes)]
+    _advanced_exact = {"mon_bloc_1"}
+    expected = [s for s in shipped
+                if not s.startswith(_advanced_prefixes) and s not in _advanced_exact]
     assert sorted(EDITIONS["beginner"]["sample_folders"]) == expected
 
 

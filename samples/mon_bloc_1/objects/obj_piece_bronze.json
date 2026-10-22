@@ -1,0 +1,14 @@
+{
+  "name": "obj_piece_bronze",
+  "asset_type": "object",
+  "sprite": "spr_piece_bronze",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00",
+  "parent": ""
+}

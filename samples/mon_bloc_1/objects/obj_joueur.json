@@ -1,0 +1,164 @@
+{
+  "name": "obj_joueur",
+  "asset_type": "object",
+  "sprite": "spr_joueur",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "keyboard": {
+      "up": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "stop",
+              "speed": "8"
+            }
+          }
+        ]
+      }
+    },
+    "create": {
+      "actions": []
+    },
+    "collision_with_obj_piece_bronze": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "5",
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_piece_bronze"
+    },
+    "collision_with_obj_piece_argent": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "10",
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_piece_argent"
+    },
+    "collision_with_obj_piece_or": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "25",
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_piece_or"
+    }
+  },
+  "imported": true,
+  "created": "2026-10-22T12:00:00",
+  "modified": "2026-10-22T12:00:00",
+  "parent": ""
+}
