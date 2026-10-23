@@ -214,18 +214,24 @@ def main():
             time.sleep(0.15)
         _capture_widget(object_editor, app, "objet_blockly.png")
 
-        # -- Room -----------------------------------------------------------
-        instances = [{
+        # -- Room -------------------------------------------------------
+        # A new project already has a default room ("room0",
+        # core/project_manager.py's _create_default_project_data) -- the
+        # guide has students use/place into THAT one rather than create a
+        # new one, so place the hero directly into it instead of calling
+        # am.create_asset (which would just make a second, unused room).
+        room_data = am.get_asset("rooms", "room0")
+        if room_data is None:
+            raise RuntimeError("expected a default 'room0' in a new project")
+        room_data["width"], room_data["height"] = 640, 480
+        room_data["background_color"] = "#dff0ff"
+        room_data["instances"] = [{
             "object_name": "obj_heros", "x": 300, "y": 220, "rotation": 0,
             "scale_x": 1.0, "scale_y": 1.0, "visible": True,
         }]
-        room_data = am.create_asset(
-            "salle_1", "rooms",
-            width=640, height=480, background_color="#dff0ff",
-            instances=instances)
         _sync(ide)
-        ide.open_room_editor("salle_1", room_data)
-        rkey = ide._editor_key("rooms", "salle_1")
+        ide.open_room_editor("room0", room_data)
+        rkey = ide._editor_key("rooms", "room0")
         room_editor = ide.open_editors[rkey]
         app.processEvents()
         _capture_widget(room_editor, app, "salle_editeur.png")

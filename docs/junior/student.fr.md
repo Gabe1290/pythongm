@@ -56,13 +56,17 @@ Regarde en haut de la fenêtre :
 
 ## Partie 5 : construire une salle et jouer
 
-- [ ] Clique **Ressources > Créer une salle**.
+Ton projet a déjà une salle, **room0**. Pas besoin d'en créer une !
+
+- [ ] Double-clique sur **room0** dans la liste **Salles**, à gauche.
 - [ ] Clique sur ton objet dans la liste, puis clique dans la salle pour le
       placer.
 
 ![La salle avec le héros placé dedans](images/salle_editeur.png "65%")
 
 - [ ] Appuie sur le **triangle vert** (ou **F5**) pour jouer.
+
+> TIP : tu peux renommer **room0** si tu veux (clic droit > Renommer).
 
 > DONE : tu vois ton sprite dans le jeu et tu peux le faire bouger.
 
