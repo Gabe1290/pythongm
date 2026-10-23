@@ -66,6 +66,12 @@ l'éditeur d'objet. Il affiche les événements construits par Blockly. Les
 Pour une période de 45 minutes, fais les parties 1 à 5 et garde l'export pour
 la fois suivante.
 
+**Partie 7 (bonus, optionnelle) : ramasse des fruits.** Pour les élèves qui
+finissent vite : un objet `obj_fruit` que le héros ramasse par collision,
+avec un score affiché. Pas dans le minutage ci-dessus, propose-la plutôt
+comme activité libre une fois la partie 6 terminée, ou en devoir si le
+temps manque.
+
 Leçons suivantes : les tutoriels Junior sous **Aide > Tutoriels** :
 Premiers pas, Attrapez l'étoile, Pong, Breakout, Fusion de Fruits,
 Panier de Fruits. Chacun a sa propre fiche de l'élève et son guide de
@@ -82,6 +88,7 @@ l'enseignant.
 | Un nom est refusé | Utilise des lettres, des chiffres et des tirets bas, sans espace ni caractère spécial |
 | Supprimé par erreur | Outils > Restaurer les ressources supprimées |
 | Fenêtre de jeu grise | Souvent un ordinateur lent ou à court de mémoire. Attends, puis réessaie |
+| Le score n'augmente pas (partie 7) | L'événement collision doit être sur **obj_heros** (pas sur obj_fruit), avec obj_fruit choisi dans le menu déroulant |
 | Le jeu exporté a besoin d'internet | Les jeux qui utilisent du code Python chargent un environnement en ligne. Quand on te le demande, choisis de l'inclure pour un usage hors ligne |
 | Un exemple utilise un bloc introuvable | Les exemples peuvent utiliser des blocs hors de l'ensemble Junior. Ils fonctionnent quand même ; les élèves ne peuvent simplement pas rajouter ce bloc |
 

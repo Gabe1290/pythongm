@@ -42,17 +42,20 @@ Regarde en haut de la fenêtre :
 
 > TIP : commence les noms de sprites par `spr_`.
 
-## Partie 4 : faire bouger un objet
+## Partie 4 : faire bouger un objet dans les 4 directions
 
 - [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
-- [ ] Glisse des blocs : **Clavier: Flèche gauche** puis
-      **définir vitesse horizontale à**.
-- [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**.
+- [ ] Ajoute 4 blocs **Clavier** (Flèche gauche, droite, haut, bas), chacun
+      avec **définir vitesse horizontale/verticale à** (-4, 4, -4, 4).
+- [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**, pour
+      que ton héros s'arrête quand tu ne touches rien.
 
-![Deux blocs dans l'objet : Clavier Flèche gauche, et Clavier Aucune touche](images/objet_blockly.png "65%")
+![Cinq blocs dans l'objet : un pour chaque flèche du clavier, plus un pour s'arrêter](images/objet_blockly.png "65%")
 
-> TIP : clic droit sur un bloc pour le dupliquer ou le supprimer.
+> TIP : clic droit sur un bloc pour le dupliquer ou le supprimer. Duplique
+> le bloc **Flèche gauche** trois fois, puis change juste la touche et le
+> nombre dans chaque copie !
 
 ## Partie 5 : construire une salle et jouer
 
@@ -78,6 +81,29 @@ Ton projet a déjà une salle, **room0**. Pas besoin d'en créer une !
 
 Tu obtiens un fichier `.html`. Envoie-le à un ami : il peut y jouer !
 
+## Partie 7 : BONUS — ramasse des fruits !
+
+Ton jeu marche déjà. Si tu as encore du temps, ajoute des points !
+
+- [ ] Crée un sprite `spr_fruit` (un petit rond rouge ou jaune).
+- [ ] Crée un objet `obj_fruit` avec ce sprite.
+- [ ] Ouvre **obj_heros**, ajoute l'événement **Quand collision avec
+      obj_fruit**.
+- [ ] Mets-y 2 blocs : **Ajouter au score 10** et **Détruire autre
+      instance**.
+- [ ] Ajoute l'événement **Quand dessiner**, avec le bloc **Afficher score
+      à x: 10 y: 10**.
+
+![Les blocs bonus : collision avec le fruit (score + destruction), et afficher le score](images/objet_blockly_bonus.png "65%")
+
+- [ ] Retourne dans **room0** et place 2 ou 3 `obj_fruit` dans la salle.
+
+![La salle avec le héros et trois fruits placés dedans](images/salle_fruits.png "65%")
+
+- [ ] Appuie sur **F5** : ramasse les fruits pour gagner des points !
+
+> DONE : ton score augmente et le fruit disparaît quand tu le touches.
+
 ## Tu es bloqué ?
 
 | Ce qui se passe | Essaie ceci |
@@ -87,6 +113,7 @@ Tu obtiens un fichier `.html`. Envoie-le à un ami : il peut y jouer !
 | Je ne vois pas mon sprite | As-tu choisi le sprite dans la case **Sprite** ? |
 | J'ai supprimé un truc par erreur | **Outils > Restaurer les ressources supprimées** |
 | Le jeu affiche une fenêtre grise | Attends un peu, puis réessaie |
+| Mon score n'augmente pas | L'événement collision est-il sur **obj_heros**, avec le bon objet choisi ? |
 
 ## Mots à connaître
 
@@ -94,11 +121,13 @@ Tu obtiens un fichier `.html`. Envoie-le à un ami : il peut y jouer !
 - **Objet** : une chose qui fait des actions
 - **Salle** : un niveau
 - **Bloc** : un morceau de ton programme
+- **Collision** : quand deux objets se touchent
+- **Score** : tes points
 
 ## Défis
 
-- **Essaie (5 min) :** dessine un deuxième sprite et crée un deuxième objet.
-- **Va plus loin :** fais aussi bouger ton héros vers le haut et vers le bas.
+- **Essaie :** change la couleur ou le nombre de points de ton fruit.
+- **Va plus loin :** ajoute un deuxième type de fruit qui vaut plus de points.
 
 ## Réfléchis
 

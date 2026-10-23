@@ -23,6 +23,14 @@ Extra line-level syntax beyond plain Markdown:
                           GitHub's markdown renderer too, so a source shared
                           between wiki and print stays silent in both)
 
+LANDMINE: fpdf2's markdown=True treats a bare " -- " as the OPEN of an
+--underline-- span, not an em dash -- a single stray "--" in a paragraph
+(this repo's own prose habit, used throughout CLAUDE.md and commit
+messages) silently underlines everything from there to the end of that
+text run. Found by actually rendering a real page and looking at it, not
+assumed. Avoid "--" as a standalone dash in handout source text; write the
+sentence another way (a comma, a new sentence, parentheses) instead.
+
 Usage:
     python3 scripts/generate_tutorial_handouts_pdf.py [SRC.md [OUT.pdf]]
 
