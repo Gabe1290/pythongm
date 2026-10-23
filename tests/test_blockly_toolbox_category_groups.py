@@ -171,7 +171,7 @@ def test_toolbox_group_order_lists_all_eight_core_groups():
     m = re.search(r"var TOOLBOX_GROUP_ORDER = \[(.*?)\];", src, re.S)
     assert m
     order = re.findall(r"'([A-Za-z ]+)'", m.group(1))
-    assert order == ["Motion", "Looks", "Sound", "Events", "Control",
+    assert order == ["Events", "Motion", "Looks", "Sound", "Control",
                       "Sensing", "Operators", "Variables"]
 
 

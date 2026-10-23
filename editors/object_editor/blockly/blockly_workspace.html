@@ -3248,12 +3248,14 @@
             'My Blocks': '#FF6680'
         };
 
-        // Fixed emission order (Scratch's own order) so the toolbox reads
-        // the same way every time, independent of object iteration order.
+        // Fixed emission order so the toolbox reads the same way every
+        // time, independent of object iteration order. Events leads (a
+        // student picks "when does this run" before "what does it do"),
+        // then every action-type group, in Scratch's own relative order.
         // Anything not in this list (an unmapped/extension category, or
         // 'My Blocks' once it has content) is appended afterward, in the
         // order generateToolboxXml() encounters it.
-        var TOOLBOX_GROUP_ORDER = ['Motion', 'Looks', 'Sound', 'Events',
+        var TOOLBOX_GROUP_ORDER = ['Events', 'Motion', 'Looks', 'Sound',
             'Control', 'Sensing', 'Operators', 'Variables'];
 
         var _categoryToGroup = {};
