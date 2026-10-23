@@ -3,9 +3,10 @@
 (docs/junior/images/).
 
 Drives a real PyGameMakerIDE in the "junior" edition through a tiny scratch
-project (one sprite, one moving object, one room) and grabs four widgets:
-the main toolbar, the Sprite Editor, the Object Editor's Blockly tab (with
-two real event blocks already on the canvas), and the Room Editor.
+project (one sprite, one moving object, one room) and grabs five widgets:
+the whole IDE window on the Welcome tab (no project loaded yet), the main
+toolbar, the Sprite Editor, the Object Editor's Blockly tab (with two real
+event blocks already on the canvas), and the Room Editor.
 
 Unlike every other headless-capture script in this repo (tools/
 capture_tutorial_screenshots.py, tools/gen_tutorial_15/16_handout_images.py),
@@ -119,6 +120,13 @@ def _capture_widget(widget, app, filename):
 def main():
     app = _make_app()
     ide = _make_ide(app)
+
+    # -- Whole IDE, Welcome tab, no project loaded ---------------------
+    # Captured before _new_scratch_project() runs, so it matches what a
+    # student actually sees on first launch: "Aucun projet charge" / the
+    # New Project / Open Project / sample-game buttons.
+    _capture_widget(ide, app, "ide_welcome.png")
+
     scratch = _new_scratch_project(ide, "scratch_junior_fr")
     am = ide.asset_manager
     sprite_dir = scratch / "_capture_sprites"
@@ -126,9 +134,17 @@ def main():
 
     try:
         # -- Toolbar ---------------------------------------------------
+        # grab() captures the toolbar's full laid-out width, which on this
+        # box's wide virtual display is mostly empty space well past the
+        # last real icon -- crop down to just the icon cluster + a little
+        # padding so the handout image isn't a thin, hard-to-read strip.
         from PySide6.QtWidgets import QToolBar
         toolbar = ide.findChild(QToolBar, "MainToolbar")
         _capture_widget(toolbar, app, "toolbar.png")
+        from PIL import Image
+        toolbar_path = OUT / "toolbar.png"
+        with Image.open(toolbar_path) as img:
+            img.crop((0, 0, min(400, img.width), img.height)).save(toolbar_path)
 
         # -- Sprite -------------------------------------------------------
         png_path = sprite_dir / "spr_heros.png"

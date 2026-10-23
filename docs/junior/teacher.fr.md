@@ -58,12 +58,12 @@ l'éditeur d'objet. Il affiche les événements construits par Blockly. Les
 | Temps | Activité |
 |---|---|
 | 0-10 | Visite : barre d'outils, ressources, bouton de lecture. Ouvrir un exemple depuis l'onglet Bienvenue et appuyer sur F5 |
-| 10-25 | Fiche de l'élève, parties 1 et 2 : dessiner un sprite |
-| 25-45 | Parties 3 et 4 : faire bouger un objet, construire une salle, jouer |
-| 45-55 | Partie 5 : exporter en HTML5 et l'ouvrir dans le navigateur |
+| 10-25 | Fiche de l'élève, parties 1 à 3 : créer un projet, puis dessiner un sprite |
+| 25-45 | Parties 4 et 5 : faire bouger un objet, construire une salle, jouer |
+| 45-55 | Partie 6 : exporter en HTML5 et l'ouvrir dans le navigateur |
 | 55-60 | Partage, et les questions « Réfléchis » comme ticket de sortie |
 
-Pour une période de 45 minutes, fais les parties 1 à 4 et garde l'export pour
+Pour une période de 45 minutes, fais les parties 1 à 5 et garde l'export pour
 la fois suivante.
 
 Leçons suivantes : les tutoriels Junior sous **Aide > Tutoriels** :

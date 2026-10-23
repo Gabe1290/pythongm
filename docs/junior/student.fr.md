@@ -3,7 +3,17 @@
 Garde cette feuille à côté de toi. Fais chaque partie, puis coche la case.
 Bloqué ? Demande à un copain, puis à ton enseignant.
 
-## Partie 1 : tes outils
+## Partie 1 : commence un projet
+
+Au démarrage, tu vois ça :
+
+![La fenêtre de PyGameMaker au démarrage, avec le bouton Nouveau projet](images/ide_welcome.png "90%")
+
+- [ ] Clique **Nouveau projet**.
+- [ ] Donne un nom à ton projet, par exemple `MonJeu`.
+- [ ] Clique **OK**.
+
+## Partie 2 : tes outils
 
 Regarde en haut de la fenêtre :
 
@@ -21,7 +31,7 @@ Regarde en haut de la fenêtre :
 - Un **objet** fait des choses dans ton jeu.
 - Une **salle** est un niveau.
 
-## Partie 2 : dessiner un sprite
+## Partie 3 : dessiner un sprite
 
 - [ ] Clique **Ressources > Créer un sprite**.
 - [ ] Donne-lui un nom, par exemple `spr_heros`.
@@ -32,7 +42,7 @@ Regarde en haut de la fenêtre :
 
 > TIP : commence les noms de sprites par `spr_`.
 
-## Partie 3 : faire bouger un objet
+## Partie 4 : faire bouger un objet
 
 - [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
@@ -44,7 +54,7 @@ Regarde en haut de la fenêtre :
 
 > TIP : clic droit sur un bloc pour le dupliquer ou le supprimer.
 
-## Partie 4 : construire une salle et jouer
+## Partie 5 : construire une salle et jouer
 
 - [ ] Clique **Ressources > Créer une salle**.
 - [ ] Clique sur ton objet dans la liste, puis clique dans la salle pour le
@@ -56,7 +66,7 @@ Regarde en haut de la fenêtre :
 
 > DONE : tu vois ton sprite dans le jeu et tu peux le faire bouger.
 
-## Partie 5 : partager ton jeu
+## Partie 6 : partager ton jeu
 
 - [ ] Clique **Fichier > Exporter en HTML5**.
 - [ ] Choisis un dossier.
