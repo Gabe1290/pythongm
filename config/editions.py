@@ -8,10 +8,9 @@ EDITIONS = {
     # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 1: a tier below "beginner"
     # for 8-9 year olds, simplifying UI chrome the edition system never
     # touched before (menus, dialogs, the Object Editor's authoring
-    # surfaces) rather than just curating content. Inherits beginner's
-    # tutorial/sample curation for now (Phase 3 may give it its own,
-    # smaller Blockly preset later; "beginner" is a safe placeholder,
-    # not a final choice).
+    # surfaces) rather than just curating content. Inherited beginner's
+    # tutorial/sample curation at first; sample_folders has since
+    # diverged (see below).
     "junior": {
         "name": "Junior",
         "description": "Extra-simplified interface for young students",
@@ -24,12 +23,25 @@ EDITIONS = {
             "15_fruit_fusion",
             "16_fruit_basket",
         ],
+        # Pruned (2026-10-23) to only samples that are FULLY editable
+        # within Junior's own restrictions (no Code Editor/Event List
+        # tabs, no Scripts/Fonts/Playgrounds in the asset sidebar, only
+        # JUNIOR_BLOCKS in the Blockly toolbox): dropped "treasure" (its
+        # monster AI is a Scripts-category script called via
+        # execute_script, which has no Blockly block at all -- with
+        # Scripts hidden there is no UI path left to view or edit it),
+        # "match3_1"/"match3_2"/"match3_3" (every event is raw-Python
+        # execute_code, not block-built -- editable in place but not
+        # addable from the Junior toolbox, so it's not a block-building
+        # exercise at this tier), and "maze_3"/"maze_4" (their HUD uses a
+        # custom Fonts-category asset that's no longer reachable from the
+        # sidebar). Students ready for scripts/raw code/custom fonts use
+        # a more advanced edition instead. Beginner/advanced/development
+        # keep the full sample list below.
         "sample_folders": [
-            "maze_1", "maze_2", "maze_3", "maze_4",
+            "maze_1", "maze_2",
             "plateforme_1", "plateforme_2", "plateforme_3",
-            "match3_1", "match3_2", "match3_3",
             "views_1", "views_2",
-            "treasure",
             "sky_strike_1",
         ],
         # Phase 1: the Object Editor's "Event List" and "Code Editor" tabs
