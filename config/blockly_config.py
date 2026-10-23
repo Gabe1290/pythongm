@@ -552,10 +552,6 @@ class BlocklyConfig:
         # tests/test_blockly_preset_generated_actions.py) found 17 more
         # actually in use, several more widely used than those 3 --
         # decided with the user the same day to include all of them.
-        # set_draw_font and draw_sprite are the only two left out
-        # (sky_strike_1 only, each): a sample using a block that's not in
-        # the toolbox still loads and runs, it just can't be added again
-        # from the picker.
         config.enable_block("restart_game")          # maze_1/3/4, plateforme_3, treasure, sky_strike_1
         config.enable_block("set_window_caption")    # maze_2/3/4, plateforme_3, treasure
         config.enable_block("set_draw_color")        # maze_3/4
@@ -576,12 +572,35 @@ class BlocklyConfig:
         config.enable_block("test_expression")          # plateforme_3
         config.enable_block("execute_script")           # treasure
         config.enable_block("set_background")           # sky_strike_1
+        config.enable_block("set_draw_font")            # maze_3/4
+        config.enable_block("draw_sprite")              # sky_strike_1
+
+        # Hand-written-block gaps (2026-10-23): a second per-sample audit --
+        # this time against config.toolbox_visibility.visible_actions(), the
+        # same resolver the real toolbox uses, so it also catches hand-
+        # written blocks the generated-action sweep above deliberately
+        # didn't check (tests/test_blockly_preset_generated_actions.py's own
+        # docstring flagged this as "a separate, pre-existing gap" at the
+        # time) -- found every beginner-edition sample except plateforme_1
+        # and match3_1/2/3 relied on at least one hand-written block never
+        # enabled here. Closing these (rather than dropping the affected
+        # samples from the edition) keeps the full 14-sample list fully
+        # buildable from the picker.
+        config.enable_block("room_goto_next")   # maze_1 ("next_room")/maze_2 ("room_goto_next") -- go to next room
+        config.enable_block("health_set")       # maze_1 (set_health)
+        config.enable_block("move_snap_to_grid")  # maze_1/2/3/4, views_1/2 -- grid-aligned movement
+        config.enable_block("set_sprite")       # maze_4, plateforme_2/3, treasure
+        config.enable_block("set_variable")     # maze_4, views_1, treasure, sky_strike_1
+        config.enable_block("if_condition")     # sky_strike_1
+        config.enable_block("wrap_around_room")  # treasure
+        config.enable_block("enable_views")     # views_1/2
+        config.enable_block("set_view")         # views_1/2
 
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
             "Score/Lives/Health", "Instance", "Room", "Game",
-            "Control",
+            "Control", "Views",
         }
 
         return config

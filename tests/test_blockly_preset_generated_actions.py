@@ -36,7 +36,30 @@ BEGINNER_NEWLY_ADDED = {
     "check_empty", "jump_to_start", "test_alignment", "test_chance",
     "test_expression", "execute_script", "set_background",
 }
-BEGINNER_DELIBERATELY_EXCLUDED = {"set_draw_font", "draw_sprite"}
+# set_draw_font/draw_sprite used to be deliberately left out here (sky_strike_1
+# was thought to be the only user of either); the 2026-10-23 hand-written-block
+# audit below found maze_3/maze_4 also use set_draw_font, so both are now
+# enabled too (see HAND_WRITTEN_GAPS_CLOSED) and there is nothing left to
+# exclude.
+BEGINNER_DELIBERATELY_EXCLUDED = set()
+
+# 2026-10-23: curating which samples Beginner shows (same spirit as the
+# Junior-tier cleanup) surfaced that this file's own
+# test_beginner_edition_samples_only_use_visible_or_explicitly_excluded_generated_actions
+# is deliberately scoped to GENERATED_ACTION_NAMES only -- its docstring says
+# a sample using a *hand-written* block beginner never enabled (its own
+# example: maze_1's room_goto_next) is "a separate, pre-existing gap unrelated
+# to this unit's bug". A fresh audit against config.toolbox_visibility's real
+# toolbox_enabled_blocks() (the alias-aware pipeline the live Blockly editor
+# actually uses) found every beginner-edition sample except plateforme_1 and
+# match3_1/2/3 relied on at least one such hand-written block. Rather than
+# drop those samples from the edition, closed the gaps so beginner stays
+# fully buildable from the picker.
+HAND_WRITTEN_GAPS_CLOSED = {
+    "room_goto_next", "health_set", "move_snap_to_grid", "set_sprite",
+    "set_variable", "if_condition", "wrap_around_room", "enable_views",
+    "set_view",
+}
 
 BEGINNER_EDITION_SAMPLES = (
     "maze_1", "maze_2", "maze_3", "maze_4",
@@ -198,6 +221,53 @@ def test_beginner_edition_samples_only_use_visible_or_explicitly_excluded_genera
             unaccounted[sample] = sorted(missing)
 
     assert unaccounted == {}, f"generated actions used but not visible/excluded: {unaccounted}"
+
+
+def test_beginner_preset_enables_the_hand_written_gap_closures():
+    presets = _presets()
+    assert HAND_WRITTEN_GAPS_CLOSED <= presets["beginner"].enabled_blocks
+    assert "Views" in presets["beginner"].enabled_categories
+
+
+def test_beginner_edition_samples_are_fully_buildable_from_the_picker():
+    """Every action (hand-written or generated, under its canonical name or
+    a legacy alias) a beginner-edition sample actually uses must be
+    addable from the Beginner toolbox -- the real pipeline the live
+    Blockly editor sends to JS (config.toolbox_visibility.
+    toolbox_enabled_blocks(), which resolves both extension/Audio-always-
+    visible actions and the action-name<->block-type mapping), not just
+    the GENERATED_ACTION_NAMES-scoped check above. 2026-10-23: this is
+    what makes it safe to keep all 14 samples in the Beginner edition
+    instead of pruning the ones that use a hand-written block (see
+    HAND_WRITTEN_GAPS_CLOSED)."""
+    from events.plugin_loader import load_all_plugins, collect_project_action_names
+    load_all_plugins()
+    from events.action_types import ACTION_TYPE_ALIASES, ACTION_TO_BLOCKLY_MAP
+    from config.blockly_config import PRESETS
+    from config.toolbox_visibility import toolbox_enabled_blocks
+
+    beginner = PRESETS["beginner"]
+    enabled_block_types = toolbox_enabled_blocks(beginner, project_data=None)
+
+    unaccounted = {}
+    for sample in BEGINNER_EDITION_SAMPLES:
+        project_file = REPO_ROOT / "samples" / sample / "project.json"
+        assert project_file.exists(), f"missing sample: {sample}"
+        project_data = json.loads(project_file.read_text(encoding="utf-8"))
+        used = collect_project_action_names(project_data)
+
+        missing = set()
+        for name in used:
+            canonical = ACTION_TYPE_ALIASES.get(name, name)
+            block_type = ACTION_TO_BLOCKLY_MAP.get(canonical, canonical)
+            if (block_type not in enabled_block_types
+                    and canonical not in enabled_block_types
+                    and name not in enabled_block_types):
+                missing.add(name)
+        if missing:
+            unaccounted[sample] = sorted(missing)
+
+    assert unaccounted == {}, f"actions used but not addable from the picker: {unaccounted}"
 
 
 def test_load_config_migrates_a_pre_unit2_saved_config_once(tmp_path, monkeypatch):

@@ -25,7 +25,10 @@ def test_hand_written_block_gating_is_unchanged():
     cfg = _beginner()
     shown = visible_actions(cfg, project_data=None)
     assert "bounce" in shown            # in beginner's enabled_blocks
-    assert "draw_sprite" not in shown  # a generated action, deliberately excluded from beginner (U2)
+    # draw_sprite/set_draw_font (the original U2 "only two left out") were
+    # added to beginner 2026-10-23 (maze_3/4/sky_strike_1 actually use
+    # them) -- draw_line is still a generated action beginner never enabled.
+    assert "draw_line" not in shown
 
 
 def test_audio_actions_are_always_visible_regardless_of_preset():
@@ -193,7 +196,7 @@ def test_apply_configuration_payload_for_beginner_with_and_without_raycast():
         assert "set_facing_angle" not in blocks       # raycast inactive
         assert "enable_raycast_view" not in blocks
         assert "restart_game" in blocks                # U2 addition, still works
-        assert "draw_sprite" not in blocks              # U2 deliberate exclusion
+        assert "draw_line" not in blocks                # generated action beginner never enabled
         assert "event_create" in blocks                 # non-action entry preserved
 
         ide.current_project_data = {"settings": {"active_extensions": ["raycast_2_5d"]}}
@@ -344,7 +347,7 @@ def test_get_actions_by_category_still_gates_core_actions_by_a_real_config():
     cats = get_actions_by_category(_beginner())
     all_actions = {a.name for actions in cats.values() for a in actions}
     assert "bounce" in all_actions        # enabled in beginner
-    assert "draw_sprite" not in all_actions  # deliberately excluded from beginner (U2)
+    assert "draw_line" not in all_actions  # generated action beginner never enabled
 
 
 def test_context_menu_and_dialog_callers_pass_project_data():
