@@ -1,100 +1,95 @@
 # PyGameMaker Junior : crée ton propre jeu
 
-## Comment utiliser cette fiche
-
-Garde cette feuille à côté de ton ordinateur. Fais chaque partie sur
-l'écran, puis coche la case. Si tu es bloqué, demande d'abord à ton voisin,
-puis à ton enseignant.
+Garde cette feuille à côté de toi. Fais chaque partie, puis coche la case.
+Bloqué ? Demande à un copain, puis à ton enseignant.
 
 ## Partie 1 : tes outils
 
-Regarde en haut de la fenêtre. Voici les boutons que tu vas utiliser :
+Regarde en haut de la fenêtre :
 
-- **Nouveau** (une page blanche) : commencer un nouveau jeu
-- **Ouvrir** (un dossier) : ouvrir un jeu enregistré
-- **Enregistrer** (une disquette) : sauvegarder ton jeu. Fais-le souvent !
-- **Triangle vert** : **lancer ton jeu** (ou la touche **F5**)
-- **Coche** : partager ton jeu sous forme de page web
+![La barre d'outils](images/toolbar.png "55%")
 
-À gauche, tu vois tes **ressources** : sprites, objets et salles.
+- **Nouveau** : commencer un jeu
+- **Ouvrir** : reprendre un jeu
+- **Enregistrer** : sauver ton jeu. Fais-le souvent !
+- **Triangle vert** : jouer (ou touche **F5**)
+- **Coche verte** : partager ton jeu
+
+À gauche, tu as tes **ressources** : sprites, objets, salles.
 
 - Un **sprite** est une image.
-- Un **objet** est quelque chose dans ton jeu qui fait des choses.
-- Une **salle** est un niveau où se passe le jeu.
+- Un **objet** fait des choses dans ton jeu.
+- Une **salle** est un niveau.
 
 ## Partie 2 : dessiner un sprite
 
-- [ ] Clique sur **Ressources > Créer un sprite**.
-- [ ] Écris un nom, par exemple `spr_hero`, puis clique sur OK.
-- [ ] Une fenêtre de dessin s'ouvre. Choisis une couleur et dessine avec le crayon.
-- [ ] Clique sur **Enregistrer** quand tu es content de ton dessin.
+- [ ] Clique **Ressources > Créer un sprite**.
+- [ ] Donne-lui un nom, par exemple `spr_heros`.
+- [ ] Choisis une couleur et dessine avec le crayon.
+- [ ] Clique **Enregistrer**.
 
-> TIP : les noms commencent par `spr_` pour les sprites et `obj_` pour les
-> objets. Utilise seulement des lettres et des chiffres, sans espace.
+![L'éditeur de sprite, avec un dessin orange rond](images/sprite_editor.png "65%")
 
-Tu peux aussi cliquer sur **Ressources > Importer un sprite** pour utiliser
-une image qui est dans un fichier. Pour modifier un sprite plus tard,
-**double-clique** dessus dans la liste de gauche.
+> TIP : commence les noms de sprites par `spr_`.
 
 ## Partie 3 : faire bouger un objet
 
-- [ ] Clique sur **Ressources > Créer un objet** et appelle-le `obj_hero`.
+- [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
-- [ ] Dans la zone **Blockly**, glisse des blocs depuis la gauche pour
-      construire ce qui se passe. Par exemple : **Clavier: Gauche** puis
+- [ ] Glisse des blocs : **Clavier: Flèche gauche** puis
       **définir vitesse horizontale à**.
-- [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**, pour
-      que ton héros s'arrête.
+- [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**.
 
-> TIP : fais un clic droit sur un bloc pour le **dupliquer** ou le **supprimer**.
+![Deux blocs dans l'objet : Clavier Flèche gauche, et Clavier Aucune touche](images/objet_blockly.png "65%")
+
+> TIP : clic droit sur un bloc pour le dupliquer ou le supprimer.
 
 ## Partie 4 : construire une salle et jouer
 
-- [ ] Clique sur **Ressources > Créer une salle**.
-- [ ] Clique sur un objet dans la liste, puis clique dans la salle pour le placer.
+- [ ] Clique **Ressources > Créer une salle**.
+- [ ] Clique sur ton objet dans la liste, puis clique dans la salle pour le
+      placer.
+
+![La salle avec le héros placé dedans](images/salle_editeur.png "65%")
+
 - [ ] Appuie sur le **triangle vert** (ou **F5**) pour jouer.
 
-> DONE : tu dois voir ton sprite dans le jeu et pouvoir le déplacer.
+> DONE : tu vois ton sprite dans le jeu et tu peux le faire bouger.
 
 ## Partie 5 : partager ton jeu
 
-- [ ] Clique sur **Fichier > Exporter en HTML5**.
-- [ ] Choisis un dossier où l'enregistrer.
-- [ ] Clique sur **Oui** pour l'ouvrir dans ton navigateur.
+- [ ] Clique **Fichier > Exporter en HTML5**.
+- [ ] Choisis un dossier.
+- [ ] Clique **Oui** pour l'ouvrir dans ton navigateur.
 
-Tu obtiens un seul fichier qui se termine par `.html`. Envoie-le à un ami :
-il pourra y jouer dans n'importe quel navigateur !
+Tu obtiens un fichier `.html`. Envoie-le à un ami : il peut y jouer !
 
 ## Tu es bloqué ?
 
 | Ce qui se passe | Essaie ceci |
 |---|---|
-| Mon objet ne bouge pas | As-tu mis un bloc sous l'événement **Clavier** ? L'objet est-il dans la salle ? |
-| Mon héros ne s'arrête jamais | Ajoute **Clavier: Aucune touche** et **arrêter le mouvement** |
-| Je ne vois pas mon sprite dans le jeu | As-tu choisi le sprite dans la case **Sprite** de l'objet ? |
-| J'ai supprimé quelque chose par erreur | **Outils > Restaurer les ressources supprimées** le ramène |
-| Le jeu affiche une fenêtre grise | Attends quelques secondes, puis réessaie |
+| Mon objet ne bouge pas | Un bloc est-il sous **Clavier** ? L'objet est-il dans la salle ? |
+| Mon héros ne s'arrête jamais | Ajoute **Clavier: Aucune touche** + **arrêter le mouvement** |
+| Je ne vois pas mon sprite | As-tu choisi le sprite dans la case **Sprite** ? |
+| J'ai supprimé un truc par erreur | **Outils > Restaurer les ressources supprimées** |
+| Le jeu affiche une fenêtre grise | Attends un peu, puis réessaie |
 
 ## Mots à connaître
 
-- **Sprite** : une image utilisée dans ton jeu
-- **Objet** : quelque chose dans ton jeu qui peut faire des choses
+- **Sprite** : une image
+- **Objet** : une chose qui fait des actions
 - **Salle** : un niveau
-- **Événement** : « quand quelque chose arrive », comme appuyer sur une touche
-- **Action** : « faire quelque chose », comme bouger
-- **Bloc** : une pièce de ton programme
+- **Bloc** : un morceau de ton programme
 
 ## Défis
 
 - **Essaie (5 min) :** dessine un deuxième sprite et crée un deuxième objet.
 - **Va plus loin :** fais aussi bouger ton héros vers le haut et vers le bas.
-- **Invente :** crée un objet mur qui arrête ton héros.
 
 ## Réfléchis
 
-1. À quoi sert un événement **Clavier** ?
+1. À quoi sert le bloc **Clavier** ?
 2. Quelle est la différence entre un sprite et un objet ?
-3. Comment montrerais-tu ton jeu à quelqu'un à la maison ?
 
 ## Mes notes
 

@@ -157,6 +157,34 @@ def _data_uri(path):
     return f"data:{mime};base64,{b64}"
 
 
+# Assumed printable width once LibreOffice's HTML import lays the page out
+# with its own default margins (A4, ~2cm each side) -- there's no explicit
+# @page rule in the generated HTML to pin this exactly, but it's what the
+# non-extreme-aspect-ratio images already render correctly against (percent-
+# only width, no height), so it's a reasonable anchor for computing an
+# absolute height for the ones that don't.
+PAGE_CONTENT_WIDTH_CM = 17.0
+
+
+def _image_size_cm(path, pct):
+    """(width_cm, height_cm) for an image at `pct`% of the page's printable
+    width, preserving its real aspect ratio.
+
+    A bare `width="NN%"` with no height was fine for ordinary (roughly
+    page-ish aspect ratio) screenshots -- LibreOffice's HTML import scaled
+    them proportionally on its own. A very wide, short image (e.g. a
+    cropped toolbar strip) came out badly vertically stretched with the
+    same markup: found by actually converting one and looking at the
+    rendered PDF, not assumed. Pinning both dimensions explicitly removes
+    whatever heuristic LibreOffice was using for the width-only case."""
+    from PIL import Image
+    with Image.open(path) as img:
+        w, h = img.size
+    width_cm = PAGE_CONTENT_WIDTH_CM * pct / 100
+    height_cm = width_cm * (h / w) if w else width_cm
+    return width_cm, height_cm
+
+
 def _inline(text):
     text = html.escape(text, quote=False)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
@@ -262,9 +290,11 @@ def md_to_html(md_text, src_dir=None):
             alt = m_img.group(1)
             relpath, pct = split_image_target(m_img.group(2))
             abspath = os.path.abspath(os.path.join(src_dir or "", relpath))
+            width_cm, height_cm = _image_size_cm(abspath, pct)
             out.append(
                 f'<p><img src="{_data_uri(abspath)}" '
-                f'alt="{html.escape(alt, quote=True)}" width="{pct}%"></p>'
+                f'alt="{html.escape(alt, quote=True)}" '
+                f'style="width:{width_cm:.2f}cm;height:{height_cm:.2f}cm"></p>'
             )
             i += 1
             continue
