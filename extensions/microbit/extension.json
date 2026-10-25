@@ -1,0 +1,8 @@
+{
+    "name": "micro:bit",
+    "version": "0.1.0",
+    "author": "PyGameMaker",
+    "description": "BBC micro:bit simulator: a board drawn in the game window with its LED display, buttons, sensors and radio. Being built stage by stage -- see docs/MICROBIT_EXTENSION_PLAN.md.",
+    "enabled": true,
+    "provides_actions": []
+}

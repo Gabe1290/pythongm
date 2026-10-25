@@ -148,6 +148,17 @@ object. A "microbit" Blockly preset shows them explicitly, and a
 "New micro:bit project" welcome-tab entry (unit S10) creates a project that
 already has one, so the feature is discoverable. See open decision O1.
 
+*Found in S1:* core already has a per-project mechanism for this
+(`config/toolbox_visibility.py` `active_extensions`, decided 2026-09-30).
+An extension's actions show only when the project uses one of them or
+lists the extension in `settings.active_extensions`, which the Project
+Settings dialog offers as a checkbox for every extension whose manifest
+`provides_actions` names real actions. S10 should rely on that instead of a
+bespoke `ToolboxVisibilityFilter`, and the S10 project template just sets
+`active_extensions: ["microbit"]`. Until S3 fills `provides_actions`, the
+extension doesn't appear in that dialog (`tests/test_project_settings_extensions.py`
+pins the current list).
+
 ### Built-in images and melodies
 
 Data tables in `images.py` / `melodies.py`, copied by value from the
@@ -199,7 +210,7 @@ don't.
 | S7 | Sensor strip: tilt pad, shake button, sliders, a `microbit_show_sensors` toggle. Drag tests (tilt pad → accel x/y → `tilt_left` gesture event). | [ ] |
 | S8 | Sound: `melodies.py`, square-wave synthesis on its own mixer channel, state-only fallback under the dummy driver. Tests on the state; check by ear once on a real machine. | [ ] |
 | S9 | `radio.py` bus + radio actions/event. Two-micro:bit room test: A's button sends 7 → B receives it, A doesn't, and a different group doesn't. | [ ] |
-| S10 | Blockly categories + "microbit" preset + toolbox visibility filter + FR category/block translations (accents checked). Welcome-tab "New micro:bit project" template. Translation-resolution test like `tests/test_extension_ui_translations.py`. | [ ] |
+| S10 | Blockly categories + "microbit" preset + visibility through `active_extensions` (see "Visibility in the IDE") + FR category/block translations (accents checked). Welcome-tab "New micro:bit project" template. Translation-resolution test like `tests/test_extension_ui_translations.py`. | [ ] |
 | S11 | Sample `samples/microbit_1` ("Dé et humeurs"): A = happy face, B = sad face, shake = random dice face, logo = scroll a quoted score. `README.md` + `README.fr.md`, Welcome tab, `tools/smoke_run_samples.py`, `test_edition_sample_filter`'s advanced-prefix list (decide per O1), and a desktop-export render check with `tools/verify_desktop_export.py --compare`. | [ ] |
 | S12 | Close-out: the extension's `README.md` (file map like Thymio's), `wiki/Microbit.md` + `_fr.md` (other languages deferred, as with `Network.md`), regenerate the action reference (`tools/gen_action_reference.py`; check `FILE_KEY` gets the new category), a CLAUDE.md session note. HTML5/Kivy: confirm the actions fall through to the existing unsupported-action warning and don't crash an export (a test; parity is Stage P). | [ ] |
 
