@@ -126,7 +126,7 @@ in desktop exports and later in HTML5. It can be hidden per object
 Thymio's tone is state-only: `play_tone` records frequency and duration and
 nothing is heard. The micro:bit should actually beep. Synthesise a square
 wave with `pygame.sndarray` (numpy is already a dependency, check this in
-unit S4) on a dedicated mixer channel. If the mixer is unavailable
+unit S8) on a dedicated mixer channel. If the mixer is unavailable
 (`SDL_AUDIODRIVER=dummy`, as in tests), fall back to state-only, so tests
 can still assert on the simulator's audio state.
 
