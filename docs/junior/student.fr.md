@@ -29,7 +29,7 @@ Regarde en haut de la fenêtre :
 
 - Un **sprite** est une image.
 - Un **objet** fait des choses dans ton jeu.
-- Une **salle** est un niveau.
+- Un **room** est une salle (un niveau).
 
 ## Partie 3 : dessiner un sprite
 
@@ -47,7 +47,7 @@ Regarde en haut de la fenêtre :
 - [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
 - [ ] Ajoute 4 blocs **Clavier** (Flèche gauche, droite, haut, bas), chacun
-      avec **définir vitesse horizontale/verticale à** (-4, 4, -4, 4).
+      avec **définir vitesse horizontale et vitesse verticale à** (-4, 4, -4, 4).
 - [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**, pour
       que ton héros s'arrête quand tu ne touches rien.
 
@@ -61,7 +61,7 @@ Regarde en haut de la fenêtre :
 
 Ton projet a déjà une salle, **room0**. Pas besoin d'en créer une !
 
-- [ ] Double-clique sur **room0** dans la liste **Salles**, à gauche.
+- [ ] Double-clique sur **room0** dans la liste **Rooms**, à gauche.
 - [ ] Clique sur ton objet dans la liste, puis clique dans la salle pour le
       placer.
 
@@ -119,7 +119,7 @@ Ton jeu marche déjà. Si tu as encore du temps, ajoute des points !
 
 - **Sprite** : une image
 - **Objet** : une chose qui fait des actions
-- **Salle** : un niveau
+- **Room** : une salle (un niveau)
 - **Bloc** : un morceau de ton programme
 - **Collision** : quand deux objets se touchent
 - **Score** : tes points
