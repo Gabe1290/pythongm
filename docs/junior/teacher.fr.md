@@ -28,6 +28,11 @@ Remarques :
   **nouveaux** projets. Un projet existant garde l'ensemble de blocs avec
   lequel il a été enregistré. Changer d'édition dans les Préférences applique
   aussi le nouvel ensemble de blocs au projet ouvert.
+- **Catégories de la barre latérale :** Sprites, Sounds, Backgrounds, Objects
+  et Rooms restent en anglais dans l'arborescence des ressources, même en
+  français. Un élève qui suit sa fiche verra donc **Rooms** dans la liste à
+  gauche, pas « Salles » (la fiche de l'élève utilise maintenant « Room »
+  pour cette raison).
 
 ## Ce que voient les élèves
 
