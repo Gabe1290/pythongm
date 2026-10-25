@@ -44,6 +44,7 @@ import re
 import shutil
 import subprocess
 import sys
+import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hand_exported import is_hand_exported  # noqa: E402
@@ -367,6 +368,73 @@ def _soffice():
     raise FileNotFoundError("soffice / libreoffice not found on PATH")
 
 
+# ISO-3166 country for the languages this repo actually ships (core/
+# language_manager.py's LANGUAGE_INFO); falls back to upper-casing the
+# language code itself for anything not listed (wrong for a few, e.g. would
+# give "SV" for Swedish instead of "SE", but LibreOffice only uses the
+# country half to pick a *regional* dictionary variant -- the language half
+# is what actually selects which spell-check dictionary runs at all).
+_LANG_COUNTRY = {
+    "en": "US", "fr": "FR", "es": "ES", "de": "DE", "it": "IT", "pt": "PT",
+    "ru": "RU", "uk": "UA", "zh": "CN", "ja": "JP", "ko": "KR", "ar": "SA",
+    "hi": "IN", "tr": "TR", "pl": "PL", "nl": "NL", "sv": "SE", "da": "DK",
+    "cs": "CZ", "el": "GR",
+}
+
+
+def _doc_language(src_path):
+    """ISO language code from a '<name>.<lang>.md' source filename (the
+    convention every docs/junior and docs/handouts file uses), or None if
+    the filename doesn't carry one."""
+    m = re.search(r"\.([a-z]{2})\.md$", os.path.basename(src_path))
+    return m.group(1) if m else None
+
+
+def _set_document_language(odt_path, lang):
+    """Rewrite the Western-text fo:language/fo:country pair in styles.xml
+    so a spell-checker opening the .odt uses the handout's real language
+    instead of whatever locale this machine's LibreOffice install defaults
+    to.
+
+    A plain <html lang="..."> attribute on the source HTML is silently
+    ignored by LibreOffice's HTML-import filter -- confirmed empirically:
+    converting a minimal lang="fr" HTML file still produced
+    fo:language="en" in the output .odt, every time. Post-processing the
+    package directly is the only reliable lever found.
+
+    style:language-asian / style:language-complex (the CJK/RTL fallback
+    fonts' own language) are deliberately left untouched -- only the fo:*
+    (Western text) pair controls spell-check for this Latin-script
+    content, and those two attributes govern font *fallback* selection for
+    scripts this content doesn't use, not spelling.
+    """
+    country = _LANG_COUNTRY.get(lang, lang.upper())
+    with zipfile.ZipFile(odt_path) as zin:
+        names = zin.namelist()
+        data = {name: zin.read(name) for name in names}
+    if "styles.xml" not in data:
+        return
+    styles = data["styles.xml"].decode("utf-8")
+    styles, count = re.subn(
+        r'fo:language="[A-Za-z-]+" fo:country="[A-Za-z]+"',
+        f'fo:language="{lang}" fo:country="{country}"',
+        styles,
+    )
+    if count == 0:
+        return  # nothing to rewrite -- don't fail the whole render over it
+    data["styles.xml"] = styles.encode("utf-8")
+
+    with zipfile.ZipFile(odt_path, "w") as zout:
+        # "mimetype" must be the first entry, stored uncompressed, for a
+        # strictly spec-compliant ODF package.
+        if "mimetype" in data:
+            zout.writestr("mimetype", data["mimetype"], compress_type=zipfile.ZIP_STORED)
+        for name in names:
+            if name == "mimetype":
+                continue
+            zout.writestr(name, data[name], compress_type=zipfile.ZIP_DEFLATED)
+
+
 def render(src_path, out_path):
     with open(src_path, encoding="utf-8") as fh:
         html_doc = md_to_html(fh.read(), src_dir=os.path.dirname(src_path))
@@ -399,6 +467,9 @@ def render(src_path, out_path):
         produced = os.path.join(tmp, base + ".odt")
         if not os.path.isfile(produced):
             raise RuntimeError(f"LibreOffice did not produce {produced}")
+        lang = _doc_language(src_path)
+        if lang:
+            _set_document_language(produced, lang)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         shutil.move(produced, out_path)
     return out_path
