@@ -78,15 +78,35 @@ Every action becomes a Blockly block, the way it does for core actions.
 
 On the device, MicroPython's `display.scroll()` and MakeCode's
 `show string` **block** until the scroll finishes. Blocking the game loop is
-not an option, so in the simulator display actions **queue**. A new display
-action replaces a scroll that is still running (MakeCode's behaviour when
-a button event interrupts), and a `microbit_display_done` event fires when
-the queue empties so students can chain animations. This difference from the
-real device is documented in the guide. Stage X emits blocking calls, so a
-program that relies on chaining behaves the same on both.
+not an option, so in the simulator display actions **queue** and play one
+after another. That is also what the device does: the runtime makes a
+second `scroll`/`show` wait for the display to be free, in MakeCode fibers
+and MicroPython alike (O3, settled in S2). `clear` empties the queue. A
+`microbit_display_done` event fires when the queue empties, so students can
+chain animations. Stage X emits blocking calls, so a program behaves the
+same on both.
+
+Two guards stop a Step event that shows something every frame from piling
+up a backlog the device would never have (its loop blocks instead):
+showing exactly what is already displayed is a no-op, and the queue holds
+at most 16 items (`MAX_QUEUE`), refusing more.
 
 The simulator advances with the frame `dt`. Scroll speed defaults to
-MicroPython's 150 ms per column.
+MicroPython's 150 ms per column. Scrolling is monospaced (5 columns per
+character plus a 1-column gap, as MakeCode scrolls); MicroPython's default
+is proportional, so Stage X passes `monospace=True` to match. Characters
+outside printable ASCII, accented letters included, show as `?`, as on
+the device.
+
+*Sources (S2):* the font and the 64 built-in images are generated from the
+MIT-licensed micro:bit runtime and MicroPython sources
+(`extensions/microbit/THIRD_PARTY_LICENSES.md`). Gestures are codal-core's
+`Accelerometer::updateGesture`/`instantaneousPosture`, ported line for
+line and run on a fixed 20 ms sample clock so the damping counts mean the
+same time as on the device. Sound thresholds are codal-microbit-v2's
+85 dB / 65 dB, which is 196 / 118 on MicroPython's 0–255 `sound_level`
+scale. A resting board reports "face up" about 120 ms after start,
+as a real one does at boot.
 
 ### Drawing the board (instance overlay)
 
@@ -275,7 +295,8 @@ would bring Stage L to HTML5.
   microphone, speaker). Stage X must then flag V2-only actions when
   exporting for a V1 board. Most schools now have V2 boards, so check what
   the target classrooms own.
-- **O3 — Display queue semantics.** Replace-on-interrupt (MakeCode) vs
-  append. The recommendation is replace, plus the `display_done` event.
+- ~~**O3 — Display queue semantics.**~~ Settled in S2: append, because
+  the device makes display commands wait for each other (see "Time and
+  blocking").
 - **O4 — Shipping visible.** Thymio ships hidden behind `show_thymio_tab`.
   The micro:bit doesn't need a hidden phase if O1's gating is accepted.

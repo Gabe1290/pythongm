@@ -8,7 +8,12 @@ What lives here so far:
   ``instance.extension_state["microbit"]``; ``on_instance_created`` below
   attaches a simulator to ``microbit*`` instances as a room builds (S1).
 * ``simulator.py`` -- ``MicrobitSimulator``, the pure (no pygame, no Qt)
-  board state. Only the 5x5 display buffer so far (S1); S2 fills it in.
+  board state: the display and its queue (images, scrolling text,
+  numbers), buttons, logo, pins, accelerometer gestures, compass, light,
+  temperature and sound level; ``update(dt)`` returns what happened (S2).
+* ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
+  images, generated from MIT-licensed micro:bit sources
+  (``THIRD_PARTY_LICENSES.md``).
 """
 
 PLUGIN_NAME = "micro:bit"
