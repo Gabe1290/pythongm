@@ -201,7 +201,7 @@ don't.
 | Unit | What | Done |
 |---|---|---|
 | S0 | Commit this plan. | [ ] |
-| S1 | Skeleton: `extensions/microbit/` with `extension.json`, an `__init__.py` docstring map, `state.py`, and the instance-created binding (`microbit*` prefix / `is_microbit`). Test: a room with `microbit_1` gets a simulator, `obj_player` doesn't. | [ ] |
+| S1 | Skeleton: `extensions/microbit/` with `extension.json`, an `__init__.py` docstring map, `state.py`, and the instance-created binding (`microbit*` prefix / `is_microbit`). Test: a room with `microbit_1` gets a simulator, `obj_player` doesn't. | [x] `c2f56b16` |
 | S2 | `simulator.py`: pure `MicrobitSimulator` with the display buffer, brightness, display queue (show image / scroll / number with timing), buttons/logo/pins state, accelerometer + gesture derivation (shake from accel-magnitude spikes, tilt thresholds as in MicroPython), compass, light, temperature, sound level, `update(dt)` returning fired events. Plus `images.py`. Exhaustive pure unit tests (scroll timing per column, gesture edges, interrupting a scroll). | [ ] |
 | S3 | `actions.py` + `handlers.py`: display, sensor-read and condition actions (English schemas, `PluginExecutor`); an action-picker tab (`register_action_tabs`). Handler tests via `load_all_plugins` + `ex.action_handlers`. | [ ] |
 | S4 | `events.py` + `runtime.py`: `PLUGIN_EVENTS` (with sub-events for pins/gestures) and the frame-update hook that steps every simulator and fires events, with the same early-out as Thymio when the room has no micro:bit. Real `GameRunner.run()` test: a posted button state fires `microbit_button_a`, and its handler's `show_image` lands in the buffer. | [ ] |
