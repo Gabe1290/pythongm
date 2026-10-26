@@ -21,5 +21,31 @@
         "microbit_if_gesture",
         "microbit_if_tilt",
         "microbit_if_pixel"
+    ],
+    "provides_events": [
+        "microbit_button_a",
+        "microbit_button_b",
+        "microbit_button_ab",
+        "microbit_logo_touched",
+        "microbit_pin_0",
+        "microbit_pin_1",
+        "microbit_pin_2",
+        "microbit_gesture_shake",
+        "microbit_gesture_logo_up",
+        "microbit_gesture_logo_down",
+        "microbit_gesture_tilt_left",
+        "microbit_gesture_tilt_right",
+        "microbit_gesture_screen_up",
+        "microbit_gesture_screen_down",
+        "microbit_gesture_free_fall",
+        "microbit_gesture_2g",
+        "microbit_gesture_3g",
+        "microbit_gesture_6g",
+        "microbit_gesture_8g",
+        "microbit_loud_sound",
+        "microbit_quiet_sound",
+        "microbit_display_done",
+        "microbit_radio_received",
+        "microbit_sound_done"
     ]
 }

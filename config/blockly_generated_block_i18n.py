@@ -271,6 +271,28 @@ PARAM_LABEL_TRANSLATIONS = {
 }
 
 
+def register_generated_block_translations(mapping) -> None:
+    """Merge an extension's PLUGIN_GENERATED_BLOCK_TRANSLATIONS into the
+    tables above, so an extension carries its own canvas translations instead
+    of core listing its actions. Shape::
+
+        {"actions": {action_name: {lang: {"display_name": ..., "description": ...}}},
+         "params":  {lang: {english_label: translated_label}}}
+
+    Existing entries are kept (first one wins), so an extension can never
+    change how a core action or a shared parameter label reads.
+    """
+    mapping = mapping or {}
+    for action_name, languages in (mapping.get("actions") or {}).items():
+        entry = ACTION_TRANSLATIONS.setdefault(action_name, {})
+        for language, texts in (languages or {}).items():
+            entry.setdefault(language, texts)
+    for language, labels in (mapping.get("params") or {}).items():
+        table = PARAM_LABEL_TRANSLATIONS.setdefault(language, {})
+        for label, text in (labels or {}).items():
+            table.setdefault(label, text)
+
+
 def get_translated_action_display_name(action_name: str, language: str, fallback: str) -> str:
     """Translated block label for a generated Blockly block, or `fallback`
     (the raw English ActionType.display_name) for 'en' or any

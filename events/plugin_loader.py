@@ -415,6 +415,10 @@ class PluginLoader:
         presets = getattr(module, 'PLUGIN_BLOCKLY_PRESETS', None)
         cat_tr = getattr(module, 'PLUGIN_BLOCK_CATEGORY_TRANSLATIONS', None)
         block_tr = getattr(module, 'PLUGIN_BLOCK_TRANSLATIONS', None)
+        generated_tr = getattr(module, 'PLUGIN_GENERATED_BLOCK_TRANSLATIONS', None)
+        if generated_tr:
+            from config.blockly_generated_block_i18n import register_generated_block_translations
+            register_generated_block_translations(generated_tr)
         if not (cats or presets or cat_tr or block_tr):
             return 0
         from config.blockly_config import register_block_categories, register_blockly_presets

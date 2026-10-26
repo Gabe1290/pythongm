@@ -242,9 +242,12 @@ bool and core's generic then/else handling does the rest. One known limit of
 the zero-core rule: a *false* micro:bit condition whose guarded unit is itself
 another micro:bit condition doesn't chain-skip, because core's
 `ActionExecutor._QUESTION_ACTIONS` lists the question names (Thymio's and
-`is_instance_owner` have the same gap). Use then/else blocks (what Blockly
-emits) and it never shows. Revisit only if a generic "question" flag on
-`ActionType` is ever added.
+`is_instance_owner` have the same gap). *(Corrected in S10: Blockly does NOT
+emit then/else for these -- the generated blocks are plain statement blocks,
+so a condition guards the next block GameMaker-style, with the core
+`start_block`/`end_block`/`else_action` blocks for groups. The gap therefore
+only shows for a condition directly followed by another micro:bit condition.)*
+Revisit only if a generic "question" flag on `ActionType` is ever added.
 
 *Decided in S4:* events are **flat names**, not sub-events:
 `microbit_button_a/b/ab`, `microbit_logo_touched`, `microbit_pin_0/1/2`,
@@ -317,6 +320,41 @@ no handler is authored, so a Step event can read them. Messages sent in a
 frame arrive in the same frame's hook pass at the latest, otherwise the next.
 The radio is always on (no `radio.on()` step to forget), and bridging it over
 `multiplayer_lan` stays out of scope.
+
+*Decided in S10 (what the plan got wrong, found by reading core first):*
+- **No hand-written Blockly at all.** Every `ActionType` is auto-generated
+  into a toolbox category named after `ActionType.category` ("micro:bit"),
+  extension events ride core's generic `event_extension` block, and per-project
+  visibility is `active_extensions` (S1 note). So no `PLUGIN_BLOCK_CATEGORIES`
+  and no five-way "Affichage/Entrées/Musique/Radio/Capteurs" split: that would
+  need curated categories nothing else shows.
+- **`provides_events` was missing from the manifest** (S4 oversight, caught by
+  the S10 visibility test): without it core treated the 24 events as plain core
+  events -- always offered, never in the extension event block. The manifest now
+  lists them, so they follow the same activation rule as the actions.
+- **French for the generated blocks** goes through a new generic seam,
+  `config.blockly_generated_block_i18n.register_generated_block_translations`
+  (first entry wins, so an extension can't change a core label), fed by
+  `PLUGIN_GENERATED_BLOCK_TRANSLATIONS` and loaded by `plugin_loader`. French
+  only, matching that table; other languages fall back to English. The seam
+  also lets raycast/multiplayer translate their canvas blocks later.
+- **No "microbit" preset.** Active extensions override the preset, and the
+  Blockly config dialog's preset list is fixed (Thymio needed its own dialog),
+  so a dedicated preset would be unreachable and change nothing but core blocks.
+  A project that wants a tidy toolbox uses `beginner` plus
+  `active_extensions: ["microbit"]`.
+- **No "New micro:bit project" template.** Templates are core
+  (`resources/templates/<id>` and a fixed combo in the New Project dialog), so
+  a template would mean a core change naming micro:bit or a new seam. The S11
+  sample (a ready project that already lists the extension) and the Project
+  Settings checkbox cover discovery instead; revisit if teachers ask.
+- **Known cosmetic gaps, left alone:** the micro:bit blocks draw in the default
+  grey (the colour table in `blockly_workspace.html` is core and has no
+  extension entry), and the event drop-down labels are the English display
+  names. Both would need a small core JS/Python seam.
+- **Not verified in a real Blockly canvas** (no web engine in this environment):
+  the tests pin what Python sends -- category, label, param types, XML-safe
+  defaults -- not the rendered toolbox. Eyeball it once.
 
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.

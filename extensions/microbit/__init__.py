@@ -27,6 +27,7 @@ What lives here so far:
   channel (S8).
 * ``radio.py`` -- delivery of radio messages between the boards in a room,
   by group (S9).
+* ``translations.py`` -- French text for the auto-generated Blockly blocks (S10).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
@@ -40,6 +41,7 @@ from .state import attach_simulator
 from .actions import PLUGIN_ACTIONS, MICROBIT_TAB
 from .handlers import PluginExecutor
 from .events import MICROBIT_EVENT_TYPES
+from .translations import PLUGIN_GENERATED_BLOCK_TRANSLATIONS
 
 register_action_tabs(MICROBIT_TAB)
 
