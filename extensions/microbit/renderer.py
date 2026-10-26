@@ -16,6 +16,7 @@ from .state import simulator_of
 BODY_COLOR = (34, 36, 40)
 BODY_EDGE = (12, 12, 14)
 LED_WELL = (18, 8, 8)
+LED_CHIP = (140, 142, 148)            # the small grey mark on an unlit LED
 BUTTON_COLOR = (205, 205, 200)
 BUTTON_DOWN = (255, 214, 90)
 BUTTON_EDGE = (110, 110, 105)
@@ -160,6 +161,9 @@ def draw_board(screen, layout, sim, draw_body=True):
     # LEDs
     size = layout.led_size
     half = size // 2
+    chip_w = max(2, int(size * 0.3))
+    chip_h = max(3, int(size * 0.35))
+    chip_margin = max(1, int(size * 0.08))
     for y in range(5):
         for x in range(5):
             px, py = layout.led_center(x, y)
@@ -167,6 +171,14 @@ def draw_board(screen, layout, sim, draw_body=True):
                              (px - half - 1, py - half - 1, size + 2, size + 2))
             pygame.draw.rect(screen, led_color(sim.display[y][x], sim.brightness),
                              (px - half, py - half, size, size))
+            if sim.display[y][x] == 0:
+                # A small grey component mark, echoing the real board's
+                # unlit SMD LEDs -- kept inside the LED's own square and
+                # clear of its exact centre pixel, so it never touches the
+                # centre the renderer tests sample.
+                pygame.draw.rect(screen, LED_CHIP,
+                                 (px - chip_w // 2, py - half + chip_margin,
+                                  chip_w, chip_h), border_radius=1)
 
     # Buttons
     for name, (bx, by, br) in layout.buttons.items():
