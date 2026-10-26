@@ -19,9 +19,9 @@ LED_WELL = (18, 8, 8)
 BUTTON_COLOR = (205, 205, 200)
 BUTTON_DOWN = (255, 214, 90)
 BUTTON_EDGE = (110, 110, 105)
-LOGO_COLOR = (212, 175, 55)
-LOGO_TOUCHED = (255, 240, 150)
-LOGO_DOT = (120, 95, 20)              # accent dots inside the logo oval
+LOGO_COLOR = (54, 199, 149)
+LOGO_TOUCHED = (150, 255, 210)
+LOGO_DOT = (16, 80, 62)               # accent dots inside the logo oval
 PAD_COLOR = (196, 150, 60)
 PAD_TOUCHED = (255, 240, 150)
 PAD_EDGE = (80, 60, 20)
@@ -127,17 +127,22 @@ def _corner_decoration(screen, layout):
 def _button_tag(screen, name, bx, by, br, layout):
     """The small triangular 'A'/'B' flag beside a button, matching the real
     board's silkscreen tag -- separate from (and in addition to) the letter
-    already drawn on the button cap for at-a-glance readability."""
+    already drawn on the button cap for at-a-glance readability. The two
+    tags are 180-degree rotations of each other, same as the real board:
+    'A' hangs below its button pointing down-left, 'B' sits above its
+    button pointing up-right."""
     sc = layout.scale
     tw, th = max(6, int(16 * sc)), max(6, int(14 * sc))
     tx = bx - tw // 2
-    ty = by + br + max(2, int(3 * sc))
+    gap = max(2, int(3 * sc))
     if name == "a":
-        pts = [(tx, ty), (tx + tw, ty), (tx, ty + th)]
-        centroid = (tx + tw / 3, ty + th / 3)
+        ty = by + br + gap
+        pts = [(tx, ty + th), (tx + tw, ty + th), (tx + tw, ty)]
+        centroid = (tx + tw * 2 / 3, ty + th * 2 / 3)
     else:
-        pts = [(tx, ty), (tx + tw, ty), (tx + tw, ty + th)]
-        centroid = (tx + tw * 2 / 3, ty + th / 3)
+        ty = by - br - gap - th
+        pts = [(tx + tw, ty), (tx, ty), (tx, ty + th)]
+        centroid = (tx + tw / 3, ty + th / 3)
     pygame.draw.polygon(screen, CORNER_GREEN, pts)
     label = _label(name.upper(), max(8, int(11 * sc)), TAG_LABEL)
     screen.blit(label, label.get_rect(center=(int(centroid[0]), int(centroid[1]))))
