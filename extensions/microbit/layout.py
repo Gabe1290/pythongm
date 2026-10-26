@@ -132,13 +132,17 @@ def layout_for(instance):
 
 
 # --- sensor strip (Stage S7) -------------------------------------------------------------
-# A panel under the board: a tilt pad, a shake button and four sliders.
+# Two panels flanking the board: the tilt pad on the left, the shake button
+# and four sliders stacked on the right.
 
-STRIP_GAP = 10
-STRIP_H = 132
+STRIP_GAP = 20                    # gap between the board and each side panel
 STRIP_PAD = 8
 TILT_SIZE = 100
 SHAKE_H = 22
+RIGHT_CONTENT_W = 110              # inner width of the shake/sliders panel
+RIGHT_TOP_GAP = 14                 # extra room between the shake button and the first slider
+SLIDER_STEP = 22
+SLIDER_TRACK_H = 8
 TILT_FULL = 1024                  # pad edge = one g, so tilt gestures trigger there
 
 # slider name -> (minimum, maximum), in the order they are stacked
@@ -152,7 +156,8 @@ SLIDERS = {
 
 @dataclass(frozen=True)
 class StripLayout:
-    panel: Tuple[int, int, int, int]
+    panel_left: Tuple[int, int, int, int]     # tilt pad's panel
+    panel_right: Tuple[int, int, int, int]    # shake + sliders' panel
     tilt: Tuple[int, int, int, int]
     shake: Tuple[int, int, int, int]
     sliders: Dict[str, Tuple[int, int, int, int]]    # name -> track x, y, w, h
@@ -161,18 +166,36 @@ class StripLayout:
 def strip_layout(layout: BoardLayout) -> StripLayout:
     s = layout.scale
     bx, by, bw, bh = layout.body
-    px, py = bx, by + bh + _r(STRIP_GAP * s)
-    panel = (px, py, bw, _r(STRIP_H * s))
+    cy = by + bh / 2
     pad = _r(STRIP_PAD * s)
+    gap = _r(STRIP_GAP * s)
+
+    # Left panel: the tilt pad, flanking the board on the left.
     tilt_size = _r(TILT_SIZE * s)
-    tilt = (px + pad, py + _r(12 * s), tilt_size, tilt_size)
-    col_x = tilt[0] + tilt_size + _r(12 * s)
-    col_w = px + bw - pad - col_x
-    shake = (col_x, py + pad, col_w, _r(SHAKE_H * s))
+    left_w = tilt_size + 2 * pad
+    left_h = tilt_size + 2 * pad
+    left_x = bx - gap - left_w
+    left_y = _r(cy - left_h / 2)
+    panel_left = (left_x, left_y, left_w, left_h)
+    tilt = (left_x + pad, left_y + pad, tilt_size, tilt_size)
+
+    # Right panel: the shake button above four sliders, flanking the board
+    # on the right.
+    col_w = _r(RIGHT_CONTENT_W * s)
+    shake_h = _r(SHAKE_H * s)
+    step = _r(SLIDER_STEP * s)
+    track_h = max(3, _r(SLIDER_TRACK_H * s))
+    first_dy = pad + shake_h + _r(RIGHT_TOP_GAP * s)
+    right_h = first_dy + 3 * step + track_h + pad
+    right_w = col_w + 2 * pad
+    right_x = bx + bw + gap
+    right_y = _r(cy - right_h / 2)
+    panel_right = (right_x, right_y, right_w, right_h)
+    shake = (right_x + pad, right_y + pad, col_w, shake_h)
     sliders = {}
     for i, name in enumerate(SLIDERS):
-        sliders[name] = (col_x, py + _r((46 + 22 * i) * s), col_w, max(3, _r(8 * s)))
-    return StripLayout(panel, tilt, shake, sliders)
+        sliders[name] = (right_x + pad, right_y + first_dy + i * step, col_w, track_h)
+    return StripLayout(panel_left, panel_right, tilt, shake, sliders)
 
 
 def tilt_from_pos(rect, x, y):

@@ -43,17 +43,34 @@ def _center(rect):
 
 # --- geometry / mappings (pure) ------------------------------------------------------------
 
-def test_strip_sits_under_the_board_and_everything_is_inside_its_panel():
+def test_tilt_flanks_the_board_on_the_left_the_rest_on_the_right():
     board = L.board_layout(200, 150)
     strip = L.strip_layout(board)
-    px, py, pw, ph = strip.panel
-    assert py >= board.body[1] + board.body[3]                 # below the body
-    assert (px, pw) == (board.body[0], board.body[2])          # as wide as the board
-    inside = lambda r: (px <= r[0] and py <= r[1] and r[0] + r[2] <= px + pw  # noqa: E731
-                        and r[1] + r[3] <= py + ph)
-    assert inside(strip.tilt) and inside(strip.shake)
-    assert all(inside(t) for t in strip.sliders.values())
+
+    lx, ly, lw, lh = strip.panel_left
+    assert lx + lw <= board.body[0] - L.STRIP_GAP + 1          # left of the body, gapped
+    inside_left = lambda r: (lx <= r[0] and ly <= r[1]         # noqa: E731
+                             and r[0] + r[2] <= lx + lw and r[1] + r[3] <= ly + lh)
+    assert inside_left(strip.tilt)
+
+    rx, ry, rw, rh = strip.panel_right
+    assert rx >= board.body[0] + board.body[2] + L.STRIP_GAP - 1  # right of the body, gapped
+    inside_right = lambda r: (rx <= r[0] and ry <= r[1]        # noqa: E731
+                              and r[0] + r[2] <= rx + rw and r[1] + r[3] <= ry + rh)
+    assert inside_right(strip.shake)
+    assert all(inside_right(t) for t in strip.sliders.values())
     assert list(strip.sliders) == ["light", "temperature", "compass", "sound"]
+
+
+def test_the_two_panels_are_gapped_from_the_board_and_do_not_overlap_it():
+    board = L.board_layout(200, 150)
+    strip = L.strip_layout(board)
+    bx, by, bw, bh = board.body
+    lx, ly, lw, lh = strip.panel_left
+    rx, ry, rw, rh = strip.panel_right
+    assert lx + lw < bx and rx > bx + bw                       # strictly clear, not touching
+    assert bx - (lx + lw) >= L.STRIP_GAP - 1
+    assert rx - (bx + bw) >= L.STRIP_GAP - 1
 
 
 def test_strip_controls_do_not_overlap():
@@ -70,7 +87,8 @@ def test_strip_scales_with_the_board():
     a = L.strip_layout(L.board_layout(100, 100, 1.0))
     b = L.strip_layout(L.board_layout(100, 100, 2.0))
     assert b.tilt[2] == 2 * a.tilt[2]
-    assert b.panel[3] == 2 * a.panel[3]
+    assert b.panel_left[3] == 2 * a.panel_left[3]
+    assert b.panel_right[3] == 2 * a.panel_right[3]
 
 
 def test_tilt_pad_centre_is_rest_and_edges_are_one_g():
@@ -106,7 +124,8 @@ def test_tilt_pad_edges_trigger_the_real_gesture_algorithm():
 
 def test_tilt_to_pos_inverts_tilt_from_pos():
     rect = L.strip_layout(L.board_layout(200, 150)).tilt
-    for pos in ((120, 300), (150, 310), (120, 285), (180, 340)):
+    x, y, w, h = rect
+    for pos in ((x + 22, y + 39), (x + 52, y + 49), (x + 22, y + 24), (x + 82, y + 79)):
         ax, ay, _ = L.tilt_from_pos(rect, *pos)
         back = L.tilt_to_pos(rect, ax, ay)
         assert abs(back[0] - pos[0]) <= 1 and abs(back[1] - pos[1]) <= 1
@@ -131,7 +150,7 @@ def test_strip_hit_test_finds_each_control():
     assert L.strip_hit_test(strip, *_center(strip.shake)) == "shake"
     for name, track in strip.sliders.items():
         assert L.strip_hit_test(strip, *_center(track)) == f"slider:{name}"
-    assert L.strip_hit_test(strip, strip.panel[0] + 1, strip.panel[1] + 1) is None
+    assert L.strip_hit_test(strip, strip.panel_left[0] + 1, strip.panel_left[1] + 1) is None
     assert L.strip_hit_test(strip, 5, 5) is None
 
 
@@ -150,8 +169,8 @@ def test_strip_visible_option():
 
 # --- drawing ----------------------------------------------------------------------------------
 
-def _draw(sim, cx=160, cy=110):
-    surf = pygame.Surface((320, 400))
+def _draw(sim, cx=300, cy=160):
+    surf = pygame.Surface((650, 320))
     surf.fill(BG)
     board = L.board_layout(cx, cy)
     strip = L.strip_layout(board)
@@ -198,13 +217,13 @@ def test_overlay_draws_the_strip_unless_switched_off():
     load_all_plugins()
     overlay = next(f for f in get_instance_overlays()
                    if f.__module__ == "pygm_extension_microbit")
-    room = GameRoom("r", {"width": 320, "height": 400, "instances": [
-        {"object": "microbit_1", "x": 160, "y": 110}]}, action_executor=None)
+    room = GameRoom("r", {"width": 650, "height": 320, "instances": [
+        {"object": "microbit_1", "x": 300, "y": 160}]}, action_executor=None)
     inst = room.instances[0]
-    strip = L.strip_layout(L.board_layout(160, 110))
+    strip = L.strip_layout(L.board_layout(300, 160))
     spot = (strip.shake[0] + 4, strip.shake[1] + 3)
 
-    surf = pygame.Surface((320, 400))
+    surf = pygame.Surface((650, 320))
     surf.fill(BG)
     overlay(inst, surf)
     assert _px(surf, spot) == R.SHAKE_COLOR

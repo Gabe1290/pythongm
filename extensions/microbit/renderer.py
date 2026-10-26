@@ -69,10 +69,12 @@ def _slider_value(sim, name):
 
 
 def draw_strip(screen, strip, sim, scale=1.0):
-    """Paint the sensor strip: tilt pad, shake button and the four sliders."""
+    """Paint the sensor strip: the tilt pad's panel on the left of the board,
+    the shake button and four sliders' panel on the right."""
     radius = max(2, int(8 * scale))
-    pygame.draw.rect(screen, PANEL_COLOR, strip.panel, border_radius=radius)
-    pygame.draw.rect(screen, PANEL_EDGE, strip.panel, width=1, border_radius=radius)
+    for panel in (strip.panel_left, strip.panel_right):
+        pygame.draw.rect(screen, PANEL_COLOR, panel, border_radius=radius)
+        pygame.draw.rect(screen, PANEL_EDGE, panel, width=1, border_radius=radius)
 
     tx, ty, tw, th = strip.tilt
     pygame.draw.rect(screen, PAD_WELL, strip.tilt)
