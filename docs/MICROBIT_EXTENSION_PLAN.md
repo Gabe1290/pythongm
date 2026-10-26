@@ -258,6 +258,20 @@ instance, stepped by `1/fps` per frame from the `after_collision` hook. The
 Blockly event map (`PLUGIN_EVENT_BLOCKLY_MAP`) is left to S10, when the
 blocks exist.
 
+*Decided in S6:* a mouse can't press two buttons, so the **A+B chord is a
+right-click on either A or B** (left-click presses one, held until release).
+Pressing only sets simulator state; the S4 frame update fires the events, so
+a click whose down and up land in the same frame still registers. Pad 3V/GND
+aren't touch pins and don't respond. Keyboard (`microbit_keyboard`, instance
+variable or object property, default off): `A`/`B` buttons, arrows hold a
+1000 mg tilt on x/y (opposite keys cancel, release returns to rest), `S`
+shakes. The tilt directions follow the gesture names, so the S7 tilt pad
+should use the same mapping. `layout_for`/`scale_of`/`center_of` live in the
+pure `layout.py` so `input.py` never imports pygame (the IDE loads the
+extension's schemas without it). Overlays and hit-testing both work in
+screen space, so a room with views would misplace the board; revisit if a
+sample ever needs scrolling.
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 

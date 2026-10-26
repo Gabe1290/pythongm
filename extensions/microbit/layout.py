@@ -9,6 +9,8 @@ board centred on ``(cx, cy)``; at scale 1.0 it is ``BODY_W`` pixels wide.
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
+from .state import option_of
+
 # Design units (scale 1.0): the real board is 52 x 42 mm, drawn at ~4.2 px/mm.
 BODY_W = 220
 BODY_H = 178
@@ -84,3 +86,44 @@ def led_color(level, brightness=255):
     (0-255), from a dark red (off) to a bright red (on)."""
     amount = max(0, min(9, level)) / 9.0 * max(0, min(255, brightness)) / 255.0
     return tuple(int(round(o + (n - o) * amount)) for o, n in zip(OFF_COLOR, ON_COLOR))
+
+
+def hit_test(layout, x, y):
+    """What a click at screen ``(x, y)`` lands on: ``"a"``, ``"b"``,
+    ``"logo"``, ``"pin0"``/``"pin1"``/``"pin2"`` -- or ``None``."""
+    for name, (bx, by, r) in layout.buttons.items():
+        if (x - bx) ** 2 + (y - by) ** 2 <= r * r:
+            return name
+    lx, ly, rx, ry = layout.logo
+    if rx and ry and ((x - lx) / rx) ** 2 + ((y - ly) / ry) ** 2 <= 1:
+        return "logo"
+    for pin in TOUCH_PINS:
+        px, py, pw, ph = layout.pads[str(pin)]
+        if px <= x < px + pw and py <= y < py + ph:
+            return f"pin{pin}"
+    return None
+
+
+def scale_of(instance):
+    """The board's size multiplier: an instance variable, else the object's
+    ``microbit_scale`` property, else 1.0."""
+    value = option_of(instance, "microbit_scale", 1.0)
+    try:
+        return max(0.1, float(value))
+    except (TypeError, ValueError):
+        return 1.0
+
+
+def center_of(instance):
+    """Screen position the board is centred on: the instance's own point
+    when it has no sprite, else the middle of its sprite."""
+    sprite = getattr(instance, "sprite", None)
+    if sprite is None:
+        return instance.x, instance.y
+    return (instance.x - sprite.origin_x + sprite.width / 2,
+            instance.y - sprite.origin_y + sprite.height / 2)
+
+
+def layout_for(instance):
+    cx, cy = center_of(instance)
+    return board_layout(cx, cy, scale_of(instance))

@@ -8,7 +8,8 @@ that works out where the board goes for a game instance.
 """
 import pygame
 
-from .layout import board_layout, led_color, PAD_NAMES, TOUCH_PINS
+from .layout import (led_color, layout_for, scale_of, center_of,  # noqa: F401
+                     PAD_NAMES, TOUCH_PINS)
 from .state import simulator_of
 
 BODY_COLOR = (34, 36, 40)
@@ -86,34 +87,6 @@ def draw_board(screen, layout, sim, draw_body=True):
         pygame.draw.rect(screen, PAD_EDGE, (x, y, w, h), width=1, border_radius=3)
         label = _label(name, max(10, int(15 * layout.scale)), LABEL_COLOR)
         screen.blit(label, label.get_rect(midbottom=(x + w // 2, y - 2)))
-
-
-def scale_of(instance):
-    """The board's size multiplier: an instance variable, else the object's
-    ``microbit_scale`` property, else 1.0."""
-    value = getattr(instance, "microbit_scale", None)
-    if value is None:
-        data = getattr(instance, "object_data", None) or {}
-        value = data.get("microbit_scale", 1.0)
-    try:
-        return max(0.1, float(value))
-    except (TypeError, ValueError):
-        return 1.0
-
-
-def center_of(instance):
-    """Screen position the board is centred on: the instance's own point
-    when it has no sprite, else the middle of its sprite."""
-    sprite = getattr(instance, "sprite", None)
-    if sprite is None:
-        return instance.x, instance.y
-    return (instance.x - sprite.origin_x + sprite.width / 2,
-            instance.y - sprite.origin_y + sprite.height / 2)
-
-
-def layout_for(instance):
-    cx, cy = center_of(instance)
-    return board_layout(cx, cy, scale_of(instance))
 
 
 def draw_overlay(instance, screen):

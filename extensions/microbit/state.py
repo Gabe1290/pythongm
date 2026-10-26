@@ -34,3 +34,19 @@ def simulator_of(instance):
 
 def is_microbit(instance) -> bool:
     return simulator_of(instance) is not None
+
+
+def option_of(instance, name, default=None):
+    """An authored per-board option (``microbit_scale``, ``microbit_keyboard``):
+    an instance variable wins, else the object's own property."""
+    value = getattr(instance, name, None)
+    if value is None:
+        data = getattr(instance, "object_data", None) or {}
+        value = data.get(name, default)
+    return default if value is None else value
+
+
+def scratch(instance) -> dict:
+    """The mutable per-board dict (held keys and the like) that sits beside
+    the simulator in ``extension_state``."""
+    return instance.extension_state[KEY]
