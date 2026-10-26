@@ -2375,9 +2375,12 @@ state; README in the folder): a simulated BBC micro:bit drawn in the game
 window — 16 actions, 24 flat `microbit_*` events, a clickable board + sensor
 strip, square-wave sound, radio between boards, sample `microbit_1`
 ("Dice and Moods", beginner-visible), wiki `Microbit.md` + `_fr`. 24 commits,
-one unit each, all on `main`; ~300 new tests; suite 6,836 passed, with the same
-four unrelated failures throughout (two in `test_blockly_webengine_crash_guard`,
-`test_project_search`, and a flaky `test_multiplayer_files_connect_screen`).
+one unit each, all on `main`; ~300 new tests; suite **6,840 passed, 0 failed** (it had been 6,836 with four unrelated
+failures throughout, all fixed afterwards in `b9723bc8`: a test-order bug --
+`GameRunner.cleanup()` calls `pygame.quit()`, so any test that ran a game loop
+broke later files that only `pygame.init()` at import; `conftest.py` now
+re-initialises pygame per test -- plus a PySide6 6.10 tuple-comes-back-as-list
+change and two Linux-only `ldd` tests that were running on Windows).
 - **Design:** the simulator is *pure and reports*; a click only sets state and
   the per-frame hook turns `update(dt)`'s report into events, so a same-frame
   down+up still registers. Radio is a per-room delivery pass, not a global bus.
