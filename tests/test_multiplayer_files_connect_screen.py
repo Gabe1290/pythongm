@@ -17,6 +17,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
+import pytest
+
 from conftest import skip_without_pygame
 
 pytestmark = skip_without_pygame
@@ -26,6 +28,21 @@ pygame.init()
 pygame.display.set_mode((640, 480))
 
 from extensions.multiplayer_files.connect_screen import FileConnectScreen  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _pygame_ready():
+    """pygame is initialised once, at import, but a test file that ran earlier
+    in the same process may have called ``pygame.quit()`` (several do). The
+    modal loop reads ``pygame.event.get()``, which raises "video system not
+    initialized" after a quit -- so a test that passed alone failed in the full
+    suite. Re-initialise before every test instead of trusting import-time
+    state."""
+    if not pygame.display.get_init():
+        pygame.init()
+    if pygame.display.get_surface() is None:
+        pygame.display.set_mode((640, 480))
+    yield
 
 
 def _surface():

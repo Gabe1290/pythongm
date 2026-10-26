@@ -199,7 +199,9 @@ class TestProjectSearchDialog:
             dialog.search_field.setText("player_speed")
             dialog._run_search()
             assert dialog.results_tree.topLevelItemCount() == 3
-            categories = {dialog.results_tree.topLevelItem(i).data(0, 256)
+            # Qt's variant round-trip turns a stored tuple into a list on newer
+            # PySide6 (6.10), so normalise before putting it in a set.
+            categories = {tuple(dialog.results_tree.topLevelItem(i).data(0, 256))
                           for i in range(3)}
             assert ("objects", "obj_player") in categories
             assert ("scripts", "calc_damage") in categories

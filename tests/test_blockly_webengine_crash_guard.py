@@ -86,6 +86,16 @@ class TestBlocklyMessageFile:
 
 class TestQtWebEngineMissingLibraries:
 
+    @pytest.fixture(autouse=True)
+    def _pretend_linux(self, request, monkeypatch):
+        """``qtwebengine_missing_libraries`` returns None at once on Windows and
+        macOS, so every test here that exercises the ``ldd`` path was silently
+        asserting against that early return (two of them failed outright on
+        Windows, two more passed for the wrong reason). Run them as Linux.
+        The one real, unmocked check keeps the machine's own platform."""
+        if request.node.name != "test_this_machine_reports_no_missing_libraries":
+            monkeypatch.setattr(sys, "platform", "linux")
+
     def test_returns_none_when_ldd_is_unavailable(self):
         m = _blockly_widget()
         with patch("shutil.which", return_value=None):

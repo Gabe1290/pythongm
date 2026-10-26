@@ -90,6 +90,24 @@ def _quit_pygame_at_session_end():
 
 
 @pytest.fixture(autouse=True)
+def _pygame_initialised():
+    """Make sure pygame is initialised when each test starts.
+
+    About 48 test files call ``pygame.init()`` once, at import time. But
+    ``GameRunner.cleanup()`` ends with ``pygame.quit()``, so any test that ran
+    a real game loop to completion leaves pygame shut down for every later
+    file -- and a test that then reads ``pygame.event.get()`` fails with
+    "video system not initialized". It passed alone and failed in the full
+    suite, depending only on file order (found as the flaky
+    ``test_run_modal_loop_exits_on_quit``). Re-initialising here is cheap and
+    removes the whole class of order-dependence; a test that needs a display
+    surface still creates its own."""
+    if HAS_PYGAME and not pygame.get_init():
+        pygame.init()
+    yield
+
+
+@pytest.fixture(autouse=True)
 def _gc_collect_after_every_test():
     """Diagnostic, not a fix -- and deliberately OPT-IN via
     PYGM_GC_COLLECT_PER_TEST, not a blanket autouse fixture. A CI run

@@ -14,6 +14,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
+import pytest
+
 from conftest import skip_without_pygame
 
 pytestmark = skip_without_pygame
@@ -25,6 +27,17 @@ pygame.display.set_mode((640, 480))
 from extensions.multiplayer_lan.connect_screen import (  # noqa: E402
     ConnectScreen, _split_addr, local_ip,
 )
+
+
+@pytest.fixture(autouse=True)
+def _display_ready():
+    """The modal loop draws to a display surface; a test file that ran earlier
+    may have quit pygame (``GameRunner.cleanup`` does), which discards the
+    surface created at import. Recreate it per test (conftest re-initialises
+    pygame itself)."""
+    if pygame.display.get_surface() is None:
+        pygame.display.set_mode((640, 480))
+    yield
 
 
 def _surface():
