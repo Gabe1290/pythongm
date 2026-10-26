@@ -75,6 +75,11 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     # same commit (scripts, not committed, mirroring
     # add_sample_name_translations.py's approach).
     ("samples/fichier_1", "File Exchange — Tic-Tac-Toe"),
+    # microbit_1: a simulated BBC micro:bit drawn in the game window (the
+    # micro:bit extension, docs/MICROBIT_EXTENSION_PLAN.md S11). No second
+    # machine or hardware needed, so unlike the reseau_* entries it is also
+    # offered in the beginner edition. Translated like the other names.
+    ("samples/microbit_1", "micro:bit — Dice and Moods"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # docs/BLOCKLY_SCRATCH_PARITY_PLAN.md item 7: the bundled sample

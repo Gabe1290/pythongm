@@ -2628,6 +2628,10 @@ Do you want to save anyway?</source>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>文件交换 — 井字棋</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — 骰子与心情</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -576,6 +576,46 @@ sharing a folder (network drive / synced folder).
 
 ---
 
+## 11a. micro:bit simulator (`microbit_1`)
+
+→ `docs/MICROBIT_EXTENSION_PLAN.md`. One machine, no hardware. Everything the
+tests can pin is pinned; this is the part only eyes and ears can check.
+
+- L [ ] M [ ] W [ ] The Welcome tab offers **micro:bit — Dice and Moods**
+  (also in the **beginner** edition, and translated in each language) and it
+  opens and runs.
+- L [ ] M [ ] W [ ] The board looks like a micro:bit: 5×5 red LEDs, buttons
+  **A**/**B**, a gold logo above the display, five pads along the bottom, and
+  the sensor strip underneath (tilt pad, SHAKE, four sliders). Nothing
+  overlaps or is clipped at 640×480.
+- L [ ] M [ ] W [ ] Click **A** → happy face; **B** → sad face. **Right-click**
+  A or B presses both (A+B). Buttons light while held.
+- L [ ] M [ ] W [ ] **SHAKE** (or the **S** key) rolls a die: a face of 1–6
+  pips appears. Touch the **logo**: it scrolls "Rolls" then the number of
+  rolls so far.
+- L [ ] M [ ] W [ ] Drag the **tilt pad** to an edge and release: the dot
+  follows the pointer and springs back to the middle. Drag a slider: its label
+  and knob follow, and the value stays after release.
+- L [ ] M [ ] W [ ] Keys: **A**, **B**, **S** and the arrows drive the board
+  (this object opts in); in any other project they do nothing.
+- L [ ] M [ ] W [ ] **By ear:** add *Play Melody* `DADADADUM` (and *Play Tone*
+  440) to an event. You hear a clear square-wave beep at a comfortable volume,
+  the speaker dot above the display lights while it sounds, and *Stop Sound*
+  cuts it off.
+- L [ ] M [ ] W [ ] **Blockly:** open `microbit_1` in the object editor's
+  Blockly tab: a **micro:bit** category with the display / sound / radio /
+  sensor / condition blocks is there, and in a **French** IDE the block text is
+  French with its accents. The "extension event" block offers the micro:bit
+  events. In a project that does *not* activate the extension, none of it shows.
+- L [ ] M [ ] W [ ] Two boards in one room (copy `microbit_1`, set a **Set
+  Radio Group** in each and a **Send Radio Message** on a button): the other
+  board shows the message, the sender does not.
+- L [ ] M [ ] W [ ] A **desktop export** of `microbit_1` shows the board
+  (a missing extension fails silently in a frozen build). HTML5 and Android
+  exports run without crashing but do not draw the board (planned, Stage P).
+
+---
+
 ## 12. Preferences & settings
 
 - L [ ] M [ ] W [ ] Preferences dialog opens; **every tab's content fits

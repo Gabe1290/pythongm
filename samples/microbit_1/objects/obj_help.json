@@ -1,0 +1,42 @@
+{
+  "name": "obj_help",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Click A: happy face     Click B: sad face\"",
+            "x": "48",
+            "y": "404",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"SHAKE button or the S key: roll the die\"",
+            "x": "48",
+            "y": "428",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Touch the gold logo: how many rolls so far?\"",
+            "x": "48",
+            "y": "452",
+            "color": "#ffffff"
+          }
+        }
+      ]
+    }
+  }
+}

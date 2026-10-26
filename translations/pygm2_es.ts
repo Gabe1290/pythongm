@@ -9774,6 +9774,10 @@ Do you want to save anyway?</source>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>Intercambio de archivos — Tres en raya</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — Dado y estados de ánimo</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -82,7 +82,7 @@ def test_every_named_sample_exists():
                    "raycast_1", "raycast_2", "raycast_3", "raycast_4",
                    "block_world_1", "block_world_2", "block_world_3",
                    "reseau_1", "reseau_2", "reseau_3", "reseau_4",
-                   "fichier_1"):
+                   "fichier_1", "microbit_1"):
         assert sample in text, "%s is not covered by the checklist" % sample
         assert (REPO_ROOT / "samples" / sample / "project.json").exists()
 

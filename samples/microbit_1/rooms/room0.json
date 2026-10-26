@@ -1,0 +1,35 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 640,
+  "height": 480,
+  "background_color": "#1a2a44",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 2,
+  "instances": [
+    {
+      "object_name": "microbit_1",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 320,
+      "y": 160
+    },
+    {
+      "object_name": "obj_help",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "created": "2026-10-27T00:00:00.000000",
+  "modified": "2026-10-27T00:00:00.000000",
+  "imported": false,
+  "tiles": []
+}

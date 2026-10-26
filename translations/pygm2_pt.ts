@@ -438,6 +438,10 @@ Deseja salvar mesmo assim?</translation>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>Troca de ficheiros — Jogo do Galo</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — Dado e humores</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

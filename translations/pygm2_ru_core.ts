@@ -2899,6 +2899,10 @@ Which one do you want to open?</source>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>Обмен файлами — Крестики-нолики</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — Кубик и настроения</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

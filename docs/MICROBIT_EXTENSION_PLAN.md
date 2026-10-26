@@ -356,6 +356,20 @@ The radio is always on (no `radio.on()` step to forget), and bridging it over
   the tests pin what Python sends -- category, label, param types, XML-safe
   defaults -- not the rendered toolbox. Eyeball it once.
 
+*Decided in S11:* `microbit_1` is "micro:bit — Dice and Moods": A/B show
+`HAPPY`/`SAD`, a shake rolls a die (`roll = irandom(5) + 1`, then six
+`test_variable` / `show_image` pairs with custom 5x5 pip images, point-
+symmetric like a real die), the logo scrolls `"Rolls"` then `show_number
+rolls` (display actions queue, which doubles as the lesson on the queue). The
+board object sets `microbit_keyboard: true` so A/B/S/arrows work without a
+mouse. The sample files are the source (no generator is committed); the Welcome
+tab name is translated in all 10 shipped languages (`.ts` + recompiled `.qm`),
+guides in English and French. It stays on the sample's own text being English,
+per the 2026-07-20 "samples' messages stay English" rule. A scroll of a
+five-letter word takes about 5 s at the device's 150 ms per column, so tests of
+the logo wait ~7 s of frames. Desktop-export render checked with
+`tools/verify_desktop_export.py --compare` (result in the S11 commit).
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 
@@ -407,7 +421,11 @@ would bring Stage L to HTML5.
 
 ## Open decisions
 
-- **O1 — Discoverability vs clutter.** The recommended default (toolbox
+- ~~**O1 — Discoverability vs clutter.**~~ *Settled across S1/S10/S11:* the toolbox
+  stays clean through the per-project `active_extensions` mechanism (no bespoke
+  filter, no preset, no template -- see "Decided in S10"), and `microbit_1` **is
+  offered in the beginner edition** (it needs no second machine or hardware,
+  unlike the `reseau_*` samples) but not in junior. Original text: **O1 — Discoverability vs clutter.** The recommended default (toolbox
   hidden until a micro:bit object exists, plus a preset and a Welcome-tab
   template) keeps beginners' toolboxes clean. The alternative is an
   always-visible "micro:bit" category. Also decide whether `microbit_1`

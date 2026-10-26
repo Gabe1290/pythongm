@@ -122,6 +122,7 @@ EDITIONS = {
             "views_1", "views_2",
             "treasure",
             "sky_strike_1",
+            "microbit_1",
         ],
     },
     "advanced": {

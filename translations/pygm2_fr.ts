@@ -10535,6 +10535,10 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>Échange de fichiers — Morpion</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — Dé et humeurs</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

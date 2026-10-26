@@ -135,7 +135,7 @@ def layout_for(instance):
 # A panel under the board: a tilt pad, a shake button and four sliders.
 
 STRIP_GAP = 10
-STRIP_H = 124
+STRIP_H = 132
 STRIP_PAD = 8
 TILT_SIZE = 100
 SHAKE_H = 22
@@ -171,7 +171,7 @@ def strip_layout(layout: BoardLayout) -> StripLayout:
     shake = (col_x, py + pad, col_w, _r(SHAKE_H * s))
     sliders = {}
     for i, name in enumerate(SLIDERS):
-        sliders[name] = (col_x, py + _r((46 + 20 * i) * s), col_w, max(3, _r(8 * s)))
+        sliders[name] = (col_x, py + _r((46 + 22 * i) * s), col_w, max(3, _r(8 * s)))
     return StripLayout(panel, tilt, shake, sliders)
 
 

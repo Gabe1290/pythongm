@@ -2899,6 +2899,10 @@ Katerega želite odpreti?</translation>
         <source>File Exchange — Tic-Tac-Toe</source>
         <translation>Izmenjava datotek — Križci in krožci</translation>
     </message>
+    <message>
+        <source>micro:bit — Dice and Moods</source>
+        <translation>micro:bit — Kocka in razpoloženja</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -1,0 +1,262 @@
+{
+  "name": "microbit_1",
+  "version": "1.0",
+  "created": "2026-10-27T00:00:00.000000",
+  "modified": "2026-10-27T00:00:00.000000",
+  "settings": {
+    "window_title": "micro:bit: Dice and Moods",
+    "window_width": 640,
+    "window_height": 480,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full",
+    "active_extensions": [
+      "microbit"
+    ]
+  },
+  "assets": {
+    "sprites": {},
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "microbit_1": {
+        "name": "microbit_1",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "microbit_keyboard": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "rolls",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "HEART"
+                }
+              }
+            ]
+          },
+          "microbit_button_a": {
+            "actions": [
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "HAPPY"
+                }
+              }
+            ]
+          },
+          "microbit_button_b": {
+            "actions": [
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "SAD"
+                }
+              }
+            ]
+          },
+          "microbit_gesture_shake": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "irandom(5) + 1"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "1",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "00000:00000:00900:00000:00000"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "2",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "90000:00000:00000:00000:00009"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "3",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "90000:00000:00900:00000:00009"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "4",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "90009:00000:00000:00000:90009"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "5",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "90009:00000:00900:00000:90009"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "roll",
+                  "value": "6",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "microbit_show_image",
+                "parameters": {
+                  "image": "90009:00000:90009:00000:90009"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "rolls",
+                  "value": "1",
+                  "relative": true
+                }
+              }
+            ]
+          },
+          "microbit_logo_touched": {
+            "actions": [
+              {
+                "action": "microbit_scroll_text",
+                "parameters": {
+                  "text": "\"Rolls\""
+                }
+              },
+              {
+                "action": "microbit_show_number",
+                "parameters": {
+                  "value": "rolls"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "obj_help": {
+        "name": "obj_help",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -100,
+        "events": {
+          "draw": {
+            "actions": [
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Click A: happy face     Click B: sad face\"",
+                  "x": "48",
+                  "y": "404",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"SHAKE button or the S key: roll the die\"",
+                  "x": "48",
+                  "y": "428",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Touch the gold logo: how many rolls so far?\"",
+                  "x": "48",
+                  "y": "452",
+                  "color": "#ffffff"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 640,
+        "height": 480,
+        "background_color": "#1a2a44",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 2,
+        "instances": [],
+        "created": "2026-10-27T00:00:00.000000",
+        "modified": "2026-10-27T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}
