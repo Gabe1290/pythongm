@@ -21,10 +21,14 @@ BUTTON_DOWN = (255, 214, 90)
 BUTTON_EDGE = (110, 110, 105)
 LOGO_COLOR = (212, 175, 55)
 LOGO_TOUCHED = (255, 240, 150)
+LOGO_DOT = (120, 95, 20)              # accent dots inside the logo oval
 PAD_COLOR = (196, 150, 60)
 PAD_TOUCHED = (255, 240, 150)
 PAD_EDGE = (80, 60, 20)
+PAD_HOLE = (70, 52, 18)               # decorative pin-hole on each pad
 LABEL_COLOR = (200, 200, 200)
+CORNER_GREEN = (54, 199, 149)         # silkscreen corner decoration + A/B tags
+TAG_LABEL = (16, 54, 42)
 PANEL_COLOR = (46, 48, 54)
 PANEL_EDGE = (20, 20, 24)
 PAD_WELL = (24, 26, 30)
@@ -102,6 +106,45 @@ def draw_strip(screen, strip, sim, scale=1.0):
                            max(3, kh // 2 + 2))
 
 
+def _corner_decoration(screen, layout):
+    """The jagged green silkscreen wedge in the board's top-left corner --
+    purely decorative, inset from the literal corner so it sits inside the
+    body's rounded edge instead of poking past it."""
+    bx, by, bw, bh = layout.body
+    sc = layout.scale
+    inset = max(2, int(5 * sc))
+    x0, y0 = bx + inset, by + inset
+    pts = [
+        (x0, y0),
+        (bx + bw * 0.42, by),
+        (bx + bw * 0.30, by + bh * 0.12),
+        (bx + bw * 0.22, by + bh * 0.05),
+        (bx + bw * 0.12, by + bh * 0.20),
+        (bx + bw * 0.05, by + bh * 0.10),
+        (bx, by + bh * 0.36),
+    ]
+    pygame.draw.polygon(screen, CORNER_GREEN, pts)
+
+
+def _button_tag(screen, name, bx, by, br, layout):
+    """The small triangular 'A'/'B' flag beside a button, matching the real
+    board's silkscreen tag -- separate from (and in addition to) the letter
+    already drawn on the button cap for at-a-glance readability."""
+    sc = layout.scale
+    tw, th = max(6, int(16 * sc)), max(6, int(14 * sc))
+    tx = bx - tw // 2
+    ty = by + br + max(2, int(3 * sc))
+    if name == "a":
+        pts = [(tx, ty), (tx + tw, ty), (tx, ty + th)]
+        centroid = (tx + tw / 3, ty + th / 3)
+    else:
+        pts = [(tx, ty), (tx + tw, ty), (tx + tw, ty + th)]
+        centroid = (tx + tw * 2 / 3, ty + th / 3)
+    pygame.draw.polygon(screen, CORNER_GREEN, pts)
+    label = _label(name.upper(), max(8, int(11 * sc)), TAG_LABEL)
+    screen.blit(label, label.get_rect(center=(int(centroid[0]), int(centroid[1]))))
+
+
 def draw_board(screen, layout, sim, draw_body=True):
     """Paint the board. ``draw_body=False`` leaves the body out, for an
     instance whose own sprite is the board (LEDs and controls draw on top)."""
@@ -111,6 +154,7 @@ def draw_board(screen, layout, sim, draw_body=True):
         pygame.draw.rect(screen, BODY_COLOR, (bx, by, bw, bh), border_radius=radius)
         pygame.draw.rect(screen, BODY_EDGE, (bx, by, bw, bh), width=2,
                          border_radius=radius)
+        _corner_decoration(screen, layout)
 
     # LEDs
     size = layout.led_size
@@ -130,6 +174,8 @@ def draw_board(screen, layout, sim, draw_body=True):
         pygame.draw.circle(screen, BUTTON_EDGE, (bx, by), br, 2)
         label = _label(name.upper(), max(12, int(22 * layout.scale)), (40, 40, 40))
         screen.blit(label, label.get_rect(center=(bx, by)))
+        if draw_body:
+            _button_tag(screen, name, bx, by, br, layout)
 
     # Speaker: lit with sound waves while a tone plays
     kx, ky, kr = layout.speaker
@@ -139,10 +185,17 @@ def draw_board(screen, layout, sim, draw_body=True):
         for grow in (kr + 4, kr + 9):
             pygame.draw.circle(screen, SPEAKER_ON, (kx, ky), grow, 1)
 
-    # Touch logo
+    # Touch logo: filled oval (the exact fill colour, including at its
+    # centre, is what the touch state reflects) plus two off-centre accent
+    # dots so it reads as the real board's two-eyes logo/mic icon.
     lx, ly, rx, ry = layout.logo
     pygame.draw.ellipse(screen, LOGO_TOUCHED if sim.logo_touched else LOGO_COLOR,
                         (lx - rx, ly - ry, rx * 2, ry * 2))
+    dot_r = max(1, int(ry * 0.35))
+    dot_dx = rx * 0.45
+    if dot_dx > dot_r:
+        pygame.draw.circle(screen, LOGO_DOT, (int(lx - dot_dx), ly), dot_r)
+        pygame.draw.circle(screen, LOGO_DOT, (int(lx + dot_dx), ly), dot_r)
 
     # Edge connector
     for name in PAD_NAMES:
@@ -152,6 +205,10 @@ def draw_board(screen, layout, sim, draw_body=True):
         pygame.draw.rect(screen, PAD_TOUCHED if touched else PAD_COLOR, (x, y, w, h),
                          border_radius=3)
         pygame.draw.rect(screen, PAD_EDGE, (x, y, w, h), width=1, border_radius=3)
+        hole_r = max(1, int(min(w, h) * 0.18))
+        hole_cy = y + hole_r + max(1, int(2 * layout.scale))
+        if hole_cy + hole_r < y + h - max(4, int(4 * layout.scale)):
+            pygame.draw.circle(screen, PAD_HOLE, (x + w // 2, hole_cy), hole_r)
         label = _label(name, max(10, int(15 * layout.scale)), LABEL_COLOR)
         screen.blit(label, label.get_rect(midbottom=(x + w // 2, y - 2)))
 
