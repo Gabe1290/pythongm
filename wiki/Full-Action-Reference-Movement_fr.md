@@ -272,6 +272,21 @@ Mettre les deux vitesses à zéro
 
 *Paramètres:* aucun
 
+### Tester l'alignement sur la grille
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `test_alignment` |
+| **Icône** | ❓▦ |
+| **Catégorie** | Mouvement |
+
+Condition : vrai si l'instance est alignée sur une grille
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `hsnap` | Nombre | `32` | Espacement horizontal de la grille en pixels |
+| `vsnap` | Nombre | `32` | Espacement vertical de la grille en pixels |
+
 ### Boucler autour de la salle
 
 | Propriété | Valeur |
@@ -289,16 +304,19 @@ Réapparaître du côté opposé de la salle
 ## Autres Catégories
 
 - [Instance](Full-Action-Reference-Instance_fr) (12)
-- [Score](Full-Action-Reference-Score_fr) (11)
+- [Score](Full-Action-Reference-Score_fr) (6)
 - [Salle](Full-Action-Reference-Room_fr) (13)
 - [Minuterie](Full-Action-Reference-Timing_fr) (8)
 - [Audio](Full-Action-Reference-Audio_fr) (6)
-- [Jeu](Full-Action-Reference-Game_fr) (25)
+- [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
-- [Grille](Full-Action-Reference-Grid_fr) (4)
+- [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
+- [Dessin](Full-Action-Reference-Drawing_fr) (11)
+- [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

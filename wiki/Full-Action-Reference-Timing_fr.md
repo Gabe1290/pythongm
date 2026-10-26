@@ -116,17 +116,20 @@ Arrête la lecture de la frise et remet la position à 0
 
 ## Autres Catégories
 
-- [Mouvement](Full-Action-Reference-Movement_fr) (20)
+- [Mouvement](Full-Action-Reference-Movement_fr) (21)
 - [Instance](Full-Action-Reference-Instance_fr) (12)
-- [Score](Full-Action-Reference-Score_fr) (11)
+- [Score](Full-Action-Reference-Score_fr) (6)
 - [Salle](Full-Action-Reference-Room_fr) (13)
 - [Audio](Full-Action-Reference-Audio_fr) (6)
-- [Jeu](Full-Action-Reference-Game_fr) (25)
+- [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
-- [Grille](Full-Action-Reference-Grid_fr) (4)
+- [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
+- [Dessin](Full-Action-Reference-Drawing_fr) (11)
+- [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

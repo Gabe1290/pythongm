@@ -22,7 +22,7 @@ PyGameMaker uses **presets** to control which events and actions are available. 
 |--------|----------|----------|
 | [**Beginner**](Beginner-Preset) | New to game development | Essentials — movement, collisions, score, rooms |
 | [**Intermediate**](Intermediate-Preset) | Some experience | Adds lives, health, sound, alarms, drawing |
-| **Advanced (Full)** | Experienced users | Everything — all 37 events and 159 actions |
+| **Advanced (Full)** | Experienced users | Everything — all 37 events and 184 actions |
 
 **New users:** Start with the [Beginner Preset](Beginner-Preset) to learn the fundamentals without being overwhelmed.
 
@@ -38,6 +38,7 @@ See the [Preset Guide](Preset-Guide) for a complete overview of the preset syste
 | **Event-Action System** | GameMaker 7.0 compatible event-driven logic |
 | **Skill-Based Presets** | Beginner, Intermediate, and Advanced feature sets |
 | **2.5D / First-Person View** | Optional Doom/Wolfenstein-style raycast rendering — see [3D View](3D-View) |
+| **micro:bit Simulator** | A simulated BBC micro:bit in your game — LED display, buttons, sensors, sound and radio — see [micro:bit](Microbit) |
 | **LAN Multiplayer** | Host/join a game over the local network, shared variables and networked avatars — see [Network](Network) |
 | **File Exchange Multiplayer** | Turn-based multiplayer through a shared drive — works even when a school firewall blocks direct connections, see [File Exchange Multiplayer](FileExchange) |
 | **Multi-Platform Export** | Windows EXE, macOS app, HTML5, Linux, Kivy (mobile/desktop) |
@@ -101,7 +102,7 @@ Triggers that execute actions when specific conditions occur:
 See the [Event Reference](Event-Reference) for complete documentation.
 
 ### Actions
-Operations performed when events trigger. **159** built-in actions for:
+Operations performed when events trigger. **184** built-in actions for:
 - Movement and physics
 - Drawing and sprites
 - Score, lives, and health
@@ -109,6 +110,7 @@ Operations performed when events trigger. **159** built-in actions for:
 - Instance and room management
 - 3D View (first-person raycast rendering)
 - Network (LAN multiplayer)
+- micro:bit (simulated board: display, buttons, sensors, sound, radio)
 
 See the [Full Action Reference](Full-Action-Reference) for the complete, always-current list.
 
@@ -186,8 +188,9 @@ project_name/
 ### Advanced Features
 - [3D View](3D-View) - Doom-style first-person (raycast) rendering
 - [Network](Network) - LAN multiplayer: host/join, shared variables, networked avatars
+- [micro:bit](Microbit) - A simulated BBC micro:bit: LED display, buttons, sensors, sound, radio
 - [File Exchange Multiplayer](FileExchange) - Turn-based multiplayer through a shared drive, firewall-friendly
-- [Extensions](Extensions) - Add-on actions and renderers (how 3D View, Network, and File Exchange Multiplayer ship)
+- [Extensions](Extensions) - Add-on actions and renderers (how 3D View, Network, File Exchange Multiplayer and micro:bit ship)
 
 ### Guides
 - [Object-Editor](Object-Editor) - Working with game objects

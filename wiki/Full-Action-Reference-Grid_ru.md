@@ -48,36 +48,24 @@
 |-----------|------|---------|-------|
 | `grid_size` | Число | `32` | Размер клетки сетки в пикселях |
 
-### Проверить выравнивание по сетке
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `test_alignment` |
-| **Значок** | ❓▦ |
-| **Категория** | Сетка |
-
-Условие: истина, если экземпляр выровнен по сетке
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `hsnap` | Число | `32` | Горизонтальный шаг сетки в пикселях |
-| `vsnap` | Число | `32` | Вертикальный шаг сетки в пикселях |
-
 ---
 
 ## Другие Категории
 
-- [Движение](Full-Action-Reference-Movement_ru) (20)
+- [Движение](Full-Action-Reference-Movement_ru) (21)
 - [Экземпляр](Full-Action-Reference-Instance_ru) (12)
-- [Счёт](Full-Action-Reference-Score_ru) (11)
+- [Счёт](Full-Action-Reference-Score_ru) (6)
 - [Комната](Full-Action-Reference-Room_ru) (13)
 - [Время](Full-Action-Reference-Timing_ru) (8)
 - [Аудио](Full-Action-Reference-Audio_ru) (6)
-- [Игра](Full-Action-Reference-Game_ru) (25)
+- [Игра](Full-Action-Reference-Game_ru) (14)
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (18)
-- [Сеть](Full-Action-Reference-Network-Actions_ru) (15)
+- [Рисование](Full-Action-Reference-Drawing_ru) (11)
+- [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
 - [Частицы](Full-Action-Reference-Particles_ru) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_ru) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_ru) (16)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

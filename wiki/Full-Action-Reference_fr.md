@@ -4,23 +4,26 @@
 
 > **Généré automatiquement** à partir du registre d'actions de l'IDE par `tools/gen_action_reference.py` — ne pas modifier à la main ; relancez le générateur après avoir changé les actions. Les traductions proviennent de `tools/action_ref_i18n.py`.
 
-Cette page liste l'ensemble des **161** actions disponibles dans PyGameMaker, exactement telles qu'elles apparaissent dans le sélecteur d'actions de l'IDE (y compris le plugin Audio et l'extension Vue 3D). Les actions sont des commandes qui s'exécutent lorsqu'un événement se déclenche.
+Cette page liste l'ensemble des **184** actions disponibles dans PyGameMaker, exactement telles qu'elles apparaissent dans le sélecteur d'actions de l'IDE (y compris le plugin Audio et l'extension Vue 3D). Les actions sont des commandes qui s'exécutent lorsqu'un événement se déclenche.
 
 ## Catégories
 
-- [Mouvement](Full-Action-Reference-Movement_fr) (20)
+- [Mouvement](Full-Action-Reference-Movement_fr) (21)
 - [Instance](Full-Action-Reference-Instance_fr) (12)
-- [Score](Full-Action-Reference-Score_fr) (11)
+- [Score](Full-Action-Reference-Score_fr) (6)
 - [Salle](Full-Action-Reference-Room_fr) (13)
 - [Minuterie](Full-Action-Reference-Timing_fr) (8)
 - [Audio](Full-Action-Reference-Audio_fr) (6)
-- [Jeu](Full-Action-Reference-Game_fr) (25)
+- [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
-- [Grille](Full-Action-Reference-Grid_fr) (4)
+- [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
+- [Dessin](Full-Action-Reference-Drawing_fr) (11)
+- [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 ---
 

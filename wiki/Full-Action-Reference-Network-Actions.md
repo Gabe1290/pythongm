@@ -37,6 +37,18 @@ Host only: create an instance that automatically appears on every client (as int
 | `owner` | Text | `0` | Player who drives the instance (0 = host). Often global.network_sender inside "Player Joined".; optional |
 | `relative` | Yes/No | No | Position relative to the object running the action; optional |
 
+### End Turn (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `end_turn` |
+| **Icon** | ✅ |
+| **Category** | Network |
+
+Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+
+*Parameters:* none
+
 ### Host Game
 
 | Property | Value |
@@ -54,6 +66,24 @@ Become the host of a LAN multiplayer game: other players connect to this machine
 | `port` | Number | `45782` | TCP port -- must match on the host and every client; optional |
 | `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
 | `show_lobby` | Yes/No | No | Show a "Waiting for players..." screen with a Start button before the game begins; optional |
+
+### Host a Game (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `host_game_files` |
+| **Icon** | 🗂️ |
+| **Category** | Network |
+
+Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `folder` | Text | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `max_players` | Number | `8` | Largest number of players, host included (2 to 16); optional |
+| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
+| `round_deadline` | Number | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); optional |
+| `show_lobby` | Yes/No | No | Show a "Waiting for players..." screen with a Start button before handing control back to the game; optional |
 
 ### If I Own This Instance
 
@@ -98,6 +128,21 @@ Connect to a LAN multiplayer game hosted by another machine. global.player_id wi
 | `port` | Number | `45782` | TCP port -- must match the host's; optional |
 | `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
 
+### Join a Game (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `join_game_files` |
+| **Icon** | 🔌 |
+| **Category** | Network |
+
+Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `folder` | Text | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
+
 ### Leave Game
 
 | Property | Value |
@@ -110,6 +155,18 @@ Disconnect (or stop hosting) and clear the network global variables
 
 *Parameters:* none
 
+### Leave the Game (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `leave_game_files` |
+| **Icon** | 🚪 |
+| **Category** | Network |
+
+Stop hosting or leave the game, and clear the global status variables
+
+*Parameters:* none
+
 ### Get Shared Variable
 
 | Property | Value |
@@ -119,6 +176,21 @@ Disconnect (or stop hosting) and clear the network global variables
 | **Category** | Network |
 
 Copy a shared variable into a global variable (to use it in a calculation). Equivalent to reading global.<name> directly
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `name` | Text | — | Name of the shared variable to read |
+| `into` | Text | — | Name of the global variable to write the value into |
+
+### Read a Shared Variable (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `get_shared_var_files` |
+| **Icon** | 📥 |
+| **Category** | Network |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
 
 | Parameter | Type | Default | Notes |
 |-----------|------|---------|-------|
@@ -140,6 +212,22 @@ Broadcast a custom message. Fires the "Network Message" event on the machines it
 | `event` | Text | — | A free-form label the handler tests for (e.g. "buzz", "answer") |
 | `data` | Text | — | A number, text, boolean, or small list; optional |
 | `target` | Choice | `all` | all = everyone; host = the host only; Choices: `all`, `host` |
+
+### Send a Network Message (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `send_network_message_files` |
+| **Icon** | ✉️ |
+| **Category** | Network |
+
+Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `event` | Text | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
+| `data` | Text | — | A number, text, true/false, or a short list; optional |
+| `target` | Choice | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Choices: `all`, `host` |
 
 ### Set Network Mode (v1)
 
@@ -171,6 +259,21 @@ Write a variable shared by every machine. On the host: applied immediately. On a
 |-----------|------|---------|-------|
 | `name` | Text | — | A plain identifier (letters, digits, _) -- no spaces or operators |
 | `value` | Text | `0` | A number, text, or boolean (complex objects are rejected) |
+
+### Set a Shared Variable (File Exchange)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_shared_var_files` |
+| **Icon** | 📤 |
+| **Category** | Network |
+
+Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `name` | Text | — | A plain identifier (letters, digits, _) -- no spaces or operators |
+| `value` | Text | `0` | A number, text or true/false (complex objects are refused) |
 
 ### Set Instance Owner
 
@@ -231,17 +334,20 @@ Mark the instance running this action as "synced": its position, rotation, image
 
 ## Other Categories
 
-- [Movement](Full-Action-Reference-Movement) (20)
+- [Movement](Full-Action-Reference-Movement) (21)
 - [Instance](Full-Action-Reference-Instance) (12)
-- [Score](Full-Action-Reference-Score) (11)
+- [Score](Full-Action-Reference-Score) (6)
 - [Room](Full-Action-Reference-Room) (13)
 - [Timing](Full-Action-Reference-Timing) (8)
 - [Audio](Full-Action-Reference-Audio) (6)
-- [Game](Full-Action-Reference-Game) (25)
+- [Game](Full-Action-Reference-Game) (14)
 - [Control](Full-Action-Reference-Control) (19)
-- [Grid](Full-Action-Reference-Grid) (4)
+- [Grid](Full-Action-Reference-Grid) (3)
 - [Views](Full-Action-Reference-Views) (2)
 - [3D View](Full-Action-Reference-3D-View-Actions) (18)
+- [Drawing](Full-Action-Reference-Drawing) (11)
 - [Particles](Full-Action-Reference-Particles) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions) (16)
 
 [← Back to Full Action Reference](Full-Action-Reference)

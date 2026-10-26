@@ -50,17 +50,20 @@ Konfiguriraj pogled kamere: kateri del sobe prikazuje, kje se izriše na zaslonu
 
 ## Druge Kategorije
 
-- [Gibanje](Full-Action-Reference-Movement_sl) (20)
+- [Gibanje](Full-Action-Reference-Movement_sl) (21)
 - [Instanca](Full-Action-Reference-Instance_sl) (12)
-- [Rezultat](Full-Action-Reference-Score_sl) (11)
+- [Rezultat](Full-Action-Reference-Score_sl) (6)
 - [Soba](Full-Action-Reference-Room_sl) (13)
 - [Čas](Full-Action-Reference-Timing_sl) (8)
 - [Zvok](Full-Action-Reference-Audio_sl) (6)
-- [Igra](Full-Action-Reference-Game_sl) (25)
+- [Igra](Full-Action-Reference-Game_sl) (14)
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
-- [Mreža](Full-Action-Reference-Grid_sl) (4)
+- [Mreža](Full-Action-Reference-Grid_sl) (3)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (18)
-- [Omrežje](Full-Action-Reference-Network-Actions_sl) (15)
+- [Risanje](Full-Action-Reference-Drawing_sl) (11)
+- [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

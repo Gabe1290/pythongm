@@ -1,6 +1,6 @@
 # Extensions
 
-*[Home](Home) | [3D View](3D-View) | [Network](Network) | [File Exchange Multiplayer](FileExchange) | [Full Action Reference](Full-Action-Reference)*
+*[Home](Home) | [3D View](3D-View) | [Network](Network) | [micro:bit](Microbit) | [File Exchange Multiplayer](FileExchange) | [Full Action Reference](Full-Action-Reference)*
 
 ---
 
@@ -25,6 +25,11 @@ state through files on a shared drive instead of a live connection, for a
 classroom where a firewall blocks LAN Multiplayer's direct connections.
 Desktop export only — see [File Exchange Multiplayer](FileExchange)'s own
 "Why not every export" note.
+The built-in **micro:bit** extension (the [micro:bit](Microbit) feature) puts a
+simulated BBC micro:bit in the game window: 16 actions, 24 events, a drawn board
+with clickable buttons and a sensor strip, sound and a radio. It ships enabled
+but is switched on per project (**Project Settings → Extensions**), and works
+in Test Game and the desktop export.
 
 ---
 
@@ -123,6 +128,7 @@ extension when a project needs a disabled one.
 
 - [3D View](3D-View) — the feature the 2.5D Raycast extension provides
 - [Network](Network) — the feature the LAN Multiplayer extension provides
+- [micro:bit](Microbit) — the feature the micro:bit extension provides
 - [File Exchange Multiplayer](FileExchange) — the feature the File Exchange Multiplayer extension provides
 - [Full Action Reference](Full-Action-Reference) — extension actions appear here too
 - [Exporting Games](Exporting-Games) — extension features carry into exports

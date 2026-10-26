@@ -292,17 +292,20 @@ Testar o valor de uma variável de instância ou global
 
 ## Outras Categorias
 
-- [Movimento](Full-Action-Reference-Movement_pt) (20)
+- [Movimento](Full-Action-Reference-Movement_pt) (21)
 - [Instância](Full-Action-Reference-Instance_pt) (12)
-- [Pontuação](Full-Action-Reference-Score_pt) (11)
+- [Pontuação](Full-Action-Reference-Score_pt) (6)
 - [Sala](Full-Action-Reference-Room_pt) (13)
 - [Tempo](Full-Action-Reference-Timing_pt) (8)
 - [Áudio](Full-Action-Reference-Audio_pt) (6)
-- [Jogo](Full-Action-Reference-Game_pt) (25)
-- [Grade](Full-Action-Reference-Grid_pt) (4)
+- [Jogo](Full-Action-Reference-Game_pt) (14)
+- [Grade](Full-Action-Reference-Grid_pt) (3)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (18)
-- [Rede](Full-Action-Reference-Network-Actions_pt) (15)
+- [Desenho](Full-Action-Reference-Drawing_pt) (11)
+- [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_pt) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_pt) (16)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

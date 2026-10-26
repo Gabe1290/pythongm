@@ -48,36 +48,24 @@ Stop movement on grid when no movement keys are pressed (perfect for smooth grid
 |-----------|------|---------|-------|
 | `grid_size` | Number | `32` | Grid cell size in pixels |
 
-### Test Grid Alignment
-
-| Property | Value |
-|----------|-------|
-| **Name** | `test_alignment` |
-| **Icon** | ❓▦ |
-| **Category** | Grid |
-
-Conditional: true if the instance is aligned to a grid
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `hsnap` | Number | `32` | Horizontal grid spacing in pixels |
-| `vsnap` | Number | `32` | Vertical grid spacing in pixels |
-
 ---
 
 ## Other Categories
 
-- [Movement](Full-Action-Reference-Movement) (20)
+- [Movement](Full-Action-Reference-Movement) (21)
 - [Instance](Full-Action-Reference-Instance) (12)
-- [Score](Full-Action-Reference-Score) (11)
+- [Score](Full-Action-Reference-Score) (6)
 - [Room](Full-Action-Reference-Room) (13)
 - [Timing](Full-Action-Reference-Timing) (8)
 - [Audio](Full-Action-Reference-Audio) (6)
-- [Game](Full-Action-Reference-Game) (25)
+- [Game](Full-Action-Reference-Game) (14)
 - [Control](Full-Action-Reference-Control) (19)
 - [Views](Full-Action-Reference-Views) (2)
 - [3D View](Full-Action-Reference-3D-View-Actions) (18)
-- [Network](Full-Action-Reference-Network-Actions) (15)
+- [Drawing](Full-Action-Reference-Drawing) (11)
+- [Network](Full-Action-Reference-Network-Actions) (22)
 - [Particles](Full-Action-Reference-Particles) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions) (16)
 
 [← Back to Full Action Reference](Full-Action-Reference)

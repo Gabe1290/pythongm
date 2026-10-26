@@ -50,17 +50,20 @@ Eine Kameraansicht konfigurieren: welchen Teil des Raums sie zeigt, wo sie auf d
 
 ## Weitere Kategorien
 
-- [Bewegung](Full-Action-Reference-Movement_de) (20)
+- [Bewegung](Full-Action-Reference-Movement_de) (21)
 - [Instanz](Full-Action-Reference-Instance_de) (12)
-- [Punkte](Full-Action-Reference-Score_de) (11)
+- [Punkte](Full-Action-Reference-Score_de) (6)
 - [Raum](Full-Action-Reference-Room_de) (13)
 - [Zeitsteuerung](Full-Action-Reference-Timing_de) (8)
 - [Audio](Full-Action-Reference-Audio_de) (6)
-- [Spiel](Full-Action-Reference-Game_de) (25)
+- [Spiel](Full-Action-Reference-Game_de) (14)
 - [Steuerung](Full-Action-Reference-Control_de) (19)
-- [Gitter](Full-Action-Reference-Grid_de) (4)
+- [Gitter](Full-Action-Reference-Grid_de) (3)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
-- [Netzwerk](Full-Action-Reference-Network-Actions_de) (15)
+- [Zeichnen](Full-Action-Reference-Drawing_de) (11)
+- [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_de) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_de) (16)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

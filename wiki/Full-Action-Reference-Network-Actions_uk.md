@@ -37,6 +37,18 @@
 | `owner` | Текст | `0` | Гравець, який керує цим екземпляром (0 — ведучий). Часто global.network_sender усередині події «Гравець приєднався».; необов'язково |
 | `relative` | Так/Ні | Ні | Позиція відносно об'єкта, що виконує дію; необов'язково |
 
+### End Turn (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `end_turn` |
+| **Значок** | ✅ |
+| **Категорія** | Мережа |
+
+Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+
+*Параметри:* немає
+
 ### Створити гру
 
 | Властивість | Значення |
@@ -54,6 +66,24 @@
 | `port` | Число | `45782` | Порт TCP — має збігатися у ведучого й у кожного клієнта; необов'язково |
 | `player_name` | Текст | — | Ім'я цього гравця (порожньо — global.player_name, інакше "Player"); необов'язково |
 | `show_lobby` | Так/Ні | Ні | Показати екран «Очікування гравців...» з кнопкою запуску перед початком гри; необов'язково |
+
+### Host a Game (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `host_game_files` |
+| **Значок** | 🗂️ |
+| **Категорія** | Мережа |
+
+Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `folder` | Текст | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `max_players` | Число | `8` | Найбільша кількість гравців, разом з ведучим (від 2 до 16); необов'язково |
+| `player_name` | Текст | — | Ім'я цього гравця (порожньо — global.player_name, інакше "Player"); необов'язково |
+| `round_deadline` | Число | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); необов'язково |
+| `show_lobby` | Так/Ні | Ні | Show a "Waiting for players..." screen with a Start button before handing control back to the game; необов'язково |
 
 ### Якщо я керую цим екземпляром
 
@@ -98,6 +128,21 @@
 | `port` | Число | `45782` | Порт TCP — має збігатися з портом ведучого; необов'язково |
 | `player_name` | Текст | — | Ім'я цього гравця (порожньо — global.player_name, інакше "Player"); необов'язково |
 
+### Join a Game (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `join_game_files` |
+| **Значок** | 🔌 |
+| **Категорія** | Мережа |
+
+Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `folder` | Текст | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `player_name` | Текст | — | Ім'я цього гравця (порожньо — global.player_name, інакше "Player"); необов'язково |
+
 ### Покинути гру
 
 | Властивість | Значення |
@@ -110,6 +155,18 @@
 
 *Параметри:* немає
 
+### Leave the Game (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `leave_game_files` |
+| **Значок** | 🚪 |
+| **Категорія** | Мережа |
+
+Stop hosting or leave the game, and clear the global status variables
+
+*Параметри:* немає
+
 ### Прочитати спільну змінну
 
 | Властивість | Значення |
@@ -119,6 +176,21 @@
 | **Категорія** | Мережа |
 
 Копіює спільну змінну до глобальної, щоб використати її в обчисленні. Те саме, що прочитати global.<ім'я> напряму
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `name` | Текст | — | Назва спільної змінної, яку треба прочитати |
+| `into` | Текст | — | Назва глобальної змінної, до якої записується значення |
+
+### Read a Shared Variable (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `get_shared_var_files` |
+| **Значок** | 📥 |
+| **Категорія** | Мережа |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -140,6 +212,22 @@
 | `event` | Текст | — | Назва на ваш вибір, яку перевіряє обробник (напр. "buzz", "answer") |
 | `data` | Текст | — | Число, текст, true/false або короткий список; необов'язково |
 | `target` | Вибір | `all` | all — усі; host — лише ведучий; Варіанти: `all`, `host` |
+
+### Send a Network Message (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `send_network_message_files` |
+| **Значок** | ✉️ |
+| **Категорія** | Мережа |
+
+Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `event` | Текст | — | Назва на ваш вибір, яку перевіряє обробник (напр. "buzz", "answer") |
+| `data` | Текст | — | Число, текст, true/false або короткий список; необов'язково |
+| `target` | Вибір | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Варіанти: `all`, `host` |
 
 ### Задати мережевий режим (v1)
 
@@ -166,6 +254,21 @@
 | **Категорія** | Мережа |
 
 Записує змінну, спільну для всіх машин. У ведучого вона застосовується одразу; у клієнта це запит, надісланий ведучому. Читається будь-де як global.<ім'я>
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `name` | Текст | — | Простий ідентифікатор (літери, цифри, _) — без пробілів і операторів |
+| `value` | Текст | `0` | Число, текст або true/false (складені об'єкти відхиляються) |
+
+### Set a Shared Variable (File Exchange)
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `set_shared_var_files` |
+| **Значок** | 📤 |
+| **Категорія** | Мережа |
+
+Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -231,17 +334,20 @@
 
 ## Інші Категорії
 
-- [Рух](Full-Action-Reference-Movement_uk) (20)
+- [Рух](Full-Action-Reference-Movement_uk) (21)
 - [Екземпляр](Full-Action-Reference-Instance_uk) (12)
-- [Рахунок](Full-Action-Reference-Score_uk) (11)
+- [Рахунок](Full-Action-Reference-Score_uk) (6)
 - [Кімната](Full-Action-Reference-Room_uk) (13)
 - [Час](Full-Action-Reference-Timing_uk) (8)
 - [Аудіо](Full-Action-Reference-Audio_uk) (6)
-- [Гра](Full-Action-Reference-Game_uk) (25)
+- [Гра](Full-Action-Reference-Game_uk) (14)
 - [Керування](Full-Action-Reference-Control_uk) (19)
-- [Сітка](Full-Action-Reference-Grid_uk) (4)
+- [Сітка](Full-Action-Reference-Grid_uk) (3)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (18)
+- [Малювання](Full-Action-Reference-Drawing_uk) (11)
 - [Частки](Full-Action-Reference-Particles_uk) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_uk) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_uk) (16)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

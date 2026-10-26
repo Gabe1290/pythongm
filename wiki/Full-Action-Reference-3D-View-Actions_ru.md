@@ -341,17 +341,20 @@
 
 ## Другие Категории
 
-- [Движение](Full-Action-Reference-Movement_ru) (20)
+- [Движение](Full-Action-Reference-Movement_ru) (21)
 - [Экземпляр](Full-Action-Reference-Instance_ru) (12)
-- [Счёт](Full-Action-Reference-Score_ru) (11)
+- [Счёт](Full-Action-Reference-Score_ru) (6)
 - [Комната](Full-Action-Reference-Room_ru) (13)
 - [Время](Full-Action-Reference-Timing_ru) (8)
 - [Аудио](Full-Action-Reference-Audio_ru) (6)
-- [Игра](Full-Action-Reference-Game_ru) (25)
+- [Игра](Full-Action-Reference-Game_ru) (14)
 - [Управление](Full-Action-Reference-Control_ru) (19)
-- [Сетка](Full-Action-Reference-Grid_ru) (4)
+- [Сетка](Full-Action-Reference-Grid_ru) (3)
 - [Виды](Full-Action-Reference-Views_ru) (2)
-- [Сеть](Full-Action-Reference-Network-Actions_ru) (15)
+- [Рисование](Full-Action-Reference-Drawing_ru) (11)
+- [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
 - [Частицы](Full-Action-Reference-Particles_ru) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_ru) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_ru) (16)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

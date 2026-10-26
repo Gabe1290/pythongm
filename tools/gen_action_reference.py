@@ -20,6 +20,7 @@ added action is never silently half-translated — exactly the drift the generat
 exists to prevent.
 """
 import io
+import re
 import sys
 from pathlib import Path
 
@@ -57,6 +58,13 @@ FILE_KEY = {
     # additive-only -- it never deletes, so a rename would strand the
     # old pages live and break those links.
     "Network": "Network-Actions",
+    # The category is "micro:bit"; a colon is not allowed in a Windows file name
+    # or a GitHub wiki page name, so the page key is plain ASCII.
+    "micro:bit": "Microbit-Actions",
+    # A real category (test_health, test_score, test_lives, show_highscore,
+    # clear_highscore) whose "/" was a path separator: the whole run crashed
+    # on it with FileNotFoundError, found while regenerating for micro:bit.
+    "Score/Lives/Health": "Score-Lives-Health",
 }
 
 
@@ -66,7 +74,7 @@ def _file_key(cat: str) -> str:
     category, not just the new one) -- previously a plain dict subscript,
     which is exactly what happened when "Particles" and "Réseau" were added
     without updating this table."""
-    return FILE_KEY.get(cat, cat.replace(" ", "-"))
+    return FILE_KEY.get(cat, re.sub(r"[^A-Za-z0-9]+", "-", cat).strip("-"))
 
 TYPE_LABEL = {
     "number": "Number", "float": "Number", "string": "Text", "text": "Text",

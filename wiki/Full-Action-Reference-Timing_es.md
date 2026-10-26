@@ -116,17 +116,20 @@ Detiene la línea de tiempo y devuelve la posición a 0
 
 ## Otras Categorías
 
-- [Movimiento](Full-Action-Reference-Movement_es) (20)
+- [Movimiento](Full-Action-Reference-Movement_es) (21)
 - [Instancia](Full-Action-Reference-Instance_es) (12)
-- [Puntuación](Full-Action-Reference-Score_es) (11)
+- [Puntuación](Full-Action-Reference-Score_es) (6)
 - [Sala](Full-Action-Reference-Room_es) (13)
 - [Audio](Full-Action-Reference-Audio_es) (6)
-- [Juego](Full-Action-Reference-Game_es) (25)
+- [Juego](Full-Action-Reference-Game_es) (14)
 - [Control](Full-Action-Reference-Control_es) (19)
-- [Cuadrícula](Full-Action-Reference-Grid_es) (4)
+- [Cuadrícula](Full-Action-Reference-Grid_es) (3)
 - [Vistas](Full-Action-Reference-Views_es) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (18)
-- [Red](Full-Action-Reference-Network-Actions_es) (15)
+- [Dibujo](Full-Action-Reference-Drawing_es) (11)
+- [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_es) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_es) (16)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

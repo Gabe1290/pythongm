@@ -48,36 +48,24 @@ Ferma il movimento sulla griglia quando non è premuto alcun tasto di movimento 
 |-----------|------|---------|-------|
 | `grid_size` | Numero | `32` | Dimensione della cella della griglia in pixel |
 
-### Verifica allineamento alla griglia
-
-| Proprietà | Valore |
-|----------|-------|
-| **Nome** | `test_alignment` |
-| **Icona** | ❓▦ |
-| **Categoria** | Griglia |
-
-Condizione: vero se l'istanza è allineata a una griglia
-
-| Parametro | Tipo | Predef. | Note |
-|-----------|------|---------|-------|
-| `hsnap` | Numero | `32` | Spaziatura orizzontale della griglia in pixel |
-| `vsnap` | Numero | `32` | Spaziatura verticale della griglia in pixel |
-
 ---
 
 ## Altre Categorie
 
-- [Movimento](Full-Action-Reference-Movement_it) (20)
+- [Movimento](Full-Action-Reference-Movement_it) (21)
 - [Istanza](Full-Action-Reference-Instance_it) (12)
-- [Punteggio](Full-Action-Reference-Score_it) (11)
+- [Punteggio](Full-Action-Reference-Score_it) (6)
 - [Stanza](Full-Action-Reference-Room_it) (13)
 - [Tempo](Full-Action-Reference-Timing_it) (8)
 - [Audio](Full-Action-Reference-Audio_it) (6)
-- [Gioco](Full-Action-Reference-Game_it) (25)
+- [Gioco](Full-Action-Reference-Game_it) (14)
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Viste](Full-Action-Reference-Views_it) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (18)
-- [Rete](Full-Action-Reference-Network-Actions_it) (15)
+- [Disegno](Full-Action-Reference-Drawing_it) (11)
+- [Rete](Full-Action-Reference-Network-Actions_it) (22)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_it) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_it) (16)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

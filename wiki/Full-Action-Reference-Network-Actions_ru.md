@@ -37,6 +37,18 @@
 | `owner` | Текст | `0` | Игрок, который управляет этим экземпляром (0 — ведущий). Часто global.network_sender внутри события «Игрок присоединился».; необязательно |
 | `relative` | Да/Нет | Нет | Позиция относительно объекта, выполняющего действие; необязательно |
 
+### End Turn (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `end_turn` |
+| **Значок** | ✅ |
+| **Категория** | Сеть |
+
+Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+
+*Параметры:* нет
+
 ### Создать игру
 
 | Свойство | Значение |
@@ -54,6 +66,24 @@
 | `port` | Число | `45782` | TCP-порт — должен совпадать у ведущего и у каждого клиента; необязательно |
 | `player_name` | Текст | — | Имя этого игрока (пусто — global.player_name, иначе "Player"); необязательно |
 | `show_lobby` | Да/Нет | Нет | Показать экран «Ожидание игроков...» с кнопкой запуска перед началом игры; необязательно |
+
+### Host a Game (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `host_game_files` |
+| **Значок** | 🗂️ |
+| **Категория** | Сеть |
+
+Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `folder` | Текст | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `max_players` | Число | `8` | Наибольшее число игроков, включая ведущего (от 2 до 16); необязательно |
+| `player_name` | Текст | — | Имя этого игрока (пусто — global.player_name, иначе "Player"); необязательно |
+| `round_deadline` | Число | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); необязательно |
+| `show_lobby` | Да/Нет | Нет | Show a "Waiting for players..." screen with a Start button before handing control back to the game; необязательно |
 
 ### Если я управляю этим экземпляром
 
@@ -98,6 +128,21 @@
 | `port` | Число | `45782` | TCP-порт — должен совпадать с портом ведущего; необязательно |
 | `player_name` | Текст | — | Имя этого игрока (пусто — global.player_name, иначе "Player"); необязательно |
 
+### Join a Game (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `join_game_files` |
+| **Значок** | 🔌 |
+| **Категория** | Сеть |
+
+Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `folder` | Текст | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `player_name` | Текст | — | Имя этого игрока (пусто — global.player_name, иначе "Player"); необязательно |
+
 ### Покинуть игру
 
 | Свойство | Значение |
@@ -110,6 +155,18 @@
 
 *Параметры:* нет
 
+### Leave the Game (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `leave_game_files` |
+| **Значок** | 🚪 |
+| **Категория** | Сеть |
+
+Stop hosting or leave the game, and clear the global status variables
+
+*Параметры:* нет
+
 ### Прочитать общую переменную
 
 | Свойство | Значение |
@@ -119,6 +176,21 @@
 | **Категория** | Сеть |
 
 Копирует общую переменную в глобальную, чтобы использовать её в вычислении. То же самое, что прочитать global.<имя> напрямую
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `name` | Текст | — | Имя общей переменной, которую нужно прочитать |
+| `into` | Текст | — | Имя глобальной переменной, в которую записывается значение |
+
+### Read a Shared Variable (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `get_shared_var_files` |
+| **Значок** | 📥 |
+| **Категория** | Сеть |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -140,6 +212,22 @@
 | `event` | Текст | — | Название на ваш выбор, которое проверяет обработчик (например, "buzz", "answer") |
 | `data` | Текст | — | Число, текст, true/false или короткий список; необязательно |
 | `target` | Выбор | `all` | all — все; host — только ведущий; Варианты: `all`, `host` |
+
+### Send a Network Message (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `send_network_message_files` |
+| **Значок** | ✉️ |
+| **Категория** | Сеть |
+
+Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `event` | Текст | — | Название на ваш выбор, которое проверяет обработчик (например, "buzz", "answer") |
+| `data` | Текст | — | Число, текст, true/false или короткий список; необязательно |
+| `target` | Выбор | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Варианты: `all`, `host` |
 
 ### Задать сетевой режим (v1)
 
@@ -166,6 +254,21 @@
 | **Категория** | Сеть |
 
 Записывает переменную, общую для всех машин. У ведущего она применяется сразу; у клиента это запрос, отправляемый ведущему. Читается везде как global.<имя>
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `name` | Текст | — | Простой идентификатор (буквы, цифры, _) — без пробелов и операторов |
+| `value` | Текст | `0` | Число, текст или true/false (составные объекты отклоняются) |
+
+### Set a Shared Variable (File Exchange)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `set_shared_var_files` |
+| **Значок** | 📤 |
+| **Категория** | Сеть |
+
+Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -231,17 +334,20 @@
 
 ## Другие Категории
 
-- [Движение](Full-Action-Reference-Movement_ru) (20)
+- [Движение](Full-Action-Reference-Movement_ru) (21)
 - [Экземпляр](Full-Action-Reference-Instance_ru) (12)
-- [Счёт](Full-Action-Reference-Score_ru) (11)
+- [Счёт](Full-Action-Reference-Score_ru) (6)
 - [Комната](Full-Action-Reference-Room_ru) (13)
 - [Время](Full-Action-Reference-Timing_ru) (8)
 - [Аудио](Full-Action-Reference-Audio_ru) (6)
-- [Игра](Full-Action-Reference-Game_ru) (25)
+- [Игра](Full-Action-Reference-Game_ru) (14)
 - [Управление](Full-Action-Reference-Control_ru) (19)
-- [Сетка](Full-Action-Reference-Grid_ru) (4)
+- [Сетка](Full-Action-Reference-Grid_ru) (3)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (18)
+- [Рисование](Full-Action-Reference-Drawing_ru) (11)
 - [Частицы](Full-Action-Reference-Particles_ru) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_ru) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_ru) (16)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

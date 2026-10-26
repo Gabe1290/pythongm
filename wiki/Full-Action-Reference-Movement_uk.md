@@ -272,6 +272,21 @@
 
 *Параметри:* немає
 
+### Перевірити вирівнювання по сітці
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `test_alignment` |
+| **Значок** | ❓▦ |
+| **Категорія** | Рух |
+
+Умова: істина, якщо екземпляр вирівняно по сітці
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `hsnap` | Число | `32` | Горизонтальний крок сітки в пікселях |
+| `vsnap` | Число | `32` | Вертикальний крок сітки в пікселях |
+
 ### Обгортання навколо кімнати
 
 | Властивість | Значення |
@@ -289,16 +304,19 @@
 ## Інші Категорії
 
 - [Екземпляр](Full-Action-Reference-Instance_uk) (12)
-- [Рахунок](Full-Action-Reference-Score_uk) (11)
+- [Рахунок](Full-Action-Reference-Score_uk) (6)
 - [Кімната](Full-Action-Reference-Room_uk) (13)
 - [Час](Full-Action-Reference-Timing_uk) (8)
 - [Аудіо](Full-Action-Reference-Audio_uk) (6)
-- [Гра](Full-Action-Reference-Game_uk) (25)
+- [Гра](Full-Action-Reference-Game_uk) (14)
 - [Керування](Full-Action-Reference-Control_uk) (19)
-- [Сітка](Full-Action-Reference-Grid_uk) (4)
+- [Сітка](Full-Action-Reference-Grid_uk) (3)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (18)
-- [Мережа](Full-Action-Reference-Network-Actions_uk) (15)
+- [Малювання](Full-Action-Reference-Drawing_uk) (11)
+- [Мережа](Full-Action-Reference-Network-Actions_uk) (22)
 - [Частки](Full-Action-Reference-Particles_uk) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_uk) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_uk) (16)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

@@ -37,6 +37,18 @@ Hôte uniquement : créer une instance qui apparaît automatiquement chez tous l
 | `owner` | Texte | `0` | Le joueur qui pilote cette instance (0 = l'hôte). Souvent global.network_sender dans « Joueur connecté ».; optionnel |
 | `relative` | Oui/Non | Non | Position relative à l'objet qui exécute l'action; optionnel |
 
+### End Turn (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `end_turn` |
+| **Icône** | ✅ |
+| **Catégorie** | Réseau |
+
+Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+
+*Paramètres:* aucun
+
 ### Héberger une partie
 
 | Propriété | Valeur |
@@ -54,6 +66,24 @@ Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent 
 | `port` | Nombre | `45782` | Port TCP — doit être le même chez l'hôte et chez chaque client; optionnel |
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 | `show_lobby` | Oui/Non | Non | Afficher un écran « En attente de joueurs... » avec un bouton Démarrer avant le début de la partie; optionnel |
+
+### Host a Game (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `host_game_files` |
+| **Icône** | 🗂️ |
+| **Catégorie** | Réseau |
+
+Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `folder` | Texte | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `max_players` | Nombre | `8` | Nombre maximal de joueurs, hôte compris (de 2 à 16); optionnel |
+| `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
+| `round_deadline` | Nombre | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); optionnel |
+| `show_lobby` | Oui/Non | Non | Show a "Waiting for players..." screen with a Start button before handing control back to the game; optionnel |
 
 ### Si je pilote cette instance
 
@@ -98,6 +128,21 @@ Se connecter à une partie multijoueur LAN hébergée par une autre machine. glo
 | `port` | Nombre | `45782` | Port TCP — doit correspondre à celui de l'hôte; optionnel |
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 
+### Join a Game (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `join_game_files` |
+| **Icône** | 🔌 |
+| **Catégorie** | Réseau |
+
+Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `folder` | Texte | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
+
 ### Quitter la partie
 
 | Propriété | Valeur |
@@ -110,6 +155,18 @@ Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globa
 
 *Paramètres:* aucun
 
+### Leave the Game (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `leave_game_files` |
+| **Icône** | 🚪 |
+| **Catégorie** | Réseau |
+
+Stop hosting or leave the game, and clear the global status variables
+
+*Paramètres:* aucun
+
 ### Lire une variable partagée
 
 | Propriété | Valeur |
@@ -119,6 +176,21 @@ Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globa
 | **Catégorie** | Réseau |
 
 Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.<nom> directement
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `name` | Texte | — | Nom de la variable partagée à lire |
+| `into` | Texte | — | Nom de la variable globale dans laquelle écrire la valeur |
+
+### Read a Shared Variable (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `get_shared_var_files` |
+| **Icône** | 📥 |
+| **Catégorie** | Réseau |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -140,6 +212,22 @@ Diffuser un message personnalisé. Déclenche l'événement « Message réseau �
 | `event` | Texte | — | Un nom de votre choix que le gestionnaire teste (par ex. "buzz", "answer") |
 | `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
 | `target` | Choix | `all` | all = tout le monde ; host = l'hôte uniquement; Choix: `all`, `host` |
+
+### Send a Network Message (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `send_network_message_files` |
+| **Icône** | ✉️ |
+| **Catégorie** | Réseau |
+
+Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `event` | Texte | — | Un nom de votre choix que le gestionnaire teste (par ex. "buzz", "answer") |
+| `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
+| `target` | Choix | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Choix: `all`, `host` |
 
 ### Set Network Mode (v1)
 
@@ -166,6 +254,21 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 | **Catégorie** | Réseau |
 
 Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `name` | Texte | — | Un identifiant simple (lettres, chiffres, _) — ni espaces ni opérateurs |
+| `value` | Texte | `0` | Un nombre, du texte ou true/false (les objets complexes sont refusés) |
+
+### Set a Shared Variable (File Exchange)
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `set_shared_var_files` |
+| **Icône** | 📤 |
+| **Catégorie** | Réseau |
+
+Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -231,17 +334,20 @@ Marquer l'instance qui exécute l'action comme « synchronisée » : sa position
 
 ## Autres Catégories
 
-- [Mouvement](Full-Action-Reference-Movement_fr) (20)
+- [Mouvement](Full-Action-Reference-Movement_fr) (21)
 - [Instance](Full-Action-Reference-Instance_fr) (12)
-- [Score](Full-Action-Reference-Score_fr) (11)
+- [Score](Full-Action-Reference-Score_fr) (6)
 - [Salle](Full-Action-Reference-Room_fr) (13)
 - [Minuterie](Full-Action-Reference-Timing_fr) (8)
 - [Audio](Full-Action-Reference-Audio_fr) (6)
-- [Jeu](Full-Action-Reference-Game_fr) (25)
+- [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
-- [Grille](Full-Action-Reference-Grid_fr) (4)
+- [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
+- [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
+- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

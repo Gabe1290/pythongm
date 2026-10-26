@@ -4723,3 +4723,34 @@ LANGS = {
     "sl": {"chrome": CHROME_SL, "categories": CATEGORIES_SL, "types": TYPES_SL,
            "actions": ACTIONS_SL, "notes": NOTES_SL, "events": EVENTS_SL},
 }
+
+
+# --------------------------------------------------------------------------- #
+# micro:bit extension (docs/MICROBIT_EXTENSION_PLAN.md, Stage S12).
+# French action names/descriptions come from the extension's OWN table, the
+# one the Blockly canvas uses, so the wiki and the editor cannot disagree.
+# Only French so far; the other languages fall back to the English schema text
+# (the generator reports them as untranslated).
+# --------------------------------------------------------------------------- #
+
+from extensions.microbit.translations import PLUGIN_GENERATED_BLOCK_TRANSLATIONS as _MB_TR
+
+for _name, _languages in _MB_TR["actions"].items():
+    ACTIONS_FR[_name] = {"display": _languages["fr"]["display_name"],
+                         "desc": _languages["fr"]["description"]}
+
+CATEGORIES_FR["micro:bit"] = "micro:bit"
+
+NOTES_FR.update({
+    "Built-in image name, or 5 rows of 5 digits (0-9) separated by colons":
+        "Nom d'une image intégrée, ou 5 lignes de 5 chiffres (0-9) séparées par des deux-points",
+    "How long it stays before the next queued item (0 = until something else is shown)":
+        "Durée avant l'élément suivant de la file (0 = jusqu'à ce qu'autre chose s'affiche)",
+    "Text or expression to scroll": "Texte ou expression à faire défiler",
+    "Scroll speed (MicroPython default 150)": "Vitesse de défilement (150 par défaut dans MicroPython)",
+    "Number or expression": "Nombre ou expression",
+    "Pitch in hertz (440 = the note A)": "Hauteur en hertz (440 = la note la)",
+    "Built-in name, or notes separated by spaces": "Nom d'une mélodie intégrée, ou notes séparées par des espaces",
+    "Variable that receives the reading": "Variable qui reçoit la mesure",
+    "A number, an expression or quoted text": "Un nombre, une expression ou un texte entre guillemets",
+})

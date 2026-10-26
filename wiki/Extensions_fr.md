@@ -1,6 +1,6 @@
 # Extensions
 
-*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Réseau](Network_fr) | [Multijoueur par échange de fichiers](FileExchange_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
+*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Réseau](Network_fr) | [micro:bit](Microbit_fr) | [Multijoueur par échange de fichiers](FileExchange_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
 ---
 
@@ -29,6 +29,12 @@ classe où un pare-feu bloque les connexions directes du Réseau
 (multijoueur LAN). Export ordinateur uniquement — voir la remarque
 « Pourquoi pas tous les exports » de la page [Multijoueur par échange de
 fichiers](FileExchange_fr).
+L'extension intégrée **micro:bit** (la fonctionnalité [micro:bit](Microbit_fr))
+place une BBC micro:bit simulée dans la fenêtre du jeu : 16 actions, 24
+événements, une carte dessinée avec des boutons cliquables et une bande de
+capteurs, du son et une radio. Elle est livrée activée mais s'active projet par
+projet (**Paramètres du projet → Extensions**), et fonctionne dans Tester le
+jeu et dans l'export ordinateur.
 
 ---
 
@@ -131,6 +137,7 @@ l'extension exacte lorsqu'un projet a besoin d'une extension désactivée.
 
 - [Vue 3D](3D-View_fr) — la fonctionnalité fournie par l'extension 2.5D Raycast
 - [Réseau](Network_fr) — la fonctionnalité fournie par l'extension Réseau (multijoueur LAN)
+- [micro:bit](Microbit_fr) — la fonctionnalité fournie par l'extension micro:bit
 - [Multijoueur par échange de fichiers](FileExchange_fr) — la fonctionnalité fournie par l'extension Multijoueur par échange de fichiers
 - [Référence Complète des Actions](Full-Action-Reference_fr) — les actions d'extension y figurent aussi
 - [Exporter des Jeux](Exportation_fr) — les fonctionnalités d'extension sont conservées dans les exports
