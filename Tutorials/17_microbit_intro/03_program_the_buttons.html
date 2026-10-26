@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-microbit { background-color: #888888; }
+        .block-indent { margin-left: 20px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Program the Buttons</h1>
+    <p>Open <code>microbit_1</code>, click the <strong>Blockly</strong> tab, and add these events.
+    All micro:bit blocks live in the <strong>micro:bit</strong> action category, and all of its events
+    are chosen from the same generic <em>"Extension event"</em> dropdown &mdash; that one block covers every
+    event any installed extension provides.</p>
+    <h2>Button A: a Happy Face</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Extension event: Button A Pressed</span><br>
+        <span class="block block-microbit block-indent">Show Image &mdash; Image <span class="block-text">HAPPY</span> Hold (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <ol>
+        <li>From <strong>Events</strong>, snap in <strong>Extension event</strong></li>
+        <li>In its dropdown, choose <strong>Button A Pressed</strong></li>
+        <li>From the <strong>micro:bit</strong> category, snap in <strong>Show Image</strong> and type <code>HAPPY</code>
+        into its <em>Image</em> field</li></ol>
+    <div class="info" style="margin-top: 8px;"><strong>No quotes here.</strong> Show Image's <em>Image</em> field is a
+    plain name, not an expression &mdash; unlike text you draw with <em>Draw Text</em> or <em>Scroll Text</em>, you do
+    <strong>not</strong> put quotes around <code>HAPPY</code>.</div></div>
+    <h2>Button B: a Sad Face</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Extension event: Button B Pressed</span><br>
+        <span class="block block-microbit block-indent">Show Image &mdash; Image <span class="block-text">SAD</span> Hold (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <p>Same as button A, but choose <strong>Button B Pressed</strong> and type <code>SAD</code>.</p></div>
+    <h2>Start With a Heart</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">When created</span><br>
+        <span class="block block-microbit block-indent">Show Image &mdash; Image <span class="block-text">HEART</span> Hold (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <p>So the board shows something the moment the game starts, instead of a blank display.</p></div>
+    <div class="highlight"><strong>64 built-in images.</strong> <code>HEART</code>, <code>HAPPY</code> and
+    <code>SAD</code> are three of 64 names Show Image understands (<code>YES</code>, <code>NO</code>,
+    <code>SKULL</code>, <code>ARROW_N</code>&hellip;) &mdash; hover the action in Blockly to see the full list, or
+    light individual LEDs yourself with five rows of brightness digits like
+    <code>09090:99999:99999:09990:00900</code>.</div>
+    <div class="info">Click "Next" to test your board.</div>
+</body>
+</html>

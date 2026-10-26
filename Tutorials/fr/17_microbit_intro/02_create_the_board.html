@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : construire la carte</h1>
+    <p>Une micro:bit est simplement un <strong>objet</strong> &mdash; le moteur la reconnaît par son nom et dessine
+    la carte par-dessus. Aucun sprite n'est nécessaire : le dessin de la carte <em>est</em> son apparence.</p>
+    <h2>Créer un nouveau projet</h2>
+    <div class="step"><ol>
+        <li>Allez dans <code>Fichier &gt; Nouveau projet</code></li>
+        <li>Nommez-le <strong>MaMicrobit</strong> et choisissez le modèle <strong>« Projet vide »</strong></li></ol></div>
+    <h2>Créer l'objet micro:bit</h2>
+    <div class="step"><ol>
+        <li>Créez un nouvel objet et nommez-le <code>microbit_1</code></li>
+        <li>Laissez son <strong>sprite vide</strong> &mdash; la carte se dessine elle-même</li></ol>
+        <div class="info" style="margin-top: 8px;"><strong>La règle de nommage :</strong> tout objet dont le nom
+        <strong>commence par <code>microbit</code></strong> devient automatiquement une micro:bit. (Pour utiliser un
+        autre nom, vous pouvez cocher la propriété <code>is_microbit</code> de l'instance dans la salle à la place
+        &mdash; mais commencer le nom par <code>microbit</code> est le plus simple, et c'est ce que ce tutoriel
+        utilise.)</div></div>
+    <h2>Activer l'extension</h2>
+    <div class="step"><ol>
+        <li>Allez dans <code>Fichier &gt; Paramètres du projet&hellip; &gt; Extensions</code></li>
+        <li>Cochez <strong>micro:bit</strong></li></ol>
+        <div class="info" style="margin-top: 8px;">C'est ce qui fait apparaître les événements et actions micro:bit
+        dans Blockly. Un projet qui n'utilise jamais une action micro:bit les laisse cachés &mdash; et dès que vous en
+        ajoutez une, l'extension s'active automatiquement.</div></div>
+    <h2>La placer dans une salle</h2>
+    <div class="step"><ol>
+        <li>Créez une salle nommée <code>room_main</code></li>
+        <li>Placez <strong>une</strong> instance de <code>microbit_1</code> n'importe où dans la salle</li></ol></div>
+    <div class="highlight"><strong>Essayez tout de suite :</strong> appuyez sur F5. Vous devriez voir la carte, son
+    écran de 5&times;5 LED éteint, dans la salle &mdash; même avant d'ajouter le moindre événement. Cliquez sur ses
+    boutons et faites glisser ses curseurs de capteurs ; rien ne se passe encore, mais la carte est déjà vivante.
+    Nous la programmons à la page suivante.</div>
+    <div class="info">Cliquez sur « Suivant » pour faire réagir les boutons.</div>
+</body>
+</html>

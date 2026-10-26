@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Test and Explore More</h1>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Board!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+    <ul>
+        <li>The board shows a <strong>heart</strong> as soon as the game starts</li>
+        <li>Click button <strong>A</strong> &mdash; the display switches to a <strong>happy face</strong></li>
+        <li>Click button <strong>B</strong> &mdash; the display switches to a <strong>sad face</strong></li>
+    </ul></div>
+    <h2>If Something Looks Wrong</h2>
+    <table class="t"><tr><th>What you see</th><th>Likely cause</th></tr>
+    <tr><td>No board at all in the room</td><td>The object's name must <strong>start with <code>microbit</code></strong> (check for a typo), or its room instance is missing</td></tr>
+    <tr><td>The micro:bit blocks don't appear in Blockly</td><td>The extension isn't ticked: <code>File &gt; Project Settings&hellip; &gt; Extensions &gt; micro:bit</code></td></tr>
+    <tr><td>Clicking A or B does nothing</td><td>The events must be on the <strong>board's own object</strong> &mdash; each micro:bit action works on the micro:bit that runs it</td></tr>
+    <tr><td>The display stays blank</td><td>Check the spelling of the image name (<code>HEART</code>, <code>HAPPY</code>, <code>SAD</code>) &mdash; an unknown name is silently ignored</td></tr>
+    </table>
+    <h2>Try This Next</h2>
+    <div class="step"><p>The board can do much more than two buttons &mdash; all with the same pattern of an
+    <strong>Extension event</strong> plus a micro:bit action:</p>
+    <ul>
+        <li><strong>Shake</strong> &mdash; choose the <em>Shake</em> event, then <em>Show Image</em> something
+        different, like <code>SKULL</code></li>
+        <li><strong>Touch the logo</strong> &mdash; choose <em>Logo Touched</em>, then try <em>Play Melody</em>
+        <code>POWER_UP</code></li>
+        <li><strong>Sensors</strong> &mdash; <em>Read Sensor</em> can put the light level, temperature, compass heading
+        or accelerometer tilt into a variable</li>
+        <li><strong>Two boards talking to each other</strong> &mdash; copy the object as <code>microbit_2</code>, put
+        both in the room, and use <em>Set Radio Group</em> and <em>Send Radio Message</em></li>
+    </ul></div>
+    <h2>You Built a Virtual micro:bit!</h2>
+    <ul>
+        <li>Any object named <code>microbit&hellip;</code> becomes a working simulated board</li>
+        <li>The micro:bit's own events and actions program it exactly like any other object</li>
+        <li>No hardware, no extra setup beyond ticking the extension</li>
+    </ul>
+    <div class="highlight"><strong>Where next:</strong> open the bundled <strong>micro:bit &mdash; Dice and Moods</strong>
+    sample from the Welcome tab for a complete worked example (shaking, the logo, a dice animation), or read the
+    <strong>micro:bit</strong> page in the wiki's Help menu for the full list of actions, events and sensors.</div>
+</body>
+</html>

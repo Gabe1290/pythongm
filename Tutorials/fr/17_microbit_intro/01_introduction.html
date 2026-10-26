@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-microbit { background-color: #888888; }
+        .block-indent { margin-left: 20px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>micro:bit : programmer une carte virtuelle</h1>
+    <div class="game-preview">
+        <p style="font-size: 40px; margin: 0;">&#129302;</p>
+        <p><strong>Une vraie carte BBC micro:bit, simulée directement dans votre jeu &mdash; aucun matériel nécessaire.</strong></p>
+        <p>Un écran de 5&times;5 LED, deux boutons, un logo tactile et plus encore, tout dessiné à l'écran et programmé
+        de la même façon que le reste de PyGameMaker.</p>
+    </div>
+    <h2>Ce que nous allons construire</h2>
+    <p>L'extension <strong>micro:bit</strong> place une carte BBC micro:bit simulée à l'écran comme un objet de jeu
+    ordinaire. Ce n'est pas une image &mdash; c'est une vraie carte que vous pouvez cliquer, et que vous programmez
+    avec des événements et des actions, exactement comme n'importe quel autre objet de votre jeu.</p>
+    <div class="info"><strong>Pourquoi une micro:bit dans un moteur de jeu ?</strong> Beaucoup de classes utilisent
+    déjà de vraies micro:bit. Cela permet de construire et tester des programmes micro:bit &mdash; boutons, écran de
+    LED, secousses, capteurs &mdash; sans posséder la carte, et le même projet peut ensuite être partagé avec des
+    élèves qui en ont une.</div>
+    <h2>Comment ce tutoriel fonctionne</h2>
+    <div class="phase"><strong>Phase 1 &mdash; Construire la carte</strong><br>Créer un objet qui devient une micro:bit et le placer dans une salle.</div>
+    <div class="phase"><strong>Phase 2 &mdash; Programmer les boutons</strong><br>Faire que le bouton A affiche un visage content et le bouton B un visage triste.</div>
+    <div class="phase"><strong>Phase 3 &mdash; Tester et aller plus loin</strong><br>Jouer, puis voir où aller ensuite : la secousse, le logo, le son, les capteurs et la communication entre deux cartes.</div>
+    <h2>Ce que vous allez apprendre</h2>
+    <ul>
+        <li>Comment n'importe quel objet devient une micro:bit, simplement par son nom</li>
+        <li>Activer l'<strong>extension</strong> micro:bit pour un projet</li>
+        <li>L'action <strong>Afficher une image</strong> et les images intégrées de la carte</li>
+        <li>Les propres événements de la micro:bit, comme <strong>Button A Pressed</strong></li>
+    </ul>
+    <div class="highlight"><strong>Durée nécessaire :</strong> environ 15 minutes. Vous devez déjà savoir créer des
+    objets et des salles, et ajouter des événements dans l'éditeur Blockly (voir le Tutoriel 1).</div>
+    <div class="info"><strong>Prêt(e) ?</strong> Cliquez sur « Suivant » pour construire votre carte.</div>
+</body>
+</html>

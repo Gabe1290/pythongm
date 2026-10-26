@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-microbit { background-color: #888888; }
+        .block-indent { margin-left: 20px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>micro:bit: Program a Virtual Board</h1>
+    <div class="game-preview">
+        <p style="font-size: 40px; margin: 0;">&#129302;</p>
+        <p><strong>A real BBC micro:bit, simulated right inside your game &mdash; no hardware needed.</strong></p>
+        <p>A 5&times;5 LED display, two buttons, a touch logo and more, all drawn on screen and programmed the same way as everything else in PyGameMaker.</p>
+    </div>
+    <h2>What We'll Build</h2>
+    <p>The <strong>micro:bit</strong> extension puts a simulated BBC micro:bit on screen as an ordinary game object.
+    It isn't a picture &mdash; it is a working board you can click, and one you program with events and actions, exactly
+    like any other object in your game.</p>
+    <div class="info"><strong>Why a micro:bit in a game engine?</strong> Many classrooms already use real micro:bits.
+    This lets you build and test micro:bit programs &mdash; buttons, the LED display, shaking it, its sensors &mdash;
+    without owning the hardware, and the same project can later be shared with students who do have a board.</div>
+    <h2>How This Tutorial Works</h2>
+    <div class="phase"><strong>Phase 1 &mdash; Build the Board</strong><br>Create an object that becomes a micro:bit and place it in a room.</div>
+    <div class="phase"><strong>Phase 2 &mdash; Program the Buttons</strong><br>Make button A show a happy face and button B show a sad one.</div>
+    <div class="phase"><strong>Phase 3 &mdash; Test and Explore More</strong><br>Play it, then see where to go next: shaking, the logo, sound, sensors and talking to a second board.</div>
+    <h2>What You'll Learn</h2>
+    <ul>
+        <li>How any object becomes a micro:bit, just by its name</li>
+        <li>Turning the micro:bit <strong>extension</strong> on for a project</li>
+        <li>The <strong>Show Image</strong> action and the board's built-in pictures</li>
+        <li>The micro:bit's own events, like <strong>Button A Pressed</strong></li>
+    </ul>
+    <div class="highlight"><strong>Time Required:</strong> About 15 minutes. You should already know how to create objects
+    and rooms, and add events in the Blockly editor (see Tutorial 1).</div>
+    <div class="info"><strong>Ready?</strong> Click "Next" to build your board.</div>
+</body>
+</html>

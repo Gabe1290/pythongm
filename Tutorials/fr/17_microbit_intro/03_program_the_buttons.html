@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-microbit { background-color: #888888; }
+        .block-indent { margin-left: 20px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : programmer les boutons</h1>
+    <p>Ouvrez <code>microbit_1</code>, cliquez sur l'onglet <strong>Blockly</strong>, et ajoutez ces événements.
+    Tous les blocs micro:bit se trouvent dans la catégorie d'actions <strong>micro:bit</strong>, et tous ses
+    événements se choisissent dans le même bloc générique <em>« Événement d'extension »</em> &mdash; ce seul bloc
+    couvre les événements de toute extension installée.</p>
+    <h2>Bouton A : un visage content</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Événement d'extension : Button A Pressed</span><br>
+        <span class="block block-microbit block-indent">Afficher une image &mdash; Image <span class="block-text">HAPPY</span> Durée d'affichage (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <ol>
+        <li>Ajouter un événement &rarr; depuis <strong>Événements</strong>, emboîtez <strong>Événement d'extension</strong></li>
+        <li>Dans son menu déroulant, choisissez <strong>Button A Pressed</strong></li>
+        <li>Depuis la catégorie <strong>micro:bit</strong>, emboîtez <strong>Afficher une image</strong> et tapez
+        <code>HAPPY</code> dans son champ <em>Image</em></li></ol>
+    <div class="info" style="margin-top: 8px;"><strong>Pas de guillemets ici.</strong> Le champ <em>Image</em>
+    d'Afficher une image est un simple nom, pas une expression &mdash; contrairement à un texte dessiné avec
+    <em>Dessiner du texte</em> ou <em>Faire défiler un texte</em>, vous ne mettez <strong>pas</strong> de guillemets
+    autour de <code>HAPPY</code>.</div>
+    <div class="info" style="margin-top: 8px;"><strong>Pourquoi « Button A Pressed » reste en anglais :</strong> le
+    menu déroulant des événements d'extension n'est pas encore traduit &mdash; c'est ce que vous verrez vraiment à
+    l'écran, même en français.</div></div>
+    <h2>Bouton B : un visage triste</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Événement d'extension : Button B Pressed</span><br>
+        <span class="block block-microbit block-indent">Afficher une image &mdash; Image <span class="block-text">SAD</span> Durée d'affichage (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <p>Comme pour le bouton A, mais choisissez <strong>Button B Pressed</strong> et tapez <code>SAD</code>.</p></div>
+    <h2>Commencer par un cœur</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Quand créé</span><br>
+        <span class="block block-microbit block-indent">Afficher une image &mdash; Image <span class="block-text">HEART</span> Durée d'affichage (ms) <span class="block-num">0</span></span><br>
+    </div>
+    <p>Pour que la carte affiche quelque chose dès le début de la partie, au lieu d'un écran vide.</p></div>
+    <div class="highlight"><strong>64 images intégrées.</strong> <code>HEART</code>, <code>HAPPY</code> et
+    <code>SAD</code> sont trois des 64 noms que comprend Afficher une image (<code>YES</code>, <code>NO</code>,
+    <code>SKULL</code>, <code>ARROW_N</code>&hellip;) &mdash; survolez l'action dans Blockly pour voir la liste
+    complète, ou allumez vous-même chaque LED avec cinq lignes de chiffres de luminosité comme
+    <code>09090:99999:99999:09990:00900</code>.</div>
+    <div class="info">Cliquez sur « Suivant » pour tester votre carte.</div>
+</body>
+</html>

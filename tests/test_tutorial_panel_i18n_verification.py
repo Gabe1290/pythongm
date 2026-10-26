@@ -278,6 +278,66 @@ class TestTutorial06MazeBonusPage:
             manager.current_language = original
 
 
+class TestTutorial17MicrobitIntro:
+    """New lesson: Tutorials/17_microbit_intro + its fr/ mirror (teaching the
+    micro:bit extension's setup -- naming an object ``microbit...``, turning
+    the extension on, and its first two events/actions). Same gap as the two
+    classes above -- the parametrized LOCALIZED_LANGUAGES tests only ever
+    open a ``Tutorials/<lang>/`` subfolder, never the English root directly.
+    """
+
+    def test_appears_in_both_language_indexes_with_matching_pages(self):
+        for index_path in (TUTORIALS_ROOT / "index.json", TUTORIALS_ROOT / "fr" / "index.json"):
+            with open(index_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            entries = [t for t in data["tutorials"] if t["folder"] == "17_microbit_intro"]
+            assert len(entries) == 1, f"{index_path}: expected exactly one entry"
+            assert entries[0]["pages"] == [
+                "01_introduction.html",
+                "02_create_the_board.html",
+                "03_program_the_buttons.html",
+                "04_test_and_next_steps.html",
+            ]
+            assert entries[0]["thumbnail"] == "thumbnails/17_microbit_intro.png"
+
+    def test_thumbnail_file_exists(self):
+        assert (TUTORIALS_ROOT / "thumbnails" / "17_microbit_intro.png").exists()
+
+    def test_english_root_every_page_loads(self):
+        """The English pages live directly under Tutorials/, not a
+        Tutorials/<lang>/ subfolder -- nothing in the parametrized tests
+        above ever opens the root directly."""
+        _make_app()
+        from core.language_manager import get_language_manager
+        from widgets.tutorial_panel import TutorialPanel
+
+        manager = get_language_manager()
+        original = manager.current_language
+        try:
+            manager.current_language = "en"
+            panel = TutorialPanel()
+            panel.set_tutorials_path(TUTORIALS_ROOT)
+            assert panel.tutorials_path == TUTORIALS_ROOT
+
+            with open(TUTORIALS_ROOT / "index.json", "r", encoding="utf-8") as f:
+                index_data = json.load(f)
+            tutorial = next(t for t in index_data["tutorials"] if t["folder"] == "17_microbit_intro")
+
+            panel.open_tutorial_by_data(tutorial)
+            assert panel.stack.currentIndex() == 1
+            assert len(panel.tutorial_pages) == 4
+
+            for page_index in range(4):
+                panel.current_page_index = page_index
+                panel.load_current_page()
+                plain = panel.content_browser.toPlainText()
+                for marker in _ERROR_MARKERS:
+                    assert marker not in plain, f"page {page_index}: hit fallback branch {marker!r}"
+                assert len(plain.strip()) > 100, f"page {page_index}: suspiciously short content"
+        finally:
+            manager.current_language = original
+
+
 def test_ja_zh_fall_back_to_english_root_cleanly():
     """ja/zh have no Tutorials/<lang>/ folder yet (out of Section L's original
     scope) — the loader must fall back to the English root rather than error,

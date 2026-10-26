@@ -202,6 +202,18 @@
                 "05_winning.html",
                 "06_import_sprites.html"
             ]
+        },
+        {
+            "title": "micro:bit : programmer une carte virtuelle",
+            "folder": "17_microbit_intro",
+            "description": "Mettre en place une carte BBC micro:bit simulée et programmer ses boutons et son écran de LED -- aucun matériel nécessaire.",
+            "thumbnail": "thumbnails/17_microbit_intro.png",
+            "pages": [
+                "01_introduction.html",
+                "02_create_the_board.html",
+                "03_program_the_buttons.html",
+                "04_test_and_next_steps.html"
+            ]
         }
     ]
 }

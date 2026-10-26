@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Build the Board</h1>
+    <p>A micro:bit is just an <strong>object</strong> &mdash; the engine recognizes it by its name and draws the board
+    on top of it. No sprite is needed: the board's own drawing <em>is</em> its appearance.</p>
+    <h2>Create a New Project</h2>
+    <div class="step"><ol>
+        <li>Go to <code>File &gt; New Project</code></li>
+        <li>Name it <strong>MyMicrobit</strong> and choose the <strong>"Empty Project"</strong> template</li></ol></div>
+    <h2>Create the micro:bit Object</h2>
+    <div class="step"><ol>
+        <li>Create a new object and name it <code>microbit_1</code></li>
+        <li>Leave its <strong>sprite empty</strong> &mdash; the board draws itself</li></ol>
+        <div class="info" style="margin-top: 8px;"><strong>The naming rule:</strong> any object whose name
+        <strong>starts with <code>microbit</code></strong> becomes a micro:bit automatically. (If you want a different
+        name, you can tick the room instance's <code>is_microbit</code> property instead &mdash; but starting the name
+        with <code>microbit</code> is the easiest way, and what this tutorial uses.)</div></div>
+    <h2>Turn On the Extension</h2>
+    <div class="step"><ol>
+        <li>Go to <code>File &gt; Project Settings&hellip; &gt; Extensions</code></li>
+        <li>Tick <strong>micro:bit</strong></li></ol>
+        <div class="info" style="margin-top: 8px;">This is what makes the micro:bit events and actions appear in Blockly.
+        A project that never uses a micro:bit action keeps them hidden &mdash; and the first time you add one, the
+        extension turns itself on automatically.</div></div>
+    <h2>Place It in a Room</h2>
+    <div class="step"><ol>
+        <li>Create a room named <code>room_main</code></li>
+        <li>Place <strong>one</strong> instance of <code>microbit_1</code> anywhere in the room</li></ol></div>
+    <div class="highlight"><strong>Try it right now:</strong> press F5. You should see the board, with its 5&times;5
+    LED display dark, sitting in the room &mdash; even before you add a single event. Click its buttons and drag its
+    sensor sliders; nothing happens yet, but the board is already alive. We program it on the next page.</div>
+    <div class="info">Click "Next" to make the buttons do something.</div>
+</body>
+</html>
