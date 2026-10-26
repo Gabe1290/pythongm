@@ -14,6 +14,8 @@ What lives here so far:
 * ``actions.py`` / ``handlers.py`` -- the display, sensor-read and condition
   actions: English schemas merged into ``ACTION_TYPES`` and the
   ``PluginExecutor`` that runs them on the acting board (S3).
+* ``events.py`` / ``runtime.py`` -- the flat ``microbit_*`` event types and
+  the frame update that steps every board and fires them (S4).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
@@ -26,8 +28,20 @@ from actions.core import register_action_tabs
 from .state import attach_simulator
 from .actions import PLUGIN_ACTIONS, MICROBIT_TAB
 from .handlers import PluginExecutor
+from .events import MICROBIT_EVENT_TYPES
 
 register_action_tabs(MICROBIT_TAB)
+
+PLUGIN_EVENTS = MICROBIT_EVENT_TYPES
+
+
+def _frame_update_boards(game_runner):
+    # Imported lazily: keeps pygame out of the IDE's schema-only load.
+    from .runtime import update_microbits
+    update_microbits(game_runner)
+
+
+PLUGIN_FRAME_UPDATES = [(_frame_update_boards, "after_collision")]
 
 logger = get_logger(__name__)
 

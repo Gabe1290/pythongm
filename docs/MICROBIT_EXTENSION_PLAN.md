@@ -246,6 +246,18 @@ another micro:bit condition doesn't chain-skip, because core's
 emits) and it never shows. Revisit only if a generic "question" flag on
 `ActionType` is ever added.
 
+*Decided in S4:* events are **flat names**, not sub-events:
+`microbit_button_a/b/ab`, `microbit_logo_touched`, `microbit_pin_0/1/2`,
+`microbit_gesture_<shake|logo_up|logo_down|tilt_left|tilt_right|screen_up|
+screen_down|free_fall|2g|3g|6g|8g>`, `microbit_loud_sound`,
+`microbit_quiet_sound`, `microbit_display_done` (22 in all). Same vocabulary
+as the table above, but it needs no sub-event selector in the editor and
+maps one-to-one onto Blockly blocks, as `collision_with_<object>` does.
+`microbit_radio_received` waits for S9. Events fire on the board's own
+instance, stepped by `1/fps` per frame from the `after_collision` hook. The
+Blockly event map (`PLUGIN_EVENT_BLOCKLY_MAP`) is left to S10, when the
+blocks exist.
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 
