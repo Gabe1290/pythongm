@@ -220,7 +220,7 @@ don't.
 
 | Unit | What | Done |
 |---|---|---|
-| S0 | Commit this plan. | [ ] |
+| S0 | Commit this plan. | [x] |
 | S1 | Skeleton: `extensions/microbit/` with `extension.json`, an `__init__.py` docstring map, `state.py`, and the instance-created binding (`microbit*` prefix / `is_microbit`). Test: a room with `microbit_1` gets a simulator, `obj_player` doesn't. | [x] `c2f56b16` |
 | S2 | `simulator.py`: pure `MicrobitSimulator` with the display buffer, brightness, display queue (show image / scroll / number with timing), buttons/logo/pins state, accelerometer + gesture derivation (shake from accel-magnitude spikes, tilt thresholds as in MicroPython), compass, light, temperature, sound level, `update(dt)` returning fired events. Plus `images.py`. Exhaustive pure unit tests (scroll timing per column, gesture edges, interrupting a scroll). | [x] `8705cd5e` |
 | S3 | `actions.py` + `handlers.py`: display, sensor-read and condition actions (English schemas, `PluginExecutor`); an action-picker tab (`register_action_tabs`). Handler tests via `load_all_plugins` + `ex.action_handlers`. | [ ] |
@@ -233,6 +233,18 @@ don't.
 | S10 | Blockly categories + "microbit" preset + visibility through `active_extensions` (see "Visibility in the IDE") + FR category/block translations (accents checked). Welcome-tab "New micro:bit project" template. Translation-resolution test like `tests/test_extension_ui_translations.py`. | [ ] |
 | S11 | Sample `samples/microbit_1` ("Dé et humeurs"): A = happy face, B = sad face, shake = random dice face, logo = scroll a quoted score. `README.md` + `README.fr.md`, Welcome tab, `tools/smoke_run_samples.py`, `test_edition_sample_filter`'s advanced-prefix list (decide per O1), and a desktop-export render check with `tools/verify_desktop_export.py --compare`. | [ ] |
 | S12 | Close-out: the extension's `README.md` (file map like Thymio's), `wiki/Microbit.md` + `_fr.md` (other languages deferred, as with `Network.md`), regenerate the action reference (`tools/gen_action_reference.py`; check `FILE_KEY` gets the new category), a CLAUDE.md session note. HTML5/Kivy: confirm the actions fall through to the existing unsupported-action warning and don't crash an export (a test; parity is Stage P). | [ ] |
+
+*Found in S3:* the actions are plain `PLUGIN_ACTIONS` (`ActionType`, category
+"micro:bit") like `raycast_2_5d`'s, not Thymio's `ActionDefinition` set; the
+`microbit` picker tab is registered through `register_action_tabs` as the plan
+said, but only Thymio's own dialogs read those tabs. Conditions just return a
+bool and core's generic then/else handling does the rest. One known limit of
+the zero-core rule: a *false* micro:bit condition whose guarded unit is itself
+another micro:bit condition doesn't chain-skip, because core's
+`ActionExecutor._QUESTION_ACTIONS` lists the question names (Thymio's and
+`is_instance_owner` have the same gap). Use then/else blocks (what Blockly
+emits) and it never shows. Revisit only if a generic "question" flag on
+`ActionType` is ever added.
 
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.

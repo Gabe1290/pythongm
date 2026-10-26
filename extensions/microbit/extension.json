@@ -4,5 +4,17 @@
     "author": "PyGameMaker",
     "description": "BBC micro:bit simulator: a board drawn in the game window with its LED display, buttons, sensors and radio. Being built stage by stage -- see docs/MICROBIT_EXTENSION_PLAN.md.",
     "enabled": true,
-    "provides_actions": []
+    "provides_actions": [
+        "microbit_show_image",
+        "microbit_scroll_text",
+        "microbit_show_number",
+        "microbit_set_pixel",
+        "microbit_clear_display",
+        "microbit_set_brightness",
+        "microbit_read_sensor",
+        "microbit_if_button",
+        "microbit_if_gesture",
+        "microbit_if_tilt",
+        "microbit_if_pixel"
+    ]
 }

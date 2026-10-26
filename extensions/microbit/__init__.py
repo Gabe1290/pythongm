@@ -11,6 +11,9 @@ What lives here so far:
   board state: the display and its queue (images, scrolling text,
   numbers), buttons, logo, pins, accelerometer gestures, compass, light,
   temperature and sound level; ``update(dt)`` returns what happened (S2).
+* ``actions.py`` / ``handlers.py`` -- the display, sensor-read and condition
+  actions: English schemas merged into ``ACTION_TYPES`` and the
+  ``PluginExecutor`` that runs them on the acting board (S3).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
@@ -19,7 +22,12 @@ What lives here so far:
 PLUGIN_NAME = "micro:bit"
 
 from core.logger import get_logger
+from actions.core import register_action_tabs
 from .state import attach_simulator
+from .actions import PLUGIN_ACTIONS, MICROBIT_TAB
+from .handlers import PluginExecutor
+
+register_action_tabs(MICROBIT_TAB)
 
 logger = get_logger(__name__)
 

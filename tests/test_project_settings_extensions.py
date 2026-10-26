@@ -48,7 +48,8 @@ def test_thymio_is_excluded_from_the_list(qapp):
     try:
         assert "thymio" not in dlg.extension_checks
         assert set(dlg.extension_checks) == {
-            "block_world", "multiplayer_files", "multiplayer_lan", "raycast_2_5d"}
+            "block_world", "microbit", "multiplayer_files", "multiplayer_lan",
+            "raycast_2_5d"}
     finally:
         dlg.deleteLater()
 
