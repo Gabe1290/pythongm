@@ -162,8 +162,9 @@ def draw_board(screen, layout, sim, draw_body=True):
     size = layout.led_size
     half = size // 2
     chip_w = max(2, int(size * 0.18))
-    chip_h = max(4, int(size * 0.42))
     chip_margin = max(1, int(size * 0.05))
+    chip_half_h = max(2, half - chip_margin - 1)
+    chip_r = max(1, chip_w // 2)
     for y in range(5):
         for x in range(5):
             px, py = layout.led_center(x, y)
@@ -172,13 +173,16 @@ def draw_board(screen, layout, sim, draw_body=True):
             pygame.draw.rect(screen, led_color(sim.display[y][x], sim.brightness),
                              (px - half, py - half, size, size))
             if sim.display[y][x] == 0:
-                # A small grey component mark, echoing the real board's
-                # unlit SMD LEDs -- kept inside the LED's own square and
-                # clear of its exact centre pixel, so it never touches the
-                # centre the renderer tests sample.
-                pygame.draw.rect(screen, LED_CHIP,
-                                 (px - chip_w // 2, py - half + chip_margin,
-                                  chip_w, chip_h), border_radius=max(1, chip_w // 2))
+                # A thin grey component strip, echoing the real board's
+                # unlit SMD LEDs -- drawn as two rounded halves (top/bottom)
+                # that together run almost the LED's full height, with a
+                # 1px seam left at the exact centre pixel the renderer
+                # pixel-tests sample, so the fill colour there is untouched.
+                cx0 = px - chip_w // 2
+                pygame.draw.rect(screen, LED_CHIP, (cx0, py - half + chip_margin, chip_w, chip_half_h),
+                                 border_top_left_radius=chip_r, border_top_right_radius=chip_r)
+                pygame.draw.rect(screen, LED_CHIP, (cx0, py + 1, chip_w, chip_half_h),
+                                 border_bottom_left_radius=chip_r, border_bottom_right_radius=chip_r)
 
     # Buttons
     for name, (bx, by, br) in layout.buttons.items():
