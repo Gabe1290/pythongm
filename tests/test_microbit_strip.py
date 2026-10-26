@@ -110,10 +110,11 @@ def test_tilt_pad_corners_and_outside_stay_within_one_g():
 
 def test_tilt_pad_edges_trigger_the_real_gesture_algorithm():
     rect = L.strip_layout(L.board_layout(200, 150)).tilt
-    for pos, gesture in (((rect[0], rect[1] + 50), "left"),
-                         ((rect[0] + 100, rect[1] + 50), "right"),
-                         ((rect[0] + 50, rect[1]), "up"),
-                         ((rect[0] + 50, rect[1] + 100), "down")):
+    x, y, w, h = rect
+    for pos, gesture in (((x, y + h // 2), "left"),
+                         ((x + w, y + h // 2), "right"),
+                         ((x + w // 2, y), "up"),
+                         ((x + w // 2, y + h), "down")):
         sim = MicrobitSimulator()
         sim.set_acceleration(*L.tilt_from_pos(rect, *pos))
         events = []
@@ -169,8 +170,8 @@ def test_strip_visible_option():
 
 # --- drawing ----------------------------------------------------------------------------------
 
-def _draw(sim, cx=300, cy=160):
-    surf = pygame.Surface((650, 320))
+def _draw(sim, cx=320, cy=180):
+    surf = pygame.Surface((750, 360))
     surf.fill(BG)
     board = L.board_layout(cx, cy)
     strip = L.strip_layout(board)
@@ -217,13 +218,13 @@ def test_overlay_draws_the_strip_unless_switched_off():
     load_all_plugins()
     overlay = next(f for f in get_instance_overlays()
                    if f.__module__ == "pygm_extension_microbit")
-    room = GameRoom("r", {"width": 650, "height": 320, "instances": [
-        {"object": "microbit_1", "x": 300, "y": 160}]}, action_executor=None)
+    room = GameRoom("r", {"width": 750, "height": 360, "instances": [
+        {"object": "microbit_1", "x": 320, "y": 180}]}, action_executor=None)
     inst = room.instances[0]
-    strip = L.strip_layout(L.board_layout(300, 160))
+    strip = L.strip_layout(L.board_layout(320, 180))
     spot = (strip.shake[0] + 4, strip.shake[1] + 3)
 
-    surf = pygame.Surface((650, 320))
+    surf = pygame.Surface((750, 360))
     surf.fill(BG)
     overlay(inst, surf)
     assert _px(surf, spot) == R.SHAKE_COLOR

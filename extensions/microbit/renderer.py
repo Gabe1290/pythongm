@@ -84,19 +84,19 @@ def draw_strip(screen, strip, sim, scale=1.0):
     ax, ay, _ = sim.acceleration
     pygame.draw.circle(screen, PAD_DOT, tilt_to_pos(strip.tilt, ax, ay),
                        max(3, int(6 * scale)))
-    screen.blit(_label("TILT", max(11, int(15 * scale)), LABEL_COLOR), (tx + 3, ty + 2))
+    screen.blit(_label("TILT", max(11, int(19 * scale)), LABEL_COLOR), (tx + 3, ty + 2))
 
     sx, sy, sw, sh = strip.shake
     active = sim.current_gesture == "shake"
     pygame.draw.rect(screen, SHAKE_ACTIVE if active else SHAKE_COLOR, strip.shake,
                      border_radius=4)
-    text = _label("SHAKE", max(12, int(17 * scale)),
+    text = _label("SHAKE", max(12, int(21 * scale)),
                   (20, 20, 20) if active else (235, 235, 240))
     screen.blit(text, text.get_rect(center=(sx + sw // 2, sy + sh // 2)))
 
     for name, (kx, ky, kw, kh) in strip.sliders.items():
         value = _slider_value(sim, name)
-        label = _label(f"{SLIDER_TITLES[name]} {value}", max(11, int(15 * scale)),
+        label = _label(f"{SLIDER_TITLES[name]} {value}", max(11, int(19 * scale)),
                        LABEL_COLOR)
         screen.blit(label, (kx, ky - label.get_height() - 1))
         pygame.draw.rect(screen, TRACK_COLOR, (kx, ky, kw, kh), border_radius=kh // 2)
@@ -132,9 +132,9 @@ def _button_tag(screen, name, bx, by, br, layout):
     'A' hangs below its button pointing down-left, 'B' sits above its
     button pointing up-right."""
     sc = layout.scale
-    tw, th = max(6, int(16 * sc)), max(6, int(14 * sc))
+    tw, th = max(6, int(20 * sc)), max(6, int(18 * sc))
     tx = bx - tw // 2
-    gap = max(2, int(3 * sc))
+    gap = max(2, int(4 * sc))
     if name == "a":
         ty = by + br + gap
         pts = [(tx, ty + th), (tx + tw, ty + th), (tx + tw, ty)]
@@ -144,7 +144,7 @@ def _button_tag(screen, name, bx, by, br, layout):
         pts = [(tx + tw, ty), (tx, ty), (tx, ty + th)]
         centroid = (tx + tw / 3, ty + th / 3)
     pygame.draw.polygon(screen, CORNER_GREEN, pts)
-    label = _label(name.upper(), max(8, int(11 * sc)), TAG_LABEL)
+    label = _label(name.upper(), max(8, int(14 * sc)), TAG_LABEL)
     screen.blit(label, label.get_rect(center=(int(centroid[0]), int(centroid[1]))))
 
 
@@ -173,7 +173,7 @@ def draw_board(screen, layout, sim, draw_body=True):
         down = sim.buttons.get(name, False)
         pygame.draw.circle(screen, BUTTON_DOWN if down else BUTTON_COLOR, (bx, by), br)
         pygame.draw.circle(screen, BUTTON_EDGE, (bx, by), br, 2)
-        label = _label(name.upper(), max(12, int(22 * layout.scale)), (40, 40, 40))
+        label = _label(name.upper(), max(12, int(28 * layout.scale)), (40, 40, 40))
         screen.blit(label, label.get_rect(center=(bx, by)))
         if draw_body:
             _button_tag(screen, name, bx, by, br, layout)
@@ -210,7 +210,7 @@ def draw_board(screen, layout, sim, draw_body=True):
         hole_cy = y + hole_r + max(1, int(2 * layout.scale))
         if hole_cy + hole_r < y + h - max(4, int(4 * layout.scale)):
             pygame.draw.circle(screen, PAD_HOLE, (x + w // 2, hole_cy), hole_r)
-        label = _label(name, max(10, int(15 * layout.scale)), LABEL_COLOR)
+        label = _label(name, max(10, int(19 * layout.scale)), LABEL_COLOR)
         screen.blit(label, label.get_rect(midbottom=(x + w // 2, y - 2)))
 
 

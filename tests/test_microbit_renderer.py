@@ -194,8 +194,8 @@ def test_logo_and_touched_pin_light_up_in_place():
 def test_board_moves_with_its_centre_and_scales():
     sim = MicrobitSimulator()
     sim.set_pixel(2, 2, 9)
-    for cx, cy, scale in ((110, 100, 0.6), (200, 150, 1.0), (160, 130, 1.3)):
-        surf = _canvas(400, 320)
+    for cx, cy, scale in ((110, 100, 0.6), (200, 150, 1.0), (300, 200, 1.3)):
+        surf = _canvas(550, 400)
         lay = L.board_layout(cx, cy, scale)
         R.draw_board(surf, lay, sim)
         assert _px(surf, lay.led_center(2, 2)) == L.ON_COLOR

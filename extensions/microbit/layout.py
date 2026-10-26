@@ -11,20 +11,22 @@ from typing import Dict, Tuple
 
 from .state import option_of
 
-# Design units (scale 1.0): the real board is 52 x 42 mm, drawn at ~4.2 px/mm.
-BODY_W = 220
-BODY_H = 178
-LED_PITCH = 24
-LED_SIZE = 14
-LED_CENTER_DY = -8          # the LED grid sits a little above centre
-BUTTON_DX = 85
-BUTTON_RADIUS = 15
-LOGO_DY = -76
-LOGO_RX = 14
-LOGO_RY = 9
-PAD_PITCH = 36
-PAD_W = 26
-PAD_H = 22
+# Design units (scale 1.0): proportioned like the real 52 x 42 mm board
+# (not calibrated to any physical screen size), at ~5.25 px/mm -- bumped up
+# 25% from the original ~4.2 px/mm so the default drawing reads more easily.
+BODY_W = 276
+BODY_H = 224
+LED_PITCH = 30
+LED_SIZE = 18
+LED_CENTER_DY = -10         # the LED grid sits a little above centre
+BUTTON_DX = 106
+BUTTON_RADIUS = 19
+LOGO_DY = -95
+LOGO_RX = 18
+LOGO_RY = 11
+PAD_PITCH = 45
+PAD_W = 33
+PAD_H = 28
 PAD_NAMES = ("0", "1", "2", "3V", "GND")
 TOUCH_PINS = (0, 1, 2)
 
@@ -135,14 +137,14 @@ def layout_for(instance):
 # Two panels flanking the board: the tilt pad on the left, the shake button
 # and four sliders stacked on the right.
 
-STRIP_GAP = 20                    # gap between the board and each side panel
-STRIP_PAD = 8
-TILT_SIZE = 100
-SHAKE_H = 22
-RIGHT_CONTENT_W = 110              # inner width of the shake/sliders panel
-RIGHT_TOP_GAP = 14                 # extra room between the shake button and the first slider
-SLIDER_STEP = 22
-SLIDER_TRACK_H = 8
+STRIP_GAP = 25                    # gap between the board and each side panel
+STRIP_PAD = 10
+TILT_SIZE = 126
+SHAKE_H = 28
+RIGHT_CONTENT_W = 138              # inner width of the shake/sliders panel
+RIGHT_TOP_GAP = 18                 # extra room between the shake button and the first slider
+SLIDER_STEP = 28
+SLIDER_TRACK_H = 10
 TILT_FULL = 1024                  # pad edge = one g, so tilt gestures trigger there
 
 # slider name -> (minimum, maximum), in the order they are stacked
