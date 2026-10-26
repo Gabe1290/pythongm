@@ -13,7 +13,8 @@ Declared through the input hook (``PLUGIN_INPUT_HANDLERS``):
   off by default so a game's own A/B/arrow keys are left alone): ``A``/``B``
   are the buttons, the arrow keys tilt the board, ``S`` shakes it.
 """
-from .layout import hit_test, layout_for
+from .layout import (hit_test, layout_for, strip_layout, strip_hit_test,
+                     strip_visible, tilt_from_pos, slider_value)
 from .simulator import REST_ACCELERATION
 from .state import option_of, scratch, simulator_of
 
@@ -28,13 +29,51 @@ LEFT, RIGHT = 1, 3
 _mouse_presses = {}
 
 
-def _apply(sim, target, down):
+_SETTERS = {
+    "light": "set_light_level", "temperature": "set_temperature",
+    "compass": "set_compass_heading", "sound": "set_sound_level",
+}
+
+
+def _apply(instance, sim, target, down, x=0, y=0):
+    """Press (``down``) or release one control. Strip controls also take the
+    pointer position: the tilt pad and the sliders follow it while held."""
     if target in ("a", "b"):
         sim.set_button(target, down)
     elif target == "logo":
         sim.set_logo_touched(down)
     elif target.startswith("pin"):
         sim.set_pin_touched(int(target[3:]), down)
+    elif target == "shake":
+        if down:
+            sim.shake()
+    elif target == "tilt":
+        if down:
+            rect = strip_layout(layout_for(instance)).tilt
+            sim.set_acceleration(*tilt_from_pos(rect, x, y))
+        else:
+            sim.set_acceleration(*REST_ACCELERATION)       # springs back
+    elif target.startswith("slider:"):
+        if down:
+            name = target[7:]
+            track = strip_layout(layout_for(instance)).sliders[name]
+            getattr(sim, _SETTERS[name])(slider_value(name, track, x))
+
+
+def drags():
+    """``[(instance, target)]`` for the strip controls a mouse button is
+    holding (the tilt pad and sliders), for the frame update to keep
+    following the pointer (the input hook has no mouse-motion kind)."""
+    return [(inst, t) for inst, targets in _mouse_presses.values()
+            for t in targets if t == "tilt" or t.startswith("slider:")]
+
+
+def follow(x, y):
+    """Move every held tilt pad / slider to the pointer at ``(x, y)``."""
+    for instance, target in drags():
+        sim = simulator_of(instance)
+        if sim is not None:
+            _apply(instance, sim, target, True, x, y)
 
 
 def mouse_down(game_runner, button, mouse_x, mouse_y):
@@ -46,7 +85,10 @@ def mouse_down(game_runner, button, mouse_x, mouse_y):
         sim = simulator_of(instance)
         if sim is None or not getattr(instance, "visible", True):
             continue
-        target = hit_test(layout_for(instance), mouse_x, mouse_y)
+        layout = layout_for(instance)
+        target = hit_test(layout, mouse_x, mouse_y)
+        if target is None and button == LEFT and strip_visible(instance):
+            target = strip_hit_test(strip_layout(layout), mouse_x, mouse_y)
         if target is None:
             continue
         targets = [target]
@@ -56,7 +98,7 @@ def mouse_down(game_runner, button, mouse_x, mouse_y):
             return True              # a right click elsewhere on the board does nothing
         mouse_up(game_runner, button, mouse_x, mouse_y)   # a release we never saw
         for each in targets:
-            _apply(sim, each, True)
+            _apply(instance, sim, each, True, mouse_x, mouse_y)
         _mouse_presses[button] = (instance, targets)
         return True
     return False
@@ -71,7 +113,7 @@ def mouse_up(game_runner, button, mouse_x, mouse_y):
     sim = simulator_of(instance)
     if sim is not None:
         for each in targets:
-            _apply(sim, each, False)
+            _apply(instance, sim, each, False, mouse_x, mouse_y)
     return True
 
 

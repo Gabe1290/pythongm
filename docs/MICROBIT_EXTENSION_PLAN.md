@@ -272,6 +272,20 @@ extension's schemas without it). Overlays and hit-testing both work in
 screen space, so a room with views would misplace the board; revisit if a
 sample ever needs scrolling.
 
+*Decided in S7:* the strip is a panel under the board (tilt pad, SHAKE
+button, light / temperature / compass / sound sliders) drawn and hit-tested
+from the same pure `layout.py`. The tilt pad edge is one g (1024 mg), so
+dragging to an edge triggers the real tilt gesture; **releasing springs back
+to rest**, like the keyboard arrows, while sliders keep their value. The input
+hook has no mouse-motion kind, so instead of a core change the frame update
+polls `pygame.mouse.get_pos()` while a tilt/slider drag is held
+(`input.drags()` / `follow()`); a lost release would leave a drag running, the
+same exposure buttons have. The sound slider goes through `set_sound_level`,
+so crossing the thresholds fires `microbit_loud_sound` / `quiet_sound`.
+`microbit_show_sensors: false` (instance variable or object property) hides
+the strip and makes it unclickable. Slider hit areas overhang the track by a
+few pixels so the knob is grabbable at both ends.
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 

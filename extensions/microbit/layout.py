@@ -127,3 +127,108 @@ def center_of(instance):
 def layout_for(instance):
     cx, cy = center_of(instance)
     return board_layout(cx, cy, scale_of(instance))
+
+
+# --- sensor strip (Stage S7) -------------------------------------------------------------
+# A panel under the board: a tilt pad, a shake button and four sliders.
+
+STRIP_GAP = 10
+STRIP_H = 124
+STRIP_PAD = 8
+TILT_SIZE = 100
+SHAKE_H = 22
+TILT_FULL = 1024                  # pad edge = one g, so tilt gestures trigger there
+
+# slider name -> (minimum, maximum), in the order they are stacked
+SLIDERS = {
+    "light": (0, 255),
+    "temperature": (-5, 50),
+    "compass": (0, 359),
+    "sound": (0, 255),
+}
+
+
+@dataclass(frozen=True)
+class StripLayout:
+    panel: Tuple[int, int, int, int]
+    tilt: Tuple[int, int, int, int]
+    shake: Tuple[int, int, int, int]
+    sliders: Dict[str, Tuple[int, int, int, int]]    # name -> track x, y, w, h
+
+
+def strip_layout(layout: BoardLayout) -> StripLayout:
+    s = layout.scale
+    bx, by, bw, bh = layout.body
+    px, py = bx, by + bh + _r(STRIP_GAP * s)
+    panel = (px, py, bw, _r(STRIP_H * s))
+    pad = _r(STRIP_PAD * s)
+    tilt_size = _r(TILT_SIZE * s)
+    tilt = (px + pad, py + _r(12 * s), tilt_size, tilt_size)
+    col_x = tilt[0] + tilt_size + _r(12 * s)
+    col_w = px + bw - pad - col_x
+    shake = (col_x, py + pad, col_w, _r(SHAKE_H * s))
+    sliders = {}
+    for i, name in enumerate(SLIDERS):
+        sliders[name] = (col_x, py + _r((46 + 20 * i) * s), col_w, max(3, _r(8 * s)))
+    return StripLayout(panel, tilt, shake, sliders)
+
+
+def tilt_from_pos(rect, x, y):
+    """Accelerometer ``(x, y, z)`` for a point on the tilt pad: the pad edge is
+    one g of tilt, up on the pad is "logo up" (+y) and right is +x. z fills
+    the rest of one g, so the middle of the pad is the resting face-up board."""
+    px, py, pw, ph = rect
+    u = max(-1.0, min(1.0, (x - (px + pw / 2)) / (pw / 2)))
+    v = max(-1.0, min(1.0, ((py + ph / 2) - y) / (ph / 2)))
+    ax, ay = u * TILT_FULL, v * TILT_FULL
+    radius = (ax * ax + ay * ay) ** 0.5
+    if radius > TILT_FULL:
+        ax, ay = ax * TILT_FULL / radius, ay * TILT_FULL / radius
+    az = -((max(0.0, TILT_FULL ** 2 - ax * ax - ay * ay)) ** 0.5)
+    return int(round(ax)), int(round(ay)), int(round(az))
+
+
+def tilt_to_pos(rect, ax, ay):
+    """Where the tilt pad's dot sits for an acceleration (inverse of the above)."""
+    px, py, pw, ph = rect
+    u = max(-1.0, min(1.0, ax / TILT_FULL))
+    v = max(-1.0, min(1.0, ay / TILT_FULL))
+    return int(round(px + pw / 2 + u * pw / 2)), int(round(py + ph / 2 - v * ph / 2))
+
+
+def slider_value(name, track, x):
+    """The value a drag at screen ``x`` sets on slider ``name``."""
+    lo, hi = SLIDERS[name]
+    tx, _, tw, _ = track
+    fraction = max(0.0, min(1.0, (x - tx) / float(tw))) if tw else 0.0
+    return int(round(lo + fraction * (hi - lo)))
+
+
+def slider_fraction(name, value):
+    lo, hi = SLIDERS[name]
+    return max(0.0, min(1.0, (value - lo) / float(hi - lo)))
+
+
+def strip_hit_test(strip, x, y):
+    """What a click lands on in the strip: ``"tilt"``, ``"shake"``,
+    ``"slider:<name>"`` -- or ``None``."""
+    def inside(rect, grow=0, grow_x=0):
+        rx, ry, rw, rh = rect
+        return (rx - grow_x <= x < rx + rw + grow_x
+                and ry - grow <= y < ry + rh + grow)
+    if inside(strip.tilt):
+        return "tilt"
+    if inside(strip.shake):
+        return "shake"
+    for name, track in strip.sliders.items():
+        if inside(track, grow=7, grow_x=6):   # the knob overhangs the ends
+            return f"slider:{name}"
+    return None
+
+
+def strip_visible(instance):
+    """The sensor strip shows unless ``microbit_show_sensors`` is off."""
+    value = option_of(instance, "microbit_show_sensors", True)
+    if isinstance(value, str):
+        return value.strip().lower() not in ("false", "0", "no", "")
+    return bool(value)

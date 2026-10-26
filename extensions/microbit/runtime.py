@@ -6,6 +6,9 @@ like Thymio's: after movement and collision events, before end-step. It steps
 every simulator by one frame and fires the events each one reports on the
 board's own instance.
 """
+import pygame
+
+from . import input as board_input
 from .events import event_name_for
 from .state import simulator_of
 
@@ -20,6 +23,9 @@ def update_microbits(game_runner):
               if simulator_of(inst) is not None]
     if not boards:
         return
+
+    if board_input.drags():
+        board_input.follow(*pygame.mouse.get_pos())
 
     dt = 1.0 / max(1, getattr(game_runner, "fps", 60) or 60)
     for instance, sim in boards:

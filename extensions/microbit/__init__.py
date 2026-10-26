@@ -17,9 +17,11 @@ What lives here so far:
 * ``events.py`` / ``runtime.py`` -- the flat ``microbit_*`` event types and
   the frame update that steps every board and fires them (S4).
 * ``input.py`` -- mouse clicks on the board's controls and the opt-in
-  keyboard shortcuts, through the input hook (S6).
+  keyboard shortcuts, through the input hook (S6); the sensor strip's tilt
+  pad, shake button and sliders (S7) are driven the same way.
 * ``layout.py`` / ``renderer.py`` -- the board's geometry (pure) and the
-  pygame overlay that draws it over its instance (S5).
+  pygame overlay that draws it over its instance (S5), plus the sensor
+  strip underneath it (S7).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
