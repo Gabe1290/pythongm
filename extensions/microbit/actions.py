@@ -7,7 +7,7 @@ loader merges ``PLUGIN_ACTIONS`` into ``ACTION_TYPES`` at startup, so the
 action picker and Blockly see them; handlers are in ``handlers.py``.
 
 Every action works on the micro:bit that runs it -- put the events on the
-``microbit*`` object itself. Sound and radio actions arrive with S8/S9.
+``microbit*`` object itself. Radio actions arrive with S9.
 """
 from events.action_types import ActionType, ActionParameter
 
@@ -116,6 +116,47 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="brightness", display_name="Brightness (0-255)",
                 param_type="string", default_value="255"),
         ],
+    ),
+
+    # -- Sound -------------------------------------------------------------
+    "microbit_play_tone": ActionType(
+        name="microbit_play_tone",
+        display_name="Play Tone",
+        description="Beep at a frequency for a number of milliseconds. "
+                    "Sounds queue and play one after another.",
+        category=CATEGORY, icon="🔔",
+        parameters=[
+            ActionParameter(name="frequency", display_name="Frequency (Hz)",
+                param_type="string", default_value="440",
+                description="Pitch in hertz (440 = the note A)"),
+            ActionParameter(name="duration", display_name="Duration (ms)",
+                param_type="string", default_value="500", required=False),
+        ],
+    ),
+    "microbit_play_melody": ActionType(
+        name="microbit_play_melody",
+        display_name="Play Melody",
+        description="Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, "
+                    "ODE, NYAN, RINGTONE, FUNK, BLUES, BIRTHDAY, WEDDING, "
+                    "FUNERAL, PUNCHLINE, PYTHON, BADDY, CHASE, BA_DING, "
+                    "WAWAWAWAA, JUMP_UP, JUMP_DOWN, POWER_UP, POWER_DOWN) or "
+                    "your own notes such as \"C4:4 E G C5:8 R:4\" "
+                    "(note, octave, :length; R is a rest).",
+        category=CATEGORY, icon="🎵",
+        parameters=[
+            ActionParameter(name="melody", display_name="Melody",
+                param_type="string", default_value="DADADADUM",
+                description="Built-in name, or notes separated by spaces"),
+            ActionParameter(name="tempo", display_name="Tempo (bpm)",
+                param_type="string", default_value="120", required=False),
+        ],
+    ),
+    "microbit_stop_sound": ActionType(
+        name="microbit_stop_sound",
+        display_name="Stop Sound",
+        description="Silence the speaker and drop any queued sounds",
+        category=CATEGORY, icon="🔇",
+        parameters=[],
     ),
 
     # -- Sensors -----------------------------------------------------------

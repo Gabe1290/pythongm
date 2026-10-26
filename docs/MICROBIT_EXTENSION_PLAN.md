@@ -286,6 +286,24 @@ so crossing the thresholds fires `microbit_loud_sound` / `quiet_sound`.
 the strip and makes it unclickable. Slider hit areas overhang the track by a
 few pixels so the knob is grabbable at both ends.
 
+*Decided in S8:* `sound.py` (pure) ports MicroPython's `music.play` note
+format and timing: octave/duration persist within one melody (reset per
+call), a quarter note is 4 ticks, 4 ticks make a beat, 120 bpm, and each note
+sounds for its length less a 10 ms articulation. Deliberate deviation: the
+device is silent or garbled for `E#`/`B#`/`Cb`/`Fb`; here they are the
+enharmonic natural note. `melodies.py` is generated from the MicroPython
+source (21 tunes) and `microbit_play_melody` also takes your own notes
+(`"C4:4 E G C5:8 R:4"`) and a tempo. Sounds queue like the display (16
+items, repeats not stacked); `microbit_sound_done` chains them and
+`microbit_stop_sound` cuts them off without firing it. The simulator stays
+pure and *reports* `sound_note`/`sound_stop`; `audio.py` turns those into a
+16-bit square wave on mixer channel 0, reserved. It caches raw PCM bytes and
+fetches the channel fresh every call, never `Sound`/`Channel` objects (they
+dangle after `pygame.quit()`, the same crash the S5 Font cache hit). With no
+mixer the calls do nothing and `sim.tone` is the record. One speaker channel
+is shared, so two boards sounding at once interrupt each other. **By-ear
+check still owed** on a real machine.
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 

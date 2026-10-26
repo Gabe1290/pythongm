@@ -39,6 +39,7 @@ _FIXED = {
     ("sound", "loud"): "microbit_loud_sound",
     ("sound", "quiet"): "microbit_quiet_sound",
     ("display_done", None): "microbit_display_done",
+    ("sound_done", None): "microbit_sound_done",
 }
 
 
@@ -82,5 +83,7 @@ MICROBIT_EVENT_TYPES = {
                "Executed when the sound drops back to quiet", "🔈"),
         _event("microbit_display_done", "Display Finished",
                "Executed when the display queue has played everything", "✅"),
+        _event("microbit_sound_done", "Sound Finished",
+               "Executed when every queued tone and melody has played", "🎵"),
     ]
 }

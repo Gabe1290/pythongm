@@ -18,6 +18,9 @@ last call, as ``(kind, detail)`` tuples:
   "8g", "shake".
 * ``("sound", "loud" | "quiet")`` -- crossing the microphone thresholds.
 * ``("display_done", None)`` -- the display queue has just emptied.
+* ``("sound_note", (hz, seconds))`` / ``("sound_stop", None)`` -- for the
+  audio output: a note (0 Hz = rest) just began / sound was cut off.
+* ``("sound_done", None)`` -- the sound queue has just emptied.
 
 Gesture recognition is the micro:bit runtime's own algorithm (codal-core
 ``Accelerometer::updateGesture``/``instantaneousPosture``), run on a fixed
@@ -28,6 +31,7 @@ device ``display.scroll``/``show`` wait for the display to be free.
 
 from .font import GLYPHS
 from .images import IMAGES
+from .sound import melody_notes, tone_notes, DEFAULT_BPM
 
 WIDTH = 5
 HEIGHT = 5
@@ -39,6 +43,7 @@ SCROLL_DELAY = 0.150
 # A Step event that shows something every frame would otherwise grow the
 # queue without bound (on the device the loop blocks instead).
 MAX_QUEUE = 16
+MAX_SOUND_QUEUE = 16     # tones/melodies waiting, as with the display
 
 # --- accelerometer (codal-core Accelerometer.h), milli-g -------------------
 SAMPLE_PERIOD = 0.020
@@ -178,6 +183,14 @@ class MicrobitSimulator:
         self.temperature = 21
         self.sound_level = 0
 
+        # Sound: queued tones/melodies (each a list of (hz, seconds) steps)
+        # play one after another, like the display queue. ``tone`` is the
+        # frequency sounding now (0 = silent).
+        self.tone = 0.0
+        self._sound = []
+        self._step = 0
+        self._step_elapsed = 0.0
+
         self._pending = []
         self._sample_clock = 0.0
         # codal-core gesture state
@@ -273,6 +286,74 @@ class MicrobitSimulator:
             if self._queue:
                 self.display = [row[:] for row in self._queue[0].frames[0]]
         self._pending.append(("display_done", None))
+
+    # ------------------------------------------------------------------
+    # Sound
+    # ------------------------------------------------------------------
+
+    @property
+    def sound_busy(self):
+        """True while a tone or melody is queued or sounding."""
+        return bool(self._sound)
+
+    def play_tone(self, frequency, milliseconds=500):
+        """Queue a tone. Returns False if the queue is full."""
+        return self._enqueue_sound(tone_notes(frequency, milliseconds))
+
+    def play_melody(self, spec, bpm=DEFAULT_BPM):
+        """Queue a melody (see ``sound.melody_notes``). Raises ``ValueError``
+        for a melody that can't be read. Returns False if the queue is full."""
+        return self._enqueue_sound(melody_notes(spec, bpm))
+
+    def stop_sound(self):
+        """Silence everything and drop what's queued."""
+        was_busy = bool(self._sound) or self.tone
+        self._sound.clear()
+        self._step = 0
+        self._step_elapsed = 0.0
+        self.tone = 0.0
+        if was_busy:
+            self._pending.append(("sound_stop", None))
+
+    def _enqueue_sound(self, steps):
+        if self._sound and self._sound[-1] == steps:
+            return True       # a repeat of what's already waiting
+        if len(self._sound) >= MAX_SOUND_QUEUE:
+            return False
+        self._sound.append(steps)
+        if len(self._sound) == 1:
+            self._step = 0
+            self._step_elapsed = 0.0
+            self._begin_step()
+        return True
+
+    def _begin_step(self):
+        hz, seconds = self._sound[0][self._step]
+        self.tone = hz
+        self._pending.append(("sound_note", (hz, seconds)))
+
+    def _advance_sound(self, dt):
+        if not self._sound:
+            return
+        remaining = dt
+        while self._sound:
+            hz, seconds = self._sound[0][self._step]
+            left = seconds - self._step_elapsed
+            if remaining < left:
+                self._step_elapsed += remaining
+                return
+            remaining -= left
+            self._step += 1
+            self._step_elapsed = 0.0
+            if self._step >= len(self._sound[0]):
+                self._sound.pop(0)
+                self._step = 0
+            if self._sound:
+                self._begin_step()
+        if self.tone:
+            self.tone = 0.0
+            self._pending.append(("sound_stop", None))
+        self._pending.append(("sound_done", None))
 
     # ------------------------------------------------------------------
     # Buttons, logo, pins
@@ -441,5 +522,6 @@ class MicrobitSimulator:
         if samples == MAX_SAMPLES_PER_UPDATE:
             self._sample_clock = 0.0
         self._advance_display(dt)
+        self._advance_sound(dt)
         events, self._pending = self._pending, []
         return events

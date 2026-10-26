@@ -134,6 +134,32 @@ class PluginExecutor:
         if sim is not None:
             sim.set_brightness(_int(instance, parameters.get("brightness", 255), 255))
 
+    # -- Sound -------------------------------------------------------------
+
+    def execute_microbit_play_tone_action(self, instance, parameters):
+        sim = simulator_of(instance)
+        if sim is None:
+            return
+        sim.play_tone(_int(instance, parameters.get("frequency"), 440),
+                      _int(instance, parameters.get("duration"), 500))
+
+    def execute_microbit_play_melody_action(self, instance, parameters):
+        sim = simulator_of(instance)
+        if sim is None:
+            return
+        spec = str(_value(instance, parameters.get("melody"), "")
+                   if str(parameters.get("melody", "")).startswith('"')
+                   else parameters.get("melody", "")).strip()
+        try:
+            sim.play_melody(spec, _int(instance, parameters.get("tempo"), 120))
+        except ValueError:
+            logger.warning(f"micro:bit: can't play melody {spec!r}")
+
+    def execute_microbit_stop_sound_action(self, instance, parameters):
+        sim = simulator_of(instance)
+        if sim is not None:
+            sim.stop_sound()
+
     # -- Sensors -----------------------------------------------------------
 
     def execute_microbit_read_sensor_action(self, instance, parameters):

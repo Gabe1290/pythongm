@@ -22,6 +22,9 @@ What lives here so far:
 * ``layout.py`` / ``renderer.py`` -- the board's geometry (pure) and the
   pygame overlay that draws it over its instance (S5), plus the sensor
   strip underneath it (S7).
+* ``sound.py`` / ``melodies.py`` / ``audio.py`` -- notes and melodies (pure),
+  the 21 built-in tunes, and the square-wave speaker on a reserved mixer
+  channel (S8).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).

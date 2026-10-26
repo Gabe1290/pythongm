@@ -8,6 +8,7 @@ board's own instance.
 """
 import pygame
 
+from . import audio
 from . import input as board_input
 from .events import event_name_for
 from .state import simulator_of
@@ -30,6 +31,11 @@ def update_microbits(game_runner):
     dt = 1.0 / max(1, getattr(game_runner, "fps", 60) or 60)
     for instance, sim in boards:
         reported = sim.update(dt)
+        for kind, detail in reported:
+            if kind == "sound_note":
+                audio.play(*detail)
+            elif kind == "sound_stop":
+                audio.stop()
         events = (instance.object_data or {}).get("events") \
             if getattr(instance, "object_data", None) else None
         executor = getattr(instance, "action_executor", None)

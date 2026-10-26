@@ -43,6 +43,7 @@ class BoardLayout:
     buttons: Dict[str, Tuple[int, int, int]]         # name -> (cx, cy, r)
     logo: Tuple[int, int, int, int]                  # cx, cy, rx, ry
     pads: Dict[str, Tuple[int, int, int, int]]       # name -> x, y, w, h
+    speaker: Tuple[int, int, int] = (0, 0, 0)        # cx, cy, r (S8)
 
     def led_center(self, x, y):
         return self.leds[y][x]
@@ -77,8 +78,9 @@ def board_layout(cx, cy, scale=1.0) -> BoardLayout:
         name: (_r(cx + (i - 2) * s(PAD_PITCH) - pad_w / 2), pad_y, pad_w, pad_h)
         for i, name in enumerate(PAD_NAMES)
     }
+    speaker = (_r(cx + s(BUTTON_DX)), _r(cy + s(LOGO_DY)), max(3, _r(s(7))))
     return BoardLayout(cx, cy, scale, body, max(2, _r(s(LED_SIZE))), leds,
-                       buttons, logo, pads)
+                       buttons, logo, pads, speaker)
 
 
 def led_color(level, brightness=255):

@@ -34,6 +34,8 @@ TRACK_FILL = (96, 170, 255)
 KNOB_COLOR = (230, 230, 235)
 SHAKE_COLOR = (96, 110, 150)
 SHAKE_ACTIVE = (255, 214, 90)
+SPEAKER_ON = (120, 220, 255)
+SPEAKER_OFF = (60, 62, 70)
 SLIDER_TITLES = {"light": "Light", "temperature": "Temp", "compass": "Compass",
                  "sound": "Sound"}
 
@@ -128,6 +130,14 @@ def draw_board(screen, layout, sim, draw_body=True):
         pygame.draw.circle(screen, BUTTON_EDGE, (bx, by), br, 2)
         label = _label(name.upper(), max(12, int(22 * layout.scale)), (40, 40, 40))
         screen.blit(label, label.get_rect(center=(bx, by)))
+
+    # Speaker: lit with sound waves while a tone plays
+    kx, ky, kr = layout.speaker
+    playing = getattr(sim, "tone", 0) > 0
+    pygame.draw.circle(screen, SPEAKER_ON if playing else SPEAKER_OFF, (kx, ky), kr)
+    if playing:
+        for grow in (kr + 4, kr + 9):
+            pygame.draw.circle(screen, SPEAKER_ON, (kx, ky), grow, 1)
 
     # Touch logo
     lx, ly, rx, ry = layout.logo

@@ -59,3 +59,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+## melodies.py — MicroPython for micro:bit, `source/microbit/modmusictunes.c`
+
+https://github.com/bbcmicrobit/micropython -- the same MIT License and
+Damien P. George notice as `images.py` above, plus:
+
+```
+Copyright (c) 2015 Nicholas H. Tollervey
+
+The music encoded herein is either in the public domain, composed by
+Nicholas H.Tollervey or the composer is untraceable and covered by fair
+(educational) use.
+```
+
+`sound.py` follows the timing and note format of `modmusic.cpp` from the same
+repository (octave/duration persistence, 4 ticks per beat, 120 bpm, 10 ms
+articulation).
+
