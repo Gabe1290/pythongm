@@ -24,6 +24,7 @@ ACTION_NAMES = [
     "microbit_show_image", "microbit_scroll_text", "microbit_show_number",
     "microbit_set_pixel", "microbit_clear_display", "microbit_set_brightness",
     "microbit_play_tone", "microbit_play_melody", "microbit_stop_sound",
+    "microbit_radio_set_group", "microbit_radio_send",
     "microbit_read_sensor", "microbit_if_button", "microbit_if_gesture",
     "microbit_if_tilt", "microbit_if_pixel",
 ]

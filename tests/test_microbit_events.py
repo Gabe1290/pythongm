@@ -29,7 +29,7 @@ def test_every_simulator_report_has_an_event():
     reports = [("button", "a"), ("button", "b"), ("button", "ab"),
                ("logo", "touched"), ("pin", 0), ("pin", 1), ("pin", 2),
                ("sound", "loud"), ("sound", "quiet"), ("display_done", None),
-               ("sound_done", None)]
+               ("sound_done", None), ("radio", 7), ("radio", "hi")]
     from extensions.microbit.simulator import MicrobitSimulator  # noqa: F401
     gestures = ["up", "down", "left", "right", "face up", "face down",
                 "freefall", "2g", "3g", "6g", "8g", "shake"]
@@ -48,7 +48,7 @@ def test_unknown_reports_have_no_event():
 
 def test_event_names_are_unique_and_prefixed():
     from extensions.microbit.events import MICROBIT_EVENT_TYPES
-    assert len(MICROBIT_EVENT_TYPES) == 7 + 12 + 4
+    assert len(MICROBIT_EVENT_TYPES) == 7 + 12 + 5
     for name, ev in MICROBIT_EVENT_TYPES.items():
         assert name == ev.name and name.startswith("microbit_")
         assert ev.category == "micro:bit"

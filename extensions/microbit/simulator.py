@@ -21,6 +21,7 @@ last call, as ``(kind, detail)`` tuples:
 * ``("sound_note", (hz, seconds))`` / ``("sound_stop", None)`` -- for the
   audio output: a note (0 Hz = rest) just began / sound was cut off.
 * ``("sound_done", None)`` -- the sound queue has just emptied.
+* ``("radio", value)`` -- a radio message arrived (a number or a string).
 
 Gesture recognition is the micro:bit runtime's own algorithm (codal-core
 ``Accelerometer::updateGesture``/``instantaneousPosture``), run on a fixed
@@ -32,6 +33,7 @@ device ``display.scroll``/``show`` wait for the display to be free.
 from .font import GLYPHS
 from .images import IMAGES
 from .sound import melody_notes, tone_notes, DEFAULT_BPM
+from .radio import clamp_group, clean_message
 
 WIDTH = 5
 HEIGHT = 5
@@ -44,6 +46,7 @@ SCROLL_DELAY = 0.150
 # queue without bound (on the device the loop blocks instead).
 MAX_QUEUE = 16
 MAX_SOUND_QUEUE = 16     # tones/melodies waiting, as with the display
+MAX_RADIO_OUTBOX = 32    # messages a board can have in flight at once
 
 # --- accelerometer (codal-core Accelerometer.h), milli-g -------------------
 SAMPLE_PERIOD = 0.020
@@ -190,6 +193,11 @@ class MicrobitSimulator:
         self._sound = []
         self._step = 0
         self._step_elapsed = 0.0
+
+        # Radio: ``radio.deliver`` moves the outbox to the other boards
+        # in the same group; a message that arrives is reported as an event.
+        self.radio_group = 0
+        self._radio_outbox = []
 
         self._pending = []
         self._sample_clock = 0.0
@@ -354,6 +362,29 @@ class MicrobitSimulator:
             self.tone = 0.0
             self._pending.append(("sound_stop", None))
         self._pending.append(("sound_done", None))
+
+    # ------------------------------------------------------------------
+    # Radio
+    # ------------------------------------------------------------------
+
+    def set_radio_group(self, group):
+        self.radio_group = clamp_group(group)
+
+    def radio_send(self, value):
+        """Queue a number or string for the other boards in this group.
+        Returns False if too many are already in flight."""
+        if len(self._radio_outbox) >= MAX_RADIO_OUTBOX:
+            return False
+        self._radio_outbox.append(clean_message(value))
+        return True
+
+    def take_radio_outbox(self):
+        messages, self._radio_outbox = self._radio_outbox, []
+        return messages
+
+    def radio_receive(self, value):
+        """A message arrived (called by ``radio.deliver``)."""
+        self._pending.append(("radio", value))
 
     # ------------------------------------------------------------------
     # Buttons, logo, pins

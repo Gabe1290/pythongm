@@ -25,6 +25,8 @@ What lives here so far:
 * ``sound.py`` / ``melodies.py`` / ``audio.py`` -- notes and melodies (pure),
   the 21 built-in tunes, and the square-wave speaker on a reserved mixer
   channel (S8).
+* ``radio.py`` -- delivery of radio messages between the boards in a room,
+  by group (S9).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).

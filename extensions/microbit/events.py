@@ -45,6 +45,8 @@ _FIXED = {
 
 def event_name_for(kind, detail):
     """The event a simulator report fires, or ``None`` if it has none."""
+    if kind == "radio":
+        return "microbit_radio_received"
     if kind == "gesture":
         entry = GESTURE_NAMES.get(detail)
         return f"microbit_gesture_{entry[0]}" if entry else None
@@ -83,6 +85,10 @@ MICROBIT_EVENT_TYPES = {
                "Executed when the sound drops back to quiet", "🔈"),
         _event("microbit_display_done", "Display Finished",
                "Executed when the display queue has played everything", "✅"),
+        _event("microbit_radio_received", "Radio Message Received",
+               "Executed when another micro:bit in the same radio group sends "
+               "a message. The value is in the variables radio_number and "
+               "radio_string", "📻"),
         _event("microbit_sound_done", "Sound Finished",
                "Executed when every queued tone and melody has played", "🎵"),
     ]

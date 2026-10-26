@@ -7,7 +7,7 @@ loader merges ``PLUGIN_ACTIONS`` into ``ACTION_TYPES`` at startup, so the
 action picker and Blockly see them; handlers are in ``handlers.py``.
 
 Every action works on the micro:bit that runs it -- put the events on the
-``microbit*`` object itself. Radio actions arrive with S9.
+``microbit*`` object itself. Radio sends reach the other micro:bits in the same group.
 """
 from events.action_types import ActionType, ActionParameter
 
@@ -157,6 +157,35 @@ PLUGIN_ACTIONS = {
         description="Silence the speaker and drop any queued sounds",
         category=CATEGORY, icon="🔇",
         parameters=[],
+    ),
+
+    # -- Radio ---------------------------------------------------------------
+    "microbit_radio_set_group": ActionType(
+        name="microbit_radio_set_group",
+        display_name="Set Radio Group",
+        description="Choose the radio group (0-255). Only micro:bits in the "
+                    "same group hear each other; every board starts in "
+                    "group 0.",
+        category=CATEGORY, icon="📡",
+        parameters=[
+            ActionParameter(name="group", display_name="Group (0-255)",
+                param_type="string", default_value="0"),
+        ],
+    ),
+    "microbit_radio_send": ActionType(
+        name="microbit_radio_send",
+        display_name="Send Radio Message",
+        description="Send a number or text to the other micro:bits in the "
+                    "same group (not to this one). They get the Radio "
+                    "Message Received event, with the value in radio_number "
+                    "and radio_string. Put literal text in double quotes; "
+                    "text is cut to 32 characters.",
+        category=CATEGORY, icon="📻",
+        parameters=[
+            ActionParameter(name="value", display_name="Message",
+                param_type="string", default_value="1",
+                description="A number, an expression or quoted text"),
+        ],
     ),
 
     # -- Sensors -----------------------------------------------------------

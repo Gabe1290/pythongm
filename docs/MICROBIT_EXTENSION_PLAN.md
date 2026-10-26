@@ -304,6 +304,20 @@ mixer the calls do nothing and `sim.tone` is the record. One speaker channel
 is shared, so two boards sounding at once interrupt each other. **By-ear
 check still owed** on a real machine.
 
+*Decided in S9:* the radio is **not a global bus**: `radio.deliver(sims)` is
+a pure function that, once per frame ahead of the boards' updates, moves each
+board's outbox to the *other* boards in its group, so a room change or a new
+game starts clean and there is no process-wide state for a test to leak. A
+board never hears itself; every board starts in group 0; groups clamp to
+0-255. Numbers stay numbers, anything else is text cut to 32 characters (the
+device's default payload). A received message fires
+`microbit_radio_received` and sets the receiving instance's `radio_number`
+(0 if the text isn't numeric) and `radio_string` (always the text), even when
+no handler is authored, so a Step event can read them. Messages sent in a
+frame arrive in the same frame's hook pass at the latest, otherwise the next.
+The radio is always on (no `radio.on()` step to forget), and bridging it over
+`multiplayer_lan` stays out of scope.
+
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.
 

@@ -160,6 +160,19 @@ class PluginExecutor:
         if sim is not None:
             sim.stop_sound()
 
+    # -- Radio -------------------------------------------------------------
+
+    def execute_microbit_radio_set_group_action(self, instance, parameters):
+        sim = simulator_of(instance)
+        if sim is not None:
+            sim.set_radio_group(_int(instance, parameters.get("group"), 0))
+
+    def execute_microbit_radio_send_action(self, instance, parameters):
+        sim = simulator_of(instance)
+        if sim is None:
+            return
+        sim.radio_send(_value(instance, parameters.get("value", 1), 1))
+
     # -- Sensors -----------------------------------------------------------
 
     def execute_microbit_read_sensor_action(self, instance, parameters):
