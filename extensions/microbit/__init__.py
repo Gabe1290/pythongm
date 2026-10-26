@@ -16,6 +16,8 @@ What lives here so far:
   ``PluginExecutor`` that runs them on the acting board (S3).
 * ``events.py`` / ``runtime.py`` -- the flat ``microbit_*`` event types and
   the frame update that steps every board and fires them (S4).
+* ``layout.py`` / ``renderer.py`` -- the board's geometry (pure) and the
+  pygame overlay that draws it over its instance (S5).
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
@@ -42,6 +44,15 @@ def _frame_update_boards(game_runner):
 
 
 PLUGIN_FRAME_UPDATES = [(_frame_update_boards, "after_collision")]
+
+
+def _draw_board(instance, screen):
+    # Imported lazily: keeps pygame out of the IDE's schema-only load.
+    from .renderer import draw_overlay
+    draw_overlay(instance, screen)
+
+
+PLUGIN_INSTANCE_OVERLAYS = [_draw_board]
 
 logger = get_logger(__name__)
 

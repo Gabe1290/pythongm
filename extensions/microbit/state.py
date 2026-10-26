@@ -14,8 +14,9 @@ def attach_simulator(instance, simulator) -> None:
     """Make ``instance`` a micro:bit by storing its simulator.
 
     Unlike Thymio's, this doesn't set ``custom_rendered``: the instance's
-    own sprite (if any) keeps drawing until the board overlay exists, and
-    Stage S5 decides how the two combine."""
+    own sprite (if any) keeps drawing, and the board overlay (renderer.py)
+    draws the LEDs and controls on top of it -- the body too when there is
+    no sprite."""
     state = getattr(instance, "extension_state", None)
     if state is None:
         state = instance.extension_state = {}
