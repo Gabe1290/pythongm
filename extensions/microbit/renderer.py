@@ -108,14 +108,10 @@ def draw_strip(screen, strip, sim, scale=1.0):
 
 def _corner_decoration(screen, layout):
     """The jagged green silkscreen wedge in the board's top-left corner --
-    purely decorative, inset from the literal corner so it sits inside the
-    body's rounded edge instead of poking past it."""
+    purely decorative."""
     bx, by, bw, bh = layout.body
-    sc = layout.scale
-    inset = max(2, int(5 * sc))
-    x0, y0 = bx + inset, by + inset
     pts = [
-        (x0, y0),
+        (bx, by),
         (bx + bw * 0.42, by),
         (bx + bw * 0.30, by + bh * 0.12),
         (bx + bw * 0.22, by + bh * 0.05),
@@ -150,10 +146,8 @@ def draw_board(screen, layout, sim, draw_body=True):
     instance whose own sprite is the board (LEDs and controls draw on top)."""
     if draw_body:
         bx, by, bw, bh = layout.body
-        radius = max(2, int(14 * layout.scale))
-        pygame.draw.rect(screen, BODY_COLOR, (bx, by, bw, bh), border_radius=radius)
-        pygame.draw.rect(screen, BODY_EDGE, (bx, by, bw, bh), width=2,
-                         border_radius=radius)
+        pygame.draw.rect(screen, BODY_COLOR, (bx, by, bw, bh))
+        pygame.draw.rect(screen, BODY_EDGE, (bx, by, bw, bh), width=2)
         _corner_decoration(screen, layout)
 
     # LEDs
