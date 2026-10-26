@@ -161,9 +161,9 @@ def draw_board(screen, layout, sim, draw_body=True):
     # LEDs
     size = layout.led_size
     half = size // 2
-    chip_w = max(2, int(size * 0.3))
-    chip_h = max(3, int(size * 0.35))
-    chip_margin = max(1, int(size * 0.08))
+    chip_w = max(2, int(size * 0.18))
+    chip_h = max(4, int(size * 0.42))
+    chip_margin = max(1, int(size * 0.05))
     for y in range(5):
         for x in range(5):
             px, py = layout.led_center(x, y)
@@ -178,7 +178,7 @@ def draw_board(screen, layout, sim, draw_body=True):
                 # centre the renderer tests sample.
                 pygame.draw.rect(screen, LED_CHIP,
                                  (px - chip_w // 2, py - half + chip_margin,
-                                  chip_w, chip_h), border_radius=1)
+                                  chip_w, chip_h), border_radius=max(1, chip_w // 2))
 
     # Buttons
     for name, (bx, by, br) in layout.buttons.items():
