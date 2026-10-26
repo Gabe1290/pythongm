@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **micro:bit simulator** (a folder extension, `extensions/microbit/`): a
+  simulated BBC micro:bit drawn in the game window — 5×5 LED display,
+  buttons A/B, touch logo, pins 0/1/2, a tilt pad, shake button and light /
+  temperature / compass / sound sliders, a square-wave speaker and a radio
+  between boards. 16 actions and 24 events (`microbit_*`), shown only in
+  projects that activate the extension (Project Settings → Extensions).
+  The new sample **micro:bit — Dice and Moods** (`microbit_1`, also in the
+  beginner edition) and a wiki page (English and French) show how it works.
+  Works in Test Game and the desktop export; HTML5 and Android exports still
+  run but skip the micro:bit actions and don't draw the board yet.
+- Extensions can now ship their own translations for the auto-generated
+  Blockly blocks (`PLUGIN_GENERATED_BLOCK_TRANSLATIONS`); the micro:bit's are
+  in French.
+
+### Fixed
+- The action-reference generator crashed on the "Score/Lives/Health" category
+  (the `/` became a path separator), so the wiki's reference had not been
+  regenerated since the categories were merged; it now covers all 184 actions.
+
 ### Changed
 - The Export Game dialog now greys out export targets a packaged build
   of the IDE cannot actually produce (Windows .exe, Linux binary, macOS

@@ -334,6 +334,18 @@ dozen now-deleted docs:
 - Antivirus false-positive scan on the Windows `.exe`; real mobile-
   browser/touch testing for HTML5 exports.
 
+9. **`docs/MICROBIT_EXTENSION_PLAN.md` — micro:bit simulator, Stage S
+   (S0–S12) DONE 2026-10-26; Stages L / X / P open and not started.**
+   A folder extension (`extensions/microbit/`, ~2,600 lines of Python + ~300 tests) that
+   draws a simulated BBC micro:bit in the game window: 16 actions, 24 events,
+   a clickable board with a sensor strip, square-wave sound, a radio between
+   boards, the `microbit_1` sample and a wiki page in English and French.
+   Core grew **one** small generic seam (extensions can translate their
+   generated Blockly blocks); everything else used existing hooks. **Open:**
+   a live link to a real board (L), MicroPython export (X) and HTML5/Kivy
+   parity (P) — see `TODO.md`'s "micro:bit extension — follow-ups" — plus the
+   by-ear / by-eye checks in `docs/RELEASE_QA_CHECKLIST.md` §11a.
+
 ---
 
 ## What was deleted, and why it's safe

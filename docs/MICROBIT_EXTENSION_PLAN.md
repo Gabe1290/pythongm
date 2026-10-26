@@ -1,6 +1,7 @@
 # micro:bit extension plan
 
-Written 2026-10-25. Status: **not started**. This plan is the resume state:
+Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**; Stages L, X and P
+are sketches, not started. This plan is the resume state:
 work the units in order, one unit ≈ one commit (code + regression test +
 verification), push after each, and tick the box with the commit hash.
 
@@ -369,6 +370,23 @@ per the 2026-07-20 "samples' messages stay English" rule. A scroll of a
 five-letter word takes about 5 s at the device's 150 ms per column, so tests of
 the logo wait ~7 s of frames. Desktop-export render checked with
 `tools/verify_desktop_export.py --compare` (result in the S11 commit).
+
+*Decided in S12:* the close-out found nothing in the code to change, but
+three things in the docs: (1) `tools/gen_action_reference.py` crashed on the
+`Score/Lives/Health` category (a `/` in a page name) -- it had not been run
+since the categories were merged, so the reference was stale well beyond
+micro:bit; fixed with a sanitising fallback and regenerated for all nine
+languages (184 actions, was 161); the micro:bit page key is `Microbit-Actions`
+(a colon is not valid in a wiki page name). (2) The generator must run with
+every extension enabled: this machine's `~/.pygamemaker/config.json` switches
+three off, which silently drops their pages -- regenerate with a wrapper that
+forces them on for that one process, never by editing the user's config. (3) The
+HTML5/Android claim in the QA checklist is now pinned by
+`tests/test_microbit_export_fallthrough.py`: both exports succeed, the Kivy
+output compiles, the Kivy warning names every skipped micro:bit action -- but
+Kivy drops the micro:bit *events* without any warning (logged in `TODO.md`).
+The extension has its own README (a file map like `raycast_2_5d`'s, pinned by
+`tests/test_microbit_docs.py`).
 
 Expected size: S2, S5 and S7 are the big ones; the rest are each a short
 session. About 12 sessions in all.

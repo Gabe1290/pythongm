@@ -2368,3 +2368,42 @@ contains `room0`; the game starts in the first room) landed in the handouts and
 all nine in-app Tutorial 1 pages. Details: `docs/TUTORIAL_HANDOUT_WORKFLOW.md`.
 **CI has no `fpdf2`** — a test that imports the PDF generator must stub it (see
 `_load_generator` in `tests/test_hand_exported_handouts.py`).
+
+**2026-10-26 — micro:bit simulator extension, Stage S (S0–S12) complete.**
+`extensions/microbit/` (plan: `docs/MICROBIT_EXTENSION_PLAN.md`, the resume
+state; README in the folder): a simulated BBC micro:bit drawn in the game
+window — 16 actions, 24 flat `microbit_*` events, a clickable board + sensor
+strip, square-wave sound, radio between boards, sample `microbit_1`
+("Dice and Moods", beginner-visible), wiki `Microbit.md` + `_fr`. 24 commits,
+one unit each, all on `main`; ~300 new tests; suite 6,836 passed, with the same
+four unrelated failures throughout (two in `test_blockly_webengine_crash_guard`,
+`test_project_search`, and a flaky `test_multiplayer_files_connect_screen`).
+- **Design:** the simulator is *pure and reports*; a click only sets state and
+  the per-frame hook turns `update(dt)`'s report into events, so a same-frame
+  down+up still registers. Radio is a per-room delivery pass, not a global bus.
+  Only ONE new core seam (`register_generated_block_translations`); the rest
+  used existing hooks. Blockly needed no hand-written blocks — actions
+  auto-generate, events ride the generic extension-event block.
+- **Landmines worth carrying:** (1) **never cache pygame `Font`/`Sound`/`Channel`
+  across calls** — they dangle after `pygame.quit()` and crash the whole pytest
+  process (access violation); only the full suite caught it, twice. Cache
+  rendered Surfaces / raw PCM bytes. (2) **`provides_events` in the manifest is
+  load-bearing** — without it core treats the events as plain core events (always
+  offered, never in the extension event block). (3) A Kivy export **silently drops
+  events it doesn't know**; it only warns about actions. (4) The bash tool
+  mangles some nested-quote heredocs — write patch scripts with the Write tool.
+  (5) **This machine's `~/.pygamemaker/config.json` disables block_world,
+  multiplayer_files, multiplayer_lan and thymio**, so anything that enumerates
+  extensions (the action-reference generator!) silently drops them: run it via a
+  wrapper that forces them on for that process, never edit the user's config.
+  (6) `tools/gen_action_reference.py` had crashed on the "Score/Lives/Health"
+  category since the 2026-10-08 category merge, so the wiki reference was stale
+  (161 → **184** actions); fixed + regenerated for all nine languages.
+- **Verified:** a real Windows `.exe` of `microbit_1` renders 120 frames with
+  0.00% pixel difference from the IDE engine (`tools/verify_desktop_export.py
+  --compare microbit_1`); smoke 29/29.
+- **Still needs human eyes/ears:** the beep's volume (a guess, ~15%), the Blockly
+  toolbox with the extension active (grey blocks, English event labels), the
+  French Welcome-tab entry — `docs/RELEASE_QA_CHECKLIST.md` §11a. **Open:**
+  Stage L (live link, needs a board), X (MicroPython export), P (HTML5/Kivy
+  parity) — `TODO.md` "micro:bit extension — follow-ups".

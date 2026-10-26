@@ -1024,6 +1024,33 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Extensions
 
+### micro:bit extension — follow-ups (2026-10-26)
+The simulator is done (`docs/MICROBIT_EXTENSION_PLAN.md`, Stage S). Open, in
+rough order of value:
+- **Stage L — live link:** drive the simulator from a real micro:bit over USB
+  serial (bridge program + `pyserial`). Needs a physical board.
+- **Stage X — MicroPython export:** generate `main.py` / a `.hex` that runs on
+  the device. Needs the universal-hex licence/size research first.
+- **Stage P — export parity:** port the simulator, overlay and input to HTML5
+  and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
+  drops the micro:bit *events* silently** (its generator ignores event names it
+  doesn't know and only warns about *actions*): worth a generic "unsupported
+  event" warning in `export/Kivy/`.
+- **Block colour and event labels:** the micro:bit's generated Blockly blocks
+  draw in the default grey (the category-colour table in
+  `blockly_workspace.html` is core), and the extension-event drop-down labels
+  are English. Both need a small generic seam.
+- **Translations:** the generated-block text is French only; the other nine
+  languages fall back to English (the wiki's action reference is the same).
+- **A "New micro:bit project" template** was dropped (templates are core, see
+  the plan's "Decided in S10"); revisit if teachers ask.
+- **Views:** the board and its clicks work in screen space, so a room with a
+  scrolling view would misplace them. The speaker channel is shared, so two
+  boards sounding at once interrupt each other.
+- **Needs a human:** hear the beep (volume was a guess), look at the Blockly
+  toolbox with the extension active, and look at the Welcome-tab entry in
+  French — all in `docs/RELEASE_QA_CHECKLIST.md` §11a.
+
 ### ~~2.0 extension system — compatibility guarantees~~ (DONE 2026-08-09)
 - Goal: a project using extensions (Thymio robotics, a future 3D extension)
   must never crash or silently corrupt when opened by an editor that
