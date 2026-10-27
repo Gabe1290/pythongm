@@ -1045,9 +1045,8 @@ rough order of value:
   now translated in all 10 shipped languages; `tests/test_microbit_export_ui_translations.py`.)
 - **Stage P — export parity:** port the simulator, overlay and input to HTML5
   and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
-  drops the micro:bit *events* silently** (its generator ignores event names it
-  doesn't know and only warns about *actions*): worth a generic "unsupported
-  event" warning in `export/Kivy/`.
+  now warns about the events it drops** (generic "unsupported event" report,
+  Stage P0). Plan and unit checklist: `docs/MICROBIT_STAGE_P_PLAN.md`.
 - **Block colour and event labels:** the micro:bit's generated Blockly blocks
   draw in the default grey (the category-colour table in
   `blockly_workspace.html` is core), and the extension-event drop-down labels

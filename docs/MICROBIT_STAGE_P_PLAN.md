@@ -1,0 +1,80 @@
+# micro:bit Stage P -- export parity (HTML5 + Kivy)
+
+Parent: `docs/MICROBIT_EXTENSION_PLAN.md` ("Stage P -- export parity (sketch)").
+Goal: a project using the simulated micro:bit plays the same in an HTML5 export
+and a Kivy (Android/iOS) export as in the IDE. Today both targets skip the 16
+micro:bit actions (a warning) and the Kivy generator **drops the 24 events
+silently**. Desktop export needs nothing: it freezes the real engine and the
+extension rides along.
+
+Rules (CLAUDE.md): one unit = one commit + a regression test + the full suite;
+commit and push after each; this file's checkboxes are the resume state.
+
+## What exists to build on
+
+| | HTML5 | Kivy |
+|---|---|---|
+| Extension seam | `export_html5.js`, concatenated at `__PYGM_EXTENSION_JS__`; `registerExtensionAction`, `registerFrameUpdate`, `registerRoomRenderer` | `export_kivy.py`: `SCENE_CODE`, `BASE_OBJECT_CODE`, `ACTION_CODEGEN` |
+| Simulator | **must be rewritten in JS** (558 lines + font/images/melodies/radio tables) | **reuse `simulator.py` verbatim** -- it is pure Python (imports only `font`, `images`, `sound`, `radio`); embed the five modules into the export |
+| Gaps in the seams | no per-instance overlay hook, no mouse/key input hook | no event-name hook, no input/overlay hook |
+| Verification | no Node in CI; **Playwright + Chromium are installed on the dev box** -> real JS parity run locally, structural/golden tests in CI | stub-Kivy harness (`test_kivy_raycast.py` pattern) + generated-file compile |
+
+Design decision: **the simulator is ported, not re-specified.** The Python
+`MicrobitSimulator` is the oracle. For JS, a local-only parity tool drives the
+Python and JS simulators with the same scripted input and diffs display, tone,
+gesture and the reported event list frame by frame. A recorded golden trace
+(generated from Python, committed) is checked in CI against structural
+properties of the JS (constants and tables equal to the Python source).
+
+## Units
+
+### P0 -- Kivy must not drop events silently
+- [x] The Kivy generator warns once per unknown event name (generic, not
+  micro:bit-specific), like it already does for actions. Test with a project
+  that authors `microbit_button_a`.
+
+### HTML5
+- [ ] **H1 -- JS simulator.** `extensions/microbit/export_html5.js`:
+  tables (font, images, melody parser, radio helpers) and `MicrobitSimulator`
+  with the same API/report tuples. Local parity tool
+  `tools/microbit_js_parity.py` (Playwright) + CI test that pins the JS
+  constants/tables to the Python source.
+- [ ] **H2 -- actions, conditions, events.** 16 `registerExtensionAction`s
+  (read_sensor, if_button/gesture/tilt/pixel return bool the way engine.js
+  conditions do); frame update steps every board and fires the reported events
+  (`event_name_for` table); radio delivery per room; board detection
+  (`microbit*` name / `is_microbit`). Needs engine.js to expose the bool-result
+  contract for extension conditions -- check first.
+- [ ] **H3 -- drawing.** New generic engine.js seam
+  `registerInstanceOverlay(fn(inst, ctx))` (mirror of desktop's
+  `PLUGIN_INSTANCE_OVERLAYS`), then layout + board + sensor strip in canvas 2D.
+  Assert WHERE LEDs/buttons land (pixel samples at layout coordinates), not
+  that something drew.
+- [ ] **H4 -- input.** Generic seam for pointer/key hooks; mouse (left/right,
+  chord), strip drag (tilt, sliders), opt-in keyboard. Touch-screen friendly
+  (pointer events).
+- [ ] **H5 -- sound.** WebAudio square wave from `sound_note` / `sound_stop`
+  reports; resume the context on first user gesture.
+- [ ] **H6 -- close-out.** Real-browser playtest of `microbit_1` via Playwright
+  (screenshot compared with the pygame frame), README/wiki/CLAUDE.md note.
+
+### Kivy
+- [ ] **K1 -- embed the pure modules + actions.** Copy `simulator.py`, `font`,
+  `images`, `sound`, `radio`, `events` into the export; `ACTION_CODEGEN` for
+  the 16 actions calling a `_mb_*` helper on `GameObject` (M34 two-halves
+  pattern: codegen emits calls, helpers hold the logic).
+- [ ] **K2 -- events + frame update.** Step boards in the scene update; fire
+  reported events through the existing event dispatch; radio delivery.
+- [ ] **K3 -- drawing.** Board + strip on `canvas.after` (Kivy is y-up: flip at
+  the final draw only, as the raycast port does).
+- [ ] **K4 -- input.** `on_touch_down/up/move` hit-test via `layout.py`
+  (also embedded verbatim); opt-in keyboard.
+- [ ] **K5 -- sound.** Render PCM with the existing `sound.py`/`audio.py`
+  logic to a temp WAV and play with `SoundLoader`.
+- [ ] **K6 -- close-out.** Stub-Kivy end-to-end test of the generated app,
+  generated-file compile for `microbit_1`, docs.
+
+## Non-goals / limits to state plainly
+- Stage L (live link to a real board) stays out; WebSerial is a later idea.
+- No real Android/iOS or browser *human* playtest is possible from here:
+  record that under "needs human eyes" when done.

@@ -351,8 +351,23 @@ def _direction_names(value) -> list:
 _UNSUPPORTED_ACTIONS: set = set()
 
 
+# Events the Kivy generator has no handler for. Their actions are dropped, so
+# they are tallied (and reported after the export) like unsupported actions.
+_UNSUPPORTED_EVENTS: set = set()
+
+
 def reset_unsupported_actions() -> None:
     _UNSUPPORTED_ACTIONS.clear()
+    _UNSUPPORTED_EVENTS.clear()
+
+
+def note_unsupported_event(event_type: str) -> None:
+    _UNSUPPORTED_EVENTS.add(str(event_type))
+
+
+def get_unsupported_events() -> list:
+    """Sorted event names whose actions were dropped since the last reset."""
+    return sorted(_UNSUPPORTED_EVENTS)
 
 
 def get_unsupported_actions() -> list:

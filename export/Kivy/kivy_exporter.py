@@ -249,6 +249,15 @@ class KivyExporter:
                     "skipped (the exported game will not perform them): %s",
                     len(_unsupported), ", ".join(_unsupported))
 
+            from export.Kivy.code_generator import get_unsupported_events
+            _unsupported_events = get_unsupported_events()
+            if _unsupported_events:
+                logger.warning(
+                    "Kivy export: %d event(s) are not supported and their "
+                    "actions were skipped (the exported game will never run "
+                    "them): %s",
+                    len(_unsupported_events), ", ".join(_unsupported_events))
+
             logger.info("=" * 60)
             logger.info("Export completed successfully!")
             logger.info("=" * 60)
@@ -5116,6 +5125,9 @@ class {class_name}(GameObject):
             # Map event types to method names
             method_name = self._get_event_method_name(event)
             if not method_name:
+                from export.Kivy.code_generator import note_unsupported_event
+                logger.warning(f"Unsupported event '{event_type}' on {obj_name}: its actions are skipped")
+                note_unsupported_event(event_type)
                 continue
 
             # Generate method signature

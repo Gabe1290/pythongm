@@ -170,3 +170,34 @@ def test_ide_note_lists_skipped_actions_or_is_empty():
     note = PyGameMakerIDE._unsupported_actions_note(stub)
     assert "execute_script" in note and "skipped" in note
     cg.reset_unsupported_actions()
+
+
+# --- Stage P0: dropped EVENTS are surfaced too, not silently lost ---------------
+
+def test_unknown_event_is_recorded_and_reset():
+    cg.reset_unsupported_actions()
+    assert cg.get_unsupported_events() == []
+    cg.note_unsupported_event("microbit_button_a")
+    assert cg.get_unsupported_events() == ["microbit_button_a"]
+    cg.reset_unsupported_actions()
+    assert cg.get_unsupported_events() == []
+
+
+def test_kivy_export_reports_events_it_cannot_run():
+    """microbit_1 authors micro:bit events the Kivy generator has no handler
+    for; the export must say so instead of dropping them without a word."""
+    from export.Kivy.kivy_exporter import KivyExporter
+    data, sample = _merged("microbit_1")
+    out = Path(tempfile.mkdtemp(prefix="uae_ev_")) / "export"
+    KivyExporter(data, sample, out).export()
+    dropped = cg.get_unsupported_events()
+    assert "microbit_button_a" in dropped
+    assert all(e.startswith("microbit_") for e in dropped), dropped
+
+
+def test_clean_sample_reports_no_dropped_events():
+    from export.Kivy.kivy_exporter import KivyExporter
+    data, sample = _merged("maze_1")
+    out = Path(tempfile.mkdtemp(prefix="uae_ev2_")) / "export"
+    KivyExporter(data, sample, out).export()
+    assert cg.get_unsupported_events() == []
