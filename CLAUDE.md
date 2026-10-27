@@ -2494,8 +2494,58 @@ suite:
   exception Stage L's own sketch already accepts. ~140 new tests across
   the arc; full microbit+thymio suite green throughout (507+ passed, 0
   failed at X7).
-- **Still open**: X8 (combined/universal-hex, needs O5's firmware-licence
-  research first, not started) and Stages L/P (unchanged). **Needs a real
-  board**: the actual `microfs` serial write, and that the V1/V2 export
-  dialog + exported `main.py` behave correctly on both board revisions —
-  everything else in X0–X7 is tested with `microfs` mocked.
+- **Still open at this point**: X8 and Stages L/P — resolved/landed later
+  the same session, see the follow-on entry below.
+
+**2026-10-27 (same day, continued) — O5 resolved with real research;
+X8 built, scoped to V1 only after a genuine finding mid-implementation.**
+A background research agent resolved the O5 question the entry above
+left open: both firmware source trees (V1 `bbcmicrobit/micropython`, V2
+`microbit-foundation/micropython-microbit-v2`) are confirmed MIT straight
+from their `LICENSE` files, with no SoftDevice/BLE blob entanglement
+(`micropython-microbit-v2#51` — MicroPython doesn't support BLE from
+Python on either revision), and sizes are modest (~700 KB single-variant,
+~1.8 MB true Universal Hex). The real constraint turned out to be
+**tooling, not licensing**: the Universal Hex multiplexed format has no
+pure-Python implementation anywhere — only the JS `microbit-fs`/
+`microbit-universal-hex` libraries implement it — and `uflash`'s last
+release (2021) predates V2 entirely. Written up in
+`docs/MICROBIT_STAGE_X_PLAN.md`'s O5 and `617fb9a2`. User asked to
+implement X8 given it was now unblocked.
+- **A second, bigger finding surfaced actually starting X8**, caught
+  before any risky code was written: downloading the REAL official V2
+  firmware release (`micropython-microbit-v2.1.1.hex`, verified via
+  GitHub's release API, not assumed) and measuring its flash usage
+  directly found it already occupies up to `0x68000` — past V1's fixed
+  `SCRIPT_ADDR` (`0x3e000`) that `tools/hexlifyscript.py` hardcodes. So
+  V2 isn't "the same embedding trick at a different address" as the
+  plan's own O5 write-up first concluded — it needs a REAL flash
+  filesystem (littlefs-style, multi-file), located by parsing a
+  self-describing "Flash Regions Table" the firmware embeds (confirmed
+  by reading `microbit-fs`'s `flash-regions.ts` source directly).
+  Reimplementing that filesystem builder in Python is real and bounded
+  but meaningfully bigger and riskier to get right with no V2 board to
+  verify against — asked the user before proceeding rather than either
+  attempting untested V2 flash-image code or silently narrowing scope;
+  they chose V1-only, deferring V2 as its own separate follow-up.
+- **X8 (V1 only) landed in `dd74cdf5`.** Vendored the real official V1
+  firmware release (`micropython-microbit-v1.1.1.hex`, MIT, SHA-256
+  recorded in `THIRD_PARTY_LICENSES.md`, marked `binary` in
+  `.gitattributes` so git never touches its line endings and the
+  committed bytes always match that hash) and ported
+  `tools/hexlifyscript.py` + `tools/makecombinedhex.py`'s embedding
+  algorithm faithfully into `extensions/microbit/export/hex_build.py`
+  (in-memory strings/bytes instead of files/argparse, for testability).
+  Verified by a full embed-then-extract round-trip against the REAL
+  vendored firmware, not a synthetic fixture — the strongest check
+  available without a board — including boundary cases (empty script,
+  near-the-8KB-limit script). Wired into `export_microbit_code` as a new
+  V1-only "build a ready-to-flash .hex" offer alongside the existing
+  device-copy offer, gated the same way (only with exactly one object
+  exported). 25 new tests; full microbit+thymio suite 529 passed, 1
+  skipped, 0 failed.
+- **Still open**: a V2 combined-hex (needs the flash-filesystem builder
+  above, not started) and Stages L/P (unchanged). **Needs a real board**:
+  the actual `microfs` serial write, and that a built V1 `.hex` really
+  boots and runs — everything in X0–X8 is otherwise tested with `microfs`
+  mocked or against the real vendored firmware's structure.

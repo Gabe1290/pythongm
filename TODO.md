@@ -1029,15 +1029,20 @@ The simulator is done (`docs/MICROBIT_EXTENSION_PLAN.md`, Stage S). Open, in
 rough order of value:
 - **Stage L — live link:** drive the simulator from a real micro:bit over USB
   serial (bridge program + `pyserial`). Needs a physical board.
-- ~~**Stage X — MicroPython export**~~ **MVP done, 2026-10-27**
-  (`docs/MICROBIT_STAGE_X_PLAN.md`, units X0-X7): File menu -> "Export
+- ~~**Stage X — MicroPython export**~~ **done for V1, 2026-10-27**
+  (`docs/MICROBIT_STAGE_X_PLAN.md`, units X0-X8): File menu -> "Export
   micro:bit (MicroPython) code..." generates a `main.py` per micro:bit
-  object and can copy it straight onto a board already running
-  MicroPython via `microfs`. **Still open: X8**, a combined/universal
-  `.hex` for a factory-fresh board (no prior MicroPython flash needed) --
-  blocked on O5, researching the compiled-firmware binaries' own licence/
-  size, not yet started. Needs a physical board to verify the real
-  serial write (everything else is tested with `microfs` mocked).
+  object; can copy it straight onto a board already running MicroPython
+  via `microfs`, or (V1 only) build a ready-to-flash combined `.hex` for
+  a factory-fresh board, no prior MicroPython flash needed. **Still open:
+  a V2 combined hex** — building X8 against the real downloaded V2
+  firmware found it needs a real flash-filesystem builder (littlefs-
+  style, multi-file located via a self-describing table the firmware
+  embeds), not just a different embedding address like V1's — a separate,
+  meaningfully bigger task, not started. Needs a physical board to verify
+  the real serial write and that a built V1 `.hex` actually boots and
+  runs (everything else is tested with `microfs` mocked / against the
+  real vendored firmware's structure).
 - **Stage P — export parity:** port the simulator, overlay and input to HTML5
   and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
   drops the micro:bit *events* silently** (its generator ignores event names it
