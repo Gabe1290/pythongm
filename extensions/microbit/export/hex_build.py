@@ -14,21 +14,25 @@ without real hardware: this is pure, deterministic Intel Hex text
 manipulation, no device needed to verify its structure, the same tier
 the plan's own golden-output tests already use.
 
-V2 is NOT supported here. V2's firmware uses a real flash filesystem
-(littlefs-style, multi-file), found by parsing a self-describing "Flash
-Regions Table" baked into the firmware -- confirmed by downloading the
-official v2.1.1 release and measuring its flash usage directly: it
-already extends to 0x68000, well past this module's fixed V1
-``SCRIPT_ADDR`` (0x3e000), so that address is simply wrong for V2, not
-just unmaintained. Reimplementing V2's filesystem builder in Python is
-a real, bounded, but separate and larger task -- not started.
+V2 is a different mechanism and lives in the second half of this module
+(``build_v2_hex``, docs/MICROBIT_V2_HEX_PLAN.md): V2's firmware already reaches
+0x68000, past this module's fixed V1 ``SCRIPT_ADDR`` (0x3E000), so instead of
+appending a script it writes ``main.py`` into the MicroPython **file system**,
+whose location the firmware states in its own Flash Regions Table (``mpfs.py``,
+``flash_regions.py``, ``intel_hex.py``).
 """
 import binascii
+import functools
 import struct
 from pathlib import Path
 
+from . import mpfs
+from .flash_regions import read_flash_regions
+from .intel_hex import parse_hex, to_hex
+
 FIRMWARE_DIR = Path(__file__).parent / "firmware"
 V1_FIRMWARE_HEX = FIRMWARE_DIR / "micropython-microbit-v1.1.1.hex"
+V2_FIRMWARE_HEX = FIRMWARE_DIR / "micropython-microbit-v2.1.2.hex"
 
 _IHEX_TYPE_DATA = 0
 _IHEX_TYPE_EXT_LIN_ADDR = 4
@@ -168,3 +172,71 @@ def extract_script(combined_hex: str) -> bytes:
         raise ValueError("No embedded script found at SCRIPT_ADDR.")
     length = struct.unpack('<H', data[2:4])[0]
     return data[4:4 + length]
+
+
+# --------------------------------------------------------------------------
+# V2: main.py in the MicroPython file system
+# --------------------------------------------------------------------------
+
+V2_SCRIPT_NAME = "main.py"
+
+
+@functools.lru_cache(maxsize=1)
+def _v2_firmware():
+    """The vendored V2 firmware parsed once: ``(memory, start_records,
+    layout)``. Callers must ``clone()`` the memory before changing it."""
+    memory, start_records = parse_hex(V2_FIRMWARE_HEX.read_text(encoding="ascii"))
+    layout = mpfs.layout_from_regions(read_flash_regions(memory))
+    return memory, start_records, layout
+
+
+def v2_max_script_size() -> int:
+    """The largest ``main.py`` (bytes) a V2 combined hex can hold."""
+    return mpfs.max_file_size(_v2_firmware()[2], V2_SCRIPT_NAME)
+
+
+def build_v2_hex(script: bytes, firmware_hex: str = None) -> str:
+    """The V2 firmware (Intel Hex text) with ``script`` as ``main.py`` in its
+    file system: ready to drag onto a factory-fresh V2 board's MICROBIT drive.
+
+    Every byte outside the file system region is the firmware's own, untouched;
+    records come out in ascending address order. ``firmware_hex`` substitutes
+    another V2 firmware (the vendored v2.1.2 by default). Raises
+    ``ScriptTooLargeError`` if the script does not fit, ``ValueError`` for an
+    empty one or a hex that is not a V2 MicroPython firmware.
+    """
+    script = bytes(script)
+    if not script:
+        raise ValueError("The script is empty; there is nothing to flash.")
+    if firmware_hex is None:
+        base, start_records, layout = _v2_firmware()
+        memory = base.clone()
+    else:
+        memory, start_records = parse_hex(firmware_hex)
+        layout = mpfs.layout_from_regions(read_flash_regions(memory))
+    limit = mpfs.max_file_size(layout, V2_SCRIPT_NAME)
+    if len(script) > limit:
+        raise ScriptTooLargeError(
+            f"Script too large for a V2 micro:bit: {len(script)} bytes (the most a "
+            f"V2 board's file system holds is {limit}).")
+    mpfs.add_file(memory, layout, V2_SCRIPT_NAME, script)
+    return to_hex(memory, start_records)
+
+
+def build_v2_combined_hex(main_py_path, output_hex_path) -> None:
+    """Read ``main_py_path``, build the V2 hex around it and write it to
+    ``output_hex_path`` (the V2 twin of ``build_v1_combined_hex``)."""
+    script = Path(main_py_path).read_bytes()
+    Path(output_hex_path).write_text(build_v2_hex(script), encoding="utf-8")
+
+
+def extract_v2_script(combined_hex: str) -> bytes:
+    """The ``main.py`` inside a V2 hex, read back through the file system the way
+    the device does -- the mirror of ``build_v2_hex``, used by the tests as the
+    strongest round-trip check available without a board."""
+    memory, _ = parse_hex(combined_hex)
+    layout = mpfs.layout_from_regions(read_flash_regions(memory))
+    files = mpfs.read_files(memory, layout)
+    if V2_SCRIPT_NAME not in files:
+        raise ValueError("No main.py found in this hex's file system.")
+    return files[V2_SCRIPT_NAME]
