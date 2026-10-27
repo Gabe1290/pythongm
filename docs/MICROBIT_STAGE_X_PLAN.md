@@ -231,8 +231,8 @@ than emitting code that will raise `AttributeError` on an older board, for:
 
 | Unit | What | Done |
 |---|---|---|
-| X0 | Commit this plan. | [ ] |
-| X1 | `export/micropython_exporter.py` skeleton: find `microbit*` objects (mirrors Thymio's `_find_thymio_objects`), load merged object data (`utils.project_file_merge`), emit one `main.py` per object with just the Create-event setup lines and an empty `while True: pass` loop. Test: a two-board sample project produces two distinct files, non-microbit objects are skipped, output is valid Python (`py_compile`). | [ ] |
+| X0 | Commit this plan. | [x] `9f55d14d` |
+| X1 | `export/micropython_exporter.py` skeleton: find `microbit*` objects (mirrors Thymio's `_find_thymio_objects`), load merged object data (`utils.project_file_merge`), emit one `main.py` per object with just the Create-event setup lines and an empty `while True: pass` loop. Test: a two-board sample project produces two distinct files, non-microbit objects are skipped, output is valid Python (`py_compile`). | [x] (commit pending) |
 | X2 | Display + sound action translators (the first two mapping-table sections above), plus the brightness 255->9 conversion and the melody-tempo conversion, each with a dedicated test asserting the exact emitted line. | [ ] |
 | X3 | Radio + sensor-read translators, the V1/V2 export-dialog option (O6), and the V1/V2 skip-and-warn behaviour (O2) with tests for both a V1 and a V2 export of the same project. | [ ] |
 | X4 | Condition translators (`if_button`/`if_gesture`/`if_tilt`/`if_pixel`) plus the generic `set_variable`/`test_variable`/`comment`/block-structure subset, with indent-level tracking (same approach as `AsebaExporter.indent_level`). | [ ] |
