@@ -1,14 +1,17 @@
 """Regression tests for the micro:bit MicroPython exporter (Stage X, units
-X1-X4). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
+X1-X5). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
 file-layout; X2 is the display+sound action translators; X3 is radio +
 sensor-read translators, plus the V1/V2 export choice (O6) and the
 skip-and-warn behaviour for V2-only actions on a V1 export (O2); X4 is the
 four condition translators plus the generic set_variable/test_variable/
 comment/block-structure subset, with the flat-list-to-nested-Python
-control-flow translation that needs. Event polling (X5) isn't wired yet,
-so these tests still reach actions only through the Create/Step events.
-Anything outside this plan's scope entirely (ordinary core actions with
-no micro:bit meaning) is still correctly reported as unsupported.
+control-flow translation that needs; X5 is event polling -- every
+microbit_* event joins the while-loop body as a guard, with hand-rolled
+edge tracking for buttons/logo/pins/sound (no native edge-triggered call
+on the device) and the native was_gesture()/radio.receive() for
+everything else. Anything outside this plan's scope entirely (ordinary
+core actions with no micro:bit meaning) is still correctly reported as
+unsupported.
 """
 import json
 import py_compile
@@ -732,3 +735,272 @@ class TestX4StartBlockAndElse:
         assert ("if button_a.is_pressed():\n"
                 "    if accelerometer.is_gesture('shake'):\n"
                 "        display.show(Image.HAPPY)") in source
+
+
+def _events_main(events, tmp_path, board_version="v2"):
+    """A main.py generated for an object with an arbitrary ``events``
+    dict -- X5's event-polling tests need several different event names
+    at once, not just one action at a time."""
+    proj = tmp_path / "project.json"
+    proj.write_text(json.dumps({
+        "name": "TestProject",
+        "assets": {"objects": {"microbit_1": {"events": events}}},
+    }), encoding="utf-8")
+    out = tmp_path / "out"
+    export(str(proj), str(out), board_version=board_version)
+    return (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
+
+
+def _one_event(name, action, parameters):
+    return {name: {"actions": [{"action": action, "parameters": parameters}]}}
+
+
+class TestX5ButtonEvents:
+    def test_button_a_alone(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_button_a", "microbit_show_image", {"image": "HAPPY"}),
+            tmp_path)
+        assert "_button_a_now = button_a.is_pressed()" in source
+        assert "if _button_a_edge:" in source
+        assert "display.show(Image.HAPPY)" in source
+        # b/ab aren't authored -- no guard for them, but the shared
+        # state they'd need is still computed (button_a/b share it).
+        assert "if _button_b_edge:" not in source
+        assert "(_button_a_edge and _button_b_now)" not in source
+
+    def test_button_b_alone(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_button_b", "microbit_show_image", {"image": "SAD"}),
+            tmp_path)
+        assert "if _button_b_edge:" in source
+        assert "if _button_a_edge:" not in source
+
+    def test_button_ab_combo(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_button_ab", "microbit_stop_sound", {}),
+            tmp_path)
+        assert ("if (_button_a_edge and _button_b_now) or "
+                "(_button_b_edge and _button_a_now):") in source
+        assert "music.stop()" in source
+
+    def test_no_button_state_without_any_button_event(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_gesture_shake", "microbit_stop_sound", {}),
+            tmp_path)
+        assert "_prev_button_a" not in source
+        assert "button_a.is_pressed()" not in source
+
+    def test_all_three_button_events_together(self, tmp_path):
+        source = _events_main({
+            "microbit_button_a": {"actions": [
+                {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}}]},
+            "microbit_button_b": {"actions": [
+                {"action": "microbit_show_image", "parameters": {"image": "SAD"}}]},
+            "microbit_button_ab": {"actions": [
+                {"action": "microbit_play_tone", "parameters": {"frequency": 880}}]},
+        }, tmp_path)
+        assert "if _button_a_edge:" in source
+        assert "if _button_b_edge:" in source
+        assert "(_button_a_edge and _button_b_now)" in source
+        # Shared state initialised exactly once, not once per event.
+        assert source.count("_prev_button_a = False") == 1
+
+
+class TestX5LogoAndPinEvents:
+    def test_logo_touched_on_v2(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_logo_touched", "microbit_clear_display", {}),
+            tmp_path, board_version="v2")
+        assert "pin_logo.is_touched()" in source
+        assert "display.clear()" in source
+
+    def test_logo_touched_skipped_and_warned_on_v1(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_logo_touched", "microbit_clear_display", {}),
+            tmp_path, board_version="v1")
+        assert "pin_logo" not in source
+        assert "display.clear()" not in source
+        assert "Not exported -- needs a V2 board" in source
+        assert "microbit_logo_touched" in source
+
+    def test_pin_0_1_2(self, tmp_path):
+        for n in (0, 1, 2):
+            source = _events_main(
+                _one_event(f"microbit_pin_{n}", "microbit_clear_display", {}),
+                tmp_path)
+            assert f"pin{n}.is_touched()" in source
+            assert f"_prev_pin{n} = False" in source
+
+    def test_unused_pins_get_no_state(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_pin_0", "microbit_clear_display", {}),
+            tmp_path)
+        assert "_prev_pin1" not in source
+        assert "_prev_pin2" not in source
+
+
+class TestX5GestureEvents:
+    def test_every_gesture_event_maps_to_its_raw_name(self, tmp_path):
+        cases = [
+            ("microbit_gesture_shake", "shake"),
+            ("microbit_gesture_logo_up", "up"),
+            ("microbit_gesture_logo_down", "down"),
+            ("microbit_gesture_tilt_left", "left"),
+            ("microbit_gesture_tilt_right", "right"),
+            ("microbit_gesture_screen_up", "face up"),
+            ("microbit_gesture_screen_down", "face down"),
+            ("microbit_gesture_free_fall", "freefall"),
+            ("microbit_gesture_2g", "2g"),
+            ("microbit_gesture_3g", "3g"),
+            ("microbit_gesture_6g", "6g"),
+            ("microbit_gesture_8g", "8g"),
+        ]
+        for event_name, raw in cases:
+            source = _events_main(
+                _one_event(event_name, "microbit_stop_sound", {}), tmp_path)
+            assert f"accelerometer.was_gesture({raw!r})" in source
+
+    def test_gestures_need_no_hand_rolled_state(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_gesture_shake", "microbit_stop_sound", {}),
+            tmp_path)
+        assert "_prev" not in source
+
+
+class TestX5SoundEvents:
+    def test_loud_sound_on_v2(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_loud_sound", "microbit_show_image", {"image": "YES"}),
+            tmp_path, board_version="v2")
+        assert "microphone.sound_level()" in source
+        assert '_sound_state != "loud" and _sound_level_now > 196' in source
+        assert "display.show(Image.YES)" in source
+
+    def test_quiet_sound_on_v2(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_quiet_sound", "microbit_show_image", {"image": "NO"}),
+            tmp_path, board_version="v2")
+        assert '_sound_state != "quiet" and _sound_level_now < 118' in source
+        assert "display.show(Image.NO)" in source
+
+    def test_both_loud_and_quiet_share_one_state_machine(self, tmp_path):
+        source = _events_main({
+            "microbit_loud_sound": {"actions": [
+                {"action": "microbit_show_image", "parameters": {"image": "YES"}}]},
+            "microbit_quiet_sound": {"actions": [
+                {"action": "microbit_show_image", "parameters": {"image": "NO"}}]},
+        }, tmp_path)
+        assert source.count('_sound_state = "quiet"') == 2  # init + the elif branch
+        assert "elif" in source
+
+    def test_sound_events_skipped_and_warned_on_v1(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_loud_sound", "microbit_show_image", {"image": "YES"}),
+            tmp_path, board_version="v1")
+        assert "microphone" not in source
+        assert "Not exported -- needs a V2 board" in source
+        assert "microbit_loud_sound" in source
+
+
+class TestX5RadioReceivedEvent:
+    def test_radio_received_sets_both_variables(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_radio_received", "set_variable",
+                       {"variable": "last", "value": "radio_number"}),
+            tmp_path)
+        assert "_radio_msg = radio.receive()" in source
+        assert "if _radio_msg is not None:" in source
+        assert "radio_string = _radio_msg" in source
+        assert "radio_number = _radio_as_number(_radio_msg)" in source
+        assert "last = radio_number" in source
+
+    def test_radio_as_number_helper_mirrors_radio_py(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_radio_received", "set_variable",
+                       {"variable": "last", "value": "radio_number"}),
+            tmp_path)
+        assert "def _radio_as_number(value):" in source
+        assert "int(n) if n == int(n) else n" in source
+
+    def test_no_radio_as_number_helper_without_the_event(self, tmp_path):
+        source = _setup_lines("microbit_radio_send", {"value": "1"}, tmp_path)
+        assert "_radio_as_number" not in source
+
+    def test_radio_on_injected_once_for_the_event_alone(self, tmp_path):
+        # Confirms the event (not just the radio_send/radio_set_group
+        # actions from X3) also triggers the one-time radio.on().
+        source = _events_main(
+            _one_event("microbit_radio_received", "microbit_stop_sound", {}),
+            tmp_path)
+        assert source.count("radio.on()") == 1
+
+
+class TestX5UnsupportedDoneEvents:
+    def test_display_done_is_unsupported_not_dropped(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_display_done", "microbit_clear_display", {}),
+            tmp_path)
+        assert "display.clear()" not in source
+        assert "Not exported" in source
+        assert "microbit_display_done" in source
+
+    def test_sound_done_is_unsupported_not_dropped(self, tmp_path):
+        source = _events_main(
+            _one_event("microbit_sound_done", "microbit_stop_sound", {}),
+            tmp_path)
+        assert "music.stop()" not in source
+        assert "Not exported" in source
+        assert "microbit_sound_done" in source
+
+    def test_empty_done_events_are_silent(self, tmp_path):
+        # An event present in the JSON with no actions at all (e.g. an
+        # authored-then-emptied handler) shouldn't appear as a warning.
+        source = _events_main({"microbit_display_done": {"actions": []}}, tmp_path)
+        assert "microbit_display_done" not in source
+
+
+class TestX5RealSampleEndToEnd:
+    """samples/microbit_1 end to end: Create + button_a/b + gesture_shake
+    (the dice chain) + logo_touched (scroll + show_number) all together,
+    through the real sample file -- not a synthetic fixture."""
+
+    def _generated(self):
+        import tempfile
+        out = tempfile.mkdtemp()
+        export("samples/microbit_1/project.json", out)
+        from pathlib import Path
+        return (Path(out) / "microbit_1" / "main.py").read_text(encoding="utf-8")
+
+    def test_compiles(self):
+        import py_compile
+        import tempfile
+        out = tempfile.mkdtemp()
+        export("samples/microbit_1/project.json", out)
+        from pathlib import Path
+        py_compile.compile(str(Path(out) / "microbit_1" / "main.py"), doraise=True)
+
+    def test_create_event_setup(self):
+        source = self._generated()
+        assert "rolls = 0" in source
+        assert "display.show(Image.HEART)" in source
+
+    def test_button_events(self):
+        source = self._generated()
+        assert "if _button_a_edge:\n        display.show(Image.HAPPY)" in source
+        assert "if _button_b_edge:\n        display.show(Image.SAD)" in source
+
+    def test_gesture_shake_dice_chain(self):
+        source = self._generated()
+        assert "if accelerometer.was_gesture('shake'):" in source
+        assert "roll = random.randint(0, 5) + 1" in source
+        assert "if roll == (6):" in source
+        assert "rolls += (1)" in source
+
+    def test_logo_touched_scroll_and_number(self):
+        source = self._generated()
+        assert 'display.scroll("Rolls", delay=150)' in source
+        assert "display.show(rolls)" in source
+
+    def test_only_one_while_loop(self):
+        source = self._generated()
+        assert source.count("while True:") == 1

@@ -19,9 +19,18 @@ actually uses) ARE rewritten onto Python's ``random`` module (X4, where
 (``GM_MATH_FUNCTIONS`` and friends) still passes through unchanged, a
 documented, narrower-than-core MVP limit.
 
-Event polling (X5) is not wired yet, so only the Create and Step events
-are scanned; any condition/variable action elsewhere in the object is
-correctly invisible to this exporter for now, not a bug.
+Event polling (X5): buttons and gestures have native edge-triggered
+checks on the device (``was_pressed()``/``was_gesture()``), so no
+hand-rolled state is needed for those alone -- but the A+B combo event
+needs level reads (``is_pressed()``) and its own edge tracking anyway
+(the simulator's own rule: pressing the second button while the first is
+already held fires BOTH the single-button and the combo event, which
+``was_pressed()`` alone can't express without double-consuming the
+flag), and pin touches / logo touch / loud-quiet sound have no
+edge-triggered call on the device at all and need the same hand-rolled
+``_prev_x`` pattern. ``microbit_display_done``/``microbit_sound_done``
+have no real-device equivalent (the device's own display/sound calls are
+already blocking) and are reported unsupported, not silently dropped.
 """
 import json
 import re
@@ -33,6 +42,8 @@ from core.logger import get_logger
 from ..images import IMAGES
 from ..melodies import MELODIES
 from ..actions import SENSORS, GESTURES
+from ..events import GESTURE_NAMES
+from ..simulator import LOUD_THRESHOLD, QUIET_THRESHOLD
 
 logger = get_logger(__name__)
 
@@ -54,6 +65,14 @@ _QUESTION_ACTIONS = frozenset({
 _COMPARE_OPS = {
     "equal": "==", "less": "<", "greater": ">",
     "less_equal": "<=", "greater_equal": ">=", "not_equal": "!=",
+}
+
+# "microbit_gesture_<suffix>" -> the raw MicroPython gesture name
+# accelerometer.was_gesture() takes -- inverts events.py's own GESTURE_NAMES
+# (one source of truth) rather than re-deriving the mapping here.
+_GESTURE_EVENT_TO_RAW = {
+    f"microbit_gesture_{suffix}": raw
+    for raw, (suffix, _label, _icon) in GESTURE_NAMES.items()
 }
 
 _IRANDOM_RE = re.compile(r'\birandom\s*\(')
@@ -259,8 +278,9 @@ class MicropythonExporter:
         before the import line so it can name only the modules actually
         used -- ``music``/``radio`` are separate MicroPython modules, not
         part of ``from microbit import *``."""
-        setup_section = self._generate_setup(obj_data)
-        body = self._generate_loop_body(obj_data)
+        event_setup, event_loop = self._generate_event_polling(obj_data)
+        setup_section = self._generate_setup(obj_data, event_setup)
+        body = self._generate_loop_body(obj_data, event_loop)
 
         used_source = (setup_section or "") + "\n" + (body or "")
         imports = ["from microbit import *"]
@@ -274,6 +294,18 @@ class MicropythonExporter:
         lines = [self._generate_header(obj_name, project_data), ""]
         lines.extend(imports)
         lines.append("")
+
+        if "_radio_as_number(" in used_source:
+            # Mirrors radio.py's as_number(): a number stays a number
+            # (and a whole-valued float becomes an int, matching the
+            # simulator exactly), anything else is 0.
+            lines.append("def _radio_as_number(value):")
+            lines.append("    try:")
+            lines.append("        n = float(value)")
+            lines.append("    except (TypeError, ValueError):")
+            lines.append("        return 0")
+            lines.append("    return int(n) if n == int(n) else n")
+            lines.append("")
 
         # One-time device setup these calls need before they're safe to
         # use, regardless of how many actions in the object call them:
@@ -325,20 +357,26 @@ class MicropythonExporter:
             f"# automatically on startup."
         )
 
-    def _generate_setup(self, obj_data) -> str:
+    def _generate_setup(self, obj_data, event_setup=()) -> str:
         events = obj_data.get('events', {})
         actions = events.get('create', {}).get('actions', [])
         nodes, _ = self._parse_actions(actions, 0)
         lines = self._render_nodes(nodes, 0)
-        if not lines:
-            return ""
-        return '\n'.join(["# -- setup (from the Create event) --"] + lines)
+        sections = []
+        if lines:
+            sections.append('\n'.join(["# -- setup (from the Create event) --"] + lines))
+        if event_setup:
+            sections.append('\n'.join(
+                ["# -- event-polling state (X5) --"] + list(event_setup)))
+        return '\n\n'.join(sections)
 
-    def _generate_loop_body(self, obj_data) -> str:
+    def _generate_loop_body(self, obj_data, event_loop=()) -> str:
         events = obj_data.get('events', {})
         actions = events.get('step', {}).get('actions', [])
         nodes, _ = self._parse_actions(actions, 0)
         lines = self._render_nodes(nodes, 1)
+        if event_loop:
+            lines = lines + list(event_loop)
         return '\n'.join(lines)
 
     # -- Flat-list control flow -> nested Python (X4) ------------------------
@@ -663,6 +701,128 @@ class MicropythonExporter:
         comparison = str(params.get("comparison", ">")).strip()
         value = _expr(params.get("value"), "0")
         return f"display.get_pixel({x}, {y}) {comparison} ({value})"
+
+    # -- Event polling (X5) --------------------------------------------------
+
+    def _event_body(self, events, event_name):
+        """The action list for one event, parsed and rendered one level
+        inside the polling guard that will contain it (indent 2: 1 for
+        the while loop, 1 for the guard's own if)."""
+        actions = events.get(event_name, {}).get('actions', [])
+        if not actions:
+            return None
+        nodes, _ = self._parse_actions(actions, 0)
+        return self._render_nodes(nodes, 2)
+
+    def _generate_event_polling(self, obj_data):
+        """State-init lines (for setup) and polling if-blocks (for the
+        while-loop body, indent 1) for every event type the object
+        actually uses. See the module docstring for which events have a
+        native edge-triggered device call and which need hand-rolled
+        level-to-edge tracking."""
+        events = obj_data.get('events', {})
+        setup, loop = [], []
+
+        # Buttons: a/b/ab share state (pressing the second while the
+        # first is held fires BOTH the single-button and the combo
+        # event -- simulator.py's set_button -- which was_pressed()
+        # alone can't express without double-consuming the flag), so
+        # they're generated as one unit whenever any of the three is
+        # authored.
+        a_body = self._event_body(events, "microbit_button_a")
+        b_body = self._event_body(events, "microbit_button_b")
+        ab_body = self._event_body(events, "microbit_button_ab")
+        if a_body or b_body or ab_body:
+            setup.append("_prev_button_a = False")
+            setup.append("_prev_button_b = False")
+            loop.append("    _button_a_now = button_a.is_pressed()")
+            loop.append("    _button_b_now = button_b.is_pressed()")
+            loop.append("    _button_a_edge = _button_a_now and not _prev_button_a")
+            loop.append("    _button_b_edge = _button_b_now and not _prev_button_b")
+            if a_body:
+                loop.append("    if _button_a_edge:")
+                loop.extend(a_body)
+            if b_body:
+                loop.append("    if _button_b_edge:")
+                loop.extend(b_body)
+            if ab_body:
+                loop.append("    if (_button_a_edge and _button_b_now) or "
+                             "(_button_b_edge and _button_a_now):")
+                loop.extend(ab_body)
+            loop.append("    _prev_button_a = _button_a_now")
+            loop.append("    _prev_button_b = _button_b_now")
+
+        # Logo touch -- V2 only (pin_logo), no was_touched() on the
+        # device, same hand-rolled edge tracking as the pins below.
+        logo_body = self._event_body(events, "microbit_logo_touched")
+        if logo_body:
+            if self.board_version == "v1":
+                self.v1_incompatible.add("microbit_logo_touched")
+            else:
+                setup.append("_prev_logo = False")
+                loop.append("    _logo_now = pin_logo.is_touched()")
+                loop.append("    if _logo_now and not _prev_logo:")
+                loop.extend(logo_body)
+                loop.append("    _prev_logo = _logo_now")
+
+        # Pins 0/1/2 -- no was_touched() either.
+        for n in (0, 1, 2):
+            pin_body = self._event_body(events, f"microbit_pin_{n}")
+            if pin_body:
+                setup.append(f"_prev_pin{n} = False")
+                loop.append(f"    _pin{n}_now = pin{n}.is_touched()")
+                loop.append(f"    if _pin{n}_now and not _prev_pin{n}:")
+                loop.extend(pin_body)
+                loop.append(f"    _prev_pin{n} = _pin{n}_now")
+
+        # Gestures -- accelerometer.was_gesture() is already edge-
+        # triggered on the device, so no hand-rolled state is needed.
+        for event_name, raw_gesture in _GESTURE_EVENT_TO_RAW.items():
+            body = self._event_body(events, event_name)
+            if body:
+                loop.append(f"    if accelerometer.was_gesture({raw_gesture!r}):")
+                loop.extend(body)
+
+        # Loud/quiet sound -- V2 only (microphone), same hysteresis band
+        # the simulator uses (simulator.py's LOUD_THRESHOLD/
+        # QUIET_THRESHOLD) so a program behaves the same ported from the
+        # simulator to a real device.
+        loud_body = self._event_body(events, "microbit_loud_sound")
+        quiet_body = self._event_body(events, "microbit_quiet_sound")
+        if loud_body or quiet_body:
+            if self.board_version == "v1":
+                self.v1_incompatible.add("microbit_loud_sound/microbit_quiet_sound")
+            else:
+                setup.append('_sound_state = "quiet"')
+                loop.append("    _sound_level_now = microphone.sound_level()")
+                loop.append(f'    if _sound_state != "loud" and '
+                             f'_sound_level_now > {LOUD_THRESHOLD}:')
+                loop.append('        _sound_state = "loud"')
+                loop.extend(loud_body or [])
+                loop.append(f'    elif _sound_state != "quiet" and '
+                             f'_sound_level_now < {QUIET_THRESHOLD}:')
+                loop.append('        _sound_state = "quiet"')
+                loop.extend(quiet_body or [])
+
+        # Radio -- no edge concept, just "did a message arrive this
+        # pass". radio.on() and `import radio` are already covered by
+        # generate_main's "radio." substring check against this call.
+        radio_body = self._event_body(events, "microbit_radio_received")
+        if radio_body:
+            loop.append("    _radio_msg = radio.receive()")
+            loop.append("    if _radio_msg is not None:")
+            loop.append("        radio_string = _radio_msg")
+            loop.append("        radio_number = _radio_as_number(_radio_msg)")
+            loop.extend(radio_body)
+
+        # No real-device equivalent at all -- the device's own display/
+        # sound calls are already blocking, so "done" has no polling
+        # analogue. Reported, not silently dropped.
+        for event_name in ("microbit_display_done", "microbit_sound_done"):
+            if events.get(event_name, {}).get('actions'):
+                self.unsupported.add(f"{event_name} (no real-device equivalent)")
+
+        return setup, loop
 
 
 def export(project_path, output_path=None, board_version="v2") -> bool:
