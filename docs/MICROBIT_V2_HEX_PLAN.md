@@ -110,7 +110,7 @@ These go in `docs/RELEASE_QA_CHECKLIST.md` s11a.
 
 | Unit | What | Done |
 |---|---|---|
-| H0 | Commit this plan. | [ ] |
+| H0 | Commit this plan. | [x] `3d0d0982` |
 | H1 | Vendor the V2 v2.1.2 firmware (+ licence/SHA-256, `.gitattributes`); `intel_hex.py` (parse to a sparse memory map, emit ascending 16-byte records with extended-address records) and `flash_regions.py` (find the table, read the regions). Tests: round-trip a real hex; the parser reports the measured v2.1.2 numbers. | [ ] |
 | H2 | `mpfs.py`: the chunk filesystem builder and independent reader, generic over (start, end, page size). Hand-derived known-answer vector, boundary round-trips, error cases (name too long, empty file, no space). | [ ] |
 | H3 | `build_v2_hex(main_py)`: firmware + filesystem -> one hex. Tests on the real firmware (invariants above), the too-large error, determinism. | [ ] |
