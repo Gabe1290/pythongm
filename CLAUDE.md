@@ -2580,4 +2580,4 @@ the V2 v2.1.2 firmware is vendored (MIT, SHA-256 in `THIRD_PARTY_LICENSES.md`).
   survived (this happened, and it looked like a test gap). (2) The Bash tool halves backslashes in heredocs (a \\xff in a script reached Python as a lone \xff, so a pattern silently matched nothing): build such strings with `chr(92)` or write the script with the Write tool. (3) A `QCoreApplication` created
   by a test (not a `QApplication`) kills the whole pytest process, with no Python
   traceback, at the next Qt test (found and fixed the same day in the `microbit_1`
-  sample test). (4) The Stage X dialog strings have no translations in ANY language.
+  sample test). (4) ~~The Stage X dialog strings have no translations~~ -- fixed 2026-10-27: all 36 are translated in the 10 shipped languages (`tests/test_microbit_export_ui_translations.py`).
