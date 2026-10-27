@@ -121,10 +121,15 @@ class MemoryMap:
         return isinstance(other, MemoryMap) and self.segments() == other.segments()
 
 
-def _record(address, record_type, data=b""):
+def make_record(address, record_type, data=b""):
+    """One record as text: ``:LLAAAATT<data>CC`` with the checksum filled in.
+    ``record_type`` is not restricted (the Universal Hex adds custom types)."""
     body = bytes([len(data), (address >> 8) & 0xFF, address & 0xFF, record_type]) + bytes(data)
     checksum = (-sum(body)) & 0xFF
     return ":" + binascii.hexlify(body + bytes([checksum])).decode("ascii").upper()
+
+
+_record = make_record          # the name the tests and this module used first
 
 
 def parse_hex(text):
