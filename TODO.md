@@ -1029,20 +1029,21 @@ The simulator is done (`docs/MICROBIT_EXTENSION_PLAN.md`, Stage S). Open, in
 rough order of value:
 - **Stage L — live link:** drive the simulator from a real micro:bit over USB
   serial (bridge program + `pyserial`). Needs a physical board.
-- ~~**Stage X — MicroPython export**~~ **done for V1, 2026-10-27**
-  (`docs/MICROBIT_STAGE_X_PLAN.md`, units X0-X8): File menu -> "Export
-  micro:bit (MicroPython) code..." generates a `main.py` per micro:bit
-  object; can copy it straight onto a board already running MicroPython
-  via `microfs`, or (V1 only) build a ready-to-flash combined `.hex` for
-  a factory-fresh board, no prior MicroPython flash needed. **Still open:
-  a V2 combined hex** — building X8 against the real downloaded V2
-  firmware found it needs a real flash-filesystem builder (littlefs-
-  style, multi-file located via a self-describing table the firmware
-  embeds), not just a different embedding address like V1's — a separate,
-  meaningfully bigger task, not started. Needs a physical board to verify
-  the real serial write and that a built V1 `.hex` actually boots and
-  runs (everything else is tested with `microfs` mocked / against the
-  real vendored firmware's structure).
+- ~~**Stage X — MicroPython export**~~ **done, 2026-10-27**
+  (`docs/MICROBIT_STAGE_X_PLAN.md` X0-X8, then `docs/MICROBIT_V2_HEX_PLAN.md`
+  H0-H7): File menu -> "Export micro:bit (MicroPython) code..." generates a
+  `main.py` per micro:bit object; copies it onto a board already running
+  MicroPython via `microfs`; and builds a ready-to-flash `.hex` for a
+  factory-fresh board: **V1**, **V2** (the file system, found through the
+  firmware's Flash Regions Table), or **one Universal Hex for both** (limited by
+  V1's 8 KB slot: 8,187 bytes). **Still open for it:** (a) needs a real board:
+  the actual `microfs` write, that each built `.hex` boots and runs, that a
+  Universal Hex flashes on both a V1 and a V2 (QA checklist s11a); (b) a
+  cross-check of the V2 file system bytes against the JavaScript reference
+  `microbit-fs` (needs Node; could not be run here) -- a difference is a bug;
+  (c) the older Universal Hex "blocks" layout; (d) the Stage X dialog strings
+  (the File-menu entry, the version question, the hex offers) are **English
+  only in every language**.
 - **Stage P — export parity:** port the simulator, overlay and input to HTML5
   and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
   drops the micro:bit *events* silently** (its generator ignores event names it

@@ -613,6 +613,18 @@ tests can pin is pinned; this is the part only eyes and ears can check.
 - L [ ] M [ ] W [ ] A **desktop export** of `microbit_1` shows the board
   (a missing extension fails silently in a frozen build). HTML5 and Android
   exports run without crashing but do not draw the board (planned, Stage P).
+- L [ ] M [ ] W [ ] **Stage X on real boards** (needs a V1 and a V2 board):
+  File -> *Export micro:bit (MicroPython) code...* on `microbit_1`, then *build a
+  .hex*. (1) V2 choice: drag the `.hex` onto a V2 board's MICROBIT drive, wait for
+  the copy to finish: the program runs (a heart, then A/B show the moods).
+  (2) V1 choice: the same on a V1 board. (3) **Both** choice: the SAME single
+  `.hex` on a V1 and then a V2 board. A hex that is refused or does nothing is a
+  bug in `extensions/microbit/export/`; say which board and which choice.
+- L [ ] M [ ] W [ ] **Optional cross-check (anyone with Node):** run the
+  reference `@microbit/microbit-fs` `addIntelHexFiles` over
+  `extensions/microbit/export/firmware/micropython-microbit-v2.1.2.hex` with the
+  same `main.py` and diff its file-system region (`0x6D000`-`0x73000`) against
+  ours; they must be identical.
 
 ---
 

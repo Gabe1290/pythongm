@@ -1,8 +1,11 @@
 # micro:bit extension -- Stage X plan (MicroPython export)
 
 Written 2026-10-27. Status: **X0-X8 all done, same day** (X8 scoped to V1
-only after a real build-time finding -- V2's combined hex needs a real
-flash-filesystem builder, a separate, bigger, not-yet-started task).
+only after a real build-time finding). **Update, same day: the V2 combined hex
+and the Universal Hex were then built too** -- see `docs/MICROBIT_V2_HEX_PLAN.md`.
+**Correction:** the notes below call V2's file system "littlefs-style"; that was
+wrong. It is the same chunk file system as V1, located through the firmware's
+Flash Regions Table (the V2 hex plan has the details).
 Expands the Stage X
 sketch in `docs/MICROBIT_EXTENSION_PLAN.md` (that file's own goal/ground
 rules/"what counts as a micro:bit" sections still apply and aren't repeated

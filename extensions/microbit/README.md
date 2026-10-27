@@ -32,7 +32,7 @@ The user-facing page is `wiki/Microbit.md`; the sample is `samples/microbit_1/`.
 | `handlers.py` | The action **handlers** (`PluginExecutor`). |
 | `translations.py` | French text for the auto-generated Blockly blocks. |
 | `README.md` | This file. |
-| `export/` | MicroPython export (Stage X, `docs/MICROBIT_STAGE_X_PLAN.md`): `export/micropython_exporter.py` generates a standalone real-device program per micro:bit object; `export/device.py` copies it onto a connected board over USB serial (`microfs`); `export/hex_build.py` + the vendored `export/firmware/micropython-microbit-v1.1.1.hex` build a ready-to-flash combined hex for a factory-fresh V1 board (V2's combined hex needs a real flash-filesystem builder, a separate, bigger, not-yet-started task); this folder's own `__init__.py` wires the File-menu entry via `PLUGIN_IDE_MENUS`. |
+| `export/` | MicroPython export (Stage X, `docs/MICROBIT_STAGE_X_PLAN.md`): `export/micropython_exporter.py` generates a standalone real-device program per micro:bit object; `export/device.py` copies it onto a connected board over USB serial (`microfs`); `export/hex_build.py` + the vendored firmware in `export/firmware/` (V1 v1.1.1, V2 v2.1.2) build a ready-to-flash hex for a factory-fresh board: V1 (script appended at a fixed address), V2 (the program saved as main.py in the MicroPython file system, via `export/intel_hex.py`, `export/flash_regions.py` and `export/mpfs.py`), or ONE Universal Hex for both (`export/universal_hex.py`), all described in `docs/MICROBIT_V2_HEX_PLAN.md`; this folder's own `__init__.py` wires the File-menu entry via `PLUGIN_IDE_MENUS`. |
 
 ## How it hooks in
 
@@ -113,6 +113,7 @@ computed rectangle fires `microbit_button_a`), and several run a real
 
 ## What is not here yet
 
-A live link to a real micro:bit over USB serial (Stage L), a combined-hex
-export for a factory-fresh V2 board (needs a real flash-filesystem builder,
-see `docs/MICROBIT_STAGE_X_PLAN.md`'s O5), and HTML5/Kivy parity (Stage P).
+A live link to a real micro:bit over USB serial (Stage L) and HTML5/Kivy
+parity (Stage P). The exported `.hex` files (V1, V2, Universal) are verified
+against the real firmware and by independent checks, but **not yet on a real
+board** -- see `docs/RELEASE_QA_CHECKLIST.md` s11a.

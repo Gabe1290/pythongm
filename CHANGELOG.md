@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   beginner edition) and a wiki page (English and French) show how it works.
   Works in Test Game and the desktop export; HTML5 and Android exports still
   run but skip the micro:bit actions and don't draw the board yet.
+- **micro:bit: a ready-to-flash `.hex` for V2 boards, and one file for both.**
+  File -> "Export micro:bit (MicroPython) code..." can now build a `.hex` that a
+  factory-fresh V2 board runs by drag-and-drop (previously V1 only), and a new
+  "Both" choice builds ONE Universal Hex that flashes on either a V1 or a V2.
+  Built from the official MIT-licensed V2 firmware (v2.1.2) vendored in the
+  repository. Not yet tried on a real board.
 - Extensions can now ship their own translations for the auto-generated
   Blockly blocks (`PLUGIN_GENERATED_BLOCK_TRANSLATIONS`); the micro:bit's are
   in French.

@@ -2549,3 +2549,35 @@ implement X8 given it was now unblocked.
   the actual `microfs` serial write, and that a built V1 `.hex` really
   boots and runs — everything in X0–X8 is otherwise tested with `microfs`
   mocked or against the real vendored firmware's structure.
+
+**2026-10-27 — micro:bit V2 combined `.hex` and the Universal Hex (plan
+`docs/MICROBIT_V2_HEX_PLAN.md`, H0-H7, all done).** Picked up the two items Stage X
+left open. File menu -> "Export micro:bit (MicroPython) code..." now offers a
+ready-to-flash `.hex` for V2 and a third version choice, "Both", that builds ONE
+Universal Hex (V1 + V2, ~1.9 MB, limited by V1's 8 KB slot = 8,187 bytes; V2 alone
+holds 20,150). New pure modules in `extensions/microbit/export/`: `intel_hex.py`
+(sparse memory map, strict parse/emit), `flash_regions.py` (the V2 regions table),
+`mpfs.py` (the chunk file system: build + independent reader), `universal_hex.py`
+("sections" format); `hex_build.py` gained `build_v2_hex` / `build_universal_hex`;
+the V2 v2.1.2 firmware is vendored (MIT, SHA-256 in `THIRD_PARTY_LICENSES.md`).
+~300 new tests; every unit mutation-checked.
+- **A correction worth knowing:** the notes above (X8) say V2's file system is
+  "littlefs-style". **It is not.** It is the SAME 128-byte-chunk file system as V1
+  (`filesystem.c`); only its location differs, and V2 states it in a Flash Regions
+  Table at the end of the runtime's last page (measured on the real firmware: pages
+  109-114, `0x6D000`-`0x73000`, runtime ending at `0x68000`).
+- **Verification limits, stated plainly:** no V2 board; and the reference JS library
+  (`microbit-fs`, the natural oracle) could NOT be run — executing a downloaded
+  Node binary + npm packages was refused by the environment's safety classifier,
+  rightly, and was not worked around. So the checks are the real firmware (every
+  byte outside the file system region unchanged, the region holds exactly the
+  expected chunks, ascending addresses, valid checksums), two known-answer vectors
+  derived by hand, the reference's own hard-coded record strings, a 512-alignment
+  property test, and round-trips through an independent reader. **Not yet checked:**
+  a real board (QA checklist s11a), and a byte diff against the JS reference.
+- **Landmines:** (1) a `sed`-applied "mutation" can silently match nothing, and the
+  run then "passes" — confirm the file really changed before believing a mutation
+  survived (this happened, and it looked like a test gap). (2) The Bash tool halves backslashes in heredocs (a \\xff in a script reached Python as a lone \xff, so a pattern silently matched nothing): build such strings with `chr(92)` or write the script with the Write tool. (3) A `QCoreApplication` created
+  by a test (not a `QApplication`) kills the whole pytest process, with no Python
+  traceback, at the next Qt test (found and fixed the same day in the `microbit_1`
+  sample test). (4) The Stage X dialog strings have no translations in ANY language.

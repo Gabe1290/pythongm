@@ -1,6 +1,7 @@
 # micro:bit extension -- V2 combined `.hex` and the Universal Hex
 
-Written 2026-10-27. Status: **not started** (this document is unit H0).
+Written 2026-10-27. Status: **done, same day (H0-H7)** -- verified against the real
+firmware and by independent checks, **not on a real board**.
 Picks up the two items `docs/MICROBIT_STAGE_X_PLAN.md` (X8) left open and
 `TODO.md` lists: a ready-to-flash `.hex` for a **V2** board, and a single file
 for **both** board versions (the "Universal Hex"). Work the units in order, one
@@ -117,7 +118,42 @@ These go in `docs/RELEASE_QA_CHECKLIST.md` s11a.
 | H4 | Wire V2 into the export flow: the "ready-to-flash .hex" offer for a V2 choice; typed errors become dialogs; tests with the dialogs mocked, extending X8's. | [x] `122dfe89` |
 | H5 | `universal_hex.py`: port `iHexToCustomFormatBlocks` / `createUniversalHex` / `separateUniversalHex` (MIT, attributed). Tests: 512-byte blocks, board-id tagging, separator round-trip, V1-style data-record handling. | [x] `99116626` |
 | H6 | `build_universal_hex(main_py)` (V1 hex + V2 hex -> one) and the "both boards" option in the export dialog; tests. | [x] `b997fd15` |
-| H7 | Close-out: extension README, plan/TODO/CLAUDE notes, QA checklist rows, `THIRD_PARTY_LICENSES.md`. | [ ] |
+| H7 | Close-out: extension README, plan/TODO/CLAUDE notes, QA checklist rows, `THIRD_PARTY_LICENSES.md`. | [x] see the commit that ticks this |
+
+## Result (2026-10-27)
+
+- `extensions/microbit/export/`: `intel_hex.py` (sparse memory map, strict
+  parse/emit), `flash_regions.py` (the V2 regions table), `mpfs.py` (the chunk
+  file system, build + read), `universal_hex.py` (the "sections" format), and in
+  `hex_build.py`: `build_v2_hex`, `build_universal_hex`, their file helpers,
+  `extract_v2_script`, and the limits (`v1_max_script_size()` 8,187,
+  `v2_max_script_size()` 20,150, `universal_max_script_size()` 8,187).
+- The export dialog's version question has a third choice, "Both (one .hex for V1
+  and V2 boards)": it exports under V1's rules (the program must run on the older
+  board) and offers the Universal Hex; V2 alone now also gets a ready-to-flash hex.
+- ~300 new tests across `test_microbit_{intel_hex,flash_regions,mpfs,
+  v2_hex_build,universal_hex,universal_build}.py` plus the extended dialog tests.
+  Mutation-checked throughout, and **one mutation "passed" the first time because
+  the sed that applied it silently matched nothing** -- re-done with the
+  mutation verified as applied (a "no failures" mutation run proves nothing until
+  you've confirmed the file really changed).
+- **Corrects the earlier notes:** the V2 file system is NOT littlefs-style (X8's
+  O5 write-up said so; the reference source says otherwise and the real firmware
+  confirms it): same chunk file system as V1, found through a table.
+
+## Still open
+
+- **A real board.** That a built V2 `.hex` boots and runs, and that a Universal Hex
+  flashes on both a V1 and a V2, is untested -- `docs/RELEASE_QA_CHECKLIST.md` s11a.
+- **A cross-check against the reference library.** Running the JavaScript
+  `microbit-fs` over the same firmware and script and diffing the file system
+  bytes would be the strongest check available; it needs Node and npm packages,
+  which this environment would not run. If someone with Node does it, a
+  difference is a bug here.
+- The older Universal Hex **"blocks"** layout (the specification recommends
+  "sections", which is what is built).
+- The Stage X dialog strings are **untranslated in every language** (English only,
+  the File-menu entry included).
 
 ## Expected size
 

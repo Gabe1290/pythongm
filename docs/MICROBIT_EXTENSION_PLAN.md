@@ -1,10 +1,10 @@
 # micro:bit extension plan
 
 Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**;
-**Stage X is done, 2026-10-27, for V1** (its own detailed plan,
-`docs/MICROBIT_STAGE_X_PLAN.md`, all units X0-X8; a V2 combined-hex export
-needs a real flash-filesystem builder, found while building X8 against the
-real V2 firmware -- a separate, bigger, unstarted task). Stages L and P are
+**Stage X is done, 2026-10-27** (its own detailed plan,
+`docs/MICROBIT_STAGE_X_PLAN.md`, units X0-X8; the V2 combined hex and the
+Universal Hex for both boards followed the same day,
+`docs/MICROBIT_V2_HEX_PLAN.md`, H0-H7). Stages L and P are
 still sketches, not started. This plan is the resume state:
 work the units in order, one unit ≈ one commit (code + regression test +
 verification), push after each, and tick the box with the commit hash.
@@ -425,9 +425,9 @@ IDE's File menu ("Export micro:bit (MicroPython) code..."): `main.py`
 generation + `microfs` copy onto a board already running MicroPython (no
 firmware-licensing question, works on V1 and V2 alike); and, V1 only, a
 ready-to-flash combined `.hex` built from the vendored official V1 firmware
-(MIT) for a factory-fresh board. **V2's combined hex stays unstarted** --
+(MIT) for a factory-fresh board. **V2's combined hex was unstarted at this point (built later the same day, see the V2 hex plan)** --
 building X8 against the real downloaded V2 firmware found it needs a real
-flash-filesystem builder (littlefs-style, multi-file), not just a different
+flash-filesystem builder (NOT littlefs-style, as first written: the same chunk file system as V1), not just a different
 embedding address, a separate and meaningfully bigger task (full research in
 the Stage X plan's O5). Event handlers became one `while True:` loop polling
 `button_a.was_pressed()`, `accelerometer.was_gesture()`, `radio.receive()`

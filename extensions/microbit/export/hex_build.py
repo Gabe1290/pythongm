@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
-"""Build a V1 micro:bit "combined hex" -- MicroPython firmware with a
-script embedded at a fixed flash address, ready to drag onto a
-factory-fresh board's MICROBIT USB drive, no prior MicroPython flash
-needed (Stage X, unit X8, V1 only -- see docs/MICROBIT_STAGE_X_PLAN.md's
-O5 for why).
+"""Build a micro:bit "combined hex" -- MicroPython firmware with the student's
+program inside, ready to drag onto a factory-fresh board's MICROBIT USB drive,
+no prior MicroPython flash needed. Three builders, one per kind of file:
+
+* ``embed_script`` / ``build_v1_combined_hex`` -- V1 (Stage X unit X8): the
+  script appended at a fixed flash address;
+* ``build_v2_hex`` / ``build_v2_combined_hex`` -- V2: ``main.py`` written into
+  the MicroPython file system the firmware describes (further down);
+* ``build_universal_hex`` -- both, in ONE file (the bottom of the module).
+
+docs/MICROBIT_V2_HEX_PLAN.md explains the V2 and Universal parts.
+
+The V1 half (this first part of the module):
 
 Ported from the official ``micropython/micropython`` source tree's
 ``tools/hexlifyscript.py`` + ``tools/makecombinedhex.py`` (MIT,
