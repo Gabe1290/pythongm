@@ -1,10 +1,11 @@
 # micro:bit extension plan
 
 Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**;
-**Stage X's MVP (X0-X7) is done, 2026-10-27** (its own detailed plan,
-`docs/MICROBIT_STAGE_X_PLAN.md`; X8, the combined/universal-hex path, stays
-deferred behind unresearched firmware licensing). Stages L and P are still
-sketches, not started. This plan is the resume state:
+**Stage X is done, 2026-10-27, for V1** (its own detailed plan,
+`docs/MICROBIT_STAGE_X_PLAN.md`, all units X0-X8; a V2 combined-hex export
+needs a real flash-filesystem builder, found while building X8 against the
+real V2 firmware -- a separate, bigger, unstarted task). Stages L and P are
+still sketches, not started. This plan is the resume state:
 work the units in order, one unit ≈ one commit (code + regression test +
 verification), push after each, and tick the box with the commit hash.
 
@@ -415,19 +416,23 @@ session. About 12 sessions in all.
   serial at all. A physical micro:bit is needed for anything past the
   protocol unit tests (a fake serial port).
 
-## Stage X — MicroPython export (MVP done, 2026-10-27)
+## Stage X — MicroPython export (done for V1, 2026-10-27)
 
 Full plan: `docs/MICROBIT_STAGE_X_PLAN.md` (written 2026-10-27, with the
 universal-hex/microfs research this sketch flagged as needed, now done;
-units X0-X7 all closed the same day). The MVP path: `main.py` generation +
-`microfs` copy onto a board already running MicroPython (no firmware-
-licensing question, works on V1 and V2 alike), reachable from the IDE's
-File menu ("Export micro:bit (MicroPython) code..."). Building a combined/
-universal `.hex` for a factory-fresh board is deferred to its own gated
-unit (X8/O5) pending a firmware-license/size research pass, not started.
-Event handlers became one `while True:` loop polling `button_a.was_pressed()`,
-`accelerometer.was_gesture()`, `radio.receive()` and so on, with Step as
-the loop body. Supported subset only; unsupported actions are listed in a
+units X0-X8 all closed the same day). Two paths, both reachable from the
+IDE's File menu ("Export micro:bit (MicroPython) code..."): `main.py`
+generation + `microfs` copy onto a board already running MicroPython (no
+firmware-licensing question, works on V1 and V2 alike); and, V1 only, a
+ready-to-flash combined `.hex` built from the vendored official V1 firmware
+(MIT) for a factory-fresh board. **V2's combined hex stays unstarted** --
+building X8 against the real downloaded V2 firmware found it needs a real
+flash-filesystem builder (littlefs-style, multi-file), not just a different
+embedding address, a separate and meaningfully bigger task (full research in
+the Stage X plan's O5). Event handlers became one `while True:` loop polling
+`button_a.was_pressed()`, `accelerometer.was_gesture()`, `radio.receive()`
+and so on, with Step as the loop body. Supported subset only; unsupported
+actions are listed in a
 warning, not silently dropped (the Kivy precedent).
 
 ## Stage P — export parity (sketch)

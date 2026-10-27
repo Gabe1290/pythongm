@@ -1,9 +1,15 @@
-"""Regression tests for Stage X unit X7: getting a generated main.py onto
-a real device, plus the IDE menu/UI wiring. docs/MICROBIT_STAGE_X_PLAN.md
+"""Regression tests for Stage X units X7-X8: getting a generated main.py
+onto a real device (X7) or built into a ready-to-flash combined hex
+(X8, V1 only), plus the IDE menu/UI wiring. docs/MICROBIT_STAGE_X_PLAN.md
 is the plan. device.py's actual microfs.put() over a real USB serial
 connection needs real hardware and is explicitly out of this file's
 scope (same standing exception Stage L's own sketch accepts for its
 serial link) -- everything here is tested with microfs/the IDE mocked.
+hex_build.py's combined-hex construction, by contrast, IS fully tested
+here with the real vendored firmware (pure, deterministic Intel Hex
+text manipulation, no hardware needed) -- see tests/test_microbit_hex_build.py
+for its own, more exhaustive coverage; the classes here cover the UI
+wiring around it.
 """
 import os
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -254,6 +260,50 @@ class TestExportMicrobitCodeDeviceCopyOffer:
         mock_offer.assert_not_called()
 
 
+class TestExportMicrobitCodeHexBuildOffer:
+    """X8: the "build a .hex" offer is V1-only (V2's combined hex needs a
+    real flash-filesystem builder, not yet implemented) and, like the
+    device-copy offer, only for exactly one exported object."""
+
+    def test_offered_for_v1_with_one_object(self, tmp_path):
+        from extensions.microbit.export import export_microbit_code
+        _write_project(tmp_path, ONE_BOARD)
+        ide = _stub_ide(tmp_path)
+        with patch("extensions.microbit.export.QInputDialog") as mock_input:
+            mock_input.getItem.return_value = ("V1 (original, 2016-2020)", True)
+            with patch("extensions.microbit.export.QMessageBox"):
+                with patch("extensions.microbit.export._offer_copy_to_device"):
+                    with patch("extensions.microbit.export._offer_build_hex") as mock_offer:
+                        export_microbit_code(ide)
+        mock_offer.assert_called_once()
+        called_path = mock_offer.call_args[0][1]
+        assert called_path == tmp_path / "out" / "microbit_1" / "main.py"
+
+    def test_not_offered_for_v2(self, tmp_path):
+        from extensions.microbit.export import export_microbit_code
+        _write_project(tmp_path, ONE_BOARD)
+        ide = _stub_ide(tmp_path)
+        with patch("extensions.microbit.export.QInputDialog") as mock_input:
+            mock_input.getItem.return_value = ("V2 (2020 or later)", True)
+            with patch("extensions.microbit.export.QMessageBox"):
+                with patch("extensions.microbit.export._offer_copy_to_device"):
+                    with patch("extensions.microbit.export._offer_build_hex") as mock_offer:
+                        export_microbit_code(ide)
+        mock_offer.assert_not_called()
+
+    def test_not_offered_for_v1_with_two_objects(self, tmp_path):
+        from extensions.microbit.export import export_microbit_code
+        _write_project(tmp_path, TWO_BOARDS)
+        ide = _stub_ide(tmp_path)
+        with patch("extensions.microbit.export.QInputDialog") as mock_input:
+            mock_input.getItem.return_value = ("V1 (original, 2016-2020)", True)
+            with patch("extensions.microbit.export.QMessageBox"):
+                with patch("extensions.microbit.export._offer_copy_to_device"):
+                    with patch("extensions.microbit.export._offer_build_hex") as mock_offer:
+                        export_microbit_code(ide)
+        mock_offer.assert_not_called()
+
+
 class TestOfferCopyToDevice:
     def test_user_declines_copy_is_not_attempted(self, tmp_path):
         from extensions.microbit.export import _offer_copy_to_device
@@ -298,6 +348,68 @@ class TestOfferCopyToDevice:
                 _offer_copy_to_device(ide, main_py)
         mock_box.critical.assert_called_once()
         assert "no board" in mock_box.critical.call_args[0][2]
+
+
+class TestOfferBuildHex:
+    """X8 (V1 only): _offer_build_hex does `from . import hex_build`
+    inside the function, resolved via sys.modules at call time -- same
+    reasoning as _offer_copy_to_device's own device.copy_main_py patch,
+    so the attribute to patch is on the real hex_build module."""
+
+    def test_user_declines_build_is_not_attempted(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            mock_box.StandardButton.No = 0
+            mock_box.question.return_value = 0
+            with patch("extensions.microbit.export.hex_build.build_v1_combined_hex") as mock_build:
+                _offer_build_hex(ide, main_py)
+        mock_build.assert_not_called()
+
+    def test_user_accepts_and_build_succeeds(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            mock_box.StandardButton.Yes = 1
+            mock_box.question.return_value = 1
+            with patch("extensions.microbit.export.hex_build.build_v1_combined_hex") as mock_build:
+                _offer_build_hex(ide, main_py)
+                mock_build.assert_called_once_with(main_py, main_py.with_suffix('.hex'))
+        mock_box.information.assert_called_once()
+        assert str(main_py.with_suffix('.hex')) in mock_box.information.call_args[0][2]
+
+    def test_build_failure_shows_critical_dialog(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            mock_box.StandardButton.Yes = 1
+            mock_box.question.return_value = 1
+            with patch("extensions.microbit.export.hex_build.build_v1_combined_hex") as mock_build:
+                mock_build.side_effect = RuntimeError("script too large")
+                _offer_build_hex(ide, main_py)
+        mock_box.critical.assert_called_once()
+        assert "script too large" in mock_box.critical.call_args[0][2]
+
+
+class TestOfferBuildHexRealFirmware:
+    """No mocking: a real combined hex built against the vendored
+    firmware, through the exact function the UI calls."""
+
+    def test_builds_a_working_combined_hex(self, tmp_path):
+        from extensions.microbit.export.hex_build import build_v1_combined_hex, extract_script
+        main_py = tmp_path / "main.py"
+        main_py.write_text("from microbit import *\ndisplay.show(Image.HEART)\n",
+                            encoding="utf-8")
+        output = main_py.with_suffix('.hex')
+        build_v1_combined_hex(main_py, output)
+        assert output.exists()
+        assert extract_script(output.read_text(encoding="utf-8")) == main_py.read_bytes()
 
 
 # ---------------------------------------------------------------------------

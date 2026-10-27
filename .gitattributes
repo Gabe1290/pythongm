@@ -6,6 +6,12 @@
 *.ts text eol=lf
 *.qm binary
 
+# Vendored micro:bit firmware (extensions/microbit/export/firmware/): plain
+# ASCII Intel Hex text, but treated as binary so git never touches its line
+# endings -- its committed bytes must match the documented sha256 in
+# THIRD_PARTY_LICENSES.md exactly, on every platform.
+extensions/microbit/export/firmware/*.hex binary
+
 # Force Markdown (incl. wiki/ sources) to LF so wiki sync doesn't report
 # spurious CRLF-vs-LF drift on Windows checkouts
 *.md text eol=lf

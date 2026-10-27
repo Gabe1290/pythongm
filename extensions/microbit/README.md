@@ -32,6 +32,7 @@ The user-facing page is `wiki/Microbit.md`; the sample is `samples/microbit_1/`.
 | `handlers.py` | The action **handlers** (`PluginExecutor`). |
 | `translations.py` | French text for the auto-generated Blockly blocks. |
 | `README.md` | This file. |
+| `export/` | MicroPython export (Stage X, `docs/MICROBIT_STAGE_X_PLAN.md`): `export/micropython_exporter.py` generates a standalone real-device program per micro:bit object; `export/device.py` copies it onto a connected board over USB serial (`microfs`); `export/hex_build.py` + the vendored `export/firmware/micropython-microbit-v1.1.1.hex` build a ready-to-flash combined hex for a factory-fresh V1 board (V2's combined hex needs a real flash-filesystem builder, a separate, bigger, not-yet-started task); this folder's own `__init__.py` wires the File-menu entry via `PLUGIN_IDE_MENUS`. |
 
 ## How it hooks in
 
@@ -95,6 +96,13 @@ Kivy/Android have no simulator yet: the actions are skipped (Kivy lists them in
 its warning), and the micro:bit **events are dropped without a warning** on
 Kivy. `tests/test_microbit_export_fallthrough.py` pins that nothing crashes.
 
+**MicroPython export** (a different kind of export — *onto a real micro:bit*,
+not another PyGameMaker platform target) lives in `export/`: File menu →
+"Export micro:bit (MicroPython) code..." generates a `main.py` per object,
+offers to copy it straight onto a board already running MicroPython, and (V1
+only) offers to build a ready-to-flash combined `.hex` for a board that isn't.
+`docs/MICROBIT_STAGE_X_PLAN.md` is the plan.
+
 ## The tests
 
 `tests/test_microbit_*.py` — simulator, actions, events, renderer, input, strip,
@@ -105,5 +113,6 @@ computed rectangle fires `microbit_button_a`), and several run a real
 
 ## What is not here yet
 
-A live link to a real micro:bit over USB serial, MicroPython export, and
-HTML5/Kivy parity — see Stages L, X and P in the plan.
+A live link to a real micro:bit over USB serial (Stage L), a combined-hex
+export for a factory-fresh V2 board (needs a real flash-filesystem builder,
+see `docs/MICROBIT_STAGE_X_PLAN.md`'s O5), and HTML5/Kivy parity (Stage P).

@@ -1,8 +1,9 @@
 # micro:bit extension -- Stage X plan (MicroPython export)
 
-Written 2026-10-27. Status: **MVP (X0-X7) done, same day.** X8 (the
-combined/universal-hex path) remains deferred behind O5's unstarted
-licensing research. Expands the Stage X
+Written 2026-10-27. Status: **X0-X8 all done, same day** (X8 scoped to V1
+only after a real build-time finding -- V2's combined hex needs a real
+flash-filesystem builder, a separate, bigger, not-yet-started task).
+Expands the Stage X
 sketch in `docs/MICROBIT_EXTENSION_PLAN.md` (that file's own goal/ground
 rules/"what counts as a micro:bit" sections still apply and aren't repeated
 here). Work the units in order, one unit >= one commit (code + regression
@@ -226,19 +227,24 @@ than emitting code that will raise `AttributeError` on an older board, for:
   is pure Python and pip-installable, but its last release (2.0.0,
   2021-06) predates V2 (2020-10) by nothing it ever mentions -- treat it
   as V1-only, unmaintained for V2, not safely reusable as-is.
-  **Recommendation, not yet acted on:** skip reimplementing the Universal
-  Hex multiplexed format. Vendor the two official **single-variant**
-  firmware hexes (V1 from micropython.org/download/MICROBIT/; V2 from
-  microbit-foundation/micropython-microbit-v2's build output) and adapt
-  the already-pure-Python `tools/makecombinedhex.py`/`tools/hexlify.py`
-  script-embedding logic (from the `micropython/micropython` source tree,
-  MIT) to produce **two** ~700 KB combined hexes -- O6's existing V1/V2
-  export-dialog choice already picks which one to hand the student, so
-  this needs zero new UI and zero Node dependency. A real single
-  drag-and-drop-onto-either-board file would mean hand-porting the small,
-  openly published Universal Hex spec's tagged-block merge algorithm into
-  Python -- bounded and feasible, but a separate, bigger unit than X8 as
-  currently scoped; not started.
+  **Recommendation, acted on for V1 (X8), corrected for V2 after
+  measuring the real firmware:** skip reimplementing the Universal Hex
+  multiplexed format either way. For V1, vendoring the single-variant
+  firmware and adapting `tools/makecombinedhex.py`/`tools/hexlifyscript.py`
+  (from `bbcmicrobit/micropython`, MIT) worked exactly as expected --
+  done, `extensions/microbit/export/hex_build.py`. **V2 turned out NOT
+  to be the same task with a different address**, discovered by
+  downloading the real `microbit-foundation/micropython-microbit-v2`
+  v2.1.1 release and measuring it directly: its firmware already
+  occupies flash up to `0x68000`, past V1's fixed `SCRIPT_ADDR`
+  (`0x3e000`), and V2 uses a real flash filesystem (littlefs-style,
+  multi-file) located by parsing a self-describing "Flash Regions
+  Table" the firmware embeds (`microbit-fs`'s `flash-regions.ts`) --
+  reimplementing that filesystem builder in Python is a real, bounded,
+  but meaningfully bigger and separate task from X8's V1 work, and
+  still not started. A true single drag-and-drop-onto-either-board file
+  would need that V2 work plus the Universal Hex spec's tagged-block
+  merge algorithm on top -- bigger still, also not started.
 - **O6 -- where the V1/V2 choice lives.** A per-export dialog option (like
   picking a desktop export platform) versus a per-project setting next to
   `is_microbit`. Leaning per-export-dialog: a classroom with mixed V1/V2
@@ -256,7 +262,7 @@ than emitting code that will raise `AttributeError` on an older board, for:
 | X5 | Event polling: the flat `while True:` body wiring for every supported event type, including the pin-touch and loud/quiet-sound hand-rolled edge tracking and the `compass.calibrate()` auto-insert rule. `microbit_display_done`/`microbit_sound_done` land in the unsupported-action warning here. Test: a project using every event type compiles and the generated source contains the expected `if`/edge-tracking shape for each. | [x] `ead51201` |
 | X6 | The unsupported-action warning collection (actions AND events outside the supported set get named, not dropped -- the Kivy-warning precedent) surfaced through the export result and the generated file's own header comment. | [x] `104e3a7d` |
 | X7 | Getting it onto the device (Path A, MVP): `microfs` + `pyserial` through `_missing_dependency_message`, USB VID/PID auto-detect port (reuses Stage L's own approach), the IDE menu entry via a new `PLUGIN_IDE_MENUS` hook on `extensions/microbit/__init__.py` (Thymio's `_build_file_menu` is the template), the UI flow (`export_microbit_code(ide)`, modeled on `extensions/thymio/export/__init__.py`'s `export_aseba_code`: project-open check, output picker, try/except with a critical dialog, no-boards-found warning, success dialog naming any warnings). Tests: the file-generation side fully (headless); the actual serial write is marked "needs real hardware," matching Stage L's own standing exception to CI coverage. | [x] `eac1eb7d` |
-| X8 (optional, O5 now resolved -- not yet started) | Vendor the official V1 + V2 single-variant firmware hexes (MIT, ~700 KB each, O5's citations above), adapt `makecombinedhex.py`/`hexlify.py`'s script-embedding into `extensions/microbit/export/`, reuse O6's existing V1/V2 choice to pick which to hand the student. A true single Universal Hex (works on either board) is a separate, bigger unit (porting the Universal Hex spec's merge algorithm to Python) -- not this one. | [ ] |
+| X8 (V1 only; V2 and the true Universal Hex are separate, not started) | **Done, scoped to V1 only** after a real risk found mid-implementation: V2's firmware (confirmed by downloading the real v2.1.1 release and measuring it) already uses flash up to 0x68000, past V1's fixed `SCRIPT_ADDR` (0x3e000), and needs a real flash-filesystem builder, not a different constant -- a bigger, separate, unstarted task. V1's `tools/hexlifyscript.py`/`tools/makecombinedhex.py` logic ported faithfully into `extensions/microbit/export/hex_build.py`, verified by a full embed/extract round-trip against the real vendored `extensions/microbit/export/firmware/micropython-microbit-v1.1.1.hex` (MIT; `THIRD_PARTY_LICENSES.md`) -- the strongest check available without a board. Wired into `export_microbit_code` as a V1-only "build a ready-to-flash .hex" offer, alongside the existing device-copy offer. | [x] (commit pending) |
 
 ## Testing strategy
 
@@ -282,6 +288,7 @@ than emitting code that will raise `AttributeError` on an older board, for:
 
 X1-X2 are the largest (the full action-mapping surface); X3-X6 are each a
 short session; X7 (device I/O + menu wiring) is comparable to Stage L's own
-`link.py` unit. The MVP (X0-X7) landed in one session, 2026-10-27. X8, now
-that O5 is resolved, is roughly another short session (vendor two ~700 KB
-binaries + adapt existing pure-Python embedding logic) -- not yet started.
+`link.py` unit. X0-X8 all landed in one session, 2026-10-27 -- X8 turned out
+V1-only once V2's real flash-filesystem requirement surfaced mid-
+implementation (confirmed against the real downloaded v2.1.1 firmware, not
+assumed); V2's combined hex is a separate, larger, unstarted task.

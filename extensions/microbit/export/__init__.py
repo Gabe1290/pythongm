@@ -2,7 +2,9 @@
 """MicroPython export for micro:bit objects (Stage X).
 
 ``micropython_exporter.py`` holds the generator; ``device.py`` copies a
-generated ``main.py`` onto a connected board; this module is the IDE-menu
+generated ``main.py`` onto a connected board already running
+MicroPython; ``hex_build.py`` (X8, V1 only) builds a ready-to-flash
+combined hex for a board that isn't. This module is the IDE-menu
 File-menu handler (``export_microbit_code``, modeled on
 ``extensions/thymio/export``'s ``export_aseba_code`` -- same project-open
 check, output-dir picker, try/except with a critical dialog, no-boards-
@@ -121,7 +123,10 @@ def export_microbit_code(ide) -> None:
             subprocess.run(['xdg-open', output_dir])
 
     if len(exporter.exported_files) == 1:
-        _offer_copy_to_device(ide, next(iter(exporter.exported_files.values())))
+        main_py_path = next(iter(exporter.exported_files.values()))
+        _offer_copy_to_device(ide, main_py_path)
+        if board_version == "v1":
+            _offer_build_hex(ide, main_py_path)
 
 
 def _offer_copy_to_device(ide, main_py_path) -> None:
@@ -157,4 +162,48 @@ def _offer_copy_to_device(ide, main_py_path) -> None:
         ide,
         ide.tr("Copied"),
         ide.tr("main.py copied to the micro:bit. It will run automatically.")
+    )
+
+
+def _offer_build_hex(ide, main_py_path) -> None:
+    """V1 only (X8): a combined hex works on a board that has never run
+    MicroPython at all -- drag it onto the MICROBIT USB drive, no prior
+    setup needed, unlike the copy-to-device offer above. V2 isn't
+    supported yet (docs/MICROBIT_STAGE_X_PLAN.md's O5): its firmware
+    needs a real flash-filesystem image, not this fixed-address script
+    append."""
+    result = QMessageBox.question(
+        ide,
+        ide.tr("Build a ready-to-flash .hex?"),
+        ide.tr("Also build a .hex file you can drag onto a V1 micro:bit's "
+                "MICROBIT USB drive? This works even on a brand-new board "
+                "that has never run MicroPython."),
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        QMessageBox.StandardButton.No,
+    )
+    if result != QMessageBox.StandardButton.Yes:
+        return
+
+    from . import hex_build
+
+    output_hex = Path(main_py_path).with_suffix('.hex')
+    ide.update_status(ide.tr("Building .hex..."))
+    try:
+        hex_build.build_v1_combined_hex(main_py_path, output_hex)
+    except Exception as e:
+        logger.error(f"micro:bit hex build failed: {e}", exc_info=True)
+        QMessageBox.critical(
+            ide,
+            ide.tr("Build Failed"),
+            ide.tr("Couldn't build the .hex file:\n\n{0}").format(str(e))
+        )
+        ide.update_status(ide.tr("micro:bit hex build failed"))
+        return
+
+    ide.update_status(ide.tr("Built .hex"))
+    QMessageBox.information(
+        ide,
+        ide.tr("Built"),
+        ide.tr("Written to:\n{0}\n\nDrag this file onto the micro:bit's "
+                "MICROBIT USB drive to flash it.").format(str(output_hex))
     )
