@@ -27,18 +27,25 @@ __all__ = ["MicropythonExporter", "export", "export_microbit_code"]
 def _ask_board_version(ide):
     """O6: a per-export choice (not a per-project setting), so a
     classroom with mixed V1/V2 boards doesn't need two project copies.
-    Returns "v1"/"v2", or ``None`` if the user cancelled. Compares the
+    Returns "v1"/"v2"/"both", or ``None`` if the user cancelled. Compares the
     result against this same ``choices`` list (not a separately
     translated "V1" substring, which a differently-worded translation
-    isn't guaranteed to start with)."""
-    choices = [ide.tr("V2 (2020 or later)"), ide.tr("V1 (original, 2016-2020)")]
+    isn't guaranteed to start with). "both" is for a classroom with mixed
+    boards: it exports under V1's rules (the program must run on the older
+    board) and offers ONE Universal Hex that flashes on either."""
+    choices = [ide.tr("V2 (2020 or later)"), ide.tr("V1 (original, 2016-2020)"),
+               ide.tr("Both (one .hex for V1 and V2 boards)")]
     choice, ok = QInputDialog.getItem(
         ide, ide.tr("micro:bit Version"),
         ide.tr("Which micro:bit do you have?"), choices, 0, False,
     )
     if not ok:
         return None
-    return "v1" if choice == choices[1] else "v2"
+    if choice == choices[1]:
+        return "v1"
+    if choice == choices[2]:
+        return "both"
+    return "v2"
 
 
 def _warning_text(ide, export_warnings: dict) -> str:
@@ -74,8 +81,11 @@ def export_microbit_code(ide) -> None:
     exporter = MicropythonExporter()
 
     ide.update_status(ide.tr("Exporting micro:bit code..."))
+    # A file for both boards has to run on the older one, so it is exported under
+    # V1's rules (V2-only actions are skipped and reported, as for a V1 export).
+    export_version = "v1" if board_version == "both" else board_version
     try:
-        success = exporter.export(project_file, output_dir, board_version)
+        success = exporter.export(project_file, output_dir, export_version)
     except Exception as e:
         logger.error(f"micro:bit export failed: {e}", exc_info=True)
         QMessageBox.critical(
@@ -166,7 +176,9 @@ def _offer_copy_to_device(ide, main_py_path) -> None:
 
 # The combined-hex builders, by the board version the export dialog chose. Looked
 # up by NAME on the hex_build module at call time so a test can patch them.
-_HEX_BUILDERS = {"v1": "build_v1_combined_hex", "v2": "build_v2_combined_hex"}
+_HEX_BUILDERS = {"v1": "build_v1_combined_hex", "v2": "build_v2_combined_hex",
+                 "both": "build_universal_combined_hex"}
+_HEX_BOARD_LABELS = {"v1": "V1", "v2": "V2", "both": "V1 or V2"}
 
 
 def _offer_build_hex(ide, main_py_path, board_version="v1") -> None:
@@ -174,8 +186,9 @@ def _offer_build_hex(ide, main_py_path, board_version="v1") -> None:
     drag it onto the MICROBIT USB drive, no prior setup needed, unlike the
     copy-to-device offer above. V1 appends the script at a fixed flash address
     (X8); V2 writes ``main.py`` into the MicroPython file system its firmware
-    describes (docs/MICROBIT_V2_HEX_PLAN.md)."""
-    version_label = "V2" if board_version == "v2" else "V1"
+    describes; "both" builds one Universal Hex for either board
+    (docs/MICROBIT_V2_HEX_PLAN.md)."""
+    version_label = _HEX_BOARD_LABELS.get(board_version, "V1")
     result = QMessageBox.question(
         ide,
         ide.tr("Build a ready-to-flash .hex?"),

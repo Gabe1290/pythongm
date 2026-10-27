@@ -29,6 +29,7 @@ from pathlib import Path
 from . import mpfs
 from .flash_regions import read_flash_regions
 from .intel_hex import parse_hex, to_hex
+from .universal_hex import BOARD_ID_V1, BOARD_ID_V2, create_universal_hex
 
 FIRMWARE_DIR = Path(__file__).parent / "firmware"
 V1_FIRMWARE_HEX = FIRMWARE_DIR / "micropython-microbit-v1.1.1.hex"
@@ -240,3 +241,50 @@ def extract_v2_script(combined_hex: str) -> bytes:
     if V2_SCRIPT_NAME not in files:
         raise ValueError("No main.py found in this hex's file system.")
     return files[V2_SCRIPT_NAME]
+
+
+# --------------------------------------------------------------------------
+# Both boards in one file: the Universal Hex
+# --------------------------------------------------------------------------
+
+def v1_max_script_size() -> int:
+    """The largest script (bytes) the V1 firmware's single appended-script
+    slot holds: 8 KB less the 4-byte "MP" + length header and at least one
+    padding byte."""
+    return _SCRIPT_MAX_LEN - 5
+
+
+def universal_max_script_size() -> int:
+    """The largest ``main.py`` a Universal Hex can carry: the smaller of the two
+    boards' limits, which is V1's."""
+    return min(v1_max_script_size(), v2_max_script_size())
+
+
+def build_universal_hex(script: bytes) -> str:
+    """ONE hex that flashes on either a V1 or a V2 board: the V1 firmware with
+    ``script`` appended (``embed_script``) and the V2 firmware with it as
+    ``main.py`` (``build_v2_hex``), each tagged with its board id and merged
+    (``universal_hex``). Limited by V1's 8 KB script slot.
+
+    Raises ``ScriptTooLargeError`` (with both limits in the message) if the
+    script does not fit a V1 board, ``ValueError`` for an empty one.
+    """
+    script = bytes(script)
+    if not script:
+        raise ValueError("The script is empty; there is nothing to flash.")
+    limit = universal_max_script_size()
+    if len(script) > limit:
+        raise ScriptTooLargeError(
+            f"Script too large for a Universal Hex: {len(script)} bytes (a V1 board "
+            f"holds at most {v1_max_script_size()}; build a V2-only .hex for up to "
+            f"{v2_max_script_size()}).")
+    v1 = embed_script(V1_FIRMWARE_HEX.read_text(encoding="utf-8"), script)
+    v2 = build_v2_hex(script)
+    return create_universal_hex([(BOARD_ID_V1, v1), (BOARD_ID_V2, v2)])
+
+
+def build_universal_combined_hex(main_py_path, output_hex_path) -> None:
+    """Read ``main_py_path``, build the Universal Hex around it and write it to
+    ``output_hex_path`` (the Universal twin of the V1 and V2 file helpers)."""
+    script = Path(main_py_path).read_bytes()
+    Path(output_hex_path).write_text(build_universal_hex(script), encoding="utf-8")
