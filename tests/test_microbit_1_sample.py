@@ -134,7 +134,13 @@ def test_name_is_translated_in_every_shipped_language(lang):
 
 def test_french_name_has_its_accent_and_compiled_catalog_resolves_it():
     from PySide6.QtCore import QCoreApplication, QTranslator
-    app = QCoreApplication.instance() or QCoreApplication([])
+    from PySide6.QtWidgets import QApplication
+    # A QApplication, never a bare QCoreApplication: if this runs first and
+    # makes a QCoreApplication, any later test that needs a real QApplication
+    # (pytest-qt's qapp, every dialog test) aborts the WHOLE process with a Qt
+    # fatal error and no Python traceback. It only ever passed in a full run
+    # because another file had already created a QApplication.
+    app = QCoreApplication.instance() or QApplication([])
     translator = QTranslator()
     assert translator.load(str(REPO_ROOT / "translations" / "pygm2_fr.qm"))
     app.installTranslator(translator)
