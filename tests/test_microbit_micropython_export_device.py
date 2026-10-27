@@ -261,9 +261,9 @@ class TestExportMicrobitCodeDeviceCopyOffer:
 
 
 class TestExportMicrobitCodeHexBuildOffer:
-    """X8: the "build a .hex" offer is V1-only (V2's combined hex needs a
-    real flash-filesystem builder, not yet implemented) and, like the
-    device-copy offer, only for exactly one exported object."""
+    """The "build a .hex" offer (X8 for V1, docs/MICROBIT_V2_HEX_PLAN.md for
+    V2) is made for either board version and, like the device-copy offer, only
+    for exactly one exported object. The chosen version is passed on."""
 
     def test_offered_for_v1_with_one_object(self, tmp_path):
         from extensions.microbit.export import export_microbit_code
@@ -278,10 +278,25 @@ class TestExportMicrobitCodeHexBuildOffer:
         mock_offer.assert_called_once()
         called_path = mock_offer.call_args[0][1]
         assert called_path == tmp_path / "out" / "microbit_1" / "main.py"
+        assert mock_offer.call_args[0][2] == "v1"
 
-    def test_not_offered_for_v2(self, tmp_path):
+    def test_offered_for_v2_with_one_object(self, tmp_path):
         from extensions.microbit.export import export_microbit_code
         _write_project(tmp_path, ONE_BOARD)
+        ide = _stub_ide(tmp_path)
+        with patch("extensions.microbit.export.QInputDialog") as mock_input:
+            mock_input.getItem.return_value = ("V2 (2020 or later)", True)
+            with patch("extensions.microbit.export.QMessageBox"):
+                with patch("extensions.microbit.export._offer_copy_to_device"):
+                    with patch("extensions.microbit.export._offer_build_hex") as mock_offer:
+                        export_microbit_code(ide)
+        mock_offer.assert_called_once()
+        assert mock_offer.call_args[0][1] == tmp_path / "out" / "microbit_1" / "main.py"
+        assert mock_offer.call_args[0][2] == "v2"
+
+    def test_not_offered_for_v2_with_two_objects(self, tmp_path):
+        from extensions.microbit.export import export_microbit_code
+        _write_project(tmp_path, TWO_BOARDS)
         ide = _stub_ide(tmp_path)
         with patch("extensions.microbit.export.QInputDialog") as mock_input:
             mock_input.getItem.return_value = ("V2 (2020 or later)", True)
@@ -351,10 +366,11 @@ class TestOfferCopyToDevice:
 
 
 class TestOfferBuildHex:
-    """X8 (V1 only): _offer_build_hex does `from . import hex_build`
-    inside the function, resolved via sys.modules at call time -- same
-    reasoning as _offer_copy_to_device's own device.copy_main_py patch,
-    so the attribute to patch is on the real hex_build module."""
+    """_offer_build_hex does `from . import hex_build` inside the function,
+    resolved via sys.modules at call time -- same reasoning as
+    _offer_copy_to_device's own device.copy_main_py patch, so the attribute to
+    patch is on the real hex_build module. With no version given it builds for
+    V1 (X8); "v2" uses the V2 builder."""
 
     def test_user_declines_build_is_not_attempted(self, tmp_path):
         from extensions.microbit.export import _offer_build_hex
@@ -395,6 +411,87 @@ class TestOfferBuildHex:
                 _offer_build_hex(ide, main_py)
         mock_box.critical.assert_called_once()
         assert "script too large" in mock_box.critical.call_args[0][2]
+
+
+class TestOfferBuildHexV2:
+    def _yes(self, mock_box):
+        mock_box.StandardButton.Yes = 1
+        mock_box.question.return_value = 1
+
+    def test_v2_uses_the_v2_builder_and_not_the_v1_one(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            self._yes(mock_box)
+            with patch("extensions.microbit.export.hex_build.build_v2_combined_hex") as v2, \
+                 patch("extensions.microbit.export.hex_build.build_v1_combined_hex") as v1:
+                _offer_build_hex(ide, main_py, "v2")
+                v2.assert_called_once_with(main_py, main_py.with_suffix('.hex'))
+                v1.assert_not_called()
+        mock_box.information.assert_called_once()
+
+    def test_v1_still_uses_the_v1_builder_when_the_version_is_given(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            self._yes(mock_box)
+            with patch("extensions.microbit.export.hex_build.build_v2_combined_hex") as v2, \
+                 patch("extensions.microbit.export.hex_build.build_v1_combined_hex") as v1:
+                _offer_build_hex(ide, main_py, "v1")
+                v1.assert_called_once()
+                v2.assert_not_called()
+
+    def test_the_question_names_the_board_version(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("# test\n", encoding="utf-8")
+        asked = {}
+        for version in ("v1", "v2"):
+            with patch("extensions.microbit.export.QMessageBox") as mock_box:
+                mock_box.StandardButton.No = 0
+                mock_box.question.return_value = 0
+                _offer_build_hex(ide, main_py, version)
+                asked[version] = mock_box.question.call_args[0][2]
+        assert "V1 micro:bit" in asked["v1"] and "V2" not in asked["v1"]
+        assert "V2 micro:bit" in asked["v2"] and "V1" not in asked["v2"]
+
+    def test_a_script_too_big_for_v2_shows_the_numbers_not_a_traceback(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_bytes(b"#" * 25000)
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            self._yes(mock_box)
+            _offer_build_hex(ide, main_py, "v2")          # the REAL builder
+        mock_box.critical.assert_called_once()
+        text = mock_box.critical.call_args[0][2]
+        assert "25000 bytes" in text and "20150" in text
+        assert not main_py.with_suffix('.hex').exists()
+
+
+class TestOfferBuildHexV2RealFirmware:
+    """No mocking: a real V2 hex built against the vendored v2.1.2 firmware,
+    through the exact function the UI calls, and read back."""
+
+    def test_builds_a_working_v2_hex(self, tmp_path):
+        from extensions.microbit.export import _offer_build_hex
+        from extensions.microbit.export.hex_build import extract_v2_script
+        ide = _stub_ide(tmp_path)
+        main_py = tmp_path / "main.py"
+        main_py.write_text("from microbit import *\ndisplay.show(Image.HEART)\n",
+                            encoding="utf-8")
+        with patch("extensions.microbit.export.QMessageBox") as mock_box:
+            mock_box.StandardButton.Yes = 1
+            mock_box.question.return_value = 1
+            _offer_build_hex(ide, main_py, "v2")
+        mock_box.critical.assert_not_called()
+        output = main_py.with_suffix('.hex')
+        assert extract_v2_script(output.read_text(encoding="utf-8")) == main_py.read_bytes()
 
 
 class TestOfferBuildHexRealFirmware:

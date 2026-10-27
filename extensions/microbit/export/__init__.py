@@ -3,8 +3,8 @@
 
 ``micropython_exporter.py`` holds the generator; ``device.py`` copies a
 generated ``main.py`` onto a connected board already running
-MicroPython; ``hex_build.py`` (X8, V1 only) builds a ready-to-flash
-combined hex for a board that isn't. This module is the IDE-menu
+MicroPython; ``hex_build.py`` (X8 for V1, docs/MICROBIT_V2_HEX_PLAN.md for
+V2) builds a ready-to-flash combined hex for a board that isn't. This module is the IDE-menu
 File-menu handler (``export_microbit_code``, modeled on
 ``extensions/thymio/export``'s ``export_aseba_code`` -- same project-open
 check, output-dir picker, try/except with a critical dialog, no-boards-
@@ -125,8 +125,7 @@ def export_microbit_code(ide) -> None:
     if len(exporter.exported_files) == 1:
         main_py_path = next(iter(exporter.exported_files.values()))
         _offer_copy_to_device(ide, main_py_path)
-        if board_version == "v1":
-            _offer_build_hex(ide, main_py_path)
+        _offer_build_hex(ide, main_py_path, board_version)
 
 
 def _offer_copy_to_device(ide, main_py_path) -> None:
@@ -165,19 +164,24 @@ def _offer_copy_to_device(ide, main_py_path) -> None:
     )
 
 
-def _offer_build_hex(ide, main_py_path) -> None:
-    """V1 only (X8): a combined hex works on a board that has never run
-    MicroPython at all -- drag it onto the MICROBIT USB drive, no prior
-    setup needed, unlike the copy-to-device offer above. V2 isn't
-    supported yet (docs/MICROBIT_STAGE_X_PLAN.md's O5): its firmware
-    needs a real flash-filesystem image, not this fixed-address script
-    append."""
+# The combined-hex builders, by the board version the export dialog chose. Looked
+# up by NAME on the hex_build module at call time so a test can patch them.
+_HEX_BUILDERS = {"v1": "build_v1_combined_hex", "v2": "build_v2_combined_hex"}
+
+
+def _offer_build_hex(ide, main_py_path, board_version="v1") -> None:
+    """A combined hex works on a board that has never run MicroPython at all --
+    drag it onto the MICROBIT USB drive, no prior setup needed, unlike the
+    copy-to-device offer above. V1 appends the script at a fixed flash address
+    (X8); V2 writes ``main.py`` into the MicroPython file system its firmware
+    describes (docs/MICROBIT_V2_HEX_PLAN.md)."""
+    version_label = "V2" if board_version == "v2" else "V1"
     result = QMessageBox.question(
         ide,
         ide.tr("Build a ready-to-flash .hex?"),
-        ide.tr("Also build a .hex file you can drag onto a V1 micro:bit's "
+        ide.tr("Also build a .hex file you can drag onto a {0} micro:bit's "
                 "MICROBIT USB drive? This works even on a brand-new board "
-                "that has never run MicroPython."),
+                "that has never run MicroPython.").format(version_label),
         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         QMessageBox.StandardButton.No,
     )
@@ -189,7 +193,8 @@ def _offer_build_hex(ide, main_py_path) -> None:
     output_hex = Path(main_py_path).with_suffix('.hex')
     ide.update_status(ide.tr("Building .hex..."))
     try:
-        hex_build.build_v1_combined_hex(main_py_path, output_hex)
+        builder = getattr(hex_build, _HEX_BUILDERS.get(board_version, _HEX_BUILDERS["v1"]))
+        builder(main_py_path, output_hex)
     except Exception as e:
         logger.error(f"micro:bit hex build failed: {e}", exc_info=True)
         QMessageBox.critical(
