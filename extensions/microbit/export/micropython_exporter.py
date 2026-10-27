@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
-"""MicroPython exporter for micro:bit objects (Stage X, units X1-X2).
+"""MicroPython exporter for micro:bit objects (Stage X, units X1-X4).
 
 docs/MICROBIT_STAGE_X_PLAN.md is the map. In the shape of
 ``extensions/thymio/export/aseba_exporter.py`` -- object discovery, the
 objects/<name>.json merge, and the per-object output all mirror it -- but
 the output unit is a standalone ``main.py`` per micro:bit object (one real
 board = one flat script, no event-handler indirection), not one shared
-runtime. Condition/radio/sensor/generic-variable translators are added in
-X3-X4; until then every action outside the X2 set is reported as
-unsupported, which is the correct, honest state for this stage -- not a
-bug.
+runtime.
 
-Expressions (``_expr``) pass through as-is for now: quoted text and plain
-numbers/identifiers are already valid Python/MicroPython syntax (a
-variable name becomes a top-level global -- see the plan's "Variable
-semantics"), so most authored values need no translation at all. GameMaker's
-``irandom``/``random``/``choose`` builtins (the ones
-``runtime/action_executor.py``'s ``_parse_value`` calls out as
-intentionally supported, and the ones ``samples/microbit_1`` actually
-uses) are NOT yet rewritten onto Python's ``random`` module -- deferred to
-X4, where the generic ``set_variable`` translator first needs it, since no
-code reachable before X4/X5 wiring calls ``_expr`` on a GM-function
-expression yet.
+Expressions (``_expr``) pass through as-is for anything that isn't a
+GameMaker builtin: quoted text and plain numbers/identifiers are already
+valid Python/MicroPython syntax (a variable name becomes a top-level
+global -- see the plan's "Variable semantics"). ``irandom``/``random``/
+``choose`` (the ones ``runtime/action_executor.py``'s ``_parse_value``
+calls out as intentionally supported, and the ones ``samples/microbit_1``
+actually uses) ARE rewritten onto Python's ``random`` module (X4, where
+``set_variable``'s value expressions first need it) -- anything else
+(``GM_MATH_FUNCTIONS`` and friends) still passes through unchanged, a
+documented, narrower-than-core MVP limit.
+
+Event polling (X5) is not wired yet, so only the Create and Step events
+are scanned; any condition/variable action elsewhere in the object is
+correctly invisible to this exporter for now, not a bug.
 """
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -31,9 +32,33 @@ from core.logger import get_logger
 
 from ..images import IMAGES
 from ..melodies import MELODIES
-from ..actions import SENSORS
+from ..actions import SENSORS, GESTURES
 
 logger = get_logger(__name__)
+
+# Flat-list control-flow markers, exactly as runtime/action_executor.py's
+# _execute_action_list_inner recognises them (including its aliases).
+_START_BLOCK = ("start_block", "start")
+_END_BLOCK = ("end_block", "end")
+_ELSE = ("else_action", "else_block", "else")
+
+# Actions whose handler returns True/False and so guard the next unit,
+# GameMaker-style (core's own _QUESTION_ACTIONS is a different, core-only
+# list; this exporter's set is its own, scoped to what X4 translates).
+_QUESTION_ACTIONS = frozenset({
+    "microbit_if_button", "microbit_if_gesture",
+    "microbit_if_tilt", "microbit_if_pixel",
+    "test_variable",
+})
+
+_COMPARE_OPS = {
+    "equal": "==", "less": "<", "greater": ">",
+    "less_equal": "<=", "greater_equal": ">=", "not_equal": "!=",
+}
+
+_IRANDOM_RE = re.compile(r'\birandom\s*\(')
+_RANDOM_RE = re.compile(r'\brandom\s*\(')
+_CHOOSE_RE = re.compile(r'\bchoose\s*\(')
 
 # microbit_read_sensor's SENSORS entries -> the real device call. "sound
 # level" is handled separately (V1/V2, below) since microphone is V2-only.
@@ -53,12 +78,54 @@ assert set(_SENSOR_CALLS) | {"sound level"} == set(SENSORS), \
     "every microbit_read_sensor choice needs a device call"
 
 
+def _rewrite_choose(text: str) -> str:
+    """``choose(a, b, c)`` -> ``random.choice([a, b, c])``, matching the
+    real closing parenthesis (bracket-depth aware) so a nested call
+    inside an argument survives."""
+    out = []
+    i = 0
+    while True:
+        m = _CHOOSE_RE.search(text, i)
+        if not m:
+            out.append(text[i:])
+            break
+        out.append(text[i:m.start()])
+        out.append('random.choice([')
+        depth = 1
+        j = m.end()
+        while j < len(text) and depth > 0:
+            if text[j] == '(':
+                depth += 1
+            elif text[j] == ')':
+                depth -= 1
+            if depth > 0:
+                out.append(text[j])
+            j += 1
+        out.append('])')
+        i = j
+    return ''.join(out)
+
+
+def _rewrite_gm_builtins(text: str) -> str:
+    """Rewrite GameMaker's ``irandom()``/``random()``/``choose()`` onto
+    Python's ``random`` module -- the three builtins
+    ``runtime/action_executor.py``'s ``_parse_value`` calls out as
+    intentionally supported, and the ones ``samples/microbit_1`` actually
+    uses (``irandom(5) + 1`` for a dice roll). Anything else passes
+    through unchanged (the module docstring's documented MVP limit)."""
+    text = _rewrite_choose(text)
+    text = _IRANDOM_RE.sub('random.randint(0, ', text)
+    text = _RANDOM_RE.sub('random.uniform(0, ', text)
+    return text
+
+
 def _expr(raw, default="0") -> str:
     """A parameter's raw text as MicroPython source (not evaluated -- the
     device evaluates it at runtime). See the module docstring for the
     current, deliberately limited, scope."""
     text = str(raw if raw is not None and raw != "" else default).strip()
-    return text if text else default
+    text = text if text else default
+    return _rewrite_gm_builtins(text)
 
 
 def _image_literal(spec: str) -> str:
@@ -96,7 +163,6 @@ class MicropythonExporter:
     def __init__(self):
         self.unsupported = set()
         self.v1_incompatible = set()
-        self.indent_level = 0
         self.current_object = None
         self.board_version = "v2"
 
@@ -136,7 +202,6 @@ class MicropythonExporter:
         for obj_name, obj_data in microbit_objects.items():
             self.unsupported = set()
             self.v1_incompatible = set()
-            self.indent_level = 0
             self.current_object = obj_name
 
             code = self.generate_main(obj_name, obj_data, project_data)
@@ -195,9 +260,7 @@ class MicropythonExporter:
         used -- ``music``/``radio`` are separate MicroPython modules, not
         part of ``from microbit import *``."""
         setup_section = self._generate_setup(obj_data)
-        self.indent_level = 1
         body = self._generate_loop_body(obj_data)
-        self.indent_level = 0
 
         used_source = (setup_section or "") + "\n" + (body or "")
         imports = ["from microbit import *"]
@@ -205,6 +268,8 @@ class MicropythonExporter:
             imports.append("import music")
         if "radio." in used_source:
             imports.append("import radio")
+        if "random." in used_source:
+            imports.append("import random")
 
         lines = [self._generate_header(obj_name, project_data), ""]
         lines.extend(imports)
@@ -263,7 +328,8 @@ class MicropythonExporter:
     def _generate_setup(self, obj_data) -> str:
         events = obj_data.get('events', {})
         actions = events.get('create', {}).get('actions', [])
-        lines = [code for code in (self._translate_action(a) for a in actions) if code]
+        nodes, _ = self._parse_actions(actions, 0)
+        lines = self._render_nodes(nodes, 0)
         if not lines:
             return ""
         return '\n'.join(["# -- setup (from the Create event) --"] + lines)
@@ -271,18 +337,125 @@ class MicropythonExporter:
     def _generate_loop_body(self, obj_data) -> str:
         events = obj_data.get('events', {})
         actions = events.get('step', {}).get('actions', [])
-        lines = [code for code in (self._translate_action(a) for a in actions) if code]
-        if not lines:
-            return ""
-        indent = '    ' * self.indent_level
-        return '\n'.join(indent + line for line in lines)
+        nodes, _ = self._parse_actions(actions, 0)
+        lines = self._render_nodes(nodes, 1)
+        return '\n'.join(lines)
+
+    # -- Flat-list control flow -> nested Python (X4) ------------------------
+    #
+    # runtime/action_executor.py's _execute_action_list_inner interprets a
+    # FLAT action list at runtime: a question's result sets a skip_next
+    # flag that skips exactly the next single unit (one action, or a
+    # whole start_block...end_block group), with else_action attaching the
+    # alternative. This parses that same flat shape once, ahead of time,
+    # into a small tree, then renders it as real nested Python if/else --
+    # correct for the recursive "a skipped question also skips its own
+    # guarded unit" case Blockly actually generates (chained test_variable
+    # guards, no blocks). A bare nested question immediately followed by
+    # an else_action with no start_block/end_block (which the live
+    # interpreter's single condition_was_false flag handles ambiguously,
+    # and Blockly never emits -- CLAUDE.md's "Decided in S10") instead
+    # gets well-defined nested if/else here; a deliberate, documented, and
+    # narrower divergence, not a regression, since no currently authored
+    # content takes that shape.
+
+    def _is_question(self, action_name: str) -> bool:
+        return action_name in _QUESTION_ACTIONS
+
+    def _parse_actions(self, actions, i, stop_at=()):
+        """Parse ``actions[i:]`` into a list of nodes, stopping (without
+        consuming) at any action name in ``stop_at``. Returns
+        ``(nodes, next_index)``."""
+        nodes = []
+        n = len(actions)
+        while i < n:
+            if actions[i].get("action", "") in stop_at:
+                return nodes, i
+            node, i = self._parse_one(actions, i)
+            if node is not None:
+                nodes.append(node)
+        return nodes, i
+
+    def _parse_one(self, actions, i):
+        """Parse exactly one statement starting at ``actions[i]``: a plain
+        action, or -- if it's a question -- an ``("if", cond, then, else)``
+        node whose branches are each a guarded unit. Returns
+        ``(node_or_None, next_index)``."""
+        action = actions[i]
+        name = action.get("action", "")
+
+        if name in _START_BLOCK:
+            body, i = self._parse_actions(actions, i + 1, stop_at=_END_BLOCK)
+            if i < len(actions):
+                i += 1  # consume the matching end_block
+            return ("block", body), i
+
+        if self._is_question(name):
+            cond = self._translate_condition(action)
+            i += 1
+            then_body, i = self._parse_guarded_unit(actions, i)
+            else_body = None
+            if i < len(actions) and actions[i].get("action", "") in _ELSE:
+                i += 1
+                else_body, i = self._parse_guarded_unit(actions, i)
+            if cond is None:
+                return None, i
+            return ("if", cond, then_body, else_body), i
+
+        translated = self._translate_action(action)
+        i += 1
+        if translated is None:
+            return None, i
+        return ("stmt", translated), i
+
+    def _parse_guarded_unit(self, actions, i):
+        """The single unit a question guards: a whole
+        start_block...end_block group, or exactly one further statement
+        (itself possibly another question, handled recursively)."""
+        if i >= len(actions):
+            return [], i
+        if actions[i].get("action", "") in _START_BLOCK:
+            node, i = self._parse_one(actions, i)
+            return (node[1] if node else []), i
+        node, i = self._parse_one(actions, i)
+        return ([node] if node else []), i
+
+    def _render_nodes(self, nodes, indent: int):
+        pad = '    ' * indent
+        lines = []
+        for kind, *rest in nodes:
+            if kind == "stmt":
+                lines.extend(pad + line for line in rest[0].split('\n'))
+            elif kind == "block":
+                lines.extend(self._render_nodes(rest[0], indent))
+            elif kind == "if":
+                cond, then_body, else_body = rest
+                lines.append(f"{pad}if {cond}:")
+                then_lines = self._render_nodes(then_body, indent + 1)
+                lines.extend(then_lines if then_lines else [pad + "    pass"])
+                if else_body is not None:
+                    lines.append(f"{pad}else:")
+                    else_lines = self._render_nodes(else_body, indent + 1)
+                    lines.extend(else_lines if else_lines else [pad + "    pass"])
+        return lines
 
     def _translate_action(self, action):
-        """One action -> one (or more) lines of MicroPython, or ``None`` if
-        this action type isn't exported yet -- tracked in ``unsupported``
-        rather than silently dropped (the Kivy warning precedent)."""
+        """One statement action -> one (or more) lines of MicroPython, or
+        ``None`` if this action type isn't exported yet -- tracked in
+        ``unsupported`` rather than silently dropped (the Kivy warning
+        precedent)."""
         action_type = action.get('action', '')
         translator = self._get_action_translator(action_type)
+        if translator is None:
+            self.unsupported.add(action_type)
+            return None
+        return translator(action.get('parameters', {}))
+
+    def _translate_condition(self, action):
+        """One question action -> a Python boolean expression (used in an
+        ``if <expr>:``), or ``None`` if unsupported/V1-incompatible."""
+        action_type = action.get('action', '')
+        translator = self._get_condition_translator(action_type)
         if translator is None:
             self.unsupported.add(action_type)
             return None
@@ -304,6 +477,21 @@ class MicropythonExporter:
             "microbit_radio_set_group": self._translate_radio_set_group,
             "microbit_radio_send": self._translate_radio_send,
             "microbit_read_sensor": self._translate_read_sensor,
+            "set_variable": self._translate_set_variable,
+            "comment": self._translate_comment,
+        }
+        return translators.get(action_type)
+
+    def _get_condition_translator(self, action_type):
+        """Question actions (X4): each returns a Python boolean expression,
+        not a statement -- rendered inside ``if <expr>:`` by
+        ``_render_nodes``."""
+        translators = {
+            "microbit_if_button": self._translate_if_button,
+            "microbit_if_gesture": self._translate_if_gesture,
+            "microbit_if_tilt": self._translate_if_tilt,
+            "microbit_if_pixel": self._translate_if_pixel,
+            "test_variable": self._translate_test_variable,
         }
         return translators.get(action_type)
 
@@ -395,6 +583,86 @@ class MicropythonExporter:
             self.unsupported.add(f"microbit_read_sensor ({sensor})")
             return None
         return f"{var_name} = {call}"
+
+    # -- Generic variable + comment subset (X4) --------------------------
+
+    def _variable_name(self, params) -> str:
+        """"global.X" and a plain name both collapse to a top-level
+        Python global on a single-board export; "other" scope has no
+        meaning (no other instances on one board) and is unsupported."""
+        return str(params.get("variable") or params.get("variable_name") or "").strip()
+
+    def _translate_set_variable(self, params):
+        scope = str(params.get("scope", "self")).strip().lower()
+        if scope == "other":
+            self.unsupported.add("set_variable (other scope)")
+            return None
+        var = self._variable_name(params)
+        if not var:
+            return None
+        value = _expr(params.get("value", "0"), "0")
+        if params.get("relative", False):
+            return f"{var} += ({value})"
+        return f"{var} = {value}"
+
+    def _translate_comment(self, params):
+        text = str(params.get("text", "")).strip()
+        if not text:
+            return None
+        return '\n'.join(f"# {line}" for line in text.splitlines())
+
+    # -- Conditions (X4) -----------------------------------------------------
+
+    def _translate_test_variable(self, params):
+        scope = str(params.get("scope", "self")).strip().lower()
+        if scope == "other":
+            self.unsupported.add("test_variable (other scope)")
+            return None
+        var = self._variable_name(params)
+        if not var:
+            return None
+        value = _expr(params.get("value", "0"), "0")
+        op = _COMPARE_OPS.get(str(params.get("operation", "equal")).strip().lower(), "==")
+        return f"{var} {op} ({value})"
+
+    def _translate_if_button(self, params):
+        button = str(params.get("button", "a")).strip().lower()
+        if button == "a":
+            return "button_a.is_pressed()"
+        if button == "b":
+            return "button_b.is_pressed()"
+        if button == "ab":
+            return "(button_a.is_pressed() and button_b.is_pressed())"
+        if button == "logo":
+            if self.board_version == "v1":
+                self.v1_incompatible.add("microbit_if_button (logo)")
+                return None
+            return "pin_logo.is_touched()"
+        self.unsupported.add(f"microbit_if_button ({button})")
+        return None
+
+    def _translate_if_gesture(self, params):
+        gesture = str(params.get("gesture", "shake")).strip().lower()
+        if gesture not in GESTURES:
+            self.unsupported.add(f"microbit_if_gesture ({gesture})")
+            return None
+        return f"accelerometer.is_gesture({gesture!r})"
+
+    def _translate_if_tilt(self, params):
+        axis = str(params.get("axis", "x")).strip().lower()
+        if axis not in ("x", "y", "z"):
+            self.unsupported.add(f"microbit_if_tilt ({axis})")
+            return None
+        comparison = str(params.get("comparison", ">")).strip()
+        value = _expr(params.get("value"), "0")
+        return f"accelerometer.get_{axis}() {comparison} ({value})"
+
+    def _translate_if_pixel(self, params):
+        x = _expr(params.get("x"), "0")
+        y = _expr(params.get("y"), "0")
+        comparison = str(params.get("comparison", ">")).strip()
+        value = _expr(params.get("value"), "0")
+        return f"display.get_pixel({x}, {y}) {comparison} ({value})"
 
 
 def export(project_path, output_path=None, board_version="v2") -> bool:

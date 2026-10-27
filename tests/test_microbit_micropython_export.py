@@ -1,11 +1,14 @@
 """Regression tests for the micro:bit MicroPython exporter (Stage X, units
-X1-X3). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
+X1-X4). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
 file-layout; X2 is the display+sound action translators; X3 is radio +
 sensor-read translators, plus the V1/V2 export choice (O6) and the
-skip-and-warn behaviour for V2-only actions on a V1 export (O2).
-Condition/generic-variable translators land in X4, so any action outside
-the X2/X3 set is still correctly reported as unsupported here -- that's
-the honest state for this stage, not a bug.
+skip-and-warn behaviour for V2-only actions on a V1 export (O2); X4 is the
+four condition translators plus the generic set_variable/test_variable/
+comment/block-structure subset, with the flat-list-to-nested-Python
+control-flow translation that needs. Event polling (X5) isn't wired yet,
+so these tests still reach actions only through the Create/Step events.
+Anything outside this plan's scope entirely (ordinary core actions with
+no micro:bit meaning) is still correctly reported as unsupported.
 """
 import json
 import py_compile
@@ -161,17 +164,16 @@ class TestGeneratedStructure:
 
 
 class TestUnsupportedActionsAreNamedNotDropped:
-    def test_still_unsupported_actions_are_named_before_x4_translators_exist(self, tmp_path):
-        # Conditions + the generic variable/block subset (X4) aren't
-        # translated yet at this point in the plan -- still correctly
-        # unsupported.
+    def test_actions_outside_the_exporters_scope_are_named_not_dropped(self, tmp_path):
+        # A generic action with no micro:bit meaning and outside X4's
+        # small generic subset -- still correctly unsupported at every
+        # unit in this plan.
         proj = tmp_path / "project.json"
         proj.write_text(json.dumps({
             "name": "TestProject",
             "assets": {"objects": {
                 "microbit_1": {"events": {"create": {"actions": [
-                    {"action": "microbit_if_tilt",
-                     "parameters": {"axis": "x", "comparison": ">", "value": "300"}},
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
                 ]}}},
             }},
         }), encoding="utf-8")
@@ -179,7 +181,7 @@ class TestUnsupportedActionsAreNamedNotDropped:
         export(str(proj), str(out))
         source = (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
         assert "Not exported" in source
-        assert "microbit_if_tilt" in source
+        assert "move_towards_point" in source
 
 
 class TestValidPython:
@@ -215,19 +217,18 @@ class TestExporterInstanceReset:
         assert "display.show" not in b
 
     def test_unsupported_set_does_not_leak_between_objects(self, tmp_path):
-        # Both action types are still unsupported at this point in the
-        # plan (X4) -- a real canary for self.unsupported leaking across
-        # the per-object loop in export().
+        # Both action types are still outside the exporter's scope -- a
+        # real canary for self.unsupported leaking across the per-object
+        # loop in export().
         proj = tmp_path / "project.json"
         proj.write_text(json.dumps({
             "name": "TestProject",
             "assets": {"objects": {
                 "microbit_a": {"events": {"create": {"actions": [
-                    {"action": "microbit_if_tilt",
-                     "parameters": {"axis": "x", "comparison": ">", "value": "300"}},
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
                 ]}}},
                 "microbit_b": {"events": {"create": {"actions": [
-                    {"action": "set_variable", "parameters": {"variable": "x", "value": "1"}},
+                    {"action": "set_sprite", "parameters": {"sprite": "spr_x"}},
                 ]}}},
             }},
         }), encoding="utf-8")
@@ -236,8 +237,8 @@ class TestExporterInstanceReset:
         exporter.export(str(proj), str(out))
         a = (out / "microbit_a" / "main.py").read_text(encoding="utf-8")
         b = (out / "microbit_b" / "main.py").read_text(encoding="utf-8")
-        assert "set_variable" not in a
-        assert "microbit_if_tilt" not in b
+        assert "set_sprite" not in a
+        assert "move_towards_point" not in b
 
 
 def _setup_lines(action, parameters, tmp_path, board_version="v2"):
@@ -472,3 +473,262 @@ class TestO2V1V2SoundLevelSensor:
         export(str(proj), str(out))  # no board_version passed
         source = (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
         assert "v = microphone.sound_level()" in source
+
+
+def _create_actions(actions, tmp_path, board_version="v2"):
+    """Like _setup_lines, but for a whole Create-event action LIST --
+    X4's block-structure tests need to see how several actions interact,
+    not just one at a time."""
+    proj = tmp_path / "project.json"
+    proj.write_text(json.dumps({
+        "name": "TestProject",
+        "assets": {"objects": {
+            "microbit_1": {"events": {"create": {"actions": actions}}},
+        }},
+    }), encoding="utf-8")
+    out = tmp_path / "out"
+    export(str(proj), str(out), board_version=board_version)
+    return (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
+
+
+class TestX4ConditionTranslators:
+    def test_if_button_a(self, tmp_path):
+        source = _setup_lines("microbit_if_button", {"button": "a"}, tmp_path)
+        assert "button_a.is_pressed()" in source
+
+    def test_if_button_b(self, tmp_path):
+        source = _setup_lines("microbit_if_button", {"button": "b"}, tmp_path)
+        assert "button_b.is_pressed()" in source
+
+    def test_if_button_ab_chord(self, tmp_path):
+        source = _setup_lines("microbit_if_button", {"button": "ab"}, tmp_path)
+        assert "button_a.is_pressed() and button_b.is_pressed()" in source
+
+    def test_if_button_logo_on_v2(self, tmp_path):
+        source = _setup_lines("microbit_if_button", {"button": "logo"},
+                               tmp_path, board_version="v2")
+        assert "pin_logo.is_touched()" in source
+
+    def test_if_button_logo_skipped_and_warned_on_v1(self, tmp_path):
+        source = _setup_lines("microbit_if_button", {"button": "logo"},
+                               tmp_path, board_version="v1")
+        assert "pin_logo" not in source
+        assert "Not exported -- needs a V2 board" in source
+        assert "logo" in source
+
+    def test_if_gesture(self, tmp_path):
+        source = _setup_lines("microbit_if_gesture", {"gesture": "shake"}, tmp_path)
+        assert "accelerometer.is_gesture('shake')" in source
+
+    def test_if_gesture_two_word_name(self, tmp_path):
+        source = _setup_lines("microbit_if_gesture", {"gesture": "face up"}, tmp_path)
+        assert "accelerometer.is_gesture('face up')" in source
+
+    def test_if_tilt(self, tmp_path):
+        source = _setup_lines("microbit_if_tilt",
+                               {"axis": "x", "comparison": ">", "value": "300"}, tmp_path)
+        assert "accelerometer.get_x() > (300)" in source
+
+    def test_if_pixel_default_is_it_lit(self, tmp_path):
+        source = _setup_lines("microbit_if_pixel", {"x": 2, "y": 2}, tmp_path)
+        assert "display.get_pixel(2, 2) > (0)" in source
+
+    def test_test_variable_equal(self, tmp_path):
+        source = _setup_lines("test_variable",
+                               {"variable": "roll", "value": "1", "operation": "equal"}, tmp_path)
+        assert "roll == (1)" in source
+
+    def test_test_variable_every_operation(self, tmp_path):
+        for op, symbol in [("equal", "=="), ("not_equal", "!="), ("less", "<"),
+                            ("less_equal", "<="), ("greater", ">"), ("greater_equal", ">=")]:
+            source = _setup_lines("test_variable",
+                                   {"variable": "x", "value": "5", "operation": op}, tmp_path)
+            assert f"x {symbol} (5)" in source
+
+    def test_test_variable_other_scope_is_unsupported(self, tmp_path):
+        source = _setup_lines("test_variable",
+                               {"variable": "x", "value": "5", "scope": "other"}, tmp_path)
+        assert "Not exported" in source
+        assert "other scope" in source
+
+
+class TestX4GenericVariableAndComment:
+    def test_set_variable_plain_assignment(self, tmp_path):
+        source = _setup_lines("set_variable", {"variable": "score", "value": "0"}, tmp_path)
+        assert "score = 0" in source
+
+    def test_set_variable_relative_becomes_augmented_assignment(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "score", "value": "1", "relative": True}, tmp_path)
+        assert "score += (1)" in source
+
+    def test_set_variable_global_prefixed_still_becomes_a_plain_name(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "x", "value": "1", "scope": "global"}, tmp_path)
+        assert "x = 1" in source
+
+    def test_set_variable_other_scope_is_unsupported(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "x", "value": "1", "scope": "other"}, tmp_path)
+        assert "Not exported" in source
+        assert "other scope" in source
+
+    def test_comment_becomes_a_hash_line(self, tmp_path):
+        source = _setup_lines("comment", {"text": "wire up the dice"}, tmp_path)
+        assert "# wire up the dice" in source
+
+    def test_empty_comment_emits_nothing(self, tmp_path):
+        source = _setup_lines("comment", {"text": ""}, tmp_path)
+        # No setup section at all, and the loop body is just "pass" --
+        # an empty comment contributes no lines anywhere.
+        assert "# -- setup" not in source
+        assert "while True:\n    pass" in source
+
+
+class TestX4GmBuiltinRewriting:
+    def test_irandom_becomes_random_randint(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "roll", "value": "irandom(5) + 1"}, tmp_path)
+        assert "roll = random.randint(0, 5) + 1" in source
+        assert "import random" in source
+
+    def test_random_becomes_random_uniform(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "speed", "value": "random(4)"}, tmp_path)
+        assert "speed = random.uniform(0, 4)" in source
+
+    def test_choose_becomes_random_choice_of_a_list(self, tmp_path):
+        source = _setup_lines("set_variable",
+                               {"variable": "pick", "value": "choose(1, 2, 3)"}, tmp_path)
+        assert "pick = random.choice([1, 2, 3])" in source
+
+    def test_no_random_import_without_a_gm_builtin(self, tmp_path):
+        source = _setup_lines("set_variable", {"variable": "x", "value": "5"}, tmp_path)
+        assert "import random" not in source
+
+
+class TestX4RealDiceRollChain:
+    """samples/microbit_1's actual gesture_shake event: a chain of
+    test_variable guards each followed by exactly one microbit_show_image,
+    ending with an unconditional relative set_variable -- the real-world
+    shape this exporter has to get right, not just a synthetic case."""
+
+    def test_chain_of_guarded_single_actions(self, tmp_path):
+        source = _create_actions([
+            {"action": "set_variable", "parameters": {"variable": "roll", "value": "irandom(5) + 1"}},
+            {"action": "test_variable",
+             "parameters": {"variable": "roll", "value": "1", "operation": "equal"}},
+            {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+            {"action": "test_variable",
+             "parameters": {"variable": "roll", "value": "2", "operation": "equal"}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+            {"action": "set_variable",
+             "parameters": {"variable": "rolls", "value": "1", "relative": True}},
+        ], tmp_path)
+        assert "roll = random.randint(0, 5) + 1" in source
+        assert "if roll == (1):\n    display.show(Image.HEART)" in source
+        assert "if roll == (2):\n    display.show(Image.HAPPY)" in source
+        # The final relative set is unconditional -- not nested under
+        # either guard, same as the flat list's own semantics.
+        assert source.count("    rolls") == 0
+        assert "\nrolls += (1)" in source
+
+    def test_compiles(self, tmp_path):
+        source = _create_actions([
+            {"action": "set_variable", "parameters": {"variable": "roll", "value": "irandom(5) + 1"}},
+            {"action": "test_variable",
+             "parameters": {"variable": "roll", "value": "1", "operation": "equal"}},
+            {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+        ], tmp_path)
+        # Exercise py_compile directly on this exact source via a temp file,
+        # matching TestValidPython's own no-stub-needed reasoning.
+        import py_compile
+        f = tmp_path / "chain_main.py"
+        f.write_text(source, encoding="utf-8")
+        py_compile.compile(str(f), doraise=True)
+
+
+class TestX4StartBlockAndElse:
+    def test_start_block_group_as_the_guarded_unit(self, tmp_path):
+        source = _create_actions([
+            {"action": "microbit_if_button", "parameters": {"button": "a"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "set_variable", "parameters": {"variable": "score", "value": "1", "relative": True}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+            {"action": "end_block", "parameters": {}},
+        ], tmp_path)
+        assert ("if button_a.is_pressed():\n"
+                "    score += (1)\n"
+                "    display.show(Image.HAPPY)") in source
+
+    def test_else_action_after_a_single_guarded_action(self, tmp_path):
+        source = _create_actions([
+            {"action": "microbit_if_button", "parameters": {"button": "a"}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+            {"action": "else_action", "parameters": {}},
+            {"action": "microbit_show_image", "parameters": {"image": "SAD"}},
+        ], tmp_path)
+        assert ("if button_a.is_pressed():\n"
+                "    display.show(Image.HAPPY)\n"
+                "else:\n"
+                "    display.show(Image.SAD)") in source
+
+    def test_else_action_after_a_start_block_group(self, tmp_path):
+        source = _create_actions([
+            {"action": "microbit_if_button", "parameters": {"button": "a"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+            {"action": "microbit_play_tone", "parameters": {"frequency": 440}},
+            {"action": "end_block", "parameters": {}},
+            {"action": "else_action", "parameters": {}},
+            {"action": "microbit_show_image", "parameters": {"image": "SAD"}},
+        ], tmp_path)
+        assert ("if button_a.is_pressed():\n"
+                "    display.show(Image.HAPPY)\n"
+                "    music.pitch(440, 500)\n"
+                "else:\n"
+                "    display.show(Image.SAD)") in source
+
+    def test_bare_block_with_no_guard_is_transparent(self, tmp_path):
+        # start_block/end_block with no preceding question is a no-op
+        # marker at runtime (runtime/action_executor.py only gives it
+        # meaning while skipping) -- same indentation as its surroundings.
+        source = _create_actions([
+            {"action": "start_block", "parameters": {}},
+            {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+            {"action": "end_block", "parameters": {}},
+        ], tmp_path)
+        assert "\ndisplay.show(Image.HEART)" in source
+        assert "    display.show(Image.HEART)" not in source
+
+    def test_nested_start_blocks(self, tmp_path):
+        source = _create_actions([
+            {"action": "microbit_if_button", "parameters": {"button": "a"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "microbit_if_button", "parameters": {"button": "b"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+            {"action": "end_block", "parameters": {}},
+            {"action": "microbit_play_tone", "parameters": {"frequency": 880}},
+            {"action": "end_block", "parameters": {}},
+        ], tmp_path)
+        assert ("if button_a.is_pressed():\n"
+                "    if button_b.is_pressed():\n"
+                "        display.show(Image.HAPPY)\n"
+                "    music.pitch(880, 500)") in source
+
+    def test_chained_guarded_question_as_the_guarded_unit(self, tmp_path):
+        # A question guarding another bare question (no start_block) --
+        # the recursive design produces well-defined nested if/else here,
+        # a deliberate, documented improvement over the live simulator's
+        # own single condition_was_false-flag ambiguity for this shape
+        # (not relevant to any currently authored content -- Blockly
+        # always wraps a multi-action guard in start_block/end_block).
+        source = _create_actions([
+            {"action": "microbit_if_button", "parameters": {"button": "a"}},
+            {"action": "microbit_if_gesture", "parameters": {"gesture": "shake"}},
+            {"action": "microbit_show_image", "parameters": {"image": "HAPPY"}},
+        ], tmp_path)
+        assert ("if button_a.is_pressed():\n"
+                "    if accelerometer.is_gesture('shake'):\n"
+                "        display.show(Image.HAPPY)") in source
