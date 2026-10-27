@@ -1,7 +1,9 @@
 # micro:bit extension plan
 
-Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**; Stages L, X and P
-are sketches, not started. This plan is the resume state:
+Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**;
+Stage X has its own detailed plan (`docs/MICROBIT_STAGE_X_PLAN.md`, written
+2026-10-27, not started); Stages L and P are still sketches, not started.
+This plan is the resume state:
 work the units in order, one unit ≈ one commit (code + regression test +
 verification), push after each, and tick the box with the commit hash.
 
@@ -412,22 +414,19 @@ session. About 12 sessions in all.
   serial at all. A physical micro:bit is needed for anything past the
   protocol unit tests (a fake serial port).
 
-## Stage X — MicroPython export (sketch)
+## Stage X — MicroPython export (planned, not started)
 
-- `export/micropython_exporter.py`, in the shape of
-  `extensions/thymio/export/aseba_exporter.py`: event handlers → one
-  `while True:` loop polling `button_a.was_pressed()`,
-  `accelerometer.was_gesture()`, `radio.receive()` and so on, with Step
-  as the loop body. Supported subset only. Unsupported actions are listed
-  in a warning, not silently dropped (the Kivy precedent).
-- Getting it onto the device: write `main.py` and copy it with `microfs`
-  onto a board already running MicroPython, or build a `.hex`. `uflash`'s
-  bundled runtime is V1-only, so V2 needs the official universal hex
-  (research unit: licence, size, how to embed `main.py`). Copying a `.hex`
-  onto the MICROBIT USB drive needs no extra software, which matters on
-  locked-down lab PCs.
-- Tests: generated code compiles (`py_compile` with a stub `microbit`
-  module), plus golden-output tests per action.
+Full plan: `docs/MICROBIT_STAGE_X_PLAN.md` (written 2026-10-27, with the
+universal-hex/microfs research this sketch flagged as needed, now done).
+Short version: the MVP path is `main.py` generation + `microfs` copy onto
+a board already running MicroPython (no firmware-licensing question, works
+on V1 and V2 alike); building a combined/universal `.hex` for a
+factory-fresh board is deferred to its own gated unit (O5) pending a
+firmware-license/size research pass. Event handlers become one
+`while True:` loop polling `button_a.was_pressed()`,
+`accelerometer.was_gesture()`, `radio.receive()` and so on, with Step as
+the loop body. Supported subset only; unsupported actions are listed in a
+warning, not silently dropped (the Kivy precedent).
 
 ## Stage P — export parity (sketch)
 
@@ -450,9 +449,10 @@ would bring Stage L to HTML5.
   counts as an "advanced" sample hidden by the beginner edition (it is
   arguably the most beginner-friendly sample of all).
 - **O2 — V1 vs V2 features.** The plan simulates the V2 superset (logo,
-  microphone, speaker). Stage X must then flag V2-only actions when
-  exporting for a V1 board. Most schools now have V2 boards, so check what
-  the target classrooms own.
+  microphone, speaker). *Resolved concretely in `docs/MICROBIT_STAGE_X_PLAN.md`:*
+  the export dialog asks V1 or V2 (default V2, most schools now have V2
+  boards) and skips + warns on V2-only actions (logo touch, microphone)
+  when V1 is chosen, rather than emitting code that errors on the device.
 - ~~**O3 — Display queue semantics.**~~ Settled in S2: append, because
   the device makes display commands wait for each other (see "Time and
   blocking").
