@@ -45,19 +45,9 @@ them as alternatives, not a combined pipeline.
   auto-detect by USB VID/PID) reused for a one-shot write instead of a
   live stream.
 - **Path B -- a combined/universal `.hex` a factory-fresh board can be
-  flashed with by drag-and-drop, no prior setup.** This is real and
-  documented (`tools/makecombinedhex.py` / `tools/hexlify.py` in the
-  official `micropython/micropython` microbit port, or the `uflash`
-  package for a V1-only runtime), but it means vendoring a compiled
-  firmware binary per hardware revision (V1 ihex, V2 "universal hex") --
-  a license question distinct from the MIT-licensed *source* this repo
-  already vendors for images/fonts (`extensions/microbit/
-  THIRD_PARTY_LICENSES.md`), a real size cost, and no in-repo way to
-  build it without either shipping those binaries or a JS/Node tool this
-  repo has deliberately avoided depending on elsewhere (Stage P's own
-  "no Node in CI" constraint). **Deferred to its own unit (X8, optional)**
-  with its own research pass before any code is written -- not assumed,
-  not started here.
+  flashed with by drag-and-drop, no prior setup.** Real, and (as of
+  2026-10-27) researched: O5 below. **Deferred to its own unit (X8,
+  optional)** -- not started here, but no longer blocked on an unknown.
 
 The MVP's own boundary, stated plainly for the export dialog's copy: **the
 student's board must already be running MicroPython** before this feature
@@ -217,13 +207,38 @@ than emitting code that will raise `AttributeError` on an older board, for:
 
 ## New Open Decisions from this plan
 
-- **O5 -- the combined/universal-hex path (Path B above) is deferred, not
-  rejected.** Needs its own research unit before any code: confirm the
-  compiled-firmware binaries' actual license terms (distinct from the MIT
-  *source* license already on file), their size, and whether
-  `makecombinedhex.py`'s logic is reimplementable without a Node/JS
-  dependency this repo has avoided elsewhere. Do not start X8 without
-  that research written down first.
+- **O5 -- resolved 2026-10-27 (real web research, not assumed).**
+  Licensing is **not a blocker**: both firmware source trees (V1
+  `bbcmicrobit/micropython`, V2 `microbit-foundation/micropython-microbit-v2`)
+  are MIT, confirmed directly from their LICENSE files, and MIT's grant
+  covers "the Software" in any form -- redistributing the *compiled*
+  binary is not a distinct legal question from redistributing the source.
+  No SoftDevice/BLE blob entanglement either (both build "nosd" --
+  microbit-foundation/micropython-microbit-v2#51 confirms MicroPython
+  doesn't support BLE from Python at all, so there's no proprietary
+  Nordic binary bundled to begin with). Sizes are modest: ~700 KB for a
+  single-variant hex (V1-only or V2-only), ~1.8 MB for a true multi-variant
+  Universal Hex. **But a true Universal Hex has no pure-Python
+  implementation anywhere to reuse** -- the format's own spec repo
+  (`microbit-foundation/spec-universal-hex`) says outright there is
+  exactly one implementation, and it's JS (`microbit-universal-hex`,
+  what the browser Python Editor's `microbit-fs` library uses). `uflash`
+  is pure Python and pip-installable, but its last release (2.0.0,
+  2021-06) predates V2 (2020-10) by nothing it ever mentions -- treat it
+  as V1-only, unmaintained for V2, not safely reusable as-is.
+  **Recommendation, not yet acted on:** skip reimplementing the Universal
+  Hex multiplexed format. Vendor the two official **single-variant**
+  firmware hexes (V1 from micropython.org/download/MICROBIT/; V2 from
+  microbit-foundation/micropython-microbit-v2's build output) and adapt
+  the already-pure-Python `tools/makecombinedhex.py`/`tools/hexlify.py`
+  script-embedding logic (from the `micropython/micropython` source tree,
+  MIT) to produce **two** ~700 KB combined hexes -- O6's existing V1/V2
+  export-dialog choice already picks which one to hand the student, so
+  this needs zero new UI and zero Node dependency. A real single
+  drag-and-drop-onto-either-board file would mean hand-porting the small,
+  openly published Universal Hex spec's tagged-block merge algorithm into
+  Python -- bounded and feasible, but a separate, bigger unit than X8 as
+  currently scoped; not started.
 - **O6 -- where the V1/V2 choice lives.** A per-export dialog option (like
   picking a desktop export platform) versus a per-project setting next to
   `is_microbit`. Leaning per-export-dialog: a classroom with mixed V1/V2
@@ -241,7 +256,7 @@ than emitting code that will raise `AttributeError` on an older board, for:
 | X5 | Event polling: the flat `while True:` body wiring for every supported event type, including the pin-touch and loud/quiet-sound hand-rolled edge tracking and the `compass.calibrate()` auto-insert rule. `microbit_display_done`/`microbit_sound_done` land in the unsupported-action warning here. Test: a project using every event type compiles and the generated source contains the expected `if`/edge-tracking shape for each. | [x] `ead51201` |
 | X6 | The unsupported-action warning collection (actions AND events outside the supported set get named, not dropped -- the Kivy-warning precedent) surfaced through the export result and the generated file's own header comment. | [x] `104e3a7d` |
 | X7 | Getting it onto the device (Path A, MVP): `microfs` + `pyserial` through `_missing_dependency_message`, USB VID/PID auto-detect port (reuses Stage L's own approach), the IDE menu entry via a new `PLUGIN_IDE_MENUS` hook on `extensions/microbit/__init__.py` (Thymio's `_build_file_menu` is the template), the UI flow (`export_microbit_code(ide)`, modeled on `extensions/thymio/export/__init__.py`'s `export_aseba_code`: project-open check, output picker, try/except with a critical dialog, no-boards-found warning, success dialog naming any warnings). Tests: the file-generation side fully (headless); the actual serial write is marked "needs real hardware," matching Stage L's own standing exception to CI coverage. | [x] `eac1eb7d` |
-| X8 (optional, gated on O5) | The combined/universal-hex path (Path B), only after O5's research is written up and the licensing question is answered. Not started as part of this plan's main line. | [ ] |
+| X8 (optional, O5 now resolved -- not yet started) | Vendor the official V1 + V2 single-variant firmware hexes (MIT, ~700 KB each, O5's citations above), adapt `makecombinedhex.py`/`hexlify.py`'s script-embedding into `extensions/microbit/export/`, reuse O6's existing V1/V2 choice to pick which to hand the student. A true single Universal Hex (works on either board) is a separate, bigger unit (porting the Universal Hex spec's merge algorithm to Python) -- not this one. | [ ] |
 
 ## Testing strategy
 
@@ -267,5 +282,6 @@ than emitting code that will raise `AttributeError` on an older board, for:
 
 X1-X2 are the largest (the full action-mapping surface); X3-X6 are each a
 short session; X7 (device I/O + menu wiring) is comparable to Stage L's own
-`link.py` unit. About 6-7 sessions for the MVP (X0-X7); X8 is explicitly
-not sized until O5 is answered.
+`link.py` unit. The MVP (X0-X7) landed in one session, 2026-10-27. X8, now
+that O5 is resolved, is roughly another short session (vendor two ~700 KB
+binaries + adapt existing pure-Python embedding logic) -- not yet started.
