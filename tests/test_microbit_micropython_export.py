@@ -1,5 +1,5 @@
 """Regression tests for the micro:bit MicroPython exporter (Stage X, units
-X1-X5). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
+X1-X6). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
 file-layout; X2 is the display+sound action translators; X3 is radio +
 sensor-read translators, plus the V1/V2 export choice (O6) and the
 skip-and-warn behaviour for V2-only actions on a V1 export (O2); X4 is the
@@ -9,7 +9,10 @@ control-flow translation that needs; X5 is event polling -- every
 microbit_* event joins the while-loop body as a guard, with hand-rolled
 edge tracking for buttons/logo/pins/sound (no native edge-triggered call
 on the device) and the native was_gesture()/radio.receive() for
-everything else. Anything outside this plan's scope entirely (ordinary
+everything else; X6 is export_warnings, collecting the same
+unsupported/V1-incompatible detail already in each generated file's
+trailing comment into one place a caller can inspect without re-reading
+every main.py. Anything outside this plan's scope entirely (ordinary
 core actions with no micro:bit meaning) is still correctly reported as
 unsupported.
 """
@@ -1004,3 +1007,116 @@ class TestX5RealSampleEndToEnd:
     def test_only_one_while_loop(self):
         source = self._generated()
         assert source.count("while True:") == 1
+
+
+class TestX6ExportWarnings:
+    """export_warnings (X6): a caller shouldn't have to re-read every
+    generated main.py to learn what wasn't exported -- MicropythonExporter
+    collects the same unsupported/v1_incompatible detail already in each
+    file's trailing comment into one place after export() returns."""
+
+    def test_no_warnings_for_a_fully_supported_object(self, tmp_path):
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.export(str(proj), str(tmp_path / "out"))
+        assert exporter.export_warnings == {}
+
+    def test_unsupported_action_is_recorded_by_object_name(self, tmp_path):
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.export(str(proj), str(tmp_path / "out"))
+        assert exporter.export_warnings == {
+            "microbit_1": {"unsupported": ["move_towards_point"], "v1_incompatible": []},
+        }
+
+    def test_v1_incompatible_action_is_recorded_separately(self, tmp_path):
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "microbit_if_button", "parameters": {"button": "logo"}},
+                    {"action": "microbit_clear_display", "parameters": {}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.export(str(proj), str(tmp_path / "out"), board_version="v1")
+        assert exporter.export_warnings["microbit_1"]["v1_incompatible"] == \
+            ["microbit_if_button (logo)"]
+        assert exporter.export_warnings["microbit_1"]["unsupported"] == []
+
+    def test_each_object_gets_its_own_entry(self, tmp_path):
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_a": {"events": {"create": {"actions": [
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
+                ]}}},
+                "microbit_b": {"events": {"create": {"actions": [
+                    {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.export(str(proj), str(tmp_path / "out"))
+        assert "microbit_a" in exporter.export_warnings
+        assert "microbit_b" not in exporter.export_warnings
+
+    def test_export_warnings_resets_across_calls_on_the_same_instance(self, tmp_path):
+        clean_proj = tmp_path / "clean.json"
+        clean_proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        dirty_proj = tmp_path / "dirty.json"
+        dirty_proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.export(str(dirty_proj), str(tmp_path / "out1"))
+        assert exporter.export_warnings  # non-empty first
+        exporter.export(str(clean_proj), str(tmp_path / "out2"))
+        assert exporter.export_warnings == {}
+
+    def test_module_level_export_discards_warnings_with_the_instance(self, tmp_path):
+        # Documented behaviour, not a bug: the convenience function
+        # creates a throwaway MicropythonExporter -- a caller that wants
+        # export_warnings uses the class directly.
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "move_towards_point", "parameters": {"x": "0", "y": "0"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        result = export(str(proj), str(tmp_path / "out"))
+        assert result is True  # the bool return is unaffected by X6

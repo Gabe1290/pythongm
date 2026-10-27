@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""MicroPython exporter for micro:bit objects (Stage X, units X1-X4).
+"""MicroPython exporter for micro:bit objects (Stage X, units X1-X6).
 
 docs/MICROBIT_STAGE_X_PLAN.md is the map. In the shape of
 ``extensions/thymio/export/aseba_exporter.py`` -- object discovery, the
@@ -184,14 +184,23 @@ class MicropythonExporter:
         self.v1_incompatible = set()
         self.current_object = None
         self.board_version = "v2"
+        # Every object's unsupported/V1-incompatible action types, keyed
+        # by object name, filled in by export() -- the generated file's
+        # own trailing comment says the same thing per file, but a caller
+        # (the X7 UI) shouldn't have to re-read every main.py to show one
+        # consolidated warning after an export.
+        self.export_warnings = {}
 
     def export(self, project_path, output_path=None, board_version="v2") -> bool:
         """``board_version`` is ``"v1"`` or ``"v2"`` (O6: a per-export
         choice, not a per-project setting, since a classroom with mixed
         boards shouldn't need two project copies). V2-only actions are
         skipped and warned on a V1 export (O2), not silently emitted to
-        fail with an AttributeError on the device."""
+        fail with an AttributeError on the device. After a successful
+        export, ``self.export_warnings`` names any unsupported/V1-only
+        action type per object (empty for an object with none)."""
         self.board_version = board_version
+        self.export_warnings = {}
         project_path = Path(project_path)
         if not project_path.exists():
             logger.error(f"Project not found: {project_path}")
@@ -231,6 +240,12 @@ class MicropythonExporter:
             with open(main_file, 'w', encoding='utf-8') as f:
                 f.write(code)
             logger.info(f"   Exported {obj_name} -> {main_file}")
+
+            if self.unsupported or self.v1_incompatible:
+                self.export_warnings[obj_name] = {
+                    "unsupported": sorted(self.unsupported),
+                    "v1_incompatible": sorted(self.v1_incompatible),
+                }
 
         return True
 
@@ -826,5 +841,8 @@ class MicropythonExporter:
 
 
 def export(project_path, output_path=None, board_version="v2") -> bool:
-    """Module-level convenience wrapper, matching the Aseba exporter's shape."""
+    """Module-level convenience wrapper, matching the Aseba exporter's
+    shape. Discards the per-object warning detail (``export_warnings``)
+    along with the throwaway instance -- a caller that wants it should
+    use ``MicropythonExporter`` directly."""
     return MicropythonExporter().export(project_path, output_path, board_version)
