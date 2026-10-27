@@ -1,11 +1,11 @@
 """Regression tests for the micro:bit MicroPython exporter (Stage X, units
-X1-X2). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
-file-layout; X2 is the display+sound action translators (golden-output,
-one per mapping-table row) plus the two real scale conversions found while
-building the plan (brightness 255->9, melody tempo as a tuple). Radio/
-sensor/condition/generic-variable translators land in X3-X4, so any action
-outside the X2 set is still correctly reported as unsupported here --
-that's the honest state for this stage, not a bug.
+X1-X3). docs/MICROBIT_STAGE_X_PLAN.md is the plan. X1 is discovery/merge/
+file-layout; X2 is the display+sound action translators; X3 is radio +
+sensor-read translators, plus the V1/V2 export choice (O6) and the
+skip-and-warn behaviour for V2-only actions on a V1 export (O2).
+Condition/generic-variable translators land in X4, so any action outside
+the X2/X3 set is still correctly reported as unsupported here -- that's
+the honest state for this stage, not a bug.
 """
 import json
 import py_compile
@@ -161,15 +161,17 @@ class TestGeneratedStructure:
 
 
 class TestUnsupportedActionsAreNamedNotDropped:
-    def test_still_unsupported_actions_are_named_before_x3_x4_translators_exist(self, tmp_path):
-        # microbit_radio_send (X3) and set_variable (X4) aren't translated
-        # yet at this point in the plan -- still correctly unsupported.
+    def test_still_unsupported_actions_are_named_before_x4_translators_exist(self, tmp_path):
+        # Conditions + the generic variable/block subset (X4) aren't
+        # translated yet at this point in the plan -- still correctly
+        # unsupported.
         proj = tmp_path / "project.json"
         proj.write_text(json.dumps({
             "name": "TestProject",
             "assets": {"objects": {
                 "microbit_1": {"events": {"create": {"actions": [
-                    {"action": "microbit_radio_send", "parameters": {"value": "1"}},
+                    {"action": "microbit_if_tilt",
+                     "parameters": {"axis": "x", "comparison": ">", "value": "300"}},
                 ]}}},
             }},
         }), encoding="utf-8")
@@ -177,7 +179,7 @@ class TestUnsupportedActionsAreNamedNotDropped:
         export(str(proj), str(out))
         source = (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
         assert "Not exported" in source
-        assert "microbit_radio_send" in source
+        assert "microbit_if_tilt" in source
 
 
 class TestValidPython:
@@ -214,14 +216,15 @@ class TestExporterInstanceReset:
 
     def test_unsupported_set_does_not_leak_between_objects(self, tmp_path):
         # Both action types are still unsupported at this point in the
-        # plan (X3/X4) -- a real canary for self.unsupported leaking
-        # across the per-object loop in export().
+        # plan (X4) -- a real canary for self.unsupported leaking across
+        # the per-object loop in export().
         proj = tmp_path / "project.json"
         proj.write_text(json.dumps({
             "name": "TestProject",
             "assets": {"objects": {
                 "microbit_a": {"events": {"create": {"actions": [
-                    {"action": "microbit_radio_send", "parameters": {"value": "1"}},
+                    {"action": "microbit_if_tilt",
+                     "parameters": {"axis": "x", "comparison": ">", "value": "300"}},
                 ]}}},
                 "microbit_b": {"events": {"create": {"actions": [
                     {"action": "set_variable", "parameters": {"variable": "x", "value": "1"}},
@@ -234,12 +237,12 @@ class TestExporterInstanceReset:
         a = (out / "microbit_a" / "main.py").read_text(encoding="utf-8")
         b = (out / "microbit_b" / "main.py").read_text(encoding="utf-8")
         assert "set_variable" not in a
-        assert "microbit_radio_send" not in b
+        assert "microbit_if_tilt" not in b
 
 
-def _setup_lines(action, parameters, tmp_path):
+def _setup_lines(action, parameters, tmp_path, board_version="v2"):
     """The Create-event setup lines generated for one action -- the
-    golden-output unit for X2's per-action mapping table."""
+    golden-output unit for the plan's per-action mapping table."""
     proj = tmp_path / "project.json"
     proj.write_text(json.dumps({
         "name": "TestProject",
@@ -250,7 +253,7 @@ def _setup_lines(action, parameters, tmp_path):
         }},
     }), encoding="utf-8")
     out = tmp_path / "out"
-    export(str(proj), str(out))
+    export(str(proj), str(out), board_version=board_version)
     return (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
 
 
@@ -360,3 +363,112 @@ class TestX2ConditionalImports:
         source = _setup_lines("microbit_show_image", {"image": "HEART"}, tmp_path)
         assert "import music" not in source
         assert "from microbit import *" in source
+
+
+class TestX3RadioTranslators:
+    def test_radio_set_group(self, tmp_path):
+        source = _setup_lines("microbit_radio_set_group", {"group": 7}, tmp_path)
+        assert "radio.config(group=7)" in source
+
+    def test_radio_set_group_injects_radio_on_once(self, tmp_path):
+        source = _setup_lines("microbit_radio_set_group", {"group": 7}, tmp_path)
+        assert source.count("radio.on()") == 1
+        assert "import radio" in source
+
+    def test_radio_send_wraps_value_in_str(self, tmp_path):
+        source = _setup_lines("microbit_radio_send", {"value": "1"}, tmp_path)
+        assert "radio.send(str(1))" in source
+
+    def test_radio_send_variable_expression_passes_through(self, tmp_path):
+        source = _setup_lines("microbit_radio_send", {"value": "score"}, tmp_path)
+        assert "radio.send(str(score))" in source
+
+    def test_no_radio_import_without_a_radio_action(self, tmp_path):
+        source = _setup_lines("microbit_show_image", {"image": "HEART"}, tmp_path)
+        assert "import radio" not in source
+        assert "radio.on()" not in source
+
+
+class TestX3SensorTranslator:
+    def test_accelerometer_axes(self, tmp_path):
+        for axis, call in [("x", "get_x"), ("y", "get_y"), ("z", "get_z")]:
+            source = _setup_lines("microbit_read_sensor",
+                                   {"sensor": f"accelerometer {axis}", "variable": "v"}, tmp_path)
+            assert f"v = accelerometer.{call}()" in source
+
+    def test_acceleration_strength(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "acceleration strength", "variable": "v"}, tmp_path)
+        assert "v = accelerometer.get_strength()" in source
+
+    def test_light_level(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "light level", "variable": "v"}, tmp_path)
+        assert "v = display.read_light_level()" in source
+
+    def test_temperature(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "temperature", "variable": "v"}, tmp_path)
+        assert "v = temperature()" in source
+
+    def test_pin_analog(self, tmp_path):
+        for n in (0, 1, 2):
+            source = _setup_lines("microbit_read_sensor",
+                                   {"sensor": f"pin {n} analog", "variable": "v"}, tmp_path)
+            assert f"v = pin{n}.read_analog()" in source
+
+    def test_global_prefixed_variable_becomes_a_plain_name(self, tmp_path):
+        # A real export is one board, one standalone file -- "global." and
+        # a plain name both collapse to the same top-level Python global.
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "temperature", "variable": "global.temp"}, tmp_path)
+        assert "temp = temperature()" in source
+        assert "global.temp" not in source
+
+    def test_compass_heading_calibrates_once(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "compass heading", "variable": "h"}, tmp_path)
+        assert "h = compass.heading()" in source
+        assert source.count("compass.calibrate()") == 1
+
+    def test_no_compass_calibrate_without_compass_use(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "temperature", "variable": "v"}, tmp_path)
+        assert "compass.calibrate()" not in source
+
+
+class TestO2V1V2SoundLevelSensor:
+    """O2, resolved concretely: a V1 export skips + warns on V2-only
+    actions instead of emitting code that fails on the device."""
+
+    def test_sound_level_translates_on_v2(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "sound level", "variable": "v"},
+                               tmp_path, board_version="v2")
+        assert "v = microphone.sound_level()" in source
+        assert "Not exported" not in source
+
+    def test_sound_level_skipped_and_warned_on_v1(self, tmp_path):
+        source = _setup_lines("microbit_read_sensor",
+                               {"sensor": "sound level", "variable": "v"},
+                               tmp_path, board_version="v1")
+        assert "microphone" not in source
+        assert "Not exported -- needs a V2 board" in source
+        assert "sound level" in source
+
+    def test_v2_is_the_default_board_version(self, tmp_path):
+        # export()'s own default, not just the test helper's.
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "microbit_read_sensor",
+                     "parameters": {"sensor": "sound level", "variable": "v"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        out = tmp_path / "out"
+        export(str(proj), str(out))  # no board_version passed
+        source = (out / "microbit_1" / "main.py").read_text(encoding="utf-8")
+        assert "v = microphone.sound_level()" in source

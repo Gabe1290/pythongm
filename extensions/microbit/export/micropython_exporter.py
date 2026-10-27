@@ -31,8 +31,26 @@ from core.logger import get_logger
 
 from ..images import IMAGES
 from ..melodies import MELODIES
+from ..actions import SENSORS
 
 logger = get_logger(__name__)
+
+# microbit_read_sensor's SENSORS entries -> the real device call. "sound
+# level" is handled separately (V1/V2, below) since microphone is V2-only.
+_SENSOR_CALLS = {
+    "accelerometer x": "accelerometer.get_x()",
+    "accelerometer y": "accelerometer.get_y()",
+    "accelerometer z": "accelerometer.get_z()",
+    "acceleration strength": "accelerometer.get_strength()",
+    "compass heading": "compass.heading()",
+    "light level": "display.read_light_level()",
+    "temperature": "temperature()",
+    "pin 0 analog": "pin0.read_analog()",
+    "pin 1 analog": "pin1.read_analog()",
+    "pin 2 analog": "pin2.read_analog()",
+}
+assert set(_SENSOR_CALLS) | {"sound level"} == set(SENSORS), \
+    "every microbit_read_sensor choice needs a device call"
 
 
 def _expr(raw, default="0") -> str:
@@ -77,10 +95,18 @@ class MicropythonExporter:
 
     def __init__(self):
         self.unsupported = set()
+        self.v1_incompatible = set()
         self.indent_level = 0
         self.current_object = None
+        self.board_version = "v2"
 
-    def export(self, project_path, output_path=None) -> bool:
+    def export(self, project_path, output_path=None, board_version="v2") -> bool:
+        """``board_version`` is ``"v1"`` or ``"v2"`` (O6: a per-export
+        choice, not a per-project setting, since a classroom with mixed
+        boards shouldn't need two project copies). V2-only actions are
+        skipped and warned on a V1 export (O2), not silently emitted to
+        fail with an AttributeError on the device."""
+        self.board_version = board_version
         project_path = Path(project_path)
         if not project_path.exists():
             logger.error(f"Project not found: {project_path}")
@@ -109,6 +135,7 @@ class MicropythonExporter:
 
         for obj_name, obj_data in microbit_objects.items():
             self.unsupported = set()
+            self.v1_incompatible = set()
             self.indent_level = 0
             self.current_object = obj_name
 
@@ -183,6 +210,23 @@ class MicropythonExporter:
         lines.extend(imports)
         lines.append("")
 
+        # One-time device setup these calls need before they're safe to
+        # use, regardless of how many actions in the object call them:
+        # radio.on() powers the radio on; an uncalibrated compass starts
+        # an on-device calibration dance (tilt to light every LED) the
+        # moment heading() is first called, so calibrate explicitly up
+        # front instead of surprising the student mid-game.
+        one_time = []
+        if "radio." in used_source:
+            one_time.append("radio.on()")
+        if "compass.heading()" in used_source:
+            one_time.append("# First use of the compass calibrates it (tilt the board")
+            one_time.append("# until every LED lights, per the micro:bit's own routine).")
+            one_time.append("compass.calibrate()")
+        if one_time:
+            lines.extend(one_time)
+            lines.append("")
+
         if setup_section:
             lines.append(setup_section)
             lines.append("")
@@ -194,6 +238,11 @@ class MicropythonExporter:
             lines.append("")
             lines.append("# Not exported in this version (unsupported action type(s)): "
                          + ", ".join(sorted(self.unsupported)))
+
+        if self.v1_incompatible:
+            lines.append("")
+            lines.append(f"# Not exported -- needs a V2 board ({self.board_version} chosen): "
+                         + ", ".join(sorted(self.v1_incompatible)))
 
         return '\n'.join(lines) + '\n'
 
@@ -252,6 +301,9 @@ class MicropythonExporter:
             "microbit_play_tone": self._translate_play_tone,
             "microbit_play_melody": self._translate_play_melody,
             "microbit_stop_sound": self._translate_stop_sound,
+            "microbit_radio_set_group": self._translate_radio_set_group,
+            "microbit_radio_send": self._translate_radio_send,
+            "microbit_read_sensor": self._translate_read_sensor,
         }
         return translators.get(action_type)
 
@@ -306,7 +358,45 @@ class MicropythonExporter:
     def _translate_stop_sound(self, params) -> str:
         return "music.stop()"
 
+    # -- Radio (X3) -----------------------------------------------------------
 
-def export(project_path, output_path=None) -> bool:
+    def _translate_radio_set_group(self, params) -> str:
+        # radio.on() itself is injected once in generate_main, not here --
+        # calling it again every time the group changes is harmless but
+        # noisy, and the group may be set more than once.
+        group = _expr(params.get("group"), "0")
+        return f"radio.config(group={group})"
+
+    def _translate_radio_send(self, params) -> str:
+        # radio.send() only takes a string on the device, unlike the
+        # simulator's clean_message() which keeps numbers as numbers for
+        # the in-process transport -- every value is wrapped here.
+        value = _expr(params.get("value", 1), "1")
+        return f"radio.send(str({value}))"
+
+    # -- Sensors (X3) ---------------------------------------------------------
+
+    def _translate_read_sensor(self, params):
+        sensor = str(params.get("sensor", SENSORS[0])).strip().lower()
+        var_raw = str(params.get("variable") or "sensor_value").strip()
+        # "global.X" and a plain name both collapse to the same thing on a
+        # single-board export: a top-level Python global in that board's
+        # own file (see the plan's "Variable semantics").
+        var_name = var_raw[len("global."):] if var_raw.startswith("global.") else var_raw
+
+        if sensor == "sound level":
+            if self.board_version == "v1":
+                self.v1_incompatible.add("microbit_read_sensor (sound level)")
+                return None
+            return f"{var_name} = microphone.sound_level()"
+
+        call = _SENSOR_CALLS.get(sensor)
+        if call is None:
+            self.unsupported.add(f"microbit_read_sensor ({sensor})")
+            return None
+        return f"{var_name} = {call}"
+
+
+def export(project_path, output_path=None, board_version="v2") -> bool:
     """Module-level convenience wrapper, matching the Aseba exporter's shape."""
-    return MicropythonExporter().export(project_path, output_path)
+    return MicropythonExporter().export(project_path, output_path, board_version)
