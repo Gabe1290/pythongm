@@ -2410,3 +2410,92 @@ change and two Linux-only `ldd` tests that were running on Windows).
   French Welcome-tab entry — `docs/RELEASE_QA_CHECKLIST.md` §11a. **Open:**
   Stage L (live link, needs a board), X (MicroPython export), P (HTML5/Kivy
   parity) — `TODO.md` "micro:bit extension — follow-ups".
+
+**2026-10-27 — micro:bit Stage X (MicroPython export) planned and its MVP
+(X0–X7) built the same day.** `docs/MICROBIT_STAGE_X_PLAN.md` — a plan was
+asked for first, de-risking the parent plan's own flagged research gap
+(universal-hex licence/size, `microfs` vs. combined-hex, `main.py` auto-run
+semantics) with real web research before any code: confirmed `microfs`
+(MIT, wraps `pyserial`) copies a file onto a board *already running*
+MicroPython with zero firmware-licensing exposure, while a combined/
+universal `.hex` for a *factory-fresh* board needs vendoring compiled
+firmware binaries whose licence terms are a separate, unresearched
+question (deferred as X8/O5, not started). Then X0–X7 landed in one
+session, one commit per unit, each gated by the full microbit+thymio
+suite:
+- **`extensions/microbit/export/micropython_exporter.py`** (X1–X6):
+  finds `microbit*`/`is_microbit` objects (mirrors Thymio's
+  `_find_thymio_objects`), emits one standalone `main.py` per object
+  (`<output>/<object_name>/main.py` — a real board only auto-runs a file
+  with that exact name, so two boards' programs can't share one flat
+  output folder). All 16 actions translate to real MicroPython calls,
+  with two genuine scale conversions found along the way: `set_brightness`
+  is 0–255 in the schema/simulator but the device's `display.set_brightness()`
+  takes 0–9 (converted at *runtime* via `round()`, not export time, so a
+  variable value still works); `music.play()`'s `tempo` kwarg is a
+  `(ticks, bpm)` tuple, not a bare bpm. Conditions/`set_variable`/
+  `test_variable`/`comment`/block-structure translate too, including a
+  small recursive-descent parser that turns the flat, GameMaker-style
+  action list (`runtime/action_executor.py`'s own `_execute_action_list_inner`
+  shape — a question guards exactly the next unit, one action or a whole
+  `start_block`...`end_block` group, with `else_action` for the
+  alternative) into real nested Python `if`/`else` once, rather than
+  reimplementing a skip_next interpreter in generated code. `irandom`/
+  `random`/`choose` (the three GameMaker builtins `_parse_value` itself
+  calls "intentionally supported", and the ones `samples/microbit_1`'s
+  dice-roll chain actually uses) rewrite onto Python's `random` module;
+  anything else passes through unchanged, a documented, narrower-than-core
+  limit. Event polling joins the loop body for every event type: buttons/
+  gestures get edge-triggered device calls for (mostly) free, but the A+B
+  combo needs level reads plus hand-rolled edge tracking anyway (pressing
+  the second button while the first is held fires *both* the single and
+  the combo event — `simulator.py`'s own `set_button` rule — which
+  `was_pressed()` alone can't express without double-consuming the flag);
+  pins/logo/loud-quiet-sound have no edge-triggered call on the device at
+  all and get the same hand-rolled `_prev_x` pattern (loud/quiet reuses
+  the simulator's own hysteresis thresholds verbatim, so a program behaves
+  the same ported from the simulator to a real device); radio has no edge
+  concept, just "did `radio.receive()` return something this pass."
+  `microbit_display_done`/`microbit_sound_done` have no real-device
+  equivalent at all (the device's own display/sound calls are already
+  blocking) and are reported unsupported, never silently dropped — the
+  same Kivy-warning precedent the parent plan names. `export_warnings`/
+  `exported_files` surface the same per-object detail a caller would
+  otherwise have to re-read out of each generated file. Verified end to
+  end against the real `samples/microbit_1` project, not just synthetic
+  fixtures — the exporter now produces a complete, compiling, behaviourally
+  faithful program covering every one of that sample's authored events.
+- **`extensions/microbit/export/device.py` + the File-menu wiring (X7)**:
+  `copy_main_py()` wraps `microfs`, confirmed by reading its *installed*
+  source that `put(filename, target=None, serial=None)` already
+  auto-detects the board by USB VID:PID `0D28:0204` and manages the whole
+  serial session — no manual `get_serial()`/open/close needed, much
+  thinner than the sketch assumed. A new `PLUGIN_IDE_MENUS` hook (the
+  extension had none yet) wires "Export micro:bit (MicroPython) code..."
+  into the File menu exactly like Thymio's `_build_file_menu`/
+  `export_aseba_action`, confirmed via a real `PyGameMakerIDE`, not just
+  unit tests. `export_microbit_code(ide)` mirrors `export_aseba_code`'s
+  whole shape (project-open check, output picker, try/except with a
+  critical dialog, no-boards-found warning, a success dialog naming any
+  `export_warnings`) plus a new V1/V2 picker (O6, settled as a per-export
+  `QInputDialog` choice, not a per-project setting) and — only when
+  exactly one object was exported, since which board to target is
+  otherwise ambiguous — an offer to copy straight onto a connected
+  device. `microfs`/`pyserial` added to `requirements.txt`, following
+  this repo's existing convention of listing every export target's
+  optional deps up front with `_missing_dependency_message`
+  (`export/base_exporter.py`) as the runtime fallback for a partial
+  install.
+- **Testing tier, matching the plan's own stated strategy**: golden-output
+  tests for every action/event mapping-table row (one assertion per
+  translator), the real-sample end-to-end check, and the whole X7 UI flow
+  with `microfs`/`QMessageBox`/`QInputDialog` mocked — the actual serial
+  write onto real hardware is explicitly out of CI, the same standing
+  exception Stage L's own sketch already accepts. ~140 new tests across
+  the arc; full microbit+thymio suite green throughout (507+ passed, 0
+  failed at X7).
+- **Still open**: X8 (combined/universal-hex, needs O5's firmware-licence
+  research first, not started) and Stages L/P (unchanged). **Needs a real
+  board**: the actual `microfs` serial write, and that the V1/V2 export
+  dialog + exported `main.py` behave correctly on both board revisions —
+  everything else in X0–X7 is tested with `microfs` mocked.

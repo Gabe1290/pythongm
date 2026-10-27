@@ -1029,8 +1029,15 @@ The simulator is done (`docs/MICROBIT_EXTENSION_PLAN.md`, Stage S). Open, in
 rough order of value:
 - **Stage L — live link:** drive the simulator from a real micro:bit over USB
   serial (bridge program + `pyserial`). Needs a physical board.
-- **Stage X — MicroPython export:** generate `main.py` / a `.hex` that runs on
-  the device. Needs the universal-hex licence/size research first.
+- ~~**Stage X — MicroPython export**~~ **MVP done, 2026-10-27**
+  (`docs/MICROBIT_STAGE_X_PLAN.md`, units X0-X7): File menu -> "Export
+  micro:bit (MicroPython) code..." generates a `main.py` per micro:bit
+  object and can copy it straight onto a board already running
+  MicroPython via `microfs`. **Still open: X8**, a combined/universal
+  `.hex` for a factory-fresh board (no prior MicroPython flash needed) --
+  blocked on O5, researching the compiled-firmware binaries' own licence/
+  size, not yet started. Needs a physical board to verify the real
+  serial write (everything else is tested with `microfs` mocked).
 - **Stage P — export parity:** port the simulator, overlay and input to HTML5
   and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
   drops the micro:bit *events* silently** (its generator ignores event names it
@@ -1049,7 +1056,11 @@ rough order of value:
   boards sounding at once interrupt each other.
 - **Needs a human:** hear the beep (volume was a guess), look at the Blockly
   toolbox with the extension active, and look at the Welcome-tab entry in
-  French — all in `docs/RELEASE_QA_CHECKLIST.md` §11a.
+  French — all in `docs/RELEASE_QA_CHECKLIST.md` §11a. **Also needs a real
+  board:** Stage X's actual `microfs` serial write onto a real device
+  (everything else is tested with `microfs` mocked), and the V1/V2 export
+  dialog + the exported `main.py` actually run as expected on both board
+  revisions.
 
 ### ~~2.0 extension system — compatibility guarantees~~ (DONE 2026-08-09)
 - Goal: a project using extensions (Thymio robotics, a future 3D extension)
