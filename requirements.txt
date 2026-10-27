@@ -36,6 +36,11 @@ jinja2>=3.1.0
 # Creating Windows EXE files
 pyinstaller>=5.0.0
 
+# micro:bit MicroPython export -- copying a generated main.py onto a
+# connected board already running MicroPython, over USB serial
+pyserial>=3.5
+microfs>=1.4.0
+
 # Built-in Python modules (no installation needed):
 # - json
 # - pathlib

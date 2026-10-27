@@ -190,6 +190,10 @@ class MicropythonExporter:
         # (the X7 UI) shouldn't have to re-read every main.py to show one
         # consolidated warning after an export.
         self.export_warnings = {}
+        # Every object's written main.py, keyed by object name -- so a
+        # caller (the X7 "copy to a connected device" step) can find the
+        # one file to copy without re-deriving <output>/<name>/main.py.
+        self.exported_files = {}
 
     def export(self, project_path, output_path=None, board_version="v2") -> bool:
         """``board_version`` is ``"v1"`` or ``"v2"`` (O6: a per-export
@@ -198,9 +202,12 @@ class MicropythonExporter:
         skipped and warned on a V1 export (O2), not silently emitted to
         fail with an AttributeError on the device. After a successful
         export, ``self.export_warnings`` names any unsupported/V1-only
-        action type per object (empty for an object with none)."""
+        action type per object (empty for an object with none), and
+        ``self.exported_files`` maps each object name to its written
+        ``main.py`` path."""
         self.board_version = board_version
         self.export_warnings = {}
+        self.exported_files = {}
         project_path = Path(project_path)
         if not project_path.exists():
             logger.error(f"Project not found: {project_path}")
@@ -240,6 +247,7 @@ class MicropythonExporter:
             with open(main_file, 'w', encoding='utf-8') as f:
                 f.write(code)
             logger.info(f"   Exported {obj_name} -> {main_file}")
+            self.exported_files[obj_name] = main_file
 
             if self.unsupported or self.v1_incompatible:
                 self.export_warnings[obj_name] = {

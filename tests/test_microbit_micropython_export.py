@@ -1029,6 +1029,38 @@ class TestX6ExportWarnings:
         exporter.export(str(proj), str(tmp_path / "out"))
         assert exporter.export_warnings == {}
 
+    def test_exported_files_maps_object_name_to_its_main_py(self, tmp_path):
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {
+                "microbit_1": {"events": {"create": {"actions": [
+                    {"action": "microbit_show_image", "parameters": {"image": "HEART"}},
+                ]}}},
+            }},
+        }), encoding="utf-8")
+        out = tmp_path / "out"
+        exporter = MicropythonExporter()
+        exporter.export(str(proj), str(out))
+        assert exporter.exported_files == {"microbit_1": out / "microbit_1" / "main.py"}
+        assert exporter.exported_files["microbit_1"].exists()
+
+    def test_exported_files_resets_at_the_start_of_every_export_call(self, tmp_path):
+        # Reset happens unconditionally at the top of export(), even on a
+        # project with no micro:bit objects (an early-return False) -- a
+        # stale entry from a previous call on the same instance must not
+        # survive.
+        proj = tmp_path / "project.json"
+        proj.write_text(json.dumps({
+            "name": "TestProject",
+            "assets": {"objects": {"obj_player": {"events": {}}}},
+        }), encoding="utf-8")
+        exporter = MicropythonExporter()
+        exporter.exported_files = {"stale": "stale_path"}
+        result = exporter.export(str(proj), str(tmp_path / "out"))
+        assert result is False
+        assert exporter.exported_files == {}
+
     def test_unsupported_action_is_recorded_by_object_name(self, tmp_path):
         proj = tmp_path / "project.json"
         proj.write_text(json.dumps({

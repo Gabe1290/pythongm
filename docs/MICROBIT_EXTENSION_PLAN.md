@@ -1,9 +1,10 @@
 # micro:bit extension plan
 
 Written 2026-10-25. Status: **Stage S (the simulator, S0–S12) is done, 2026-10-26**;
-Stage X has its own detailed plan (`docs/MICROBIT_STAGE_X_PLAN.md`, written
-2026-10-27, not started); Stages L and P are still sketches, not started.
-This plan is the resume state:
+**Stage X's MVP (X0-X7) is done, 2026-10-27** (its own detailed plan,
+`docs/MICROBIT_STAGE_X_PLAN.md`; X8, the combined/universal-hex path, stays
+deferred behind unresearched firmware licensing). Stages L and P are still
+sketches, not started. This plan is the resume state:
 work the units in order, one unit ≈ one commit (code + regression test +
 verification), push after each, and tick the box with the commit hash.
 
@@ -414,16 +415,17 @@ session. About 12 sessions in all.
   serial at all. A physical micro:bit is needed for anything past the
   protocol unit tests (a fake serial port).
 
-## Stage X — MicroPython export (planned, not started)
+## Stage X — MicroPython export (MVP done, 2026-10-27)
 
 Full plan: `docs/MICROBIT_STAGE_X_PLAN.md` (written 2026-10-27, with the
-universal-hex/microfs research this sketch flagged as needed, now done).
-Short version: the MVP path is `main.py` generation + `microfs` copy onto
-a board already running MicroPython (no firmware-licensing question, works
-on V1 and V2 alike); building a combined/universal `.hex` for a
-factory-fresh board is deferred to its own gated unit (O5) pending a
-firmware-license/size research pass. Event handlers become one
-`while True:` loop polling `button_a.was_pressed()`,
+universal-hex/microfs research this sketch flagged as needed, now done;
+units X0-X7 all closed the same day). The MVP path: `main.py` generation +
+`microfs` copy onto a board already running MicroPython (no firmware-
+licensing question, works on V1 and V2 alike), reachable from the IDE's
+File menu ("Export micro:bit (MicroPython) code..."). Building a combined/
+universal `.hex` for a factory-fresh board is deferred to its own gated
+unit (X8/O5) pending a firmware-license/size research pass, not started.
+Event handlers became one `while True:` loop polling `button_a.was_pressed()`,
 `accelerometer.was_gesture()`, `radio.receive()` and so on, with Step as
 the loop body. Supported subset only; unsupported actions are listed in a
 warning, not silently dropped (the Kivy precedent).

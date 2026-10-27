@@ -31,6 +31,11 @@ What lives here so far:
 * ``font.py`` / ``images.py`` -- the device's 5x5 font and its 64 built-in
   images, generated from MIT-licensed micro:bit sources
   (``THIRD_PARTY_LICENSES.md``).
+* ``export/`` -- MicroPython export (Stage X, docs/MICROBIT_STAGE_X_PLAN.md):
+  ``micropython_exporter.py`` generates a standalone ``main.py`` per
+  micro:bit object; ``device.py`` copies it onto a connected board over
+  USB serial (``microfs``); this file's own ``_build_file_menu`` wires
+  the File-menu entry.
 """
 
 PLUGIN_NAME = "micro:bit"
@@ -84,3 +89,25 @@ def on_instance_created(instance, instance_data, room):
 
 
 PLUGIN_INSTANCE_CREATED = [on_instance_created]
+
+
+# File-menu entry: MicroPython export (Stage X, unit X7). Mirrors Thymio's
+# own _build_file_menu exactly -- lazy import inside the function (keeps
+# pygame/Qt out of the schema-only load), attached under a pre-declared
+# name core/ide_window.py's update_ui_state() enable/disable sweep and
+# any future UI code can rely on.
+def _build_file_menu(ide, menu):
+    from .export import export_microbit_code
+
+    ide.export_microbit_code = lambda: export_microbit_code(ide)
+
+    menu.addSeparator()
+    ide.export_microbit_action = ide.create_action(
+        ide.tr("Export &micro:bit (MicroPython) code..."), None, ide.export_microbit_code)
+    # Needs an open project, same as export_aseba_action -- flagged for
+    # core's generic update_ui_state() sweep (pygm_requires_project).
+    ide.export_microbit_action.setProperty("pygm_requires_project", True)
+    menu.addAction(ide.export_microbit_action)
+
+
+PLUGIN_IDE_MENUS = [("file", _build_file_menu)]
