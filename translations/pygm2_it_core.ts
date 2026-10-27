@@ -2648,6 +2648,184 @@ Which one do you want to open?</source>
 
 Quale vuoi aprire?</translation>
     </message>
+    <message>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>Esporta codice &amp;micro:bit (MicroPython)...</translation>
+    </message>
+    <message>
+        <source>V2 (2020 or later)</source>
+        <translation>V2 (2020 o successiva)</translation>
+    </message>
+    <message>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1 (originale, 2016-2020)</translation>
+    </message>
+    <message>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>Entrambe (un solo file .hex per schede V1 e V2)</translation>
+    </message>
+    <message>
+        <source>micro:bit Version</source>
+        <translation>Versione di micro:bit</translation>
+    </message>
+    <message>
+        <source>Which micro:bit do you have?</source>
+        <translation>Quale micro:bit hai?</translation>
+    </message>
+    <message>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+Non esportato (non supportato o richiede una scheda V2):
+</translation>
+    </message>
+    <message>
+        <source>Exporting micro:bit code...</source>
+        <translation>Esportazione del codice micro:bit in corso...</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Failed</source>
+        <translation>Esportazione micro:bit non riuscita</translation>
+    </message>
+    <message>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>Impossibile esportare il codice micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit export failed</source>
+        <translation>Esportazione micro:bit non riuscita</translation>
+    </message>
+    <message>
+        <source>micro:bit Export</source>
+        <translation>Esportazione micro:bit</translation>
+    </message>
+    <message>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with "microbit", or set is_microbit) and try again.</source>
+        <translation>Nessun oggetto micro:bit trovato in questo progetto, quindi non è stato generato alcun codice MicroPython. Aggiungi un oggetto micro:bit (con un nome che inizia con «microbit», oppure imposta is_microbit) e riprova.</translation>
+    </message>
+    <message>
+        <source>micro:bit export: nothing to export</source>
+        <translation>Esportazione micro:bit: niente da esportare</translation>
+    </message>
+    <message>
+        <source>micro:bit export complete</source>
+        <translation>Esportazione micro:bit completata</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Complete</source>
+        <translation>Esportazione micro:bit completata</translation>
+    </message>
+    <message>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>main.py scritto per {0} oggetto/i micro:bit in:
+{1}{2}
+
+Vuoi aprire la cartella di output?</translation>
+    </message>
+    <message>
+        <source>Copy to micro:bit?</source>
+        <translation>Copiare sulla micro:bit?</translation>
+    </message>
+    <message>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>Copiare main.py ora su una micro:bit collegata?
+
+La scheda deve essere già collegata via USB ed eseguire MicroPython.</translation>
+    </message>
+    <message>
+        <source>Copying to micro:bit...</source>
+        <translation>Copia sulla micro:bit in corso...</translation>
+    </message>
+    <message>
+        <source>Copy Failed</source>
+        <translation>Copia non riuscita</translation>
+    </message>
+    <message>
+        <source>Couldn't copy to the micro:bit:
+
+{0}</source>
+        <translation>Impossibile copiare sulla micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit copy failed</source>
+        <translation>Copia sulla micro:bit non riuscita</translation>
+    </message>
+    <message>
+        <source>Copied to micro:bit</source>
+        <translation>Copiato sulla micro:bit</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Copiato</translation>
+    </message>
+    <message>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>main.py copiato sulla micro:bit. Verrà eseguito automaticamente.</translation>
+    </message>
+    <message>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>Creare un file .hex pronto da caricare?</translation>
+    </message>
+    <message>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>Creare anche un file .hex da trascinare sull'unità USB MICROBIT di una micro:bit ({0})? Funziona anche su una scheda nuova che non ha mai eseguito MicroPython.</translation>
+    </message>
+    <message>
+        <source>Building .hex...</source>
+        <translation>Creazione del file .hex in corso...</translation>
+    </message>
+    <message>
+        <source>Build Failed</source>
+        <translation>Creazione non riuscita</translation>
+    </message>
+    <message>
+        <source>Couldn't build the .hex file:
+
+{0}</source>
+        <translation>Impossibile creare il file .hex:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit hex build failed</source>
+        <translation>Creazione del file .hex micro:bit non riuscita</translation>
+    </message>
+    <message>
+        <source>Built .hex</source>
+        <translation>File .hex creato</translation>
+    </message>
+    <message>
+        <source>Built</source>
+        <translation>Creato</translation>
+    </message>
+    <message>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
+        <translation>Scritto in:
+{0}
+
+Trascina questo file sull'unità USB MICROBIT della micro:bit per caricarlo.</translation>
+    </message>
+    <message>
+        <source>V1 or V2</source>
+        <translation>V1 o V2</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

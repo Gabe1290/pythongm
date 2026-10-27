@@ -8124,5 +8124,183 @@ Which one do you want to open?</source>
 
 要打开哪一个？</translation>
     </message>
+    <message>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>导出 micro:bit（MicroPython）代码(&amp;M)...</translation>
+    </message>
+    <message>
+        <source>V2 (2020 or later)</source>
+        <translation>V2（2020 年或更新）</translation>
+    </message>
+    <message>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1（初代，2016-2020 年）</translation>
+    </message>
+    <message>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>两者（一个 .hex 文件同时适用于 V1 和 V2 板）</translation>
+    </message>
+    <message>
+        <source>micro:bit Version</source>
+        <translation>micro:bit 版本</translation>
+    </message>
+    <message>
+        <source>Which micro:bit do you have?</source>
+        <translation>您使用的是哪种 micro:bit？</translation>
+    </message>
+    <message>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+未导出（不支持，或需要 V2 板）：
+</translation>
+    </message>
+    <message>
+        <source>Exporting micro:bit code...</source>
+        <translation>正在导出 micro:bit 代码...</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Failed</source>
+        <translation>micro:bit 导出失败</translation>
+    </message>
+    <message>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>导出 micro:bit 代码失败：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit export failed</source>
+        <translation>micro:bit 导出失败</translation>
+    </message>
+    <message>
+        <source>micro:bit Export</source>
+        <translation>micro:bit 导出</translation>
+    </message>
+    <message>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with "microbit", or set is_microbit) and try again.</source>
+        <translation>此项目中未找到 micro:bit 对象，因此未生成 MicroPython 代码。请添加一个 micro:bit 对象（名称以“microbit”开头，或设置 is_microbit），然后重试。</translation>
+    </message>
+    <message>
+        <source>micro:bit export: nothing to export</source>
+        <translation>micro:bit 导出：没有可导出的内容</translation>
+    </message>
+    <message>
+        <source>micro:bit export complete</source>
+        <translation>micro:bit 导出完成</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Complete</source>
+        <translation>micro:bit 导出完成</translation>
+    </message>
+    <message>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>已为 {0} 个 micro:bit 对象写入 main.py，位置：
+{1}{2}
+
+是否要打开输出文件夹？</translation>
+    </message>
+    <message>
+        <source>Copy to micro:bit?</source>
+        <translation>复制到 micro:bit？</translation>
+    </message>
+    <message>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>现在将 main.py 复制到已连接的 micro:bit 吗？
+
+开发板必须已通过 USB 连接并运行 MicroPython。</translation>
+    </message>
+    <message>
+        <source>Copying to micro:bit...</source>
+        <translation>正在复制到 micro:bit...</translation>
+    </message>
+    <message>
+        <source>Copy Failed</source>
+        <translation>复制失败</translation>
+    </message>
+    <message>
+        <source>Couldn't copy to the micro:bit:
+
+{0}</source>
+        <translation>无法复制到 micro:bit：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit copy failed</source>
+        <translation>复制到 micro:bit 失败</translation>
+    </message>
+    <message>
+        <source>Copied to micro:bit</source>
+        <translation>已复制到 micro:bit</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>已复制</translation>
+    </message>
+    <message>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>main.py 已复制到 micro:bit，将自动运行。</translation>
+    </message>
+    <message>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>构建可直接烧录的 .hex 文件？</translation>
+    </message>
+    <message>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>是否同时构建一个 .hex 文件，可拖到 micro:bit（{0}）的 MICROBIT USB 驱动器上？即使是从未运行过 MicroPython 的全新开发板也可使用。</translation>
+    </message>
+    <message>
+        <source>Building .hex...</source>
+        <translation>正在构建 .hex 文件...</translation>
+    </message>
+    <message>
+        <source>Build Failed</source>
+        <translation>构建失败</translation>
+    </message>
+    <message>
+        <source>Couldn't build the .hex file:
+
+{0}</source>
+        <translation>无法构建 .hex 文件：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit hex build failed</source>
+        <translation>micro:bit .hex 文件构建失败</translation>
+    </message>
+    <message>
+        <source>Built .hex</source>
+        <translation>已构建 .hex</translation>
+    </message>
+    <message>
+        <source>Built</source>
+        <translation>已构建</translation>
+    </message>
+    <message>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
+        <translation>已写入：
+{0}
+
+将此文件拖到 micro:bit 的 MICROBIT USB 驱动器上即可烧录。</translation>
+    </message>
+    <message>
+        <source>V1 or V2</source>
+        <translation>V1 或 V2</translation>
+    </message>
 </context>
 </TS>

@@ -8124,5 +8124,183 @@ Which one do you want to open?</source>
 
 どれを開きますか？</translation>
     </message>
+    <message>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>micro:bit（MicroPython）コードをエクスポート(&amp;M)...</translation>
+    </message>
+    <message>
+        <source>V2 (2020 or later)</source>
+        <translation>V2（2020年以降）</translation>
+    </message>
+    <message>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1（初代、2016〜2020年）</translation>
+    </message>
+    <message>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>両方（V1とV2の両方に使える.hexファイル1つ）</translation>
+    </message>
+    <message>
+        <source>micro:bit Version</source>
+        <translation>micro:bitのバージョン</translation>
+    </message>
+    <message>
+        <source>Which micro:bit do you have?</source>
+        <translation>お持ちのmicro:bitはどれですか？</translation>
+    </message>
+    <message>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+エクスポートされません（未対応、またはV2ボードが必要）：
+</translation>
+    </message>
+    <message>
+        <source>Exporting micro:bit code...</source>
+        <translation>micro:bitコードをエクスポート中...</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Failed</source>
+        <translation>micro:bitのエクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>micro:bitコードのエクスポートに失敗しました：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit export failed</source>
+        <translation>micro:bitのエクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <source>micro:bit Export</source>
+        <translation>micro:bitのエクスポート</translation>
+    </message>
+    <message>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with "microbit", or set is_microbit) and try again.</source>
+        <translation>このプロジェクトにmicro:bitオブジェクトが見つからないため、MicroPythonコードは生成されませんでした。micro:bitオブジェクトを追加して（名前を「microbit」で始めるか、is_microbitを設定して）もう一度お試しください。</translation>
+    </message>
+    <message>
+        <source>micro:bit export: nothing to export</source>
+        <translation>micro:bitのエクスポート：エクスポートする内容がありません</translation>
+    </message>
+    <message>
+        <source>micro:bit export complete</source>
+        <translation>micro:bitのエクスポートが完了しました</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Complete</source>
+        <translation>micro:bitのエクスポートが完了しました</translation>
+    </message>
+    <message>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>{0}個のmicro:bitオブジェクトのmain.pyを次の場所に書き込みました：
+{1}{2}
+
+出力フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <source>Copy to micro:bit?</source>
+        <translation>micro:bitにコピーしますか？</translation>
+    </message>
+    <message>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>接続中のmicro:bitにmain.pyを今すぐコピーしますか？
+
+ボードはすでにUSBで接続され、MicroPythonが動作している必要があります。</translation>
+    </message>
+    <message>
+        <source>Copying to micro:bit...</source>
+        <translation>micro:bitにコピー中...</translation>
+    </message>
+    <message>
+        <source>Copy Failed</source>
+        <translation>コピーに失敗しました</translation>
+    </message>
+    <message>
+        <source>Couldn't copy to the micro:bit:
+
+{0}</source>
+        <translation>micro:bitにコピーできませんでした：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit copy failed</source>
+        <translation>micro:bitへのコピーに失敗しました</translation>
+    </message>
+    <message>
+        <source>Copied to micro:bit</source>
+        <translation>micro:bitにコピーしました</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>コピーしました</translation>
+    </message>
+    <message>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>main.pyをmicro:bitにコピーしました。自動的に実行されます。</translation>
+    </message>
+    <message>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>書き込み用の.hexファイルを作成しますか？</translation>
+    </message>
+    <message>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>micro:bit（{0}）のMICROBIT USBドライブにドラッグできる.hexファイルも作成しますか？MicroPythonを一度も実行したことのない新品のボードでも動作します。</translation>
+    </message>
+    <message>
+        <source>Building .hex...</source>
+        <translation>.hexファイルを作成中...</translation>
+    </message>
+    <message>
+        <source>Build Failed</source>
+        <translation>作成に失敗しました</translation>
+    </message>
+    <message>
+        <source>Couldn't build the .hex file:
+
+{0}</source>
+        <translation>.hexファイルを作成できませんでした：
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit hex build failed</source>
+        <translation>micro:bitの.hexファイルの作成に失敗しました</translation>
+    </message>
+    <message>
+        <source>Built .hex</source>
+        <translation>.hexファイルを作成しました</translation>
+    </message>
+    <message>
+        <source>Built</source>
+        <translation>作成しました</translation>
+    </message>
+    <message>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
+        <translation>次の場所に書き込みました：
+{0}
+
+このファイルをmicro:bitのMICROBIT USBドライブにドラッグして書き込んでください。</translation>
+    </message>
+    <message>
+        <source>V1 or V2</source>
+        <translation>V1またはV2</translation>
+    </message>
 </context>
 </TS>

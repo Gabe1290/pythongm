@@ -2648,6 +2648,184 @@ Which one do you want to open?</source>
 
 Katerega želite odpreti?</translation>
     </message>
+    <message>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>Izvozi kodo &amp;micro:bit (MicroPython)...</translation>
+    </message>
+    <message>
+        <source>V2 (2020 or later)</source>
+        <translation>V2 (2020 ali novejša)</translation>
+    </message>
+    <message>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1 (izvirna, 2016-2020)</translation>
+    </message>
+    <message>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>Obe (ena datoteka .hex za plošči V1 in V2)</translation>
+    </message>
+    <message>
+        <source>micro:bit Version</source>
+        <translation>Različica micro:bit</translation>
+    </message>
+    <message>
+        <source>Which micro:bit do you have?</source>
+        <translation>Katero ploščo micro:bit imate?</translation>
+    </message>
+    <message>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+Ni izvoženo (ni podprto ali zahteva ploščo V2):
+</translation>
+    </message>
+    <message>
+        <source>Exporting micro:bit code...</source>
+        <translation>Izvažanje kode micro:bit...</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Failed</source>
+        <translation>Izvoz micro:bit ni uspel</translation>
+    </message>
+    <message>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>Kode micro:bit ni bilo mogoče izvoziti:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit export failed</source>
+        <translation>Izvoz micro:bit ni uspel</translation>
+    </message>
+    <message>
+        <source>micro:bit Export</source>
+        <translation>Izvoz micro:bit</translation>
+    </message>
+    <message>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with "microbit", or set is_microbit) and try again.</source>
+        <translation>V tem projektu ni najdenih objektov micro:bit, zato koda MicroPython ni bila ustvarjena. Dodajte objekt micro:bit (njegovo ime naj se začne z »microbit« ali nastavite is_microbit) in poskusite znova.</translation>
+    </message>
+    <message>
+        <source>micro:bit export: nothing to export</source>
+        <translation>Izvoz micro:bit: ni česa izvoziti</translation>
+    </message>
+    <message>
+        <source>micro:bit export complete</source>
+        <translation>Izvoz micro:bit zaključen</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Complete</source>
+        <translation>Izvoz micro:bit zaključen</translation>
+    </message>
+    <message>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>main.py zapisan za {0} objekt(ov) micro:bit v:
+{1}{2}
+
+Ali želite odpreti izhodno mapo?</translation>
+    </message>
+    <message>
+        <source>Copy to micro:bit?</source>
+        <translation>Kopirati na micro:bit?</translation>
+    </message>
+    <message>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>Ali želite zdaj kopirati main.py na povezano ploščo micro:bit?
+
+Plošča mora biti že povezana prek USB in poganjati MicroPython.</translation>
+    </message>
+    <message>
+        <source>Copying to micro:bit...</source>
+        <translation>Kopiranje na micro:bit...</translation>
+    </message>
+    <message>
+        <source>Copy Failed</source>
+        <translation>Kopiranje ni uspelo</translation>
+    </message>
+    <message>
+        <source>Couldn't copy to the micro:bit:
+
+{0}</source>
+        <translation>Kopiranje na micro:bit ni bilo mogoče:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit copy failed</source>
+        <translation>Kopiranje na micro:bit ni uspelo</translation>
+    </message>
+    <message>
+        <source>Copied to micro:bit</source>
+        <translation>Kopirano na micro:bit</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Kopirano</translation>
+    </message>
+    <message>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>main.py je kopiran na micro:bit. Zagnal se bo samodejno.</translation>
+    </message>
+    <message>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>Ustvariti datoteko .hex, pripravljeno za nalaganje?</translation>
+    </message>
+    <message>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>Ali naj ustvarim tudi datoteko .hex, ki jo lahko povlečete na pogon USB MICROBIT plošče micro:bit ({0})? Deluje tudi na povsem novi plošči, ki še nikoli ni poganjala MicroPythona.</translation>
+    </message>
+    <message>
+        <source>Building .hex...</source>
+        <translation>Ustvarjanje datoteke .hex...</translation>
+    </message>
+    <message>
+        <source>Build Failed</source>
+        <translation>Ustvarjanje ni uspelo</translation>
+    </message>
+    <message>
+        <source>Couldn't build the .hex file:
+
+{0}</source>
+        <translation>Datoteke .hex ni bilo mogoče ustvariti:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit hex build failed</source>
+        <translation>Ustvarjanje datoteke .hex za micro:bit ni uspelo</translation>
+    </message>
+    <message>
+        <source>Built .hex</source>
+        <translation>Datoteka .hex ustvarjena</translation>
+    </message>
+    <message>
+        <source>Built</source>
+        <translation>Ustvarjeno</translation>
+    </message>
+    <message>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
+        <translation>Zapisano v:
+{0}
+
+Povlecite to datoteko na pogon USB MICROBIT plošče micro:bit, da jo naložite.</translation>
+    </message>
+    <message>
+        <source>V1 or V2</source>
+        <translation>V1 ali V2</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

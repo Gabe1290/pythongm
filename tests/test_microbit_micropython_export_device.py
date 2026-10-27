@@ -457,8 +457,8 @@ class TestOfferBuildHexV2:
                 mock_box.question.return_value = 0
                 _offer_build_hex(ide, main_py, version)
                 asked[version] = mock_box.question.call_args[0][2]
-        assert "V1 micro:bit" in asked["v1"] and "V2" not in asked["v1"]
-        assert "V2 micro:bit" in asked["v2"] and "V1" not in asked["v2"]
+        assert "micro:bit (V1)" in asked["v1"] and "V2" not in asked["v1"]
+        assert "micro:bit (V2)" in asked["v2"] and "V1" not in asked["v2"]
 
     def test_a_script_too_big_for_v2_shows_the_numbers_not_a_traceback(self, tmp_path):
         from extensions.microbit.export import _offer_build_hex

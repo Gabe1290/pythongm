@@ -1041,9 +1041,8 @@ rough order of value:
   Universal Hex flashes on both a V1 and a V2 (QA checklist s11a); (b) a
   cross-check of the V2 file system bytes against the JavaScript reference
   `microbit-fs` (needs Node; could not be run here) -- a difference is a bug;
-  (c) the older Universal Hex "blocks" layout; (d) the Stage X dialog strings
-  (the File-menu entry, the version question, the hex offers) are **English
-  only in every language**.
+  (c) the older Universal Hex "blocks" layout. (The Stage X dialog strings are
+  now translated in all 10 shipped languages; `tests/test_microbit_export_ui_translations.py`.)
 - **Stage P — export parity:** port the simulator, overlay and input to HTML5
   and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
   drops the micro:bit *events* silently** (its generator ignores event names it

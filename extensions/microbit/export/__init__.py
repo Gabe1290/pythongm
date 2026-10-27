@@ -178,7 +178,14 @@ def _offer_copy_to_device(ide, main_py_path) -> None:
 # up by NAME on the hex_build module at call time so a test can patch them.
 _HEX_BUILDERS = {"v1": "build_v1_combined_hex", "v2": "build_v2_combined_hex",
                  "both": "build_universal_combined_hex"}
-_HEX_BOARD_LABELS = {"v1": "V1", "v2": "V2", "both": "V1 or V2"}
+
+
+def _hex_board_label(ide, board_version):
+    """The board(s) a .hex is for, for the question. "V1" and "V2" are names, not
+    words; "V1 or V2" has a word in it, so it goes through the translator."""
+    if board_version == "both":
+        return ide.tr("V1 or V2")
+    return "V2" if board_version == "v2" else "V1"
 
 
 def _offer_build_hex(ide, main_py_path, board_version="v1") -> None:
@@ -188,13 +195,13 @@ def _offer_build_hex(ide, main_py_path, board_version="v1") -> None:
     (X8); V2 writes ``main.py`` into the MicroPython file system its firmware
     describes; "both" builds one Universal Hex for either board
     (docs/MICROBIT_V2_HEX_PLAN.md)."""
-    version_label = _HEX_BOARD_LABELS.get(board_version, "V1")
+    version_label = _hex_board_label(ide, board_version)
     result = QMessageBox.question(
         ide,
         ide.tr("Build a ready-to-flash .hex?"),
-        ide.tr("Also build a .hex file you can drag onto a {0} micro:bit's "
-                "MICROBIT USB drive? This works even on a brand-new board "
-                "that has never run MicroPython.").format(version_label),
+        ide.tr("Also build a .hex file you can drag onto the MICROBIT USB "
+                "drive of a micro:bit ({0})? This works even on a brand-new "
+                "board that has never run MicroPython.").format(version_label),
         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         QMessageBox.StandardButton.No,
     )

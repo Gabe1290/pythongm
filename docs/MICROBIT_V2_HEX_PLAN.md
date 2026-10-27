@@ -152,8 +152,9 @@ These go in `docs/RELEASE_QA_CHECKLIST.md` s11a.
   difference is a bug here.
 - The older Universal Hex **"blocks"** layout (the specification recommends
   "sections", which is what is built).
-- The Stage X dialog strings are **untranslated in every language** (English only,
-  the File-menu entry included).
+- ~~The Stage X dialog strings are untranslated~~ -- done: all 36 strings are in the
+  `PyGameMakerIDE` context of the 10 shipped languages, pinned by
+  `tests/test_microbit_export_ui_translations.py`.
 
 ## Expected size
 

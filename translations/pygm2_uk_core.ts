@@ -2512,6 +2512,184 @@ Which one do you want to open?</source>
 
 Який із них відкрити?</translation>
     </message>
+    <message>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>Експортувати код &amp;micro:bit (MicroPython)...</translation>
+    </message>
+    <message>
+        <source>V2 (2020 or later)</source>
+        <translation>V2 (2020 або новіша)</translation>
+    </message>
+    <message>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1 (оригінальна, 2016-2020)</translation>
+    </message>
+    <message>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>Обидві (один файл .hex для плат V1 і V2)</translation>
+    </message>
+    <message>
+        <source>micro:bit Version</source>
+        <translation>Версія micro:bit</translation>
+    </message>
+    <message>
+        <source>Which micro:bit do you have?</source>
+        <translation>Яка у вас micro:bit?</translation>
+    </message>
+    <message>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+Не експортовано (не підтримується або потрібна плата V2):
+</translation>
+    </message>
+    <message>
+        <source>Exporting micro:bit code...</source>
+        <translation>Експортування коду micro:bit...</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Failed</source>
+        <translation>Експорт micro:bit не вдався</translation>
+    </message>
+    <message>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>Не вдалося експортувати код micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit export failed</source>
+        <translation>Експорт micro:bit не вдався</translation>
+    </message>
+    <message>
+        <source>micro:bit Export</source>
+        <translation>Експорт micro:bit</translation>
+    </message>
+    <message>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with "microbit", or set is_microbit) and try again.</source>
+        <translation>У цьому проєкті не знайдено об'єктів micro:bit, тому код MicroPython не створено. Додайте об'єкт micro:bit (ім'я має починатися з «microbit», або встановіть is_microbit) і повторіть спробу.</translation>
+    </message>
+    <message>
+        <source>micro:bit export: nothing to export</source>
+        <translation>Експорт micro:bit: нічого експортувати</translation>
+    </message>
+    <message>
+        <source>micro:bit export complete</source>
+        <translation>Експорт micro:bit завершено</translation>
+    </message>
+    <message>
+        <source>micro:bit Export Complete</source>
+        <translation>Експорт micro:bit завершено</translation>
+    </message>
+    <message>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>main.py записано для {0} об'єкт(ів) micro:bit в:
+{1}{2}
+
+Відкрити вихідну папку?</translation>
+    </message>
+    <message>
+        <source>Copy to micro:bit?</source>
+        <translation>Скопіювати на micro:bit?</translation>
+    </message>
+    <message>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>Скопіювати main.py на підключену micro:bit зараз?
+
+Плата має бути вже підключена через USB і виконувати MicroPython.</translation>
+    </message>
+    <message>
+        <source>Copying to micro:bit...</source>
+        <translation>Копіювання на micro:bit...</translation>
+    </message>
+    <message>
+        <source>Copy Failed</source>
+        <translation>Не вдалося скопіювати</translation>
+    </message>
+    <message>
+        <source>Couldn't copy to the micro:bit:
+
+{0}</source>
+        <translation>Не вдалося скопіювати на micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit copy failed</source>
+        <translation>Копіювання на micro:bit не вдалося</translation>
+    </message>
+    <message>
+        <source>Copied to micro:bit</source>
+        <translation>Скопійовано на micro:bit</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Скопійовано</translation>
+    </message>
+    <message>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>main.py скопійовано на micro:bit. Він запускатиметься автоматично.</translation>
+    </message>
+    <message>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>Створити готовий до прошивання файл .hex?</translation>
+    </message>
+    <message>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>Також створити файл .hex, який можна перетягнути на USB-диск MICROBIT плати micro:bit ({0})? Це працює навіть на цілком новій платі, на якій ніколи не запускався MicroPython.</translation>
+    </message>
+    <message>
+        <source>Building .hex...</source>
+        <translation>Створення файлу .hex...</translation>
+    </message>
+    <message>
+        <source>Build Failed</source>
+        <translation>Не вдалося створити</translation>
+    </message>
+    <message>
+        <source>Couldn't build the .hex file:
+
+{0}</source>
+        <translation>Не вдалося створити файл .hex:
+
+{0}</translation>
+    </message>
+    <message>
+        <source>micro:bit hex build failed</source>
+        <translation>Не вдалося створити файл .hex для micro:bit</translation>
+    </message>
+    <message>
+        <source>Built .hex</source>
+        <translation>Файл .hex створено</translation>
+    </message>
+    <message>
+        <source>Built</source>
+        <translation>Створено</translation>
+    </message>
+    <message>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
+        <translation>Записано в:
+{0}
+
+Перетягніть цей файл на USB-диск MICROBIT плати micro:bit, щоб прошити її.</translation>
+    </message>
+    <message>
+        <source>V1 or V2</source>
+        <translation>V1 або V2</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>
