@@ -118,7 +118,7 @@ These go in `docs/RELEASE_QA_CHECKLIST.md` s11a.
 | H4 | Wire V2 into the export flow: the "ready-to-flash .hex" offer for a V2 choice; typed errors become dialogs; tests with the dialogs mocked, extending X8's. | [x] `122dfe89` |
 | H5 | `universal_hex.py`: port `iHexToCustomFormatBlocks` / `createUniversalHex` / `separateUniversalHex` (MIT, attributed). Tests: 512-byte blocks, board-id tagging, separator round-trip, V1-style data-record handling. | [x] `99116626` |
 | H6 | `build_universal_hex(main_py)` (V1 hex + V2 hex -> one) and the "both boards" option in the export dialog; tests. | [x] `b997fd15` |
-| H7 | Close-out: extension README, plan/TODO/CLAUDE notes, QA checklist rows, `THIRD_PARTY_LICENSES.md`. | [x] see the commit that ticks this |
+| H7 | Close-out: extension README, plan/TODO/CLAUDE notes, QA checklist rows, `THIRD_PARTY_LICENSES.md`. | [x] `4cced0c8` |
 
 ## Result (2026-10-27)
 
