@@ -180,9 +180,11 @@ def test_html5_engine_warns_instead_of_failing_on_an_action_it_does_not_know():
         assert f"case '{name}'" not in html and f"registerExtensionAction('{name}'" not in html
 
 
-def test_html5_export_does_not_embed_the_micro_bit_simulator():
+def test_html5_export_embeds_the_micro_bit_simulator():
+    """Stage P / H1: the pure simulator ships with every HTML5 export (like
+    every extension's export_html5.js); the actions come in later units."""
     html, _ = _html5_export(_every_action_project())
-    assert "MicrobitSimulator" not in html and "microbit" not in html.split("gameData")[0].lower()
+    assert "class MicrobitSimulator" in html and "window.__pygmMicrobit" in html
 
 
 @pytest.mark.parametrize("sample", ["microbit_1"])
