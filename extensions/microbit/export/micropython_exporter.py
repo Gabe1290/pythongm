@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
-"""MicroPython exporter for micro:bit objects (Stage X, unit X1: skeleton).
+"""MicroPython exporter for micro:bit objects (Stage X, units X1-X2).
 
 docs/MICROBIT_STAGE_X_PLAN.md is the map. In the shape of
 ``extensions/thymio/export/aseba_exporter.py`` -- object discovery, the
 objects/<name>.json merge, and the per-object output all mirror it -- but
 the output unit is a standalone ``main.py`` per micro:bit object (one real
 board = one flat script, no event-handler indirection), not one shared
-runtime. Action/condition translators are added unit by unit (X2-X4);
-until then every action an object uses is reported as unsupported, which
-is the correct, honest state for this stage -- not a bug.
+runtime. Condition/radio/sensor/generic-variable translators are added in
+X3-X4; until then every action outside the X2 set is reported as
+unsupported, which is the correct, honest state for this stage -- not a
+bug.
+
+Expressions (``_expr``) pass through as-is for now: quoted text and plain
+numbers/identifiers are already valid Python/MicroPython syntax (a
+variable name becomes a top-level global -- see the plan's "Variable
+semantics"), so most authored values need no translation at all. GameMaker's
+``irandom``/``random``/``choose`` builtins (the ones
+``runtime/action_executor.py``'s ``_parse_value`` calls out as
+intentionally supported, and the ones ``samples/microbit_1`` actually
+uses) are NOT yet rewritten onto Python's ``random`` module -- deferred to
+X4, where the generic ``set_variable`` translator first needs it, since no
+code reachable before X4/X5 wiring calls ``_expr`` on a GM-function
+expression yet.
 """
 import json
 from datetime import datetime
@@ -16,7 +29,44 @@ from pathlib import Path
 
 from core.logger import get_logger
 
+from ..images import IMAGES
+from ..melodies import MELODIES
+
 logger = get_logger(__name__)
+
+
+def _expr(raw, default="0") -> str:
+    """A parameter's raw text as MicroPython source (not evaluated -- the
+    device evaluates it at runtime). See the module docstring for the
+    current, deliberately limited, scope."""
+    text = str(raw if raw is not None and raw != "" else default).strip()
+    return text if text else default
+
+
+def _image_literal(spec: str) -> str:
+    """``Image.<NAME>`` for a built-in name, else ``Image("...")`` -- the
+    colon-separated digit-grid format our own action schema uses is
+    already exactly what MicroPython's ``Image()`` constructor takes
+    (confirmed against ``images.py``'s own docstring), so no reformatting
+    is needed, only the literal/name choice."""
+    name = spec.strip().upper()
+    if name in IMAGES:
+        return f"Image.{name}"
+    return f"Image({spec.strip()!r})"
+
+
+def _melody_call(raw_melody: str, tempo_expr: str) -> str:
+    """``music.<NAME>`` for a built-in name, else ``music.play(notes,
+    tempo=(4, bpm))`` -- mirrors ``handlers.py``'s own quoted-vs-bare
+    handling: a quoted value is literal note text with the quotes
+    stripped; an unquoted value is tried as a built-in name first, and
+    used as literal note text otherwise (handlers.py's own fallback)."""
+    raw = str(raw_melody)
+    quoted = raw.strip().startswith('"')
+    bare = raw.strip().strip('"').strip()
+    if not quoted and bare.upper() in MELODIES:
+        return f"music.{bare.upper()}"
+    return f"music.play({bare!r}, tempo=(4, {tempo_expr}))"
 
 
 class MicropythonExporter:
@@ -111,22 +161,34 @@ class MicropythonExporter:
 
     def generate_main(self, obj_name, obj_data, project_data) -> str:
         """The full ``main.py`` source for one micro:bit object: header,
-        import, one-time setup from the Create event, then a single
+        imports, one-time setup from the Create event, then a single
         ``while True:`` loop whose body is the Step event (event polling
-        joins the loop body starting in X5)."""
-        lines = [self._generate_header(obj_name, project_data), "",
-                  "from microbit import *", ""]
-
+        joins the loop body starting in X5). Setup/body are generated
+        before the import line so it can name only the modules actually
+        used -- ``music``/``radio`` are separate MicroPython modules, not
+        part of ``from microbit import *``."""
         setup_section = self._generate_setup(obj_data)
+        self.indent_level = 1
+        body = self._generate_loop_body(obj_data)
+        self.indent_level = 0
+
+        used_source = (setup_section or "") + "\n" + (body or "")
+        imports = ["from microbit import *"]
+        if "music." in used_source:
+            imports.append("import music")
+        if "radio." in used_source:
+            imports.append("import radio")
+
+        lines = [self._generate_header(obj_name, project_data), ""]
+        lines.extend(imports)
+        lines.append("")
+
         if setup_section:
             lines.append(setup_section)
             lines.append("")
 
         lines.append("while True:")
-        self.indent_level = 1
-        body = self._generate_loop_body(obj_data)
         lines.append(body if body else "    pass")
-        self.indent_level = 0
 
         if self.unsupported:
             lines.append("")
@@ -179,11 +241,70 @@ class MicropythonExporter:
 
     def _get_action_translator(self, action_type):
         """Populated unit by unit (X2: display/sound, X3: radio/sensors,
-        X4: conditions + the generic variable/block subset). Empty here --
-        X1 is the skeleton that proves discovery, merging and file layout
-        before any translation exists."""
-        translators = {}
+        X4: conditions + the generic variable/block subset)."""
+        translators = {
+            "microbit_show_image": self._translate_show_image,
+            "microbit_scroll_text": self._translate_scroll_text,
+            "microbit_show_number": self._translate_show_number,
+            "microbit_set_pixel": self._translate_set_pixel,
+            "microbit_clear_display": self._translate_clear_display,
+            "microbit_set_brightness": self._translate_set_brightness,
+            "microbit_play_tone": self._translate_play_tone,
+            "microbit_play_melody": self._translate_play_melody,
+            "microbit_stop_sound": self._translate_stop_sound,
+        }
         return translators.get(action_type)
+
+    # -- Display (X2) -------------------------------------------------------
+
+    def _translate_show_image(self, params) -> str:
+        image = _image_literal(str(params.get("image", "HEART")))
+        hold = _expr(params.get("hold"), "0")
+        lines = [f"display.show({image})"]
+        if hold.strip() != "0":
+            lines.append(f"sleep_ms({hold})")
+        return '\n'.join(lines)
+
+    def _translate_scroll_text(self, params) -> str:
+        text = _expr(params.get("text", '"Hello"'), '"Hello"')
+        delay = _expr(params.get("delay"), "150")
+        return f"display.scroll({text}, delay={delay})"
+
+    def _translate_show_number(self, params) -> str:
+        value = _expr(params.get("value", "0"), "0")
+        return f"display.show({value})"
+
+    def _translate_set_pixel(self, params) -> str:
+        x = _expr(params.get("x"), "0")
+        y = _expr(params.get("y"), "0")
+        brightness = _expr(params.get("brightness"), "9")
+        return f"display.set_pixel({x}, {y}, {brightness})"
+
+    def _translate_clear_display(self, params) -> str:
+        return "display.clear()"
+
+    def _translate_set_brightness(self, params) -> str:
+        # Real-device scale conversion, found while writing this plan: our
+        # schema/simulator use 0-255 (simulator.py clamps to that range),
+        # but display.set_brightness() on the device takes 0-9. Computed
+        # at runtime, not at export time, so a variable value still works.
+        value = _expr(params.get("brightness"), "255")
+        return f"display.set_brightness(round(({value}) / 255 * 9))"
+
+    # -- Sound (X2) -----------------------------------------------------------
+
+    def _translate_play_tone(self, params) -> str:
+        frequency = _expr(params.get("frequency"), "440")
+        duration = _expr(params.get("duration"), "500")
+        return f"music.pitch({frequency}, {duration})"
+
+    def _translate_play_melody(self, params) -> str:
+        melody = str(params.get("melody", "DADADADUM"))
+        tempo = _expr(params.get("tempo"), "120")
+        return _melody_call(melody, tempo)
+
+    def _translate_stop_sound(self, params) -> str:
+        return "music.stop()"
 
 
 def export(project_path, output_path=None) -> bool:
