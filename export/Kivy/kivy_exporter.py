@@ -201,6 +201,9 @@ class KivyExporter:
             self._generate_main_app()
             logger.info("Main application generated")
 
+            # Files an extension ships into the game (e.g. a simulator package)
+            self._write_extension_support_files()
+
             # Generate game scenes/rooms
             self._generate_scenes()
             logger.info(f"Generated {len(self.project_data.get('assets', {}).get('rooms', {}))} room(s)")
@@ -1839,6 +1842,42 @@ if __name__ == '__main__':
                 (out_dir / filename).write_bytes(base64.b64decode(b64_bytes))
             except (OSError, ValueError) as exc:
                 logger.error(f"Could not write block-world texture {filename}: {exc}")
+
+    def _write_extension_support_files(self):
+        """Copy the files each ENABLED extension's ``export_kivy.py`` lists in
+        ``SUPPORT_FILES`` -- ``{path under game/: source path relative to the
+        extension folder}`` -- into the exported game, byte for byte. This is how
+        an extension ships a pure-Python module (the micro:bit simulator) that
+        the generated code imports, without a second copy to keep in step."""
+        try:
+            from events.plugin_loader import (
+                list_available_extensions, get_extension_directory)
+            ext_dir = get_extension_directory()
+        except Exception as exc:
+            logger.warning(f"Could not enumerate extensions for SUPPORT_FILES: {exc}")
+            return
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            folder = ext_dir / info["folder"]
+            py = folder / "export_kivy.py"
+            if not py.exists():
+                continue
+            try:
+                ns = {}
+                exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
+                files = ns.get("SUPPORT_FILES", {})
+                for dest, source in (files or {}).items():
+                    target = (self.output_path / "game" / dest).resolve()
+                    base = (self.output_path / "game").resolve()
+                    if base not in target.parents:
+                        raise ValueError(f"support file path escapes the game folder: {dest}")
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes((folder / source).read_bytes())
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' support files could not be "
+                    f"exported; its actions will fail at run time: {exc}")
 
     EXTENSION_SCENE_MARKER = "    # __PYGM_EXTENSION_SCENE_CODE__"
 

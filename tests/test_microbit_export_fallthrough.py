@@ -114,22 +114,26 @@ def test_kivy_export_of_every_micro_bit_action_succeeds_and_compiles(caplog):
     assert (out / "game" / "main.py").exists()
 
 
-def test_kivy_export_reports_the_actions_it_skipped(caplog):
+def test_kivy_export_no_longer_skips_the_micro_bit_actions(caplog):
+    """Stage P / K1: the 12 actions and 4 conditions have Kivy codegen now, so
+    they are not in the 'skipped' warning (the events still are, until K2)."""
     _kivy_export(_every_action_project(), caplog)
-    warning = next((m for m in caplog.messages
-                    if "not supported and were skipped" in m), None)
-    assert warning, "unsupported micro:bit actions were skipped silently"
+    skipped = next((m for m in caplog.messages
+                    if "not supported and were skipped" in m), "")
     for name in ACTIONS:
-        assert name in warning, name
+        assert name not in skipped, name
 
 
-def test_kivy_generated_code_runs_no_micro_bit_behaviour(caplog):
-    """Skipped, not faked: the actions become inert placeholders and the
-    micro:bit events produce no handlers."""
+def test_kivy_export_ships_the_simulator_and_calls_it(caplog):
     out = _kivy_export(_every_action_project(), caplog)
+    for name in ("simulator", "font", "images", "sound", "melodies", "radio"):
+        assert (out / "game" / "microbit_sim" / f"{name}.py").exists(), name
     text = "\n".join(p.read_text(encoding="utf-8") for p in out.rglob("*.py"))
-    assert "# TODO: microbit_show_image" in text
-    assert "def on_microbit_" not in text and "microbit_button_a" not in text
+    assert "# TODO: microbit_show_image" not in text
+    assert "self._mb_show_image(" in text
+    # The events are a later unit (K2): still reported, not faked.
+    events = next((m for m in caplog.messages if "event(s) are not supported" in m), "")
+    assert "microbit_button_a" in events
 
 
 def test_kivy_export_of_the_real_sample_succeeds(caplog):
@@ -144,7 +148,7 @@ def test_kivy_export_of_the_real_sample_succeeds(caplog):
         (sample / "rooms" / "room0.json").read_text(encoding="utf-8"))
     out = Path(tempfile.mkdtemp(prefix="mb1_kivy_")) / "export"
     assert KivyExporter(data, sample, out).export()
-    assert any("microbit_show_image" in m for m in caplog.messages)
+    assert (out / "game" / "microbit_sim" / "simulator.py").exists()
     for path in out.rglob("*.py"):
         py_compile.compile(str(path), doraise=True)
 

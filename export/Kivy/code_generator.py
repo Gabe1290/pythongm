@@ -380,12 +380,22 @@ def get_unsupported_actions() -> list:
 # fn(gen, params, event_type) -> code string. Loaded once per process; the
 # loader honours the extension enable/disable config.
 _EXTENSION_CODEGEN = None
+# An extension may also ship CONDITION_CODEGEN: {name: fn}, where
+# fn(gen, params, event_type) -> a Python boolean EXPRESSION; the generator
+# wraps it in a guard exactly as it does for its own conditionals.
+_EXTENSION_CONDITIONS = {}
+
+
+def _extension_conditions():
+    _extension_codegen()
+    return _EXTENSION_CONDITIONS
 
 
 def _extension_codegen():
     global _EXTENSION_CODEGEN
     if _EXTENSION_CODEGEN is None:
         _EXTENSION_CODEGEN = {}
+        _EXTENSION_CONDITIONS.clear()
         try:
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
@@ -408,6 +418,9 @@ def _extension_codegen():
                 table = ns.get("ACTION_CODEGEN", {})
                 if isinstance(table, dict):
                     _EXTENSION_CODEGEN.update(table)
+                conditions = ns.get("CONDITION_CODEGEN", {})
+                if isinstance(conditions, dict):
+                    _EXTENSION_CONDITIONS.update(conditions)
             except Exception as exc:
                 logger.error(
                     f"Extension '{info['folder']}' export_kivy.py failed to load; "
@@ -548,6 +561,14 @@ class ActionCodeGenerator:
                 return
             while self._top_label() == 'guard_open':
                 self._pop_block()
+
+        # Extension-owned conditions (a question action the extension
+        # generates a boolean expression for): guard the next unit like any
+        # other conditional.
+        _ext_condition = _extension_conditions().get(action_type)
+        if _ext_condition is not None:
+            self._open_guard(f"if {_ext_condition(self, params, event_type)}:")
+            return
 
         # BLOCK CONTROL ACTIONS
         if action_type == 'start_block':

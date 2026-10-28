@@ -109,10 +109,23 @@ properties of the JS (constants and tables equal to the Python source).
   (K1-K6) is next.
 
 ### Kivy
-- [ ] **K1 -- embed the pure modules + actions.** Copy `simulator.py`, `font`,
+- [x] **K1 -- embed the pure modules + actions.** Copy `simulator.py`, `font`,
   `images`, `sound`, `radio`, `events` into the export; `ACTION_CODEGEN` for
   the 16 actions calling a `_mb_*` helper on `GameObject` (M34 two-halves
   pattern: codegen emits calls, helpers hold the logic).
+  *Done:* two generic Kivy-export seams -- `SUPPORT_FILES` (an extension's
+  files copied byte for byte into `game/`, path-escape guarded) and
+  `CONDITION_CODEGEN` (an extension's question action -> a boolean expression
+  the generator wraps in its normal guard). `extensions/microbit/export_kivy.py`:
+  the simulator ships as the `microbit_sim` package (simulator, font, images,
+  sound, melodies, radio -- `events.py`/`layout.py` are not needed yet);
+  12 action + 4 condition codegens emit calls to `_mb_*` helpers injected into
+  the base object. `tests/test_kivy_microbit_actions.py` imports the real
+  generated object under a stub kivy and compares what each action/condition
+  does with what the desktop handler does (same params), plus byte-identity of
+  the shipped simulator. Boards are recognised by object name (`microbit*`) or
+  an `is_microbit` attribute; the flag form on an object property is wired in
+  K2 with the events. Events are still skipped (warned) until K2.
 - [ ] **K2 -- events + frame update.** Step boards in the scene update; fire
   reported events through the existing event dispatch; radio delivery.
 - [ ] **K3 -- drawing.** Board + strip on `canvas.after` (Kivy is y-up: flip at
