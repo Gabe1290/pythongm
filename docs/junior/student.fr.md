@@ -47,7 +47,8 @@ Regarde en haut de la fenêtre :
 - [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
 - [ ] Ajoute 4 blocs **Clavier** (Flèche gauche, droite, haut, bas), chacun
-      avec **définir vitesse horizontale et vitesse verticale à** (-4, 4, -4, 4).
+      avec **définir vitesse horizontale et vitesse verticale à** : gauche -4,
+      droite 4, haut -4, bas 4.
 - [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**, pour
       que ton héros s'arrête quand tu ne touches rien.
 

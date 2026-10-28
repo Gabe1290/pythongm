@@ -40,21 +40,21 @@ On the left you have your **resources**: sprites, objects and rooms.
 
 ![The sprite editor, with a round orange drawing](images/en/sprite_editor.png "65%")
 
-> TIP: Start the names of your sprites with `spr_`.
+> Start the names of your sprites with `spr_`.
 
 ## Part 4: Make an Object Move in 4 Directions
 
 - [ ] Click **Assets > Create Object** and name it `obj_hero`.
 - [ ] In **Sprite**, choose your sprite.
 - [ ] Add 4 **Keyboard** blocks (Left Arrow, Right Arrow, Up Arrow, Down
-      Arrow). In each one, put **Set horizontal speed to** (-4 and 4) or
-      **Set vertical speed to** (-4 and 4): left -4, right 4, up -4, down 4.
+      Arrow). In each one, put **Set horizontal speed** or **Set vertical
+      speed to**: left -4, right 4, up -4, down 4.
 - [ ] Add **Keyboard: No key**, then **Stop movement**, so your hero stops
       when you touch nothing.
 
 ![The blocks in the object: one for each arrow key](images/en/objet_blockly.png "65%")
 
-> TIP: Right-click a block to duplicate or delete it. Duplicate the **Left
+> Right-click a block to duplicate or delete it. Duplicate the **Left
 > Arrow** block three times, then just change the key and the number in each
 > copy!
 
@@ -69,9 +69,9 @@ Your project already has a room, **room0**. You do not need to create one!
 
 - [ ] Press the **green triangle** (or **F5**) to play.
 
-> TIP: You can rename **room0** if you want (right-click > Rename).
+> You can rename **room0** if you want (right-click > Rename).
 
-> DONE: You see your sprite in the game and you can make it move.
+> You see your sprite in the game and you can make it move.
 
 ## Part 6: Share Your Game
 
@@ -100,7 +100,7 @@ Your game already works. If you still have time, add points!
 
 - [ ] Press **F5**: pick up the fruit to win points!
 
-> DONE: Your score goes up and the fruit disappears when you touch it.
+> Your score goes up and the fruit disappears when you touch it.
 
 ## Stuck?
 
