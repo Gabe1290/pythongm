@@ -56,6 +56,31 @@ function runInstanceOverlays(room, ctx) {
     }
 }
 
+// Input handlers: {mouse_down(game, button, x, y), mouse_up(...), key_down(inst, key),
+// key_up(inst, key)} -- mirrors the desktop runtime's extension_hooks.
+// register_input_handler. Mouse coordinates are canvas (screen) pixels and
+// button numbers are pygame's (1 left, 2 middle, 3 right); a mouse handler
+// returning true swallows the click so no authored mouse event also fires. Key
+// names are the lowercase pygm2 names ("a", "left", "space"); the key hooks
+// never swallow. game.pointer holds the last pointer position.
+const _extInputHandlers = [];
+function registerInputHandler(handlers) {
+    if (handlers && !_extInputHandlers.includes(handlers)) _extInputHandlers.push(handlers);
+}
+function runInputHandlers(kind, ...args) {
+    let hit = false;
+    for (const handlers of _extInputHandlers) {
+        const fn = handlers[kind];
+        if (!fn) continue;
+        try { if (fn(...args)) hit = true; } catch (e) { console.error('Extension input handler failed:', e); }
+    }
+    return hit;
+}
+function inputKeyName(key) {
+    const named = {ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down', ' ': 'space'};
+    return named[key] || String(key).toLowerCase();
+}
+
 // Question (condition) actions: name -> (obj, params, game) => boolean. A name
 // registered here is treated like a built-in test_*/if_* question: it gates the
 // next action/block in the flat form and picks then/else in the nested form
@@ -4476,6 +4501,44 @@ class Game {
         const MIDDLE_PRESS_KEYS = ['mouse_middle_press', 'mouse_middle_button', 'mouse_middle_down'];
         const MIDDLE_RELEASE_KEYS = ['mouse_middle_release'];
 
+        // Canvas-space point for a client position (extension input hooks work
+        // in screen space, like the desktop's), or null when it can't be mapped.
+        const toCanvas = (clientX, clientY) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const cw = this.canvas.clientWidth, ch = this.canvas.clientHeight;
+            if (!cw || !ch) return null;
+            return {x: (clientX - rect.left - this.canvas.clientLeft) * this.canvas.width / cw,
+                    y: (clientY - rect.top - this.canvas.clientTop) * this.canvas.height / ch};
+        };
+        const hookMouse = (kind, button, clientX, clientY) => {
+            if (!this.currentRoom || this.paused || !_extInputHandlers.length) return false;
+            const pt = toCanvas(clientX, clientY);
+            return !!pt && runInputHandlers(kind, this, button, pt.x, pt.y);
+        };
+        const DOM_TO_PYGAME_BUTTON = {0: 1, 1: 2, 2: 3};
+        const trackPointer = (clientX, clientY) => {
+            const pt = toCanvas(clientX, clientY);
+            if (pt) this.pointer = pt;
+        };
+        this.pointer = {x: 0, y: 0};
+        this.canvas.addEventListener('mousemove', (e) => trackPointer(e.clientX, e.clientY));
+        this.canvas.addEventListener('touchmove', (e) => {
+            const t = e.changedTouches[0];
+            if (t) trackPointer(t.clientX, t.clientY);
+        }, { passive: true });
+        // A release outside the canvas still ends a press that began on it.
+        window.addEventListener('mouseup', (e) => {
+            hookMouse('mouse_up', DOM_TO_PYGAME_BUTTON[e.button], e.clientX, e.clientY);
+        });
+        window.addEventListener('touchend', (e) => {
+            const t = e.changedTouches[0];
+            if (t) hookMouse('mouse_up', 1, t.clientX, t.clientY);
+        });
+        window.addEventListener('touchcancel', (e) => {
+            const t = e.changedTouches[0];
+            if (t) hookMouse('mouse_up', 1, t.clientX, t.clientY);
+        });
+
         const dispatch = (clientX, clientY, eventKeys) => {
             if (!this.currentRoom || this.paused) return;
             const rect = this.canvas.getBoundingClientRect();
@@ -4501,11 +4564,14 @@ class Game {
 
         // DOM MouseEvent.button: 0=left, 1=middle, 2=right.
         this.canvas.addEventListener('mousedown', (e) => {
+            trackPointer(e.clientX, e.clientY);
+            if (hookMouse('mouse_down', DOM_TO_PYGAME_BUTTON[e.button], e.clientX, e.clientY)) return;
             if (e.button === 0) dispatch(e.clientX, e.clientY, PRESS_KEYS);
             else if (e.button === 2) dispatch(e.clientX, e.clientY, RIGHT_PRESS_KEYS);
             else if (e.button === 1) dispatch(e.clientX, e.clientY, MIDDLE_PRESS_KEYS);
         });
         this.canvas.addEventListener('mouseup', (e) => {
+            if (hookMouse('mouse_up', DOM_TO_PYGAME_BUTTON[e.button], e.clientX, e.clientY)) return;
             if (e.button === 0) dispatch(e.clientX, e.clientY, RELEASE_KEYS);
             else if (e.button === 2) dispatch(e.clientX, e.clientY, RIGHT_RELEASE_KEYS);
             else if (e.button === 1) dispatch(e.clientX, e.clientY, MIDDLE_RELEASE_KEYS);
@@ -4516,11 +4582,14 @@ class Game {
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const t = e.changedTouches[0];
+            if (t) trackPointer(t.clientX, t.clientY);
+            if (t && hookMouse('mouse_down', 1, t.clientX, t.clientY)) return;
             if (t) dispatch(t.clientX, t.clientY, PRESS_KEYS);
         }, { passive: false });
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
             const t = e.changedTouches[0];
+            if (t && hookMouse('mouse_up', 1, t.clientX, t.clientY)) return;
             if (t) dispatch(t.clientX, t.clientY, RELEASE_KEYS);
         }, { passive: false });
     }
@@ -4888,6 +4957,17 @@ class Game {
             }
         }
 
+        // Extension input hooks, once per pressed key per instance (the desktop
+        // runs them on every instance, events or not).
+        if (_extInputHandlers.length) {
+            for (const key in this.keysPressed) {
+                if (!this.keysPressed[key]) continue;
+                this.currentRoom.instances.forEach(inst => {
+                    if (!inst.toDestroy) runInputHandlers('key_down', inst, inputKeyName(key));
+                });
+            }
+        }
+
         // Clear pressed keys for next frame
         this.keysPressed = {};
 
@@ -4913,6 +4993,15 @@ class Game {
                     if (!inst.toDestroy && inst.events) {
                         inst.onKeyboardRelease(key, this);
                     }
+                });
+            }
+        }
+
+        if (_extInputHandlers.length) {
+            for (const key in this.keysReleased) {
+                if (!this.keysReleased[key]) continue;
+                this.currentRoom.instances.forEach(inst => {
+                    if (!inst.toDestroy) runInputHandlers('key_up', inst, inputKeyName(key));
                 });
             }
         }

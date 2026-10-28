@@ -5,7 +5,8 @@
 // port of extensions/microbit/simulator.py (+ sound.py and radio.py). H2: the
 // 16 actions, the events and the per-frame update (handlers.py, runtime.py).
 // H3: the layout and the canvas drawing (layout.py, renderer.py), through the
-// engine's instance-overlay hook. Field names stay snake_case, identical to the Python object, so
+// engine's instance-overlay hook. H4: mouse/touch/keyboard input (input.py)
+// through the engine's input hook. Field names stay snake_case, identical to the Python object, so
 // tools/microbit_js_parity.py can diff the two frame by frame. Later units add
 // the actions, drawing and input on top. Everything lives in one function
 // scope and is exposed on window.__pygmMicrobit.
@@ -647,6 +648,7 @@ function updateMicrobits(game) {
         if (sim) boards.push([inst, sim]);
     }
     if (!boards.length) return;
+    if (game.pointer && drags().length) follow(game.pointer.x, game.pointer.y);
     deliver(boards.map(b => b[1]));
     const dt = 1.0 / Math.max(1, room.roomSpeed || 60);
     for (const [inst, sim] of boards) {
@@ -1116,6 +1118,175 @@ function drawOverlay(inst, ctx) {
 
 if (typeof registerInstanceOverlay === 'function') registerInstanceOverlay(drawOverlay);
 
+// -- input (layout.py hit tests + input.py) --------------------------------------
+
+// What a click at (x, y) lands on: "a", "b", "logo", "pin0".."pin2" or null.
+function hitTest(layout, x, y) {
+    for (const name of ['a', 'b']) {
+        const [bx, by, r] = layout.buttons[name];
+        if ((x - bx) * (x - bx) + (y - by) * (y - by) <= r * r) return name;
+    }
+    const [lx, ly, rx, ry] = layout.logo;
+    if (rx && ry && Math.pow((x - lx) / rx, 2) + Math.pow((y - ly) / ry, 2) <= 1) return 'logo';
+    for (const pin of TOUCH_PINS) {
+        const [px, py, pw, ph] = layout.pads[String(pin)];
+        if (px <= x && x < px + pw && py <= y && y < py + ph) return 'pin' + pin;
+    }
+    return null;
+}
+
+// What a click lands on in the strip: "tilt", "shake", "slider:<name>" or null.
+function stripHitTest(strip, x, y) {
+    const inside = (rect, grow, growX) => {
+        const [rx, ry, rw, rh] = rect;
+        return rx - growX <= x && x < rx + rw + growX && ry - grow <= y && y < ry + rh + grow;
+    };
+    if (inside(strip.tilt, 0, 0)) return 'tilt';
+    if (inside(strip.shake, 0, 0)) return 'shake';
+    for (const name of Object.keys(strip.sliders)) {
+        if (inside(strip.sliders[name], 7, 6)) return 'slider:' + name;   // the knob overhangs the ends
+    }
+    return null;
+}
+
+// Accelerometer (x, y, z) for a point on the tilt pad: the pad edge is one g.
+function tiltFromPos(rect, x, y) {
+    const [px, py, pw, ph] = rect;
+    const u = Math.max(-1.0, Math.min(1.0, (x - (px + pw / 2)) / (pw / 2)));
+    const v = Math.max(-1.0, Math.min(1.0, ((py + ph / 2) - y) / (ph / 2)));
+    let ax = u * TILT_FULL, ay = v * TILT_FULL;
+    const radius = Math.sqrt(ax * ax + ay * ay);
+    if (radius > TILT_FULL) { ax = ax * TILT_FULL / radius; ay = ay * TILT_FULL / radius; }
+    const az = -Math.sqrt(Math.max(0.0, TILT_FULL * TILT_FULL - ax * ax - ay * ay));
+    return [pyRound(ax), pyRound(ay), pyRound(az)];
+}
+
+// The value a drag at x sets on slider `name`.
+function sliderFromX(name, track, x) {
+    const [lo, hi] = SLIDERS[name];
+    const [tx, , tw] = track;
+    const fraction = tw ? Math.max(0.0, Math.min(1.0, (x - tx) / tw)) : 0.0;
+    return pyRound(lo + fraction * (hi - lo));
+}
+
+const SLIDER_SETTERS = {light: 'set_light_level', temperature: 'set_temperature',
+    compass: 'set_compass_heading', sound: 'set_sound_level'};
+const TILT_KEY_NAMES = ['left', 'right', 'up', 'down'];
+const TILT_HELD = 1000;           // milli-g held while a tilt key is down
+
+// {pygame button: {inst, targets}} so a release maps back to the same board and
+// controls even if the board moved in between.
+const mousePresses = {};
+
+function applyTarget(inst, sim, target, down, x, y) {
+    if (target === 'a' || target === 'b') sim.set_button(target, down);
+    else if (target === 'logo') sim.set_logo_touched(down);
+    else if (target.startsWith('pin')) sim.set_pin_touched(parseInt(target.slice(3), 10), down);
+    else if (target === 'shake') { if (down) sim.shake(); }
+    else if (target === 'tilt') {
+        if (down) sim.set_acceleration(...tiltFromPos(stripLayout(layoutFor(inst)).tilt, x, y));
+        else sim.set_acceleration(...REST_ACCELERATION);          // springs back
+    } else if (target.startsWith('slider:')) {
+        if (down) {
+            const name = target.slice(7);
+            sim[SLIDER_SETTERS[name]](sliderFromX(name, stripLayout(layoutFor(inst)).sliders[name], x));
+        }
+    }
+}
+
+// The strip controls a mouse button is holding (tilt pad, sliders): the frame
+// update keeps them following the pointer.
+function drags() {
+    const out = [];
+    for (const press of Object.values(mousePresses)) {
+        for (const t of press.targets) {
+            if (t === 'tilt' || t.startsWith('slider:')) out.push([press.inst, t]);
+        }
+    }
+    return out;
+}
+
+function follow(x, y) {
+    for (const [inst, target] of drags()) {
+        const sim = boardOf(inst);
+        if (sim) applyTarget(inst, sim, target, true, x, y);
+    }
+}
+
+// Hit-test the boards under a click (topmost first); true swallows it.
+function mouseDown(game, button, x, y) {
+    if ((button !== 1 && button !== 3) || !game.currentRoom) return false;
+    const instances = game.currentRoom.instances;
+    for (let i = instances.length - 1; i >= 0; i--) {
+        const inst = instances[i];
+        const sim = boardOf(inst);
+        if (!sim || inst.visible === false) continue;
+        const layout = layoutFor(inst);
+        let target = hitTest(layout, x, y);
+        if (target === null && button === 1 && stripVisible(inst)) target = stripHitTest(stripLayout(layout), x, y);
+        if (target === null) continue;
+        let targets = [target];
+        if (button === 3 && (target === 'a' || target === 'b')) targets = ['a', 'b'];   // the A+B chord
+        else if (button === 3) return true;       // a right click elsewhere does nothing
+        mouseUp(game, button, x, y);              // a release we never saw
+        for (const each of targets) applyTarget(inst, sim, each, true, x, y);
+        mousePresses[button] = {inst, targets};
+        return true;
+    }
+    return false;
+}
+
+// Release what this mouse button pressed; true swallows the release.
+function mouseUp(game, button, x, y) {
+    const press = mousePresses[button];
+    if (!press) return false;
+    delete mousePresses[button];
+    const sim = boardOf(press.inst);
+    if (sim) for (const each of press.targets) applyTarget(press.inst, sim, each, false, x, y);
+    return true;
+}
+
+function keyboardOn(inst) {
+    const v = optionOf(inst, 'microbit_keyboard', false);
+    if (typeof v === 'string') return ['true', '1', 'yes'].indexOf(v.trim().toLowerCase()) >= 0;
+    return !!v;
+}
+
+function tiltKeys(inst) {
+    if (!inst._mbTiltKeys) inst._mbTiltKeys = new Set();
+    return inst._mbTiltKeys;
+}
+
+function retilt(inst, sim) {
+    const held = tiltKeys(inst);
+    const x = (held.has('right') ? TILT_HELD : 0) - (held.has('left') ? TILT_HELD : 0);
+    const y = (held.has('up') ? TILT_HELD : 0) - (held.has('down') ? TILT_HELD : 0);
+    if (x || y) sim.set_acceleration(x, y, 0);
+    else sim.set_acceleration(...REST_ACCELERATION);
+}
+
+// Opt-in keyboard (microbit_keyboard): A/B are the buttons, the arrows tilt, S shakes.
+function keyDown(inst, key) {
+    const sim = boardOf(inst);
+    if (!sim || !keyboardOn(inst)) return false;
+    if (key === 'a' || key === 'b') sim.set_button(key, true);
+    else if (key === 's') sim.shake();
+    else if (TILT_KEY_NAMES.indexOf(key) >= 0) { tiltKeys(inst).add(key); retilt(inst, sim); }
+    else return false;
+    return true;
+}
+
+function keyUp(inst, key) {
+    const sim = boardOf(inst);
+    if (!sim || !keyboardOn(inst)) return;
+    if (key === 'a' || key === 'b') sim.set_button(key, false);
+    else if (TILT_KEY_NAMES.indexOf(key) >= 0) { tiltKeys(inst).delete(key); retilt(inst, sim); }
+}
+
+if (typeof registerInputHandler === 'function') {
+    registerInputHandler({mouse_down: mouseDown, mouse_up: mouseUp, key_down: keyDown, key_up: keyUp});
+}
+
 window.__pygmMicrobit = {
     MicrobitSimulator, parseImage, glyphImage, textColumns, scrollFrames,
     melodyNotes, toneNotes, noteFrequency, clampGroup, cleanMessage, asNumber,
@@ -1124,5 +1295,6 @@ window.__pygmMicrobit = {
     MB_ACTIONS, MB_CONDITIONS,
     pyRound, boardLayout, stripLayout, ledColor, tiltToPos, sliderFraction, layoutFor, centerOf,
     drawBoard, drawStrip, drawOverlay,
+    hitTest, stripHitTest, tiltFromPos, sliderFromX, mouseDown, mouseUp, keyDown, keyUp, follow, drags,
 };
 })();

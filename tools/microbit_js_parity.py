@@ -373,5 +373,67 @@ def compare_pixels(tolerance=2):
     return bad
 
 
+# ---------------------------------------------------------------------------
+# Stage P / H4: hit tests and the tilt / slider maths
+# ---------------------------------------------------------------------------
+
+INPUT_RUNNER = """
+(cases) => {
+  const M = window.__pygmMicrobit;
+  return cases.map(([cx, cy, scale, x, y, name]) => {
+    const lay = M.boardLayout(cx, cy, scale);
+    const strip = M.stripLayout(lay);
+    return {hit: M.hitTest(lay, x, y), strip: M.stripHitTest(strip, x, y),
+            tilt: M.tiltFromPos(strip.tilt, x, y),
+            slider: M.sliderFromX(name, strip.sliders[name], x)};
+  });
+}
+"""
+
+
+def compare_input(n=2500, seed=11):
+    """Mismatches between the Python and JS hit tests / tilt / slider maths at
+    random points, biased toward the edges where rounding and inequalities
+    (< vs <=) differ."""
+    from extensions.microbit.layout import (board_layout, strip_layout, hit_test, strip_hit_test,
+                                            tilt_from_pos, slider_value, SLIDERS)
+    from playwright.sync_api import sync_playwright
+    rng = random.Random(seed)
+    names = list(SLIDERS)
+    cases = []
+    for _ in range(n):
+        cx, cy = rng.choice([400, 320.5, 123, 640.5]), rng.choice([300, 200.5, 77])
+        scale = rng.choice([0.5, 1.0, 1.25, 2.0])
+        lay = board_layout(cx, cy, scale)
+        strip = strip_layout(lay)
+        # a point near some control, or anywhere
+        anchor = rng.choice([lay.buttons["a"][:2], lay.buttons["b"][:2], lay.logo[:2],
+                             strip.tilt[:2], strip.shake[:2], strip.sliders["light"][:2],
+                             strip.sliders["compass"][:2], lay.pads["1"][:2], (cx, cy)])
+        x = anchor[0] + rng.randint(-40, 160)
+        y = anchor[1] + rng.randint(-40, 60)
+        cases.append([cx, cy, scale, x, y, rng.choice(names)])
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.set_content("<html><body></body></html>")
+        page.add_script_tag(content=JS.read_text(encoding="utf-8"))
+        got = page.evaluate(INPUT_RUNNER, cases)
+        browser.close()
+    bad = []
+    hits = set()
+    for case, js in zip(cases, got):
+        cx, cy, scale, x, y, name = case
+        lay = board_layout(cx, cy, scale)
+        strip = strip_layout(lay)
+        want = {"hit": hit_test(lay, x, y), "strip": strip_hit_test(strip, x, y),
+                "tilt": list(tilt_from_pos(strip.tilt, x, y)),
+                "slider": slider_value(name, strip.sliders[name], x)}
+        hits.add((want["hit"], want["strip"]))
+        if want != js:
+            bad.append((case, want, js))
+    return bad, hits
+
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

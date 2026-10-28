@@ -74,9 +74,22 @@ properties of the JS (constants and tables equal to the Python source).
   speaker, tilt dot, slider knob; 7 states x 2 placements), plus a real export
   of `microbit_1` painting the board where `layoutFor` says. Text labels use
   a CSS font (not pygame's), so glyph shapes differ slightly; positions match.
-- [ ] **H4 -- input.** Generic seam for pointer/key hooks; mouse (left/right,
+- [x] **H4 -- input.** Generic seam for pointer/key hooks; mouse (left/right,
   chord), strip drag (tilt, sliders), opt-in keyboard. Touch-screen friendly
   (pointer events).
+  *Done:* engine.js `registerInputHandler` / `runInputHandlers` (mirror of the
+  desktop `register_input_handler`): mouse and touch go through it before the
+  authored mouse events (a handler returning true swallows the click), key
+  hooks run per instance and never swallow, `game.pointer` tracks the pointer,
+  and a window-level release ends a press that began on the canvas. Extension:
+  `hitTest`/`stripHitTest`/`tiltFromPos`/`sliderFromX` (fuzz-compared with
+  `layout.py`: 2,500 points, no differences), left press, the right-click A+B
+  chord, strip drags that follow the pointer each frame, tilt spring-back, and
+  the opt-in keyboard (A/B/S/arrows). Verified in Chromium with real mouse,
+  touch and key events against an export of `microbit_1`
+  (`tests/test_microbit_html5_input.py`, dev box only; 8 breakages caught).
+  Multi-touch isn't handled (the first touch only), as in the engine itself.
+
 - [ ] **H5 -- sound.** WebAudio square wave from `sound_note` / `sound_stop`
   reports; resume the context on first user gesture.
 - [ ] **H6 -- close-out.** Real-browser playtest of `microbit_1` via Playwright
