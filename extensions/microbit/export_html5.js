@@ -3,7 +3,9 @@
 // Concatenated into engine.js at the __PYGM_EXTENSION_JS__ marker, like the
 // other extensions' export_html5.js. H1: the pure simulator, a line-for-line
 // port of extensions/microbit/simulator.py (+ sound.py and radio.py). H2: the
-// 16 actions, the events and the per-frame update (handlers.py, runtime.py). Field names stay snake_case, identical to the Python object, so
+// 16 actions, the events and the per-frame update (handlers.py, runtime.py).
+// H3: the layout and the canvas drawing (layout.py, renderer.py), through the
+// engine's instance-overlay hook. Field names stay snake_case, identical to the Python object, so
 // tools/microbit_js_parity.py can diff the two frame by frame. Later units add
 // the actions, drawing and input on top. Everything lives in one function
 // scope and is exposed on window.__pygmMicrobit.
@@ -759,11 +761,368 @@ if (typeof registerExtensionAction === 'function') {
     registerFrameUpdate(updateMicrobits);
 }
 
+// -- layout (layout.py): where everything on the drawn board sits -------------
+
+const BODY_W = 276;
+const BODY_H = 224;
+const LED_PITCH = 30;
+const LED_SIZE = 18;
+const LED_CENTER_DY = -10;
+const BUTTON_DX = 106;
+const BUTTON_RADIUS = 19;
+const LOGO_DY = -95;
+const LOGO_RX = 18;
+const LOGO_RY = 11;
+const PAD_PITCH = 45;
+const PAD_W = 33;
+const PAD_H = 28;
+const PAD_NAMES = ['0', '1', '2', '3V', 'GND'];
+const TOUCH_PINS = [0, 1, 2];
+const OFF_COLOR = [62, 22, 22];
+const ON_COLOR = [255, 52, 40];
+
+const STRIP_GAP = 25;
+const STRIP_PAD = 10;
+const TILT_SIZE = 126;
+const SHAKE_H = 28;
+const RIGHT_CONTENT_W = 138;
+const RIGHT_TOP_GAP = 18;
+const SLIDER_STEP = 28;
+const SLIDER_TRACK_H = 10;
+const TILT_FULL = 1024;
+const SLIDERS = {light: [0, 255], temperature: [-5, 50], compass: [0, 359], sound: [0, 255]};
+
+// Python's round() goes to the even neighbour on an exact half; Math.round
+// doesn't, and the layout is integer-snapped, so it has to match.
+function pyRound(x) {
+    const f = Math.floor(x), d = x - f;
+    if (d < 0.5) return f;
+    if (d > 0.5) return f + 1;
+    return f % 2 === 0 ? f : f + 1;
+}
+
+function boardLayout(cx, cy, scale) {
+    scale = Math.max(0.1, Number(scale));
+    const s = v => v * scale;
+    const bodyW = pyRound(s(BODY_W)), bodyH = pyRound(s(BODY_H));
+    const body = [pyRound(cx - bodyW / 2), pyRound(cy - bodyH / 2), bodyW, bodyH];
+    const gridCy = cy + s(LED_CENTER_DY);
+    const leds = [];
+    for (let y = 0; y < 5; y++) {
+        const row = [];
+        for (let x = 0; x < 5; x++) {
+            row.push([pyRound(cx + (x - 2) * s(LED_PITCH)), pyRound(gridCy + (y - 2) * s(LED_PITCH))]);
+        }
+        leds.push(row);
+    }
+    const buttons = {
+        a: [pyRound(cx - s(BUTTON_DX)), pyRound(gridCy), pyRound(s(BUTTON_RADIUS))],
+        b: [pyRound(cx + s(BUTTON_DX)), pyRound(gridCy), pyRound(s(BUTTON_RADIUS))],
+    };
+    const logo = [pyRound(cx), pyRound(cy + s(LOGO_DY)), pyRound(s(LOGO_RX)), pyRound(s(LOGO_RY))];
+    const padW = pyRound(s(PAD_W)), padH = pyRound(s(PAD_H));
+    const padY = body[1] + bodyH - padH;
+    const pads = {};
+    PAD_NAMES.forEach((name, i) => {
+        pads[name] = [pyRound(cx + (i - 2) * s(PAD_PITCH) - padW / 2), padY, padW, padH];
+    });
+    const speaker = [pyRound(cx + s(BUTTON_DX)), pyRound(cy + s(LOGO_DY)), Math.max(3, pyRound(s(7)))];
+    return {cx, cy, scale, body, led_size: Math.max(2, pyRound(s(LED_SIZE))), leds, buttons, logo, pads, speaker};
+}
+
+function ledColor(level, brightness) {
+    if (brightness === undefined) brightness = 255;
+    const amount = Math.max(0, Math.min(9, level)) / 9.0 * Math.max(0, Math.min(255, brightness)) / 255.0;
+    return OFF_COLOR.map((o, i) => Math.trunc(pyRound(o + (ON_COLOR[i] - o) * amount)));
+}
+
+function stripLayout(layout) {
+    const s = layout.scale;
+    const [bx, by, bw, bh] = layout.body;
+    const cy = by + bh / 2;
+    const pad = pyRound(STRIP_PAD * s);
+    const gap = pyRound(STRIP_GAP * s);
+    const tiltSize = pyRound(TILT_SIZE * s);
+    const leftW = tiltSize + 2 * pad, leftH = tiltSize + 2 * pad;
+    const leftX = bx - gap - leftW;
+    const leftY = pyRound(cy - leftH / 2);
+    const panelLeft = [leftX, leftY, leftW, leftH];
+    const tilt = [leftX + pad, leftY + pad, tiltSize, tiltSize];
+    const colW = pyRound(RIGHT_CONTENT_W * s);
+    const shakeH = pyRound(SHAKE_H * s);
+    const step = pyRound(SLIDER_STEP * s);
+    const trackH = Math.max(3, pyRound(SLIDER_TRACK_H * s));
+    const firstDy = pad + shakeH + pyRound(RIGHT_TOP_GAP * s);
+    const rightH = firstDy + 3 * step + trackH + pad;
+    const rightW = colW + 2 * pad;
+    const rightX = bx + bw + gap;
+    const rightY = pyRound(cy - rightH / 2);
+    const panelRight = [rightX, rightY, rightW, rightH];
+    const shake = [rightX + pad, rightY + pad, colW, shakeH];
+    const sliders = {};
+    Object.keys(SLIDERS).forEach((name, i) => {
+        sliders[name] = [rightX + pad, rightY + firstDy + i * step, colW, trackH];
+    });
+    return {panel_left: panelLeft, panel_right: panelRight, tilt, shake, sliders};
+}
+
+function tiltToPos(rect, ax, ay) {
+    const [px, py, pw, ph] = rect;
+    const u = Math.max(-1.0, Math.min(1.0, ax / TILT_FULL));
+    const v = Math.max(-1.0, Math.min(1.0, ay / TILT_FULL));
+    return [pyRound(px + pw / 2 + u * pw / 2), pyRound(py + ph / 2 - v * ph / 2)];
+}
+
+function sliderFraction(name, value) {
+    const [lo, hi] = SLIDERS[name];
+    return Math.max(0.0, Math.min(1.0, (value - lo) / (hi - lo)));
+}
+
+// An authored per-board option: an instance variable wins, else the object's.
+function optionOf(inst, name, dflt) {
+    let v = inst[name];
+    if (v === undefined || v === null) v = (inst.objectData || {})[name];
+    return v === undefined || v === null ? dflt : v;
+}
+
+function scaleOf(inst) {
+    const v = parseFloat(optionOf(inst, 'microbit_scale', 1.0));
+    return isNaN(v) ? 1.0 : Math.max(0.1, v);
+}
+
+// The point the board is centred on: the instance's own point with no sprite,
+// else the middle of its sprite.
+function centerOf(inst) {
+    const info = inst.sprite && inst.spriteInfo;
+    if (!info) return [inst.x, inst.y];
+    return [inst.x - info.origin_x + info.width / 2, inst.y - info.origin_y + info.height / 2];
+}
+
+function layoutFor(inst) {
+    const [cx, cy] = centerOf(inst);
+    return boardLayout(cx, cy, scaleOf(inst));
+}
+
+function stripVisible(inst) {
+    const v = optionOf(inst, 'microbit_show_sensors', true);
+    if (typeof v === 'string') return ['false', '0', 'no', ''].indexOf(v.trim().toLowerCase()) < 0;
+    return !!v;
+}
+
+// -- drawing (renderer.py) on a canvas 2D context ------------------------------
+
+const BODY_COLOR = [34, 36, 40];
+const BODY_EDGE = [12, 12, 14];
+const LED_WELL = [18, 8, 8];
+const LED_CHIP = [140, 142, 148];
+const BUTTON_COLOR = [205, 205, 200];
+const BUTTON_DOWN = [255, 214, 90];
+const BUTTON_EDGE = [110, 110, 105];
+const LOGO_COLOR = [54, 199, 149];
+const LOGO_TOUCHED = [150, 255, 210];
+const LOGO_DOT = [16, 80, 62];
+const PAD_COLOR = [196, 150, 60];
+const PAD_TOUCHED = [255, 240, 150];
+const PAD_EDGE = [80, 60, 20];
+const PAD_HOLE = [70, 52, 18];
+const LABEL_COLOR = [200, 200, 200];
+const CORNER_GREEN = [54, 199, 149];
+const TAG_LABEL = [16, 54, 42];
+const PANEL_COLOR = [46, 48, 54];
+const PANEL_EDGE = [20, 20, 24];
+const PAD_WELL = [24, 26, 30];
+const PAD_DOT = [255, 214, 90];
+const TRACK_COLOR = [90, 92, 100];
+const TRACK_FILL = [96, 170, 255];
+const KNOB_COLOR = [230, 230, 235];
+const SHAKE_COLOR = [96, 110, 150];
+const SHAKE_ACTIVE = [255, 214, 90];
+const SPEAKER_ON = [120, 220, 255];
+const SPEAKER_OFF = [60, 62, 70];
+const SLIDER_TITLES = {light: 'Light', temperature: 'Temp', compass: 'Compass', sound: 'Sound'};
+
+function css(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+
+function fillRect(ctx, color, r, radius) {
+    ctx.fillStyle = css(color);
+    if (radius && ctx.roundRect) { ctx.beginPath(); ctx.roundRect(r[0], r[1], r[2], r[3], radius); ctx.fill(); }
+    else ctx.fillRect(r[0], r[1], r[2], r[3]);
+}
+// pygame's width-w outline sits INSIDE the rect.
+function edgeRect(ctx, color, r, w, radius) {
+    ctx.strokeStyle = css(color);
+    ctx.lineWidth = w;
+    const h = w / 2;
+    if (radius && ctx.roundRect) { ctx.beginPath(); ctx.roundRect(r[0] + h, r[1] + h, r[2] - w, r[3] - w, radius); ctx.stroke(); }
+    else ctx.strokeRect(r[0] + h, r[1] + h, r[2] - w, r[3] - w);
+}
+function disc(ctx, color, cx, cy, r) {
+    ctx.fillStyle = css(color);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.fill();
+}
+function ring(ctx, color, cx, cy, r, w) {
+    ctx.strokeStyle = css(color);
+    ctx.lineWidth = w;
+    ctx.beginPath(); ctx.arc(cx, cy, Math.max(0, r - w / 2), 0, 2 * Math.PI); ctx.stroke();
+}
+function line(ctx, color, x1, y1, x2, y2) {
+    ctx.strokeStyle = css(color);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x1 + 0.5, y1 + 0.5); ctx.lineTo(x2 + 0.5, y2 + 0.5); ctx.stroke();
+}
+function polygon(ctx, color, pts) {
+    ctx.fillStyle = css(color);
+    ctx.beginPath();
+    pts.forEach((p, i) => { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+    ctx.closePath(); ctx.fill();
+}
+// Text: pygame's default font at `size` is ~0.72 of that in CSS pixels.
+function label(ctx, text, size, color, x, y, align) {
+    ctx.fillStyle = css(color);
+    ctx.font = 'bold ' + Math.max(7, Math.round(size * 0.72)) + 'px sans-serif';
+    ctx.textAlign = (align === 'center' || align === 'center-bottom') ? 'center' : 'left';
+    ctx.textBaseline = align === 'center' ? 'middle' : (align === 'center-bottom' ? 'bottom' : 'top');
+    ctx.fillText(text, x, y);
+}
+
+function sliderValue(sim, name) {
+    return {light: sim.light_level, temperature: sim.temperature,
+        compass: sim.compass_heading, sound: sim.sound_level}[name];
+}
+
+function drawStrip(ctx, strip, sim, scale) {
+    const radius = Math.max(2, Math.trunc(8 * scale));
+    for (const panel of [strip.panel_left, strip.panel_right]) {
+        fillRect(ctx, PANEL_COLOR, panel, radius);
+        edgeRect(ctx, PANEL_EDGE, panel, 1, radius);
+    }
+    const [tx, ty, tw, th] = strip.tilt;
+    fillRect(ctx, PAD_WELL, strip.tilt);
+    line(ctx, TRACK_COLOR, tx + Math.trunc(tw / 2), ty, tx + Math.trunc(tw / 2), ty + th - 1);
+    line(ctx, TRACK_COLOR, tx, ty + Math.trunc(th / 2), tx + tw - 1, ty + Math.trunc(th / 2));
+    edgeRect(ctx, PANEL_EDGE, strip.tilt, 1);
+    const [ax, ay] = sim.acceleration;
+    const dot = tiltToPos(strip.tilt, ax, ay);
+    disc(ctx, PAD_DOT, dot[0], dot[1], Math.max(3, Math.trunc(6 * scale)));
+    label(ctx, 'TILT', Math.max(11, Math.trunc(19 * scale)), LABEL_COLOR, tx + 3, ty + 2);
+
+    const [sx, sy, sw, sh] = strip.shake;
+    const active = sim.current_gesture === 'shake';
+    fillRect(ctx, active ? SHAKE_ACTIVE : SHAKE_COLOR, strip.shake, 4);
+    label(ctx, 'SHAKE', Math.max(12, Math.trunc(21 * scale)), active ? [20, 20, 20] : [235, 235, 240],
+        sx + Math.trunc(sw / 2), sy + Math.trunc(sh / 2), 'center');
+
+    for (const name of Object.keys(strip.sliders)) {
+        const [kx, ky, kw, kh] = strip.sliders[name];
+        const value = sliderValue(sim, name);
+        const size = Math.max(11, Math.trunc(19 * scale));
+        label(ctx, SLIDER_TITLES[name] + ' ' + value, size, LABEL_COLOR, kx, ky - Math.round(size * 0.72) - 3);
+        fillRect(ctx, TRACK_COLOR, [kx, ky, kw, kh], Math.trunc(kh / 2));
+        const filled = Math.trunc(kw * sliderFraction(name, value));
+        if (filled) fillRect(ctx, TRACK_FILL, [kx, ky, filled, kh], Math.trunc(kh / 2));
+        disc(ctx, KNOB_COLOR, kx + filled, ky + Math.trunc(kh / 2), Math.max(3, Math.trunc(kh / 2) + 2));
+    }
+}
+
+function drawBoard(ctx, layout, sim, drawBody) {
+    if (drawBody) {
+        const [bx, by, bw, bh] = layout.body;
+        fillRect(ctx, BODY_COLOR, layout.body);
+        edgeRect(ctx, BODY_EDGE, layout.body, 2);
+        polygon(ctx, CORNER_GREEN, [[bx, by], [bx + bw * 0.42, by], [bx + bw * 0.30, by + bh * 0.12],
+            [bx + bw * 0.22, by + bh * 0.05], [bx + bw * 0.12, by + bh * 0.20],
+            [bx + bw * 0.05, by + bh * 0.10], [bx, by + bh * 0.36]]);
+    }
+    const size = layout.led_size, half = Math.trunc(size / 2);
+    const chipW = Math.max(2, Math.trunc(size * 0.18)), chipMargin = Math.max(1, Math.trunc(size * 0.05));
+    const chipHalfH = Math.max(2, half - chipMargin - 1), chipR = Math.max(1, Math.trunc(chipW / 2));
+    for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+            const [px, py] = layout.leds[y][x];
+            fillRect(ctx, LED_WELL, [px - half - 1, py - half - 1, size + 2, size + 2]);
+            fillRect(ctx, ledColor(sim.display[y][x], sim.brightness), [px - half, py - half, size, size]);
+            if (sim.display[y][x] === 0) {
+                const cx0 = px - Math.trunc(chipW / 2);
+                fillRect(ctx, LED_CHIP, [cx0, py - half + chipMargin, chipW, chipHalfH], [chipR, chipR, 0, 0]);
+                fillRect(ctx, LED_CHIP, [cx0, py + 1, chipW, chipHalfH], [0, 0, chipR, chipR]);
+            }
+        }
+    }
+    for (const name of ['a', 'b']) {
+        const [bx, by, br] = layout.buttons[name];
+        disc(ctx, sim.buttons[name] ? BUTTON_DOWN : BUTTON_COLOR, bx, by, br);
+        ring(ctx, BUTTON_EDGE, bx, by, br, 2);
+        label(ctx, name.toUpperCase(), Math.max(12, Math.trunc(28 * layout.scale)), [40, 40, 40], bx, by, 'center');
+        if (drawBody) buttonTag(ctx, name, bx, by, br, layout);
+    }
+    const [kx, ky, kr] = layout.speaker;
+    const playing = (sim.tone || 0) > 0;
+    disc(ctx, playing ? SPEAKER_ON : SPEAKER_OFF, kx, ky, kr);
+    if (playing) { ring(ctx, SPEAKER_ON, kx, ky, kr + 4, 1); ring(ctx, SPEAKER_ON, kx, ky, kr + 9, 1); }
+
+    const [lx, ly, rx, ry] = layout.logo;
+    ctx.fillStyle = css(sim.logo_touched ? LOGO_TOUCHED : LOGO_COLOR);
+    ctx.beginPath(); ctx.ellipse(lx, ly, rx, ry, 0, 0, 2 * Math.PI); ctx.fill();
+    const dotR = Math.max(1, Math.trunc(ry * 0.35)), dotDx = rx * 0.45;
+    if (dotDx > dotR) {
+        disc(ctx, LOGO_DOT, Math.trunc(lx - dotDx), ly, dotR);
+        disc(ctx, LOGO_DOT, Math.trunc(lx + dotDx), ly, dotR);
+    }
+    for (const name of PAD_NAMES) {
+        const [x, y, w, h] = layout.pads[name];
+        const isPin = /^[0-9]$/.test(name) && TOUCH_PINS.indexOf(parseInt(name, 10)) >= 0;
+        const touched = isPin && !!sim.pins_touched[parseInt(name, 10)];
+        fillRect(ctx, touched ? PAD_TOUCHED : PAD_COLOR, [x, y, w, h], 3);
+        edgeRect(ctx, PAD_EDGE, [x, y, w, h], 1, 3);
+        const holeR = Math.max(1, Math.trunc(Math.min(w, h) * 0.18));
+        const holeCy = y + holeR + Math.max(1, Math.trunc(2 * layout.scale));
+        if (holeCy + holeR < y + h - Math.max(4, Math.trunc(4 * layout.scale))) {
+            disc(ctx, PAD_HOLE, x + Math.trunc(w / 2), holeCy, holeR);
+        }
+        label(ctx, name, Math.max(10, Math.trunc(19 * layout.scale)), LABEL_COLOR, x + Math.trunc(w / 2), y - 2, 'center-bottom');
+    }
+}
+
+// The 'A'/'B' silkscreen flag beside a button.
+function buttonTag(ctx, name, bx, by, br, layout) {
+    const sc = layout.scale;
+    const tw = Math.max(6, Math.trunc(20 * sc)), th = Math.max(6, Math.trunc(18 * sc));
+    const tx = bx - Math.trunc(tw / 2), gap = Math.max(2, Math.trunc(4 * sc));
+    let pts, centroid;
+    if (name === 'a') {
+        const ty = by + br + gap;
+        pts = [[tx, ty + th], [tx + tw, ty + th], [tx + tw, ty]];
+        centroid = [tx + tw * 2 / 3, ty + th * 2 / 3];
+    } else {
+        const ty = by - br - gap - th;
+        pts = [[tx + tw, ty], [tx, ty], [tx, ty + th]];
+        centroid = [tx + tw / 3, ty + th / 3];
+    }
+    polygon(ctx, CORNER_GREEN, pts);
+    label(ctx, name.toUpperCase(), Math.max(8, Math.trunc(14 * sc)), TAG_LABEL,
+        Math.trunc(centroid[0]), Math.trunc(centroid[1]), 'center');
+}
+
+// Instance-overlay hook: draw the board for a micro:bit instance.
+function drawOverlay(inst, ctx) {
+    const sim = boardOf(inst);
+    if (!sim || inst.visible === false) return;
+    ctx.save();
+    const layout = layoutFor(inst);
+    drawBoard(ctx, layout, sim, !(inst.sprite && inst.spriteInfo));
+    if (stripVisible(inst)) drawStrip(ctx, stripLayout(layout), sim, layout.scale);
+    ctx.restore();
+}
+
+if (typeof registerInstanceOverlay === 'function') registerInstanceOverlay(drawOverlay);
+
 window.__pygmMicrobit = {
     MicrobitSimulator, parseImage, glyphImage, textColumns, scrollFrames,
     melodyNotes, toneNotes, noteFrequency, clampGroup, cleanMessage, asNumber,
     deliver, formatNumber, REST_ACCELERATION,
     boardOf, eventNameFor, updateMicrobits, readSensor, mbValue, soundHooks,
     MB_ACTIONS, MB_CONDITIONS,
+    pyRound, boardLayout, stripLayout, ledColor, tiltToPos, sliderFraction, layoutFor, centerOf,
+    drawBoard, drawStrip, drawOverlay,
 };
 })();

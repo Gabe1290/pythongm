@@ -59,11 +59,21 @@ properties of the JS (constants and tables equal to the Python source).
   frame (the HTML5 hook runs before the room steps; desktop runs it after
   collisions), and the step is `1 / roomSpeed` per rendered frame, like the
   rest of the HTML5 engine. Sound reports are delivered to `soundHooks` (H5).
-- [ ] **H3 -- drawing.** New generic engine.js seam
+- [x] **H3 -- drawing.** New generic engine.js seam
   `registerInstanceOverlay(fn(inst, ctx))` (mirror of desktop's
   `PLUGIN_INSTANCE_OVERLAYS`), then layout + board + sensor strip in canvas 2D.
   Assert WHERE LEDs/buttons land (pixel samples at layout coordinates), not
   that something drew.
+  *Done:* engine.js `registerInstanceOverlay` / `runInstanceOverlays`, called
+  after the room renders on all three paths (2.5D, no views, views), like the
+  desktop hook. Layout, board and sensor strip ported to canvas 2D. Python's
+  round-half-to-even is reproduced (`pyRound`): Math.round differs on exact
+  halves and the layout is integer-snapped. Verified in Chromium: layout fuzz
+  vs `layout.py` (300 positions x scales incl. exact halves), and the canvas
+  vs pygame colour at 60+ points per state (every LED, button, pad, logo,
+  speaker, tilt dot, slider knob; 7 states x 2 placements), plus a real export
+  of `microbit_1` painting the board where `layoutFor` says. Text labels use
+  a CSS font (not pygame's), so glyph shapes differ slightly; positions match.
 - [ ] **H4 -- input.** Generic seam for pointer/key hooks; mouse (left/right,
   chord), strip drag (tilt, sliders), opt-in keyboard. Touch-screen friendly
   (pointer events).

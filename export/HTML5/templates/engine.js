@@ -39,6 +39,23 @@ function registerExtensionAction(name, fn) {
     if (typeof fn === 'function') _extActions[name] = fn;
 }
 
+// Instance overlays: fn(inst, ctx), drawn for every instance AFTER the whole
+// room (all views) has rendered, in canvas (screen) space -- mirrors the
+// desktop runtime's extension_hooks.register_instance_overlay. An extension
+// that draws something over an instance (the micro:bit board) registers here.
+const _extInstanceOverlays = [];
+function registerInstanceOverlay(fn) {
+    if (typeof fn === 'function' && !_extInstanceOverlays.includes(fn)) _extInstanceOverlays.push(fn);
+}
+function runInstanceOverlays(room, ctx) {
+    if (!_extInstanceOverlays.length) return;
+    for (const inst of room.instances) {
+        for (const fn of _extInstanceOverlays) {
+            try { fn(inst, ctx); } catch (e) { console.error('Extension instance overlay failed:', e); }
+        }
+    }
+}
+
 // Question (condition) actions: name -> (obj, params, game) => boolean. A name
 // registered here is treated like a built-in test_*/if_* question: it gates the
 // next action/block in the flat form and picks then/else in the nested form
@@ -4179,6 +4196,7 @@ class GameRoom {
         if (renderExtensionRoom(this, ctx)) {
             const hudInstances = [...this.instances].sort((a, b) => b.depth - a.depth);
             hudInstances.forEach(inst => inst.runDrawEvent(ctx));
+            runInstanceOverlays(this, ctx);
             return;
         }
         // Fill the whole canvas with the bg color once; areas outside any
@@ -4196,6 +4214,7 @@ class GameRoom {
             // Legacy no-view path: draw at room origin.
             this.currentViewIndex = -1;
             this._renderContents(ctx);
+            runInstanceOverlays(this, ctx);
             return;
         }
         // For each visible view: clip to its port and translate so the
@@ -4212,6 +4231,7 @@ class GameRoom {
             ctx.restore();
         }
         this.currentViewIndex = -1;
+        runInstanceOverlays(this, ctx);
     }
 
     // Room contents in ROOM coordinates (the caller applies any camera

@@ -194,5 +194,184 @@ def main(argv):
     return 1 if bad else 0
 
 
+# ---------------------------------------------------------------------------
+# Stage P / H3: layout and drawing
+# ---------------------------------------------------------------------------
+
+def _plain(value):
+    """Tuples -> lists, dataclasses -> dicts, so the Python layout compares to
+    the JSON the browser returns."""
+    import dataclasses
+    if dataclasses.is_dataclass(value):
+        return {k: _plain(v) for k, v in dataclasses.asdict(value).items()}
+    if isinstance(value, dict):
+        return {str(k): _plain(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_plain(v) for v in value]
+    return value
+
+
+LAYOUT_RUNNER = """
+(cases) => {
+  const M = window.__pygmMicrobit;
+  return cases.map(([cx, cy, scale, level, brightness]) => {
+    const lay = M.boardLayout(cx, cy, scale);
+    const strip = M.stripLayout(lay);
+    return {lay, strip, led: M.ledColor(level, brightness)};
+  });
+}
+"""
+
+
+def layout_cases(n=400, seed=7):
+    rng = random.Random(seed)
+    cases = [[400, 300, 1.0, 5, 255], [0.5, 0.5, 0.5, 9, 128], [100.5, 99.5, 1.5, 0, 0]]
+    for _ in range(n):
+        cases.append([rng.choice([rng.uniform(-50, 900), rng.randint(0, 900) + 0.5, rng.randint(0, 900)]),
+                      rng.choice([rng.uniform(-50, 700), rng.randint(0, 700) + 0.5, rng.randint(0, 700)]),
+                      rng.choice([0.05, 0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, rng.uniform(0.1, 4.0)]),
+                      rng.randint(-1, 10), rng.randint(-5, 300)])
+    return cases
+
+
+def compare_layout(n=400):
+    """Mismatches between layout.py and the JS port over many positions/scales
+    (including exact .5 ties, where Python's round and Math.round differ)."""
+    from extensions.microbit.layout import board_layout, strip_layout, led_color
+    from playwright.sync_api import sync_playwright
+    cases = layout_cases(n)
+    bad = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.set_content("<html><body></body></html>")
+        page.add_script_tag(content=JS.read_text(encoding="utf-8"))
+        got = page.evaluate(LAYOUT_RUNNER, cases)
+        browser.close()
+    for case, js in zip(cases, got):
+        cx, cy, scale, level, brightness = case
+        lay = board_layout(cx, cy, scale)
+        want = {"lay": _plain(lay), "strip": _plain(strip_layout(lay)),
+                "led": list(led_color(level, brightness))}
+        mine = {"lay": js["lay"], "strip": js["strip"], "led": js["led"]}
+        for key in ("cx", "cy", "scale"):
+            mine["lay"].pop(key, None)
+            want["lay"].pop(key, None)
+        if json.loads(json.dumps(want)) != mine:
+            bad.append((case, want, mine))
+    return bad
+
+
+PIXEL_STATES = [
+    [],
+    [["show_image", "HEART", 0]],
+    [["show_image", "HAPPY", 0], ["set_brightness", 120]],
+    [["set_button", "a", True], ["set_pin_touched", 1, True], ["set_logo_touched", True]],
+    [["set_button", "b", True], ["play_tone", 440, 5000], ["update", 0.01]],
+    [["set_acceleration", 700, -400, -500], ["update", 0.1], ["set_light_level", 200],
+     ["set_temperature", 30], ["set_compass_heading", 90], ["set_sound_level", 60]],
+    [["shake"], ["update", 0.05]],
+]
+
+
+def _points(lay, strip, sim):
+    """(name, x, y) the two renderers must agree on: where things land."""
+    from extensions.microbit.layout import tilt_to_pos, slider_fraction
+    from extensions.microbit.renderer import _slider_value
+    pts = []
+    bx0, by0, bw0, bh0 = lay.body
+    pts.append(("body", bx0 + 6, by0 + bh0 // 2))
+    pts.append(("body_edge", bx0, by0 + bh0 // 2))
+    pts.append(("corner_mark", bx0 + 4, by0 + 4))
+    for y in range(5):
+        for x in range(5):
+            cx, cy = lay.led_center(x, y)
+            pts.append((f"led{x}{y}", cx, cy))
+    for name, (bx, by, br) in lay.buttons.items():
+        pts.append((f"button_{name}", bx + int(br * 0.7), by))
+    lx, ly, rx, ry = lay.logo
+    pts.append(("logo", lx, ly + ry // 2))
+    for pin in ("0", "1", "2", "3V", "GND"):
+        px, py, pw, ph = lay.pads[pin]
+        pts.append((f"pad{pin}", px + pw // 2, py + ph - 5))
+    kx, ky, kr = lay.speaker
+    pts.append(("speaker", kx, ky))
+    tx, ty, tw, th = strip.tilt
+    pts.append(("tilt_corner", tx + 2, ty + th - 3))
+    dx, dy = tilt_to_pos(strip.tilt, sim.acceleration[0], sim.acceleration[1])
+    pts.append(("tilt_dot", dx, dy))
+    sx, sy, sw, sh = strip.shake
+    pts.append(("shake", sx + 4, sy + 4))
+    pts.append(("panel_left", strip.panel_left[0] + 3, strip.panel_left[1] + strip.panel_left[3] // 2))
+    pts.append(("panel_right", strip.panel_right[0] + 3, strip.panel_right[1] + strip.panel_right[3] // 2))
+    for name, (sx0, sy0, sw0, sh0) in strip.sliders.items():
+        filled = int(sw0 * slider_fraction(name, _slider_value(sim, name)))
+        pts.append((f"slider_{name}_end", sx0 + sw0 - 4, sy0 + sh0 // 2))
+        pts.append((f"slider_{name}_knob", sx0 + filled, sy0 + sh0 // 2))
+    return pts
+
+
+PIXEL_RUNNER = """
+([ops, cx, cy, scale, pts]) => {
+  const M = window.__pygmMicrobit;
+  const sim = new M.MicrobitSimulator();
+  for (const op of ops) {
+    try { if (op[0] === 'update') sim.update(...op.slice(1)); else sim[op[0]](...op.slice(1)); } catch (e) {}
+  }
+  const canvas = document.createElement('canvas'); canvas.width = 900; canvas.height = 700;
+  const ctx = canvas.getContext('2d', {willReadFrequently: true});
+  ctx.fillStyle = 'rgb(0,0,0)'; ctx.fillRect(0, 0, 900, 700);
+  const inst = {name: 'microbit_t', x: cx, y: cy, sprite: null, spriteInfo: null, visible: true,
+                objectData: {microbit_scale: scale}, instanceData: {}, _mb: sim};
+  M.drawOverlay(inst, ctx);
+  return pts.map(([name, x, y]) => [name, Array.from(ctx.getImageData(x, y, 1, 1).data.slice(0, 3))]);
+}
+"""
+
+
+def compare_pixels(tolerance=2):
+    """Render the same board state with pygame and with canvas 2D and compare
+    the colour at every point where a control should land."""
+    import os
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    import pygame
+    from types import SimpleNamespace
+    from extensions.microbit.simulator import MicrobitSimulator
+    from extensions.microbit.layout import layout_for, strip_layout
+    from extensions.microbit.renderer import draw_overlay
+    from extensions.microbit.state import attach_simulator
+    from playwright.sync_api import sync_playwright
+    pygame.init()
+    bad = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.set_content("<html><body></body></html>")
+        page.add_script_tag(content=JS.read_text(encoding="utf-8"))
+        for ops in PIXEL_STATES:
+            for (cx, cy, scale) in ((450, 330, 1.0), (430.5, 300.5, 0.8)):
+                sim = MicrobitSimulator()
+                for op in ops:
+                    if op[0] == "update":
+                        sim.update(*op[1:])
+                    else:
+                        getattr(sim, op[0])(*op[1:])
+                inst = SimpleNamespace(x=cx, y=cy, sprite=None, visible=True,
+                                       object_data={"microbit_scale": scale}, extension_state={})
+                attach_simulator(inst, sim)
+                screen = pygame.Surface((900, 700))
+                screen.fill((0, 0, 0))
+                draw_overlay(inst, screen)
+                lay = layout_for(inst)
+                pts = _points(lay, strip_layout(lay), sim)
+                got = page.evaluate(PIXEL_RUNNER, [ops, cx, cy, scale, [list(p) for p in pts]])
+                for (name, x, y), (_, rgb) in zip(pts, got):
+                    want = list(screen.get_at((x, y)))[:3]
+                    if max(abs(a - b) for a, b in zip(want, rgb)) > tolerance:
+                        bad.append((ops, scale, name, (x, y), want, rgb))
+        browser.close()
+    return bad
+
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
