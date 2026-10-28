@@ -172,12 +172,14 @@ def test_html5_export_of_every_micro_bit_action_succeeds_and_keeps_the_data():
     assert "microbit_radio_received" in blob
 
 
-def test_html5_engine_warns_instead_of_failing_on_an_action_it_does_not_know():
+def test_html5_engine_still_warns_on_an_action_nobody_knows_and_now_knows_ours():
     html, _ = _html5_export(_every_action_project())
     # engine.js's executeAction default branch: unknown actions warn and carry on.
     assert "console.warn(`Unknown action: ${actionType}`)" in html
+    # Stage P / H2: the micro:bit actions are registered by the extension
+    # (12 actions + 4 conditions), not left to that warning.
     for name in ACTIONS:
-        assert f"case '{name}'" not in html and f"registerExtensionAction('{name}'" not in html
+        assert f"    {name}(inst, p, game, sim)" in html, name
 
 
 def test_html5_export_embeds_the_micro_bit_simulator():

@@ -25,6 +25,7 @@ def build_block() -> str:
     from extensions.microbit.font import GLYPHS
     from extensions.microbit.images import IMAGES
     from extensions.microbit.melodies import MELODIES
+    from extensions.microbit.events import GESTURE_NAMES, _FIXED
 
     # Glyphs are keyed by character code: bracket and quote characters as keys
     # would confuse the (string-unaware) brace-balance guard on this file.
@@ -36,6 +37,10 @@ def build_block() -> str:
         dump("MB_GLYPHS", {str(ord(ch)): list(rows) for ch, rows in GLYPHS.items()}),
         dump("MB_IMAGES", {name: list(rows) for name, rows in IMAGES.items()}),
         dump("MB_MELODIES", {name: list(notes) for name, notes in MELODIES.items()}),
+        # (kind, detail) -> event name; "kind:detail" keys, "" for a None detail.
+        dump("MB_EVENT_FIXED", {f"{k}:{'' if d is None else d}": n for (k, d), n in _FIXED.items()}),
+        # simulator gesture name -> the suffix of microbit_gesture_<suffix>
+        dump("MB_GESTURE_EVENTS", {g: e[0] for g, e in GESTURE_NAMES.items()}),
         END,
     ])
 

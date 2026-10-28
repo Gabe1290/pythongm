@@ -39,6 +39,15 @@ function registerExtensionAction(name, fn) {
     if (typeof fn === 'function') _extActions[name] = fn;
 }
 
+// Question (condition) actions: name -> (obj, params, game) => boolean. A name
+// registered here is treated like a built-in test_*/if_* question: it gates the
+// next action/block in the flat form and picks then/else in the nested form
+// (GameObject.isConditionalAction / evaluateCondition consult this registry).
+const _extConditions = {};
+function registerExtensionCondition(name, fn) {
+    if (typeof fn === 'function') _extConditions[name] = fn;
+}
+
 // Per-frame hooks: fn(game), called once every gameLoop() iteration, right
 // before the room steps -- for state that changes continuously over time
 // rather than only in response to an action call (Phase 7.2's multiplayer
@@ -968,6 +977,9 @@ class GameObject {
         // remember_destroyed object flag.
         this.remember_destroyed = objectData ? (objectData.remember_destroyed || false) : false;
         this.objectData = objectData;
+        // The room's own entry for this instance (extensions read per-instance
+        // flags from it, e.g. the micro:bit's is_microbit).
+        this.instanceData = data;
         this.toDestroy = false;
         this.events = objectData ? (objectData.events || {}) : {};
 
@@ -1496,6 +1508,7 @@ class GameObject {
     // (the H1 defect: test_expression / check_empty etc. were missing).
     static isConditionalAction(actionType) {
         return !!actionType && (actionType.startsWith('if_') ||
+                                !!_extConditions[actionType] ||
                                 actionType === 'test_alignment' ||
                                 actionType === 'test_variable' ||
                                 actionType === 'test_score' ||
@@ -1945,6 +1958,10 @@ class GameObject {
                 return confirm(params.question || params.message || game.translate('yes_or_no'));
 
             default:
+                if (_extConditions[actionType]) {
+                    // An extension-contributed question (registerExtensionCondition).
+                    return !!_extConditions[actionType](this, params, game);
+                }
                 console.warn(`Unknown conditional action: ${actionType}`);
                 return false;
         }
