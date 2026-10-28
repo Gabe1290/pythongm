@@ -4798,6 +4798,15 @@ class GameObject(Widget):
                 height = max(1, int(height * float(cmd.get('yscale', 1.0))))
             x = float(cmd.get('x', 0))
             y = float(cmd.get('y', 0))
+            # Optional anchor: (x, y) is the text's centre / bottom-centre /
+            # bottom-left instead of its top-left (micro:bit board labels).
+            anchor = cmd.get('anchor')
+            if anchor == 'center':
+                x, y = x - width / 2.0, y - height / 2.0
+            elif anchor == 'midbottom':
+                x, y = x - width / 2.0, y - height
+            elif anchor == 'bottomleft':
+                y = y - height
             # CoreLabel glyphs are white; the Color instruction tints them.
             group.add(Color(*color))
             group.add(Rectangle(texture=texture,

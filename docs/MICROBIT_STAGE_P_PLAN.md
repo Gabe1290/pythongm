@@ -138,8 +138,19 @@ properties of the JS (constants and tables equal to the Python source).
   scene and compares fired events with the desktop mapping). Not done: the
   `is_microbit` flag from a room entry (boards are recognised by object name);
   sound reports are ignored until K5; `_update_extensions` is a single override.
-- [ ] **K3 -- drawing.** Board + strip on `canvas.after` (Kivy is y-up: flip at
-  the final draw only, as the raycast port does).
+- [x] **K3 -- drawing.** Done, by a different route than sketched: the board is
+  built as **draw-queue commands** (`kivy_draw.py` -> `microbit_sim/draw.py`;
+  `layout.py` ships verbatim with a stub `state.py`) and drawn by the exported
+  game's own `_dq_render_cmd` into a per-board group on the instance's
+  `canvas.after`, so the y-flip and view handling already exist. The queue has
+  no polygon or rounded rectangle, so the corner wedge, A/B tags and rounded
+  corners are left out. Text gained an optional `anchor` (center / midbottom /
+  bottomleft) in the Kivy renderer. `tests/test_kivy_microbit_draw.py`
+  rasterises the commands and compares ~40 sample points per state with
+  `renderer.py` (10 states x 2 scales). Unverified: a real Kivy canvas, text size
+  (one fixed font, scaled), boards inside a views room. Scale and the strip
+  toggle are read from the instance variables `microbit_scale` /
+  `microbit_show_sensors` (object properties are not exported on Kivy).
 - [ ] **K4 -- input.** `on_touch_down/up/move` hit-test via `layout.py`
   (also embedded verbatim); opt-in keyboard.
 - [ ] **K5 -- sound.** Render PCM with the existing `sound.py`/`audio.py`

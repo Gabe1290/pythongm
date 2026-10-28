@@ -41,6 +41,9 @@ def _scene_with_boards(game_dir, count=1):
         inst.object_name = "microbit_1"
         boards.append(inst)
     scene.instances = list(boards)
+    scene.room_height = 480
+    for inst in boards:
+        inst._mb_draw = lambda room_h: None      # drawing is tests/test_kivy_microbit_draw.py
     fired = []
     for inst in boards:
         for name in _all_event_names():

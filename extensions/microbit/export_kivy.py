@@ -21,6 +21,9 @@ SUPPORT_FILES = {
     "microbit_sim/sound.py": "sound.py",
     "microbit_sim/melodies.py": "melodies.py",
     "microbit_sim/radio.py": "radio.py",
+    "microbit_sim/layout.py": "layout.py",              # verbatim (K3)
+    "microbit_sim/state.py": "export/kivy_state.py",    # layout.py's option_of
+    "microbit_sim/draw.py": "kivy_draw.py",
 }
 
 
@@ -223,7 +226,9 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
                 handler = getattr(board, 'on_' + name, None) if name else None
                 if handler is not None:
                     handler()
-''' % {"fixed": _FIXED_EVENTS, "gestures": _GESTURE_EVENTS}
+        for board in boards:
+            board._mb_draw(self.room_height)
+''' %{"fixed": _FIXED_EVENTS, "gestures": _GESTURE_EVENTS}
 
 
 # ---------------------------------------------------------------------------
@@ -383,6 +388,38 @@ BASE_OBJECT_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------
         if sim is None or axis not in ('x', 'y', 'z'):
             return False
         return self._mb_compare(sim.acceleration['xyz'.index(axis)], comparison, value)
+
+    def _mb_draw(self, room_h):
+        """Draw this board (and its sensor strip) as draw-queue commands in an
+        instance-owned group on canvas.after, so it sits over the object's own
+        sprite as on the desktop. Room coordinates are y-down; the draw-queue
+        renderer does the flip. Scale and the strip toggle are read from the
+        instance variables microbit_scale / microbit_show_sensors."""
+        sim = self._mb_sim()
+        group = getattr(self, '_mb_group', None)
+        if sim is None or not self.visible:
+            if group is not None:
+                group.clear()
+            return
+        if group is None:
+            group = self._mb_group = InstructionGroup()
+            self.canvas.after.add(group)
+        group.clear()
+        from microbit_sim.layout import board_layout, scale_of, strip_visible
+        from microbit_sim.draw import board_commands, strip_commands
+        if self.has_sprite:
+            cx, cy = self.x + self.width / 2.0, room_h - self.y - self.height / 2.0
+        else:
+            cx, cy = self.x, room_h - self.y - self.height
+        layout = board_layout(cx, cy, scale_of(self))
+        commands = board_commands(layout, sim, draw_body=not self.has_sprite)
+        if strip_visible(self):
+            commands += strip_commands(layout, sim)
+        for cmd in commands:
+            try:
+                self._dq_render_cmd(group, cmd, room_h)
+            except Exception as exc:
+                print('[ERROR] micro:bit draw %s: %s' % (cmd.get('type'), exc))
 
     def _mb_if_pixel(self, x, y, comparison, value):
         sim = self._mb_sim()
