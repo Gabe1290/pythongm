@@ -24,7 +24,11 @@ produced real rendered pixels). If this is ever run somewhere with no
 display at all, set QT_QPA_PLATFORM=offscreen yourself and expect the
 Blockly screenshots specifically to need re-verification.
 
-Run: venv/bin/python3 tools/gen_junior_student_fr_images.py
+Run: venv/bin/python3 tools/gen_junior_student_fr_images.py [--lang en]
+
+``--lang en`` captures the same seven shots from the English interface into
+docs/junior/images/en/ (for student.en.md), using the English asset names the
+English guide uses (spr_hero / obj_hero). The default is French.
 """
 import os
 import shutil
@@ -36,7 +40,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-OUT = ROOT / "docs" / "junior" / "images"
+LANG = "en" if "--lang" in sys.argv and sys.argv[sys.argv.index("--lang") + 1] == "en" else "fr"
+OUT = ROOT / "docs" / "junior" / "images" / ("en" if LANG == "en" else "")
+# The guides name the hero differently per language.
+HERO_SPR, HERO_OBJ = ("spr_hero", "obj_hero") if LANG == "en" else ("spr_heros", "obj_heros")
 WINDOW_SIZE = (1700, 1100)
 
 
@@ -64,8 +71,8 @@ def _make_app():
     # real IDE session) -- but that's manager-STATE tracking, not proof a
     # QTranslator is installed in THIS fresh QApplication. Force it.
     lm.current_language = None
-    if not lm.set_language("fr"):
-        raise RuntimeError("could not install the French translator")
+    if not lm.set_language(LANG):
+        raise RuntimeError(f"could not install the {LANG} translator")
 
     return app
 
@@ -116,11 +123,24 @@ def _sprite_png(path, size, color, shape="hero"):
     img.save(path)
 
 
-def _capture_widget(widget, app, filename):
+def _capture_widget(widget, app, filename, from_screen=False):
+    """``from_screen`` grabs the pixels off the real display instead of
+    asking the widget to paint itself: a QWebEngineView (the Blockly tab) is
+    a GPU-composited surface that widget.grab() returns blank for on
+    Windows, while the screen grab sees what the user would see. The widget
+    must be visible and not covered."""
     app.processEvents()
     OUT.mkdir(parents=True, exist_ok=True)
     dest = OUT / filename
-    pix = widget.grab()
+    if from_screen:
+        from PySide6.QtCore import QPoint
+        time.sleep(0.4)
+        app.processEvents()
+        origin = widget.mapToGlobal(QPoint(0, 0))
+        pix = widget.screen().grabWindow(0, origin.x(), origin.y(),
+                                         widget.width(), widget.height())
+    else:
+        pix = widget.grab()
     if not pix.save(str(dest)):
         raise RuntimeError(f"failed to save screenshot to {dest}")
     print(f"  wrote {dest.relative_to(ROOT)} ({pix.width()}x{pix.height()})")
@@ -177,7 +197,7 @@ def _capture_object_blockly(ide, app, am, object_name, filename):
     for _ in range(8):
         app.processEvents()
         time.sleep(0.15)
-    _capture_widget(object_editor, app, filename)
+    _capture_widget(object_editor, app, filename, from_screen=True)
 
 
 def _capture_room(ide, am, app, room_name, filename):
@@ -201,7 +221,7 @@ def main():
     # New Project / Open Project / sample-game buttons.
     _capture_widget(ide, app, "ide_welcome.png")
 
-    scratch = _new_scratch_project(ide, "scratch_junior_fr")
+    scratch = _new_scratch_project(ide, f"scratch_junior_{LANG}")
     am = ide.asset_manager
     sprite_dir = scratch / "_capture_sprites"
     sprite_dir.mkdir(exist_ok=True)
@@ -218,17 +238,17 @@ def main():
         from PIL import Image
         toolbar_path = OUT / "toolbar.png"
         with Image.open(toolbar_path) as img:
-            img.crop((0, 0, min(400, img.width), img.height)).save(toolbar_path)
+            img.crop((0, 0, min(360, img.width), img.height)).save(toolbar_path)
 
         # -- Hero sprite ----------------------------------------------------
-        png_path = sprite_dir / "spr_heros.png"
+        png_path = sprite_dir / f"{HERO_SPR}.png"
         _sprite_png(png_path, (48, 48), (240, 140, 60, 255), shape="hero")
-        asset_data = am.import_asset(png_path, "sprites", "spr_heros")
+        asset_data = am.import_asset(png_path, "sprites", HERO_SPR)
         if asset_data is None:
             raise RuntimeError("failed to import sprite spr_heros")
         _sync(ide)
-        ide.open_sprite_editor("spr_heros", am.get_asset("sprites", "spr_heros"))
-        key = ide._editor_key("sprites", "spr_heros")
+        ide.open_sprite_editor(HERO_SPR, am.get_asset("sprites", HERO_SPR))
+        key = ide._editor_key("sprites", HERO_SPR)
         sprite_editor = ide.open_editors[key]
         app.processEvents()
         _capture_widget(sprite_editor, app, "sprite_editor.png")
@@ -263,10 +283,10 @@ def main():
                 ]},
             },
         }
-        am.create_asset("obj_heros", "objects", sprite="spr_heros",
+        am.create_asset(HERO_OBJ, "objects", sprite=HERO_SPR,
                         solid=False, visible=True, events=hero_events)
         _sync(ide)
-        _capture_object_blockly(ide, app, am, "obj_heros", "objet_blockly.png")
+        _capture_object_blockly(ide, app, am, HERO_OBJ, "objet_blockly.png")
 
         # -- Room: hero only ----------------------------------------------
         # A new project already has a default room ("room0",
@@ -280,7 +300,7 @@ def main():
         room_data["width"], room_data["height"] = 640, 480
         room_data["background_color"] = "#dff0ff"
         room_data["instances"] = [{
-            "object_name": "obj_heros", "x": 300, "y": 220, "rotation": 0,
+            "object_name": HERO_OBJ, "x": 300, "y": 220, "rotation": 0,
             "scale_x": 1.0, "scale_y": 1.0, "visible": True,
         }]
         _sync(ide)
@@ -306,7 +326,7 @@ def main():
         # movement-only one, not tall enough for all 7 blocks at once --
         # shows the new collision/draw blocks at the top instead of the
         # already-illustrated movement blocks scrolled into view instead.
-        hero_data = am.get_asset("objects", "obj_heros")
+        hero_data = am.get_asset("objects", HERO_OBJ)
         hero_data["events"] = {
             "collision_with_obj_fruit": {
                 "actions": [
@@ -321,7 +341,7 @@ def main():
             **hero_data["events"],
         }
         _sync(ide)
-        _capture_object_blockly(ide, app, am, "obj_heros", "objet_blockly_bonus.png")
+        _capture_object_blockly(ide, app, am, HERO_OBJ, "objet_blockly_bonus.png")
 
         # -- Bonus: room with fruits placed too ------------------------
         room_data["instances"].extend([

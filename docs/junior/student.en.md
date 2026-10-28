@@ -1,96 +1,136 @@
 # PyGameMaker Junior: Make Your Own Game
 
-## How to Use This Handout
+Keep this sheet next to your computer. Do each part, then tick the box.
+Stuck? Ask a neighbour first, then your teacher.
 
-Keep this sheet next to your computer. Do each part on the screen, then
-tick the box. Ask a neighbour first, then your teacher, if you get stuck.
+## Part 1: Start a Project
 
-## Part 1: Your Tools
+When the program starts, you see this:
 
-Look at the top of the window. These are the buttons you will use:
+![The PyGameMaker window at start-up, with the New Project button](images/en/ide_welcome.png "90%")
 
-- **New** (a blank page): start a new game
-- **Open** (a folder): open a game you saved
-- **Save** (a disk): save your game. Do this often!
-- **Green triangle**: **play your game** (also the **F5** key)
-- **Tick mark**: share your game as a web page
+- [ ] Click **New Project**.
+- [ ] Give your project a name, for example `MyGame`.
+- [ ] Click **OK**.
 
-On the left you see your **Resources**: sprites, objects and rooms.
+## Part 2: Your Tools
+
+Look at the top of the window:
+
+![The toolbar](images/en/toolbar.png "55%")
+
+- **New**: start a game
+- **Open**: open a game you saved
+- **Save**: save your game. Do this often!
+- **Green triangle**: play your game (or press **F5**)
+- **Green tick**: share your game
+
+On the left you have your **resources**: sprites, objects and rooms.
 
 - A **sprite** is a picture.
-- An **object** is something in your game that does things.
-- A **room** is a level where the game happens.
+- An **object** does things in your game.
+- A **room** is a level (a screen of your game).
 
-## Part 2: Draw a Sprite
+## Part 3: Draw a Sprite
 
 - [ ] Click **Assets > Create Sprite**.
-- [ ] Type a name, for example `spr_hero`, then press OK.
-- [ ] A drawing window opens. Pick a colour and draw with the pencil.
-- [ ] Click **Save** when you are happy with it.
+- [ ] Give it a name, for example `spr_hero`.
+- [ ] Choose a colour and draw with the pencil.
+- [ ] Click **Save**.
 
-> TIP: Names start with `spr_` for sprites and `obj_` for objects. Use
-> letters and numbers only, no spaces.
+![The sprite editor, with a round orange drawing](images/en/sprite_editor.png "65%")
 
-You can also click **Assets > Import Sprite** to use a picture from a file.
-To change a sprite later, **double-click** it in the list on the left.
+> TIP: Start the names of your sprites with `spr_`.
 
-## Part 3: Make an Object Move
+## Part 4: Make an Object Move in 4 Directions
 
 - [ ] Click **Assets > Create Object** and name it `obj_hero`.
 - [ ] In **Sprite**, choose your sprite.
-- [ ] In the **Blockly** area, drag blocks from the left to build what
-      happens. For example: **Keyboard: Left** then **Set horizontal speed**.
-- [ ] Add **Keyboard: No key** then **Stop moving**, so your hero stops.
+- [ ] Add 4 **Keyboard** blocks (Left Arrow, Right Arrow, Up Arrow, Down
+      Arrow). In each one, put **Set horizontal speed to** (-4 and 4) or
+      **Set vertical speed to** (-4 and 4): left -4, right 4, up -4, down 4.
+- [ ] Add **Keyboard: No key**, then **Stop movement**, so your hero stops
+      when you touch nothing.
 
-> TIP: Right-click a block to **Duplicate** or **Delete** it.
+![The blocks in the object: one for each arrow key](images/en/objet_blockly.png "65%")
 
-## Part 4: Build a Room and Play
+> TIP: Right-click a block to duplicate or delete it. Duplicate the **Left
+> Arrow** block three times, then just change the key and the number in each
+> copy!
 
-- [ ] Click **Assets > Create Room**.
-- [ ] Click an object in the list, then click in the room to place it.
+## Part 5: Build a Room and Play
+
+Your project already has a room, **room0**. You do not need to create one!
+
+- [ ] Double-click **room0** in the **Rooms** list on the left.
+- [ ] Click your object in the list, then click in the room to place it.
+
+![The room with the hero placed in it](images/en/salle_editeur.png "65%")
+
 - [ ] Press the **green triangle** (or **F5**) to play.
 
-> DONE: You should see your sprite in the game and be able to move it.
+> TIP: You can rename **room0** if you want (right-click > Rename).
 
-## Part 5: Share Your Game
+> DONE: You see your sprite in the game and you can make it move.
+
+## Part 6: Share Your Game
 
 - [ ] Click **File > Export as HTML5**.
-- [ ] Choose a folder to save it in.
+- [ ] Choose a folder.
 - [ ] Click **Yes** to open it in your browser.
 
-You get one file ending in `.html`. Send it to a friend, and they can play
-it in any browser!
+You get a file ending in `.html`. Send it to a friend: they can play it!
+
+## Part 7: BONUS: Pick Up Fruit!
+
+Your game already works. If you still have time, add points!
+
+- [ ] Create a sprite `spr_fruit` (a small red or yellow circle).
+- [ ] Create an object `obj_fruit` with this sprite.
+- [ ] Open **obj_hero** and add the event **When colliding with obj_fruit**.
+- [ ] Put 2 blocks in it: **Add to score 10** and **Destroy other instance**.
+- [ ] Add the event **When drawing**, with the block **Draw score at x: 10
+      y: 10**.
+
+![The bonus blocks: collision with the fruit (score and destroy), and draw the score](images/en/objet_blockly_bonus.png "65%")
+
+- [ ] Go back to **room0** and place 2 or 3 `obj_fruit` in the room.
+
+![The room with the hero and three fruits placed in it](images/en/salle_fruits.png "65%")
+
+- [ ] Press **F5**: pick up the fruit to win points!
+
+> DONE: Your score goes up and the fruit disappears when you touch it.
 
 ## Stuck?
 
 | What happens | Try this |
 |---|---|
-| My object does not move | Did you put a block under the **Keyboard** event? Is the object in the room? |
-| My hero never stops | Add **Keyboard: No key** and **Stop moving** |
-| I cannot see my sprite in the game | Did you choose the sprite in the object's **Sprite** box? |
-| I deleted something by mistake | **Tools > Restore Deleted Assets** brings it back |
-| The game shows a grey window | Wait a few seconds, then try again |
+| My object does not move | Is there a block under **Keyboard**? Is the object in the room? |
+| My hero never stops | Add **Keyboard: No key** + **Stop movement** |
+| I cannot see my sprite | Did you choose the sprite in the **Sprite** box? |
+| I deleted something by mistake | **Tools > Restore Deleted Assets** |
+| The game shows a grey window | Wait a little, then try again |
+| My score does not go up | Is the collision event on **obj_hero**, with the right object chosen? |
 
 ## Words to Know
 
-- **Sprite**: a picture used in your game
-- **Object**: something in your game that can do things
-- **Room**: a level
-- **Event**: "when something happens", like pressing a key
-- **Action**: "do something", like moving
-- **Block**: one piece of your program
+- **Sprite**: a picture
+- **Object**: a thing that does actions
+- **Room**: a level (a screen of your game)
+- **Block**: a piece of your program
+- **Collision**: when two objects touch
+- **Score**: your points
 
 ## Challenges
 
-- **Try this (5 min):** draw a second sprite and make a second object.
-- **Push further:** make your hero move up and down as well.
-- **Invent:** make a wall object that stops your hero.
+- **Try this:** change the colour of your fruit, or how many points it is worth.
+- **Push further:** add a second kind of fruit that is worth more points.
 
 ## Think About It
 
-1. What does a **Keyboard** event do?
+1. What is the **Keyboard** block for?
 2. What is the difference between a sprite and an object?
-3. How would you show your game to someone at home?
 
 ## My Notes
 

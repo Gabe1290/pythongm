@@ -31,9 +31,31 @@ DOWNLOAD = {"en": "**Download:**", "fr": "**Télécharger :**"}
 NOTES_HEADING = {"en": "## My Notes", "fr": "## Mes notes"}
 
 
+IMG_DST = WIKI / "images" / "junior"
+
+
+def copy_images():
+    """docs/junior/images/** -> wiki/images/junior/** (the French shots sit
+    directly in images/, the English ones in images/en/)."""
+    for im in (SRC / "images").rglob("*.png"):
+        dst = IMG_DST / im.relative_to(SRC / "images")
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(im, dst)
+
+
+_IMG_LINK = re.compile(r'\]\(images/([^)\s]+?)(?:\s+"[^"]*")?\)')
+
+
+def wiki_images(text: str) -> str:
+    """``![alt](images/x.png "55%")`` -> ``![alt](images/junior/x.png)``: the
+    wiki has its own image folder, and a width hint is print-only."""
+    return _IMG_LINK.sub(lambda m: f"](images/junior/{m.group(1)})", text)
+
+
 def body(md: str, lang: str):
     """Source markdown -> wiki markdown: drop the print-only notes block and
     the H1 (re-emitted by the caller)."""
+    md = wiki_images(md)
     lines = md.splitlines()
     title = lines[0].lstrip("# ").strip()
     text = "\n".join(lines[1:]).strip("\n")
@@ -44,6 +66,7 @@ def body(md: str, lang: str):
 
 def main():
     DL.mkdir(exist_ok=True)
+    copy_images()
     for lang in ("en", "fr"):
         suffix = "" if lang == "en" else "_fr"
         for kind, page in PAGES.items():

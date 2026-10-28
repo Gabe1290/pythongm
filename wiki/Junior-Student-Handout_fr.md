@@ -6,98 +6,136 @@
 
 ---
 
-## Comment utiliser cette fiche
+Garde cette feuille à côté de toi. Fais chaque partie, puis coche la case.
+Bloqué ? Demande à un copain, puis à ton enseignant.
 
-Garde cette feuille à côté de ton ordinateur. Fais chaque partie sur
-l'écran, puis coche la case. Si tu es bloqué, demande d'abord à ton voisin,
-puis à ton enseignant.
+## Partie 1 : commence un projet
 
-## Partie 1 : tes outils
+Au démarrage, tu vois ça :
 
-Regarde en haut de la fenêtre. Voici les boutons que tu vas utiliser :
+![La fenêtre de PyGameMaker au démarrage, avec le bouton Nouveau projet](images/junior/ide_welcome.png)
 
-- **Nouveau** (une page blanche) : commencer un nouveau jeu
-- **Ouvrir** (un dossier) : ouvrir un jeu enregistré
-- **Enregistrer** (une disquette) : sauvegarder ton jeu. Fais-le souvent !
-- **Triangle vert** : **lancer ton jeu** (ou la touche **F5**)
-- **Coche** : partager ton jeu sous forme de page web
+- [ ] Clique **Nouveau projet**.
+- [ ] Donne un nom à ton projet, par exemple `MonJeu`.
+- [ ] Clique **OK**.
 
-À gauche, tu vois tes **ressources** : sprites, objets et salles.
+## Partie 2 : tes outils
+
+Regarde en haut de la fenêtre :
+
+![La barre d'outils](images/junior/toolbar.png)
+
+- **Nouveau** : commencer un jeu
+- **Ouvrir** : reprendre un jeu
+- **Enregistrer** : sauver ton jeu. Fais-le souvent !
+- **Triangle vert** : jouer (ou touche **F5**)
+- **Coche verte** : partager ton jeu
+
+À gauche, tu as tes **ressources** : sprites, objets, salles.
 
 - Un **sprite** est une image.
-- Un **objet** est quelque chose dans ton jeu qui fait des choses.
-- Une **salle** est un niveau où se passe le jeu.
+- Un **objet** fait des choses dans ton jeu.
+- Un **room** est une salle (un niveau).
 
-## Partie 2 : dessiner un sprite
+## Partie 3 : dessiner un sprite
 
-- [ ] Clique sur **Ressources > Créer un sprite**.
-- [ ] Écris un nom, par exemple `spr_hero`, puis clique sur OK.
-- [ ] Une fenêtre de dessin s'ouvre. Choisis une couleur et dessine avec le crayon.
-- [ ] Clique sur **Enregistrer** quand tu es content de ton dessin.
+- [ ] Clique **Ressources > Créer un sprite**.
+- [ ] Donne-lui un nom, par exemple `spr_heros`.
+- [ ] Choisis une couleur et dessine avec le crayon.
+- [ ] Clique **Enregistrer**.
 
-> TIP : les noms commencent par `spr_` pour les sprites et `obj_` pour les
-> objets. Utilise seulement des lettres et des chiffres, sans espace.
+![L'éditeur de sprite, avec un dessin orange rond](images/junior/sprite_editor.png)
 
-Tu peux aussi cliquer sur **Ressources > Importer un sprite** pour utiliser
-une image qui est dans un fichier. Pour modifier un sprite plus tard,
-**double-clique** dessus dans la liste de gauche.
+> TIP : commence les noms de sprites par `spr_`.
 
-## Partie 3 : faire bouger un objet
+## Partie 4 : faire bouger un objet dans les 4 directions
 
-- [ ] Clique sur **Ressources > Créer un objet** et appelle-le `obj_hero`.
+- [ ] Clique **Ressources > Créer un objet**, nomme-le `obj_heros`.
 - [ ] Dans **Sprite**, choisis ton sprite.
-- [ ] Dans la zone **Blockly**, glisse des blocs depuis la gauche pour
-      construire ce qui se passe. Par exemple : **Clavier: Gauche** puis
-      **définir vitesse horizontale à**.
+- [ ] Ajoute 4 blocs **Clavier** (Flèche gauche, droite, haut, bas), chacun
+      avec **définir vitesse horizontale et vitesse verticale à** (-4, 4, -4, 4).
 - [ ] Ajoute **Clavier: Aucune touche** puis **arrêter le mouvement**, pour
-      que ton héros s'arrête.
+      que ton héros s'arrête quand tu ne touches rien.
 
-> TIP : fais un clic droit sur un bloc pour le **dupliquer** ou le **supprimer**.
+![Cinq blocs dans l'objet : un pour chaque flèche du clavier, plus un pour s'arrêter](images/junior/objet_blockly.png)
 
-## Partie 4 : construire une salle et jouer
+> TIP : clic droit sur un bloc pour le dupliquer ou le supprimer. Duplique
+> le bloc **Flèche gauche** trois fois, puis change juste la touche et le
+> nombre dans chaque copie !
 
-- [ ] Clique sur **Ressources > Créer une salle**.
-- [ ] Clique sur un objet dans la liste, puis clique dans la salle pour le placer.
+## Partie 5 : construire une salle et jouer
+
+Ton projet a déjà une salle, **room0**. Pas besoin d'en créer une !
+
+- [ ] Double-clique sur **room0** dans la liste **Rooms**, à gauche.
+- [ ] Clique sur ton objet dans la liste, puis clique dans la salle pour le
+      placer.
+
+![La salle avec le héros placé dedans](images/junior/salle_editeur.png)
+
 - [ ] Appuie sur le **triangle vert** (ou **F5**) pour jouer.
 
-> DONE : tu dois voir ton sprite dans le jeu et pouvoir le déplacer.
+> TIP : tu peux renommer **room0** si tu veux (clic droit > Renommer).
 
-## Partie 5 : partager ton jeu
+> DONE : tu vois ton sprite dans le jeu et tu peux le faire bouger.
 
-- [ ] Clique sur **Fichier > Exporter en HTML5**.
-- [ ] Choisis un dossier où l'enregistrer.
-- [ ] Clique sur **Oui** pour l'ouvrir dans ton navigateur.
+## Partie 6 : partager ton jeu
 
-Tu obtiens un seul fichier qui se termine par `.html`. Envoie-le à un ami :
-il pourra y jouer dans n'importe quel navigateur !
+- [ ] Clique **Fichier > Exporter en HTML5**.
+- [ ] Choisis un dossier.
+- [ ] Clique **Oui** pour l'ouvrir dans ton navigateur.
+
+Tu obtiens un fichier `.html`. Envoie-le à un ami : il peut y jouer !
+
+## Partie 7 : BONUS — ramasse des fruits !
+
+Ton jeu marche déjà. Si tu as encore du temps, ajoute des points !
+
+- [ ] Crée un sprite `spr_fruit` (un petit rond rouge ou jaune).
+- [ ] Crée un objet `obj_fruit` avec ce sprite.
+- [ ] Ouvre **obj_heros**, ajoute l'événement **Quand collision avec
+      obj_fruit**.
+- [ ] Mets-y 2 blocs : **Ajouter au score 10** et **Détruire autre
+      instance**.
+- [ ] Ajoute l'événement **Quand dessiner**, avec le bloc **Afficher score
+      à x: 10 y: 10**.
+
+![Les blocs bonus : collision avec le fruit (score + destruction), et afficher le score](images/junior/objet_blockly_bonus.png)
+
+- [ ] Retourne dans **room0** et place 2 ou 3 `obj_fruit` dans la salle.
+
+![La salle avec le héros et trois fruits placés dedans](images/junior/salle_fruits.png)
+
+- [ ] Appuie sur **F5** : ramasse les fruits pour gagner des points !
+
+> DONE : ton score augmente et le fruit disparaît quand tu le touches.
 
 ## Tu es bloqué ?
 
 | Ce qui se passe | Essaie ceci |
 |---|---|
-| Mon objet ne bouge pas | As-tu mis un bloc sous l'événement **Clavier** ? L'objet est-il dans la salle ? |
-| Mon héros ne s'arrête jamais | Ajoute **Clavier: Aucune touche** et **arrêter le mouvement** |
-| Je ne vois pas mon sprite dans le jeu | As-tu choisi le sprite dans la case **Sprite** de l'objet ? |
-| J'ai supprimé quelque chose par erreur | **Outils > Restaurer les ressources supprimées** le ramène |
-| Le jeu affiche une fenêtre grise | Attends quelques secondes, puis réessaie |
+| Mon objet ne bouge pas | Un bloc est-il sous **Clavier** ? L'objet est-il dans la salle ? |
+| Mon héros ne s'arrête jamais | Ajoute **Clavier: Aucune touche** + **arrêter le mouvement** |
+| Je ne vois pas mon sprite | As-tu choisi le sprite dans la case **Sprite** ? |
+| J'ai supprimé un truc par erreur | **Outils > Restaurer les ressources supprimées** |
+| Le jeu affiche une fenêtre grise | Attends un peu, puis réessaie |
+| Mon score n'augmente pas | L'événement collision est-il sur **obj_heros**, avec le bon objet choisi ? |
 
 ## Mots à connaître
 
-- **Sprite** : une image utilisée dans ton jeu
-- **Objet** : quelque chose dans ton jeu qui peut faire des choses
-- **Salle** : un niveau
-- **Événement** : « quand quelque chose arrive », comme appuyer sur une touche
-- **Action** : « faire quelque chose », comme bouger
-- **Bloc** : une pièce de ton programme
+- **Sprite** : une image
+- **Objet** : une chose qui fait des actions
+- **Room** : une salle (un niveau)
+- **Bloc** : un morceau de ton programme
+- **Collision** : quand deux objets se touchent
+- **Score** : tes points
 
 ## Défis
 
-- **Essaie (5 min) :** dessine un deuxième sprite et crée un deuxième objet.
-- **Va plus loin :** fais aussi bouger ton héros vers le haut et vers le bas.
-- **Invente :** crée un objet mur qui arrête ton héros.
+- **Essaie :** change la couleur ou le nombre de points de ton fruit.
+- **Va plus loin :** ajoute un deuxième type de fruit qui vaut plus de points.
 
 ## Réfléchis
 
-1. À quoi sert un événement **Clavier** ?
+1. À quoi sert le bloc **Clavier** ?
 2. Quelle est la différence entre un sprite et un objet ?
-3. Comment montrerais-tu ton jeu à quelqu'un à la maison ?
