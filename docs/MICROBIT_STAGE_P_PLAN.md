@@ -126,8 +126,18 @@ properties of the JS (constants and tables equal to the Python source).
   the shipped simulator. Boards are recognised by object name (`microbit*`) or
   an `is_microbit` attribute; the flag form on an object property is wired in
   K2 with the events. Events are still skipped (warned) until K2.
-- [ ] **K2 -- events + frame update.** Step boards in the scene update; fire
-  reported events through the existing event dispatch; radio delivery.
+- [x] **K2 -- events + frame update.** Done. New generic Kivy seams: an
+  extension's `export_kivy.py` may expose `EVENT_METHODS` ({event type: handler
+  name}; the generator emits the method instead of skipping the event) and the
+  scene calls `_update_extensions(dt)` after collision, before end step (the
+  desktop's `after_collision`). The microbit `SCENE_CODE` overrides it: radio
+  delivery, `sim.update(min(dt, 0.1))`, `radio_string`/`radio_number`, then
+  `on_<event>()` on the board. The event tables are repeated as data in
+  `export_kivy.py` and pinned to `events.py` by
+  `tests/test_kivy_microbit_events.py` (which also drives the real generated
+  scene and compares fired events with the desktop mapping). Not done: the
+  `is_microbit` flag from a room entry (boards are recognised by object name);
+  sound reports are ignored until K5; `_update_extensions` is a single override.
 - [ ] **K3 -- drawing.** Board + strip on `canvas.after` (Kivy is y-up: flip at
   the final draw only, as the raycast port does).
 - [ ] **K4 -- input.** `on_touch_down/up/move` hit-test via `layout.py`

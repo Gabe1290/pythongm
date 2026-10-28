@@ -111,6 +111,38 @@ def _cg_read_sensor(gen, params, event_type):
     return f"self._mb_read_sensor({sensor!r}, {name!r}, {is_global!r})"
 
 
+# ---------------------------------------------------------------------------
+# Events (K2). The simulator reports (kind, detail); events.py maps that onto a
+# flat event name. The same two tables are repeated here as plain data because
+# the exported game cannot import events.py -- tests/test_kivy_microbit_events.py
+# pins them to it. Every event type gets an `on_<name>` handler method.
+# ---------------------------------------------------------------------------
+_FIXED_EVENTS = {
+    "button:a": "microbit_button_a",
+    "button:b": "microbit_button_b",
+    "button:ab": "microbit_button_ab",
+    "logo:touched": "microbit_logo_touched",
+    "pin:0": "microbit_pin_0",
+    "pin:1": "microbit_pin_1",
+    "pin:2": "microbit_pin_2",
+    "sound:loud": "microbit_loud_sound",
+    "sound:quiet": "microbit_quiet_sound",
+    "display_done:None": "microbit_display_done",
+    "sound_done:None": "microbit_sound_done",
+    "radio": "microbit_radio_received",
+}
+_GESTURE_EVENTS = {
+    "shake": "shake", "up": "logo_up", "down": "logo_down",
+    "left": "tilt_left", "right": "tilt_right",
+    "face up": "screen_up", "face down": "screen_down",
+    "freefall": "free_fall", "2g": "2g", "3g": "3g", "6g": "6g", "8g": "8g",
+}
+
+EVENT_METHODS = {name: "on_" + name for name in _FIXED_EVENTS.values()}
+EVENT_METHODS.update({"microbit_gesture_" + g: "on_microbit_gesture_" + g
+                      for g in _GESTURE_EVENTS.values()})
+
+
 ACTION_CODEGEN = {
     "microbit_show_image": _cg_show_image,
     "microbit_scroll_text": _cg_scroll_text,
@@ -153,6 +185,45 @@ CONDITION_CODEGEN = {
     "microbit_if_tilt": _cc_if_tilt,
     "microbit_if_pixel": _cc_if_pixel,
 }
+
+
+# ---------------------------------------------------------------------------
+# Scene class-body code (K2), injected at the scene's extension marker: steps
+# every board once per frame, after collision (the desktop's after_collision
+# hook), and fires what they report as `on_<event>` on the board's instance.
+# NOTE: `_update_extensions` is a single override -- a second extension needing
+# the per-frame hook would have to chain.
+# ---------------------------------------------------------------------------
+SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------------------
+    _MB_FIXED_EVENTS = %(fixed)r
+    _MB_GESTURE_EVENTS = %(gestures)r
+
+    def _mb_event_name(self, kind, detail):
+        if kind == 'radio':
+            return self._MB_FIXED_EVENTS['radio']
+        if kind == 'gesture':
+            gesture = self._MB_GESTURE_EVENTS.get(detail)
+            return 'microbit_gesture_' + gesture if gesture else None
+        return self._MB_FIXED_EVENTS.get('%%s:%%s' %% (kind, detail))
+
+    def _update_extensions(self, dt):
+        boards = [i for i in list(self.instances)
+                  if getattr(i, '_mb_sim', None) is not None and i._mb_sim() is not None]
+        if not boards:
+            return
+        from microbit_sim import radio
+        radio.deliver([i._mb_sim() for i in boards])
+        step = min(max(float(dt), 0.0), 0.1)
+        for board in boards:
+            for kind, detail in board._mb_sim().update(step):
+                if kind == 'radio':
+                    board.radio_string = str(detail)
+                    board.radio_number = radio.as_number(detail)
+                name = self._mb_event_name(kind, detail)
+                handler = getattr(board, 'on_' + name, None) if name else None
+                if handler is not None:
+                    handler()
+''' % {"fixed": _FIXED_EVENTS, "gestures": _GESTURE_EVENTS}
 
 
 # ---------------------------------------------------------------------------

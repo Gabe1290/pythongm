@@ -184,15 +184,16 @@ def test_unknown_event_is_recorded_and_reset():
 
 
 def test_kivy_export_reports_events_it_cannot_run():
-    """microbit_1 authors micro:bit events the Kivy generator has no handler
-    for; the export must say so instead of dropping them without a word."""
+    """An authored event the Kivy generator has no handler for must be
+    reported by the export instead of dropped without a word. (micro:bit's own
+    events used to be the example; they have Kivy handlers since Stage P/K2.)"""
     from export.Kivy.kivy_exporter import KivyExporter
     data, sample = _merged("microbit_1")
+    events = data["assets"]["objects"]["microbit_1"]["events"]
+    events["no_such_event_xyz"] = {"actions": [{"action": "microbit_clear_display", "parameters": {}}]}
     out = Path(tempfile.mkdtemp(prefix="uae_ev_")) / "export"
     KivyExporter(data, sample, out).export()
-    dropped = cg.get_unsupported_events()
-    assert "microbit_button_a" in dropped
-    assert all(e.startswith("microbit_") for e in dropped), dropped
+    assert cg.get_unsupported_events() == ["no_such_event_xyz"]
 
 
 def test_clean_sample_reports_no_dropped_events():

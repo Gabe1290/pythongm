@@ -2569,6 +2569,9 @@ class {class_name}(Widget):
     def _render_extension_overlay(self):
         return False
 
+    def _update_extensions(self, dt):
+        pass
+
     # __PYGM_EXTENSION_SCENE_CODE__
 
     def _class_name_to_snake_case(self, name):
@@ -2873,6 +2876,10 @@ class {class_name}(Widget):
                     instance_collisions = colliding_with.get(id(instance), set())
                     if target_type not in instance_collisions:
                         getattr(instance, attr_name)()
+
+        # 6c. EXTENSION FRAME UPDATE - after collision, before end step (the
+        # desktop's after_collision hook; e.g. the micro:bit boards step here).
+        self._update_extensions(dt)
 
         # 7. END STEP EVENTS
         for instance in _live:
@@ -5660,6 +5667,9 @@ class {class_name}(GameObject):
             collision_obj = event.get('collision_object', 'object')
             return f"on_collision_{collision_obj.lower()}"
 
+        if event_type not in event_map:
+            from export.Kivy.code_generator import extension_event_methods
+            return extension_event_methods().get(event_type, '')
         return event_map.get(event_type, '')
 
     def _generate_action_code(self, obj_name: str, actions: List[Dict], event: Dict) -> str:

@@ -101,12 +101,12 @@ against the Python simulator by fuzz and pixel comparison, and
 `microbit_1` with the pygame one (dev box only: it needs Playwright +
 Chromium). Known differences: events fire at the start of the frame, the text
 labels use a browser font, and only the first finger of a multi-touch is read.
-Kivy/Android is half-way (Stage P, K1 done): the simulator ships in the export
-(`microbit_sim`, `export_kivy.py`) and the actions and conditions run, but the
-board is **not drawn, cannot be touched, and the micro:bit events never fire**
-yet (K2-K5; the exporter warns about the events it skips).
-`tests/test_microbit_export_fallthrough.py` and
-`tests/test_kivy_microbit_actions.py` pin the behaviour.
+Kivy/Android is half-way (Stage P, K1-K2 done): the simulator ships in the export
+(`microbit_sim`, `export_kivy.py`), the actions and conditions run, the boards are
+stepped each frame and the micro:bit events fire (radio included), but the board
+is **not drawn, cannot be touched, and makes no sound** yet (K3-K5).
+`tests/test_microbit_export_fallthrough.py`, `tests/test_kivy_microbit_actions.py`
+and `tests/test_kivy_microbit_events.py` pin the behaviour.
 
 **MicroPython export** (a different kind of export — *onto a real micro:bit*,
 not another PyGameMaker platform target) lives in `export/`: File menu →

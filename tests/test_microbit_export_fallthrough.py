@@ -131,9 +131,9 @@ def test_kivy_export_ships_the_simulator_and_calls_it(caplog):
     text = "\n".join(p.read_text(encoding="utf-8") for p in out.rglob("*.py"))
     assert "# TODO: microbit_show_image" not in text
     assert "self._mb_show_image(" in text
-    # The events are a later unit (K2): still reported, not faked.
+    # K2: the events have handlers now, so they are not reported as dropped.
     events = next((m for m in caplog.messages if "event(s) are not supported" in m), "")
-    assert "microbit_button_a" in events
+    assert "microbit_" not in events
 
 
 def test_kivy_export_of_the_real_sample_succeeds(caplog):

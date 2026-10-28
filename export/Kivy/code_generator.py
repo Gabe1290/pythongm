@@ -384,6 +384,9 @@ _EXTENSION_CODEGEN = None
 # fn(gen, params, event_type) -> a Python boolean EXPRESSION; the generator
 # wraps it in a guard exactly as it does for its own conditionals.
 _EXTENSION_CONDITIONS = {}
+# ... and EVENT_METHODS: {event_type: handler method name}. The generated object
+# gets that method; the extension's own scene code calls it (K2).
+_EXTENSION_EVENT_METHODS = {}
 
 
 def _extension_conditions():
@@ -391,11 +394,17 @@ def _extension_conditions():
     return _EXTENSION_CONDITIONS
 
 
+def extension_event_methods():
+    _extension_codegen()
+    return _EXTENSION_EVENT_METHODS
+
+
 def _extension_codegen():
     global _EXTENSION_CODEGEN
     if _EXTENSION_CODEGEN is None:
         _EXTENSION_CODEGEN = {}
         _EXTENSION_CONDITIONS.clear()
+        _EXTENSION_EVENT_METHODS.clear()
         try:
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
@@ -421,6 +430,9 @@ def _extension_codegen():
                 conditions = ns.get("CONDITION_CODEGEN", {})
                 if isinstance(conditions, dict):
                     _EXTENSION_CONDITIONS.update(conditions)
+                events = ns.get("EVENT_METHODS", {})
+                if isinstance(events, dict):
+                    _EXTENSION_EVENT_METHODS.update(events)
             except Exception as exc:
                 logger.error(
                     f"Extension '{info['folder']}' export_kivy.py failed to load; "
