@@ -90,8 +90,12 @@ properties of the JS (constants and tables equal to the Python source).
   (`tests/test_microbit_html5_input.py`, dev box only; 8 breakages caught).
   Multi-touch isn't handled (the first touch only), as in the engine itself.
 
-- [ ] **H5 -- sound.** WebAudio square wave from `sound_note` / `sound_stop`
+- [x] **H5 -- sound.** WebAudio square wave from `sound_note` / `sound_stop`
   reports; resume the context on first user gesture.
+  *Done:* `makeSpeaker` (one voice, a new note replaces it, rests and `sound_stop` cut it off,
+  gain/length cap equal audio.py's, injectable context so it is tested with a recording fake),
+  `soundHooks` wired to it, context resumed on the first pointer/key/touch.
+  *Not checked:* actual loudness/timbre by ear on a real device (same open item as desktop).
 - [ ] **H6 -- close-out.** Real-browser playtest of `microbit_1` via Playwright
   (screenshot compared with the pygame frame), README/wiki/CLAUDE.md note.
 

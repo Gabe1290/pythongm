@@ -634,8 +634,75 @@ function eventNameFor(kind, detail) {
     return name || null;
 }
 
-// Sound hooks (H5 fills these in; the reports are already delivered here).
-const soundHooks = {note: null, stop: null};
+// -- sound (audio.py) -------------------------------------------------------
+// A square wave through WebAudio. The speaker is one voice: a new note replaces
+// the one playing, a rest or sound_stop cuts it off.
+
+const AUDIO_AMPLITUDE = 5000 / 32767;    // audio.py's AMPLITUDE, as a gain
+const AUDIO_MAX_SECONDS = 10.0;
+
+// {frequency, seconds} actually played for a request, or null for a rest.
+function audioPlan(frequency, seconds) {
+    const s = Math.min(Math.max(0.0, seconds), AUDIO_MAX_SECONDS);
+    if (!(frequency > 0) || !(s > 0)) return null;
+    return {frequency: frequency, seconds: s};
+}
+
+// `makeContext` is injectable so the voice can be tested without a browser audio device.
+function makeSpeaker(makeContext) {
+    let ctx = null, voice = null, failed = false;
+    function context() {
+        if (ctx || failed) return ctx;
+        try { ctx = makeContext(); } catch (e) { failed = true; ctx = null; }
+        return ctx;
+    }
+    function resume() {
+        const c = context();
+        if (c && c.state === 'suspended' && c.resume) { try { c.resume(); } catch (e) { /* ignored */ } }
+    }
+    function stop() {
+        if (!voice) return;
+        const v = voice;
+        voice = null;
+        try { v.stop(); } catch (e) { /* already ended */ }
+        try { v.disconnect(); } catch (e) { /* ignored */ }
+    }
+    function note(frequency, seconds) {
+        stop();
+        const plan = audioPlan(frequency, seconds);
+        const c = plan ? context() : null;
+        if (!c) return false;
+        resume();
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.type = 'square';
+        osc.frequency.value = plan.frequency;
+        gain.gain.value = AUDIO_AMPLITUDE;
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.onended = function () { if (voice === osc) voice = null; };
+        osc.start();
+        osc.stop(c.currentTime + plan.seconds);
+        voice = osc;
+        return true;
+    }
+    return {note: note, stop: stop, resume: resume};
+}
+
+const speaker = makeSpeaker(function () {
+    const Ctx = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
+    if (!Ctx) throw new Error('no WebAudio');
+    return new Ctx();
+});
+
+// Browsers keep audio suspended until the player has touched the page.
+if (typeof window !== 'undefined' && window.addEventListener) {
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (type) {
+        window.addEventListener(type, function () { speaker.resume(); }, {passive: true});
+    });
+}
+
+const soundHooks = {note: speaker.note, stop: speaker.stop};
 
 // One step of every board in the room: radio delivery, the simulator, then the
 // events each one reported (runtime.py's update_microbits).
@@ -1291,7 +1358,7 @@ window.__pygmMicrobit = {
     MicrobitSimulator, parseImage, glyphImage, textColumns, scrollFrames,
     melodyNotes, toneNotes, noteFrequency, clampGroup, cleanMessage, asNumber,
     deliver, formatNumber, REST_ACCELERATION,
-    boardOf, eventNameFor, updateMicrobits, readSensor, mbValue, soundHooks,
+    boardOf, eventNameFor, updateMicrobits, readSensor, mbValue, soundHooks, audioPlan, makeSpeaker, speaker,
     MB_ACTIONS, MB_CONDITIONS,
     pyRound, boardLayout, stripLayout, ledColor, tiltToPos, sliderFraction, layoutFor, centerOf,
     drawBoard, drawStrip, drawOverlay,
