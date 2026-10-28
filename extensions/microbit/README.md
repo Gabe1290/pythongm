@@ -91,8 +91,17 @@ over USB) can drive the same simulator.
 
 ## Exports
 
-The desktop export freezes the real engine, so the board works there. HTML5 and
-Kivy/Android have no simulator yet: the actions are skipped (Kivy lists them in
+The desktop export freezes the real engine, so the board works there. The
+**HTML5** export carries a line-for-line JavaScript port of the simulator
+(`export_html5.js`): the board and sensor strip are drawn on the canvas, the
+actions, conditions and events run, the board answers mouse, touch and
+(opt-in) keyboard, and the speaker plays through WebAudio. It is checked
+against the Python simulator by fuzz and pixel comparison, and
+`tests/test_microbit_html5_playtest.py` compares a whole exported frame of
+`microbit_1` with the pygame one (dev box only: it needs Playwright +
+Chromium). Known differences: events fire at the start of the frame, the text
+labels use a browser font, and only the first finger of a multi-touch is read.
+Kivy/Android has no simulator yet: the actions are skipped (Kivy lists them in
 its warning), and the micro:bit **events are dropped without a warning** on
 Kivy. `tests/test_microbit_export_fallthrough.py` pins that nothing crashes.
 
@@ -113,7 +122,7 @@ computed rectangle fires `microbit_button_a`), and several run a real
 
 ## What is not here yet
 
-A live link to a real micro:bit over USB serial (Stage L) and HTML5/Kivy
-parity (Stage P). The exported `.hex` files (V1, V2, Universal) are verified
+A live link to a real micro:bit over USB serial (Stage L) and Kivy parity
+(Stage P, units K1-K6; HTML5 is done). The exported `.hex` files (V1, V2, Universal) are verified
 against the real firmware and by independent checks, but **not yet on a real
 board** -- see `docs/RELEASE_QA_CHECKLIST.md` s11a.

@@ -96,8 +96,17 @@ properties of the JS (constants and tables equal to the Python source).
   gain/length cap equal audio.py's, injectable context so it is tested with a recording fake),
   `soundHooks` wired to it, context resumed on the first pointer/key/touch.
   *Not checked:* actual loudness/timbre by ear on a real device (same open item as desktop).
-- [ ] **H6 -- close-out.** Real-browser playtest of `microbit_1` via Playwright
+- [x] **H6 -- close-out.** Real-browser playtest of `microbit_1` via Playwright
   (screenshot compared with the pygame frame), README/wiki/CLAUDE.md note.
+  *Done:* `tests/test_microbit_html5_playtest.py` renders the same project in
+  the pygame engine and in the HTML5 export (headless Chromium) and compares
+  the frames: under 3% of the board/strip area differs (anti-aliased edges
+  only), and solid colours at 7 sample points are identical. **It found a real
+  pre-existing HTML5 bug:** `draw_text` ignored its `color` param (desktop had
+  the same bug, fixed 2026-09-04), so every sample's authored text colour was
+  lost on HTML5 -- white help text drew black on the dark room. Fixed in
+  engine.js. README, wiki Microbit (EN + FR) updated; HTML5 is done, Kivy
+  (K1-K6) is next.
 
 ### Kivy
 - [ ] **K1 -- embed the pure modules + actions.** Copy `simulator.py`, `font`,

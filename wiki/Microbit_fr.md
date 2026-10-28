@@ -144,10 +144,15 @@ pas de carte son, il est simplement ignoré (le simulateur le suit quand même).
 ## Exports
 
 L'export **bureau** (Windows, Linux, macOS) embarque le vrai moteur : la
-micro:bit y fonctionne exactement comme dans Tester le jeu. Les exports
-**HTML5** et **Android/Kivy** n'ont pas encore de simulateur : ils s'exportent
-et se lancent, mais les actions micro:bit sont ignorées (l'export Kivy les
-signale dans son avertissement) et la carte n'est pas dessinée.
+micro:bit y fonctionne exactement comme dans Tester le jeu. L'export
+**HTML5** embarque aussi le simulateur : la carte et la bande de capteurs sont
+dessinées dans le navigateur, on peut cliquer ou toucher les boutons, le logo
+et les broches, faire glisser la zone d'inclinaison et les curseurs, et le
+haut-parleur émet des bips (les navigateurs n'autorisent le son qu'après le
+premier clic ou la première touche). L'export **Android/Kivy** n'a pas encore
+de simulateur : il s'exporte et se lance, mais les actions micro:bit sont
+ignorées (l'export Kivy les signale dans son avertissement) et la carte n'est
+pas dessinée.
 
 ---
 
@@ -158,7 +163,7 @@ signale dans son avertissement) et la carte n'est pas dessinée.
 - Essayez deux cartes dans une même salle, chacune avec un *Régler le groupe
   radio*, et envoyez un message depuis un bouton.
 - Prévus : une liaison en direct avec une vraie micro:bit par USB, l'export
-  MicroPython, et la prise en charge de HTML5/Android. Ce n'est pas encore
+  MicroPython, et la prise en charge d'Android. Ce n'est pas encore
   disponible.
 
 Voir aussi : [Extensions](Extensions_fr), [Référence Complète des Actions](Full-Action-Reference-Microbit-Actions_fr), [Référence des Événements](Event-Reference_fr).

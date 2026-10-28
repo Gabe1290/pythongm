@@ -2581,3 +2581,29 @@ the V2 v2.1.2 firmware is vendored (MIT, SHA-256 in `THIRD_PARTY_LICENSES.md`).
   by a test (not a `QApplication`) kills the whole pytest process, with no Python
   traceback, at the next Qt test (found and fixed the same day in the `microbit_1`
   sample test). (4) ~~The Stage X dialog strings have no translations~~ -- fixed 2026-10-27: all 36 are translated in the 10 shipped languages (`tests/test_microbit_export_ui_translations.py`).
+
+**2026-10-28 — micro:bit Stage P, HTML5 half (H1–H6) done: the exported
+HTML5 game runs the simulator.** Plan `docs/MICROBIT_STAGE_P_PLAN.md`; Kivy
+(K1–K6) is next and untouched. `extensions/microbit/export_html5.js` is a
+line-for-line port of the Python simulator, verified in Chromium against the
+Python oracle (fuzz traces, layout, hit-test maths, canvas pixels). It needed
+four generic `engine.js` seams: `registerExtensionCondition`,
+`registerInstanceOverlay`, `registerInputHandler` (plus the existing action and
+frame-update registries). Sound is a WebAudio square wave resumed on the first
+gesture.
+- **Dev-box-only tests.** The browser tests (`test_microbit_html5_*.py`) skip
+  where Playwright + Chromium are absent (CI); CI still runs the structural
+  tests pinning every table, constant and colour to the Python source.
+  `tools/gen_microbit_js_tables.py --check` pins the generated tables block.
+- **Real bug found by the H6 frame comparison:** HTML5 `draw_text` ignored its
+  `color` param (the bug desktop fixed 2026-09-04), so authored text colours
+  were lost on every HTML5 export. Fixed in engine.js.
+- **Landmines:** `tests/test_export_html5_extension_syntax.py` counts brackets
+  with no string awareness (no quotes/brackets inside string literals); a
+  duplicate top-level function name silently overrides (guarded by a test —
+  it once replaced the drawing helper with a slider helper); Python `round()`
+  is banker's rounding, so the port uses `pyRound`; two module-scoped
+  `sync_playwright` fixtures in one test module clash (use a function-scoped
+  one for the second).
+- **Still needs human eyes/ears:** nobody has used the exported board on a
+  real touch screen or heard the beep.

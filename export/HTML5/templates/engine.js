@@ -3167,8 +3167,9 @@ class GameObject {
                     text: String(text),
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
-                    // runtime: active draw colour, defaulting to black
-                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                    // runtime: an explicit color/colour param wins, else the active
+                    // draw colour, defaulting to black
+                    color: (params.color || params.colour) || this.draw_color || game.draw_color || [0, 0, 0],
                     halign: this.draw_halign || 'left',
                     valign: this.draw_valign || 'top',
                 });

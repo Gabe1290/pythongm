@@ -137,10 +137,13 @@ device it is silently skipped (the simulator still tracks it).
 ## Exports
 
 The **desktop** export (Windows, Linux, macOS) packages the real engine, so the
-micro:bit works exactly as in Test Game. The **HTML5** and **Android/Kivy**
-exports do not have a simulator yet: they still export and run, but the
-micro:bit actions are skipped (the Kivy export lists them in its warning) and
-the board is not drawn.
+micro:bit works exactly as in Test Game. The **HTML5** export has the
+simulator too: the board and sensor strip are drawn in the browser, you can
+click or touch the buttons, logo and pins, drag the tilt pad and sliders, and
+the speaker beeps (browsers only allow sound after the first click or key
+press). The **Android/Kivy** export does not have a simulator yet: it still
+exports and runs, but the micro:bit actions are skipped (the Kivy export lists
+them in its warning) and the board is not drawn.
 
 ---
 
@@ -150,6 +153,6 @@ the board is not drawn.
 - Try two boards in one room, each with a *Set Radio Group*, and send a
   message from a button.
 - Planned: a live link to a real micro:bit over USB, MicroPython export, and
-  HTML5/Android support. Those are not available yet.
+  Android support. Those are not available yet.
 
 See also: [Extensions](Extensions), [Full Action Reference](Full-Action-Reference-Microbit-Actions), [Event Reference](Event-Reference).
