@@ -170,8 +170,13 @@ properties of the JS (constants and tables equal to the Python source).
   scene routes the simulator's `sound_note`/`sound_stop` reports to it. Not
   verified: that it is audible on a real device, and the loudness (the same
   guess as the desktop).
-- [ ] **K6 -- close-out.** Stub-Kivy end-to-end test of the generated app,
-  generated-file compile for `microbit_1`, docs.
+- [x] **K6 -- close-out.** Done. `tests/test_kivy_microbit_e2e.py` exports the real
+  `microbit_1` sample, compiles every generated file, checks no micro:bit event
+  or action is dropped, and plays it under the stub kivy (Create, buttons A/B,
+  the A+B chord, a shake that rolls the die, the logo scroll, the opt-in
+  keyboard, drawing) against twin simulators. Wiki Microbit pages (EN/FR),
+  README and TODO updated. **Needs human eyes:** a real Android/iOS run - touch,
+  the drawn look and text size, audibility of the beep.
 
 ## Non-goals / limits to state plainly
 - Stage L (live link to a real board) stays out; WebSerial is a later idea.

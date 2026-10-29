@@ -2607,3 +2607,26 @@ gesture.
   one for the second).
 - **Still needs human eyes/ears:** nobody has used the exported board on a
   real touch screen or heard the beep.
+
+**2026-10-29 — micro:bit Stage P finished: the exported Kivy (Android/iOS) game
+runs the whole simulator (K1–K6).** Plan `docs/MICROBIT_STAGE_P_PLAN.md`, all
+units ticked; one commit per unit. The simulator ships verbatim in the export as
+`microbit_sim`; five small pure modules are shipped beside it (`kivy_draw.py`,
+`kivy_touch.py`, `kivy_audio.py`, plus a `state.py` stub for `layout.py`), each
+pinned to its pygame twin (`renderer.py`, `input.py`, `audio.py`) by a
+differential test. New GENERIC Kivy seams, usable by any extension:
+`SUPPORT_FILES`, `CONDITION_CODEGEN`, `EVENT_METHODS` in `export_kivy.py`; scene
+hooks `_update_extensions(dt)`, `_extension_touch_down/up/move`,
+`_extension_key_down/up`; an optional `anchor` on the draw-queue text command.
+- **The board is drawn as draw-queue commands**, not a new renderer — the
+  existing `_dq_render_cmd` does the y-flip. Cost: no polygon/rounded corners.
+- **Landmines:** `kivy_draw.py` must sit next to `layout.py` (relative import)
+  or it can't be imported IDE-side; `BASE_OBJECT_CODE` is a plain string but
+  `SCENE_CODE` is %-formatted (double any `%` there); CI runs pytest from
+  `tests/`, so a test must never use a repo-relative path (six X5 tests did and
+  failed only in CI — fixed `fc5a96e6`); the full suite occasionally dies with a
+  native access violation inside a QtWebEngine Blockly test (passes alone, also
+  without my changes) — gate with `--ignore-glob='tests/test_blockly*'` and run
+  those files separately.
+- **Needs human eyes:** a real Android/iOS run (touch, drawn look, text size,
+  beep). Suite 7,170+ passed, 0 failed (non-Blockly).

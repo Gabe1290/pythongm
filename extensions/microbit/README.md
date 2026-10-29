@@ -104,14 +104,16 @@ against the Python simulator by fuzz and pixel comparison, and
 `microbit_1` with the pygame one (dev box only: it needs Playwright +
 Chromium). Known differences: events fire at the start of the frame, the text
 labels use a browser font, and only the first finger of a multi-touch is read.
-Kivy/Android is half-way (Stage P, K1-K5 done): the simulator ships in the export
+Kivy/Android has the whole simulator (Stage P, K1-K6 done): it ships in the export
 (`microbit_sim`, `export_kivy.py`), the actions and conditions run, the boards are
 stepped each frame and the micro:bit events fire (radio included) and the board and
 sensor strip are drawn (a simplified look), you can touch the buttons, logo, pins, tilt pad, shake
 button and sliders (and use the opt-in keyboard), and the speaker plays its notes
 (a rendered WAV through `SoundLoader`).
-`tests/test_microbit_export_fallthrough.py`, `tests/test_kivy_microbit_actions.py`
-and `tests/test_kivy_microbit_events.py` pin the behaviour.
+Boards are recognised by object name only (`microbit*`); the room-entry
+`is_microbit` flag is desktop-only. `tests/test_kivy_microbit_{actions,events,draw,touch,sound,e2e}.py`
+(the last plays the real `microbit_1` sample) and `tests/test_microbit_export_fallthrough.py`
+pin the behaviour.
 
 **MicroPython export** (a different kind of export — *onto a real micro:bit*,
 not another PyGameMaker platform target) lives in `export/`: File menu →
@@ -130,7 +132,7 @@ computed rectangle fires `microbit_button_a`), and several run a real
 
 ## What is not here yet
 
-A live link to a real micro:bit over USB serial (Stage L) and Kivy parity
-(Stage P, units K1-K6; HTML5 is done). The exported `.hex` files (V1, V2, Universal) are verified
+A live link to a real micro:bit over USB serial (Stage L) (the export-parity Stage P
+is done on HTML5 and Kivy). The exported `.hex` files (V1, V2, Universal) are verified
 against the real firmware and by independent checks, but **not yet on a real
 board** -- see `docs/RELEASE_QA_CHECKLIST.md` s11a.

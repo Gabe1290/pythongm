@@ -1043,10 +1043,14 @@ rough order of value:
   `microbit-fs` (needs Node; could not be run here) -- a difference is a bug;
   (c) the older Universal Hex "blocks" layout. (The Stage X dialog strings are
   now translated in all 10 shipped languages; `tests/test_microbit_export_ui_translations.py`.)
-- **Stage P — export parity:** port the simulator, overlay and input to HTML5
-  and Kivy. Until then both targets skip the micro:bit actions, and **Kivy
-  now warns about the events it drops** (generic "unsupported event" report,
-  Stage P0). Plan and unit checklist: `docs/MICROBIT_STAGE_P_PLAN.md`.
+- ~~**Stage P — export parity**~~ **done, 2026-10-29** (HTML5 H1-H6, Kivy
+  K1-K6; `docs/MICROBIT_STAGE_P_PLAN.md`). **Still open for it:** nobody has
+  used it on a real touch screen or heard the beep; the Kivy board has square
+  corners and no corner wedge/A-B tags (the draw queue has no polygon); the
+  `is_microbit` room-entry flag is desktop-only on Kivy (boards are found by
+  the `microbit*` object name); Kivy `microbit_scale`/`microbit_show_sensors`/
+  `microbit_keyboard` are read from instance variables, not object properties;
+  the Kivy scene's per-frame hook `_update_extensions` is a single override.
 - **Block colour and event labels:** the micro:bit's generated Blockly blocks
   draw in the default grey (the category-colour table in
   `blockly_workspace.html` is core), and the extension-event drop-down labels

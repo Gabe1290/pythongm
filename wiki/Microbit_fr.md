@@ -149,10 +149,14 @@ micro:bit y fonctionne exactement comme dans Tester le jeu. L'export
 dessinées dans le navigateur, on peut cliquer ou toucher les boutons, le logo
 et les broches, faire glisser la zone d'inclinaison et les curseurs, et le
 haut-parleur émet des bips (les navigateurs n'autorisent le son qu'après le
-premier clic ou la première touche). L'export **Android/Kivy** n'a pas encore
-de simulateur : il s'exporte et se lance, mais les actions micro:bit sont
-ignorées (l'export Kivy les signale dans son avertissement) et la carte n'est
-pas dessinée.
+premier clic ou la première touche). L'export **Android/Kivy** l'a aussi : la carte
+et la bande de capteurs sont dessinées (avec un aspect simplifié, aux coins
+carrés), on peut toucher les boutons, le logo, les broches, la zone
+d'inclinaison, le bouton de secousse et les curseurs, les événements se
+déclenchent et le haut-parleur joue ses notes. Les raccourcis clavier ne
+fonctionnent que pour une carte dont la variable `microbit_keyboard` est
+activée. Une carte est reconnue par le nom de son objet (il doit commencer par
+`microbit`).
 
 ---
 
@@ -162,8 +166,7 @@ pas dessinée.
   guide.
 - Essayez deux cartes dans une même salle, chacune avec un *Régler le groupe
   radio*, et envoyez un message depuis un bouton.
-- Prévus : une liaison en direct avec une vraie micro:bit par USB, l'export
-  MicroPython, et la prise en charge d'Android. Ce n'est pas encore
-  disponible.
+- Prévue : une liaison en direct avec une vraie micro:bit par USB. Elle n'est
+  pas encore disponible.
 
 Voir aussi : [Extensions](Extensions_fr), [Référence Complète des Actions](Full-Action-Reference-Microbit-Actions_fr), [Référence des Événements](Event-Reference_fr).

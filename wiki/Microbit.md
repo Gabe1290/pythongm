@@ -141,9 +141,12 @@ micro:bit works exactly as in Test Game. The **HTML5** export has the
 simulator too: the board and sensor strip are drawn in the browser, you can
 click or touch the buttons, logo and pins, drag the tilt pad and sliders, and
 the speaker beeps (browsers only allow sound after the first click or key
-press). The **Android/Kivy** export does not have a simulator yet: it still
-exports and runs, but the micro:bit actions are skipped (the Kivy export lists
-them in its warning) and the board is not drawn.
+press). The **Android/Kivy** export has it too: the board and sensor strip are
+drawn (in a simplified look, with square corners), you can touch the buttons,
+logo, pins, tilt pad, shake button and sliders, the events fire, and the
+speaker plays its notes. The keyboard shortcuts work only for a board whose
+`microbit_keyboard` variable is set. A board is recognised by its object name
+(it must start with `microbit`).
 
 ---
 
@@ -152,7 +155,6 @@ them in its warning) and the board is not drawn.
 - Open the **`microbit_1`** sample from the Welcome tab and read its guide.
 - Try two boards in one room, each with a *Set Radio Group*, and send a
   message from a button.
-- Planned: a live link to a real micro:bit over USB, MicroPython export, and
-  Android support. Those are not available yet.
+- Planned: a live link to a real micro:bit over USB. It is not available yet.
 
 See also: [Extensions](Extensions), [Full Action Reference](Full-Action-Reference-Microbit-Actions), [Event Reference](Event-Reference).
