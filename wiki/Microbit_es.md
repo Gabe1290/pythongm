@@ -158,6 +158,50 @@ nombre de su objeto (debe empezar por `microbit`).
 
 ---
 
+## Exportación a MicroPython (hacia una micro:bit real)
+
+Es una exportación de otro tipo. En lugar de un juego para otro ordenador,
+convierte el programa de tus objetos micro:bit en código **MicroPython** real
+que se ejecuta en una placa física.
+
+1. Abre **Archivo → Exportar código de micro:bit (MicroPython)...** (debe haber
+   un proyecto abierto).
+2. Indica qué placa tienes: **V2 (2020 o posterior)**, **V1 (original,
+   2016-2020)** o **Ambas (un solo archivo .hex para placas V1 y V2)**.
+3. Elige una carpeta. Cada objeto micro:bit tiene su propio programa,
+   `<carpeta>/<nombre del objeto>/main.py`.
+4. Cuando se ha exportado exactamente un objeto, el IDE ofrece dos formas de
+   ponerlo en la placa. **¿Copiar a la micro:bit?** copia `main.py` a una placa
+   conectada por USB que ya ejecuta MicroPython (el programa arranca entonces
+   solo). **¿Crear un archivo .hex listo para grabar?** genera un archivo `.hex`
+   que arrastras a la unidad USB **MICROBIT** de la placa — también funciona en
+   una placa nueva que nunca ha ejecutado MicroPython.
+
+Se traducen todas las acciones y condiciones de micro:bit, y también *Set
+Variable*, *Test Variable*, los bloques y los comentarios. Cada evento se
+convierte en una comprobación dentro de un único bucle. Las acciones de juego
+que no significan nada en una placa (salas, sprites, puntuaciones…) no se
+exportan. En las expresiones funcionan `irandom`, `random` y `choose`; las
+demás funciones de GameMaker no se traducen.
+
+El cuadro de diálogo de exportación enumera lo que no se pudo exportar:
+
+- **Display Finished** y **Sound Finished** (las llamadas de pantalla y de
+  sonido de la placa ya esperan a terminar).
+- En una placa V1, lo que necesita una V2: leer el nivel de sonido, el
+  logotipo táctil (*If Button Pressed* con el logotipo, **Logo Touched**) y los
+  eventos **Loud Sound** / **Quiet Sound**.
+- Cualquier otra cosa que no tenga equivalente en MicroPython.
+
+**Tamaño:** el programa debe caber en 8.187 bytes en una placa V1 y en 20.150
+bytes en una V2. **Ambas** genera un único Universal Hex, así que está limitado
+por el tamaño de la V1 y se exporta con las reglas de la V1.
+
+> Los archivos `.hex` se han comprobado con el firmware real de la micro:bit,
+> pero todavía no en una placa física.
+
+---
+
 ## Y ahora, ¿qué?
 
 - Abre el ejemplo **`microbit_1`** desde la pestaña de bienvenida y lee su guía.

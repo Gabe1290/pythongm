@@ -150,6 +150,49 @@ speaker plays its notes. The keyboard shortcuts work only for a board whose
 
 ---
 
+## MicroPython export (onto a real micro:bit)
+
+This is a different kind of export. Instead of a game for another computer, it
+turns the program of your micro:bit objects into real **MicroPython** code that
+runs on a physical board.
+
+1. Open **File → Export micro:bit (MicroPython) code...** (a project must be
+   open).
+2. Say which board you have: **V2 (2020 or later)**, **V1 (original,
+   2016-2020)** or **Both (one .hex for V1 and V2 boards)**.
+3. Pick a folder. Every micro:bit object gets its own program,
+   `<folder>/<object name>/main.py`.
+4. When exactly one object was exported, the IDE offers two ways to put it on
+   the board. **Copy to micro:bit?** copies `main.py` to a board that is
+   plugged in over USB and already runs MicroPython (the program then starts by
+   itself). **Build a ready-to-flash .hex?** makes a `.hex` file that you drag
+   onto the board's **MICROBIT** USB drive — this also works on a brand-new
+   board that has never run MicroPython.
+
+All the micro:bit actions and conditions are translated, and so are *Set
+Variable*, *Test Variable*, blocks and comments. Each event becomes a check
+inside one loop. Game actions that mean nothing on a board (rooms, sprites,
+scores…) are not exported. In expressions, `irandom`, `random` and `choose`
+work; other GameMaker functions are not translated.
+
+The export dialog lists what could not be exported:
+
+- **Display Finished** and **Sound Finished** (the board's own display and
+  sound calls already wait until they are done).
+- On a V1 board, what needs a V2: reading the sound level, the touch logo
+  (*If Button Pressed* with the logo, **Logo Touched**) and the **Loud Sound**
+  / **Quiet Sound** events.
+- Anything else that has no MicroPython equivalent.
+
+**Size:** the program must fit in 8,187 bytes on a V1 board and 20,150 bytes on
+a V2. **Both** builds one Universal Hex, so it is limited by V1's size and
+exports under V1's rules.
+
+> The `.hex` files were checked against the real micro:bit firmware, but not
+> yet on a physical board.
+
+---
+
 ## Where next
 
 - Open the **`microbit_1`** sample from the Welcome tab and read its guide.

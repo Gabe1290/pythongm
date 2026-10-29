@@ -157,6 +157,50 @@ oggetto (deve iniziare con `microbit`).
 
 ---
 
+## Esportazione MicroPython (su una vera micro:bit)
+
+È un'esportazione di tipo diverso. Invece di un gioco per un altro computer,
+trasforma il programma dei tuoi oggetti micro:bit in vero codice **MicroPython**
+che gira su una scheda fisica.
+
+1. Apri **File → Esporta codice micro:bit (MicroPython)...** (deve essere
+   aperto un progetto).
+2. Indica quale scheda hai: **V2 (2020 o successiva)**, **V1 (originale,
+   2016-2020)** oppure **Entrambe (un solo file .hex per schede V1 e V2)**.
+3. Scegli una cartella. Ogni oggetto micro:bit ha il suo programma,
+   `<cartella>/<nome dell'oggetto>/main.py`.
+4. Quando è stato esportato esattamente un oggetto, l'IDE offre due modi per
+   metterlo sulla scheda. **Copiare sulla micro:bit?** copia `main.py` su una
+   scheda collegata via USB che esegue già MicroPython (il programma parte poi
+   da solo). **Creare un file .hex pronto da caricare?** produce un file `.hex`
+   che trascini sull'unità USB **MICROBIT** della scheda — funziona anche su una
+   scheda nuova che non ha mai eseguito MicroPython.
+
+Tutte le azioni e condizioni micro:bit vengono tradotte, come anche *Set
+Variable*, *Test Variable*, i blocchi e i commenti. Ogni evento diventa un
+controllo all'interno di un unico ciclo. Le azioni di gioco che non hanno
+significato su una scheda (stanze, sprite, punteggi…) non vengono esportate.
+Nelle espressioni funzionano `irandom`, `random` e `choose`; le altre funzioni
+di GameMaker non vengono tradotte.
+
+La finestra di esportazione elenca ciò che non è stato possibile esportare:
+
+- **Display Finished** e **Sound Finished** (le chiamate di display e suono
+  della scheda aspettano già la propria fine).
+- Su una scheda V1, ciò che richiede una V2: la lettura del livello sonoro, il
+  logo tattile (*If Button Pressed* con il logo, **Logo Touched**) e gli eventi
+  **Loud Sound** / **Quiet Sound**.
+- Tutto il resto che non ha un equivalente in MicroPython.
+
+**Dimensione:** il programma deve stare in 8.187 byte su una scheda V1 e in
+20.150 byte su una V2. **Entrambe** crea un unico Universal Hex, quindi è
+limitato dalla dimensione della V1 e viene esportato con le regole della V1.
+
+> I file `.hex` sono stati verificati con il vero firmware della micro:bit, ma
+> non ancora su una scheda fisica.
+
+---
+
 ## E poi?
 
 - Apri l'esempio **`microbit_1`** dalla scheda di benvenuto e leggi la sua guida.

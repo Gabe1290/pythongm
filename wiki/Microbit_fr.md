@@ -160,6 +160,52 @@ activée. Une carte est reconnue par le nom de son objet (il doit commencer par
 
 ---
 
+## Export MicroPython (vers une vraie micro:bit)
+
+C'est un export d'un autre genre. Au lieu d'un jeu pour un autre ordinateur, il
+transforme le programme de vos objets micro:bit en vrai code **MicroPython** qui
+tourne sur une carte physique.
+
+1. Ouvrez **Fichier → Exporter le code micro:bit (MicroPython)...** (un projet
+   doit être ouvert).
+2. Indiquez quelle carte vous avez : **V2 (2020 ou plus récent)**, **V1
+   (d'origine, 2016-2020)** ou **Les deux (un seul fichier .hex pour les cartes
+   V1 et V2)**.
+3. Choisissez un dossier. Chaque objet micro:bit a son propre programme,
+   `<dossier>/<nom de l'objet>/main.py`.
+4. Quand un seul objet a été exporté, l'IDE propose deux façons de le mettre sur
+   la carte. **Copier sur la micro:bit ?** copie `main.py` sur une carte
+   branchée en USB et qui fait déjà tourner MicroPython (le programme démarre
+   alors tout seul). **Créer un fichier .hex prêt à flasher ?** produit un
+   fichier `.hex` que vous glissez sur le lecteur USB **MICROBIT** de la carte —
+   cela marche aussi sur une carte neuve qui n'a jamais fait tourner
+   MicroPython.
+
+Toutes les actions et conditions micro:bit sont traduites, ainsi que *Définir
+une variable*, *Tester une variable*, les blocs et les commentaires. Chaque
+événement devient un test dans une seule boucle. Les actions de jeu qui n'ont
+aucun sens sur une carte (salles, sprites, scores…) ne sont pas exportées. Dans
+les expressions, `irandom`, `random` et `choose` fonctionnent ; les autres
+fonctions de GameMaker ne sont pas traduites.
+
+La boîte de dialogue d'export liste ce qui n'a pas pu être exporté :
+
+- **Display Finished** et **Sound Finished** (les appels d'affichage et de son
+  de la carte attendent déjà la fin de l'opération).
+- Sur une carte V1, ce qui exige une V2 : la lecture du niveau sonore, le logo
+  tactile (*Si bouton pressé* avec le logo, **Logo Touched**) et les événements
+  **Loud Sound** / **Quiet Sound**.
+- Tout le reste qui n'a pas d'équivalent en MicroPython.
+
+**Taille :** le programme doit tenir en 8 187 octets sur une carte V1 et en
+20 150 octets sur une V2. **Les deux** produit un seul Universal Hex : il est
+donc limité par la taille V1 et s'exporte avec les règles de la V1.
+
+> Les fichiers `.hex` ont été vérifiés par rapport au vrai micrologiciel de la
+> micro:bit, mais pas encore sur une carte physique.
+
+---
+
 ## Et ensuite
 
 - Ouvrez l'exemple **`microbit_1`** depuis l'onglet d'accueil et lisez son

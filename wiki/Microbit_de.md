@@ -160,6 +160,52 @@ ihrem Objektnamen erkannt (er muss mit `microbit` beginnen).
 
 ---
 
+## MicroPython-Export (auf einen echten micro:bit)
+
+Das ist ein Export anderer Art. Statt eines Spiels für einen anderen Computer
+macht er aus dem Programm deiner micro:bit-Objekte echten **MicroPython**-Code,
+der auf einer physischen Platine läuft.
+
+1. Öffne **Datei → micro:bit-Code (MicroPython) exportieren...** (ein Projekt
+   muss geöffnet sein).
+2. Gib an, welche Platine du hast: **V2 (2020 oder neuer)**, **V1 (Original,
+   2016-2020)** oder **Beide (eine .hex-Datei für V1- und V2-Boards)**.
+3. Wähle einen Ordner. Jedes micro:bit-Objekt bekommt sein eigenes Programm,
+   `<Ordner>/<Objektname>/main.py`.
+4. Wurde genau ein Objekt exportiert, bietet die IDE zwei Wege an, es auf die
+   Platine zu bringen. **Auf den micro:bit kopieren?** kopiert `main.py` auf
+   eine Platine, die per USB angeschlossen ist und bereits MicroPython
+   ausführt (das Programm startet dann von selbst). **Eine flashbare .hex-Datei
+   erstellen?** erzeugt eine `.hex`-Datei, die du auf das USB-Laufwerk
+   **MICROBIT** der Platine ziehst — das funktioniert auch bei einer neuen
+   Platine, die noch nie MicroPython ausgeführt hat.
+
+Alle micro:bit-Aktionen und -Bedingungen werden übersetzt, ebenso *Set
+Variable*, *Test Variable*, Blöcke und Kommentare. Jedes Ereignis wird zu einer
+Abfrage innerhalb einer einzigen Schleife. Spielaktionen, die auf einer Platine
+nichts bedeuten (Räume, Sprites, Punkte …), werden nicht exportiert. In
+Ausdrücken funktionieren `irandom`, `random` und `choose`; andere
+GameMaker-Funktionen werden nicht übersetzt.
+
+Der Export-Dialog listet auf, was nicht exportiert werden konnte:
+
+- **Display Finished** und **Sound Finished** (die Anzeige- und Tonaufrufe der
+  Platine warten ohnehin, bis sie fertig sind).
+- Auf einer V1-Platine, was eine V2 braucht: das Lesen des Geräuschpegels, das
+  Touch-Logo (*If Button Pressed* mit dem Logo, **Logo Touched**) und die
+  Ereignisse **Loud Sound** / **Quiet Sound**.
+- Alles andere, wofür es in MicroPython keine Entsprechung gibt.
+
+**Größe:** Das Programm muss auf einer V1-Platine in 8.187 Bytes und auf einer
+V2 in 20.150 Bytes passen. **Beide** erzeugt eine einzige Universal-Hex-Datei;
+sie ist daher durch die V1-Größe begrenzt und wird nach den Regeln der V1
+exportiert.
+
+> Die `.hex`-Dateien wurden gegen die echte micro:bit-Firmware geprüft, aber
+> noch nicht auf einer physischen Platine.
+
+---
+
 ## Wie geht es weiter?
 
 - Öffne das Beispiel **`microbit_1`** im Willkommen-Tab und lies seine Anleitung.

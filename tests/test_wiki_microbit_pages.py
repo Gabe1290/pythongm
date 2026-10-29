@@ -109,3 +109,66 @@ def test_extensions_says_it_works_in_all_three_exports(lang):
 def test_the_english_and_french_pages_describe_the_kivy_simulator():
     assert "does not have a simulator yet" not in EN
     assert "n'a pas encore" not in _page("fr").split("Kivy", 1)[1][:200]
+
+
+# -- the MicroPython export section ---------------------------------------------------------
+
+ALL = [None] + LANGS
+
+# (source string in the IDE, how a page may show it: the menu entry has its `&`
+# mnemonic and trailing dots removed in running text)
+_IDE_STRINGS = [
+    "Export &micro:bit (MicroPython) code...",
+    "V2 (2020 or later)",
+    "V1 (original, 2016-2020)",
+    "Both (one .hex for V1 and V2 boards)",
+    "Copy to micro:bit?",
+    "Build a ready-to-flash .hex?",
+]
+
+
+def _ide_translation(lang, source):
+    """What the IDE shows for ``source`` in ``lang`` (English: the source)."""
+    if lang is None:
+        return source
+    import html
+    for path in sorted((WIKI.parent / "translations").glob(f"pygm2_{lang}*.ts")):
+        text = path.read_text(encoding="utf-8")
+        m = re.search(re.escape("<source>" + html.escape(source, quote=False) + "</source>")
+                      + r"\s*(?:<[^>]*>\s*)*<translation[^>]*>([^<]*)</translation>", text)
+        if m and m.group(1).strip():
+            return html.unescape(m.group(1))
+    raise AssertionError(f"no {lang} translation of {source!r}")
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_page_shows_the_ide_wording_for_the_export_dialogs(lang):
+    text = " ".join(_page(lang).split())          # the page is hard-wrapped
+    for source in _IDE_STRINGS:
+        shown = _ide_translation(lang, source).replace("&", "")
+        if shown.endswith("..."):
+            shown = shown[:-3]
+        assert shown in text, f"{lang}: {shown!r}"
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_size_limits_are_the_real_ones(lang):
+    from extensions.microbit.export import hex_build
+    v1, v2 = hex_build.v1_max_script_size(), hex_build.v2_max_script_size()
+    assert (v1, v2) == (8187, 20150)
+    text = _page(lang)
+    assert re.search(r"8\D?187\b", text) and re.search(r"20\D?150\b", text)
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_section_names_what_a_v1_board_cannot_do(lang):
+    """The three V2-only features the exporter reports (micropython_exporter.py)."""
+    import inspect
+    from extensions.microbit.export import micropython_exporter
+    source = inspect.getsource(micropython_exporter)
+    for name in ("microbit_logo_touched", "microbit_loud_sound/microbit_quiet_sound", "(sound level)"):
+        assert name in source, name                 # the claim still matches the exporter
+    text = _page(lang)
+    for event in ("Logo Touched", "Loud Sound", "Quiet Sound", "Display Finished", "Sound Finished"):
+        assert event in text, event
+    assert "main.py" in text and ".hex" in text and "MICROBIT" in text

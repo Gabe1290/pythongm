@@ -151,6 +151,48 @@ začeti z `microbit`).
 
 ---
 
+## Izvoz v MicroPython (na pravi micro:bit)
+
+To je izvoz druge vrste. Namesto igre za drug računalnik pretvori program vaših
+predmetov micro:bit v pravo kodo **MicroPython**, ki teče na fizični ploščici.
+
+1. Odprite **Datoteka → Izvozi kodo micro:bit (MicroPython)...** (projekt mora
+   biti odprt).
+2. Povejte, katero ploščico imate: **V2 (2020 ali novejša)**, **V1 (izvirna,
+   2016-2020)** ali **Obe (ena datoteka .hex za plošči V1 in V2)**.
+3. Izberite mapo. Vsak predmet micro:bit dobi svoj program,
+   `<mapa>/<ime predmeta>/main.py`.
+4. Če je bil izvožen natanko en predmet, IDE ponudi dva načina, kako ga dati na
+   ploščico. **Kopirati na micro:bit?** kopira `main.py` na ploščico, ki je prek
+   USB priključena in že poganja MicroPython (program se nato zažene sam).
+   **Ustvariti datoteko .hex, pripravljeno za nalaganje?** naredi datoteko
+   `.hex`, ki jo povlečete na USB-pogon **MICROBIT** ploščice — to deluje tudi
+   na novi ploščici, ki še nikoli ni poganjala MicroPythona.
+
+Prevedena so vsa dejanja in pogoji micro:bita, pa tudi *Set Variable*, *Test
+Variable*, bloki in komentarji. Vsak dogodek postane preverjanje znotraj ene
+same zanke. Igralna dejanja, ki na ploščici ne pomenijo nič (sobe, spriti,
+točke …), se ne izvozijo. V izrazih delujejo `irandom`, `random` in `choose`;
+druge funkcije GameMakerja se ne prevedejo.
+
+Pogovorno okno izvoza našteje, česar ni bilo mogoče izvoziti:
+
+- **Display Finished** in **Sound Finished** (klici zaslona in zvoka na
+  ploščici že sami počakajo do konca).
+- Na ploščici V1 tisto, kar potrebuje V2: branje ravni zvoka, občutljivi
+  logotip (*If Button Pressed* z logotipom, **Logo Touched**) in dogodka
+  **Loud Sound** / **Quiet Sound**.
+- Vse drugo, kar nima ustreznice v MicroPythonu.
+
+**Velikost:** program mora stati v 8.187 bajtov na ploščici V1 in v 20.150
+bajtov na V2. **Obe** naredi eno samo datoteko Universal Hex, zato jo omejuje
+velikost V1 in se izvozi po pravilih V1.
+
+> Datoteke `.hex` so preverjene z resnično strojno programsko opremo micro:bita,
+> vendar še ne na fizični ploščici.
+
+---
+
 ## Kaj sledi
 
 - V zavihku dobrodošlice odprite primer **`microbit_1`** in preberite njegov
