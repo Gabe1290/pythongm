@@ -24,6 +24,7 @@ SUPPORT_FILES = {
     "microbit_sim/layout.py": "layout.py",              # verbatim (K3)
     "microbit_sim/state.py": "export/kivy_state.py",    # layout.py's option_of
     "microbit_sim/draw.py": "kivy_draw.py",
+    "microbit_sim/touch.py": "kivy_touch.py",
 }
 
 
@@ -228,6 +229,65 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
                     handler()
         for board in boards:
             board._mb_draw(self.room_height)
+
+    # -- touch and keyboard (K4) ---------------------------------------
+    def _mb_entries(self):
+        """The visible boards as touch.Board entries, topmost first."""
+        from microbit_sim.touch import Board
+        from microbit_sim.layout import strip_visible
+        entries = []
+        for inst in reversed(list(self.instances)):
+            if getattr(inst, '_mb_sim', None) is None or not inst.visible:
+                continue
+            sim = inst._mb_sim()
+            if sim is not None:
+                entries.append(Board(inst, sim, inst._mb_layout(self.room_height),
+                                     strip_visible(inst)))
+        return entries
+
+    def _mb_presses(self):
+        presses = getattr(self, '_mb_press_state', None)
+        if presses is None:
+            presses = self._mb_press_state = {}
+        return presses
+
+    def _extension_touch_down(self, touch, mx, my, button):
+        from microbit_sim import touch as mb_touch
+        return mb_touch.press(self._mb_entries(), self._mb_presses(), button, mx, my)
+
+    def _extension_touch_up(self, touch, mx, my, button):
+        from microbit_sim import touch as mb_touch
+        return mb_touch.release(self._mb_presses(), button, mx, my)
+
+    def _extension_touch_move(self, touch, mx, my):
+        from microbit_sim import touch as mb_touch
+        presses = self._mb_presses()
+        if not mb_touch.dragging(presses):
+            return False
+        mb_touch.follow(presses, mx, my)
+        return True
+
+    def _mb_key(self, key, down):
+        from microbit_sim import touch as mb_touch
+        name = mb_touch.KEY_NAMES.get(key)
+        if name is None:
+            return
+        for inst in list(self.instances):
+            if getattr(inst, '_mb_sim', None) is None:
+                continue
+            sim = inst._mb_sim()
+            if sim is None or not mb_touch.keyboard_on(getattr(inst, 'microbit_keyboard', False)):
+                continue
+            held = getattr(inst, '_mb_tilt_keys', None)
+            if held is None:
+                held = inst._mb_tilt_keys = set()
+            (mb_touch.key_down if down else mb_touch.key_up)(sim, held, name)
+
+    def _extension_key_down(self, key):
+        self._mb_key(key, True)
+
+    def _extension_key_up(self, key):
+        self._mb_key(key, False)
 ''' %{"fixed": _FIXED_EVENTS, "gestures": _GESTURE_EVENTS}
 
 
@@ -389,6 +449,16 @@ BASE_OBJECT_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------
             return False
         return self._mb_compare(sim.acceleration['xyz'.index(axis)], comparison, value)
 
+    def _mb_layout(self, room_h):
+        """Where this board is, in room pixels (y down): centred on its sprite,
+        or on its GameMaker point when it has none."""
+        from microbit_sim.layout import board_layout, scale_of
+        if self.has_sprite:
+            cx, cy = self.x + self.width / 2.0, room_h - self.y - self.height / 2.0
+        else:
+            cx, cy = self.x, room_h - self.y - self.height
+        return board_layout(cx, cy, scale_of(self))
+
     def _mb_draw(self, room_h):
         """Draw this board (and its sensor strip) as draw-queue commands in an
         instance-owned group on canvas.after, so it sits over the object's own
@@ -405,13 +475,9 @@ BASE_OBJECT_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------
             group = self._mb_group = InstructionGroup()
             self.canvas.after.add(group)
         group.clear()
-        from microbit_sim.layout import board_layout, scale_of, strip_visible
+        from microbit_sim.layout import strip_visible
         from microbit_sim.draw import board_commands, strip_commands
-        if self.has_sprite:
-            cx, cy = self.x + self.width / 2.0, room_h - self.y - self.height / 2.0
-        else:
-            cx, cy = self.x, room_h - self.y - self.height
-        layout = board_layout(cx, cy, scale_of(self))
+        layout = self._mb_layout(room_h)
         commands = board_commands(layout, sim, draw_body=not self.has_sprite)
         if strip_visible(self):
             commands += strip_commands(layout, sim)

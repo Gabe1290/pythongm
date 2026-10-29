@@ -2572,6 +2572,22 @@ class {class_name}(Widget):
     def _update_extensions(self, dt):
         pass
 
+    # Input hooks. Return True to swallow a touch; key hooks never swallow.
+    def _extension_touch_down(self, touch, mx, my, button):
+        return False
+
+    def _extension_touch_up(self, touch, mx, my, button):
+        return False
+
+    def _extension_touch_move(self, touch, mx, my):
+        return False
+
+    def _extension_key_down(self, key):
+        pass
+
+    def _extension_key_up(self, key):
+        pass
+
     # __PYGM_EXTENSION_SCENE_CODE__
 
     def _class_name_to_snake_case(self, name):
@@ -3002,6 +3018,7 @@ class {class_name}(Widget):
             for instance in list(self.instances):
                 if hasattr(instance, 'on_keyboard'):
                     instance.on_keyboard(key, scancode, codepoint, modifier)
+            self._extension_key_down(key)
         except Exception as exc:
             print(f"[ERROR] on_keyboard: {{exc}}")
         return False
@@ -3018,6 +3035,7 @@ class {class_name}(Widget):
             for instance in list(self.instances):
                 if hasattr(instance, 'on_keyboard_up'):
                     instance.on_keyboard_up(key, scancode)
+            self._extension_key_up(key)
         except Exception as exc:
             print(f"[ERROR] on_keyboard_up: {{exc}}")
         return False
@@ -3068,6 +3086,8 @@ class {class_name}(Widget):
             return False
         mx, my = self._touch_to_room(touch)
         button = getattr(touch, 'button', 'left')
+        if self._extension_touch_down(touch, mx, my, button):
+            return True
         if button == 'right':
             method_name = 'on_mouse_right_press'
         elif button == 'middle':
@@ -3094,6 +3114,8 @@ class {class_name}(Widget):
             return False
         mx, my = self._touch_to_room(touch)
         button = getattr(touch, 'button', 'left')
+        if self._extension_touch_up(touch, mx, my, button):
+            return True
         if button == 'right':
             method_name = 'on_mouse_right_release'
         elif button == 'middle':
@@ -3109,6 +3131,18 @@ class {class_name}(Widget):
                 except Exception as exc:
                     print(f"[ERROR] {{method_name}}: {{exc}}")
         return False
+
+    def on_touch_move(self, touch):
+        """A moving touch/drag: only extensions care (a held micro:bit tilt pad
+        or slider follows it); there is no GameMaker mouse-move event."""
+        if super().on_touch_move(touch):
+            return True
+        from main import get_game_app
+        _app = get_game_app()
+        if _app is not None and _app.scene is not self:
+            return False
+        mx, my = self._touch_to_room(touch)
+        return bool(self._extension_touch_move(touch, mx, my))
 '''
 
         # Format the template with actual values

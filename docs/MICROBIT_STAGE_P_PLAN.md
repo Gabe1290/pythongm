@@ -151,8 +151,17 @@ properties of the JS (constants and tables equal to the Python source).
   (one fixed font, scaled), boards inside a views room. Scale and the strip
   toggle are read from the instance variables `microbit_scale` /
   `microbit_show_sensors` (object properties are not exported on Kivy).
-- [ ] **K4 -- input.** `on_touch_down/up/move` hit-test via `layout.py`
-  (also embedded verbatim); opt-in keyboard.
+- [x] **K4 -- input.** Done. `kivy_touch.py` -> `microbit_sim/touch.py` mirrors
+  `input.py` (presses, the A+B right-click chord, tilt pad and slider drags, the
+  opt-in keyboard) but takes the geometry explicitly. New generic Kivy scene
+  hooks: `_extension_touch_down/up/move` (True swallows, so no authored mouse
+  event fires) and `_extension_key_down/up`; the scene gained `on_touch_move`.
+  Touches use room coordinates (the space the board is drawn in); keycodes map
+  a/b/s and the arrows; the keyboard is the `microbit_keyboard` instance
+  variable. `tests/test_kivy_microbit_touch.py` drives `input.py` and the Kivy
+  module with the same ~40 gestures and 11 key runs and compares the simulator
+  state. Not verified: a real touch screen; a tilt drag keeps the strip
+  geometry from when it started if the board moves mid-drag.
 - [ ] **K5 -- sound.** Render PCM with the existing `sound.py`/`audio.py`
   logic to a temp WAV and play with `SoundLoader`.
 - [ ] **K6 -- close-out.** Stub-Kivy end-to-end test of the generated app,
