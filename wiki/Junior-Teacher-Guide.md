@@ -59,12 +59,17 @@ editor. It shows the events Blockly builds. Students can ignore it.
 | Time | Activity |
 |---|---|
 | 0-10 | Tour: toolbar, resources, play button. Open a sample from the Welcome tab and press F5 |
-| 10-25 | Student handout, Parts 1 and 2: draw a sprite |
-| 25-45 | Parts 3 and 4: make an object move, build a room, play |
-| 45-55 | Part 5: export as HTML5 and open it in the browser |
+| 10-25 | Student handout, Parts 1 to 3: start a project, then draw a sprite |
+| 25-45 | Parts 4 and 5: make an object move, build a room, play |
+| 45-55 | Part 6: export as HTML5 and open it in the browser |
 | 55-60 | Share, and the "Think About It" questions as an exit ticket |
 
-For a 45-minute slot, do Parts 1 to 4 and leave the export for next time.
+For a 45-minute slot, do Parts 1 to 5 and leave the export for next time.
+
+**Part 7 (bonus, optional): pick up fruit.** For students who finish early: an
+`obj_fruit` object that the hero picks up by collision, with a score shown. It is
+not in the timings above. Offer it as free-choice work once Part 6 is done, or as
+homework if time runs out.
 
 Next lessons: the Junior tutorials under **Help > Tutorials**: Getting Started,
 Your First Game, Pong, Breakout, Fruit Fusion, Fruit Basket. Each has its own
@@ -81,6 +86,7 @@ student handout and teacher guide.
 | A name is rejected | Use letters, numbers and underscores, with no spaces or special characters |
 | Deleted by mistake | Tools > Restore Deleted Assets |
 | Grey game window | Often a slow or low-memory computer. Wait, then retry |
+| Score does not go up (Part 7) | The collision event must be on **obj_hero** (not on obj_fruit), with obj_fruit chosen in the drop-down |
 | Exported game needs internet | Games using Python code load a runtime online. When asked, choose to bundle it for offline use |
 | A sample uses a block students cannot find | Samples may use blocks outside Junior's set. They still run. Students just cannot add that block again |
 
