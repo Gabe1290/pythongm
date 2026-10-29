@@ -53,8 +53,8 @@ On the left you have your **resources**: sprites, objects and rooms.
 - [ ] Click **Assets > Create Object** and name it `obj_hero`.
 - [ ] In **Sprite**, choose your sprite.
 - [ ] Add 4 **Keyboard** blocks (Left Arrow, Right Arrow, Up Arrow, Down
-      Arrow). In each one, put **Set horizontal speed to** (-4 and 4) or
-      **Set vertical speed to** (-4 and 4): left -4, right 4, up -4, down 4.
+      Arrow). In each one, put **Set horizontal speed** or **Set vertical
+      speed to**: left -4, right 4, up -4, down 4.
 - [ ] Add **Keyboard: No key**, then **Stop movement**, so your hero stops
       when you touch nothing.
 
