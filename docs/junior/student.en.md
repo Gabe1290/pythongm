@@ -40,7 +40,7 @@ On the left you have your **resources**: sprites, objects and rooms.
 
 ![The sprite editor, with a round orange drawing](images/en/sprite_editor.png "65%")
 
-> Start the names of your sprites with `spr_`.
+> TIP: Start the names of your sprites with `spr_`.
 
 ## Part 4: Make an Object Move in 4 Directions
 
@@ -54,7 +54,7 @@ On the left you have your **resources**: sprites, objects and rooms.
 
 ![The blocks in the object: one for each arrow key](images/en/objet_blockly.png "65%")
 
-> Right-click a block to duplicate or delete it. Duplicate the **Left
+> TIP: Right-click a block to duplicate or delete it. Duplicate the **Left
 > Arrow** block three times, then just change the key and the number in each
 > copy!
 
@@ -69,9 +69,9 @@ Your project already has a room, **room0**. You do not need to create one!
 
 - [ ] Press the **green triangle** (or **F5**) to play.
 
-> You can rename **room0** if you want (right-click > Rename).
+> TIP: You can rename **room0** if you want (right-click > Rename).
 
-> You see your sprite in the game and you can make it move.
+> DONE: You see your sprite in the game and you can make it move.
 
 ## Part 6: Share Your Game
 
@@ -100,7 +100,7 @@ Your game already works. If you still have time, add points!
 
 - [ ] Press **F5**: pick up the fruit to win points!
 
-> Your score goes up and the fruit disappears when you touch it.
+> DONE: Your score goes up and the fruit disappears when you touch it.
 
 ## Stuck?
 
