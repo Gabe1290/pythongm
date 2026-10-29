@@ -745,7 +745,13 @@ def round_tripped():
     view.loadFinished.connect(loaded)
     view.load(QUrl.fromLocalFile(str(PAGE)))
     QTimer.singleShot(20000, app.quit)
-    app.exec()
+    try:
+        app.exec()
+    finally:
+        # Not left to refcounting: freeing a QWebEngineView the instant this
+        # function returns races with Chromium's own teardown.
+        from conftest import dispose_qt_widget
+        dispose_qt_widget(view)
     if result.get("after") is None:
         pytest.fail("Blockly page did not finish (timeout or unparseable result)")
     return result["after"]

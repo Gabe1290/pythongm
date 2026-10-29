@@ -140,6 +140,29 @@ def _gc_collect_after_every_test():
         gc.collect()
 
 
+def dispose_qt_widget(widget, rounds=3):
+    """Close ``widget``, schedule its deletion and actually RUN the deferred delete.
+
+    A bare ``widget.deleteLater()`` only queues the deletion; nothing runs it
+    until some later event loop spins, so a test that creates a widget owning a
+    ``QWebEngineView`` (a Chromium page, in-process) and "cleans up" that way
+    leaves the view alive until an unrelated, later ``app.exec()`` tears it down
+    at an arbitrary moment. A real crash dump of this suite (an access violation
+    in Qt6Quick, called from Qt6QuickWidgets/Qt6WebEngineWidgets, i.e. inside the
+    QWebEngineView's own QQuickWidget) is consistent with exactly that. Cause not
+    proven; this removes the arbitrary timing. See docs/OPEN_WORK_2026-10-29.md A1.
+    """
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from PySide6.QtWidgets import QApplication
+    widget.close()
+    widget.deleteLater()
+    app = QApplication.instance()
+    for _ in range(rounds):
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+        if app is not None:
+            app.processEvents()
+
+
 # PIL/Pillow detection
 try:
     from PIL import Image as _PIL_Image  # noqa: F401

@@ -21,6 +21,7 @@ import json
 
 import pytest
 
+from conftest import dispose_qt_widget
 from config.blockly_config import GENERATED_ACTION_NAMES
 from events.action_types import ACTION_TYPES
 from config.blockly_generated_block_i18n import (
@@ -115,7 +116,7 @@ def test_register_custom_blocks_sends_french_text_when_french_is_active(_qapp):
         # direction/speed params use the translated "Direction"/"Vitesse" labels.
         assert "Direction" in param_labels.values() or "Vitesse" in param_labels.values()
     finally:
-        widget.deleteLater()
+        dispose_qt_widget(widget)
         manager.set_language(previous_language)
 
 
@@ -140,7 +141,7 @@ def test_register_custom_blocks_keeps_english_when_english_is_active(_qapp):
         assert bounce["display_name"] == ACTION_TYPES["bounce"].display_name
         assert bounce["description"] == ACTION_TYPES["bounce"].description
     finally:
-        widget.deleteLater()
+        dispose_qt_widget(widget)
         manager.set_language(previous_language)
 
 
@@ -167,7 +168,7 @@ def test_register_custom_blocks_untranslated_language_falls_back_to_english(_qap
         bounce = defs["bounce"]
         assert bounce["display_name"] == ACTION_TYPES["bounce"].display_name
     finally:
-        widget.deleteLater()
+        dispose_qt_widget(widget)
         manager.set_language(previous_language)
 
 
@@ -200,5 +201,5 @@ def test_hand_written_blocks_are_unaffected_by_this_change(_qapp):
         assert "set_variable" in defs
         assert defs["set_variable"]["display_name"] == ACTION_TYPES["set_variable"].display_name
     finally:
-        widget.deleteLater()
+        dispose_qt_widget(widget)
         manager.set_language(previous_language)
