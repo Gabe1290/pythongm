@@ -25,6 +25,7 @@ SUPPORT_FILES = {
     "microbit_sim/state.py": "export/kivy_state.py",    # layout.py's option_of
     "microbit_sim/draw.py": "kivy_draw.py",
     "microbit_sim/touch.py": "kivy_touch.py",
+    "microbit_sim/speaker.py": "kivy_audio.py",
 }
 
 
@@ -216,6 +217,7 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
         if not boards:
             return
         from microbit_sim import radio
+        from microbit_sim.speaker import get_speaker
         radio.deliver([i._mb_sim() for i in boards])
         step = min(max(float(dt), 0.0), 0.1)
         for board in boards:
@@ -223,6 +225,7 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
                 if kind == 'radio':
                     board.radio_string = str(detail)
                     board.radio_number = radio.as_number(detail)
+                get_speaker().handle(kind, detail)
                 name = self._mb_event_name(kind, detail)
                 handler = getattr(board, 'on_' + name, None) if name else None
                 if handler is not None:

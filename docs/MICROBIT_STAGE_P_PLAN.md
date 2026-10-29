@@ -162,8 +162,14 @@ properties of the JS (constants and tables equal to the Python source).
   module with the same ~40 gestures and 11 key runs and compares the simulator
   state. Not verified: a real touch screen; a tilt drag keeps the strip
   geometry from when it started if the board moves mid-drag.
-- [ ] **K5 -- sound.** Render PCM with the existing `sound.py`/`audio.py`
-  logic to a temp WAV and play with `SoundLoader`.
+- [x] **K5 -- sound.** Done. `kivy_audio.py` -> `microbit_sim/speaker.py`: a note is
+  rendered to a mono 22.05 kHz WAV (same square wave, loudness and 10 s cap as
+  `audio.py`; samples pinned equal to `audio.square_wave`) in a temp folder
+  (bounded, removed at exit) and played with `SoundLoader`; one voice, a new
+  note or `sound_stop` cuts the old one; no audio device is survivable. The
+  scene routes the simulator's `sound_note`/`sound_stop` reports to it. Not
+  verified: that it is audible on a real device, and the loudness (the same
+  guess as the desktop).
 - [ ] **K6 -- close-out.** Stub-Kivy end-to-end test of the generated app,
   generated-file compile for `microbit_1`, docs.
 

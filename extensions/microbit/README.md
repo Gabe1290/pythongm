@@ -23,6 +23,7 @@ The user-facing page is `wiki/Microbit.md`; the sample is `samples/microbit_1/`.
 | `sound.py` | Pure note / melody parsing, a port of MicroPython's `music.play` timing. |
 | `radio.py` | Pure delivery of radio messages between the boards in a room, by group. |
 | `layout.py` | Pure geometry — where the LEDs, buttons, logo, pads and the sensor strip are — shared by drawing and hit-testing, so what you see is what you click. |
+| `kivy_audio.py` | The speaker on a Kivy export (pure): a note rendered to a mono WAV and played with `SoundLoader`; `audio.py` is its pygame twin. |
 | `kivy_touch.py` | Touch and keyboard control of the drawn board for a Kivy export (pure); `input.py` is its desktop twin. |
 | `kivy_draw.py` | The board and sensor strip as draw-queue commands (pure), shipped into a Kivy export; `renderer.py` is its pygame twin. |
 | `renderer.py` | The pygame drawing: board, LEDs, controls, speaker indicator, sensor strip. |
@@ -103,11 +104,12 @@ against the Python simulator by fuzz and pixel comparison, and
 `microbit_1` with the pygame one (dev box only: it needs Playwright +
 Chromium). Known differences: events fire at the start of the frame, the text
 labels use a browser font, and only the first finger of a multi-touch is read.
-Kivy/Android is half-way (Stage P, K1-K4 done): the simulator ships in the export
+Kivy/Android is half-way (Stage P, K1-K5 done): the simulator ships in the export
 (`microbit_sim`, `export_kivy.py`), the actions and conditions run, the boards are
 stepped each frame and the micro:bit events fire (radio included) and the board and
 sensor strip are drawn (a simplified look), you can touch the buttons, logo, pins, tilt pad, shake
-button and sliders (and use the opt-in keyboard), but it **makes no sound** yet (K5).
+button and sliders (and use the opt-in keyboard), and the speaker plays its notes
+(a rendered WAV through `SoundLoader`).
 `tests/test_microbit_export_fallthrough.py`, `tests/test_kivy_microbit_actions.py`
 and `tests/test_kivy_microbit_events.py` pin the behaviour.
 
