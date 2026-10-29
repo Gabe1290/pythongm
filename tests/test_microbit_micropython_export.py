@@ -24,6 +24,9 @@ import pytest
 
 from extensions.microbit.export.micropython_exporter import MicropythonExporter, export
 
+# Absolute: CI runs pytest from tests/, not the repo root.
+_SAMPLE = Path(__file__).resolve().parent.parent / "samples" / "microbit_1" / "project.json"
+
 
 def _project_with_microbit(extra_object=None):
     objects = {
@@ -970,7 +973,7 @@ class TestX5RealSampleEndToEnd:
     def _generated(self):
         import tempfile
         out = tempfile.mkdtemp()
-        export("samples/microbit_1/project.json", out)
+        export(str(_SAMPLE), out)
         from pathlib import Path
         return (Path(out) / "microbit_1" / "main.py").read_text(encoding="utf-8")
 
@@ -978,7 +981,7 @@ class TestX5RealSampleEndToEnd:
         import py_compile
         import tempfile
         out = tempfile.mkdtemp()
-        export("samples/microbit_1/project.json", out)
+        export(str(_SAMPLE), out)
         from pathlib import Path
         py_compile.compile(str(Path(out) / "microbit_1" / "main.py"), doraise=True)
 
