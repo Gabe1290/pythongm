@@ -1,6 +1,6 @@
 # Estensioni
 
-*[Home](Home_it) | [Vista 3D](3D-View_it) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
+*[Home](Home_it) | [Vista 3D](3D-View_it) | [micro:bit](Microbit_it) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
 
 ---
 
@@ -15,6 +15,8 @@ PyGameMaker senza modificare il motore di base. Un'estensione può contribuire:
 L'estensione integrata **2.5D Raycast** (la funzione [Vista 3D](3D-View_it)) è
 l'esempio di riferimento: aggiunge quattro azioni "Vista 3D" e un renderer in prima
 persona e si esporta verso tutti e tre i target.
+
+L'estensione integrata **micro:bit** (la funzione [micro:bit](Microbit_it)) mette una BBC micro:bit simulata nella finestra del gioco: 16 azioni, 24 eventi, una scheda disegnata con pulsanti cliccabili e una barra dei sensori, suono e radio. È inclusa ma si attiva per progetto (**Impostazioni progetto → Estensioni**) e funziona in «Testa gioco» e nelle esportazioni desktop, HTML5 e Android (Kivy).
 
 ---
 
@@ -88,5 +90,6 @@ l'estensione esatta quando un progetto ne necessita una disattivata.
 ## Vedi anche
 
 - [Vista 3D](3D-View_it) — la funzione fornita dall'estensione integrata
+- [micro:bit](Microbit_it) — la funzione fornita dall'estensione micro:bit
 - [Riferimento completo delle azioni](Full-Action-Reference_it) — anche le azioni delle estensioni appaiono qui
 - [Esportare giochi](Esportare_Giochi_it) — le funzioni delle estensioni si trasferiscono nelle esportazioni

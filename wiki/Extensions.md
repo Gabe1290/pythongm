@@ -29,7 +29,7 @@ The built-in **micro:bit** extension (the [micro:bit](Microbit) feature) puts a
 simulated BBC micro:bit in the game window: 16 actions, 24 events, a drawn board
 with clickable buttons and a sensor strip, sound and a radio. It ships enabled
 but is switched on per project (**Project Settings → Extensions**), and works
-in Test Game and the desktop export.
+in Test Game and in the desktop, HTML5 and Android (Kivy) exports.
 
 ---
 

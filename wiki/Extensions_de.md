@@ -1,6 +1,6 @@
 # Erweiterungen
 
-*[Startseite](Home_de) | [3D-Ansicht](3D-View_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
+*[Startseite](Home_de) | [3D-Ansicht](3D-View_de) | [micro:bit](Microbit_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
 ---
 
@@ -17,6 +17,8 @@ beisteuern:
 Die eingebaute **2.5D-Raycast**-Erweiterung (die Funktion [3D-Ansicht](3D-View_de))
 ist das ausgearbeitete Beispiel: Sie fügt vier „3D-Ansicht"-Aktionen und einen
 First-Person-Renderer hinzu und exportiert in alle drei Ziele.
+
+Die eingebaute **micro:bit**-Erweiterung (die Funktion [micro:bit](Microbit_de)) setzt einen simulierten BBC micro:bit ins Spielfenster: 16 Aktionen, 24 Ereignisse, eine gezeichnete Platine mit klickbaren Tasten und einer Sensorleiste, Ton und Funk. Sie ist standardmäßig vorhanden, wird aber pro Projekt eingeschaltet (**Projekteinstellungen → Erweiterungen**) und funktioniert in „Spiel testen“ sowie in den Exporten für Desktop, HTML5 und Android (Kivy).
 
 ---
 
@@ -94,5 +96,6 @@ Erweiterung zu benennen, wenn ein Projekt eine deaktivierte benötigt.
 ## Siehe auch
 
 - [3D-Ansicht](3D-View_de) — die Funktion, die die eingebaute Erweiterung bereitstellt
+- [micro:bit](Microbit_de) — die Funktion, die die micro:bit-Erweiterung bereitstellt
 - [Vollständige Aktionsreferenz](Full-Action-Reference_de) — Erweiterungsaktionen erscheinen auch hier
 - [Spiele exportieren](Spiele_Exportieren_de) — Erweiterungsfunktionen werden in Exporte übernommen

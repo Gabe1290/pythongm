@@ -38,6 +38,7 @@ Siehe den [Voreinstellungs-Leitfaden](Preset-Guide_de) für einen vollständigen
 | **Ereignis-Aktions-System** | GameMaker 7.0 kompatible ereignisgesteuerte Logik |
 | **Fähigkeitsbasierte Voreinstellungen** | Anfänger-, Fortgeschrittenen- und Experten-Funktionssets |
 | **2.5D- / First-Person-Ansicht** | Optionales Raycast-Rendering im Doom/Wolfenstein-Stil — siehe [3D-Ansicht](3D-View_de) |
+| **micro:bit-Simulator** | Ein simulierter BBC micro:bit in deinem Spiel — LED-Display, Tasten, Sensoren, Ton und Funk — siehe [micro:bit](Microbit_de) |
 | **Multi-Plattform-Export** | Windows EXE, macOS-App, HTML5, Linux, Kivy (mobil/Desktop) |
 | **Asset-Verwaltung** | Sprites, Sounds, Hintergründe, Schriften und Räume |
 | **Mehrsprachige UI** | Englisch, Französisch, Deutsch, Italienisch, Spanisch, Portugiesisch, Slowenisch, Ukrainisch, Russisch |
@@ -183,6 +184,7 @@ projektname/
 
 ### Erweiterte Funktionen
 - [3D-Ansicht](3D-View_de) - First-Person-Rendering im Doom-Stil (Raycast)
+- [micro:bit](Microbit_de) - Ein simulierter BBC micro:bit: LED-Display, Tasten, Sensoren, Ton, Funk
 - [Erweiterungen](Extensions_de) - Zusätzliche Aktionen und Renderer (wie die 3D-Ansicht ausgeliefert wird)
 
 ### Anleitungen

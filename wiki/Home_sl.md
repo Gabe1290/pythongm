@@ -38,6 +38,7 @@ Glejte [Vodnik po Prednastavitvah](Preset-Guide_sl) za popoln pregled sistema pr
 | **Sistem Dogodkov-Akcij** | Logika, ki temelji na dogodkih, združljiva z GameMaker 7.0 |
 | **Prednastavitve po Ravneh** | Nabori funkcij za Začetnike, Srednje in Napredne |
 | **Pogled 2.5D / Prva oseba** | Izbirno izrisovanje raycast v slogu Doom/Wolfenstein — glejte [Pogled 3D](3D-View_sl) |
+| **Simulator micro:bit** | Simuliran BBC micro:bit v vaši igri — zaslon LED, gumbi, tipala, zvok in radio — glejte [micro:bit](Microbit_sl) |
 | **Večplatformni Izvoz** | Windows EXE, aplikacija macOS, HTML5, Linux, Kivy (mobilno/namizno) |
 | **Upravljanje Virov** | Sprite-i, zvoki, ozadja, pisave in sobe |
 | **Večjezični Vmesnik** | Angleščina, Francoščina, Nemščina, Italijanščina, Španščina, Portugalščina, Slovenščina, Ukrajinščina, Ruščina |
@@ -179,6 +180,7 @@ ime_projekta/
 
 ### Napredne Funkcije
 - [Pogled 3D](3D-View_sl) - Prvoosebno izrisovanje v slogu Doom (raycast)
+- [micro:bit](Microbit_sl) - Simuliran BBC micro:bit: zaslon LED, gumbi, tipala, zvok, radio
 - [Razširitve](Extensions_sl) - Dodatne akcije in izrisovalniki (kako je distribuiran Pogled 3D)
 
 ### Vodniki

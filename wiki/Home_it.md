@@ -38,6 +38,7 @@ Vedi la [Guida ai Preset](Preset-Guide_it) per una panoramica completa del siste
 | **Sistema Eventi-Azioni** | Logica event-driven compatibile con GameMaker 7.0 |
 | **Preset per Livello** | Set di funzionalità Principiante, Intermedio e Avanzato |
 | **Vista 2.5D / Prima persona** | Rendering raycast opzionale in stile Doom/Wolfenstein — vedi [Vista 3D](3D-View_it) |
+| **Simulatore micro:bit** | Una BBC micro:bit simulata nel tuo gioco — display LED, pulsanti, sensori, suono e radio — vedi [micro:bit](Microbit_it) |
 | **Esportazione Multi-Piattaforma** | Windows EXE, app macOS, HTML5, Linux, Kivy (mobile/desktop) |
 | **Gestione Asset** | Sprite, suoni, sfondi, font e stanze |
 | **UI Multilingue** | Inglese, Francese, Tedesco, Italiano, Spagnolo, Portoghese, Sloveno, Ucraino, Russo |
@@ -179,6 +180,7 @@ nome_progetto/
 
 ### Funzionalità Avanzate
 - [Vista 3D](3D-View_it) - Rendering in prima persona in stile Doom (raycast)
+- [micro:bit](Microbit_it) - Una BBC micro:bit simulata: display LED, pulsanti, sensori, suono, radio
 - [Estensioni](Extensions_it) - Azioni e renderer aggiuntivi (come viene distribuita la Vista 3D)
 
 ### Guide

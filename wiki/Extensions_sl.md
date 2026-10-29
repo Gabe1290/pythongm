@@ -1,6 +1,6 @@
 # Razširitve
 
-*[Domov](Home_sl) | [Pogled 3D](3D-View_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
+*[Domov](Home_sl) | [Pogled 3D](3D-View_sl) | [micro:bit](Microbit_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
 ---
 
@@ -15,6 +15,8 @@ spremenil osnovni pogon. Razširitev lahko prispeva:
 Vgrajena razširitev **2.5D Raycast** (funkcija [Pogled 3D](3D-View_sl)) je delan
 primer: doda štiri dejanja "Pogled 3D" in prvoosebni izrisovalnik ter se izvozi v
 vse tri cilje.
+
+Vgrajena razširitev **micro:bit** (funkcija [micro:bit](Microbit_sl)) postavi simuliran BBC micro:bit v okno igre: 16 dejanj, 24 dogodkov, narisana ploščica s gumbi, na katere lahko kliknete, in vrstica tipal, zvok in radio. Priložena je vklopljena, vendar se vklaplja za vsak projekt posebej (**Nastavitve projekta → Razširitve**) in deluje v »Testiraj igro« ter v izvozih za namizje, HTML5 in Android (Kivy).
 
 ---
 
@@ -88,5 +90,6 @@ razširitev, ko projekt potrebuje onemogočeno.
 ## Glejte tudi
 
 - [Pogled 3D](3D-View_sl) — funkcija, ki jo zagotavlja vgrajena razširitev
+- [micro:bit](Microbit_sl) — funkcija, ki jo zagotavlja razširitev micro:bit
 - [Popolna referenca dejanj](Full-Action-Reference_sl) — tudi dejanja razširitev se pojavijo tukaj
 - [Izvoz iger](Izvoz_Iger_sl) — funkcije razširitev se prenesejo v izvoze

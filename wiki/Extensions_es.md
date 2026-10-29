@@ -1,6 +1,6 @@
 # Extensiones
 
-*[Inicio](Home_es) | [Vista 3D](3D-View_es) | [Referencia completa de acciones](Full-Action-Reference_es)*
+*[Inicio](Home_es) | [Vista 3D](3D-View_es) | [micro:bit](Microbit_es) | [Referencia completa de acciones](Full-Action-Reference_es)*
 
 ---
 
@@ -16,6 +16,8 @@ modificar el motor base. Una extensión puede aportar:
 La extensión integrada **2.5D Raycast** (la función [Vista 3D](3D-View_es)) es el
 ejemplo de referencia: añade cuatro acciones "Vista 3D" y un renderizador en primera
 persona, y se exporta a los tres destinos.
+
+La extensión integrada **micro:bit** (la función [micro:bit](Microbit_es)) pone una BBC micro:bit simulada en la ventana del juego: 16 acciones, 24 eventos, una placa dibujada con botones en los que se puede hacer clic y una franja de sensores, sonido y radio. Viene incluida, pero se activa por proyecto (**Configuración del proyecto → Extensiones**) y funciona en «Probar juego» y en las exportaciones de escritorio, HTML5 y Android (Kivy).
 
 ---
 
@@ -89,5 +91,6 @@ extensión exacta cuando un proyecto necesita una desactivada.
 ## Véase también
 
 - [Vista 3D](3D-View_es) — la función que proporciona la extensión integrada
+- [micro:bit](Microbit_es) — la función que proporciona la extensión micro:bit
 - [Referencia completa de acciones](Full-Action-Reference_es) — las acciones de extensión también aparecen aquí
 - [Exportar juegos](Exportar_Juegos_es) — las funciones de extensión se trasladan a las exportaciones

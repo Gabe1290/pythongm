@@ -34,7 +34,7 @@ place une BBC micro:bit simulée dans la fenêtre du jeu : 16 actions, 24
 événements, une carte dessinée avec des boutons cliquables et une bande de
 capteurs, du son et une radio. Elle est livrée activée mais s'active projet par
 projet (**Paramètres du projet → Extensions**), et fonctionne dans Tester le
-jeu et dans l'export ordinateur.
+jeu et dans les exports ordinateur, HTML5 et Android (Kivy).
 
 ---
 
