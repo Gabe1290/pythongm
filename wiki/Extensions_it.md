@@ -1,6 +1,6 @@
 # Estensioni
 
-*[Home](Home_it) | [Vista 3D](3D-View_it) | [micro:bit](Microbit_it) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
+*[Home](Home_it) | [Vista 3D](3D-View_it) | [Rete](Network_it) | [micro:bit](Microbit_it) | [File Exchange Multiplayer](FileExchange) (in inglese) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
 
 ---
 
@@ -15,6 +15,10 @@ PyGameMaker senza modificare il motore di base. Un'estensione può contribuire:
 L'estensione integrata **2.5D Raycast** (la funzione [Vista 3D](3D-View_it)) è
 l'esempio di riferimento: aggiunge quattro azioni "Vista 3D" e un renderer in prima
 persona e si esporta verso tutti e tre i target.
+
+L'estensione integrata **LAN Multiplayer** (la funzione [Rete](Network_it)) è una seconda, più grande: aggiunge 15 azioni «Rete» e sei eventi, e mette in rete un gioco sulla rete locale dall'esportazione desktop (come host o client) e dall'esportazione HTML5 (come client).
+
+L'estensione **File Exchange Multiplayer** (la funzione [File Exchange Multiplayer](FileExchange), in inglese) è un fratello a turni di LAN Multiplayer: aggiunge 7 azioni «Rete» e sei eventi, e scambia lo stato del gioco tramite file su un'unità condivisa invece che con una connessione dal vivo, per un'aula in cui un firewall blocca le connessioni dirette di LAN Multiplayer. Solo esportazione desktop — vedi la nota «Why not every export» della pagina stessa.
 
 L'estensione integrata **micro:bit** (la funzione [micro:bit](Microbit_it)) mette una BBC micro:bit simulata nella finestra del gioco: 16 azioni, 24 eventi, una scheda disegnata con pulsanti cliccabili e una barra dei sensori, suono e radio. È inclusa ma si attiva per progetto (**Impostazioni progetto → Estensioni**) e funziona in «Testa gioco» e nelle esportazioni desktop, HTML5 e Android (Kivy).
 
@@ -90,6 +94,8 @@ l'estensione esatta quando un progetto ne necessita una disattivata.
 ## Vedi anche
 
 - [Vista 3D](3D-View_it) — la funzione fornita dall'estensione integrata
+- [Rete](Network_it) — la funzione fornita dall'estensione LAN Multiplayer
 - [micro:bit](Microbit_it) — la funzione fornita dall'estensione micro:bit
+- [File Exchange Multiplayer](FileExchange) (in inglese) — la funzione fornita dall'estensione File Exchange Multiplayer
 - [Riferimento completo delle azioni](Full-Action-Reference_it) — anche le azioni delle estensioni appaiono qui
 - [Esportare giochi](Esportare_Giochi_it) — le funzioni delle estensioni si trasferiscono nelle esportazioni

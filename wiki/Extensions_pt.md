@@ -1,6 +1,6 @@
 # Extensões
 
-*[Início](Home_pt) | [Vista 3D](3D-View_pt) | [micro:bit](Microbit_pt) | [Referência completa de ações](Full-Action-Reference_pt)*
+*[Início](Home_pt) | [Vista 3D](3D-View_pt) | [Rede](Network_pt) | [micro:bit](Microbit_pt) | [File Exchange Multiplayer](FileExchange) (em inglês) | [Referência completa de ações](Full-Action-Reference_pt)*
 
 ---
 
@@ -15,6 +15,10 @@ sem modificar o motor base. Uma extensão pode contribuir:
 A extensão integrada **2.5D Raycast** (a função [Vista 3D](3D-View_pt)) é o exemplo de
 referência: adiciona quatro ações "Vista 3D" e um renderizador em primeira pessoa, e
 exporta para os três destinos.
+
+A extensão integrada **LAN Multiplayer** (a função [Rede](Network_pt)) é uma segunda, maior: ela adiciona 15 ações de «Rede» e seis eventos, e coloca um jogo em rede pela rede local a partir da exportação para desktop (como anfitrião ou cliente) e da exportação HTML5 (como cliente).
+
+A extensão **File Exchange Multiplayer** (a função [File Exchange Multiplayer](FileExchange), em inglês) é uma irmã por turnos do LAN Multiplayer: ela adiciona 7 ações de «Rede» e seis eventos, e troca o estado do jogo por arquivos em uma unidade compartilhada em vez de uma conexão ao vivo, para uma sala de aula em que um firewall bloqueia as conexões diretas do LAN Multiplayer. Somente exportação para desktop — veja a nota «Why not every export» da própria página.
 
 A extensão integrada **micro:bit** (a função [micro:bit](Microbit_pt)) coloca uma BBC micro:bit simulada na janela do jogo: 16 ações, 24 eventos, uma placa desenhada com botões clicáveis e uma faixa de sensores, som e rádio. Ela já vem incluída, mas é ligada por projeto (**Configurações do Projeto → Extensões**) e funciona em «Testar Jogo» e nas exportações para desktop, HTML5 e Android (Kivy).
 
@@ -90,6 +94,8 @@ quando um projeto precisa de uma desativada.
 ## Veja também
 
 - [Vista 3D](3D-View_pt) — a função que a extensão integrada fornece
+- [Rede](Network_pt) — a função que a extensão LAN Multiplayer fornece
 - [micro:bit](Microbit_pt) — a função que a extensão micro:bit fornece
+- [File Exchange Multiplayer](FileExchange) (em inglês) — a função que a extensão File Exchange Multiplayer fornece
 - [Referência completa de ações](Full-Action-Reference_pt) — as ações de extensão também aparecem aqui
 - [Exportar jogos](Exportar_Jogos_pt) — as funções de extensão são transferidas para as exportações

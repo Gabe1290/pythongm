@@ -126,3 +126,60 @@ def test_the_english_page_still_says_what_the_translations_say():
         assert sample in text
         assert (WIKI.parent / "samples" / sample / "project.json").exists()
     assert "single-player" in text
+
+
+# -- Home and Extensions point at the Network and File Exchange pages (queue item A4) -----------------
+
+def _target(lang, page):
+    return page if lang is None else f"{page}_{lang}"
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_home_and_extensions_link_to_network_micro_bit_and_file_exchange(lang):
+    for home_or_ext in ("Home", "Extensions"):
+        text = _read(f"{_target(lang, home_or_ext)}.md")
+        for page in ("Network", "Microbit"):
+            assert f"]({_target(lang, page)})" in text, f"{home_or_ext}: no link to {_target(lang, page)}"
+        # File Exchange has pages only in English and French; the others link the English one
+        fe = _target(lang, "FileExchange") if lang in (None, "fr") else "FileExchange"
+        assert f"]({fe})" in text, f"{home_or_ext}: no link to {fe}"
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_extensions_navigation_lists_every_extension_page(lang):
+    nav = _read(f"{_target(lang, 'Extensions')}.md").splitlines()[2]
+    for page in ("3D-View", "Network", "Microbit"):
+        assert f"({_target(lang, page)})" in nav, f"{lang}: {page} missing from the navigation line"
+    assert "(FileExchange" in nav
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_action_counts_on_the_extensions_page_are_the_codes(lang):
+    from extensions.multiplayer_files import PLUGIN_ACTIONS as files_actions
+    from extensions.multiplayer_lan import PLUGIN_ACTIONS as lan_actions
+    assert (len(lan_actions), len(files_actions)) == (15, 7)
+    text = _read(f"{_target(lang, 'Extensions')}.md")
+    assert re.search(r"\b15\b", text) and re.search(r"\b7\b", text)
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_home_lists_the_new_extensions_in_its_category_and_link_lists(lang):
+    text = _read(f"{_target(lang, 'Home')}.md")
+    assert text.count("micro:bit") >= 3, "micro:bit should be in the table, the category list and the links"
+    assert len(re.findall(rf"\]\({_target(lang, 'Network')}\)", text)) >= 2   # table row + link list
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_extensions_mentions_each_page_in_its_navigation_text_and_see_also(lang):
+    text = _read(f"{_target(lang, 'Extensions')}.md")
+    fe = _target(lang, "FileExchange") if lang in (None, "fr") else "FileExchange"
+    for target in (_target(lang, "Network"), _target(lang, "Microbit"), fe):
+        assert text.count(f"]({target})") >= 3, f"{lang}: {target} should be linked from the navigation, the text and See also"
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_home_has_a_category_bullet_for_network_and_for_micro_bit(lang):
+    bullets = [ln for ln in _read(f"{_target(lang, 'Home')}.md").splitlines()
+               if ln.startswith("- ") and not ln.startswith("- [")]
+    assert any("LAN" in ln for ln in bullets), f"{lang}: no category bullet for the Network actions"
+    assert any("micro:bit" in ln for ln in bullets), f"{lang}: no category bullet for the micro:bit actions"

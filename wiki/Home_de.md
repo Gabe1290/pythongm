@@ -39,6 +39,8 @@ Siehe den [Voreinstellungs-Leitfaden](Preset-Guide_de) für einen vollständigen
 | **Fähigkeitsbasierte Voreinstellungen** | Anfänger-, Fortgeschrittenen- und Experten-Funktionssets |
 | **2.5D- / First-Person-Ansicht** | Optionales Raycast-Rendering im Doom/Wolfenstein-Stil — siehe [3D-Ansicht](3D-View_de) |
 | **micro:bit-Simulator** | Ein simulierter BBC micro:bit in deinem Spiel — LED-Display, Tasten, Sensoren, Ton und Funk — siehe [micro:bit](Microbit_de) |
+| **LAN-Multiplayer** | Ein Spiel im lokalen Netzwerk hosten oder ihm beitreten, geteilte Variablen und vernetzte Avatare — siehe [Netzwerk](Network_de) |
+| **File-Exchange-Multiplayer** | Rundenbasierter Multiplayer über ein gemeinsames Laufwerk — funktioniert auch, wenn eine Schul-Firewall direkte Verbindungen blockiert, siehe [File Exchange Multiplayer](FileExchange) (englisch) |
 | **Multi-Plattform-Export** | Windows EXE, macOS-App, HTML5, Linux, Kivy (mobil/Desktop) |
 | **Asset-Verwaltung** | Sprites, Sounds, Hintergründe, Schriften und Räume |
 | **Mehrsprachige UI** | Englisch, Französisch, Deutsch, Italienisch, Spanisch, Portugiesisch, Slowenisch, Ukrainisch, Russisch |
@@ -107,6 +109,8 @@ Operationen, die ausgeführt werden, wenn Ereignisse ausgelöst werden. **109** 
 - Sound und Musik
 - Instanz- und Raumverwaltung
 - 3D-Ansicht (First-Person-Raycast-Rendering)
+- Netzwerk (LAN-Multiplayer)
+- micro:bit (simulierte Platine: Anzeige, Tasten, Sensoren, Ton, Funk)
 
 Siehe die [Vollständige Aktions-Referenz](Full-Action-Reference_de) für die vollständige, stets aktuelle Liste.
 
@@ -184,8 +188,10 @@ projektname/
 
 ### Erweiterte Funktionen
 - [3D-Ansicht](3D-View_de) - First-Person-Rendering im Doom-Stil (Raycast)
+- [Netzwerk](Network_de) - LAN-Multiplayer: hosten/beitreten, geteilte Variablen, vernetzte Avatare
 - [micro:bit](Microbit_de) - Ein simulierter BBC micro:bit: LED-Display, Tasten, Sensoren, Ton, Funk
-- [Erweiterungen](Extensions_de) - Zusätzliche Aktionen und Renderer (wie die 3D-Ansicht ausgeliefert wird)
+- [File Exchange Multiplayer](FileExchange) (englisch) - Rundenbasierter Multiplayer über ein gemeinsames Laufwerk, firewall-freundlich
+- [Erweiterungen](Extensions_de) - Zusätzliche Aktionen und Renderer (wie 3D-Ansicht, Netzwerk, File Exchange Multiplayer und micro:bit ausgeliefert werden)
 
 ### Anleitungen
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten

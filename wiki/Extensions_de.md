@@ -1,6 +1,6 @@
 # Erweiterungen
 
-*[Startseite](Home_de) | [3D-Ansicht](3D-View_de) | [micro:bit](Microbit_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
+*[Startseite](Home_de) | [3D-Ansicht](3D-View_de) | [Netzwerk](Network_de) | [micro:bit](Microbit_de) | [File Exchange Multiplayer](FileExchange) (englisch) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
 ---
 
@@ -17,6 +17,10 @@ beisteuern:
 Die eingebaute **2.5D-Raycast**-Erweiterung (die Funktion [3D-Ansicht](3D-View_de))
 ist das ausgearbeitete Beispiel: Sie fügt vier „3D-Ansicht"-Aktionen und einen
 First-Person-Renderer hinzu und exportiert in alle drei Ziele.
+
+Die eingebaute **LAN-Multiplayer**-Erweiterung (die Funktion [Netzwerk](Network_de)) ist eine zweite, größere: Sie fügt 15 „Netzwerk“-Aktionen und sechs Ereignisse hinzu und vernetzt ein Spiel über das lokale Netzwerk — aus dem Desktop-Export (als Host oder Client) und dem HTML5-Export (als Client).
+
+Die Erweiterung **File Exchange Multiplayer** (die Funktion [File Exchange Multiplayer](FileExchange), auf Englisch) ist ein rundenbasierter Verwandter von LAN-Multiplayer: Sie fügt 7 „Netzwerk“-Aktionen und sechs Ereignisse hinzu und tauscht den Spielzustand über Dateien auf einem gemeinsamen Laufwerk statt über eine Live-Verbindung aus — für ein Klassenzimmer, in dem eine Firewall die direkten Verbindungen von LAN-Multiplayer blockiert. Nur im Desktop-Export — siehe den Hinweis „Why not every export“ auf der Seite selbst.
 
 Die eingebaute **micro:bit**-Erweiterung (die Funktion [micro:bit](Microbit_de)) setzt einen simulierten BBC micro:bit ins Spielfenster: 16 Aktionen, 24 Ereignisse, eine gezeichnete Platine mit klickbaren Tasten und einer Sensorleiste, Ton und Funk. Sie ist standardmäßig vorhanden, wird aber pro Projekt eingeschaltet (**Projekteinstellungen → Erweiterungen**) und funktioniert in „Spiel testen“ sowie in den Exporten für Desktop, HTML5 und Android (Kivy).
 
@@ -96,6 +100,8 @@ Erweiterung zu benennen, wenn ein Projekt eine deaktivierte benötigt.
 ## Siehe auch
 
 - [3D-Ansicht](3D-View_de) — die Funktion, die die eingebaute Erweiterung bereitstellt
+- [Netzwerk](Network_de) — die Funktion, die die LAN-Multiplayer-Erweiterung bereitstellt
 - [micro:bit](Microbit_de) — die Funktion, die die micro:bit-Erweiterung bereitstellt
+- [File Exchange Multiplayer](FileExchange) (englisch) — die Funktion, die die File-Exchange-Multiplayer-Erweiterung bereitstellt
 - [Vollständige Aktionsreferenz](Full-Action-Reference_de) — Erweiterungsaktionen erscheinen auch hier
 - [Spiele exportieren](Spiele_Exportieren_de) — Erweiterungsfunktionen werden in Exporte übernommen

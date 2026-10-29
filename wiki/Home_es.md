@@ -39,6 +39,8 @@ Consulta la [Guía de Preajustes](Preset-Guide_es) para una visión completa del
 | **Preajustes por Nivel** | Conjuntos de características Principiante, Intermedio y Avanzado |
 | **Vista 2.5D / Primera persona** | Renderizado raycast opcional al estilo Doom/Wolfenstein — ver [Vista 3D](3D-View_es) |
 | **Simulador de micro:bit** | Una BBC micro:bit simulada en tu juego — pantalla de LED, botones, sensores, sonido y radio — ver [micro:bit](Microbit_es) |
+| **Multijugador LAN** | Aloja una partida o únete a una en la red local, variables compartidas y avatares en red — ver [Red](Network_es) |
+| **Multijugador por intercambio de archivos** | Multijugador por turnos mediante una unidad compartida — funciona incluso cuando un cortafuegos escolar bloquea las conexiones directas, ver [File Exchange Multiplayer](FileExchange) (en inglés) |
 | **Exportación Multi-Plataforma** | Windows EXE, app macOS, HTML5, Linux, Kivy (móvil/escritorio) |
 | **Gestión de Recursos** | Sprites, sonidos, fondos, fuentes y salas |
 | **Interfaz Multilingüe** | Inglés, Francés, Alemán, Italiano, Español, Portugués, Esloveno, Ucraniano, Ruso |
@@ -107,6 +109,8 @@ Operaciones realizadas cuando se disparan eventos. **109** acciones integradas p
 - Sonido y música
 - Gestión de instancias y salas
 - Vista 3D (renderizado en primera persona con raycast)
+- Red (multijugador en LAN)
+- micro:bit (placa simulada: pantalla, botones, sensores, sonido, radio)
 
 Consulta la [Referencia Completa de Acciones](Full-Action-Reference_es) para documentación completa.
 
@@ -180,8 +184,10 @@ nombre_proyecto/
 
 ### Funciones Avanzadas
 - [Vista 3D](3D-View_es) - Renderizado en primera persona al estilo Doom (raycast)
+- [Red](Network_es) - Multijugador LAN: alojar/unirse, variables compartidas, avatares en red
 - [micro:bit](Microbit_es) - Una BBC micro:bit simulada: pantalla de LED, botones, sensores, sonido, radio
-- [Extensiones](Extensions_es) - Acciones y renderizadores adicionales (cómo se distribuye la Vista 3D)
+- [File Exchange Multiplayer](FileExchange) (en inglés) - Multijugador por turnos mediante una unidad compartida, apto para cortafuegos
+- [Extensiones](Extensions_es) - Acciones y renderizadores adicionales (cómo se distribuyen la Vista 3D, la Red, File Exchange Multiplayer y micro:bit)
 
 ### Guías
 - [Editor de Objetos](Editor_Objetos_es) - Trabajar con objetos del juego

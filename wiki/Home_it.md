@@ -39,6 +39,8 @@ Vedi la [Guida ai Preset](Preset-Guide_it) per una panoramica completa del siste
 | **Preset per Livello** | Set di funzionalità Principiante, Intermedio e Avanzato |
 | **Vista 2.5D / Prima persona** | Rendering raycast opzionale in stile Doom/Wolfenstein — vedi [Vista 3D](3D-View_it) |
 | **Simulatore micro:bit** | Una BBC micro:bit simulata nel tuo gioco — display LED, pulsanti, sensori, suono e radio — vedi [micro:bit](Microbit_it) |
+| **Multigiocatore LAN** | Ospita o unisciti a una partita sulla rete locale, variabili condivise e avatar in rete — vedi [Rete](Network_it) |
+| **Multigiocatore tramite scambio di file** | Multigiocatore a turni tramite un'unità condivisa — funziona anche quando un firewall scolastico blocca le connessioni dirette, vedi [File Exchange Multiplayer](FileExchange) (in inglese) |
 | **Esportazione Multi-Piattaforma** | Windows EXE, app macOS, HTML5, Linux, Kivy (mobile/desktop) |
 | **Gestione Asset** | Sprite, suoni, sfondi, font e stanze |
 | **UI Multilingue** | Inglese, Francese, Tedesco, Italiano, Spagnolo, Portoghese, Sloveno, Ucraino, Russo |
@@ -107,6 +109,8 @@ Operazioni eseguite quando gli eventi si attivano. **109** azioni integrate per:
 - Suono e musica
 - Gestione istanze e stanze
 - Vista 3D (rendering in prima persona con raycast)
+- Rete (multigiocatore in LAN)
+- micro:bit (scheda simulata: display, pulsanti, sensori, suono, radio)
 
 Vedi il [Riferimento Completo Azioni](Full-Action-Reference_it) per la documentazione completa.
 
@@ -180,8 +184,10 @@ nome_progetto/
 
 ### Funzionalità Avanzate
 - [Vista 3D](3D-View_it) - Rendering in prima persona in stile Doom (raycast)
+- [Rete](Network_it) - Multigiocatore LAN: ospitare/unirsi, variabili condivise, avatar in rete
 - [micro:bit](Microbit_it) - Una BBC micro:bit simulata: display LED, pulsanti, sensori, suono, radio
-- [Estensioni](Extensions_it) - Azioni e renderer aggiuntivi (come viene distribuita la Vista 3D)
+- [File Exchange Multiplayer](FileExchange) (in inglese) - Multigiocatore a turni tramite un'unità condivisa, compatibile con i firewall
+- [Estensioni](Extensions_it) - Azioni e renderer aggiuntivi (come vengono distribuiti Vista 3D, Rete, File Exchange Multiplayer e micro:bit)
 
 ### Guide
 - [Editor Oggetti](Editor_Oggetti_it) - Lavorare con oggetti di gioco

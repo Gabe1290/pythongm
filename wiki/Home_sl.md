@@ -39,6 +39,8 @@ Glejte [Vodnik po Prednastavitvah](Preset-Guide_sl) za popoln pregled sistema pr
 | **Prednastavitve po Ravneh** | Nabori funkcij za Začetnike, Srednje in Napredne |
 | **Pogled 2.5D / Prva oseba** | Izbirno izrisovanje raycast v slogu Doom/Wolfenstein — glejte [Pogled 3D](3D-View_sl) |
 | **Simulator micro:bit** | Simuliran BBC micro:bit v vaši igri — zaslon LED, gumbi, tipala, zvok in radio — glejte [micro:bit](Microbit_sl) |
+| **Večigralska igra prek LAN** | Gostite igro ali se ji pridružite v lokalnem omrežju, skupne spremenljivke in omrežni avatarji — glejte [Omrežje](Network_sl) |
+| **Večigralska igra z izmenjavo datotek** | Potezna večigralska igra prek skupnega pogona — deluje tudi, ko šolski požarni zid blokira neposredne povezave, glejte [File Exchange Multiplayer](FileExchange) (v angleščini) |
 | **Večplatformni Izvoz** | Windows EXE, aplikacija macOS, HTML5, Linux, Kivy (mobilno/namizno) |
 | **Upravljanje Virov** | Sprite-i, zvoki, ozadja, pisave in sobe |
 | **Večjezični Vmesnik** | Angleščina, Francoščina, Nemščina, Italijanščina, Španščina, Portugalščina, Slovenščina, Ukrajinščina, Ruščina |
@@ -107,6 +109,8 @@ Operacije, ki se izvedejo, ko se dogodki sprožijo. **109** vgrajenih dejanj za:
 - Zvok in glasbo
 - Upravljanje instanc in sob
 - Pogled 3D (prvoosebno izrisovanje z raycast)
+- Omrežje (večigralska igra prek LAN)
+- micro:bit (simulirana ploščica: zaslon, gumbi, tipala, zvok, radio)
 
 Glejte [Popolno Referenco Akcij](Full-Action-Reference_sl) za popolno dokumentacijo.
 
@@ -180,8 +184,10 @@ ime_projekta/
 
 ### Napredne Funkcije
 - [Pogled 3D](3D-View_sl) - Prvoosebno izrisovanje v slogu Doom (raycast)
+- [Omrežje](Network_sl) - Večigralska igra prek LAN: gostiti/pridružiti se, skupne spremenljivke, omrežni avatarji
 - [micro:bit](Microbit_sl) - Simuliran BBC micro:bit: zaslon LED, gumbi, tipala, zvok, radio
-- [Razširitve](Extensions_sl) - Dodatne akcije in izrisovalniki (kako je distribuiran Pogled 3D)
+- [File Exchange Multiplayer](FileExchange) (v angleščini) - Potezna večigralska igra prek skupnega pogona, prijazna požarnim zidovom
+- [Razširitve](Extensions_sl) - Dodatne akcije in izrisovalniki (kako se distribuirajo Pogled 3D, Omrežje, File Exchange Multiplayer in micro:bit)
 
 ### Vodniki
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti

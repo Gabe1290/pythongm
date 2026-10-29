@@ -39,6 +39,8 @@ Veja o [Guia de Predefinições](Preset-Guide_pt) para uma visão completa do si
 | **Predefinições por Nível** | Conjuntos de funcionalidades Iniciante, Intermediário e Avançado |
 | **Vista 2.5D / Primeira pessoa** | Renderização raycast opcional no estilo Doom/Wolfenstein — veja [Vista 3D](3D-View_pt) |
 | **Simulador de micro:bit** | Uma BBC micro:bit simulada no seu jogo — tela de LEDs, botões, sensores, som e rádio — veja [micro:bit](Microbit_pt) |
+| **Multijogador LAN** | Hospede ou entre em um jogo na rede local, variáveis compartilhadas e avatares em rede — veja [Rede](Network_pt) |
+| **Multijogador por troca de arquivos** | Multijogador por turnos por meio de uma unidade compartilhada — funciona mesmo quando um firewall escolar bloqueia as conexões diretas, veja [File Exchange Multiplayer](FileExchange) (em inglês) |
 | **Exportação Multi-Plataforma** | Windows EXE, app macOS, HTML5, Linux, Kivy (móvel/desktop) |
 | **Gestão de Recursos** | Sprites, sons, fundos, fontes e salas |
 | **Interface Multilingue** | Inglês, Francês, Alemão, Italiano, Espanhol, Português, Esloveno, Ucraniano, Russo |
@@ -107,6 +109,8 @@ Operações realizadas quando eventos são disparados. **109** ações integrada
 - Som e música
 - Gestão de instâncias e salas
 - Vista 3D (renderização em primeira pessoa com raycast)
+- Rede (multijogador em LAN)
+- micro:bit (placa simulada: tela, botões, sensores, som, rádio)
 
 Veja a [Referência Completa de Ações](Full-Action-Reference_pt) para documentação completa.
 
@@ -180,8 +184,10 @@ nome_projeto/
 
 ### Funcionalidades Avançadas
 - [Vista 3D](3D-View_pt) - Renderização em primeira pessoa no estilo Doom (raycast)
+- [Rede](Network_pt) - Multijogador LAN: hospedar/entrar, variáveis compartilhadas, avatares em rede
 - [micro:bit](Microbit_pt) - Uma BBC micro:bit simulada: tela de LEDs, botões, sensores, som, rádio
-- [Extensões](Extensions_pt) - Ações e renderizadores adicionais (como a Vista 3D é distribuída)
+- [File Exchange Multiplayer](FileExchange) (em inglês) - Multijogador por turnos por meio de uma unidade compartilhada, compatível com firewall
+- [Extensões](Extensions_pt) - Ações e renderizadores adicionais (como a Vista 3D, a Rede, o File Exchange Multiplayer e o micro:bit são distribuídos)
 
 ### Guias
 - [Editor de Objetos](Editor_Objetos_pt) - Trabalhar com objetos do jogo
