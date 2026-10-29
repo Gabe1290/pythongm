@@ -29,6 +29,10 @@ not as a standalone sweep.
 
 ## Currently open work
 
+> **Working queue (2026-10-29):** `docs/OPEN_WORK_2026-10-29.md` is a checkbox list of
+> what is open right now, in the order to work it. The numbered items below are the
+> older, larger initiatives.
+
 This is the complete list. Everything else that used to be tracked in
 `docs/` is done and has been deleted.
 
