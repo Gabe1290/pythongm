@@ -2651,4 +2651,7 @@ excluded at the end (7,912+ passed, 0 failed).
 - **Wiki:** the micro:bit page (with the MicroPython export section) and the Network page exist
   in all nine languages; guard tests `test_wiki_microbit_pages.py` / `test_wiki_network_pages.py`.
   File Exchange is still English-only outside French. The Junior teacher guide EN matches FR.
-  Nothing from this session is published to the live wiki.
+  **Published 2026-10-30** (owner approved a full `sync_wiki.sh push`: live `806f824..a693f8d`, 213
+  files = 69 new + 144 changed; verified by a fresh clone: 988 files identical, no CRLF). Before it, 171
+  working-tree `.md` files were CRLF (old checkout) and would have been pushed as CRLF: the tree is
+  LF now and `push` strips CRs. The live wiki also holds a `.gitattributes` the repo's `wiki/` lacks.
