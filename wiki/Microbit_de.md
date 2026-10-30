@@ -151,8 +151,7 @@ micro:bit funktioniert also genau wie in „Spiel testen“. Auch der
 Browser gezeichnet, du kannst Tasten, Logo und Pins anklicken oder antippen,
 Neigungsfeld und Regler ziehen, und der Lautsprecher piept (Browser erlauben Ton
 erst nach dem ersten Klick oder Tastendruck). Der **Android/Kivy**-Export hat
-ihn ebenfalls: Platine und Sensorleiste werden gezeichnet (in vereinfachter
-Optik mit eckigen Ecken), du kannst Tasten, Logo, Pins, Neigungsfeld,
+ihn ebenfalls: Platine und Sensorleiste werden gezeichnet, du kannst Tasten, Logo, Pins, Neigungsfeld,
 Shake-Taste und Regler berühren, die Ereignisse werden ausgelöst, und der
 Lautsprecher spielt seine Töne. Die Tastaturkürzel funktionieren nur für eine
 Platine, deren Eigenschaft (oder Variable) `microbit_keyboard` gesetzt ist. Eine Platine wird an

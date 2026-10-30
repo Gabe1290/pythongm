@@ -3574,6 +3574,14 @@ GameMaker-style base object with movement and collision
 
 from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color, Line, Ellipse, InstructionGroup
+try:
+    from kivy.graphics import Triangle
+except ImportError:          # never on a real Kivy; keeps a polygon command from breaking the import
+    Triangle = None
+try:
+    from kivy.graphics import RoundedRectangle
+except ImportError:          # a very old Kivy: rounded corners fall back to square ones
+    RoundedRectangle = None
 from kivy.core.image import Image as CoreImage
 from kivy.core.text import Label as CoreLabel
 from kivy.core.window import Window
@@ -4743,6 +4751,46 @@ class GameObject(Widget):
         except Exception:
             return (1, 1, 1, 1)
 
+    @staticmethod
+    def _dq_triangulate(points):
+        """Split a simple polygon (3+ points, either winding, concave allowed) into
+        triangles by ear clipping. Returns a list of (a, b, c) point triples; a degenerate
+        polygon (zero area, or no ear found) yields a fan from the first point instead."""
+        pts = [tuple(p) for p in points]
+        n = len(pts)
+        if n < 3:
+            return []
+        area2 = sum(pts[i][0] * pts[(i + 1) % n][1] - pts[(i + 1) % n][0] * pts[i][1]
+                    for i in range(n))
+        if area2 == 0:
+            return []
+        order = list(range(n))
+        if area2 < 0:
+            order.reverse()                      # make it counter-clockwise
+
+        def cross(o, a, b):
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+        def inside(p, a, b, c):
+            return cross(a, b, p) >= 0 and cross(b, c, p) >= 0 and cross(c, a, p) >= 0
+
+        tris = []
+        while len(order) > 3:
+            for k in range(len(order)):
+                i0, i1, i2 = order[k - 1], order[k], order[(k + 1) % len(order)]
+                a, b, c = pts[i0], pts[i1], pts[i2]
+                if cross(a, b, c) <= 0:
+                    continue                     # a reflex or flat corner is not an ear
+                if any(inside(pts[j], a, b, c) for j in order if j not in (i0, i1, i2)):
+                    continue                     # another vertex lies inside: not an ear
+                tris.append((a, b, c))
+                order.pop(k)
+                break
+            else:
+                return [(pts[0], pts[i], pts[i + 1]) for i in range(1, n - 1)]
+        tris.append(tuple(pts[i] for i in order))
+        return tris
+
     # __PYGM_EXTENSION_BASE_CODE__
     def _render_draw_queue(self):
         """Render queued draw commands as Kivy canvas instructions.
@@ -4805,13 +4853,32 @@ class GameObject(Widget):
             y1 = float(cmd.get('y1', 0))
             x2 = float(cmd.get('x2', 100))
             y2 = float(cmd.get('y2', 100))
+            # Optional corner radius (the micro:bit panels and pads): clamped so it never
+            # exceeds half the shorter side, which Kivy draws as a broken shape.
+            radius = max(0.0, float(cmd.get('radius', 0) or 0))
+            radius = min(radius, abs(x2 - x1) / 2.0, abs(y2 - y1) / 2.0)
             group.add(Color(*color))
             if cmd.get('filled', True):
-                group.add(Rectangle(pos=(x1, room_h - y2),
-                                    size=(x2 - x1, y2 - y1)))
+                if radius > 0 and RoundedRectangle is not None:
+                    group.add(RoundedRectangle(pos=(x1, room_h - y2),
+                                               size=(x2 - x1, y2 - y1), radius=[radius]))
+                else:
+                    group.add(Rectangle(pos=(x1, room_h - y2),
+                                        size=(x2 - x1, y2 - y1)))
+            elif radius > 0:
+                group.add(Line(rounded_rectangle=(x1, room_h - y2,
+                                                  x2 - x1, y2 - y1, radius), width=1))
             else:
                 group.add(Line(rectangle=(x1, room_h - y2,
                                           x2 - x1, y2 - y1), width=1))
+        elif ctype == 'polygon':
+            # A filled polygon (room coordinates, y down), concave allowed: split into
+            # triangles because Kivy's Triangle is the only filled polygon primitive here.
+            pts = [(float(p[0]), room_h - float(p[1])) for p in cmd.get('points', [])]
+            group.add(Color(*color))
+            if Triangle is not None:
+                for tri in self._dq_triangulate(pts):
+                    group.add(Triangle(points=[c for p in tri for c in p]))
         elif ctype == 'ellipse':
             x1 = float(cmd.get('x1', 0))
             y1 = float(cmd.get('y1', 0))

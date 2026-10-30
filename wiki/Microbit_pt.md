@@ -144,7 +144,7 @@ navegador, pode clicar ou tocar nos botões, no logotipo e nos pinos, arrastar o
 painel de inclinação e os controles deslizantes, e o alto-falante emite bips (os
 navegadores só permitem som depois do primeiro clique ou da primeira tecla). A
 exportação **Android/Kivy** também o tem: a placa e a faixa de sensores são
-desenhadas (com um aspecto simplificado, de cantos retos), pode tocar nos botões,
+desenhadas, pode tocar nos botões,
 no logotipo, nos pinos, no painel de inclinação, no botão de sacudir e nos
 controles deslizantes, os eventos disparam e o alto-falante reproduz as suas
 notas. Os atalhos de teclado só funcionam em uma placa cuja propriedade (ou variável)

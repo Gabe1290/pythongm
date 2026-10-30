@@ -148,7 +148,7 @@ disegnate nel browser, puoi fare clic o toccare i pulsanti, il logo e i pin,
 trascinare il pad di inclinazione e i cursori, e l'altoparlante emette bip (i
 browser consentono il suono solo dopo il primo clic o la prima pressione di un
 tasto). Anche l'esportazione **Android/Kivy** ce l'ha: la scheda e la barra dei
-sensori sono disegnate (in un aspetto semplificato, con angoli squadrati), puoi
+sensori sono disegnate, puoi
 toccare i pulsanti, il logo, i pin, il pad di inclinazione, il pulsante di
 scossa e i cursori, gli eventi scattano e l'altoparlante riproduce le sue note.
 Le scorciatoie da tastiera funzionano solo per una scheda la cui proprietà (o variabile)

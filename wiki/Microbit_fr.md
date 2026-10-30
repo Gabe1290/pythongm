@@ -150,8 +150,7 @@ dessinées dans le navigateur, on peut cliquer ou toucher les boutons, le logo
 et les broches, faire glisser la zone d'inclinaison et les curseurs, et le
 haut-parleur émet des bips (les navigateurs n'autorisent le son qu'après le
 premier clic ou la première touche). L'export **Android/Kivy** l'a aussi : la carte
-et la bande de capteurs sont dessinées (avec un aspect simplifié, aux coins
-carrés), on peut toucher les boutons, le logo, les broches, la zone
+et la bande de capteurs sont dessinées, on peut toucher les boutons, le logo, les broches, la zone
 d'inclinaison, le bouton de secousse et les curseurs, les événements se
 déclenchent et le haut-parleur joue ses notes. Les raccourcis clavier ne
 fonctionnent que pour une carte dont la propriété (ou variable) `microbit_keyboard` est

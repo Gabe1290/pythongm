@@ -142,9 +142,10 @@ properties of the JS (constants and tables equal to the Python source).
   built as **draw-queue commands** (`kivy_draw.py` -> `microbit_sim/draw.py`;
   `layout.py` ships verbatim with a stub `state.py`) and drawn by the exported
   game's own `_dq_render_cmd` into a per-board group on the instance's
-  `canvas.after`, so the y-flip and view handling already exist. The queue has
+  `canvas.after`, so the y-flip and view handling already exist. At first the queue had
   no polygon or rounded rectangle, so the corner wedge, A/B tags and rounded
-  corners are left out. Text gained an optional `anchor` (center / midbottom /
+  corners were left out; queue item A9 added a `radius` on `rectangle` and a `polygon` command
+  (ear-clipped into `Triangle`s) and they are drawn now. Text gained an optional `anchor` (center / midbottom /
   bottomleft) in the Kivy renderer. `tests/test_kivy_microbit_draw.py`
   rasterises the commands and compares ~40 sample points per state with
   `renderer.py` (10 states x 2 scales). Unverified: a real Kivy canvas, text size

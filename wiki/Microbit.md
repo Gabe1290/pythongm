@@ -142,7 +142,7 @@ simulator too: the board and sensor strip are drawn in the browser, you can
 click or touch the buttons, logo and pins, drag the tilt pad and sliders, and
 the speaker beeps (browsers only allow sound after the first click or key
 press). The **Android/Kivy** export has it too: the board and sensor strip are
-drawn (in a simplified look, with square corners), you can touch the buttons,
+drawn, you can touch the buttons,
 logo, pins, tilt pad, shake button and sliders, the events fire, and the
 speaker plays its notes. The keyboard shortcuts work only for a board whose
 `microbit_keyboard` property (or variable) is set. A board is recognised by its object name

@@ -149,8 +149,7 @@ sensores se dibujan en el navegador, puedes hacer clic o tocar los botones, el
 logotipo y los pines, arrastrar el panel de inclinación y los deslizadores, y el
 altavoz pita (los navegadores solo permiten sonido tras el primer clic o la
 primera pulsación de tecla). La exportación **Android/Kivy** también lo tiene:
-la placa y la franja de sensores se dibujan (con un aspecto simplificado, de
-esquinas rectas), puedes tocar los botones, el logotipo, los pines, el panel de
+la placa y la franja de sensores se dibujan, puedes tocar los botones, el logotipo, los pines, el panel de
 inclinación, el botón de agitar y los deslizadores, los eventos se disparan y el
 altavoz reproduce sus notas. Los atajos de teclado solo funcionan para una placa
 cuya propiedad (o variable) `microbit_keyboard` esté activada. Una placa se reconoce por el

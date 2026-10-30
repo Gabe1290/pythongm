@@ -2619,7 +2619,7 @@ differential test. New GENERIC Kivy seams, usable by any extension:
 hooks `_update_extensions(dt)`, `_extension_touch_down/up/move`,
 `_extension_key_down/up`; an optional `anchor` on the draw-queue text command.
 - **The board is drawn as draw-queue commands**, not a new renderer — the
-  existing `_dq_render_cmd` does the y-flip. Cost: no polygon/rounded corners.
+  existing `_dq_render_cmd` does the y-flip (and, since A9, draws `polygon` and rounded `rectangle`).
 - **Landmines:** `kivy_draw.py` must sit next to `layout.py` (relative import)
   or it can't be imported IDE-side; `BASE_OBJECT_CODE` is a plain string but
   `SCENE_CODE` is %-formatted (double any `%` there); CI runs pytest from
@@ -2644,6 +2644,12 @@ excluded at the end (7,912+ passed, 0 failed).
   and every extension's tests loaded it alone. Test with ALL extensions forced on
   (`tests/test_kivy_extension_hook_coexistence.py` shows how, and resets
   `code_generator._EXTENSION_CODEGEN`, a process-wide cache).
+- **Real Kivy runs here (A9).** Kivy 2.3.1 is installed on this Windows box and works headless with
+  `Config.set('graphics', 'window_state', 'hidden')`; an `Fbo`'s `.pixels` can be read back. Creating
+  a graphics instruction WITHOUT a window segfaults, so use a subprocess (`tests/_real_kivy_render.py`,
+  driven by `test_kivy_microbit_real_render.py`; skips where Kivy or a GL context is missing). The
+  generated `objects/base_object.py` imports and renders under it: use this for any Kivy draw code
+  instead of trusting the stub harness alone.
 - **The intermittent native crash (A1)** is not solved: `Qt6Quick.dll + 0x11593b` inside the
   QWebEngineView's QQuickWidget, never reproduced in 70+ runs. Hardened (`conftest.
   dispose_qt_widget`), and `tools/analyze_crash_dump.py` reads a `python.exe` dump from

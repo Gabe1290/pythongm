@@ -142,7 +142,7 @@ simulator: ploščica in vrstica tipal se narišeta v brskalniku, gumbe, logotip
 priključke lahko kliknete ali se jih dotaknete, ploskev nagiba in drsnike
 vlečete, zvočnik pa piska (brskalniki dovolijo zvok šele po prvem kliku ali
 pritisku tipke). Tudi izvoz **Android/Kivy** ga ima: ploščica in vrstica tipal
-se narišeta (v poenostavljeni podobi, z oglatimi vogali), dotaknete se lahko
+se narišeta, dotaknete se lahko
 gumbov, logotipa, priključkov, ploskve nagiba, gumba za tresenje in drsnikov,
 dogodki se sprožijo, zvočnik pa predvaja svoje note. Bližnjice na tipkovnici
 delujejo le za ploščico, pri kateri je vklopljena lastnost (ali spremenljivka)
