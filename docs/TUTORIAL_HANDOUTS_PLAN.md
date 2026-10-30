@@ -256,7 +256,8 @@ rest of the teacher guide.
   ODT, and a real rendered PDF's extracted text via `pymupdf` for PDF,
   `pytest.importorskip`-gated the same way `test_student_download_flyer.py`
   already gates on `fpdf`/`pymupdf`).
-- Not done: publishing this to the live wiki (`scripts/sync_wiki.sh push`)
-  -- outward-facing, needs explicit approval per the publishing-mechanics
-  note above; the U14 entry only covered the original 3-kind set.
+- Published (this note used to say "not done"): the answer-key pages and everything else in
+  `wiki/` are live. Checked 2026-10-30: all 32 `Answer-Key-*` pages, the 98 teacher-resource pages
+  and the 15 `downloads/solutions/*.zip` were already on the live wiki before that day's full
+  `sync_wiki.sh push`, and a fresh clone of the live wiki matches `wiki/` byte for byte.
 
