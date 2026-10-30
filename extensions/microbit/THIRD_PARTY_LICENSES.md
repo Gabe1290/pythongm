@@ -181,6 +181,10 @@ source of two MIT-licensed libraries by the Micro:bit Educational Foundation:
   2020 Micro:bit Educational Foundation") -- the Universal Hex block format.
 
 Both are MIT-licensed; the MIT notice above applies to the portions derived from
-them. The Universal Hex *specification text*
+them. `tests/data/microbit_fs_hardware_vectors.json` is data extracted from microbit-fs's
+`src/__tests__/micropython-fs-builder.spec.ts` (MIT, "Copyright (c) 2019 Micro:bit Educational
+Foundation and the microbit-fs contributors"): file-system bytes that spec says were captured from a
+real micro:bit running MicroPython v1.0.1. `tools/verify_microbit_hex_against_reference.py` downloads
+(and does not vendor or run anything from) fixtures of both repositories, pinned by commit and SHA-256. The Universal Hex *specification text*
 (https://github.com/microbit-foundation/spec-universal-hex) is CC-BY-SA-4.0 and
 is cited, not copied.

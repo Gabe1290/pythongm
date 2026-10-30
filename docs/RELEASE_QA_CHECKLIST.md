@@ -624,7 +624,10 @@ tests can pin is pinned; this is the part only eyes and ears can check.
   reference `@microbit/microbit-fs` `addIntelHexFiles` over
   `extensions/microbit/export/firmware/micropython-microbit-v2.1.2.hex` with the
   same `main.py` and diff its file-system region (`0x6D000`-`0x73000`) against
-  ours; they must be identical.
+  ours; they must be identical. (The chunk format and the Universal Hex writers are
+  already checked against the reference's real-board bytes and golden files, offline:
+  `tests/test_microbit_mpfs_hardware_vectors.py`, `tools/verify_microbit_hex_against_reference.py`;
+  this item is now only about OUR v2.1.2 firmware's placement.)
 
 ---
 

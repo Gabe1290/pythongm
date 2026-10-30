@@ -177,7 +177,11 @@ the export families:
   under a stub `kivy` (Kivy cannot run in CI); the last plays the real
   `microbit_1` sample.
 - **MicroPython / hex:** `test_microbit_micropython_export*.py`,
-  `test_microbit_{intel_hex,flash_regions,mpfs,hex_build,v2_hex_build,universal_hex,universal_build}.py`.
+  `test_microbit_{intel_hex,flash_regions,mpfs,hex_build,v2_hex_build,universal_hex,universal_build,universal_blocks,mpfs_hardware_vectors}.py`.
+  `test_microbit_mpfs_hardware_vectors.py` checks the file-system chunk format against bytes captured from a real
+  micro:bit (the reference spec's); `tools/verify_microbit_hex_against_reference.py` (network, on demand) repeats the
+  comparison with the reference libraries' golden Universal Hex files and V2 firmware fixture (11 assertions, all equal
+  on 2026-10-30).
 - **Wiki:** `test_wiki_microbit_pages.py` keeps the nine language pages in step.
 
 They assert *where* things land (LED (2,2) is red at its computed position; a

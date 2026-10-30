@@ -1038,10 +1038,12 @@ rough order of value:
   firmware's Flash Regions Table), or **one Universal Hex for both** (limited by
   V1's 8 KB slot: 8,187 bytes). **Still open for it:** (a) needs a real board:
   the actual `microfs` write, that each built `.hex` boots and runs, that a
-  Universal Hex flashes on both a V1 and a V2 (QA checklist s11a); (b) a
-  cross-check of the V2 file system bytes against the JavaScript reference
-  `microbit-fs` (needs Node; could not be run here) -- a difference is a bug;
-  (c) the older Universal Hex "blocks" layout. (The Stage X dialog strings are
+  Universal Hex flashes on both a V1 and a V2 (QA checklist s11a); (b)
+  ~~a cross-check against the JavaScript reference `microbit-fs`~~ and (c) ~~the older Universal
+  Hex "blocks" layout~~ -- both **done 2026-10-30**, without running Node: the file-system chunk
+  format equals bytes captured from a real micro:bit, the Universal Hex writers equal the reference's golden
+  files byte for byte, and `hex_to_blocks` exists (not in the dialog) -- see `docs/MICROBIT_V2_HEX_PLAN.md`,
+  `tools/verify_microbit_hex_against_reference.py`. (The Stage X dialog strings are
   now translated in all 10 shipped languages; `tests/test_microbit_export_ui_translations.py`.)
 - ~~**Stage P — export parity**~~ **done, 2026-10-29** (HTML5 H1-H6, Kivy
   K1-K6; `docs/MICROBIT_STAGE_P_PLAN.md`). **Still open for it:** nobody has

@@ -145,13 +145,24 @@ These go in `docs/RELEASE_QA_CHECKLIST.md` s11a.
 
 - **A real board.** That a built V2 `.hex` boots and runs, and that a Universal Hex
   flashes on both a V1 and a V2, is untested -- `docs/RELEASE_QA_CHECKLIST.md` s11a.
-- **A cross-check against the reference library.** Running the JavaScript
-  `microbit-fs` over the same firmware and script and diffing the file system
-  bytes would be the strongest check available; it needs Node and npm packages,
-  which this environment would not run. If someone with Node does it, a
-  difference is a bug here.
-- The older Universal Hex **"blocks"** layout (the specification recommends
-  "sections", which is what is built).
+- **Running the JavaScript reference itself** (`microbit-fs` over our firmware and script, diffing the
+  file-system region) was refused twice by the environment (it will not run a downloaded Node binary) and
+  was replaced on 2026-10-30 by a stronger, offline set of checks that needs no third-party code to run:
+  - the file-system **chunk format** equals bytes the reference spec says it captured from a *real
+    micro:bit* (a file that exactly fills a chunk, one byte short, one over, a 10-chunk file, files at
+    scattered chunk positions), in both directions: `tests/test_microbit_mpfs_hardware_vectors.py`;
+  - `create_universal_hex` equals the reference's own golden Universal Hex **byte for byte** (844,812
+    characters, real MakeCode hexes) and `separate_universal_hex` returns what its tests expect;
+  - `read_flash_regions` reads the reference's V2 firmware fixture exactly as its spec expects;
+  - the last two: `tools/verify_microbit_hex_against_reference.py` (network, 11 assertions, pinned commits +
+    SHA-256, all equal).
+  What is *not* covered: our own V2 v2.1.2 firmware has no golden output to diff against, so the end-to-end
+  `.hex` is still untried on a board (above).
+- ~~The older Universal Hex **"blocks"** layout~~ -- done 2026-10-30: `hex_to_blocks` /
+  `create_universal_hex(blocks=True)`, equal to the reference's golden blocks file byte for byte (the last block
+  of the whole file is left unpadded, as there; every other block is exactly 512 characters).
+  `tests/test_microbit_universal_blocks.py`. Not offered in the export dialog: the sections layout stays the
+  default (the specification's recommendation), and nothing needs blocks unless a real board proves it does.
 - ~~The Stage X dialog strings are untranslated~~ -- done: all 36 strings are in the
   `PyGameMakerIDE` context of the 10 shipped languages, pinned by
   `tests/test_microbit_export_ui_translations.py`.

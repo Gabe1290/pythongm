@@ -305,20 +305,100 @@ def hex_to_section(hex_text, board_id):
     return "\n".join(lines)
 
 
-def create_universal_hex(hexes):
+def hex_to_blocks(hex_text, board_id, pad_final_block=True):
+    """One board's Intel Hex in the older Universal Hex **"blocks"** layout: every 512-character
+    block is self-contained -- extended-linear-address, Block Start, the records that fit, padding,
+    Block End -- instead of one section per board. A port of ``iHexToCustomFormatBlocks`` from
+    microbit-universal-hex (MIT). Every block is padded to exactly 512 characters, so a following
+    section stays aligned (the reference's current code leaves a hex's last block unpadded, which its
+    own test marks a known TODO; the golden file it ships pads it, and so does this). The one block
+    that stays short is the very last of a whole file when ``pad_final_block`` is False: it closes with
+    a zero-length Block End and the end-of-file record, exactly as in that golden file
+    (``create_universal_hex`` passes False for the last hex). The end-of-file record is kept if the
+    input had one.
+    """
+    records = split_records(hex_text)
+    if not records:
+        return ""
+    if _is_universal_records(records):
+        raise UniversalHexError(f"Board ID {board_id} Hex is already a Universal Hex.")
+
+    custom_data = board_id not in V1_BOARD_IDS
+    start = block_start_record(board_id)
+    current_ext = ext_lin_address_record(0)
+    ext_len = len(current_ext) + 1
+    start_len = len(start) + 1
+    end_base = len(block_end_record(0)) + 1
+    pad_base = len(padded_data_record(0)) + 1
+    capacity = find_data_field_length(records)
+
+    def close_block(block, block_len):
+        """Pad with Padded Data records, then end the block with a Block End that makes it exactly
+        BLOCK_SIZE characters. ``block_len`` does not yet count the Block End."""
+        while BLOCK_SIZE - block_len > capacity * 2 + end_base:
+            block.append(padded_data_record(min((BLOCK_SIZE - block_len - end_base - pad_base) >> 1, capacity)))
+            block_len += len(block[-1]) + 1
+        block.append(block_end_record((BLOCK_SIZE - block_len - end_base) >> 1))
+
+    lines = []
+    i = 0
+    while i < len(records):
+        first_type = get_record_type(records[i])
+        if first_type == TYPE_EXT_LINEAR:
+            current_ext = records[i]
+            i += 1
+        elif first_type == TYPE_EXT_SEGMENT:
+            current_ext = convert_ext_segment_to_linear(records[i])
+            i += 1
+        block = [current_ext, start]
+        block_len = ext_len + start_len
+        end_of_file = False
+        # the Block End is always reserved room (end_base) while records are added
+        while i < len(records) and BLOCK_SIZE >= block_len + end_base + len(records[i]) + 1:
+            record = records[i]
+            i += 1
+            record_type = get_record_type(record)
+            if custom_data and record_type == TYPE_DATA:
+                record = convert_record_to(record, TYPE_CUSTOM_DATA)
+            elif record_type == TYPE_EXT_LINEAR:
+                current_ext = record
+            elif record_type == TYPE_EXT_SEGMENT:
+                record = convert_ext_segment_to_linear(record)
+                current_ext = record
+            elif record_type == TYPE_EOF:
+                end_of_file = True
+                break
+            block.append(record)
+            block_len += len(record) + 1
+        if end_of_file and i != len(records):
+            raise _misplaced_eof(board_id, i, len(records), records)
+        if end_of_file and not pad_final_block:
+            block.append(block_end_record(0))
+        else:
+            close_block(block, block_len)
+        lines.extend(block)
+        if end_of_file:
+            lines.append(EOF_RECORD)
+    lines.append("")
+    return "\n".join(lines)
+
+
+def create_universal_hex(hexes, blocks=False):
     """One Universal Hex from ``[(board_id, intel_hex_text), ...]``, in order.
-    Only the last section keeps the end-of-file record."""
+    Only the last section keeps the end-of-file record. ``blocks=True`` writes the older
+    "blocks" layout (``hex_to_blocks``) instead of one section per board."""
     if not hexes:
         return ""
+    convert = hex_to_blocks if blocks else hex_to_section
     eof_line = EOF_RECORD + "\n"
     parts = []
     for board_id, text in hexes[:-1]:
-        section = hex_to_section(text, board_id)
+        section = convert(text, board_id)
         if section.endswith(eof_line):
             section = section[:-len(eof_line)]
         parts.append(section)
     last_id, last_text = hexes[-1]
-    last = hex_to_section(last_text, last_id)
+    last = hex_to_blocks(last_text, last_id, pad_final_block=False) if blocks else hex_to_section(last_text, last_id)
     parts.append(last)
     if not last.endswith(eof_line):
         parts.append(eof_line)
