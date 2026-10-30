@@ -1046,8 +1046,7 @@ rough order of value:
 - ~~**Stage P — export parity**~~ **done, 2026-10-29** (HTML5 H1-H6, Kivy
   K1-K6; `docs/MICROBIT_STAGE_P_PLAN.md`). **Still open for it:** nobody has
   used it on a real touch screen or heard the beep; the Kivy board has square
-  corners and no corner wedge/A-B tags (the draw queue has no polygon);
-  the Kivy scene's per-frame hook `_update_extensions` is a single override.
+  corners and no corner wedge/A-B tags (the draw queue has no polygon).
 - **Block colour and event labels:** the micro:bit's generated Blockly blocks
   draw in the default grey (the category-colour table in
   `blockly_workspace.html` is core), and the extension-event drop-down labels

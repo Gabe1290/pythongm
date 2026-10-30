@@ -2569,33 +2569,61 @@ class {class_name}(Widget):
         self._bg_scroll_y = (self._bg_scroll_y + self._bg_vspeed * speed_factor) % max(1, th)
         self._rebuild_bg_image_group()
 
-    # Extension hooks (Stage C). Defaults are no-ops; the raycast extension
-    # injects overriding _init_extensions / _render_extension_overlay and its
-    # render methods at the __PYGM_EXTENSION_SCENE_CODE__ marker below.
+    # Extension hooks. An extension's SCENE_CODE (injected at the marker below) adds
+    # methods named _ext_<hook>__<extension> -- hooks: init, overlay, update, touch_down,
+    # touch_up, touch_move, key_down, key_up -- and the dispatchers here call every one, in
+    # name order. (They used to be plain overrides of one shared name, so with two extensions
+    # enabled the last one injected silently won: Block World's renderer never ran next to the
+    # raycast one.) A touch hook returning True swallows the touch; the first overlay that
+    # returns True claims the frame; key hooks never swallow.
+    def _ext_handlers(self, hook):
+        cache = self.__dict__.setdefault('_ext_handler_cache', dict())
+        found = cache.get(hook)
+        if found is None:
+            prefix = '_ext_' + hook + '__'
+            found = cache[hook] = [getattr(self, n) for n in sorted(dir(type(self)))
+                                   if n.startswith(prefix)]
+        return found
+
     def _init_extensions(self):
-        pass
+        for fn in self._ext_handlers('init'):
+            fn()
 
     def _render_extension_overlay(self):
+        for fn in self._ext_handlers('overlay'):
+            if fn():
+                return True
         return False
 
     def _update_extensions(self, dt):
-        pass
+        for fn in self._ext_handlers('update'):
+            fn(dt)
 
-    # Input hooks. Return True to swallow a touch; key hooks never swallow.
     def _extension_touch_down(self, touch, mx, my, button):
+        for fn in self._ext_handlers('touch_down'):
+            if fn(touch, mx, my, button):
+                return True
         return False
 
     def _extension_touch_up(self, touch, mx, my, button):
+        for fn in self._ext_handlers('touch_up'):
+            if fn(touch, mx, my, button):
+                return True
         return False
 
     def _extension_touch_move(self, touch, mx, my):
+        for fn in self._ext_handlers('touch_move'):
+            if fn(touch, mx, my):
+                return True
         return False
 
     def _extension_key_down(self, key):
-        pass
+        for fn in self._ext_handlers('key_down'):
+            fn(key)
 
     def _extension_key_up(self, key):
-        pass
+        for fn in self._ext_handlers('key_up'):
+            fn(key)
 
     # __PYGM_EXTENSION_SCENE_CODE__
 

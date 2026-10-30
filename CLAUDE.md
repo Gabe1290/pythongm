@@ -2630,3 +2630,25 @@ hooks `_update_extensions(dt)`, `_extension_touch_down/up/move`,
   those files separately.
 - **Needs human eyes:** a real Android/iOS run (touch, drawn look, text size,
   beep). Suite 7,170+ passed, 0 failed (non-Blockly).
+
+**2026-10-30 — Work queue `docs/OPEN_WORK_2026-10-29.md`: A1-A8 done (resume state is that
+file's checkboxes).** One commit per item, each with a guard test, a full suite with nothing
+excluded at the end (7,912+ passed, 0 failed).
+- **Kivy extension seams, as they stand:** `export_kivy.py` may expose `SUPPORT_FILES`,
+  `ACTION_CODEGEN`, `CONDITION_CODEGEN`, `EVENT_METHODS`, `INSTANCE_ATTRS` (room-entry keys copied
+  onto the instance), `OBJECT_ATTRS` (object-JSON keys baked into the class), `SCENE_CODE` and
+  `BASE_OBJECT_CODE`. Scene hooks are **`_ext_<hook>__<extension>` methods**, never overrides.
+  **Landmine this exposed (A8):** with several extensions enabled each scene held three
+  definitions of `_init_extensions` / `_render_extension_overlay` and the last (raycast) silently
+  won, so Block World's Kivy renderer never ran; invisible because this box disables Block World
+  and every extension's tests loaded it alone. Test with ALL extensions forced on
+  (`tests/test_kivy_extension_hook_coexistence.py` shows how, and resets
+  `code_generator._EXTENSION_CODEGEN`, a process-wide cache).
+- **The intermittent native crash (A1)** is not solved: `Qt6Quick.dll + 0x11593b` inside the
+  QWebEngineView's QQuickWidget, never reproduced in 70+ runs. Hardened (`conftest.
+  dispose_qt_widget`), and `tools/analyze_crash_dump.py` reads a `python.exe` dump from
+  `%LOCALAPPDATA%\CrashDumps` if it recurs.
+- **Wiki:** the micro:bit page (with the MicroPython export section) and the Network page exist
+  in all nine languages; guard tests `test_wiki_microbit_pages.py` / `test_wiki_network_pages.py`.
+  File Exchange is still English-only outside French. The Junior teacher guide EN matches FR.
+  Nothing from this session is published to the live wiki.

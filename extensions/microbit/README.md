@@ -28,7 +28,7 @@ languages); the sample is `samples/microbit_1/`.
 | `kivy_touch.py` | Touch and keyboard control of the drawn board for a Kivy export (pure); `input.py` is its desktop twin. |
 | `kivy_draw.py` | The board and sensor strip as draw-queue commands (pure), shipped into a Kivy export; `renderer.py` is its pygame twin. |
 | `export_html5.js` | The HTML5 export's port of the simulator, board, input and speaker (Stage P, H1-H6), injected into the exported `engine.js` through its extension registries. |
-| `export_kivy.py` | The Kivy (Android/iOS) export's side (Stage P, K1-K6). Plain data, because the loader `exec`s it without `__file__`: `SUPPORT_FILES` (which pure modules ship as `microbit_sim/`), `ACTION_CODEGEN`, `CONDITION_CODEGEN`, `EVENT_METHODS`, `SCENE_CODE` (the per-frame step, touch and key hooks) and `BASE_OBJECT_CODE` (the `_mb_*` helpers). |
+| `export_kivy.py` | The Kivy (Android/iOS) export's side (Stage P, K1-K6). Plain data, because the loader `exec`s it without `__file__`: `SUPPORT_FILES` (which pure modules ship as `microbit_sim/`), `ACTION_CODEGEN`, `CONDITION_CODEGEN`, `EVENT_METHODS`, `SCENE_CODE` (the per-frame step, touch and key hooks, as `_ext_<hook>__microbit` methods) and `BASE_OBJECT_CODE` (the `_mb_*` helpers). |
 | `renderer.py` | The pygame drawing: board, LEDs, controls, speaker indicator, sensor strip. |
 | `input.py` | Mouse clicks and drags on the drawn controls, and the opt-in keyboard shortcuts. |
 | `audio.py` | A square wave on a reserved mixer channel; a silent no-op without a mixer. |
@@ -101,6 +101,11 @@ over USB) can drive the same simulator.
 - **A new event type needs a row in each export port.** Kivy needs an `EVENT_METHODS` entry (without one
   the export *warns* that the event's actions are skipped); HTML5 needs a row in the generated tables
   (`tools/gen_microbit_js_tables.py --check`; without one the event just never fires there).
+- **Kivy scene hooks are `_ext_<hook>__<extension>` methods, never overrides.** The scene's dispatchers
+  (`_update_extensions`, `_extension_touch_down`, `_render_extension_overlay`, ...) call every one, in name
+  order; a plain override of a shared name made the last-injected extension win (raycast silently shadowed
+  Block World's renderer). `tests/test_kivy_extension_hook_coexistence.py` exports with every extension
+  enabled and pins one definition per hook.
 - **A test must not use a repo-relative path**: CI runs pytest from `tests/`, so `samples/...` only exists
   from the repo root (six of the MicroPython export tests failed in CI for exactly that).
 - **Frozen desktop builds find the extension under `sys._MEIPASS`**; a missing one

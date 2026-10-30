@@ -4,12 +4,12 @@ SCENE_CODE is class-body Python (4-space-indented methods) that
 KivyExporter._inject_extension_scene_code drops into every generated scene
 class at its __PYGM_EXTENSION_SCENE_CODE__ marker, AFTER .format() -- so the
 { } dict/set literals here are single, not doubled. It overrides the scene's
-no-op _init_extensions / _render_extension_overlay hooks and carries the DDA
+no-op _init_extensions / _render_extension_overlay dispatchers (by adding _ext_init__ / _ext_overlay__ methods) and carries the DDA
 renderer, a faithful port of extensions/raycast_2_5d/renderer.py. Numeric
 parity with desktop + HTML5 is pinned by tests/test_raycast_export_parity.py.
 """
 
-SCENE_CODE = '''\n    def _init_extensions(self):
+SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # Per-scene raycast state (was in the scene __init__ before Stage C2b).
         self.raycast_camera = None
         self._raycast_group = None
@@ -18,7 +18,7 @@ SCENE_CODE = '''\n    def _init_extensions(self):
         self._raycast_tex_cache = {}
         self._raycast_px_cache = {}
 
-    def _render_extension_overlay(self):
+    def _ext_overlay__raycast_2_5d(self):
         # Claim the frame when the raycast camera is enabled; the scene then
         # composites the HUD over this opaque overlay. Returns True if drawn.
         if getattr(self, 'raycast_camera', None) and self.raycast_camera.get('enabled'):

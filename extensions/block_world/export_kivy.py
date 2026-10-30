@@ -132,7 +132,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     BW_TERMINAL_FALL_SPEED = -0.9
     BW_JUMP_GROUND_EPS = 1e-6
 
-    def _init_extensions(self):
+    def _ext_init__block_world(self):
         # Per-scene block-world state (mirrors raycast_2_5d's own
         # _init_extensions -- was in the scene __init__ before Stage C2b).
         self.block_world_camera = None
@@ -166,7 +166,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         cache[filename] = tex
         return tex
 
-    def _render_extension_overlay(self):
+    def _ext_overlay__block_world(self):
         if getattr(self, 'block_world_camera', None) and self.block_world_camera.get('enabled'):
             self._render_block_world()
             return True

@@ -204,8 +204,8 @@ CONDITION_CODEGEN = {
 # Scene class-body code (K2), injected at the scene's extension marker: steps
 # every board once per frame, after collision (the desktop's after_collision
 # hook), and fires what they report as `on_<event>` on the board's instance.
-# NOTE: `_update_extensions` is a single override -- a second extension needing
-# the per-frame hook would have to chain.
+# The scene's dispatchers (kivy_exporter.py) call every `_ext_<hook>__<extension>` method, so this
+# extension shares the per-frame, touch and key hooks with any other.
 # ---------------------------------------------------------------------------
 SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------------------
     _MB_FIXED_EVENTS = %(fixed)r
@@ -219,7 +219,7 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
             return 'microbit_gesture_' + gesture if gesture else None
         return self._MB_FIXED_EVENTS.get('%%s:%%s' %% (kind, detail))
 
-    def _update_extensions(self, dt):
+    def _ext_update__microbit(self, dt):
         boards = [i for i in list(self.instances)
                   if getattr(i, '_mb_sim', None) is not None and i._mb_sim() is not None]
         if not boards:
@@ -262,15 +262,15 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
             presses = self._mb_press_state = {}
         return presses
 
-    def _extension_touch_down(self, touch, mx, my, button):
+    def _ext_touch_down__microbit(self, touch, mx, my, button):
         from microbit_sim import touch as mb_touch
         return mb_touch.press(self._mb_entries(), self._mb_presses(), button, mx, my)
 
-    def _extension_touch_up(self, touch, mx, my, button):
+    def _ext_touch_up__microbit(self, touch, mx, my, button):
         from microbit_sim import touch as mb_touch
         return mb_touch.release(self._mb_presses(), button, mx, my)
 
-    def _extension_touch_move(self, touch, mx, my):
+    def _ext_touch_move__microbit(self, touch, mx, my):
         from microbit_sim import touch as mb_touch
         presses = self._mb_presses()
         if not mb_touch.dragging(presses):
@@ -294,10 +294,10 @@ SCENE_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------------
                 held = inst._mb_tilt_keys = set()
             (mb_touch.key_down if down else mb_touch.key_up)(sim, held, name)
 
-    def _extension_key_down(self, key):
+    def _ext_key_down__microbit(self, key):
         self._mb_key(key, True)
 
-    def _extension_key_up(self, key):
+    def _ext_key_up__microbit(self, key):
         self._mb_key(key, False)
 ''' %{"fixed": _FIXED_EVENTS, "gestures": _GESTURE_EVENTS}
 
