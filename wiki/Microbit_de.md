@@ -156,7 +156,7 @@ Optik mit eckigen Ecken), du kannst Tasten, Logo, Pins, Neigungsfeld,
 Shake-Taste und Regler berühren, die Ereignisse werden ausgelöst, und der
 Lautsprecher spielt seine Töne. Die Tastaturkürzel funktionieren nur für eine
 Platine, deren Variable `microbit_keyboard` gesetzt ist. Eine Platine wird an
-ihrem Objektnamen erkannt (er muss mit `microbit` beginnen).
+ihrem Objektnamen erkannt (er muss mit `microbit` beginnen) oder an `is_microbit` bei ihrer Raum-Instanz.
 
 ---
 

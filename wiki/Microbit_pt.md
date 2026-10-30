@@ -149,7 +149,7 @@ no logotipo, nos pinos, no painel de inclinação, no botão de sacudir e nos
 controles deslizantes, os eventos disparam e o alto-falante reproduz as suas
 notas. Os atalhos de teclado só funcionam em uma placa cuja variável
 `microbit_keyboard` esteja ativada. Uma placa é reconhecida pelo nome do seu
-objeto (tem de começar com `microbit`).
+objeto (tem de começar com `microbit`) ou por `is_microbit` na sua instância da sala.
 
 ---
 

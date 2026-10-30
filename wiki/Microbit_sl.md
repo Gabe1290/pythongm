@@ -147,7 +147,7 @@ gumbov, logotipa, priključkov, ploskve nagiba, gumba za tresenje in drsnikov,
 dogodki se sprožijo, zvočnik pa predvaja svoje note. Bližnjice na tipkovnici
 delujejo le za ploščico, pri kateri je vklopljena spremenljivka
 `microbit_keyboard`. Ploščico prepoznamo po imenu njenega predmeta (mora se
-začeti z `microbit`).
+začeti z `microbit`) ali po `is_microbit` pri njenem primerku v sobi.
 
 ---
 

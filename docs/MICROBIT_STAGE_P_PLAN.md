@@ -136,7 +136,7 @@ properties of the JS (constants and tables equal to the Python source).
   `export_kivy.py` and pinned to `events.py` by
   `tests/test_kivy_microbit_events.py` (which also drives the real generated
   scene and compares fired events with the desktop mapping). Not done: the
-  `is_microbit` flag from a room entry (boards are recognised by object name);
+  `is_microbit` flag from a room entry (done later, queue item A6: `INSTANCE_ATTRS`);
   sound reports are ignored until K5; `_update_extensions` is a single override.
 - [x] **K3 -- drawing.** Done, by a different route than sketched: the board is
   built as **draw-queue commands** (`kivy_draw.py` -> `microbit_sim/draw.py`;

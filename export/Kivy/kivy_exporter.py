@@ -11,7 +11,8 @@ from typing import Dict, List, Any
 from core.logger import get_logger
 logger = get_logger(__name__)
 
-from export.Kivy.code_generator import ActionCodeGenerator, _KIVY_KEY_NAME_TO_CODE
+from export.Kivy.code_generator import (
+    ActionCodeGenerator, _KIVY_KEY_NAME_TO_CODE, extension_instance_attrs)
 
 
 def _bg_color_to_rgb(value) -> tuple:
@@ -2083,6 +2084,13 @@ if __name__ == '__main__':
                 instance_code.append(
                     f"        inst_{i} = {class_name_obj}(self, {x}, {y})"
                 )
+                # Room-entry flags an extension reads off its instances (INSTANCE_ATTRS,
+                # e.g. micro:bit's is_microbit). Plain JSON scalars only -- repr() of a
+                # bool/number/str is a safe Python literal.
+                for _key in extension_instance_attrs():
+                    _value = instance.get(_key)
+                    if isinstance(_value, (bool, int, float, str)):
+                        instance_code.append(f"        inst_{i}.{_key} = {_value!r}")
                 instance_code.append(
                     f"        self.add_instance(inst_{i})"
                 )

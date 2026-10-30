@@ -156,7 +156,7 @@ d'inclinaison, le bouton de secousse et les curseurs, les événements se
 déclenchent et le haut-parleur joue ses notes. Les raccourcis clavier ne
 fonctionnent que pour une carte dont la variable `microbit_keyboard` est
 activée. Une carte est reconnue par le nom de son objet (il doit commencer par
-`microbit`).
+`microbit`) ou par `is_microbit` sur son instance dans la salle.
 
 ---
 

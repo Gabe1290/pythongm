@@ -387,6 +387,24 @@ _EXTENSION_CONDITIONS = {}
 # ... and EVENT_METHODS: {event_type: handler method name}. The generated object
 # gets that method; the extension's own scene code calls it (K2).
 _EXTENSION_EVENT_METHODS = {}
+# ... and INSTANCE_ATTRS: room-entry keys (e.g. "is_microbit") the extension wants copied
+# onto the instance that entry creates, as plain attributes (the desktop hands the whole
+# room entry to an on_instance_created hook; a Kivy export has no such hook).
+_EXTENSION_INSTANCE_ATTRS = []
+
+
+def clean_instance_attrs(attrs):
+    """The usable entries of an extension's INSTANCE_ATTRS: a list/tuple of Python identifiers.
+    The names are pasted into generated code (``inst_0.<name> = ...``), so anything that is not
+    a plain identifier is dropped rather than trusted."""
+    if not isinstance(attrs, (list, tuple)):
+        return []
+    return [key for key in attrs if isinstance(key, str) and key.isidentifier()]
+
+
+def extension_instance_attrs():
+    _extension_codegen()
+    return list(_EXTENSION_INSTANCE_ATTRS)
 
 
 def _extension_conditions():
@@ -405,6 +423,7 @@ def _extension_codegen():
         _EXTENSION_CODEGEN = {}
         _EXTENSION_CONDITIONS.clear()
         _EXTENSION_EVENT_METHODS.clear()
+        _EXTENSION_INSTANCE_ATTRS.clear()
         try:
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
@@ -433,6 +452,9 @@ def _extension_codegen():
                 events = ns.get("EVENT_METHODS", {})
                 if isinstance(events, dict):
                     _EXTENSION_EVENT_METHODS.update(events)
+                for key in clean_instance_attrs(ns.get("INSTANCE_ATTRS", ())):
+                    if key not in _EXTENSION_INSTANCE_ATTRS:
+                        _EXTENSION_INSTANCE_ATTRS.append(key)
             except Exception as exc:
                 logger.error(
                     f"Extension '{info['folder']}' export_kivy.py failed to load; "

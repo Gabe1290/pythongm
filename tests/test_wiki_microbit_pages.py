@@ -172,3 +172,13 @@ def test_the_section_names_what_a_v1_board_cannot_do(lang):
     for event in ("Logo Touched", "Loud Sound", "Quiet Sound", "Display Finished", "Sound Finished"):
         assert event in text, event
     assert "main.py" in text and ".hex" in text and "MICROBIT" in text
+
+
+@pytest.mark.parametrize("lang", ALL)
+def test_the_kivy_paragraph_says_a_room_flag_also_makes_a_board(lang):
+    """Queue item A6: a Kivy export honours ``is_microbit`` on a room entry, so the page must
+    say so where it explains how a board is recognised (not only in Getting started)."""
+    text = _page(lang)
+    assert text.count("is_microbit") >= 2
+    exports = text.split("Kivy", 1)[1]
+    assert "is_microbit" in exports, f"{lang}: the Kivy/exports paragraph does not mention is_microbit"

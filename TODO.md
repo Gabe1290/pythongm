@@ -1046,9 +1046,7 @@ rough order of value:
 - ~~**Stage P — export parity**~~ **done, 2026-10-29** (HTML5 H1-H6, Kivy
   K1-K6; `docs/MICROBIT_STAGE_P_PLAN.md`). **Still open for it:** nobody has
   used it on a real touch screen or heard the beep; the Kivy board has square
-  corners and no corner wedge/A-B tags (the draw queue has no polygon); the
-  `is_microbit` room-entry flag is desktop-only on Kivy (boards are found by
-  the `microbit*` object name); Kivy `microbit_scale`/`microbit_show_sensors`/
+  corners and no corner wedge/A-B tags (the draw queue has no polygon); Kivy `microbit_scale`/`microbit_show_sensors`/
   `microbit_keyboard` are read from instance variables, not object properties;
   the Kivy scene's per-frame hook `_update_extensions` is a single override.
 - **Block colour and event labels:** the micro:bit's generated Blockly blocks

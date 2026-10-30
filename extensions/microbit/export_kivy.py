@@ -143,6 +143,10 @@ _GESTURE_EVENTS = {
     "freefall": "free_fall", "2g": "2g", "3g": "3g", "6g": "6g", "8g": "8g",
 }
 
+# Room-entry keys copied onto the instance an entry creates (desktop: __init__'s
+# on_instance_created reads instance_data.get('is_microbit')).
+INSTANCE_ATTRS = ("is_microbit",)
+
 EVENT_METHODS = {name: "on_" + name for name in _FIXED_EVENTS.values()}
 EVENT_METHODS.update({"microbit_gesture_" + g: "on_microbit_gesture_" + g
                       for g in _GESTURE_EVENTS.values()})

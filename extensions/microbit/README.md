@@ -125,8 +125,9 @@ stepped each frame and the micro:bit events fire (radio included) and the board 
 sensor strip are drawn (a simplified look), you can touch the buttons, logo, pins, tilt pad, shake
 button and sliders (and use the opt-in keyboard), and the speaker plays its notes
 (a rendered WAV through `SoundLoader`).
-Boards are recognised by object name only (`microbit*`); the room-entry
-`is_microbit` flag is desktop-only. `tests/test_kivy_microbit_{actions,events,draw,touch,sound,e2e}.py`
+A board is recognised by its object name (`microbit*`) or by `is_microbit` on its room entry (the
+exporter copies the keys listed in `export_kivy.py`'s `INSTANCE_ATTRS` onto the instance it builds).
+`tests/test_kivy_microbit_{actions,events,draw,touch,sound,e2e,room_flag}.py`
 (the last plays the real `microbit_1` sample) and `tests/test_microbit_export_fallthrough.py`
 pin the behaviour.
 
@@ -186,5 +187,4 @@ click at A's computed rectangle fires `microbit_button_a`), and several run a re
 - **Human eyes on the exports.** Nobody has used the exported HTML5 board on a
   touch screen, run the Kivy game on Android or iOS, or heard the beep. The Kivy
   board is drawn in a simplified look (square corners, no corner wedge or A/B
-  tags: the draw queue has no polygon), and on Kivy a board is recognised by its
-  `microbit*` object name only (the room-entry `is_microbit` flag is desktop-only).
+  tags: the draw queue has no polygon).

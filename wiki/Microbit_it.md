@@ -153,7 +153,7 @@ toccare i pulsanti, il logo, i pin, il pad di inclinazione, il pulsante di
 scossa e i cursori, gli eventi scattano e l'altoparlante riproduce le sue note.
 Le scorciatoie da tastiera funzionano solo per una scheda la cui variabile
 `microbit_keyboard` è attiva. Una scheda viene riconosciuta dal nome del suo
-oggetto (deve iniziare con `microbit`).
+oggetto (deve iniziare con `microbit`) o da `is_microbit` sulla sua istanza nella stanza.
 
 ---
 
