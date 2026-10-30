@@ -147,7 +147,7 @@ exportação **Android/Kivy** também o tem: a placa e a faixa de sensores são
 desenhadas (com um aspecto simplificado, de cantos retos), pode tocar nos botões,
 no logotipo, nos pinos, no painel de inclinação, no botão de sacudir e nos
 controles deslizantes, os eventos disparam e o alto-falante reproduz as suas
-notas. Os atalhos de teclado só funcionam em uma placa cuja variável
+notas. Os atalhos de teclado só funcionam em uma placa cuja propriedade (ou variável)
 `microbit_keyboard` esteja ativada. Uma placa é reconhecida pelo nome do seu
 objeto (tem de começar com `microbit`) ou por `is_microbit` na sua instância da sala.
 

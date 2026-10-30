@@ -147,6 +147,10 @@ _GESTURE_EVENTS = {
 # on_instance_created reads instance_data.get('is_microbit')).
 INSTANCE_ATTRS = ("is_microbit",)
 
+# Object-level properties baked into every instance of the object: on the desktop `option_of`
+# falls back to instance.object_data.get(name); an exported object has no such dict.
+OBJECT_ATTRS = ("microbit_scale", "microbit_show_sensors", "microbit_keyboard")
+
 EVENT_METHODS = {name: "on_" + name for name in _FIXED_EVENTS.values()}
 EVENT_METHODS.update({"microbit_gesture_" + g: "on_microbit_gesture_" + g
                       for g in _GESTURE_EVENTS.values()})
@@ -471,7 +475,8 @@ BASE_OBJECT_CODE = '''\n    # -- micro:bit (extension: microbit) ---------------
         instance-owned group on canvas.after, so it sits over the object's own
         sprite as on the desktop. Room coordinates are y-down; the draw-queue
         renderer does the flip. Scale and the strip toggle are read from the
-        instance variables microbit_scale / microbit_show_sensors."""
+        object properties (baked in by OBJECT_ATTRS) or instance variables microbit_scale /
+        microbit_show_sensors; an instance variable wins, as option_of() does on the desktop."""
         sim = self._mb_sim()
         group = getattr(self, '_mb_group', None)
         if sim is None or not self.visible:

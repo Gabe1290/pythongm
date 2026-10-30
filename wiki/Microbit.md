@@ -145,7 +145,7 @@ press). The **Android/Kivy** export has it too: the board and sensor strip are
 drawn (in a simplified look, with square corners), you can touch the buttons,
 logo, pins, tilt pad, shake button and sliders, the events fire, and the
 speaker plays its notes. The keyboard shortcuts work only for a board whose
-`microbit_keyboard` variable is set. A board is recognised by its object name
+`microbit_keyboard` property (or variable) is set. A board is recognised by its object name
 (it must start with `microbit`) or by `is_microbit` on its room instance.
 
 ---

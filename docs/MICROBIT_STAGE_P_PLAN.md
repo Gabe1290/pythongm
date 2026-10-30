@@ -148,9 +148,9 @@ properties of the JS (constants and tables equal to the Python source).
   bottomleft) in the Kivy renderer. `tests/test_kivy_microbit_draw.py`
   rasterises the commands and compares ~40 sample points per state with
   `renderer.py` (10 states x 2 scales). Unverified: a real Kivy canvas, text size
-  (one fixed font, scaled), boards inside a views room. Scale and the strip
-  toggle are read from the instance variables `microbit_scale` /
-  `microbit_show_sensors` (object properties are not exported on Kivy).
+  (one fixed font, scaled), boards inside a views room. Scale, the strip
+  toggle and the keyboard opt-in are read from instance variables or the object's
+  properties (baked in by `OBJECT_ATTRS`, queue item A7).
 - [x] **K4 -- input.** Done. `kivy_touch.py` -> `microbit_sim/touch.py` mirrors
   `input.py` (presses, the A+B right-click chord, tilt pad and slider drags, the
   opt-in keyboard) but takes the geometry explicitly. New generic Kivy scene

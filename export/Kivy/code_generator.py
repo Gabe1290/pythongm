@@ -391,10 +391,19 @@ _EXTENSION_EVENT_METHODS = {}
 # onto the instance that entry creates, as plain attributes (the desktop hands the whole
 # room entry to an on_instance_created hook; a Kivy export has no such hook).
 _EXTENSION_INSTANCE_ATTRS = []
+# ... and OBJECT_ATTRS: OBJECT-level properties (keys of the object's own JSON, e.g.
+# "microbit_keyboard") baked into every instance of that object as plain attributes. The
+# desktop reads these from instance.object_data; an exported object has no such dict.
+_EXTENSION_OBJECT_ATTRS = []
+
+
+def extension_object_attrs():
+    _extension_codegen()
+    return list(_EXTENSION_OBJECT_ATTRS)
 
 
 def clean_instance_attrs(attrs):
-    """The usable entries of an extension's INSTANCE_ATTRS: a list/tuple of Python identifiers.
+    """The usable entries of an extension's INSTANCE_ATTRS / OBJECT_ATTRS: a list/tuple of Python identifiers.
     The names are pasted into generated code (``inst_0.<name> = ...``), so anything that is not
     a plain identifier is dropped rather than trusted."""
     if not isinstance(attrs, (list, tuple)):
@@ -424,6 +433,7 @@ def _extension_codegen():
         _EXTENSION_CONDITIONS.clear()
         _EXTENSION_EVENT_METHODS.clear()
         _EXTENSION_INSTANCE_ATTRS.clear()
+        _EXTENSION_OBJECT_ATTRS.clear()
         try:
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
@@ -455,6 +465,9 @@ def _extension_codegen():
                 for key in clean_instance_attrs(ns.get("INSTANCE_ATTRS", ())):
                     if key not in _EXTENSION_INSTANCE_ATTRS:
                         _EXTENSION_INSTANCE_ATTRS.append(key)
+                for key in clean_instance_attrs(ns.get("OBJECT_ATTRS", ())):
+                    if key not in _EXTENSION_OBJECT_ATTRS:
+                        _EXTENSION_OBJECT_ATTRS.append(key)
             except Exception as exc:
                 logger.error(
                     f"Extension '{info['folder']}' export_kivy.py failed to load; "

@@ -151,7 +151,7 @@ tasto). Anche l'esportazione **Android/Kivy** ce l'ha: la scheda e la barra dei
 sensori sono disegnate (in un aspetto semplificato, con angoli squadrati), puoi
 toccare i pulsanti, il logo, i pin, il pad di inclinazione, il pulsante di
 scossa e i cursori, gli eventi scattano e l'altoparlante riproduce le sue note.
-Le scorciatoie da tastiera funzionano solo per una scheda la cui variabile
+Le scorciatoie da tastiera funzionano solo per una scheda la cui proprietà (o variabile)
 `microbit_keyboard` è attiva. Una scheda viene riconosciuta dal nome del suo
 oggetto (deve iniziare con `microbit`) o da `is_microbit` sulla sua istanza nella stanza.
 

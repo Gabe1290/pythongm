@@ -145,7 +145,7 @@ pritisku tipke). Tudi izvoz **Android/Kivy** ga ima: ploščica in vrstica tipal
 se narišeta (v poenostavljeni podobi, z oglatimi vogali), dotaknete se lahko
 gumbov, logotipa, priključkov, ploskve nagiba, gumba za tresenje in drsnikov,
 dogodki se sprožijo, zvočnik pa predvaja svoje note. Bližnjice na tipkovnici
-delujejo le za ploščico, pri kateri je vklopljena spremenljivka
+delujejo le za ploščico, pri kateri je vklopljena lastnost (ali spremenljivka)
 `microbit_keyboard`. Ploščico prepoznamo po imenu njenega predmeta (mora se
 začeti z `microbit`) ali po `is_microbit` pri njenem primerku v sobi.
 

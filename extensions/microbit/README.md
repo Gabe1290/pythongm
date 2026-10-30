@@ -125,9 +125,11 @@ stepped each frame and the micro:bit events fire (radio included) and the board 
 sensor strip are drawn (a simplified look), you can touch the buttons, logo, pins, tilt pad, shake
 button and sliders (and use the opt-in keyboard), and the speaker plays its notes
 (a rendered WAV through `SoundLoader`).
-A board is recognised by its object name (`microbit*`) or by `is_microbit` on its room entry (the
-exporter copies the keys listed in `export_kivy.py`'s `INSTANCE_ATTRS` onto the instance it builds).
-`tests/test_kivy_microbit_{actions,events,draw,touch,sound,e2e,room_flag}.py`
+A board is recognised by its object name (`microbit*`) or by `is_microbit` on its room entry, and the
+object properties `microbit_scale` / `microbit_show_sensors` / `microbit_keyboard` work (the exporter copies
+the keys listed in `export_kivy.py`'s `INSTANCE_ATTRS` onto the instance it builds and its `OBJECT_ATTRS` into
+the generated object class; an instance variable still wins, as on the desktop).
+`tests/test_kivy_microbit_{actions,events,draw,touch,sound,e2e,room_flag,object_attrs}.py`
 (the last plays the real `microbit_1` sample) and `tests/test_microbit_export_fallthrough.py`
 pin the behaviour.
 

@@ -153,7 +153,7 @@ la placa y la franja de sensores se dibujan (con un aspecto simplificado, de
 esquinas rectas), puedes tocar los botones, el logotipo, los pines, el panel de
 inclinación, el botón de agitar y los deslizadores, los eventos se disparan y el
 altavoz reproduce sus notas. Los atajos de teclado solo funcionan para una placa
-cuya variable `microbit_keyboard` esté activada. Una placa se reconoce por el
+cuya propiedad (o variable) `microbit_keyboard` esté activada. Una placa se reconoce por el
 nombre de su objeto (debe empezar por `microbit`) o por `is_microbit` en su instancia de la sala.
 
 ---

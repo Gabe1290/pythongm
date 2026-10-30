@@ -12,7 +12,8 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 from export.Kivy.code_generator import (
-    ActionCodeGenerator, _KIVY_KEY_NAME_TO_CODE, extension_instance_attrs)
+    ActionCodeGenerator, _KIVY_KEY_NAME_TO_CODE, extension_instance_attrs,
+    extension_object_attrs)
 
 
 def _bg_color_to_rgb(value) -> tuple:
@@ -4993,6 +4994,15 @@ class GameObject(Widget):
         # own GameRunner._destroyed_memory, ported here).
         remember_destroyed = obj_data.get('remember_destroyed', False)
 
+        # Object-level properties an extension reads off its instances (OBJECT_ATTRS, e.g.
+        # micro:bit's microbit_scale / microbit_keyboard): baked in as attributes. Plain JSON
+        # scalars only -- repr() of a bool/number/str is a safe Python literal.
+        extension_attrs = ""
+        for _key in extension_object_attrs():
+            _value = obj_data.get(_key)
+            if isinstance(_value, (bool, int, float, str)):
+                extension_attrs += f"        self.{_key} = {_value!r}" + chr(10)
+
         # Get sprite file path if sprite is set
         sprite_path = ""
         if sprite_name:
@@ -5124,7 +5134,7 @@ class {class_name}(GameObject):
         self.pushable = {pushable}
         self.depth = {depth}
         self.object_name = "{obj_name}"
-
+{extension_attrs}
         # Set sprite
         {sprite_line}
 
@@ -5142,6 +5152,7 @@ class {class_name}(GameObject):
             pushable=pushable,
             depth=depth,
             sprite_line=sprite_line,
+            extension_attrs=extension_attrs,
             event_methods=event_methods
         )
 
