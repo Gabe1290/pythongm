@@ -416,6 +416,10 @@ class PluginLoader:
         cat_tr = getattr(module, 'PLUGIN_BLOCK_CATEGORY_TRANSLATIONS', None)
         block_tr = getattr(module, 'PLUGIN_BLOCK_TRANSLATIONS', None)
         generated_tr = getattr(module, 'PLUGIN_GENERATED_BLOCK_TRANSLATIONS', None)
+        colors = getattr(module, 'PLUGIN_BLOCK_CATEGORY_COLORS', None)
+        if colors:
+            from config.blockly_config import register_block_category_colors
+            register_block_category_colors(colors)
         if generated_tr:
             from config.blockly_generated_block_i18n import register_generated_block_translations
             register_generated_block_translations(generated_tr)

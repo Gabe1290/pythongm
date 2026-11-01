@@ -337,6 +337,7 @@ class BlocklyWidget(QWidget):
             self._set_blockly_language()
 
             # Register custom blocks from ActionType definitions
+            self._push_category_colors()
             self._register_custom_blocks()
             self._push_extension_events()
 
@@ -371,6 +372,18 @@ class BlocklyWidget(QWidget):
             self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
             self.update_status(self.tr("Error loading Blockly"))
+
+    def _push_category_colors(self):
+        """Send the extensions' block category colours to the page, before
+        the generated blocks are built (their colour is fixed at creation)."""
+        try:
+            from config.blockly_config import BLOCK_CATEGORY_COLORS
+            payload = json.dumps(BLOCK_CATEGORY_COLORS)
+            self.web_view.page().runJavaScript(
+                "(function(){ if (window.blocklyApi && window.blocklyApi.setCategoryColors) {"
+                f" return window.blocklyApi.setCategoryColors({payload}); }} return 0; }})()")
+        except Exception as e:
+            logger.debug(f"push category colors failed: {e}")
 
     def _push_extension_events(self):
         """Send the extension-event lists to the page (generic

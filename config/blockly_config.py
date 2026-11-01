@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Set, Dict, List
 from pathlib import Path
 import json
+import re
 
 
 # ============================================================================
@@ -1476,6 +1477,33 @@ def unregister_block_categories(names) -> None:
         BLOCK_REGISTRY.pop(name, None)
     PRESETS["full"] = BlocklyConfig.get_full()
     PRESETS["implemented_only"] = BlocklyConfig.get_implemented_only()
+
+
+# Colours an extension gives the blocks of its own action category (an action
+# category the page has no colour for would otherwise draw grey). First name
+# wins, like register_block_categories. Sent to the page by BlocklyWidget.
+BLOCK_CATEGORY_COLORS: Dict[str, str] = {}
+
+
+def register_block_category_colors(colors: Dict[str, str]) -> int:
+    """Merge an extension's PLUGIN_BLOCK_CATEGORY_COLORS ({action category:
+    "#rrggbb"}). Entries that are not a six-digit hex colour are ignored, and
+    an existing entry is kept. Returns how many were added."""
+    added = 0
+    for name, colour in (colors or {}).items():
+        if name in BLOCK_CATEGORY_COLORS or not isinstance(colour, str):
+            continue
+        if not re.fullmatch(r"#[0-9a-fA-F]{6}", colour):
+            continue
+        BLOCK_CATEGORY_COLORS[name] = colour
+        added += 1
+    return added
+
+
+def unregister_block_category_colors(names) -> None:
+    """Drop colours added by register_block_category_colors. For tests."""
+    for name in names:
+        BLOCK_CATEGORY_COLORS.pop(name, None)
 
 
 def register_blockly_presets(presets: Dict[str, BlocklyConfig]) -> int:

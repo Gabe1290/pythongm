@@ -27,6 +27,9 @@ nothing.
 
 PLUGIN_NAME = "File Exchange Multiplayer"
 
+# colour of its generated Blockly blocks and drawer (else grey)
+PLUGIN_BLOCK_CATEGORY_COLORS = {"Network": "#2D93C8"}
+
 from events.event_types import EventType
 
 from .actions import PLUGIN_ACTIONS

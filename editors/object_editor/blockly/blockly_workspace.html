@@ -3582,7 +3582,8 @@
                 var blocks = groupBuckets[groupName];
                 if (!blocks || blocks.length === 0) return;
                 var displayName = getCategoryMessage(groupName, window.BLOCKLY_LANG);
-                var color = TOOLBOX_GROUP_COLORS[groupName] || '#888888';
+                var color = TOOLBOX_GROUP_COLORS[groupName] ||
+                    (window.EXTENSION_CATEGORY_COLORS || {})[groupName] || '#888888';
                 xml += '<category name="' + displayName + '" colour="' + color + '">';
                 xml += blocks.join('');
                 xml += '</category>';
@@ -3688,7 +3689,8 @@
                     // drawer it came from); categoryColors stays as the
                     // fallback for anything toolboxGroupOf() doesn't
                     // resolve (an extension's own category).
-                    var color = TOOLBOX_GROUP_COLORS[toolboxGroupOf(d.category)] || categoryColors[d.category] || '#888888';
+                    var color = TOOLBOX_GROUP_COLORS[toolboxGroupOf(d.category)] || categoryColors[d.category] ||
+                        (window.EXTENSION_CATEGORY_COLORS || {})[d.category] || '#888888';
                     var params = d.parameters || [];
 
                     Blockly.Blocks[bt] = {
@@ -3907,6 +3909,14 @@
         loadEventsData = whileLoadingSaved(loadEventsData);
         loadWorkspaceXml = whileLoadingSaved(loadWorkspaceXml);
 
+        // Colours extensions give their own action categories (config/
+        // blockly_config.py BLOCK_CATEGORY_COLORS); must arrive before
+        // registerCustomBlocks, which fixes a block's colour at creation.
+        function setCategoryColors(colors) {
+            window.EXTENSION_CATEGORY_COLORS = colors || {};
+            return Object.keys(window.EXTENSION_CATEGORY_COLORS).length;
+        }
+
         function setExtensionEvents(allNames, menu) {
             window.EXTENSION_EVENT_NAMES = allNames || [];
             window.EXTENSION_EVENT_MENU = menu || [];
@@ -3915,6 +3925,7 @@
 
         window.blocklyApi = {
             setExtensionEvents: setExtensionEvents,
+            setCategoryColors: setCategoryColors,
             getXml: getWorkspaceXml,
             loadXml: loadWorkspaceXml,
             getCode: generatePythonCode,

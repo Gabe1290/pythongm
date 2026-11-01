@@ -24,6 +24,9 @@ import.
 
 PLUGIN_NAME = "Block World"
 
+# colour of its generated Blockly blocks and drawer (else grey)
+PLUGIN_BLOCK_CATEGORY_COLORS = {"3D View": "#5B6FD6"}
+
 from .actions import PLUGIN_ACTIONS
 from .handlers import PluginExecutor
 from .state import peek_camera

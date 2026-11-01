@@ -730,6 +730,16 @@ def round_tripped():
         saved.logic_and_fr = andFr.getField('OP').getText();
         andFr.dispose(true);
         eval(enMessages);
+        // M1: an extension's own action category takes the colour it declared
+        // (setCategoryColors) instead of the grey fallback.
+        window.blocklyApi.setCategoryColors({'Ext Cat': '#1FA39B'});
+        window.blocklyApi.registerCustomBlocks([
+            {name: 'm1_coloured', display_name: 'C', description: 'd', category: 'Ext Cat', icon: '', parameters: []},
+            {name: 'm1_plain', display_name: 'P', description: 'd', category: 'No Such Cat', icon: '', parameters: []}]);
+        var m1a = workspace.newBlock('custom_m1_coloured'), m1b = workspace.newBlock('custom_m1_plain');
+        saved.ext_colour = m1a.getColour();
+        saved.ext_colour_unknown = m1b.getColour();
+        m1a.dispose(true); m1b.dispose(true);
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s, %s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS),
@@ -1294,3 +1304,9 @@ def test_every_ide_language_has_a_blockly_message_file():
     assert codes >= {"fr", "de", "zh"}
     for code in sorted(codes | {"en"}):
         assert blockly_message_file(code) is not None, code
+
+
+def test_an_extension_category_takes_its_declared_colour_not_grey(round_tripped):
+    saved = round_tripped["__value_blocks_saved"]
+    assert saved["ext_colour"].lower() == "#1fa39b"
+    assert saved["ext_colour_unknown"].lower() == "#888888"

@@ -52,6 +52,9 @@ register_action_tabs(MICROBIT_TAB)
 
 PLUGIN_EVENTS = MICROBIT_EVENT_TYPES
 
+# the colour of its generated Blockly blocks and toolbox drawer (else grey)
+PLUGIN_BLOCK_CATEGORY_COLORS = {"micro:bit": "#1FA39B"}
+
 
 def _frame_update_boards(game_runner):
     # Imported lazily: keeps pygame out of the IDE's schema-only load.

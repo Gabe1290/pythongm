@@ -1048,10 +1048,10 @@ rough order of value:
 - ~~**Stage P — export parity**~~ **done, 2026-10-29** (HTML5 H1-H6, Kivy
   K1-K6; `docs/MICROBIT_STAGE_P_PLAN.md`). **Still open for it:** nobody has
   used it on a real touch screen or heard the beep.
-- **Block colour and event labels:** the micro:bit's generated Blockly blocks
-  draw in the default grey (the category-colour table in
-  `blockly_workspace.html` is core), and the extension-event drop-down labels
-  are English. Both need a small generic seam.
+- **Block colour and event labels:** ~~the micro:bit's generated Blockly blocks
+  draw in the default grey~~ -- **colour done 2026-11-01** (`PLUGIN_BLOCK_CATEGORY_COLORS`,
+  `docs/MICROBIT_FOLLOWUPS_PLAN.md` M1; a human still has to look at the toolbox, QA §11a).
+  The extension-event drop-down labels are still English (M2).
 - **Translations:** the generated-block text is French only; the other nine
   languages fall back to English (the wiki's action reference is the same).
 - **A "New micro:bit project" template** was dropped (templates are core, see

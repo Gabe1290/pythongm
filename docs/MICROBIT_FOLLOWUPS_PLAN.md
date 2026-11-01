@@ -19,7 +19,7 @@ Ground rules that apply to every unit
 
 ---
 
-## M1. Blocks drawn in the micro:bit's own colour — [ ]
+## M1. Blocks drawn in the micro:bit's own colour — [x] 2026-11-01
 
 **Problem.** The extension's generated Blockly action blocks draw grey (`#888888`). In
 `blockly_workspace.html` (~line 3687) the colour is
@@ -49,6 +49,14 @@ contains the colour. Page-level (QtWebEngine, skipped without it — and note th
 lives in these files, so reuse the module-scoped `round_tripped` fixture, do not add a new
 `QWebEngineView`): a generated micro:bit block reports the declared colour. Mutation: drop the
 merge, the block goes grey.
+
+**Done as built:** `PLUGIN_BLOCK_CATEGORY_COLORS` in an extension's `__init__` (micro:bit, 3D View for
+raycast and Block World, Network for both multiplayer extensions) -> `config/blockly_config.py`
+`register_block_category_colors` (hex-validated, first wins) -> `BlocklyWidget._push_category_colors`
+(sent before the generated blocks are built) -> `blocklyApi.setCategoryColors`, consulted for both the
+block body and the toolbox drawer. Checked in the real page (a micro:bit block reports the declared colour,
+an unknown category stays `#888888`) and pinned in the shared `round_tripped` fixture (no new view); the
+mutation of dropping the lookup fails it. Thymio keeps its own pipeline. Core colours did not move.
 
 **Done when:** micro:bit blocks and its drawer share a colour and no core category colour moved.
 Needs a human glance afterwards (QA checklist §11a) — say so in the commit.
