@@ -101,6 +101,14 @@ _EVENT_LABELS = {          # language -> {event: label}; one entry per further l
         "network_message_files": "ネットワークメッセージ（ファイル交換）",
         "file_session_lost": "ファイルセッションが切れた",
     },
+    "zh": {
+        "file_session_started": "文件会话已开始",
+        "player_joined_files": "玩家加入（文件）",
+        "round_resolved": "回合结束",
+        "player_skipped_round": "玩家跳过了回合",
+        "network_message_files": "网络消息（文件交换）",
+        "file_session_lost": "文件会话丢失",
+    },
 }
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
     name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}

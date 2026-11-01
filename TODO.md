@@ -1052,8 +1052,9 @@ rough order of value:
   draw in the default grey~~ -- **colour done 2026-11-01** (`PLUGIN_BLOCK_CATEGORY_COLORS`,
   `docs/MICROBIT_FOLLOWUPS_PLAN.md` M1; a human still has to look at the toolbox, QA §11a).
   The extension-event drop-down labels are translated to French too (**M2 done 2026-11-01**,
-  36 events); **German also done** (M3, 2026-11-01); the other eight languages (es, it, pt, ru, uk,
-  sl, ja, zh) fall back to English.
+  36 events); **M3 done 2026-11-01 for all nine other languages** (de, es, it, pt, ru, uk, sl, ja, zh;
+  `extensions/microbit/translations_<lang>.py`). None has been read by a native speaker -- a teacher
+  per language should skim it before release.
 - **Translations:** the generated-block text is French only; the other nine
   languages fall back to English (the wiki's action reference is the same).
 - **A "New micro:bit project" template** was dropped (templates are core, see

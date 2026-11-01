@@ -90,7 +90,7 @@ cheap. One language ≈ 24+ short strings for micro:bit — do FR only first, co
 **Tests.** The label resolves per language; unknown language/event falls back to English; the
 value is unchanged; a French label keeps its accents. Mutation: remove the lookup, label reverts.
 
-## M3. Generated-block text for the other nine languages — [~] German done 2026-11-01; es, it, pt, ru, uk, sl, ja, zh open
+## M3. Generated-block text for the other nine languages — [x] 2026-11-01, all ten languages (fr, de, es, it, pt, ru, uk, sl, ja, zh)
 
 **Problem.** `PLUGIN_GENERATED_BLOCK_TRANSLATIONS` for micro:bit carries French only; the other
 nine IDE languages show English block text. Same shape for the multiplayer extensions (their
@@ -103,7 +103,9 @@ so roughly a tenth of that per language. **Do one language per commit**, most-us
 which; German and Spanish are the largest of the shipped set), and stop whenever the budget
 says so — the English fallback makes any stopping point safe.
 
-**Done so far (German):** `extensions/microbit/translations_de.py` (16 actions + tooltips, 22 parameter
+**Done (German first, then es, it, pt [Brazilian, matching the IDE's pt], ru, uk, sl, ja, zh):** none has been read by a native speaker.
+
+**German:** `extensions/microbit/translations_de.py` (16 actions + tooltips, 22 parameter
 labels, 24 events) merged by `translations.py`'s `_LANGUAGES` table, and German labels for the 12 LAN /
 File Exchange events. A further language = one `translations_<lang>.py` with the same three tables, one
 line in `_LANGUAGES`, the language code in `LANGUAGES` of

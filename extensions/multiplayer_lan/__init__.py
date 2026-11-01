@@ -94,6 +94,14 @@ _EVENT_LABELS = {          # language -> {event: label}; one entry per further l
         "network_game_started": "ネットワークゲーム開始",
         "connection_lost": "接続が切れた",
     },
+    "zh": {
+        "network_started": "网络就绪",
+        "player_joined": "玩家加入",
+        "player_left": "玩家离开",
+        "network_message": "网络消息",
+        "network_game_started": "网络游戏已开始",
+        "connection_lost": "连接丢失",
+    },
 }
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
     name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}
