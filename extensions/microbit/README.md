@@ -38,6 +38,7 @@ languages); the sample is `samples/microbit_1/`.
 | `handlers.py` | The action **handlers** (`PluginExecutor`). |
 | `translations.py` | French text for the auto-generated Blockly blocks, and the table that merges every language. |
 | `translations_de.py` | German text for the same blocks and for the event drop-down (one `translations_<lang>.py` per further language). |
+| `translations_it.py` | The same, in Italian. |
 | `translations_es.py` | The same, in Spanish. |
 | `README.md` | This file. |
 | `export/` | MicroPython export (Stage X, `docs/MICROBIT_STAGE_X_PLAN.md`): `export/micropython_exporter.py` generates a standalone real-device program per micro:bit object; `export/device.py` copies it onto a connected board over USB serial (`microfs`); `export/hex_build.py` + the vendored firmware in `export/firmware/` (V1 v1.1.1, V2 v2.1.2) build a ready-to-flash hex for a factory-fresh board: V1 (script appended at a fixed address), V2 (the program saved as main.py in the MicroPython file system, via `export/intel_hex.py`, `export/flash_regions.py` and `export/mpfs.py`), or ONE Universal Hex for both (`export/universal_hex.py`), all described in `docs/MICROBIT_V2_HEX_PLAN.md`; `export/kivy_sim_init.py` and `export/kivy_state.py` are never imported by the extension itself: they are the two small shims shipped into a Kivy export (the package `__init__` and a `state.py` for the verbatim `layout.py`); this folder's own `__init__.py` wires the File-menu entry via `PLUGIN_IDE_MENUS`. |

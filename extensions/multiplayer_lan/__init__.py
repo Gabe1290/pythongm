@@ -46,6 +46,14 @@ _EVENT_LABELS = {          # language -> {event: label}; one entry per further l
         "network_game_started": "Partida en red iniciada",
         "connection_lost": "Conexión perdida",
     },
+    "it": {
+        "network_started": "Rete pronta",
+        "player_joined": "Giocatore entrato",
+        "player_left": "Giocatore uscito",
+        "network_message": "Messaggio di rete",
+        "network_game_started": "Partita in rete avviata",
+        "connection_lost": "Connessione persa",
+    },
 }
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
     name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}
