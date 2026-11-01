@@ -90,7 +90,7 @@ cheap. One language ≈ 24+ short strings for micro:bit — do FR only first, co
 **Tests.** The label resolves per language; unknown language/event falls back to English; the
 value is unchanged; a French label keeps its accents. Mutation: remove the lookup, label reverts.
 
-## M3. Generated-block text for the other nine languages — [ ]
+## M3. Generated-block text for the other nine languages — [~] German done 2026-11-01; es, it, pt, ru, uk, sl, ja, zh open
 
 **Problem.** `PLUGIN_GENERATED_BLOCK_TRANSLATIONS` for micro:bit carries French only; the other
 nine IDE languages show English block text. Same shape for the multiplayer extensions (their
@@ -102,6 +102,16 @@ corpus; this one is 16 micro:bit actions + their parameter labels + (after M2) 2
 so roughly a tenth of that per language. **Do one language per commit**, most-used first (ask
 which; German and Spanish are the largest of the shipped set), and stop whenever the budget
 says so — the English fallback makes any stopping point safe.
+
+**Done so far (German):** `extensions/microbit/translations_de.py` (16 actions + tooltips, 22 parameter
+labels, 24 events) merged by `translations.py`'s `_LANGUAGES` table, and German labels for the 12 LAN /
+File Exchange events. A further language = one `translations_<lang>.py` with the same three tables, one
+line in `_LANGUAGES`, the language code in `LANGUAGES` of
+`tests/test_microbit_block_translation_languages.py` (which checks coverage, student-typed identifiers,
+and — for German — umlauts instead of transliteration), and a `"<lang>"` key in the two multiplayer event
+tables. **Side effect to know:** parameter labels are shared with core actions (Text, Value, Number,
+Message, Comparison, Variable), so registering German for them also relabels those on core generated
+blocks, which had no German at all; French avoided this only because core already had it.
 
 **Not in scope:** the multiplayer extensions' French-first display text. If wanted it is its own
 unit (needs an English source of truth added to `actions.py` first), not part of M3.

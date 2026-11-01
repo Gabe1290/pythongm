@@ -22,12 +22,12 @@ PLUGIN_NAME = "LAN Multiplayer"
 
 # French labels of its events in the generic Blockly "extension event" drop-down
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
-    "network_started": {"fr": "Réseau prêt"},
-    "player_joined": {"fr": "Joueur arrivé"},
-    "player_left": {"fr": "Joueur parti"},
-    "network_message": {"fr": "Message réseau"},
-    "network_game_started": {"fr": "Partie en réseau lancée"},
-    "connection_lost": {"fr": "Connexion perdue"},
+    "network_started": {"fr": "Réseau prêt", "de": "Netzwerk bereit"},
+    "player_joined": {"fr": "Joueur arrivé", "de": "Spieler beigetreten"},
+    "player_left": {"fr": "Joueur parti", "de": "Spieler gegangen"},
+    "network_message": {"fr": "Message réseau", "de": "Netzwerknachricht"},
+    "network_game_started": {"fr": "Partie en réseau lancée", "de": "Netzwerkspiel gestartet"},
+    "connection_lost": {"fr": "Connexion perdue", "de": "Verbindung verloren"},
 }}
 
 # colour of its generated Blockly blocks and drawer (else grey)

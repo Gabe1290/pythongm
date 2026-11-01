@@ -130,11 +130,22 @@ _EVENTS_FR = {
     "microbit_sound_done": "Son terminé",
 }
 
+from . import translations_de
+
+# language -> (actions {name: (label, tooltip)}, params {english: translated}, events {name: label}).
+# One module per further language (translations_<lang>.py, same three tables), added here.
+_LANGUAGES = {
+    "fr": (_ACTIONS_FR, _PARAMS_FR, _EVENTS_FR),
+    "de": (translations_de.ACTIONS, translations_de.PARAMS, translations_de.EVENTS),
+}
+
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {
-    "events": {name: {"fr": label} for name, label in _EVENTS_FR.items()},
+    "events": {name: {lang: events[name] for lang, (_, _, events) in _LANGUAGES.items() if name in events}
+               for name in _EVENTS_FR},
     "actions": {
-        name: {"fr": {"display_name": label, "description": tooltip}}
-        for name, (label, tooltip) in _ACTIONS_FR.items()
+        name: {lang: {"display_name": actions[name][0], "description": actions[name][1]}
+               for lang, (actions, _, _) in _LANGUAGES.items() if name in actions}
+        for name in _ACTIONS_FR
     },
-    "params": {"fr": dict(_PARAMS_FR)},
+    "params": {lang: dict(params) for lang, (_, params, _) in _LANGUAGES.items()},
 }
