@@ -1062,7 +1062,9 @@ rough order of value:
 - **Views:** ~~a room with a scrolling view would misplace the board~~ -- **not a bug, settled
   2026-11-01 (M4):** the board is a screen overlay on all three targets by design (like `draw_gui`),
   documented in the extension README and pinned by `tests/test_microbit_scrolling_view.py`.
-  The speaker channel is shared, so two boards sounding at once interrupt each other (M5).
+  ~~The speaker channel is shared, so two boards sounding at once interrupt each other~~ --
+  **done 2026-11-01 (M5):** a voice per board (index among the room's boards, up to 4) on desktop,
+  HTML5 and Kivy; voice 0 is the old behaviour.
 - **Needs a human:** hear the beep (volume was a guess), look at the Blockly
   toolbox with the extension active, and look at the Welcome-tab entry in
   French — all in `docs/RELEASE_QA_CHECKLIST.md` §11a. **Also needs a real

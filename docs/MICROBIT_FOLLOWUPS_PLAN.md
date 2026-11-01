@@ -151,7 +151,7 @@ and documented in the extension README.
 **Why this is last of the correctness items:** the answer may be "by design", and the fix, if
 needed, touches three renderers that have no way to be eyeballed here.
 
-## M5. Two boards sounding at once — [ ]
+## M5. Two boards sounding at once — [x] 2026-11-01
 
 **Problem.** `extensions/microbit/audio.py` reserves pygame mixer channel 0 for "the speaker", so
 a second board's note replaces the first board's. Documented as a limit, never a bug report.
@@ -163,6 +163,12 @@ its tests are byte-identical. Constraints already learned the hard way: **never 
 `Channel`/`Sound` across calls** (dangles after `pygame.quit()`), so the board → index map holds
 integers only, and the channel is fetched fresh each call. `set_num_channels(8)` is already
 done; make sure the reserved count never exceeds it.
+
+**Done as built:** a voice per board = its index among the room's boards, capped at `MAX_VOICES` = 4 (a fifth
+shares the last). Desktop `audio.play/stop(voice)` -> mixer channel `voice`, with `set_reserved` growing to the
+highest voice used (integers only remembered); `runtime.update_microbits` enumerates the boards; HTML5
+`makeSpeaker` keeps an oscillator per voice; Kivy `Speaker` a Sound per voice and the scene passes the index.
+`tests/test_microbit_speaker_voices.py` (10; a mutation collapsing the voice index fails each target).
 
 **Parity.** HTML5 uses WebAudio (a new oscillator per note — check whether two boards already
 overlap there; if so desktop is the only one to fix). Kivy: `kivy_audio.py` — read before

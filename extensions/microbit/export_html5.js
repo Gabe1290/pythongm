@@ -649,8 +649,10 @@ function audioPlan(frequency, seconds) {
 }
 
 // `makeContext` is injectable so the voice can be tested without a browser audio device.
+const AUDIO_MAX_VOICES = 4;      // boards that can sound at once; a fifth shares the last (audio.py MAX_VOICES)
 function makeSpeaker(makeContext) {
-    let ctx = null, voice = null, failed = false;
+    let ctx = null, failed = false;
+    const voices = [];                // one oscillator per board
     function context() {
         if (ctx || failed) return ctx;
         try { ctx = makeContext(); } catch (e) { failed = true; ctx = null; }
@@ -660,15 +662,18 @@ function makeSpeaker(makeContext) {
         const c = context();
         if (c && c.state === 'suspended' && c.resume) { try { c.resume(); } catch (e) { /* ignored */ } }
     }
-    function stop() {
-        if (!voice) return;
-        const v = voice;
-        voice = null;
+    function voiceIndex(id) { return Math.min(Math.max(0, (id | 0)), AUDIO_MAX_VOICES - 1); }
+    function stop(id) {
+        const slot = voiceIndex(id);
+        const v = voices[slot];
+        if (!v) return;
+        voices[slot] = null;
         try { v.stop(); } catch (e) { /* already ended */ }
         try { v.disconnect(); } catch (e) { /* ignored */ }
     }
-    function note(frequency, seconds) {
-        stop();
+    function note(frequency, seconds, id) {
+        stop(id);
+        const slot = voiceIndex(id);
         const plan = audioPlan(frequency, seconds);
         const c = plan ? context() : null;
         if (!c) return false;
@@ -680,10 +685,10 @@ function makeSpeaker(makeContext) {
         gain.gain.value = AUDIO_AMPLITUDE;
         osc.connect(gain);
         gain.connect(c.destination);
-        osc.onended = function () { if (voice === osc) voice = null; };
+        osc.onended = function () { if (voices[slot] === osc) voices[slot] = null; };
         osc.start();
         osc.stop(c.currentTime + plan.seconds);
-        voice = osc;
+        voices[slot] = osc;
         return true;
     }
     return {note: note, stop: stop, resume: resume};
@@ -718,7 +723,8 @@ function updateMicrobits(game) {
     if (game.pointer && drags().length) follow(game.pointer.x, game.pointer.y);
     deliver(boards.map(b => b[1]));
     const dt = 1.0 / Math.max(1, room.roomSpeed || 60);
-    for (const [inst, sim] of boards) {
+    for (let voice = 0; voice < boards.length; voice++) {
+        const [inst, sim] = boards[voice];                // one speaker per board
         const reported = sim.update(dt);
         if (!reported.length) continue;
         for (const [kind, detail] of reported) {
@@ -726,9 +732,9 @@ function updateMicrobits(game) {
                 inst.radio_string = String(detail);
                 inst.radio_number = asNumber(detail);
             } else if (kind === 'sound_note' && soundHooks.note) {
-                soundHooks.note(detail[0], detail[1]);
+                soundHooks.note(detail[0], detail[1], voice);
             } else if (kind === 'sound_stop' && soundHooks.stop) {
-                soundHooks.stop();
+                soundHooks.stop(voice);
             }
         }
         const events = inst.events;

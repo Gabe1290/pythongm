@@ -136,7 +136,7 @@ class _Fake:
     def __init__(self):
         self.calls = []
 
-    def handle(self, kind, detail):
+    def handle(self, kind, detail, voice=0):
         if kind in ("sound_note", "sound_stop"):
             self.calls.append((kind, detail))
         return True

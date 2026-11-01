@@ -2,7 +2,8 @@
 """Makes the simulated speaker audible (Stage S8).
 
 Square-wave synthesis -- the same timbre as the real board's buzzer -- played
-on one reserved mixer channel. ``square_wave`` is pure (bytes out, no mixer),
+on a reserved mixer channel per board (voice 0..MAX_VOICES-1, so two boards
+sounding at once do not cut each other off; a fifth board shares the last). ``square_wave`` is pure (bytes out, no mixer),
 so it is testable anywhere. When there is no usable mixer (no audio device, or
 a sample format other than 16-bit signed) every call quietly does nothing:
 the simulator's own ``tone`` state is the authoritative record, and tests
@@ -13,6 +14,7 @@ import array
 import pygame
 
 AMPLITUDE = 5000            # of 32767: a clear beep, not a loud one
+MAX_VOICES = 4              # boards that can sound at the same time
 MAX_SECONDS = 10.0          # longest single note rendered
 _CACHE_LIMIT = 64
 
@@ -21,6 +23,7 @@ _CACHE_LIMIT = 64
 # crash the process on next use (the same trap as a cached Font).
 _pcm_cache = {}
 _unusable = False
+_reserved_count = 0          # channels reserved so far (an integer, never a Channel)
 
 
 def square_wave(frequency, seconds, rate=44100, channels=1, amplitude=AMPLITUDE):
@@ -58,23 +61,33 @@ def _usable_format():
     return rate, channels
 
 
-def _reserved_channel():
-    """The one channel the speaker uses, reserved so a game's own sounds
-    never take it (and it never takes theirs). Fetched fresh each time."""
+def _voice_index(voice):
+    return min(max(0, int(voice or 0)), MAX_VOICES - 1)
+
+
+def _reserved_channel(voice=0):
+    """The channel board ``voice`` uses, reserved so a game's own sounds
+    never take it (and it never takes theirs). Reservations grow with the
+    highest voice used and are never given back. Fetched fresh each time --
+    only integers are remembered, never a Channel."""
+    voice = _voice_index(voice)
     try:
-        if pygame.mixer.get_num_channels() < 2:
-            pygame.mixer.set_num_channels(8)
-        pygame.mixer.set_reserved(1)
-        return pygame.mixer.Channel(0)
+        if pygame.mixer.get_num_channels() < MAX_VOICES + 4:
+            pygame.mixer.set_num_channels(MAX_VOICES + 4)
+        global _reserved_count
+        _reserved_count = max(_reserved_count, voice + 1)
+        pygame.mixer.set_reserved(_reserved_count)
+        return pygame.mixer.Channel(voice)
     except pygame.error:
         return None
 
 
-def play(frequency, seconds):
-    """Start a note now, replacing whatever the speaker was playing. Returns
-    True if it is audible, False if it was a rest or there is no mixer."""
+def play(frequency, seconds, voice=0):
+    """Start a note now on board ``voice``'s speaker, replacing whatever that
+    speaker was playing. Returns True if it is audible, False if it was a
+    rest or there is no mixer."""
     fmt = _usable_format()
-    channel = _reserved_channel() if fmt else None
+    channel = _reserved_channel(voice) if fmt else None
     if channel is None:
         return False
     if frequency <= 0:
@@ -94,17 +107,18 @@ def play(frequency, seconds):
     return True
 
 
-def stop():
-    """Cut the speaker off."""
+def stop(voice=0):
+    """Cut board ``voice``'s speaker off."""
     try:
         if pygame.mixer.get_init():
-            pygame.mixer.Channel(0).stop()
+            pygame.mixer.Channel(_voice_index(voice)).stop()
     except pygame.error:
         pass
 
 
 def forget():
     """Drop cached audio and the "no mixer" verdict (tests; a new game)."""
-    global _unusable
+    global _unusable, _reserved_count
     _pcm_cache.clear()
     _unusable = False
+    _reserved_count = 0

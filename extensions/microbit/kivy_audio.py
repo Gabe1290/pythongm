@@ -3,8 +3,9 @@
 Shipped as ``microbit_sim/speaker.py``. Kivy has no raw-sample mixer call that
 works on every platform, so a note is rendered to a small mono WAV (the same
 square wave and loudness as ``audio.py``) and played with ``SoundLoader`` like
-any other sound. The speaker has one voice: a new note replaces the one playing,
-a rest or ``sound_stop`` cuts it off.
+any other sound. Each board has its own voice (its index among the room's boards, capped at
+MAX_VOICES): a new note replaces the one playing ON THAT VOICE, a rest or ``sound_stop`` cuts
+that voice off, so two boards can sound together.
 
 Pure apart from the lazily imported ``SoundLoader`` (injectable for tests).
 """
@@ -47,12 +48,19 @@ def _default_loader(path):
     return SoundLoader.load(path)
 
 
+MAX_VOICES = 4          # boards that can sound at once; a fifth shares the last
+
+
+def _voice_index(voice):
+    return min(max(0, int(voice or 0)), MAX_VOICES - 1)
+
+
 class Speaker:
     def __init__(self, loader=None, folder=None):
         self._loader = loader or _default_loader
         self._folder = folder
         self._files = {}
-        self._playing = None
+        self._playing = {}            # voice (one per board) -> the Sound playing on it
 
     def _path_for(self, frequency, seconds):
         key = (round(frequency, 2), round(seconds, 3))
@@ -75,9 +83,11 @@ class Speaker:
         self._files[key] = path
         return path
 
-    def note(self, frequency, seconds):
-        """Start a note, replacing the one playing. True if it is audible."""
-        self.stop()
+    def note(self, frequency, seconds, voice=0):
+        """Start a note on board ``voice``'s speaker, replacing the one it was
+        playing. True if it is audible."""
+        voice = _voice_index(voice)
+        self.stop(voice)
         if frequency <= 0 or seconds <= 0:
             return False
         try:
@@ -88,24 +98,24 @@ class Speaker:
         except Exception as exc:               # no audio device must not stop the game
             print("[WARN] micro:bit speaker: %s" % exc)
             return False
-        self._playing = sound
+        self._playing[voice] = sound
         return True
 
-    def stop(self):
-        sound, self._playing = self._playing, None
+    def stop(self, voice=0):
+        sound = self._playing.pop(_voice_index(voice), None)
         if sound is not None:
             try:
                 sound.stop()
             except Exception:
                 pass
 
-    def handle(self, kind, detail):
-        """Act on a simulator report; True if it was a sound report."""
+    def handle(self, kind, detail, voice=0):
+        """Act on a simulator report from board ``voice``; True if it was a sound report."""
         if kind == "sound_note":
-            self.note(*detail)
+            self.note(*detail, voice=voice)
             return True
         if kind == "sound_stop":
-            self.stop()
+            self.stop(voice)
             return True
         return False
 

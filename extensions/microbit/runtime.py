@@ -31,16 +31,16 @@ def update_microbits(game_runner):
     radio.deliver([sim for _, sim in boards])
 
     dt = 1.0 / max(1, getattr(game_runner, "fps", 60) or 60)
-    for instance, sim in boards:
+    for voice, (instance, sim) in enumerate(boards):       # one speaker per board
         reported = sim.update(dt)
         for kind, detail in reported:
             if kind == "radio":
                 instance.radio_string = str(detail)
                 instance.radio_number = radio.as_number(detail)
             if kind == "sound_note":
-                audio.play(*detail)
+                audio.play(*detail, voice=voice)
             elif kind == "sound_stop":
-                audio.stop()
+                audio.stop(voice)
         events = (instance.object_data or {}).get("events") \
             if getattr(instance, "object_data", None) else None
         executor = getattr(instance, "action_executor", None)
