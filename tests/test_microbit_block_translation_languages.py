@@ -17,7 +17,7 @@ from events.event_types import EVENT_TYPES  # noqa: E402
 from events.plugin_loader import load_all_plugins  # noqa: E402
 from extensions.microbit.translations import PLUGIN_GENERATED_BLOCK_TRANSLATIONS as T  # noqa: E402
 
-LANGUAGES = ["fr", "de", "es", "it", "pt", "ru", "uk", "sl"]
+LANGUAGES = ["fr", "de", "es", "it", "pt", "ru", "uk", "sl", "ja"]
 # words that are the same in the language on purpose (cognates / units / names)
 SAME = {"de": {"X (0-4)", "Y (0-4)", "Tempo (bpm)", "Text", "Variable", "Sensor"},
         "es": {"X (0-4)", "Y (0-4)", "Tempo (bpm)", "Sensor", "Variable"},
@@ -26,6 +26,7 @@ SAME = {"de": {"X (0-4)", "Y (0-4)", "Tempo (bpm)", "Text", "Variable", "Sensor"
         "ru": {"X (0-4)", "Y (0-4)"},
         "uk": {"X (0-4)", "Y (0-4)"},
         "sl": {"X (0-4)", "Y (0-4)"},
+        "ja": {"X (0-4)", "Y (0-4)"},
         "fr": {"Image", "Message", "Variable", "X (0-4)", "Y (0-4)", "Tempo (bpm)"}}
 
 
