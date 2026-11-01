@@ -2661,3 +2661,20 @@ excluded at the end (7,912+ passed, 0 failed).
   files = 69 new + 144 changed; verified by a fresh clone: 988 files identical, no CRLF). Before it, 171
   working-tree `.md` files were CRLF (old checkout) and would have been pushed as CRLF: the tree is
   LF now and `push` strips CRs. The live wiki also holds a `.gitattributes` the repo's `wiki/` lacks.
+
+**2026-11-01 — micro:bit follow-ups M1–M6 (plan `docs/MICROBIT_FOLLOWUPS_PLAN.md`; M7 template only on request).**
+One commit per unit, full suite after each (8,045 → 8,141 passed, 0 failed). A1 (the intermittent native
+crash in the Blockly tests) recurred once and is still unsolved: run with `-p no:faulthandler` so Windows can
+write a dump, then `tools/analyze_crash_dump.py`.
+- **M1** `PLUGIN_BLOCK_CATEGORY_COLORS` (extension `__init__`) → `config/blockly_config.register_block_category_colors`
+  → pushed before the generated blocks are built (`blocklyApi.setCategoryColors`) → block body AND toolbox drawer.
+- **M2/M3** `PLUGIN_GENERATED_BLOCK_TRANSLATIONS["events"]` translates the `event_extension` drop-down;
+  micro:bit text now exists in all ten languages (`extensions/microbit/translations_<lang>.py`, merged by a table in
+  `translations.py`; multiplayer event labels in per-language tables in their `__init__`). **No native speaker has read
+  any of it.** Landmine: parameter labels are shared with core, so registering German relabels core's too.
+- **M4** the board is a *screen overlay by design* on all three targets (like `draw_gui`); pinned, not changed.
+- **M5** a speaker voice per board (index in the room, cap 4) on desktop / HTML5 / Kivy.
+- **M6** `tests/_real_kivy_game.py` + `test_kivy_real_game.py` build generated scenes under real Kivy; a hidden
+  window's default framebuffer reads back blank — render with `scene.export_as_image()`. Found no bug.
+- Test-writing lessons: a "colours > N" assertion did not notice the raycast overlay never rendering (assert the
+  overlay itself); a transliteration test needs a generic pattern, not a word list.

@@ -1,6 +1,6 @@
 # micro:bit follow-ups — the small coding work that remains
 
-Written 2026-11-01. Everything here is optional and small; nothing needs hardware. It is the
+**Status 2026-11-01: M1-M6 done; M7 left for when a teacher asks.** Written 2026-11-01. Everything here is optional and small; nothing needs hardware. It is the
 "Open" list at the bottom of `TODO.md` → "micro:bit extension — follow-ups", turned into units.
 Resume state = the checkboxes. **One unit = one commit** (fix + regression test + full-suite
 gate, nothing excluded), pushed to `main` straight away (session-limit rule in `CLAUDE.md`).
