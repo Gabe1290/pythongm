@@ -140,12 +140,15 @@ def extension_event_names() -> list:
                   if extension_for_event(name) is not None and name not in EVENT_TO_BLOCKLY_MAP)
 
 
-def extension_event_menu(project_data: Optional[dict] = None) -> list:
+def extension_event_menu(project_data: Optional[dict] = None, language: str = "en") -> list:
     """``[label, name]`` choices for the ``event_extension`` drop-down: only
-    the events of extensions active in this project."""
+    the events of extensions active in this project. Labels are in the IDE
+    ``language`` where the extension supplies one (else English)."""
     from events.plugin_loader import extension_for_event
+    from config.blockly_generated_block_i18n import get_translated_event_display_name
     active = active_extensions(project_data)
-    return [[EVENT_TYPES[name].display_name or name, name] for name in extension_event_names()
+    return [[get_translated_event_display_name(name, language, EVENT_TYPES[name].display_name or name), name]
+            for name in extension_event_names()
             if extension_for_event(name)["folder"] in active]
 
 

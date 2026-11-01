@@ -271,13 +271,19 @@ PARAM_LABEL_TRANSLATIONS = {
 }
 
 
+# {event name: {language: label}} -- the drop-down labels of the generic
+# ``event_extension`` block; filled by register_generated_block_translations.
+EVENT_TRANSLATIONS: dict = {}
+
+
 def register_generated_block_translations(mapping) -> None:
     """Merge an extension's PLUGIN_GENERATED_BLOCK_TRANSLATIONS into the
     tables above, so an extension carries its own canvas translations instead
     of core listing its actions. Shape::
 
         {"actions": {action_name: {lang: {"display_name": ..., "description": ...}}},
-         "params":  {lang: {english_label: translated_label}}}
+         "params":  {lang: {english_label: translated_label}},
+         "events":  {event_name: {lang: label}}}      # optional
 
     Existing entries are kept (first one wins), so an extension can never
     change how a core action or a shared parameter label reads.
@@ -291,6 +297,18 @@ def register_generated_block_translations(mapping) -> None:
         table = PARAM_LABEL_TRANSLATIONS.setdefault(language, {})
         for label, text in (labels or {}).items():
             table.setdefault(label, text)
+    for event_name, languages in (mapping.get("events") or {}).items():
+        entry = EVENT_TRANSLATIONS.setdefault(event_name, {})
+        for language, label in (languages or {}).items():
+            entry.setdefault(language, label)
+
+
+def get_translated_event_display_name(event_name: str, language: str, fallback: str) -> str:
+    """Translated drop-down label for an extension event, or `fallback` (the
+    event's English display_name) for 'en' or any untranslated event/language."""
+    if language == "en":
+        return fallback
+    return EVENT_TRANSLATIONS.get(event_name, {}).get(language) or fallback
 
 
 def get_translated_action_display_name(action_name: str, language: str, fallback: str) -> str:

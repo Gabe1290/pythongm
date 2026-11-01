@@ -61,7 +61,7 @@ mutation of dropping the lookup fails it. Thymio keeps its own pipeline. Core co
 **Done when:** micro:bit blocks and its drawer share a colour and no core category colour moved.
 Needs a human glance afterwards (QA checklist §11a) — say so in the commit.
 
-## M2. Extension-event drop-down labels translated — [ ]
+## M2. Extension-event drop-down labels translated — [x] 2026-11-01 (French)
 
 **Problem.** `event_extension`'s drop-down (`EXTENSION_EVENT_MENU`, pairs of
 `[label, value]`) is built in Python and the labels are English ("Player joined"). Everything
@@ -75,6 +75,13 @@ data side already exists for actions: `PLUGIN_GENERATED_BLOCK_TRANSLATIONS`
 fill it for micro:bit's 24 events and the two multiplayer extensions, and have the widget look
 the label up for the IDE language, falling back to the English label. Keep event *values*
 untouched (they are the literal event names the loader compares).
+
+**Done as built:** `PLUGIN_GENERATED_BLOCK_TRANSLATIONS["events"]` -> `EVENT_TRANSLATIONS` /
+`get_translated_event_display_name` in `config/blockly_generated_block_i18n.py` (first entry wins,
+English fallback) -> `extension_event_menu(project, language)` -> `BlocklyWidget._push_extension_events`
+passes the IDE language. French for all 36 extension events (micro:bit 24, LAN 6, File Exchange 6);
+event values untouched. `tests/test_extension_event_menu_labels.py` (mutations of the menu language and
+of the micro:bit table both fail it). Other languages are M3.
 
 **Open question to settle in the unit:** which languages. French is mandatory (it is the
 user-facing language of the classes this is for); the other nine get English fallback unless

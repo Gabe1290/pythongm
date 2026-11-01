@@ -20,6 +20,16 @@ draws nothing; the Phase 6 connect screen will add one).
 
 PLUGIN_NAME = "LAN Multiplayer"
 
+# French labels of its events in the generic Blockly "extension event" drop-down
+PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
+    "network_started": {"fr": "Réseau prêt"},
+    "player_joined": {"fr": "Joueur arrivé"},
+    "player_left": {"fr": "Joueur parti"},
+    "network_message": {"fr": "Message réseau"},
+    "network_game_started": {"fr": "Partie en réseau lancée"},
+    "connection_lost": {"fr": "Connexion perdue"},
+}}
+
 # colour of its generated Blockly blocks and drawer (else grey)
 PLUGIN_BLOCK_CATEGORY_COLORS = {"Network": "#2D93C8"}
 

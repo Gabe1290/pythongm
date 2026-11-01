@@ -391,8 +391,10 @@ class BlocklyWidget(QWidget):
         load, and the active extensions' events for the drop-down."""
         try:
             from config.toolbox_visibility import extension_event_names, extension_event_menu
+            from core.language_manager import get_language_manager
+            language = get_language_manager().get_current_language() or 'en'
             payload = json.dumps([extension_event_names(),
-                                  extension_event_menu(self._find_project_data())])
+                                  extension_event_menu(self._find_project_data(), language)])
             self.web_view.page().runJavaScript(
                 "(function(){ if (window.blocklyApi && window.blocklyApi.setExtensionEvents) {"
                 f" var p = {payload}; return window.blocklyApi.setExtensionEvents(p[0], p[1]); }}"

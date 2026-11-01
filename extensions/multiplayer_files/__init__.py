@@ -27,6 +27,16 @@ nothing.
 
 PLUGIN_NAME = "File Exchange Multiplayer"
 
+# French labels of its events in the generic Blockly "extension event" drop-down
+PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
+    "file_session_started": {"fr": "Session par fichiers démarrée"},
+    "player_joined_files": {"fr": "Joueur arrivé (fichiers)"},
+    "round_resolved": {"fr": "Manche terminée"},
+    "player_skipped_round": {"fr": "Joueur a passé la manche"},
+    "network_message_files": {"fr": "Message réseau (échange de fichiers)"},
+    "file_session_lost": {"fr": "Session par fichiers perdue"},
+}}
+
 # colour of its generated Blockly blocks and drawer (else grey)
 PLUGIN_BLOCK_CATEGORY_COLORS = {"Network": "#2D93C8"}
 

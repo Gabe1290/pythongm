@@ -1051,7 +1051,8 @@ rough order of value:
 - **Block colour and event labels:** ~~the micro:bit's generated Blockly blocks
   draw in the default grey~~ -- **colour done 2026-11-01** (`PLUGIN_BLOCK_CATEGORY_COLORS`,
   `docs/MICROBIT_FOLLOWUPS_PLAN.md` M1; a human still has to look at the toolbox, QA §11a).
-  The extension-event drop-down labels are still English (M2).
+  The extension-event drop-down labels are translated to French too (**M2 done 2026-11-01**,
+  36 events); the other nine languages fall back to English (M3).
 - **Translations:** the generated-block text is French only; the other nine
   languages fall back to English (the wiki's action reference is the same).
 - **A "New micro:bit project" template** was dropped (templates are core, see

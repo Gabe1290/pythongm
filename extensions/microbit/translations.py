@@ -103,7 +103,35 @@ _PARAMS_FR = {
     "Value": "Valeur",
 }
 
+_EVENTS_FR = {
+    "microbit_button_a": "Bouton A pressé",
+    "microbit_button_b": "Bouton B pressé",
+    "microbit_button_ab": "Boutons A+B pressés",
+    "microbit_logo_touched": "Logo touché",
+    "microbit_pin_0": "Broche 0 touchée",
+    "microbit_pin_1": "Broche 1 touchée",
+    "microbit_pin_2": "Broche 2 touchée",
+    "microbit_gesture_shake": "Secousse",
+    "microbit_gesture_logo_up": "Logo en haut",
+    "microbit_gesture_logo_down": "Logo en bas",
+    "microbit_gesture_tilt_left": "Inclinée à gauche",
+    "microbit_gesture_tilt_right": "Inclinée à droite",
+    "microbit_gesture_screen_up": "Écran vers le haut",
+    "microbit_gesture_screen_down": "Écran vers le bas",
+    "microbit_gesture_free_fall": "Chute libre",
+    "microbit_gesture_2g": "Choc de 2g",
+    "microbit_gesture_3g": "Choc de 3g",
+    "microbit_gesture_6g": "Choc de 6g",
+    "microbit_gesture_8g": "Choc de 8g",
+    "microbit_loud_sound": "Bruit fort",
+    "microbit_quiet_sound": "Bruit faible",
+    "microbit_display_done": "Affichage terminé",
+    "microbit_radio_received": "Message radio reçu",
+    "microbit_sound_done": "Son terminé",
+}
+
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {
+    "events": {name: {"fr": label} for name, label in _EVENTS_FR.items()},
     "actions": {
         name: {"fr": {"display_name": label, "description": tooltip}}
         for name, (label, tooltip) in _ACTIONS_FR.items()
