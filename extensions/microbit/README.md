@@ -38,6 +38,7 @@ languages); the sample is `samples/microbit_1/`.
 | `handlers.py` | The action **handlers** (`PluginExecutor`). |
 | `translations.py` | French text for the auto-generated Blockly blocks, and the table that merges every language. |
 | `translations_de.py` | German text for the same blocks and for the event drop-down (one `translations_<lang>.py` per further language). |
+| `translations_uk.py` | The same, in Ukrainian. |
 | `translations_ru.py` | The same, in Russian. |
 | `translations_pt.py` | The same, in Portuguese. |
 | `translations_it.py` | The same, in Italian. |

@@ -70,6 +70,14 @@ _EVENT_LABELS = {          # language -> {event: label}; one entry per further l
         "network_game_started": "Сетевая игра началась",
         "connection_lost": "Соединение потеряно",
     },
+    "uk": {
+        "network_started": "Мережа готова",
+        "player_joined": "Гравець приєднався",
+        "player_left": "Гравець вийшов",
+        "network_message": "Повідомлення мережею",
+        "network_game_started": "Мережеву гру розпочато",
+        "connection_lost": "З'єднання втрачено",
+    },
 }
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
     name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}

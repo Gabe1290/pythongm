@@ -77,6 +77,14 @@ _EVENT_LABELS = {          # language -> {event: label}; one entry per further l
         "network_message_files": "Сообщение по сети (обмен файлами)",
         "file_session_lost": "Файловая сессия потеряна",
     },
+    "uk": {
+        "file_session_started": "Файлову сесію розпочато",
+        "player_joined_files": "Гравець приєднався (файли)",
+        "round_resolved": "Раунд завершено",
+        "player_skipped_round": "Гравець пропустив раунд",
+        "network_message_files": "Повідомлення мережею (обмін файлами)",
+        "file_session_lost": "Файлову сесію втрачено",
+    },
 }
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
     name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}
