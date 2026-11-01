@@ -130,13 +130,14 @@ _EVENTS_FR = {
     "microbit_sound_done": "Son terminé",
 }
 
-from . import translations_de, translations_es, translations_it, translations_pt, translations_ru, translations_uk
+from . import translations_de, translations_es, translations_it, translations_pt, translations_ru, translations_uk, translations_sl
 
 # language -> (actions {name: (label, tooltip)}, params {english: translated}, events {name: label}).
 # One module per further language (translations_<lang>.py, same three tables), added here.
 _LANGUAGES = {
     "fr": (_ACTIONS_FR, _PARAMS_FR, _EVENTS_FR),
     "de": (translations_de.ACTIONS, translations_de.PARAMS, translations_de.EVENTS),
+    "sl": (translations_sl.ACTIONS, translations_sl.PARAMS, translations_sl.EVENTS),
     "uk": (translations_uk.ACTIONS, translations_uk.PARAMS, translations_uk.EVENTS),
     "ru": (translations_ru.ACTIONS, translations_ru.PARAMS, translations_ru.EVENTS),
     "pt": (translations_pt.ACTIONS, translations_pt.PARAMS, translations_pt.EVENTS),
