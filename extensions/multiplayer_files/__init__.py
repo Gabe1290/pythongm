@@ -27,15 +27,36 @@ nothing.
 
 PLUGIN_NAME = "File Exchange Multiplayer"
 
-# French labels of its events in the generic Blockly "extension event" drop-down
+# Labels of its events in the generic Blockly "extension event" drop-down
+_EVENT_LABELS = {          # language -> {event: label}; one entry per further language
+    "fr": {
+        "file_session_started": "Session par fichiers démarrée",
+        "player_joined_files": "Joueur arrivé (fichiers)",
+        "round_resolved": "Manche terminée",
+        "player_skipped_round": "Joueur a passé la manche",
+        "network_message_files": "Message réseau (échange de fichiers)",
+        "file_session_lost": "Session par fichiers perdue",
+    },
+    "de": {
+        "file_session_started": "Dateisitzung gestartet",
+        "player_joined_files": "Spieler beigetreten (Dateien)",
+        "round_resolved": "Runde abgeschlossen",
+        "player_skipped_round": "Spieler hat die Runde ausgelassen",
+        "network_message_files": "Netzwerknachricht (Dateiaustausch)",
+        "file_session_lost": "Dateisitzung verloren",
+    },
+    "es": {
+        "file_session_started": "Sesión por archivos iniciada",
+        "player_joined_files": "Jugador unido (archivos)",
+        "round_resolved": "Ronda terminada",
+        "player_skipped_round": "Jugador omitió la ronda",
+        "network_message_files": "Mensaje de red (intercambio de archivos)",
+        "file_session_lost": "Sesión por archivos perdida",
+    },
+}
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
-    "file_session_started": {"fr": "Session par fichiers démarrée", "de": "Dateisitzung gestartet"},
-    "player_joined_files": {"fr": "Joueur arrivé (fichiers)", "de": "Spieler beigetreten (Dateien)"},
-    "round_resolved": {"fr": "Manche terminée", "de": "Runde abgeschlossen"},
-    "player_skipped_round": {"fr": "Joueur a passé la manche", "de": "Spieler hat die Runde ausgelassen"},
-    "network_message_files": {"fr": "Message réseau (échange de fichiers)", "de": "Netzwerknachricht (Dateiaustausch)"},
-    "file_session_lost": {"fr": "Session par fichiers perdue", "de": "Dateisitzung verloren"},
-}}
+    name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}
+    for name in _EVENT_LABELS["fr"]}}
 
 # colour of its generated Blockly blocks and drawer (else grey)
 PLUGIN_BLOCK_CATEGORY_COLORS = {"Network": "#2D93C8"}

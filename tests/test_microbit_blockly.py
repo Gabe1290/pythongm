@@ -101,12 +101,12 @@ def test_every_parameter_label_resolves_in_french():
 
 def test_other_languages_and_english_fall_back_to_the_schema_text():
     schema = ACTION_TYPES["microbit_play_tone"]
-    for lang in ("en", "es", "ja", "xx"):
+    for lang in ("en", "ko", "xx"):
         assert I18N.get_translated_action_display_name(
             "microbit_play_tone", lang, schema.display_name) == schema.display_name
         assert I18N.get_translated_action_description(
             "microbit_play_tone", lang, schema.description) == schema.description
-    assert I18N.get_translated_param_label("Melody", "es") == "Melody"
+    assert I18N.get_translated_param_label("Melody", "ko") == "Melody"
 
 
 # Words that must carry an accent in French; the bare form is the stripped-

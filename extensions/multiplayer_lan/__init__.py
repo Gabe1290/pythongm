@@ -20,15 +20,36 @@ draws nothing; the Phase 6 connect screen will add one).
 
 PLUGIN_NAME = "LAN Multiplayer"
 
-# French labels of its events in the generic Blockly "extension event" drop-down
+# Labels of its events in the generic Blockly "extension event" drop-down
+_EVENT_LABELS = {          # language -> {event: label}; one entry per further language
+    "fr": {
+        "network_started": "Réseau prêt",
+        "player_joined": "Joueur arrivé",
+        "player_left": "Joueur parti",
+        "network_message": "Message réseau",
+        "network_game_started": "Partie en réseau lancée",
+        "connection_lost": "Connexion perdue",
+    },
+    "de": {
+        "network_started": "Netzwerk bereit",
+        "player_joined": "Spieler beigetreten",
+        "player_left": "Spieler gegangen",
+        "network_message": "Netzwerknachricht",
+        "network_game_started": "Netzwerkspiel gestartet",
+        "connection_lost": "Verbindung verloren",
+    },
+    "es": {
+        "network_started": "Red lista",
+        "player_joined": "Jugador unido",
+        "player_left": "Jugador salido",
+        "network_message": "Mensaje de red",
+        "network_game_started": "Partida en red iniciada",
+        "connection_lost": "Conexión perdida",
+    },
+}
 PLUGIN_GENERATED_BLOCK_TRANSLATIONS = {"events": {
-    "network_started": {"fr": "Réseau prêt", "de": "Netzwerk bereit"},
-    "player_joined": {"fr": "Joueur arrivé", "de": "Spieler beigetreten"},
-    "player_left": {"fr": "Joueur parti", "de": "Spieler gegangen"},
-    "network_message": {"fr": "Message réseau", "de": "Netzwerknachricht"},
-    "network_game_started": {"fr": "Partie en réseau lancée", "de": "Netzwerkspiel gestartet"},
-    "connection_lost": {"fr": "Connexion perdue", "de": "Verbindung verloren"},
-}}
+    name: {lang: labels[name] for lang, labels in _EVENT_LABELS.items() if name in labels}
+    for name in _EVENT_LABELS["fr"]}}
 
 # colour of its generated Blockly blocks and drawer (else grey)
 PLUGIN_BLOCK_CATEGORY_COLORS = {"Network": "#2D93C8"}
