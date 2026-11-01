@@ -197,6 +197,15 @@ They assert *where* things land (LED (2,2) is red at its computed position; a
 click at A's computed rectangle fires `microbit_button_a`), and several run a real
 `GameRunner.run()` loop.
 
+## The board is a screen overlay (by design)
+
+The board and its clicks work in **window coordinates** on all three targets: it is drawn after the room
+(outside any view translate) at the object's x/y read as window pixels, and a click is hit-tested against the
+same pixels. In a room with a scrolling view the object's sprite scrolls but the board stays put, like a
+`draw_gui` HUD. Place it where you want it in the window. Pinned by `tests/test_microbit_scrolling_view.py`
+(a click works at the drawn position at any scroll; the pixels do not change with the scroll; HTML5 runs the
+overlays after the per-view loop).
+
 ## What is not here yet
 
 - **Stage L, a live link** to a real micro:bit over USB serial (needs a board).

@@ -122,7 +122,7 @@ unit (needs an English source of truth added to `actions.py` first), not part of
 non-empty translation in the language, differs from English except a documented cognate list,
 and resolves through the live path. Accents checked for fr/de/es/it/pt/ru/uk/sl.
 
-## M4. Boards and clicks in a room with a scrolling view — [ ]
+## M4. Boards and clicks in a room with a scrolling view — [x] 2026-11-01 (by design, no engine change)
 
 **Problem.** `extensions/microbit/input.py::mouse_down` hit-tests in screen space, and the
 overlay (`renderer.py`) draws in screen space. In a room with views enabled (camera scrolling)
@@ -140,6 +140,13 @@ at room (500, 300), a view scrolled to x = 400. Two honest outcomes:
   mismatch with the runtime's own view transform, on all three targets (desktop `renderer.py` +
   `input.py`, HTML5 `export_html5.js`, Kivy `kivy_draw.py` + `kivy_touch.py`), with the
   Python-oracle differential tests the HTML5/Kivy ports already have.
+
+**Outcome (Step 0):** the first branch. Desktop draws overlays after `room.render` (screen space);
+HTML5 runs `runInstanceOverlays` after the per-view loop, outside the translate; clicks are hit-tested
+against the same window coordinates; Kivy likewise has no view translation in the board path. All three
+agree, so nothing was misplaced relative to itself — the board behaves as a HUD. Pinned in
+`tests/test_microbit_scrolling_view.py` (a mutation that routes clicks through `screen_to_room` fails it)
+and documented in the extension README.
 
 **Why this is last of the correctness items:** the answer may be "by design", and the fix, if
 needed, touches three renderers that have no way to be eyeballed here.
