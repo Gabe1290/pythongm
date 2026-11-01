@@ -178,7 +178,7 @@ deciding; it may already play on independent `SoundLoader` instances.
 one leaves the other; one board behaves exactly as before; mutation: collapse back to channel 0
 and the two-board test fails.
 
-## M6. Kivy export against REAL Kivy — a bounded sweep — [ ]
+## M6. Kivy export against REAL Kivy — a bounded sweep — [x] 2026-11-01 (no new bug found)
 
 **Why.** A9 showed real Kivy 2.3.1 runs headless here (`tests/_real_kivy_render.py`, subprocess,
 skips where Kivy/GL are missing). Most Kivy export tests still use the stub harness, which cannot
@@ -190,6 +190,15 @@ commit, in this order of likely yield — (1) a generated `main.py` for `samples
 imports and builds its first scene; (2) the raycast scene overlay renders a frame with a non-black
 pixel; (3) the draw queue's `sprite` command with `subimage` crops. Stop after the three; each
 either passes (record it) or exposes a real bug (fix it in that commit).
+
+**Done as built:** `tests/_real_kivy_game.py` (subprocess worker: imports the generated `main`, builds one room
+scene on a hidden window, ticks it, renders it with `export_as_image` — a hidden window's default framebuffer
+reads back blank) and `tests/test_kivy_real_game.py`: (1) `plateforme_3` builds all its room instances and survives
+60 ticks, drawing more than one colour; (2) `raycast_1` fills its first-person overlay (`_raycast_group`) and draws
+distinct ceiling/floor; (3) the draw queue's `sprite` command crops one frame of `raycast_4`'s `spr_face` strip.
+Mutations (frame crop forced to frame 0; raycast overlay never rendered) each fail their test; the first draft of (2)
+asserted only colours and the overlay mutation survived it, so it now checks the overlay itself. All three passed
+first time: the stub harness had not been hiding a real API error in these paths.
 
 **Constraints.** Creating a graphics instruction without a window segfaults — always the
 subprocess worker; the worker must exit on its own with a hard timeout so it cannot hang CI.
