@@ -73,7 +73,7 @@ pas été chargé.
 | 1 | Appuyer sur avant / arrière | LED du dessus rouge / verte |
 |   | Appuyer sur gauche / droite | LED dessous gauche / dessous droite bleue |
 |   | Appuyer sur le centre | Toutes les LED éteintes |
-| 2 | Maintenir avant, arrière, gauche, droite | Il avance (lentement), s'arrête au relâchement |
+| 2 | Maintenir avant, arrière, gauche, droite | Il avance (à 200, une allure modérée), s'arrête au relâchement |
 |   | Appuyer sur le centre | Il s'arrête |
 | 3 | Appuyer trois fois sur le centre | La LED du dessus devient verte au troisième appui |
 |   | Appuyer sur arrière | Retour au bleu faible (compteur remis à zéro) |
@@ -98,7 +98,8 @@ hypothèses :
   syntaxe à cet endroit, c'est un résultat utile.
 - **Seuils** : 2000 pour le capteur de proximité avant et 300 pour le capteur du sol sont les
   valeurs par défaut. Votre table, l'éclairage et le ruban décident s'ils conviennent.
-- **Vitesses** 80 et 100 sont exprimées dans les unités du Thymio (le maximum est d'environ 500).
+- **Vitesses** 200 (programme 2, essayé d'abord à 100 sur le premier robot) et 80 (programmes 4 et 5) sont exprimées dans
+  les unités du Thymio (le maximum est d'environ 500).
 - Un événement de bouton se déclenche **à l'appui et au relâchement** ; c'est pourquoi les
   programmes vérifient `button.xxx == 1` avant d'agir.
 - Le simulateur et le robot ne se comporteront pas de façon identique ; la question intéressante

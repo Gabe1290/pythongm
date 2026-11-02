@@ -173,7 +173,7 @@ def test_the_motors_program_stops_when_the_button_is_released():
         return trace
     idle, held, released = _run(SAMPLE / "project.json", 5, act)
     assert idle == (0, 0)
-    assert held == (100, 100)                            # driving while held
+    assert held == (200, 200)                            # driving while held
     assert released == (0, 0)                            # and it stops on release: the whole point
 
 

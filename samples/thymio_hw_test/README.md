@@ -69,7 +69,7 @@ blue** (except the timer program) — if you do not see that, the code did not l
 | 1 | Press forward / backward | Top LED red / green |
 |   | Press left / right | Bottom-left / bottom-right LED blue |
 |   | Press centre | All LEDs off |
-| 2 | Hold forward, backward, left, right | It drives (slowly), stops when you let go |
+| 2 | Hold forward, backward, left, right | It drives (at 200, a moderate pace), stops when you let go |
 |   | Press centre | It stops |
 | 3 | Press centre three times | Top LED turns green after the third press |
 |   | Press backward | Back to dim blue (count reset) |
@@ -93,7 +93,8 @@ This is the first run on real hardware, so some things in the exported code are 
   that is a finding.
 - **Thresholds**: 2000 for the front proximity sensor and 300 for the ground sensor are the
   defaults. Your table, lighting and tape decide whether they are right.
-- **Speeds** 80 and 100 are in the Thymio's own units (the maximum is about 500).
+- **Speeds** 200 (program 2, tried on the first robot at 100 first) and 80 (programs 4 and 5) are in the Thymio's own
+  units (the maximum is about 500).
 - A button event fires on **press and on release**, which is why the programs check
   `button.xxx == 1` before acting.
 - The simulator and the robot will not behave identically; the interesting question is *how*

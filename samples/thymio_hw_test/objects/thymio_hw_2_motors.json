@@ -43,7 +43,7 @@
         {
           "action": "thymio_move_forward",
           "parameters": {
-            "speed": "100"
+            "speed": "200"
           }
         },
         {
@@ -85,7 +85,7 @@
         {
           "action": "thymio_move_backward",
           "parameters": {
-            "speed": "100"
+            "speed": "200"
           }
         },
         {
@@ -127,7 +127,7 @@
         {
           "action": "thymio_turn_left",
           "parameters": {
-            "speed": "100"
+            "speed": "200"
           }
         },
         {
@@ -169,7 +169,7 @@
         {
           "action": "thymio_turn_right",
           "parameters": {
-            "speed": "100"
+            "speed": "200"
           }
         },
         {

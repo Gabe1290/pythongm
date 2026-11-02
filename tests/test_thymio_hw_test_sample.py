@@ -168,7 +168,7 @@ def test_leds_program(aesl):
 
 def test_motors_program_drives_while_held_and_stops_on_release(aesl):
     code = _code(aesl["thymio_hw_2_motors"])
-    for button, left, right in (("forward", 100, 100), ("backward", -100, -100), ("left", 0, 100), ("right", 100, 0)):
+    for button, left, right in (("forward", 200, 200), ("backward", -200, -200), ("left", 0, 200), ("right", 200, 0)):
         i = code.index(f"onevent button.{button}")
         block = code[i:i + 14]
         assert f"if button.{button} == 1 then" in block
