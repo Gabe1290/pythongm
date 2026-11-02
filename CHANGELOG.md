@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-02
+
 ### Added
 - **micro:bit simulator** (a folder extension, `extensions/microbit/`): a
   simulated BBC micro:bit drawn in the game window — 5×5 LED display,
