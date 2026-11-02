@@ -73,8 +73,10 @@ blue** (except the timer program) — if you do not see that, the code did not l
 |   | Press centre | It stops |
 | 3 | Press centre three times | Top LED turns green after the third press |
 |   | Press backward | Back to dim blue (count reset) |
-| 4 | Press centre | It drives slowly forward |
-|   | Put a hand or a book in front | It stops, top LED red; clear again: green |
+| 4 | Press centre | It drives slowly forward (it is now "armed") |
+|   | Put a hand or a book in front | It stops, top LED red |
+|   | Take it away | Top LED green, and it **drives on by itself** |
+|   | Press backward | It stops and is disarmed: it stays still even when the way is clear |
 | 5 | Press centre on a light table | It drives slowly forward, top LED green |
 |   | Black tape under the **left** ground sensor | It stops, top LED red |
 | 6 | (nothing) | A beep and a blue top LED once a second |

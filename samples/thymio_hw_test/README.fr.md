@@ -77,8 +77,10 @@ pas été chargé.
 |   | Appuyer sur le centre | Il s'arrête |
 | 3 | Appuyer trois fois sur le centre | La LED du dessus devient verte au troisième appui |
 |   | Appuyer sur arrière | Retour au bleu faible (compteur remis à zéro) |
-| 4 | Appuyer sur le centre | Il avance lentement |
-|   | Placer une main ou un livre devant | Il s'arrête, LED rouge ; dégagé : verte |
+| 4 | Appuyer sur le centre | Il avance lentement (il est « armé ») |
+|   | Placer une main ou un livre devant | Il s'arrête, LED rouge |
+|   | Retirer l'obstacle | LED verte, et il **repart tout seul** |
+|   | Appuyer sur arrière | Il s'arrête et est désarmé : il reste immobile même quand la voie est libre |
 | 5 | Appuyer sur le centre sur une table claire | Il avance lentement, LED verte |
 |   | Ruban noir sous le capteur de sol **gauche** | Il s'arrête, LED rouge |
 | 6 | (rien) | Un bip et une LED bleue une fois par seconde |

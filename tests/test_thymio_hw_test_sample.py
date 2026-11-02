@@ -186,10 +186,79 @@ def test_counter_program_declares_and_uses_its_variable(aesl):
 
 
 def test_proximity_program(aesl):
+    """Armed by the centre button; stops at an obstacle; drives on by itself when the way is clear."""
     code = _code(aesl["thymio_hw_4_proximity"])
+    assert code[:2] == ["var armed", "armed = 0"]                              # declared, and disarmed at load
     assert "onevent prox" in code
     assert "if prox.horizontal[2] > 2000 then" in code and "if prox.horizontal[2] <= 2000 then" in code
-    assert "if button.center == 1 then" in code
+    i = code.index("onevent button.center")
+    assert code[i + 1:i + 3] == ["if button.center == 1 then", "armed = 1"]    # the centre button arms it
+    i = code.index("onevent button.backward")
+    assert code[i + 1:i + 3] == ["if button.backward == 1 then", "armed = 0"]  # the backward button disarms it
+    # resuming is nested: only when the way is clear AND it is armed
+    clear = code.index("if prox.horizontal[2] <= 2000 then")
+    nested = code.index("if armed == 1 then", clear)
+    assert "motor.left.target = 80" in code[nested:nested + 3]
+    assert code[nested + 3:nested + 5] == ["end", "end"]                       # both ifs closed
+
+
+def _proximity_robot(runner):
+    from extensions.thymio.state import simulator_of
+    robot = next(i for i in runner.current_room.instances if i.object_name == "thymio_hw_4_proximity")
+    return robot, simulator_of(robot)
+
+
+def test_proximity_robot_only_resumes_when_armed_and_clear():
+    """The arming logic through the real engine (the simulator's proximity sensors read 'clear')."""
+    import pygame
+    from events.plugin_loader import load_all_plugins
+    from runtime.game_runner import GameRunner
+    from extensions.thymio import input as inp
+    load_all_plugins()
+    pygame.init()
+    runner = GameRunner(str(SAMPLE / "project.json"))
+    seen = {}
+    real_clock = pygame.time.Clock
+
+    class FakeClock:
+        n = 0
+
+        def tick(self, fps=0):
+            FakeClock.n += 1
+            if FakeClock.n == 5:
+                robot, sim = _proximity_robot(runner)
+                events = robot.object_data["events"]
+
+                def fire(name):
+                    robot.action_executor.execute_event(robot, name, events)
+                sim.set_motor_speed(0, 0)
+                fire("thymio_proximity_update")
+                seen["disarmed_clear"] = sim.get_motor_speeds()          # clear but never armed: stays still
+                inp.key_down(robot, "space")                              # centre: arm and go
+                seen["after_centre"] = sim.get_motor_speeds()
+                sim.set_motor_speed(0, 0)                                 # an obstacle stopped it ...
+                fire("thymio_proximity_update")
+                seen["resumed"] = sim.get_motor_speeds()                  # ... and now it is clear: drives on
+                inp.key_down(robot, "down")                               # backward: disarm and stop
+                seen["after_backward"] = sim.get_motor_speeds()
+                fire("thymio_proximity_update")
+                seen["clear_but_disarmed"] = sim.get_motor_speeds()
+            if FakeClock.n == 8:
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
+            return 16
+
+        def get_fps(self):
+            return 60.0
+    pygame.time.Clock = FakeClock
+    try:
+        assert runner.run() is not False
+    finally:
+        pygame.time.Clock = real_clock
+    assert seen["disarmed_clear"] == (0, 0)
+    assert seen["after_centre"] == (80, 80)
+    assert seen["resumed"] == (80, 80)
+    assert seen["after_backward"] == (0, 0)
+    assert seen["clear_but_disarmed"] == (0, 0)
 
 
 def test_ground_program(aesl):

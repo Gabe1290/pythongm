@@ -442,6 +442,13 @@
           "create": {
             "actions": [
               {
+                "action": "thymio_set_variable",
+                "parameters": {
+                  "variable": "armed",
+                  "value": "0"
+                }
+              },
+              {
                 "action": "thymio_set_led_top",
                 "parameters": {
                   "red": "0",
@@ -464,10 +471,46 @@
                 "parameters": {}
               },
               {
+                "action": "thymio_set_variable",
+                "parameters": {
+                  "variable": "armed",
+                  "value": "1"
+                }
+              },
+              {
                 "action": "thymio_move_forward",
                 "parameters": {
                   "speed": "80"
                 }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_backward": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "backward"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_variable",
+                "parameters": {
+                  "variable": "armed",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
               },
               {
                 "action": "end_block",
@@ -524,6 +567,28 @@
                   "green": "32",
                   "blue": "0"
                 }
+              },
+              {
+                "action": "thymio_if_variable",
+                "parameters": {
+                  "variable": "armed",
+                  "comparison": "==",
+                  "value": "1"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_move_forward",
+                "parameters": {
+                  "speed": "80"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
               },
               {
                 "action": "end_block",
@@ -847,7 +912,7 @@
               {
                 "action": "draw_text",
                 "parameters": {
-                  "text": "\"centre: drive slowly forward\"",
+                  "text": "\"centre: start (drives slowly)\"",
                   "x": "40",
                   "y": "467",
                   "color": "#ffffff"
@@ -865,9 +930,18 @@
               {
                 "action": "draw_text",
                 "parameters": {
-                  "text": "\"clear ahead: green LED\"",
+                  "text": "\"clear again: green LED, drives on\"",
                   "x": "40",
                   "y": "499",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"backward: stop and disarm\"",
+                  "x": "40",
+                  "y": "515",
                   "color": "#ffffff"
                 }
               },

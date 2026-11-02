@@ -129,7 +129,7 @@
         {
           "action": "draw_text",
           "parameters": {
-            "text": "\"centre: drive slowly forward\"",
+            "text": "\"centre: start (drives slowly)\"",
             "x": "40",
             "y": "467",
             "color": "#ffffff"
@@ -147,9 +147,18 @@
         {
           "action": "draw_text",
           "parameters": {
-            "text": "\"clear ahead: green LED\"",
+            "text": "\"clear again: green LED, drives on\"",
             "x": "40",
             "y": "499",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"backward: stop and disarm\"",
+            "x": "40",
+            "y": "515",
             "color": "#ffffff"
           }
         },
