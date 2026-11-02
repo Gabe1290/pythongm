@@ -642,6 +642,10 @@ first pass is expected to turn something up: record what differs.
 - L [ ] M [ ] W [ ] The Welcome tab offers **Thymio — Hardware test** (not in the beginner edition) and it opens;
   six labelled robots are drawn and clicking a drawn arrow lights the right LED.
 - L [ ] M [ ] W [ ] *File → Export Aseba (Thymio) code…* writes six `.aesl` files.
+- L [ ] M [ ] W [ ] **File → Send to Thymio robot…** (needs `pip install --user tdmclient` and the Thymio software):
+  with the robot plugged in it offers the objects, sends the chosen one and says it is running; the top LED turns dim
+  blue (programs 1–5). With no robot it says so; with Aseba Studio holding the robot it says the robot is in use.
+  *Checked on a real robot by the developer on 2026-11-02 (program 1, LEDs only); the rest is open.*
 - L [ ] M [ ] W [ ] Each opens in **Aseba Studio** (File → Open) **without a syntax error**; Load and Run work.
   Copy any error message as text.
 - L [ ] M [ ] W [ ] Program-by-program, the robot does what the guide's table says (LEDs, motors only while held,

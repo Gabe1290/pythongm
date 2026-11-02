@@ -8676,5 +8676,97 @@ Which one do you want to open?</source>
 
 Który chcesz otworzyć?</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Send to &amp;Thymio robot...</source>
+        <translation>Wyślij do robota &amp;Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Send to Thymio</source>
+        <translation>Wyślij do Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Talking to the robot needs the 'tdmclient' package. Install it with:
+
+pip install --user tdmclient
+
+and try again.</source>
+        <translation>Do komunikacji z robotem potrzebny jest pakiet „tdmclient”. Zainstaluj go poleceniem:
+
+pip install --user tdmclient
+
+i spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>No Thymio objects found in this project. Add one (name it starting with "thymio") and try again.</source>
+        <translation>W tym projekcie nie ma obiektów Thymio. Dodaj jeden (nazwij go zaczynając od „thymio”) i spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Object to send:</source>
+        <translation>Obiekt do wysłania:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Looking for a Thymio robot...</source>
+        <translation>Szukanie robota Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again.</source>
+        <translation>Nie można połączyć się z menedżerem urządzeń Thymio. Uruchom Thymio Suite (lub thymio-device-manager) i spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Thymio send: no device manager</source>
+        <translation>Wysyłanie do Thymio: brak menedżera urządzeń</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on.</source>
+        <translation>Nie znaleziono robota Thymio. Sprawdź kabel USB (lub klucz bezprzewodowy) i czy robot jest włączony.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Thymio send: no robot found</source>
+        <translation>Wysyłanie do Thymio: nie znaleziono robota</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Robot:</source>
+        <translation>Wybierz robota:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Sending {0} to {1}...</source>
+        <translation>Wysyłanie {0} do {1}...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>{0} is now running on {1}.</source>
+        <translation>{0} działa teraz na {1}.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>Thymio send failed</source>
+        <translation>Wysyłanie do Thymio nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>The robot is in use by another program (for example Aseba Studio). Close it there and try again.</source>
+        <translation>Robot jest używany przez inny program (na przykład Aseba Studio). Zamknij go tam i spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="1"/>
+        <source>The robot did not accept the program ({0}):
+
+{1}</source>
+        <translation>Robot nie przyjął programu ({0}):
+
+{1}</translation>
+    </message>
 </context>
 </TS>

@@ -228,7 +228,7 @@ PLUGIN_ASSET_TREE_CATEGORIES = [_register_asset_tree_category()]
 # contract only supports appending (or insertAction with a known sibling,
 # which the built-in menu doesn't expose here).
 def _build_file_menu(ide, menu):
-    from .export import export_aseba_code, import_roberta_xml
+    from .export import export_aseba_code, import_roberta_xml, send_to_thymio
 
     # Attached to ide under their pre-hidden names (bound methods before
     # this stage, plain callables now -- Python doesn't care which for a
@@ -238,6 +238,7 @@ def _build_file_menu(ide, menu):
     # enable/disable check below) both rely on these exact names, unchanged.
     ide.export_aseba_code = lambda: export_aseba_code(ide)
     ide.import_roberta_xml = lambda: import_roberta_xml(ide)
+    ide.send_to_thymio = lambda: send_to_thymio(ide)
 
     menu.addSeparator()
     ide.export_aseba_action = ide.create_action(
@@ -249,6 +250,12 @@ def _build_file_menu(ide, menu):
     # naming this action (core/ide_window.py's pygm_requires_project check).
     ide.export_aseba_action.setProperty("pygm_requires_project", True)
     menu.addAction(ide.export_aseba_action)
+    # Straight to a connected robot, no Aseba Studio (needs the tdmclient package + the Thymio software's
+    # device manager; see export/device.py).
+    ide.send_to_thymio_action = ide.create_action(
+        ide.tr("Send to &Thymio robot..."), None, ide.send_to_thymio)
+    ide.send_to_thymio_action.setProperty("pygm_requires_project", True)
+    menu.addAction(ide.send_to_thymio_action)
     import_action = ide.create_action(
         ide.tr("Import Open &Roberta XML..."), None, ide.import_roberta_xml)
     # Imports a new PROJECT (like GameMaker .gmk import), so it must stay

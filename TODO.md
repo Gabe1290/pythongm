@@ -1024,6 +1024,13 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Extensions
 
+### Thymio — send straight to the robot (2026-11-02)
+`File -> Send to Thymio robot...` (extensions/thymio/export/device.py) works against a real Thymio II: the LED program was
+accepted and ran (developer, 2026-11-02). Still open: the interface text is translated in **French and Polish only** (the
+other nine languages fall back to English; 16 strings in the `PyGameMakerIDE` context, see
+`tests/test_thymio_device_link.py::SEND_STRINGS`), the motor/sensor programs have not been sent, the exported source still
+carries the "Upload this code using Aseba Studio" header comment, and there is no "stop the robot" action.
+
 ### Thymio — first run on a real robot (2026-11-02)
 `samples/thymio_hw_test` exists to find out what the Aseba export does on a **real Thymio II** (never tried).
 Open until someone fills in its results table (`docs/RELEASE_QA_CHECKLIST.md` §11b): the three guesses

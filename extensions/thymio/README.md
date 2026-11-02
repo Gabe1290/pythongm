@@ -109,11 +109,30 @@ any of Stages A–F (they only ever touched the *dedicated* Thymio tab). See
 `docs/THYMIO_EXTENSION_PLAN.md`'s Stage G5 for the itemized list; it's sized
 as its own follow-up, not attempted here.
 
+## Sending a program straight to a robot
+
+**File → Send to Thymio robot…** compiles one Thymio object's program on a connected robot and runs it, **without
+Aseba Studio**. It talks to the *Thymio Device Manager* (the background service of Thymio Suite, TCP port 8596)
+through the `tdmclient` package (`pip install --user tdmclient`; listed in `requirements.txt`). The pieces:
+
+- `export/device.py` (Qt-free): `ensure_device_manager()` (starts the service if the Thymio software is installed),
+  `list_robots()` (name, id, status), `send_program(source, node_id)` (lock the robot, compile, run). A robot's own
+  refusal (a compile error, a robot busy in another program) is a `SendResult`, not an exception.
+- `AsebaExporter.generate_source(project, object)`: the plain Aseba text a robot compiles (the manager takes source,
+  not `.aesl`).
+- `export/__init__.py`'s `send_to_thymio(ide)`: saves the project if it has unsaved changes, asks which object and
+  which robot when there are several, sends in a worker thread, and shows the robot's error text if it refuses.
+
+Landmine: `tdmclient` reads its socket in a non-daemon thread blocked in `recv()`; `disconnect()` alone leaves it
+there and the Python process (the IDE, on quit) hangs. `device._close_client` also sets a short socket timeout,
+which the library treats as "check the running flag again", so the thread ends. Shutting the socket down instead
+works but prints a traceback from the library's thread.
+
 ## Trying it on a real robot
 
 `samples/thymio_hw_test` ("Thymio — Hardware test") is six small programs, one robot each, written for the
 first run of the Aseba export on a physical Thymio II: its guide (English and French) says how to export, load
-them in Aseba Studio and what each should do, and ends with a results table. `tests/test_thymio_hw_test_sample.py`
+them in Aseba Studio (or send them with File → Send to Thymio robot…) and what each should do, and ends with a results table. `tests/test_thymio_hw_test_sample.py`
 checks the exported Aseba short of the robot itself; `docs/RELEASE_QA_CHECKLIST.md` §11b is the sign-off.
 
 ## Turning it on

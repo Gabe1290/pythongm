@@ -41,6 +41,10 @@ pyinstaller>=5.0.0
 pyserial>=3.5
 microfs>=1.4.0
 
+# Thymio: File -> Send to Thymio robot... talks to the Thymio Device Manager (Thymio Suite)
+# instead of going through Aseba Studio (extensions/thymio/export/device.py)
+tdmclient>=0.1.21
+
 # Built-in Python modules (no installation needed):
 # - json
 # - pathlib

@@ -101,6 +101,32 @@ class AsebaExporter:
 
         return True
 
+    def load_project(self, project_path) -> Dict:
+        """The project's data with the objects/<name>.json side files merged in (the same data export() uses)."""
+        project_path = Path(project_path)
+        with open(project_path, 'r', encoding='utf-8') as f:
+            project_data = json.load(f)
+        self._load_object_files(project_path.parent, project_data)
+        return project_data
+
+    def thymio_object_names(self, project_path) -> List[str]:
+        """Names of the project's Thymio objects, in project order."""
+        return list(self._find_thymio_objects(self.load_project(project_path)))
+
+    def generate_source(self, project_path, object_name: str) -> str:
+        """The plain Aseba program for one Thymio object, without the .aesl XML envelope.
+
+        This is the text a robot compiles (the Thymio Device Manager takes source, not .aesl), and is the same text
+        export() wraps in <node>. Raises KeyError if the project has no such Thymio object."""
+        project_data = self.load_project(project_path)
+        objects = self._find_thymio_objects(project_data)
+        if object_name not in objects:
+            raise KeyError(object_name)
+        self.variables = set()
+        self.timer_periods = {}
+        self.current_object = object_name
+        return self.generate_aesl(object_name, objects[object_name], project_data)
+
     def _load_object_files(self, project_dir: Path, project_data: Dict) -> None:
         """Merge objects/<name>.json side files into project_data (file wins),
         matching the project loader's precedence (merge_object_file) — same

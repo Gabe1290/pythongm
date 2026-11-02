@@ -51,6 +51,11 @@ par robot** :
 
 ## Étape 3 — lancer un programme sur le robot
 
+**Le moyen rapide, sans Aseba Studio :** installez une fois l'aide (`pip install --user tdmclient`), branchez le robot et
+utilisez *Fichier → Envoyer au robot Thymio…*. L'IDE demande lequel des six objets envoyer, le compile sur le robot et le
+démarre ; si le robot refuse le programme, son message d'erreur s'affiche dans l'IDE. Passez à « Ce que vous devez voir ».
+Les étapes ci-dessous font la même chose à la main avec Aseba Studio.
+
 1. Branchez le Thymio et allumez-le.
 2. Ouvrez **Aseba Studio** ; il trouve le robot.
 3. *Fichier → Ouvrir* le fichier `.aesl`, appuyez sur **Charger**, puis sur **Exécuter**.

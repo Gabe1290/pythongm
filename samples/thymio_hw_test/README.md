@@ -48,6 +48,11 @@ writes the same six files.)
 
 ## Step 3 — run one on the robot
 
+**The quick way, no Aseba Studio:** install the helper once (`pip install --user tdmclient`), plug in the robot and use
+*File → Send to Thymio robot…*. It asks which of the six objects to send, compiles it on the robot and starts it; if the
+robot refuses the program you get its error message in the IDE. Skip to "What you should see". The steps below do the
+same by hand with Aseba Studio.
+
 1. Plug in the Thymio and switch it on.
 2. Open **Aseba Studio**; it finds the robot.
 3. *File → Open* the `.aesl` file, press **Load**, then **Run**.
