@@ -3455,6 +3455,11 @@ Błąd: {0}</translation>
         <source>📖  Sample guides</source>
         <translation>📖  Przewodniki do przykładów</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Test z robotem</translation>
+    </message>
 </context>
 <context>
     <name>ActionConfigDialog</name>

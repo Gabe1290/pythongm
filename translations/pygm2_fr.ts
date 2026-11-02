@@ -10722,6 +10722,11 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Dé et humeurs</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Test avec le robot</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

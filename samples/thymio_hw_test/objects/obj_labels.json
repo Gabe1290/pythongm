@@ -1,0 +1,234 @@
+{
+  "name": "obj_labels",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"1  LEDs\"",
+            "x": "40",
+            "y": "163",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"forward: top LED red\"",
+            "x": "40",
+            "y": "187",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"backward: top LED green\"",
+            "x": "40",
+            "y": "203",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"left / right: bottom LEDs blue\"",
+            "x": "40",
+            "y": "219",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre: all LEDs off\"",
+            "x": "40",
+            "y": "235",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"2  Motors\"",
+            "x": "340",
+            "y": "163",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"hold an arrow: it drives\"",
+            "x": "340",
+            "y": "187",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"let go: it stops\"",
+            "x": "340",
+            "y": "203",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre: stop (keep it on the floor)\"",
+            "x": "340",
+            "y": "219",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"3  Counter\"",
+            "x": "640",
+            "y": "163",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre x 3: top LED turns green\"",
+            "x": "640",
+            "y": "187",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"backward: reset the count\"",
+            "x": "640",
+            "y": "203",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"4  Proximity\"",
+            "x": "40",
+            "y": "443",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre: drive slowly forward\"",
+            "x": "40",
+            "y": "467",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"obstacle ahead: stop + red LED\"",
+            "x": "40",
+            "y": "483",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"clear ahead: green LED\"",
+            "x": "40",
+            "y": "499",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"5  Ground\"",
+            "x": "340",
+            "y": "443",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre: drive slowly forward\"",
+            "x": "340",
+            "y": "467",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"dark ground: stop + red LED\"",
+            "x": "340",
+            "y": "483",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"light ground: green LED\"",
+            "x": "340",
+            "y": "499",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"6  Timer + tone\"",
+            "x": "640",
+            "y": "443",
+            "color": "#ffd166"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"every second: beep + blue LED\"",
+            "x": "640",
+            "y": "467",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"centre: stop the timer\"",
+            "x": "640",
+            "y": "483",
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"forward: start it again\"",
+            "x": "640",
+            "y": "499",
+            "color": "#ffffff"
+          }
+        }
+      ]
+    }
+  },
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false
+}

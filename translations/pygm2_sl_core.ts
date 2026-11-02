@@ -3086,6 +3086,11 @@ Povlecite to datoteko na pogon USB MICROBIT plošče micro:bit, da jo naložite.
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Kocka in razpoloženja</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Preizkus z robotom</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

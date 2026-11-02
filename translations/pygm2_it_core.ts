@@ -3086,6 +3086,11 @@ Trascina questo file sull'unità USB MICROBIT della micro:bit per caricarlo.</tr
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Dado e umori</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Test con il robot</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

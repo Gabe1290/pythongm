@@ -2950,6 +2950,11 @@ Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Кубик і настрої</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Перевірка на роботі</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

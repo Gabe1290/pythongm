@@ -9961,6 +9961,11 @@ Do you want to save anyway?</source>
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Dado y estados de ánimo</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Prueba con el robot</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

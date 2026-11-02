@@ -1,0 +1,107 @@
+{
+  "name": "thymio_hw_4_proximity",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "is_thymio": true,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "8"
+          }
+        }
+      ]
+    },
+    "thymio_button_center": {
+      "actions": [
+        {
+          "action": "thymio_if_button_pressed",
+          "parameters": {
+            "button": "center"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_move_forward",
+          "parameters": {
+            "speed": "80"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_proximity_update": {
+      "actions": [
+        {
+          "action": "thymio_if_proximity",
+          "parameters": {
+            "sensor_index": "2 - Front Center",
+            "threshold": "2000",
+            "comparison": ">"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "32",
+            "green": "0",
+            "blue": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_if_proximity",
+          "parameters": {
+            "sensor_index": "2 - Front Center",
+            "threshold": "2000",
+            "comparison": "<="
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "32",
+            "blue": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false
+}

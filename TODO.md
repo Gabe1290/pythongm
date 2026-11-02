@@ -1024,6 +1024,14 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Extensions
 
+### Thymio — first run on a real robot (2026-11-02)
+`samples/thymio_hw_test` exists to find out what the Aseba export does on a **real Thymio II** (never tried).
+Open until someone fills in its results table (`docs/RELEASE_QA_CHECKLIST.md` §11b): the three guesses
+(`call sound.freq(0, -1)` stops sound, `count++`, button events on press AND release), the 2000 / 300 sensor
+thresholds, speeds 80 / 100. Also found while building it: the **simulator fires a button's event only on press**
+(`extensions/thymio/input.py`), so a "released" handler never runs there; and a `draw` event on a Thymio-named
+object drew nothing in the room (labels had to move to a separate object) -- not investigated.
+
 ### micro:bit extension — follow-ups (2026-10-26)
 The simulator is done (`docs/MICROBIT_EXTENSION_PLAN.md`, Stage S). Open, in
 rough order of value:

@@ -631,6 +631,27 @@ tests can pin is pinned; this is the part only eyes and ears can check.
 
 ---
 
+## 11b. Thymio on a REAL robot (`thymio_hw_test`) — needs a Thymio II
+
+→ the sample's own guide (`samples/thymio_hw_test/README.md`) is the procedure; this is the sign-off.
+Nobody had loaded PyGameMaker's Aseba export onto a physical Thymio when this was written, so the
+first pass is expected to turn something up: record what differs.
+
+- L [ ] M [ ] W [ ] *Tools → Preferences → Extensions*: **Thymio Robot** and the checkbox under it can be
+  ticked; after OK and a restart the Thymio tab, the Tools-menu entries and the toolbar button appear.
+- L [ ] M [ ] W [ ] The Welcome tab offers **Thymio — Hardware test** (not in the beginner edition) and it opens;
+  six labelled robots are drawn and clicking a drawn arrow lights the right LED.
+- L [ ] M [ ] W [ ] *File → Export Aseba (Thymio) code…* writes six `.aesl` files.
+- L [ ] M [ ] W [ ] Each opens in **Aseba Studio** (File → Open) **without a syntax error**; Load and Run work.
+  Copy any error message as text.
+- L [ ] M [ ] W [ ] Program-by-program, the robot does what the guide's table says (LEDs, motors only while held,
+  counter, proximity stop, ground-line stop, a beep every second). Note the speeds (80 / 100) and thresholds
+  (2000 proximity, 300 ground) that needed changing.
+- L [ ] M [ ] W [ ] The three guesses in the guide's "What we are not sure about": `call sound.freq(0, -1)` stops
+  the beep, `count++` compiles, a button event fires on press and on release.
+
+---
+
 ## 12. Preferences & settings
 
 - L [ ] M [ ] W [ ] Preferences dialog opens; **every tab's content fits

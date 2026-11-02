@@ -442,6 +442,11 @@ Deseja salvar mesmo assim?</translation>
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Dado e humores</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="214"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Teste com o robô</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

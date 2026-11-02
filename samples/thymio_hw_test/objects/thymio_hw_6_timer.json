@@ -1,0 +1,75 @@
+{
+  "name": "thymio_hw_6_timer",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "is_thymio": true,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "thymio_set_timer_period",
+          "parameters": {
+            "timer_id": "0",
+            "period": "1000"
+          }
+        }
+      ]
+    },
+    "thymio_timer_0": {
+      "actions": [
+        {
+          "action": "thymio_play_tone",
+          "parameters": {
+            "frequency": "440",
+            "duration": "15"
+          }
+        },
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "32"
+          }
+        }
+      ]
+    },
+    "thymio_button_center": {
+      "actions": [
+        {
+          "action": "thymio_set_timer_period",
+          "parameters": {
+            "timer_id": "0",
+            "period": "0"
+          }
+        },
+        {
+          "action": "thymio_stop_sound",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_leds_off",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_button_forward": {
+      "actions": [
+        {
+          "action": "thymio_set_timer_period",
+          "parameters": {
+            "timer_id": "0",
+            "period": "1000"
+          }
+        }
+      ]
+    }
+  },
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false
+}

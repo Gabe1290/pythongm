@@ -80,6 +80,10 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     # machine or hardware needed, so unlike the reseau_* entries it is also
     # offered in the beginner edition. Translated like the other names.
     ("samples/microbit_1", "micro:bit — Dice and Moods"),
+    # thymio_hw_test: six small Thymio programs for trying the Aseba export on a
+    # REAL robot (extensions/thymio). Needs the Thymio extension switched on and
+    # the robot software to be useful, so it is not in the beginner list.
+    ("samples/thymio_hw_test", "Thymio — Hardware test"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # docs/BLOCKLY_SCRATCH_PARITY_PLAN.md item 7: the bundled sample

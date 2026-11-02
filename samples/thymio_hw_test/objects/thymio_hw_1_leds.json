@@ -1,0 +1,99 @@
+{
+  "name": "thymio_hw_1_leds",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "is_thymio": true,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "8"
+          }
+        }
+      ]
+    },
+    "thymio_button_forward": {
+      "actions": [
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "32",
+            "green": "0",
+            "blue": "0"
+          }
+        }
+      ]
+    },
+    "thymio_button_backward": {
+      "actions": [
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "32",
+            "blue": "0"
+          }
+        }
+      ]
+    },
+    "thymio_button_left": {
+      "actions": [
+        {
+          "action": "thymio_set_led_bottom_left",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "32"
+          }
+        }
+      ]
+    },
+    "thymio_button_right": {
+      "actions": [
+        {
+          "action": "thymio_set_led_bottom_right",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "32"
+          }
+        }
+      ]
+    },
+    "thymio_button_center": {
+      "actions": [
+        {
+          "action": "thymio_leds_off",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_set_led_bottom_left",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "0"
+          }
+        },
+        {
+          "action": "thymio_set_led_bottom_right",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "0"
+          }
+        }
+      ]
+    }
+  },
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false
+}

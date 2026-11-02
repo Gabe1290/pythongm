@@ -1,0 +1,977 @@
+{
+  "name": "thymio_hw_test",
+  "version": "1.0",
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "settings": {
+    "window_title": "Thymio: hardware test",
+    "window_width": 900,
+    "window_height": 560,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full",
+    "active_extensions": [
+      "thymio"
+    ]
+  },
+  "assets": {
+    "sprites": {},
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "thymio_hw_1_leds": {
+        "name": "thymio_hw_1_leds",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          },
+          "thymio_button_forward": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "32",
+                  "green": "0",
+                  "blue": "0"
+                }
+              }
+            ]
+          },
+          "thymio_button_backward": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "32",
+                  "blue": "0"
+                }
+              }
+            ]
+          },
+          "thymio_button_left": {
+            "actions": [
+              {
+                "action": "thymio_set_led_bottom_left",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "32"
+                }
+              }
+            ]
+          },
+          "thymio_button_right": {
+            "actions": [
+              {
+                "action": "thymio_set_led_bottom_right",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "32"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_leds_off",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_bottom_left",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "thymio_set_led_bottom_right",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "0"
+                }
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "thymio_hw_2_motors": {
+        "name": "thymio_hw_2_motors",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_forward": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "forward"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_move_forward",
+                "parameters": {
+                  "speed": "100"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_button_released",
+                "parameters": {
+                  "button": "forward"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_backward": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "backward"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_move_backward",
+                "parameters": {
+                  "speed": "100"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_button_released",
+                "parameters": {
+                  "button": "backward"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_left": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "left"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_turn_left",
+                "parameters": {
+                  "speed": "100"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_button_released",
+                "parameters": {
+                  "button": "left"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_right": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "right"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_turn_right",
+                "parameters": {
+                  "speed": "100"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_button_released",
+                "parameters": {
+                  "button": "right"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "thymio_hw_3_counter": {
+        "name": "thymio_hw_3_counter",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_variable",
+                "parameters": {
+                  "variable": "count",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "center"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_increase_variable",
+                "parameters": {
+                  "variable": "count",
+                  "amount": "1"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_variable",
+                "parameters": {
+                  "variable": "count",
+                  "comparison": ">=",
+                  "value": "3"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "32",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_backward": {
+            "actions": [
+              {
+                "action": "thymio_set_variable",
+                "parameters": {
+                  "variable": "count",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "thymio_hw_4_proximity": {
+        "name": "thymio_hw_4_proximity",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "center"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_move_forward",
+                "parameters": {
+                  "speed": "80"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_proximity_update": {
+            "actions": [
+              {
+                "action": "thymio_if_proximity",
+                "parameters": {
+                  "sensor_index": "2 - Front Center",
+                  "threshold": "2000",
+                  "comparison": ">"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "32",
+                  "green": "0",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_proximity",
+                "parameters": {
+                  "sensor_index": "2 - Front Center",
+                  "threshold": "2000",
+                  "comparison": "<="
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "32",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "thymio_hw_5_ground": {
+        "name": "thymio_hw_5_ground",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "8"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_if_button_pressed",
+                "parameters": {
+                  "button": "center"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_move_forward",
+                "parameters": {
+                  "speed": "80"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_ground_update": {
+            "actions": [
+              {
+                "action": "thymio_if_ground_dark",
+                "parameters": {
+                  "sensor_index": "0 - Left",
+                  "threshold": "300"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_stop_motors",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "32",
+                  "green": "0",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_if_ground_light",
+                "parameters": {
+                  "sensor_index": "0 - Left",
+                  "threshold": "300"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "32",
+                  "blue": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "thymio_hw_6_timer": {
+        "name": "thymio_hw_6_timer",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "is_thymio": true,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "thymio_set_timer_period",
+                "parameters": {
+                  "timer_id": "0",
+                  "period": "1000"
+                }
+              }
+            ]
+          },
+          "thymio_timer_0": {
+            "actions": [
+              {
+                "action": "thymio_play_tone",
+                "parameters": {
+                  "frequency": "440",
+                  "duration": "15"
+                }
+              },
+              {
+                "action": "thymio_set_led_top",
+                "parameters": {
+                  "red": "0",
+                  "green": "0",
+                  "blue": "32"
+                }
+              }
+            ]
+          },
+          "thymio_button_center": {
+            "actions": [
+              {
+                "action": "thymio_set_timer_period",
+                "parameters": {
+                  "timer_id": "0",
+                  "period": "0"
+                }
+              },
+              {
+                "action": "thymio_stop_sound",
+                "parameters": {}
+              },
+              {
+                "action": "thymio_leds_off",
+                "parameters": {}
+              }
+            ]
+          },
+          "thymio_button_forward": {
+            "actions": [
+              {
+                "action": "thymio_set_timer_period",
+                "parameters": {
+                  "timer_id": "0",
+                  "period": "1000"
+                }
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      },
+      "obj_labels": {
+        "name": "obj_labels",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -100,
+        "events": {
+          "draw": {
+            "actions": [
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"1  LEDs\"",
+                  "x": "40",
+                  "y": "163",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"forward: top LED red\"",
+                  "x": "40",
+                  "y": "187",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"backward: top LED green\"",
+                  "x": "40",
+                  "y": "203",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"left / right: bottom LEDs blue\"",
+                  "x": "40",
+                  "y": "219",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre: all LEDs off\"",
+                  "x": "40",
+                  "y": "235",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"2  Motors\"",
+                  "x": "340",
+                  "y": "163",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"hold an arrow: it drives\"",
+                  "x": "340",
+                  "y": "187",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"let go: it stops\"",
+                  "x": "340",
+                  "y": "203",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre: stop (keep it on the floor)\"",
+                  "x": "340",
+                  "y": "219",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"3  Counter\"",
+                  "x": "640",
+                  "y": "163",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre x 3: top LED turns green\"",
+                  "x": "640",
+                  "y": "187",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"backward: reset the count\"",
+                  "x": "640",
+                  "y": "203",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"4  Proximity\"",
+                  "x": "40",
+                  "y": "443",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre: drive slowly forward\"",
+                  "x": "40",
+                  "y": "467",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"obstacle ahead: stop + red LED\"",
+                  "x": "40",
+                  "y": "483",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"clear ahead: green LED\"",
+                  "x": "40",
+                  "y": "499",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"5  Ground\"",
+                  "x": "340",
+                  "y": "443",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre: drive slowly forward\"",
+                  "x": "340",
+                  "y": "467",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"dark ground: stop + red LED\"",
+                  "x": "340",
+                  "y": "483",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"light ground: green LED\"",
+                  "x": "340",
+                  "y": "499",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"6  Timer + tone\"",
+                  "x": "640",
+                  "y": "443",
+                  "color": "#ffd166"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"every second: beep + blue LED\"",
+                  "x": "640",
+                  "y": "467",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"centre: stop the timer\"",
+                  "x": "640",
+                  "y": "483",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"forward: start it again\"",
+                  "x": "640",
+                  "y": "499",
+                  "color": "#ffffff"
+                }
+              }
+            ]
+          }
+        },
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 900,
+        "height": 560,
+        "background_color": "#1a2a44",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 7,
+        "created": "2026-11-02T00:00:00.000000",
+        "modified": "2026-11-02T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "instances": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

@@ -53,6 +53,7 @@ SAMPLES = ["maze_1", "maze_2", "maze_3", "maze_4",
            "reseau_4",
            "fichier_1",
            "microbit_1",
+           "thymio_hw_test",
            "treasure",
            "sky_strike_1",
            "mon_bloc_1"]

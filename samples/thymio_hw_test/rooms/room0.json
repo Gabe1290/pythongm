@@ -1,0 +1,80 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 900,
+  "height": 560,
+  "background_color": "#1a2a44",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 7,
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false,
+  "tiles": [],
+  "instances": [
+    {
+      "object_name": "thymio_hw_1_leds",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 150,
+      "y": 95
+    },
+    {
+      "object_name": "thymio_hw_2_motors",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 450,
+      "y": 95
+    },
+    {
+      "object_name": "thymio_hw_3_counter",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 750,
+      "y": 95
+    },
+    {
+      "object_name": "thymio_hw_4_proximity",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 150,
+      "y": 375
+    },
+    {
+      "object_name": "thymio_hw_5_ground",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 450,
+      "y": 375
+    },
+    {
+      "object_name": "thymio_hw_6_timer",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 750,
+      "y": 375
+    },
+    {
+      "object_name": "obj_labels",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

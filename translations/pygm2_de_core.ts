@@ -3086,6 +3086,11 @@ Ziehen Sie diese Datei auf das USB-Laufwerk MICROBIT des micro:bit, um ihn zu fl
         <source>micro:bit — Dice and Moods</source>
         <translation>micro:bit — Würfel und Stimmungen</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Hardware test</source>
+        <translation>Thymio — Hardwaretest</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -1,0 +1,203 @@
+{
+  "name": "thymio_hw_2_motors",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "is_thymio": true,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "thymio_set_led_top",
+          "parameters": {
+            "red": "0",
+            "green": "0",
+            "blue": "8"
+          }
+        }
+      ]
+    },
+    "thymio_button_center": {
+      "actions": [
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_button_forward": {
+      "actions": [
+        {
+          "action": "thymio_if_button_pressed",
+          "parameters": {
+            "button": "forward"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_move_forward",
+          "parameters": {
+            "speed": "100"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_if_button_released",
+          "parameters": {
+            "button": "forward"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_button_backward": {
+      "actions": [
+        {
+          "action": "thymio_if_button_pressed",
+          "parameters": {
+            "button": "backward"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_move_backward",
+          "parameters": {
+            "speed": "100"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_if_button_released",
+          "parameters": {
+            "button": "backward"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_button_left": {
+      "actions": [
+        {
+          "action": "thymio_if_button_pressed",
+          "parameters": {
+            "button": "left"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_turn_left",
+          "parameters": {
+            "speed": "100"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_if_button_released",
+          "parameters": {
+            "button": "left"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "thymio_button_right": {
+      "actions": [
+        {
+          "action": "thymio_if_button_pressed",
+          "parameters": {
+            "button": "right"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_turn_right",
+          "parameters": {
+            "speed": "100"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_if_button_released",
+          "parameters": {
+            "button": "right"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "thymio_stop_motors",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "created": "2026-11-02T00:00:00.000000",
+  "modified": "2026-11-02T00:00:00.000000",
+  "imported": false
+}

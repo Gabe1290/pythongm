@@ -73,7 +73,7 @@ def test_unknown_edition_key_shows_all(monkeypatch):
 
 def test_beginner_whitelist_matches_the_shipped_non_raycast_samples():
     """The beginner list should be exactly the real sample folders minus
-    raycast_*, block_world_*, multiplayer_lan_*, reseau_*, fichier_* and
+    raycast_*, block_world_*, multiplayer_lan_*, reseau_*, fichier_*, thymio_* and
     mon_bloc_1 (the first two change the view shape and are the most
     advanced; the multiplayer samples -- both socket-based and
     file-exchange -- need two separate processes/machines to
@@ -84,7 +84,7 @@ def test_beginner_whitelist_matches_the_shipped_non_raycast_samples():
     lingers."""
     shipped = sorted(p.name for p in (REPO_ROOT / "samples").iterdir()
                      if (p / "project.json").exists())
-    _advanced_prefixes = ("raycast", "block_world", "multiplayer_lan", "reseau", "fichier")
+    _advanced_prefixes = ("raycast", "block_world", "multiplayer_lan", "reseau", "fichier", "thymio")
     _advanced_exact = {"mon_bloc_1"}
     expected = [s for s in shipped
                 if not s.startswith(_advanced_prefixes) and s not in _advanced_exact]

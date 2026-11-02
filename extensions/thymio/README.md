@@ -109,6 +109,13 @@ any of Stages A–F (they only ever touched the *dedicated* Thymio tab). See
 `docs/THYMIO_EXTENSION_PLAN.md`'s Stage G5 for the itemized list; it's sized
 as its own follow-up, not attempted here.
 
+## Trying it on a real robot
+
+`samples/thymio_hw_test` ("Thymio — Hardware test") is six small programs, one robot each, written for the
+first run of the Aseba export on a physical Thymio II: its guide (English and French) says how to export, load
+them in Aseba Studio and what each should do, and ends with a results table. `tests/test_thymio_hw_test_sample.py`
+checks the exported Aseba short of the robot itself; `docs/RELEASE_QA_CHECKLIST.md` §11b is the sign-off.
+
 ## Turning it on
 
 Two independent switches, both currently set to match pre-refactor
