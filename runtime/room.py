@@ -549,9 +549,14 @@ class GameRoom:
             self._depth_dirty = False
         for instance in self._sorted_instances:
             # An extension overlay draws custom_rendered instances (a robot
-            # body) after this pass; everything else renders its sprite.
+            # body) after this pass; everything else renders its sprite. The
+            # author's own draw event still runs for a custom_rendered instance
+            # (it used to be skipped with the sprite, so a draw_text on an
+            # extension-drawn robot drew nothing); it lands beneath the overlay's body.
             if not instance.custom_rendered:
                 instance.render(screen, view_offset=offset)
+            elif instance.visible:
+                instance.run_draw_event(screen)
 
         # Draw foreground background layers
         if self._bg_layers_active:
@@ -573,8 +578,8 @@ class GameRoom:
           - invisible instances are skipped — render() returns early on
             `not self.visible`, so an invisible instance's draw event does not
             fire in normal mode either;
-          - custom_rendered instances (an extension overlay draws them) are
-            skipped, as in the normal loop.
+          - a custom_rendered instance (an extension overlay draws its body)
+            still runs its draw event, as in the normal loop.
 
         Screen space: no view offset, so a HUD draw at (8, 8) lands 8 px from
         the window's top-left. World-space draws (draw_self, draw_sprite at
@@ -585,7 +590,7 @@ class GameRoom:
             self._sorted_instances = sorted(self.instances, key=lambda inst: inst.depth, reverse=True)
             self._depth_dirty = False
         for instance in self._sorted_instances:
-            if instance.custom_rendered or not instance.visible:
+            if not instance.visible:
                 continue
             instance.run_draw_event(screen)
 

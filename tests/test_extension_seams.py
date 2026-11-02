@@ -160,8 +160,10 @@ def test_instance_created_hook_runs_per_room_instance_and_survives_a_raise():
             extension_hooks.register_instance_created_hook(f)
 
 
-def test_custom_rendered_instance_skips_sprite_and_draw_event():
-    """The engine leaves a custom_rendered instance to the overlay pass."""
+def test_custom_rendered_instance_skips_its_sprite_but_still_runs_its_draw_event():
+    """The overlay draws a custom_rendered instance's body, so the engine skips its sprite -- but the
+    author's own draw event is theirs and still runs (it used to be skipped too, so a draw_text on a
+    Thymio-named object drew nothing)."""
     from types import SimpleNamespace
     from runtime.game_runner import GameRoom
     import pygame
@@ -178,7 +180,28 @@ def test_custom_rendered_instance_skips_sprite_and_draw_event():
     room._depth_dirty = True
     room._render_room(screen, (0, 0))
     room._render_draw_events(screen)
-    assert calls == [("render", "plain"), ("draw", "plain")]
+    # the normal pass: the plain instance renders (sprite + draw event); the robot only runs its draw event
+    # the draw-event-only pass (raycast HUD): both run their draw event
+    assert calls == [("render", "plain"), ("draw", "robot"), ("draw", "plain"), ("draw", "robot")]
+    assert ("render", "robot") not in calls                                    # its sprite is never drawn by the engine
+
+
+def test_an_invisible_custom_rendered_instance_runs_no_draw_event():
+    from types import SimpleNamespace
+    from runtime.game_runner import GameRoom
+    import pygame
+    pygame.display.init()
+    screen = pygame.display.set_mode((32, 32))
+    room = GameRoom("r", {"width": 32, "height": 32}, action_executor=None)
+    calls = []
+    room.instances.append(SimpleNamespace(
+        depth=0, visible=False, custom_rendered=True,
+        render=lambda s, view_offset=(0, 0): calls.append("render"),
+        run_draw_event=lambda s: calls.append("draw")))
+    room._depth_dirty = True
+    room._render_room(screen, (0, 0))
+    room._render_draw_events(screen)
+    assert calls == []
 
 
 def test_after_collision_is_a_valid_frame_update_phase():

@@ -291,31 +291,25 @@ class PlaygroundRunnerWindow(QMainWindow):
             return
         button = event_name[len('thymio_button_'):]
         # Trigger button event on every Thymio
+        from .input import fire_button_events
         for inst in self.instances:
             # Set the held button state so state-polling code (get_button /
             # thymio_if_button_pressed) reads 1, mirroring the mouse path.
             if inst.thymio_simulator is not None:
                 inst.thymio_simulator.set_button(button, True)
-            events = (inst.object_data or {}).get('events', {})
-            if event_name in events:
-                try:
-                    self.action_executor.execute_event(inst, event_name, events)
-                except Exception as e:
-                    logger.error(f"Event {event_name} failed: {e}")
-            if 'thymio_any_button' in events:
-                try:
-                    self.action_executor.execute_event(inst, 'thymio_any_button', events)
-                except Exception as e:
-                    logger.error(f"thymio_any_button failed: {e}")
+            fire_button_events(self.action_executor, inst, button)
 
     def _on_key_released(self, key):
         event_name = self._KEY_EVENT_MAP.get(key)
         if not event_name:
             return
         button = event_name[len('thymio_button_'):]
+        from .input import fire_button_events
         for inst in self.instances:
             if inst.thymio_simulator is not None:
                 inst.thymio_simulator.set_button(button, False)
+                # the real robot runs the handler on release too
+                fire_button_events(self.action_executor, inst, button)
 
     # ─── Mouse → Thymio button hit-testing ──────────────────────
 
@@ -332,19 +326,8 @@ class PlaygroundRunnerWindow(QMainWindow):
                 continue
             sim.set_button(hit, True)
             self._thymio_mouse_presses[qt_button] = (inst, hit)
-
-            event_name = f"thymio_button_{hit}"
-            events = (inst.object_data or {}).get('events', {})
-            if event_name in events:
-                try:
-                    self.action_executor.execute_event(inst, event_name, events)
-                except Exception as e:
-                    logger.error(f"Event {event_name} failed: {e}")
-            if 'thymio_any_button' in events:
-                try:
-                    self.action_executor.execute_event(inst, 'thymio_any_button', events)
-                except Exception as e:
-                    logger.error(f"thymio_any_button failed: {e}")
+            from .input import fire_button_events
+            fire_button_events(self.action_executor, inst, hit)
             return
 
     def _on_mouse_released(self, qt_button, x, y):
@@ -354,6 +337,8 @@ class PlaygroundRunnerWindow(QMainWindow):
         inst, btn_name = press
         if inst.thymio_simulator:
             inst.thymio_simulator.set_button(btn_name, False)
+            from .input import fire_button_events
+            fire_button_events(self.action_executor, inst, btn_name)
 
     # ─── Simulation loop ────────────────────────────────────────
 

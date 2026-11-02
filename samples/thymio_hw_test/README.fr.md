@@ -25,13 +25,11 @@ appuient sur ce bouton sur les **six** robots à la fois, ce qui est amusant, ma
 test des moteurs.) Cela montre si la *logique du programme* est celle que vous vouliez, avant que
 le robot n'entre en jeu.
 
-Deux choses que le simulateur fait autrement que le robot :
+Comme le vrai robot, le simulateur exécute le programme d'un bouton **à l'appui et au relâchement** ;
+le programme 2 avance donc tant que vous maintenez un bouton et s'arrête quand vous le relâchez.
 
-- Il ne déclenche l'événement d'un bouton que **lorsque vous appuyez**, pas lorsque vous
-  relâchez. Dans le programme 2, le robot continue donc d'avancer après le relâchement ; cliquez
-  sur le bouton central pour l'arrêter. Sur le vrai Thymio, relâcher l'arrête.
-- Les capteurs de proximité et du sol indiquent « libre / clair » tant que vous ne placez pas
-  d'obstacles dans un terrain de jeu (playground).
+Une chose reste différente : les capteurs de proximité et du sol indiquent « libre / clair » tant
+que vous ne placez pas d'obstacles dans un terrain de jeu (playground).
 
 ## Étape 2 — exporter le code Aseba
 

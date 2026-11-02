@@ -6,11 +6,13 @@ used to carry, verbatim in behaviour, now declared through the input hook
 (runtime/extension_hooks ``PLUGIN_INPUT_HANDLERS``):
 
 * arrow keys / space map to the robot's five capacitive buttons -- press
-  sets the button and fires that robot's ``thymio_button_*`` event, release
-  clears it (per instance, right after that instance's own keyboard events);
+  sets the button and fires that robot's ``thymio_button_*`` event (and
+  ``thymio_any_button``); release clears it and fires them again, as the real
+  robot's ``onevent button.*`` handlers run on every change of state, press AND
+  release (per instance, right after that instance's own keyboard events);
 * a left click that lands on a button drawn on the robot body presses it and
-  fires the event, and is swallowed (no ``mouse`` event fires for it); the
-  matching release clears the button and is swallowed too.
+  fires the events, and is swallowed (no ``mouse`` event fires for it); the
+  matching release clears the button, fires them again and is swallowed too.
 """
 from core.logger import get_logger
 
@@ -35,19 +37,33 @@ _mouse_presses = {}
 _simulator = simulator_of
 
 
+def fire_button_events(executor, instance, button) -> bool:
+    """Run ``thymio_button_<button>`` and ``thymio_any_button`` on ``instance``
+    when it defines them. Called on press AND on release -- the real Thymio runs
+    a button's handler on every change, so a program that guards with "if the
+    button is pressed" / "is released" behaves the same here. True if any ran.
+    Shared with the playground runner, which has its own input path."""
+    events = (instance.object_data or {}).get('events', {})
+    fired = False
+    for name in (f"thymio_button_{button}", "thymio_any_button"):
+        if name in events:
+            logger.debug(f"  🤖 Executing {name} for {instance.object_name}")
+            try:
+                executor.execute_event(instance, name, events)
+            except Exception as e:
+                logger.error(f"{name} failed: {e}")
+            fired = True
+    return fired
+
+
 def key_down(instance, key):
     """Per-instance key press. True if a robot button event was fired."""
     sim = _simulator(instance)
     if sim is None or key not in _KEY_TO_BUTTON:
         return False
-    button_name, event_name = _KEY_TO_BUTTON[key]
+    button_name, _event_name = _KEY_TO_BUTTON[key]
     sim.set_button(button_name, True)
-    events = (instance.object_data or {}).get('events', {})
-    if event_name in events:
-        logger.debug(f"  🤖 Executing {event_name} for {instance.object_name}")
-        instance.action_executor.execute_event(instance, event_name, events)
-        return True
-    return False
+    return fire_button_events(instance.action_executor, instance, button_name)
 
 
 def key_up(instance, key):
@@ -55,7 +71,9 @@ def key_up(instance, key):
     sim = _simulator(instance)
     if sim is None or key not in _KEY_TO_BUTTON:
         return
-    sim.set_button(_KEY_TO_BUTTON[key][0], False)
+    button_name = _KEY_TO_BUTTON[key][0]
+    sim.set_button(button_name, False)
+    fire_button_events(instance.action_executor, instance, button_name)
 
 
 def mouse_down(game_runner, button, mouse_x, mouse_y):
@@ -74,11 +92,7 @@ def mouse_down(game_runner, button, mouse_x, mouse_y):
             continue
         sim.set_button(hit, True)
         _mouse_presses[button] = (instance, hit)
-        event_name = f"thymio_button_{hit}"
-        events = (instance.object_data or {}).get('events', {})
-        if event_name in events:
-            logger.debug(f"  🤖 Mouse-clicked {event_name} on {instance.object_name}")
-            instance.action_executor.execute_event(instance, event_name, events)
+        fire_button_events(instance.action_executor, instance, hit)
         return True
     return False
 
@@ -92,6 +106,7 @@ def mouse_up(game_runner, button, mouse_x, mouse_y):
     sim = simulator_of(instance)
     if sim is not None:
         sim.set_button(btn_name, False)
+        fire_button_events(instance.action_executor, instance, btn_name)
     return True
 
 

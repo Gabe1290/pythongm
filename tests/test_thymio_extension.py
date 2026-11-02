@@ -275,7 +275,8 @@ def test_keys_press_and_release_robot_buttons():
     assert inp.key_down(robot, "a") is False           # unmapped key
     inp.key_up(robot, "up")
     assert presses == [("forward", True), ("center", True), ("forward", False)]
-    assert fired == ["thymio_button_forward"]
+    # the real robot runs a button's handler on press AND on release
+    assert fired == ["thymio_button_forward", "thymio_button_forward"]
     assert inp.key_down(SimpleNamespace(extension_state={}), "up") is False
 
 
@@ -296,7 +297,7 @@ def test_click_on_a_drawn_button_presses_it_and_is_swallowed():
     finally:
         renderer_mod.ThymioRenderer.hit_test_button = real
     assert presses == [("center", True), ("center", False)]
-    assert fired == ["thymio_button_center"]
+    assert fired == ["thymio_button_center", "thymio_button_center"]     # press and release
 
 
 # ---------------------------------------------------------------------------

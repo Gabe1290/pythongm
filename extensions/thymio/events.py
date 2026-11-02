@@ -22,7 +22,7 @@ THYMIO_EVENT_TYPES = {
     "thymio_button_forward": EventType(
         name="thymio_button_forward",
         display_name="Button Forward",
-        description="Executed when the forward button is pressed",
+        description="Executed when the forward button is pressed or released (like the real robot; test the button state to tell which)",
         category="Thymio Buttons",
         icon="⬆️",
         parameters=[]
@@ -31,7 +31,7 @@ THYMIO_EVENT_TYPES = {
     "thymio_button_backward": EventType(
         name="thymio_button_backward",
         display_name="Button Backward",
-        description="Executed when the backward button is pressed",
+        description="Executed when the backward button is pressed or released (like the real robot; test the button state to tell which)",
         category="Thymio Buttons",
         icon="⬇️",
         parameters=[]
@@ -40,7 +40,7 @@ THYMIO_EVENT_TYPES = {
     "thymio_button_left": EventType(
         name="thymio_button_left",
         display_name="Button Left",
-        description="Executed when the left button is pressed",
+        description="Executed when the left button is pressed or released (like the real robot; test the button state to tell which)",
         category="Thymio Buttons",
         icon="⬅️",
         parameters=[]
@@ -49,7 +49,7 @@ THYMIO_EVENT_TYPES = {
     "thymio_button_right": EventType(
         name="thymio_button_right",
         display_name="Button Right",
-        description="Executed when the right button is pressed",
+        description="Executed when the right button is pressed or released (like the real robot; test the button state to tell which)",
         category="Thymio Buttons",
         icon="➡️",
         parameters=[]
@@ -58,7 +58,7 @@ THYMIO_EVENT_TYPES = {
     "thymio_button_center": EventType(
         name="thymio_button_center",
         display_name="Button Center",
-        description="Executed when the center button is pressed",
+        description="Executed when the center button is pressed or released (like the real robot; test the button state to tell which)",
         category="Thymio Buttons",
         icon="⏺️",
         parameters=[]

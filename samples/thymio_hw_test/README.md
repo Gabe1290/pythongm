@@ -23,12 +23,11 @@ mouse: its LEDs and wheels react. (The keyboard arrows and space press that butt
 robots at once, which is also fun, but confusing for the motor test.) This tells you whether the
 *program logic* is what you meant, before the robot is involved.
 
-Two things the simulator does differently from the robot, on purpose or not:
+Like the real robot, the simulator runs a button's handler **both when you press and when you let
+go**, so program 2 drives while you hold a button and stops when you release it.
 
-- It fires a button's event **only when you press**, not when you let go. So in program 2 the
-  robot keeps driving after you release the button; click the centre button to stop it. On the real
-  Thymio, letting go stops it.
-- The proximity and ground sensors read "clear / light" unless you place obstacles in a playground.
+One thing it still does differently: the proximity and ground sensors read "clear / light" unless
+you place obstacles in a playground.
 
 ## Step 2 — export the Aseba code
 
