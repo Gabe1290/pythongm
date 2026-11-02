@@ -58,6 +58,7 @@ SOURCES = [
     ("PreferencesDialog", "Provides: {0}"),
     ("PreferencesDialog", "Installed Extensions"),
     ("PreferencesDialog", "v{0}"),
+    ("PreferencesDialog", "Show this extension's tab, menus and toolbar button"),
     ("ObjectEventsPanel",
      "This action needs the '{0}' extension, which is currently "
      "disabled, so it can't be edited here.\n\n"

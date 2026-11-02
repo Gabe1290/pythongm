@@ -3494,6 +3494,11 @@ Some changes may require restarting the IDE to take effect.</source>
         <translation>v{0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/preferences_dialog.py" line="300"/>
+        <source>Show this extension's tab, menus and toolbar button</source>
+        <translation>この拡張機能のタブ、メニュー、ツールバーボタンを表示する</translation>
+    </message>
+    <message>
         <location filename="../dialogs/preferences_dialog.py" line="252"/>
         <source>Multiple IDE windows</source>
         <translation>複数のIDEウィンドウ</translation>

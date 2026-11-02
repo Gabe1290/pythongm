@@ -45,6 +45,20 @@ extensions/
 `enabled: false` ships the extension switched off — useful for something
 experimental that people opt into.
 
+An optional `ui_toggle` gives the extension a **second switch for its user
+interface** (a tab, menu entries, a toolbar button), separate from whether it is
+loaded at all:
+
+```json
+"ui_toggle": { "config_key": "show_my_feature_tab", "default": false }
+```
+
+Tools -> Preferences -> Extensions then shows an indented checkbox under the
+extension ("Show this extension's tab, menus and toolbar button"), enabled only
+while the extension itself is ticked, saved to that config key on OK (never on
+Cancel). The extension's own code reads the same key to decide what to build, so
+changes apply after a restart. Thymio uses it (`show_thymio_tab`).
+
 ## Turning extensions on and off
 
 The manifest sets the **default**; a user's config overrides it either way, so
@@ -65,7 +79,7 @@ from events.plugin_loader import (
     list_available_extensions, set_extension_enabled,
 )
 
-list_available_extensions()          # folder, name, version, description, enabled
+list_available_extensions()          # folder, name, version, description, enabled, ui_toggle
 set_extension_enabled("my_feature", False)
 ```
 

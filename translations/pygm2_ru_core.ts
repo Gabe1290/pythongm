@@ -370,6 +370,11 @@ Some changes may require restarting the IDE to take effect.</source>
         <translation>v{0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/preferences_dialog.py" line="300"/>
+        <source>Show this extension's tab, menus and toolbar button</source>
+        <translation>Показывать вкладку, меню и кнопку панели инструментов этого расширения</translation>
+    </message>
+    <message>
         <location filename="../dialogs/preferences_dialog.py" line="252"/>
         <source>Multiple IDE windows</source>
         <translation>Несколько окон IDE</translation>

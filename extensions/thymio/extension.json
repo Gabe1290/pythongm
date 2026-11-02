@@ -4,6 +4,7 @@
     "author": "PyGameMaker",
     "description": "Thymio educational-robot programming: simulator, playground arenas, robot events/actions, Aseba (.aesl) export and Open Roberta import. Being moved out of core stage by stage -- see docs/THYMIO_EXTENSION_PLAN.md.",
     "enabled": true,
+    "ui_toggle": {"config_key": "show_thymio_tab", "default": false},
     "provides_actions": [
         "thymio_set_motor_speed",
         "thymio_move_forward",

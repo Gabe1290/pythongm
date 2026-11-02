@@ -323,6 +323,9 @@ class PreferencesDialog(QDialog):
         # (whose live state could already differ from the checkboxes once
         # the user has toggled something but not yet applied it).
         self.extension_checkboxes = {}
+        # {folder_name: (QCheckBox, Config key, default)} for extensions that
+        # declare a manifest "ui_toggle".
+        self.extension_ui_checkboxes = {}
 
         if not extensions:
             empty_label = QLabel(self.tr("No extensions found."))
@@ -351,6 +354,20 @@ class PreferencesDialog(QDialog):
                     group_layout.addWidget(caption_label)
 
                 self.extension_checkboxes[info["folder"]] = checkbox
+
+                # An extension whose UI has its own switch (e.g. Thymio's tab,
+                # menus and toolbar button): an indented checkbox that only
+                # makes sense while the extension itself is ticked.
+                toggle = info.get("ui_toggle")
+                if toggle:
+                    ui_checkbox = QCheckBox(self.tr(
+                        "Show this extension's tab, menus and toolbar button"))
+                    ui_checkbox.setStyleSheet("margin-left: 20px;")
+                    ui_checkbox.setEnabled(checkbox.isChecked())
+                    checkbox.toggled.connect(ui_checkbox.setEnabled)
+                    group_layout.addWidget(ui_checkbox)
+                    self.extension_ui_checkboxes[info["folder"]] = (
+                        ui_checkbox, toggle["config_key"], toggle["default"])
             extensions_layout.addWidget(group)
 
         extensions_layout.addStretch()
@@ -413,6 +430,10 @@ class PreferencesDialog(QDialog):
             checkbox = self.extension_checkboxes.get(info["folder"])
             if checkbox:
                 checkbox.setChecked(info["enabled"])
+            if info["folder"] in self.extension_ui_checkboxes:
+                ui_checkbox, key, default = self.extension_ui_checkboxes[info["folder"]]
+                ui_checkbox.setChecked(bool(Config.get(key, default)))
+                ui_checkbox.setEnabled(info["enabled"])
 
         # Update font preview
         self.update_font_preview()
@@ -563,6 +584,8 @@ class PreferencesDialog(QDialog):
         from events.plugin_loader import set_extension_enabled
         for folder, checkbox in self.extension_checkboxes.items():
             set_extension_enabled(folder, checkbox.isChecked())
+        for ui_checkbox, key, _default in self.extension_ui_checkboxes.values():
+            Config.set(key, ui_checkbox.isChecked())
 
     def accept_settings(self):
         """Save settings and close"""

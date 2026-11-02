@@ -605,8 +605,25 @@ def list_available_extensions() -> List[dict]:
             # project's action/event belongs to.
             "provides_actions": list(provides) if isinstance(provides, list) else [],
             "provides_events": list(provides_events) if isinstance(provides_events, list) else [],
+            # Optional second switch for an extension whose UI (tab, menus,
+            # toolbar button) is shown separately from its being loaded:
+            # {"config_key": <Config key>, "default": bool}. Preferences ->
+            # Extensions renders it as a checkbox under the extension.
+            "ui_toggle": _valid_ui_toggle(manifest.get("ui_toggle")),
         })
     return out
+
+
+def _valid_ui_toggle(value):
+    """A manifest ``ui_toggle`` as ``{"config_key": str, "default": bool}``,
+    or ``None`` when absent or malformed (a bad manifest must not break the
+    settings dialog)."""
+    if not isinstance(value, dict):
+        return None
+    key = value.get("config_key")
+    if not isinstance(key, str) or not key.strip():
+        return None
+    return {"config_key": key.strip(), "default": bool(value.get("default", False))}
 
 
 def collect_project_action_names(project_data) -> set:

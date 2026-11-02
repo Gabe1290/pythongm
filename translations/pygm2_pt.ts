@@ -3494,6 +3494,11 @@ Algumas alterações podem exigir reiniciar o IDE para terem efeito.</translatio
         <translation>v{0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/preferences_dialog.py" line="300"/>
+        <source>Show this extension's tab, menus and toolbar button</source>
+        <translation>Mostrar a aba, os menus e o botão da barra de ferramentas desta extensão</translation>
+    </message>
+    <message>
         <location filename="../dialogs/preferences_dialog.py" line="252"/>
         <source>Multiple IDE windows</source>
         <translation>Várias janelas da IDE</translation>

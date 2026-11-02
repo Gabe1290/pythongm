@@ -124,7 +124,12 @@ recommended unless you know none exist.
 "extensions": { "thymio": false }
 ```
 
-**UI-level** (`show_thymio_tab` config, default `false`) — the object
+**UI-level** (`show_thymio_tab` config, default `false`) — switch it on in the
+IDE with Tools → Preferences → Extensions → the "Show this extension's tab, menus
+and toolbar button" checkbox under *Thymio Robot* (the manifest's `ui_toggle`; restart
+afterwards). The "Show Thymio Tab" item inside the Thymio Programming submenu cannot
+be the first switch, because that submenu is only built once the flag is already on.
+The flag gates the object
 editor's dedicated Thymio tab, the Tools-menu "Configure Thymio Blocks..."
 item and "🤖 Thymio Programming" submenu, and the toolbar quick-add button
 are all gated by this single flag (`extensions/thymio/__init__.py`'s

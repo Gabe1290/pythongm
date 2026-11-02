@@ -370,6 +370,11 @@ Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</tran
         <translation>v{0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/preferences_dialog.py" line="300"/>
+        <source>Show this extension's tab, menus and toolbar button</source>
+        <translation>Pokaži zavihek, menije in gumb orodne vrstice te razširitve</translation>
+    </message>
+    <message>
         <location filename="../dialogs/preferences_dialog.py" line="252"/>
         <source>Multiple IDE windows</source>
         <translation>Več oken IDE</translation>
