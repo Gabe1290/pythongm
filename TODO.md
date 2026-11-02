@@ -1025,17 +1025,20 @@ existed. Regenerated; 0 untranslated strings reported now.
 ## Extensions
 
 ### Thymio — send straight to the robot (2026-11-02)
-`File -> Send to Thymio robot...` (extensions/thymio/export/device.py) works against a real Thymio II: the LED program was
-accepted and ran (developer, 2026-11-02). Still open: the interface text is translated in **French and Polish only** (the
-other nine languages fall back to English; 16 strings in the `PyGameMakerIDE` context, see
-`tests/test_thymio_device_link.py::SEND_STRINGS`), the motor/sensor programs have not been sent, the exported source still
-carries the "Upload this code using Aseba Studio" header comment, and there is no "stop the robot" action.
+`File -> Send to Thymio robot...` (extensions/thymio/export/device.py) **works against a real Thymio II**: all six
+`thymio_hw_test` programs were sent and ran correctly (developer, 2026-11-02). Still open: the interface text is translated
+in **French and Polish only** (the other nine languages fall back to English; 16 strings in the `PyGameMakerIDE` context,
+see `tests/test_thymio_device_link.py::SEND_STRINGS`); the exported source still carries the "Upload this code using Aseba
+Studio" header comment; there is no "stop the robot" action; nobody has clicked the menu item by hand (the flow is tested
+with dialogs stubbed, and the device layer against the robot); not tried: the wireless dongle, a second robot at once,
+Linux / macOS, and loading an exported `.aesl` in Aseba Studio by hand.
 
 ### Thymio — first run on a real robot (2026-11-02)
-`samples/thymio_hw_test` exists to find out what the Aseba export does on a **real Thymio II** (never tried).
-Open until someone fills in its results table (`docs/RELEASE_QA_CHECKLIST.md` §11b): the three guesses
-(`call sound.freq(0, -1)` stops sound, `count++`, button events on press AND release), the 2000 / 300 sensor
-thresholds, speeds 80 / 100. Also found while building it, both **fixed 2026-11-02** (`tests/test_thymio_button_release_and_draw.py`): the
+`samples/thymio_hw_test` exists to find out what the Aseba export does on a **real Thymio II**. **Done 2026-11-02 for one
+robot**: all six programs behaved as expected, and the three guesses (`call sound.freq(0, -1)` stops sound, `count++`,
+button events on press AND release) and the thresholds (2000 / 300) and speeds (200 / 80) were right; the guide and
+`docs/RELEASE_QA_CHECKLIST.md` §11b record it. Program 4 was improved on the robot (drives on by itself once the obstacle is
+gone). Also found while building it, both **fixed 2026-11-02** (`tests/test_thymio_button_release_and_draw.py`): the
 simulator fired a button's event only on press (the real robot runs it on press AND release; both input paths now
 do, plus `thymio_any_button`), and a `draw` event on a Thymio-named object drew nothing because the room's render loop
 skipped `custom_rendered` instances entirely (their draw event now runs; the sample still keeps its labels in a

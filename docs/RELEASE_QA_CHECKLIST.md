@@ -645,14 +645,16 @@ first pass is expected to turn something up: record what differs.
 - L [ ] M [ ] W [ ] **File → Send to Thymio robot…** (needs `pip install --user tdmclient` and the Thymio software):
   with the robot plugged in it offers the objects, sends the chosen one and says it is running; the top LED turns dim
   blue (programs 1–5). With no robot it says so; with Aseba Studio holding the robot it says the robot is in use.
-  *Checked on a real robot by the developer on 2026-11-02 (program 1, LEDs only); the rest is open.*
+  *The send worked on a real robot (all six programs, 2026-11-02) through the same code the menu uses, with the
+  dialogs stubbed in a test; nobody has yet clicked the menu item by hand.*
 - L [ ] M [ ] W [ ] Each opens in **Aseba Studio** (File → Open) **without a syntax error**; Load and Run work.
   Copy any error message as text.
-- L [ ] M [ ] W [ ] Program-by-program, the robot does what the guide's table says (LEDs, motors only while held,
-  counter, proximity stop, ground-line stop, a beep every second). Note the speeds (80 / 100) and thresholds
-  (2000 proximity, 300 ground) that needed changing.
-- L [ ] M [ ] W [ ] The three guesses in the guide's "What we are not sure about": `call sound.freq(0, -1)` stops
-  the beep, `count++` compiles, a button event fires on press and on release.
+- L [ ] M [ ] W [x] Program-by-program, the robot does what the guide's table says (LEDs, motors only while held,
+  counter, proximity stop and resume, ground-line stop, a beep every second). *Windows, one Thymio II over USB, sent
+  with File → Send to Thymio robot…, 2026-11-02: all six as described; speeds 200 (program 2) and 80 (4, 5) and
+  thresholds 2000 (proximity) / 300 (ground) needed no change.* Open: Linux, macOS, a wireless dongle, a second robot.
+- L [ ] M [ ] W [x] The three guesses in the guide: `call sound.freq(0, -1)` stops the beep, `count++` compiles, a
+  button event fires on press and on release (all as hoped on that robot, 2026-11-02).
 
 ---
 

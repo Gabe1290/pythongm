@@ -2678,3 +2678,28 @@ write a dump, then `tools/analyze_crash_dump.py`.
   window's default framebuffer reads back blank — render with `scene.export_as_image()`. Found no bug.
 - Test-writing lessons: a "colours > N" assertion did not notice the raycast overlay never rendering (assert the
   overlay itself); a transliteration test needs a generic pattern, not a word list.
+
+**2026-11-02 — Thymio: Preferences switch, `thymio_hw_test`, and the FIRST run on a real robot (Send to Thymio).**
+Plan-less session, one commit per unit, full suite after each (8,141 → 8,245 passed, 0 failed).
+- **Preferences → Extensions can switch an extension's UI on** (manifest `ui_toggle: {config_key, default}`; Thymio declares
+  `show_thymio_tab`). It used to live only in a menu that is not built until it is already on.
+- **`samples/thymio_hw_test`**: six small programs (LEDs, motors held-to-drive, counter, proximity, ground, timer+tone), one
+  robot each, EN + FR guides. **Two simulator-vs-robot bugs fixed**: the sim fired a button's event only on PRESS (the robot
+  runs it on press AND release; shared `fire_button_events` now, both input paths), and a `draw` event on a `custom_rendered`
+  instance (a Thymio robot) was skipped by the room render loop (now runs).
+- **`File -> Send to Thymio robot...`** (`extensions/thymio/export/device.py`, Qt-free) sends a program with NO Aseba Studio:
+  the Thymio Suite's *device manager* (`thymio-device-manager.exe`, TCP 8596) owns the robot connection and `tdmclient` (pip,
+  in requirements.txt) is a client of it. List robots, lock, `compile(source)`, `run()`. **Verified on a real Thymio II** (all
+  six programs, user watching): details in `extensions/thymio/README.md`.
+- **Landmines:** (1) `tdmclient`'s reader thread is non-daemon and blocked in `recv()`: `disconnect()` alone hangs the process at
+  exit (the IDE on quit); a short `settimeout` on its socket ends it cleanly (`shutdown()` instead prints a traceback). (2) The
+  device manager takes plain Aseba SOURCE, not `.aesl` XML (`AsebaExporter.generate_source`). (3) **This machine's config
+  disables Thymio**, so a test that needs its actions/events must monkeypatch `events.plugin_loader.is_extension_enabled`
+  (see `_thymio_enabled` fixtures) -- and Thymio actions live in `THYMIO_ACTIONS`, NOT in core's `ACTION_TYPES`. (4) The Bash tool
+  halves backslashes in heredocs: a `\n` in a patch script becomes a real newline inside a Python string literal and breaks the
+  target file; write patch scripts with the Write tool. (5) Hardware tests are gated by `PYGM_THYMIO_HW=1` (they send the
+  LED-only program).
+- **Real-robot findings:** none broke the export; program 4 was improved on the robot (armed by centre, stops at an obstacle,
+  drives on by itself, backward disarms; a nested `if` inside the clear branch).
+- **Open:** interface text for Send to Thymio is French + Polish only; nobody has clicked the menu item by hand; wireless
+  dongle / second robot / Linux / macOS / opening an exported `.aesl` in Aseba Studio untried (`TODO.md`).

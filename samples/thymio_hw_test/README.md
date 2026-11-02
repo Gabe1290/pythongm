@@ -85,9 +85,17 @@ blue** (except the timer program) — if you do not see that, the code did not l
 **Safety:** programs 2, 4 and 5 move the robot, but only after you press a button, at low speed.
 Keep it on the floor or in the middle of a table and watch it.
 
-## What we are not sure about (look at these first)
+## First result: a real Thymio II (2026-11-02)
 
-This is the first run on real hardware, so some things in the exported code are educated guesses:
+All six programs were sent to a real Thymio II (Windows, USB, with *File → Send to Thymio robot…*) and **behaved as the
+table above says**: LEDs, motors that drive while held and stop on release (at 200), the counter, the proximity stop
+(program 4 was then improved so it drives on by itself once the obstacle is gone), the ground-line stop (the left sensor
+alone is enough) and the beep every second. Loading the `.aesl` files in Aseba Studio by hand was **not** tried in that
+run.
+
+## What we were not sure about (the guesses, and how they came out)
+
+Some things in the exported code were educated guesses; the first robot answered them:
 
 - **Stopping a sound** (program 6, centre button) uses `call sound.freq(0, -1)`. If the beep does
   not stop, tell us.

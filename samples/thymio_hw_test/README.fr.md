@@ -89,10 +89,17 @@ pas été chargé.
 **Sécurité :** les programmes 2, 4 et 5 font bouger le robot, mais seulement après un appui sur un
 bouton, à faible vitesse. Gardez-le au sol ou au milieu d'une table et surveillez-le.
 
-## Ce dont nous ne sommes pas sûrs (à regarder en premier)
+## Premier résultat : un vrai Thymio II (2026-11-02)
 
-C'est le premier essai sur du vrai matériel ; certaines choses du code exporté sont donc des
-hypothèses :
+Les six programmes ont été envoyés à un vrai Thymio II (Windows, USB, avec *Fichier → Envoyer au robot Thymio…*) et se
+sont **comportés comme le dit le tableau ci-dessus** : LED, moteurs qui avancent tant qu'on maintient le bouton et
+s'arrêtent au relâchement (à 200), le compteur, l'arrêt de proximité (le programme 4 a ensuite été amélioré pour repartir
+tout seul quand l'obstacle disparaît), l'arrêt sur une ligne au sol (le capteur de gauche suffit) et le bip chaque
+seconde. Le chargement des fichiers `.aesl` à la main dans Aseba Studio n'a **pas** été essayé lors de ce test.
+
+## Ce dont nous n'étions pas sûrs (les hypothèses, et ce qu'il en est)
+
+Certaines choses du code exporté étaient des hypothèses ; le premier robot y a répondu :
 
 - **Arrêter un son** (programme 6, bouton central) utilise `call sound.freq(0, -1)`. Si le bip ne
   s'arrête pas, dites-le-nous.
