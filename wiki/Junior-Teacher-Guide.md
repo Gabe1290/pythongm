@@ -80,7 +80,7 @@ student handout and teacher guide.
 | Symptom | Cause and fix |
 |---|---|
 | Object does not move | No block under the event, or the object is not placed in the room |
-| Hero slides forever | Needs **Keyboard: No key** with **Stop moving** |
+| Hero slides forever | Needs **Keyboard: No key** with **Stop movement** |
 | Sprite not visible | Object has no sprite chosen |
 | "Name Already Used" | A sprite with that name exists. Choose another name |
 | A name is rejected | Use letters, numbers and underscores, with no spaces or special characters |

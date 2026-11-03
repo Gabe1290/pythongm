@@ -1631,6 +1631,22 @@ lines rather than matching their text.
 
 ## Export
 
+### HTML5 export: the game loop is not clocked, so it runs faster on 90/120 Hz screens
+- Found 2026-11-03 while building the Junior "My First Maze" lesson
+  (`docs/junior/lessons/maze/`). `Game.gameLoop()` in
+  `export/HTML5/templates/engine.js` takes one step per
+  `requestAnimationFrame`, with no time step or frame cap (its own comment calls
+  the rate "uncapped (~60fps)"). Desktop runs at `room_speed` steps/second. On a
+  phone or monitor refreshing at 90 or 120 Hz the exported game therefore runs
+  up to twice as fast (a hero at speed 4 moves 8 px per 60th of a second). **Read
+  from the code, not measured on a high-refresh device.** Headless Chromium at
+  60 Hz moved the maze hero 248 px in 1 s, as designed.
+- Fix would be a fixed-step accumulator in `gameLoop` (run `room_speed` steps per
+  real second, render once per frame). Not done: it changes every exported game's
+  timing, and CI has no JS engine, so it wants a real-browser check
+  (Playwright works on the dev box) at 60 and a forced higher refresh rate.
+- The lesson's teacher guide states the limit honestly instead.
+
 ### ~~HTML5 export has no `remember_destroyed` support either~~ (DONE 2026-09-09)
 - Found 2026-09-08 while fixing L17 of `docs/FULL_AUDIT_2026-09-07.md`
   ("Kivy export has no `remember_destroyed` support"). That finding's own
