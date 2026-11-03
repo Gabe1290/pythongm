@@ -11,7 +11,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 import pytest
 
 DOCS = REPO_ROOT / "docs" / "thymio_fiches"
-FICHES = [DOCS / f"fiche_{n}.fr.md" for n in range(1, 9)]
+FICHES = [DOCS / f"fiche_{n}.fr.md" for n in range(1, 10)]
 
 
 def _text(paths):
@@ -53,8 +53,8 @@ def test_french_keeps_its_accents():
 
 
 def test_every_sheet_names_the_sample_it_needs_and_the_sample_exists():
-    for p in FICHES[:7]:
-        m = re.search(r"\*\*Exemple à ouvrir :\*\* (.+?)  ·", p.read_text(encoding="utf-8"))
+    for p in FICHES[:8]:
+        m = re.search(r"\*\*Exemples? à ouvrir :\*\* (.+?)  ·", p.read_text(encoding="utf-8"))
         assert m, p.name
     for key in ("arène libre", "les murs", "le sol et le ruban"):
         assert key in (DOCS / "README.fr.md").read_text(encoding="utf-8")
@@ -62,5 +62,5 @@ def test_every_sheet_names_the_sample_it_needs_and_the_sample_exists():
 
 def test_the_sheets_do_not_promise_features_the_simulator_lacks():
     text = _text(FICHES).lower()
-    for banned in ("play tone", "play system sound", "microphone", "accéléromètre", "mode préprogrammé"):
+    for banned in ("microphone", "accéléromètre", "mode préprogrammé"):
         assert banned not in text, banned

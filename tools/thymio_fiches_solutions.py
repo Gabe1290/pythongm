@@ -160,7 +160,7 @@ PROGRAMS = {
 }
 
 # --- Fiche 8: challenges ---------------------------------------------------------------------------------------------
-PROGRAMS["fiche8_feu"] = {                        # traffic light: green, orange, red, every second
+PROGRAMS["fiche9_feu"] = {                        # traffic light: green, orange, red, every second
     "sample": "thymio_fiches_1",
     "events": {
         "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
@@ -176,7 +176,7 @@ PROGRAMS["fiche8_feu"] = {                        # traffic light: green, orange
 }
 
 _drive = PROGRAMS["fiche3_moteurs"]["events"]
-PROGRAMS["fiche8_alarme"] = {                     # drive by hand; the LED says how close the obstacle is
+PROGRAMS["fiche9_alarme"] = {                     # drive by hand; the LED says how close the obstacle is
     "sample": "thymio_fiches_2",
     "events": {
         **_drive,
@@ -187,7 +187,7 @@ PROGRAMS["fiche8_alarme"] = {                     # drive by hand; the LED says 
     },
 }
 
-PROGRAMS["fiche8_sablier"] = {                    # an hourglass: one more LED of the circle every second
+PROGRAMS["fiche9_sablier"] = {                    # an hourglass: one more LED of the circle every second
     "sample": "thymio_fiches_1",
     "events": {
         "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
@@ -199,5 +199,79 @@ PROGRAMS["fiche8_sablier"] = {                    # an hourglass: one more LED o
             var_is("etat", "==", 3, A("thymio_set_led_circle", led_index=4, intensity=32)),
             var_is("etat", "==", 4, A("thymio_set_led_circle", led_index=6, intensity=32)),
             var_is("etat", "==", 5, A("thymio_leds_off"), A("thymio_set_variable", variable="etat", value=0))),
+    },
+}
+
+
+# --- Fiche 8: sounds (the computer's speaker plays what the robot's would) -------------------------------------------
+def tone(freq, frames):
+    return A("thymio_play_tone", frequency=freq, duration=frames)
+
+
+def system_sound(label):
+    return A("thymio_play_system_sound", sound_id=label)
+
+
+PROGRAMS["fiche8_sons_notes"] = {                 # four buttons, four notes (do, mi, sol, do aigu)
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_forward": pressed("forward", tone(262, 30)),
+        "thymio_button_left": pressed("left", tone(330, 30)),
+        "thymio_button_right": pressed("right", tone(392, 30)),
+        "thymio_button_backward": pressed("backward", tone(523, 30)),
+    },
+}
+
+PROGRAMS["fiche8_sons_tenu"] = {                  # the note lasts while the button is held
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_forward": flat(pressed("forward", tone(440, -1)),
+                                      released("forward", A("thymio_stop_sound"))),
+    },
+}
+
+PROGRAMS["fiche8_sons_melodie"] = {               # do, mi, sol, do aigu: each note starts when the previous one ends
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_center": pressed("center", A("thymio_set_variable", variable="note", value=0),
+                                        tone(262, 20)),
+        "thymio_sound_finished": flat(
+            A("thymio_increase_variable", variable="note", amount=1),
+            var_is("note", "==", 1, tone(330, 20)),
+            var_is("note", "==", 2, tone(392, 20)),
+            var_is("note", "==", 3, tone(523, 40))),
+    },
+}
+
+PROGRAMS["fiche8_sons_systeme"] = {               # the factory sounds
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_forward": pressed("forward", system_sound("2 - Arrow")),
+        "thymio_button_backward": pressed("backward", system_sound("5 - Collision")),
+        "thymio_button_left": pressed("left", system_sound("0 - Startup")),
+        "thymio_button_right": pressed("right", system_sound("6 - Target Friendly")),
+        "thymio_button_center": pressed("center", system_sound("7 - Target Detected")),
+    },
+}
+
+PROGRAMS["fiche8_sirene"] = {                     # a two-tone siren with a flashing light
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
+                                        A("thymio_set_timer_period", timer_id=0, period=500)),
+        "thymio_timer_0": flat(
+            A("thymio_increase_variable", variable="etat", amount=1),
+            var_is("etat", "==", 1, tone(440, 30), top(32, 0, 0)),
+            var_is("etat", "==", 2, tone(880, 30), top(0, 0, 32), A("thymio_set_variable", variable="etat", value=0))),
+    },
+}
+
+PROGRAMS["fiche8_radar"] = {                      # parking sensor: faster, higher beeps as the obstacle gets close
+    "sample": "thymio_fiches_2",
+    "events": {
+        **PROGRAMS["fiche3_moteurs"]["events"],
+        "thymio_proximity_update": flat(
+            IF(A("thymio_if_proximity", sensor_index=FRONT, threshold=250, comparison=">"), tone(800, 4)),
+            IF(A("thymio_if_proximity", sensor_index=FRONT, threshold=1000, comparison=">"), tone(1500, 4))),
     },
 }

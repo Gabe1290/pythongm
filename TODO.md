@@ -797,7 +797,9 @@ Other:
   robot's authentic system-sound melody for real hardware; the simulator's
   single-tone approximation is now disclosed in
   `thymio_play_system_sound`'s description instead of silently misleading.
-  `tests/test_thymio_sound_honesty.py`.
+  `tests/test_thymio_sound_honesty.py`. **Audible since 2026-11-03:** tones and the
+  factory-sound jingles play through the computer's speaker (`extensions/thymio/audio.py`, M mutes);
+  still synthesised, not the robot's recordings. `tests/test_thymio_sound.py`.
 
 ## ~~Runtime features called out in code~~ (DONE — both items closed; Kivy/HTML5 fade-transition export parity DONE 2026-10-18, see below)
 

@@ -12,6 +12,7 @@ from typing import Any, Dict, Union
 
 from core.logger import get_logger
 
+from . import audio
 from .state import simulator_of
 
 logger = get_logger(__name__)
@@ -26,6 +27,16 @@ Parameters = Dict[str, Any]
 # " - <letter...>" label so the index can be recovered (audit M1). A plain
 # number ("440") or a variable name never matches this shape.
 _CHOICE_LABEL_RE = re.compile(r'^\s*(\d+)\s*-\s*[A-Za-z]')
+
+
+def _voice_of(instance):
+    """The robot's speaker: its position among the robots of the room, so that two robots can sound together."""
+    try:
+        room = instance.action_executor.game_runner.current_room
+        robots = [i for i in room.instances if simulator_of(i) is not None]
+        return robots.index(instance)
+    except Exception:
+        return 0
 
 
 def register_thymio_actions(action_executor: Any) -> None:
@@ -159,47 +170,43 @@ def register_thymio_actions(action_executor: Any) -> None:
     # ========================================================================
 
     def execute_thymio_play_tone_action(instance, parameters):
-        """Play a tone"""
-        if simulator_of(instance) is None:
+        """Play a tone: the simulator keeps the state (and the Sound Finished event) and the computer's
+        speaker sounds it (audio.py). Duration is in 1/60 s; -1 plays until Stop Sound."""
+        sim = simulator_of(instance)
+        if sim is None:
             return
 
-        frequency = _parse_value(parameters.get('frequency', 440), instance)
-        duration = _parse_value(parameters.get('duration', 60), instance)
+        frequency = int(_parse_value(parameters.get('frequency', 440), instance))
+        duration = int(_parse_value(parameters.get('duration', 60), instance))
 
-        simulator_of(instance).play_tone(int(frequency), int(duration))
+        sim.play_tone(frequency, duration)
+        voice = _voice_of(instance)
+        if duration == 0:
+            audio.stop(voice)
+        else:
+            audio.play([(frequency, duration)], voice=voice, loop=duration < 0)
 
     def execute_thymio_play_system_sound_action(instance, parameters):
-        """Approximate a Thymio system sound with a distinct tone.
-
-        The simulator's audio surface is tone-only (no sampled playback),
-        so each of the 8 built-in system sounds is rendered as a half-second
-        tone at a distinguishing frequency.
-        """
-        if simulator_of(instance) is None:
+        """Play one of the 8 factory sounds as a short jingle that resembles it (the robot's own recordings
+        are not reproduced). The Sound Finished event comes when the jingle ends."""
+        sim = simulator_of(instance)
+        if sim is None:
             return
 
-        sound_id = _parse_value(parameters.get('sound_id', 0), instance)
+        sound_id = int(_parse_value(parameters.get('sound_id', 0), instance))
+        notes = audio.SYSTEM_SOUNDS.get(sound_id, audio.SYSTEM_SOUNDS[0])
 
-        sound_frequencies = {
-            0: 440,   # Startup
-            1: 330,   # Shutdown
-            2: 523,   # Arrow
-            3: 659,   # Central
-            4: 220,   # Free Fall
-            5: 880,   # Collision
-            6: 587,   # Target Friendly
-            7: 698,   # Target Detected
-        }
-
-        freq = sound_frequencies.get(int(sound_id), 440)
-        simulator_of(instance).play_tone(freq, 30)  # 30/60s = 0.5s
+        sim.play_tone(notes[0][0], audio.total_frames(notes))
+        audio.play(notes, voice=_voice_of(instance))
 
     def execute_thymio_stop_sound_action(instance, parameters):
         """Stop currently playing sound"""
-        if simulator_of(instance) is None:
+        sim = simulator_of(instance)
+        if sim is None:
             return
 
-        simulator_of(instance).stop_sound()
+        sim.stop_sound()
+        audio.stop(_voice_of(instance))
 
     # ========================================================================
     # SENSOR READING ACTIONS

@@ -69,7 +69,10 @@ def run_program(name, frames, keys=None):
                     "bottom_left": tuple(sim.leds.bottom_left), "bottom_right": tuple(sim.leds.bottom_right),
                     "circle": list(sim.leds.circle), "prox": list(sim.sensors.proximity),
                     "ground": list(sim.sensors.ground_delta),
-                    "compteur": getattr(bot, "compteur", None), "etat": getattr(bot, "etat", None)})
+                    "compteur": getattr(bot, "compteur", None), "etat": getattr(bot, "etat", None),
+                    "note": getattr(bot, "note", None), "tone": sim.current_sound_frequency,
+                    "playing": sim.sound_playing, "dur": sim.current_sound_duration,
+                    "busy": bool(pygame.mixer.get_init() and pygame.mixer.Channel(4).get_busy())})
             if Clock.n >= frames:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             return 16
@@ -213,8 +216,8 @@ def test_fiche7_the_timer_drives_a_square():
     assert min(turned) < -85 and max(turned) > 85                             # it really turned all the way round
 
 
-def test_fiche8_traffic_light_cycles_green_orange_red():
-    r = run_program("fiche8_feu", 420, tap(5, K.K_SPACE))
+def test_fiche9_traffic_light_cycles_green_orange_red():
+    r = run_program("fiche9_feu", 420, tap(5, K.K_SPACE))
     seen = []
     for f in r:
         if not seen or f["top"] != seen[-1]:
@@ -224,8 +227,8 @@ def test_fiche8_traffic_light_cycles_green_orange_red():
     assert 62 <= first_green <= 68                                            # 1 s = 60 frames after the press
 
 
-def test_fiche8_alarm_changes_colour_as_the_box_gets_closer():
-    r = run_program("fiche8_alarme", 400, {10: [("down", K.K_UP)], 270: [("up", K.K_UP)]})
+def test_fiche9_alarm_changes_colour_as_the_box_gets_closer():
+    r = run_program("fiche9_alarme", 400, {10: [("down", K.K_UP)], 270: [("up", K.K_UP)]})
     seen = []
     for f in r:
         if f["top"] != (0, 0, 0) and (not seen or f["top"] != seen[-1]):
@@ -233,13 +236,13 @@ def test_fiche8_alarm_changes_colour_as_the_box_gets_closer():
     assert seen == [(0, 32, 0), (32, 16, 0), (32, 0, 0)]                      # green, then orange, then red
 
 
-def test_fiche8_hourglass_lights_one_more_led_every_second():
-    r = run_program("fiche8_sablier", 340, tap(5, K.K_SPACE))
+def test_fiche9_hourglass_lights_one_more_led_every_second():
+    r = run_program("fiche9_sablier", 340, tap(5, K.K_SPACE))
     lit = lambda f: sum(1 for v in f["circle"] if v)                          # noqa: E731
     assert [lit(r[i]) for i in (35, 95, 155, 215, 275, 330)] == [0, 1, 2, 3, 4, 0]
 
 
-def test_fiche8_traffic_light_can_be_stopped_by_setting_the_period_to_zero():
-    r = run_program("fiche8_feu", 400, keys_of(tap(5, K.K_SPACE), tap(200, K.K_DOWN)))
+def test_fiche9_traffic_light_can_be_stopped_by_setting_the_period_to_zero():
+    r = run_program("fiche9_feu", 400, keys_of(tap(5, K.K_SPACE), tap(200, K.K_DOWN)))
     assert r[190]["top"] != (0, 0, 0)                                         # running
     assert {f["top"] for f in r[210:]} == {(0, 0, 0)}                         # off, and the timer no longer lights it

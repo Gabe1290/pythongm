@@ -56,9 +56,24 @@ def fire_button_events(executor, instance, button) -> bool:
     return fired
 
 
+def _toggle_mute_once(instance):
+    """key_down reaches every robot of the room: only the first one toggles, or two robots would cancel out."""
+    try:
+        robots = [i for i in instance.action_executor.game_runner.current_room.instances if _simulator(i) is not None]
+        if robots and robots[0] is not instance:
+            return
+    except Exception:
+        pass
+    from . import audio
+    audio.toggle_muted()
+
+
 def key_down(instance, key):
     """Per-instance key press. True if a robot button event was fired."""
     sim = _simulator(instance)
+    if sim is not None and key == 'm':
+        _toggle_mute_once(instance)       # M mutes every robot; it is also free for the game's own use
+        return False
     if sim is None or key not in _KEY_TO_BUTTON:
         return False
     button_name, _event_name = _KEY_TO_BUTTON[key]

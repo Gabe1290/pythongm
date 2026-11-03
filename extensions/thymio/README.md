@@ -37,6 +37,7 @@ for the physical robot, or imports/exports Open Roberta Lab XML.
 | `actions.py` | The 28 action **schemas** (`THYMIO_ACTIONS`) and `THYMIO_TAB`, the GM80-dialog action-picker tab. |
 | `handlers.py` | The 28 runtime **handlers**. `PluginExecutor` is what the loader registers in the game process; `register_thymio_actions` is the same set for the playground runner, which has no plugin loader. |
 | `events.py` | The 14 robot events (`THYMIO_EVENT_TYPES`). |
+| `audio.py` | The simulated speaker: square-wave tones and factory-sound jingles through the computer's sound system (pygame mixer, one reserved channel per robot after the micro:bit's four; the M key mutes). Pure synthesis, so testable without a device. |
 | `simulator.py` | `ThymioSimulator` — differential drive, proximity/ground sensors, LEDs, tones, timers. No Qt, no pygame; pure simulation state. |
 | `state.py` | The robot's per-instance state, under `instance.extension_state["thymio"]`. |
 | `runtime.py` | The per-frame simulator step + sensor-event firing, run through the `after_collision` frame-update hook. |
