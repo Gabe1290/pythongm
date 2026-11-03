@@ -8,7 +8,7 @@ end-step/destroy -- exactly where the engine called it.
 """
 import pygame
 
-from .state import simulator_of
+from .state import simulator_of, floor_frame
 
 
 def update_thymio_robots(game_runner):
@@ -50,7 +50,7 @@ def update_thymio_robots(game_runner):
 
         # Update simulator (returns dict of events that occurred)
         dt = 1/60  # 60 FPS
-        thymio_events = sim.update(dt, obstacles, game_runner.screen)
+        thymio_events = sim.update(dt, obstacles, floor_frame(game_runner.screen))
 
         # Sync instance position with simulator
         instance.x = sim.x

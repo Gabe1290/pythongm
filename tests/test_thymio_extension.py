@@ -212,9 +212,10 @@ def test_renderer_lives_in_the_extension_and_draws_through_the_overlay():
         import extensions.thymio as ext
         robot = SimpleNamespace(extension_state={"thymio": {"simulator": SimpleNamespace(
             get_render_data=lambda: {"x": 1})}})
-        ext.draw_robot(robot, object())
-        ext.draw_robot(SimpleNamespace(extension_state={}), object())
-        ext.draw_robot(SimpleNamespace(), object())
+        screen = SimpleNamespace(copy=lambda: object())
+        ext.draw_robot(robot, screen)
+        ext.draw_robot(SimpleNamespace(extension_state={}), screen)
+        ext.draw_robot(SimpleNamespace(), screen)
     finally:
         renderer_mod.ThymioRenderer.render = real
     assert drawn == [{"x": 1}]

@@ -351,7 +351,9 @@ class PlaygroundRunnerWindow(QMainWindow):
         for inst in self.instances:
             sim = inst.thymio_simulator
             try:
-                thymio_events = sim.update(dt, self.obstacles, self.canvas.get_surface())
+                # the ground sensors read the arena WITHOUT the robots drawn on it (see _render)
+                floor = getattr(self, "_floor_surface", None)
+                thymio_events = sim.update(dt, self.obstacles, floor if floor is not None else self.canvas.get_surface())
             except Exception as e:
                 logger.error(f"simulator.update failed: {e}")
                 continue
@@ -392,6 +394,9 @@ class PlaygroundRunnerWindow(QMainWindow):
         # Walls (rotated rectangles)
         for w in self.playground_data.get('walls', []):
             self._draw_wall(surface, w)
+
+        # What a robot's ground sensors see is this floor, not the robot bodies drawn on it next
+        self._floor_surface = surface.copy()
 
         # Robots
         for inst in self.instances:

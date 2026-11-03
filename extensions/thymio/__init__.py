@@ -116,7 +116,7 @@ PLUGIN_NAME = "Thymio Robot"
 
 from core.logger import get_logger
 from actions.core import register_action_tabs
-from .state import attach_simulator, simulator_of, is_robot
+from .state import attach_simulator, simulator_of, is_robot, remember_floor
 
 logger = get_logger(__name__)
 from .actions import THYMIO_ACTIONS, THYMIO_TAB
@@ -147,6 +147,7 @@ def draw_robot(instance, screen):
     if sim is None:
         return
     from .renderer import shared_renderer
+    remember_floor(instance, screen)          # what the ground sensors will see: the frame without any robot
     shared_renderer().render(screen, sim.get_render_data())
 
 
