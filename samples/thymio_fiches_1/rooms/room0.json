@@ -1,0 +1,26 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 900,
+  "height": 560,
+  "background_color": "#e8eef2",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "tiles": [],
+  "instances": [
+    {
+      "object_name": "thymio_1",
+      "x": 450,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    }
+  ],
+  "instance_count": 1,
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000",
+  "imported": false
+}

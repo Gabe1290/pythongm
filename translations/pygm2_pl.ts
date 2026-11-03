@@ -3460,6 +3460,21 @@ Błąd: {0}</translation>
         <source>Thymio — Hardware test</source>
         <translation>Thymio — Test z robotem</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: free arena</source>
+        <translation>Thymio — Zadania: wolna arena</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: walls</source>
+        <translation>Thymio — Zadania: ściany</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: floor and tape</source>
+        <translation>Thymio — Zadania: podłoże i taśma</translation>
+    </message>
 </context>
 <context>
     <name>ActionConfigDialog</name>

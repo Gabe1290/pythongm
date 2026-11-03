@@ -1,0 +1,80 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 900,
+  "height": 560,
+  "background_color": "#e8eef2",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "tiles": [],
+  "instances": [
+    {
+      "object_name": "thymio_1",
+      "x": 120,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_mur_v",
+      "x": 15,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_mur_v",
+      "x": 885,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_mur_h",
+      "x": 450,
+      "y": 15,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_mur_h",
+      "x": 450,
+      "y": 545,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_boite",
+      "x": 480,
+      "y": 260,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_boite",
+      "x": 680,
+      "y": 330,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    }
+  ],
+  "instance_count": 7,
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000",
+  "imported": false
+}

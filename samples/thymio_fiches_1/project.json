@@ -1,0 +1,55 @@
+{
+  "name": "thymio_fiches_1",
+  "version": "1.0.0",
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000",
+  "settings": {
+    "window_title": "Thymio : arène libre",
+    "window_width": 900,
+    "window_height": 560,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full",
+    "active_extensions": [
+      "thymio"
+    ]
+  },
+  "assets": {
+    "sprites": {},
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "thymio_1": {
+        "name": "thymio_1",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000",
+        "is_thymio": true
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 900,
+        "height": 560,
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

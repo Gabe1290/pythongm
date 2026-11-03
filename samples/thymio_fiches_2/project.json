@@ -1,0 +1,143 @@
+{
+  "name": "thymio_fiches_2",
+  "version": "1.0.0",
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000",
+  "settings": {
+    "window_title": "Thymio : les murs",
+    "window_width": 900,
+    "window_height": 560,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full",
+    "active_extensions": [
+      "thymio"
+    ]
+  },
+  "assets": {
+    "sprites": {
+      "spr_mur_v": {
+        "name": "spr_mur_v",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_mur_v.png",
+        "width": 30,
+        "height": 560,
+        "frames": 1,
+        "frame_width": 30,
+        "frame_height": 560,
+        "origin_x": 15,
+        "origin_y": 280,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      },
+      "spr_mur_h": {
+        "name": "spr_mur_h",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_mur_h.png",
+        "width": 900,
+        "height": 30,
+        "frames": 1,
+        "frame_width": 900,
+        "frame_height": 30,
+        "origin_x": 450,
+        "origin_y": 15,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      },
+      "spr_boite": {
+        "name": "spr_boite",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_boite.png",
+        "width": 80,
+        "height": 80,
+        "frames": 1,
+        "frame_width": 80,
+        "frame_height": 80,
+        "origin_x": 40,
+        "origin_y": 40,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "thymio_1": {
+        "name": "thymio_1",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000",
+        "is_thymio": true
+      },
+      "obj_mur_v": {
+        "name": "obj_mur_v",
+        "asset_type": "object",
+        "sprite": "spr_mur_v",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      },
+      "obj_mur_h": {
+        "name": "obj_mur_h",
+        "asset_type": "object",
+        "sprite": "spr_mur_h",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      },
+      "obj_boite": {
+        "name": "obj_boite",
+        "asset_type": "object",
+        "sprite": "spr_boite",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "created": "2026-11-03T00:00:00.000000",
+        "modified": "2026-11-03T00:00:00.000000"
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 900,
+        "height": 560,
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

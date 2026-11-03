@@ -1,0 +1,44 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 900,
+  "height": 560,
+  "background_color": "#f4f4f4",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "tiles": [],
+  "instances": [
+    {
+      "object_name": "thymio_1",
+      "x": 120,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_ruban",
+      "x": 470,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    },
+    {
+      "object_name": "obj_bord",
+      "x": 868,
+      "y": 280,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    }
+  ],
+  "instance_count": 3,
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000",
+  "imported": false
+}

@@ -1,0 +1,12 @@
+{
+  "name": "obj_bord",
+  "asset_type": "object",
+  "sprite": "spr_bord",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000"
+}

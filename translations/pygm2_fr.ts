@@ -10819,6 +10819,21 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>Thymio — Hardware test</source>
         <translation>Thymio — Test avec le robot</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: free arena</source>
+        <translation>Thymio — Activités : arène libre</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: walls</source>
+        <translation>Thymio — Activités : les murs</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>Thymio — Activities: floor and tape</source>
+        <translation>Thymio — Activités : le sol et le ruban</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

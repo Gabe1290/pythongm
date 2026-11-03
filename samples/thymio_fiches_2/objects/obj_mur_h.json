@@ -1,0 +1,12 @@
+{
+  "name": "obj_mur_h",
+  "asset_type": "object",
+  "sprite": "spr_mur_h",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "created": "2026-11-03T00:00:00.000000",
+  "modified": "2026-11-03T00:00:00.000000"
+}

@@ -84,6 +84,11 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     # REAL robot (extensions/thymio). Needs the Thymio extension switched on and
     # the robot software to be useful, so it is not in the beginner list.
     ("samples/thymio_hw_test", "Thymio — Hardware test"),
+    # thymio_fiches_1..3: empty starter rooms for the simulator-only activity
+    # sheets in docs/thymio_fiches/ (one robot, no program: the student writes it).
+    ("samples/thymio_fiches_1", "Thymio — Activities: free arena"),
+    ("samples/thymio_fiches_2", "Thymio — Activities: walls"),
+    ("samples/thymio_fiches_3", "Thymio — Activities: floor and tape"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # docs/BLOCKLY_SCRATCH_PARITY_PLAN.md item 7: the bundled sample
