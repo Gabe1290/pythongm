@@ -105,7 +105,7 @@ def test_every_solution_names_a_real_sample_and_real_events():
     for name, prog in PROGRAMS.items():
         assert prog["sample"] in SAMPLES and (REPO_ROOT / "samples" / prog["sample"] / "project.json").exists(), name
         for event, actions in prog["events"].items():
-            assert event == "create" or event in THYMIO_EVENT_TYPES, (name, event)
+            assert event in THYMIO_EVENT_TYPES, (name, event)      # every event is in the Thymio tab
             for a in actions:
                 assert a["action"] in THYMIO_ACTIONS or a["action"] in ("start_block", "end_block"), (name, a)
 
@@ -196,18 +196,50 @@ def test_fiche6_a_variable_counts_button_presses():
 
 
 def test_fiche7_the_timer_makes_the_led_blink():
-    r = run_program("fiche7_clignotant", 300)
+    r = run_program("fiche7_clignotant", 300, tap(5, K.K_SPACE))
     on = [f["top"] == (0, 0, 32) for f in r]
     edges = sum(1 for a, b in zip(on, on[1:]) if a != b)
     assert edges >= 8                                                         # on, off, on, off ... every half second
     first_on = on.index(True)
-    assert 27 <= first_on <= 33                                               # the first tick: 500 ms = 30 frames
+    assert 32 <= first_on <= 38                                               # 500 ms = 30 frames after the press
 
 
 def test_fiche7_the_timer_drives_a_square():
-    r = run_program("fiche7_carre", 1300)
+    r = run_program("fiche7_carre", 1300, tap(5, K.K_SPACE))
     xs, ys = [f["x"] for f in r], [f["y"] for f in r]
     assert max(xs) - min(xs) == pytest.approx(75, abs=15)
     assert max(ys) - min(ys) == pytest.approx(75, abs=15)                     # 75 px sides: a square, not a line
     turned = [f["angle"] for f in r]
     assert min(turned) < -85 and max(turned) > 85                             # it really turned all the way round
+
+
+def test_fiche8_traffic_light_cycles_green_orange_red():
+    r = run_program("fiche8_feu", 420, tap(5, K.K_SPACE))
+    seen = []
+    for f in r:
+        if not seen or f["top"] != seen[-1]:
+            seen.append(f["top"])
+    assert seen[:7] == [(0, 0, 0), (0, 32, 0), (32, 16, 0), (32, 0, 0), (0, 32, 0), (32, 16, 0), (32, 0, 0)]
+    first_green = next(i for i, f in enumerate(r) if f["top"] == (0, 32, 0))
+    assert 62 <= first_green <= 68                                            # 1 s = 60 frames after the press
+
+
+def test_fiche8_alarm_changes_colour_as_the_box_gets_closer():
+    r = run_program("fiche8_alarme", 400, {10: [("down", K.K_UP)], 270: [("up", K.K_UP)]})
+    seen = []
+    for f in r:
+        if f["top"] != (0, 0, 0) and (not seen or f["top"] != seen[-1]):
+            seen.append(f["top"])
+    assert seen == [(0, 32, 0), (32, 16, 0), (32, 0, 0)]                      # green, then orange, then red
+
+
+def test_fiche8_hourglass_lights_one_more_led_every_second():
+    r = run_program("fiche8_sablier", 340, tap(5, K.K_SPACE))
+    lit = lambda f: sum(1 for v in f["circle"] if v)                          # noqa: E731
+    assert [lit(r[i]) for i in (35, 95, 155, 215, 275, 330)] == [0, 1, 2, 3, 4, 0]
+
+
+def test_fiche8_traffic_light_can_be_stopped_by_setting_the_period_to_zero():
+    r = run_program("fiche8_feu", 400, keys_of(tap(5, K.K_SPACE), tap(200, K.K_DOWN)))
+    assert r[190]["top"] != (0, 0, 0)                                         # running
+    assert {f["top"] for f in r[210:]} == {(0, 0, 0)}                         # off, and the timer no longer lights it

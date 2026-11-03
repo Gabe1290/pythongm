@@ -137,8 +137,8 @@ PROGRAMS = {
     "fiche7_clignotant": {
         "sample": "thymio_fiches_1",
         "events": {
-            "create": [A("thymio_set_variable", variable="etat", value=0),
-                       A("thymio_set_timer_period", timer_id=0, period=500)],
+            "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
+                                      A("thymio_set_timer_period", timer_id=0, period=500)),
             "thymio_timer_0": flat(
                 A("thymio_increase_variable", variable="etat", amount=1),
                 var_is("etat", "==", 1, top(0, 0, 32)),
@@ -148,13 +148,56 @@ PROGRAMS = {
     "fiche7_carre": {
         "sample": "thymio_fiches_1",
         "events": {
-            "create": [A("thymio_set_variable", variable="etat", value=0),
-                       A("thymio_set_timer_period", timer_id=0, period=1040)],
+            "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
+                                      A("thymio_set_timer_period", timer_id=0, period=1040)),
             "thymio_timer_0": flat(
                 A("thymio_increase_variable", variable="etat", amount=1),
                 var_is("etat", "==", 1, A("thymio_move_forward", speed=30)),
                 var_is("etat", "==", 2, A("thymio_set_motor_speed", left_speed=-30, right_speed=30),
                        A("thymio_set_variable", variable="etat", value=0))),
         },
+    },
+}
+
+# --- Fiche 8: challenges ---------------------------------------------------------------------------------------------
+PROGRAMS["fiche8_feu"] = {                        # traffic light: green, orange, red, every second
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
+                                      A("thymio_set_timer_period", timer_id=0, period=1000)),
+        "thymio_button_backward": pressed("backward", A("thymio_set_timer_period", timer_id=0, period=0),
+                                          A("thymio_leds_off")),
+        "thymio_timer_0": flat(
+            A("thymio_increase_variable", variable="etat", amount=1),
+            var_is("etat", "==", 1, top(0, 32, 0)),
+            var_is("etat", "==", 2, top(32, 16, 0)),
+            var_is("etat", "==", 3, top(32, 0, 0), A("thymio_set_variable", variable="etat", value=0))),
+    },
+}
+
+_drive = PROGRAMS["fiche3_moteurs"]["events"]
+PROGRAMS["fiche8_alarme"] = {                     # drive by hand; the LED says how close the obstacle is
+    "sample": "thymio_fiches_2",
+    "events": {
+        **_drive,
+        "thymio_proximity_update": flat(
+            top(0, 32, 0),
+            IF(A("thymio_if_proximity", sensor_index=FRONT, threshold=250, comparison=">"), top(32, 16, 0)),
+            IF(A("thymio_if_proximity", sensor_index=FRONT, threshold=1000, comparison=">"), top(32, 0, 0))),
+    },
+}
+
+PROGRAMS["fiche8_sablier"] = {                    # an hourglass: one more LED of the circle every second
+    "sample": "thymio_fiches_1",
+    "events": {
+        "thymio_button_center": pressed("center", A("thymio_set_variable", variable="etat", value=0),
+                                      A("thymio_set_timer_period", timer_id=0, period=1000)),
+        "thymio_timer_0": flat(
+            A("thymio_increase_variable", variable="etat", amount=1),
+            var_is("etat", "==", 1, A("thymio_set_led_circle", led_index=0, intensity=32)),
+            var_is("etat", "==", 2, A("thymio_set_led_circle", led_index=2, intensity=32)),
+            var_is("etat", "==", 3, A("thymio_set_led_circle", led_index=4, intensity=32)),
+            var_is("etat", "==", 4, A("thymio_set_led_circle", led_index=6, intensity=32)),
+            var_is("etat", "==", 5, A("thymio_leds_off"), A("thymio_set_variable", variable="etat", value=0))),
     },
 }
