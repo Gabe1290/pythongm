@@ -23,6 +23,8 @@ Lance **Test Game**. Au centre de la pièce, tu vois le robot vu de dessus :
 
 Ferme le jeu, ouvre l'objet **thymio_1** et va dans l'onglet **Thymio**.
 
+![Dans l'éditeur d'objet, l'onglet Thymio est entouré en rouge](img/fiche_1_onglet_thymio.png)
+
 - [ ] Clique sur **+ Événement** et choisis **Button Forward**.
 - [ ] Clic droit sur l'événement → **Add Action** → **Leds** → **Set Top LED Color**. Mets **red = 0**, **green = 32**, **blue = 0**.
 - [ ] Lance **Test Game** et appuie sur **↑** : la LED du dessus devient verte.

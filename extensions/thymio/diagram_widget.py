@@ -7,7 +7,7 @@ for sensors, buttons, LEDs, and motors.
 
 import math
 from PySide6.QtWidgets import QWidget, QToolTip
-from PySide6.QtCore import Qt, Signal, QRect, QRectF
+from PySide6.QtCore import Qt, Signal, QRect, QRectF, QCoreApplication
 from PySide6.QtGui import (
     QPainter, QPen, QBrush, QColor, QFont, QRadialGradient
 )
@@ -64,7 +64,7 @@ class ThymioDiagramWidget(QWidget):
         'body': ['robot_body']
     }
 
-    # Region descriptions for tooltips
+    # Region descriptions for tooltips (translated where shown, context ThymioDiagramWidget)
     REGION_DESCRIPTIONS = {
         'button_forward': 'Forward Button',
         'button_backward': 'Backward Button',
@@ -337,13 +337,13 @@ class ThymioDiagramWidget(QWidget):
         painter.setFont(font)
 
         # Front label
-        painter.drawText(cx - 20, 15, "FRONT")
+        painter.drawText(cx - 20, 15, QCoreApplication.translate("ThymioDiagramWidget", "FRONT"))
 
         # Ground sensor labels
         painter.drawText(self.regions['ground_left'].left() - 5,
-                        self.regions['ground_left'].bottom() + 12, "GND")
+                        self.regions['ground_left'].bottom() + 12, QCoreApplication.translate("ThymioDiagramWidget", "GND"))
         painter.drawText(self.regions['ground_right'].left() - 5,
-                        self.regions['ground_right'].bottom() + 12, "GND")
+                        self.regions['ground_right'].bottom() + 12, QCoreApplication.translate("ThymioDiagramWidget", "GND"))
 
     def mouseMoveEvent(self, event):
         """Handle mouse movement for hover effects"""
@@ -390,7 +390,8 @@ class ThymioDiagramWidget(QWidget):
             if new_hover:
                 self.region_hovered.emit(new_hover)
                 # Show tooltip
-                description = self.REGION_DESCRIPTIONS.get(new_hover, new_hover)
+                description = QCoreApplication.translate(
+                    "ThymioDiagramWidget", self.REGION_DESCRIPTIONS.get(new_hover, new_hover))
                 QToolTip.showText(event.globalPos(), description, self)
             else:
                 QToolTip.hideText()
