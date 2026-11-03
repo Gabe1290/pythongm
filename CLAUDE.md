@@ -2721,3 +2721,16 @@ contact; robots pass through walls; the Thymio tab lists only Thymio events (**C
 timer sheets start from Button Center). Action/event names are English in the IDE and stay English in the sheets.
 Not done: PDFs/ODTs (`scripts/generate_tutorial_handouts_pdf.py` works on these files), English version,
 other languages, a human trying the sheets with students.
+
+**2026-11-03 (later) — The Thymio simulator is audible; fiche 8 "Les sons" (fiches renumbered: défis is now 9).**
+`extensions/thymio/audio.py`: square-wave tones and eight factory-sound *jingles* (`SYSTEM_SOUNDS`, resemblances, NOT
+the robot's recordings) through the pygame mixer; one reserved channel per robot at `CHANNEL_BASE` 4 (the micro:bit
+owns 0-3); duration -1 loops a whole-cycle buffer until Stop Sound; **M mutes** every robot (only the first robot
+toggles, because key_down reaches every robot). Handlers (`thymio_play_tone` / `_play_system_sound` / `_stop_sound`)
+call it; the simulator still owns the state and the Sound Finished timing (jingle length = event time). Cached as
+bytes only (a Sound/Channel dangles after pygame.quit). `tests/test_thymio_sound.py` runs the fiche-8 reference
+programs in the real engine and reads the mixer channel's busy flag. **Not verified by ear** (headless dummy driver):
+loudness (AMPLITUDE 4000, a guess like the micro:bit's), how the jingles sound, classroom use with many robots.
+Desktop only; Thymio has no HTML5/Kivy renderer. `audio.forget()` must stop the voices or a looping tone leaks into
+the next test. PDF/ODT of all sheets are committed in `docs/thymio_fiches/{pdf,odt}` (the ODT generator never
+overwrites: delete an ODT to regenerate it).

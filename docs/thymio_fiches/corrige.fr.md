@@ -67,6 +67,22 @@ Pour aller plus loin : carré vers la droite → (30, -30). Triangle : rotation 
 
 ## Fiche 8
 
+Les sons sortent du haut-parleur de l'ordinateur (touche **M** : muet). Une durée est en 1/60 s : 30 = 0,5 s, -1 = jusqu'à **Stop Sound**.
+
+| Partie | Programme | Mesuré |
+|---|---|---|
+| 1. Notes | Button Forward / Left / Right / Backward → If Button Pressed → Play Tone 262 / 330 / 392 / 523, durée 30 | une note par appui ; sans le If Button Pressed, la note est jouée deux fois (appui et relâchement) |
+| 2. Note tenue | Button Forward → If Pressed → Play Tone (440, -1) ; If Released → Stop Sound | le son dure autant que l'appui |
+| 3. Mélodie | Button Center → bloc [Set Variable (note = 0), Play Tone (262, 20)] ; Sound Finished → Increase Variable (note), puis If note == 1 → 330 (20), == 2 → 392 (20), == 3 → 523 (40) | do, mi, sol, do aigu ; après la 4ᵉ note, note vaut 4 et plus rien ne se déclenche |
+| 4. Sons du robot | Play System Sound (0 à 7) sur les boutons | chaque son est une courte mélodie (≤ 40 images) ; la durée de la mélodie est celle de Sound Finished |
+| 5. Sirène | Button Center → bloc [etat = 0, période 500] ; Timer 0 → Increase Variable, etat == 1 → Play Tone (440, 30) + LED rouge ; etat == 2 → Play Tone (880, 30) + LED bleue + etat = 0 | alternance 440 / 880 Hz avec la lumière ; arrêt : période 0 + Stop Sound |
+| 6. Radar | programme de la fiche 3 + Proximity Sensors Update : Front Center > 250 → Play Tone (800, 4) ; > 1000 → Play Tone (1500, 4) | silence de loin, 800 Hz puis 1500 Hz en approchant d'une boîte |
+
+Réponses : quatre Play Tone à la suite → seul le dernier s'entend (chaque note remplace la précédente). « Au clair de la lune » demande onze notes donc dix If Variable ; une variable qui sert d'indice n'existe pas dans l'éditeur Thymio, donc il n'y a pas de raccourci.
+Remarque : les sons du robot sont synthétisés (ils ressemblent aux originaux, ils ne les reproduisent pas). Le volume dépend de l'ordinateur ; en classe, prévoir des casques ou la touche M.
+
+## Fiche 9
+
 | Défi | Solution (résumé) |
 |---|---|
 | 1. Feu | Button Center démarre (etat = 0, période 1000 ms) ; Timer 0, etat de 1 à 3 : vert, orange, rouge (etat remis à 0 au 3). Le premier vert vient 1 s après l'appui. Pour arrêter (Button Backward) : **Set Timer Period** (période = 0) **et** Turn Off All LEDs ; éteindre seulement les LED ne suffit pas, le minuteur continue. |
