@@ -52,6 +52,47 @@ def _green_play_icon():
     return QIcon(pm)
 
 
+def _floppy_disk_icon():
+    """A classic floppy-disk ("disquette") icon for the toolbar 'Save
+    Project' action, matching the same look every per-asset editor
+    toolbar already uses (literally a "\U0001f4be Save" button — see
+    editors/base_editor.py and friends).
+
+    Painted with fixed brand colours, same rationale as
+    ``_green_play_icon``: the style's native SP_DialogSaveButton renders as
+    very different, sometimes unrecognisable glyphs across platforms/themes
+    (reported: it doesn't read as a disk at all on this box's theme), so
+    "Save" only reads as the same disk everywhere if we paint it ourselves.
+    """
+    from PySide6.QtGui import QPixmap, QPainter, QColor, QPolygonF, QIcon
+    from PySide6.QtCore import QPointF, QRectF
+    pm = QPixmap(16, 16)
+    pm.fill(Qt.transparent)
+    p = QPainter(pm)
+    p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+    p.setPen(Qt.NoPen)
+
+    # Body: dark plastic shell, with the classic cut top-right corner.
+    p.setBrush(QColor(55, 71, 94))
+    p.drawPolygon(QPolygonF([
+        QPointF(2, 2), QPointF(11, 2), QPointF(14, 5),
+        QPointF(14, 14), QPointF(2, 14),
+    ]))
+
+    # Metal shutter strip near the top, with its write-protect notch.
+    p.setBrush(QColor(200, 206, 214))
+    p.drawRect(QRectF(4, 3, 7, 4))
+    p.setBrush(QColor(55, 71, 94))
+    p.drawRect(QRectF(9.5, 3.5, 1.5, 3))
+
+    # Paper label on the lower body.
+    p.setBrush(QColor(245, 245, 245))
+    p.drawRect(QRectF(4, 9, 8, 4))
+
+    p.end()
+    return QIcon(pm)
+
+
 def _contrasting_icon_color(palette):
     """Pick an icon foreground (light or dark) that contrasts with the
     toolbar button background, so tinted icons stay legible on both light
@@ -482,7 +523,7 @@ class MenuBuilderMixin:
         # Project group ------------------------------------------------
         _attach(self.new_project_action,  "SP_FileIcon",        self.tr("New Project (Ctrl+N)"))
         _attach(self.open_project_action, "SP_DialogOpenButton", self.tr("Open Project (Ctrl+O)"))
-        _attach(self.save_project_action, "SP_DialogSaveButton", self.tr("Save Project (Ctrl+S)"))
+        _attach(self.save_project_action, "SP_DialogSaveButton", self.tr("Save Project (Ctrl+S)"), icon=_floppy_disk_icon())
 
         toolbar.addSeparator()
 

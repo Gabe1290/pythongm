@@ -147,6 +147,33 @@ def test_green_play_icon_is_green(_qapp):
     assert found_green, "the Test Game play icon should contain green pixels"
 
 
+def test_floppy_disk_icon_looks_like_a_disk(_qapp):
+    """The main toolbar's Save Project icon should be the same painted
+    floppy-disk ("disquette") glyph the per-asset editor toolbars already
+    use (their literal "\U0001f4be Save" text), not the Qt style's native
+    SP_DialogSaveButton pixmap, which doesn't read as a disk on every
+    platform/theme."""
+    from core.ide._menu_builder import _floppy_disk_icon
+
+    icon = _floppy_disk_icon()
+    assert not icon.isNull()
+    img = icon.pixmap(16, 16).toImage()
+
+    found_dark_body = False
+    found_light_shutter = False
+    for x in range(16):
+        for y in range(16):
+            c = img.pixelColor(x, y)
+            if c.alpha() < 200:
+                continue
+            if c.red() < 90 and c.green() < 100 and c.blue() > c.red():
+                found_dark_body = True
+            if c.red() > 180 and c.green() > 180 and c.blue() > 180:
+                found_light_shutter = True
+    assert found_dark_body, "the floppy icon should have a dark plastic-shell body"
+    assert found_light_shutter, "the floppy icon should have a light metal shutter / label"
+
+
 def test_contrasting_icon_color_picks_light_on_dark(_qapp):
     from PySide6.QtGui import QPalette, QColor
     from core.ide._menu_builder import _contrasting_icon_color
