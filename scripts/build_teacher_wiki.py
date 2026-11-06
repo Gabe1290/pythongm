@@ -69,7 +69,7 @@ def convert(md, lang, img_dir_rel):
 
     while i < len(lines):
         ln = lines[i]
-        m = re.match(r"^> (TIP|INFO|DONE): ?(.*)$", ln)
+        m = re.match(r"^> (TIP|INFO|DONE)\s*:\s*(.*)$", ln)
         if m:
             gap()
             out.append(f"> **{CALLOUT[lang][m.group(1)]}:** {m.group(2)}")

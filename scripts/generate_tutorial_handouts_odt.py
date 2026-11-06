@@ -254,7 +254,7 @@ def md_to_html(md_text, src_dir=None):
                 i += 1
             text = " ".join(block).strip()
             kind = "TIP"
-            m2 = re.match(r"(TIP|INFO|DONE):\s*(.*)", text)
+            m2 = re.match(r"(TIP|INFO|DONE)\s*:\s*(.*)", text)
             if m2:
                 kind, text = m2.group(1), m2.group(2)
             bg, border = _CALLOUT_COLORS[kind]
