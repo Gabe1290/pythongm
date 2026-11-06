@@ -1953,6 +1953,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <translation>Отправить сетевое сообщение</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Задать вращение спрайта</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Задать защиту блоков</translation>
     </message>

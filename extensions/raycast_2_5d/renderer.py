@@ -233,6 +233,39 @@ def wall_shade(side: int, corrected: float, max_dist: float) -> float:
     return max(RAYCAST_MIN_SHADE, side_factor * dist_factor)
 
 
+def billboard_rotation_frame(bx: float, by: float, facing_angle_deg: float,
+                              cam_x: float, cam_y: float, frames: int) -> int:
+    """Pick which of a billboard instance's `frames` equally-spaced
+    view-angle sprite frames the camera should see right now — the
+    Doom/Build-engine "actor rotation" trick: instead of a single flat
+    always-the-same-image cutout, the sprite strip holds `frames` views of
+    the object shot from equally-spaced angles, and walking a full circle
+    around it cycles through all of them exactly once, so it finally reads
+    as something with real sides instead of a cardboard cutout.
+
+    Frame 0 is the object's FRONT view: the camera sees frame 0 when it is
+    positioned in the direction the object's own facing_angle points (set
+    via set_facing_angle, independently of the camera's facing_angle —
+    these are two different instances' two different angles). Frames then
+    advance clockwise in screen space (GM angle convention, same as every
+    other facing_angle use in this file) as the camera moves around the
+    object.
+
+    frames <= 1 always returns 0 (the degenerate/disabled case — the caller
+    falls back to the normal animated image_index instead of calling this
+    at all). HTML5 (export_html5.js) and Kivy (export_kivy.py
+    _billboard_rotation_frame) mirror this formula exactly; pinned by
+    tests/test_raycast_export_parity.py.
+    """
+    if frames <= 1:
+        return 0
+    facing_rad = math.radians(-facing_angle_deg)
+    view_rad = math.atan2(cam_y - by, cam_x - bx)
+    rel = (view_rad - facing_rad) % (2 * math.pi)
+    step = (2 * math.pi) / frames
+    return int(round(rel / step)) % frames
+
+
 def render_raycast_view(room, screen: pygame.Surface):
     """Render the room as a first-person raycast projection instead of
     the normal top-down view. See docs/RAYCAST_2_5D_PLAN.md."""
@@ -461,12 +494,12 @@ def render_raycast_view(room, screen: pygame.Surface):
         corrected = dist * math.cos(rel_angle)
         if corrected <= 1e-4:
             continue
-        billboards.append((corrected, rel_angle, inst))
+        billboards.append((corrected, rel_angle, inst, bx, by))
 
     # Farthest first (painter's algorithm) so nearer billboards draw
     # over farther ones where sprites overlap.
     billboards.sort(key=lambda b: -b[0])
-    for corrected, rel_angle, inst in billboards:
+    for corrected, rel_angle, inst, bx, by in billboards:
         # Same unclamped-height + sub-texel crop the wall pass uses: a
         # sprite you walk right up to overflows the screen, and squeezing
         # the whole sprite into a screen-clamped height (the old
@@ -489,7 +522,13 @@ def render_raycast_view(room, screen: pygame.Surface):
         vis_h = y1 - y0
         if vis_h <= 0:
             continue
-        frame = inst.sprite.get_frame(inst.image_index)
+        rot_frames = int(getattr(inst, 'billboard_rotation_frames', 0) or 0)
+        if rot_frames > 1:
+            frame_idx = billboard_rotation_frame(
+                bx, by, inst.facing_angle, cam_x, cam_y, rot_frames)
+        else:
+            frame_idx = inst.image_index
+        frame = inst.sprite.get_frame(frame_idx)
         fh = frame.get_height()
         rows_per_px = fh / full_h
         src_y_f = (y0 - y_top_f) * rows_per_px

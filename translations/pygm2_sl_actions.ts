@@ -183,6 +183,10 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <translation>Pošlji omrežno sporočilo</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Nastavi vrtenje sprite-a</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Nastavi zaščito blokov</translation>
     </message>

@@ -471,8 +471,9 @@ ACTION_TYPES = {
         ]
     ),
 
-    # All four raycast "3D View" actions (set_facing_angle, enable_raycast_view,
-    # draw_minimap, draw_doom_hud) now live in the raycast extension
+    # All raycast "3D View" actions (set_facing_angle, enable_raycast_view,
+    # draw_minimap, draw_doom_hud, set_billboard_rotation) now live in the
+    # raycast extension
     # (extensions/raycast_2_5d/actions.py) — Stage B3, docs/
     # RAYCAST_EXTENSION_PLAN.md. The loader merges an extension's PLUGIN_ACTIONS
     # into ACTION_TYPES at startup, so get_action_type() finds them once

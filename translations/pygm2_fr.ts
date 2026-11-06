@@ -653,6 +653,10 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>Choisir une case de la barre</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Définir la rotation du sprite</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Définir la protection des blocs</translation>
     </message>
@@ -4817,6 +4821,10 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
     <message>
         <source>Select Hotbar Slot</source>
         <translation>Choisir une case de la barre</translation>
+    </message>
+    <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Définir la rotation du sprite</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

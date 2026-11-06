@@ -183,6 +183,10 @@ Usa invece gli operatori Python (and / or / not), ad esempio "vspeed &gt; 0 and 
         <translation>Invia messaggio di rete</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Imposta rotazione sprite</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Imposta protezione blocchi</translation>
     </message>

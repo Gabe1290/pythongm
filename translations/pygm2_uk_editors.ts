@@ -1953,6 +1953,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <translation>Надіслати мережеве повідомлення</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Задати обертання спрайту</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Задати захист блоків</translation>
     </message>

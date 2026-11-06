@@ -2204,6 +2204,10 @@ Do you want to save anyway?</source>
         <translation>ネットワークメッセージを送る</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>スプライトの回転を設定</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>ブロック保護を設定</translation>
     </message>
@@ -4465,6 +4469,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Send a Network Message</source>
         <translation>ネットワークメッセージを送る</translation>
+    </message>
+    <message>
+        <source>Set Billboard Rotation</source>
+        <translation>スプライトの回転を設定</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

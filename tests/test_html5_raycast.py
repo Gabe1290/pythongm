@@ -122,6 +122,28 @@ def test_billboards_with_per_column_occlusion():
     assert "b.corr < colWallDist[colIdx]" in body
 
 
+def test_billboard_rotation_frames_pick_view_angle_and_slice_the_strip():
+    """set_billboard_rotation (Doom/Build actor-rotation billboards): the
+    billboard draw now slices its OWN frame of the sprite strip (boxWidth
+    is the per-frame width, spriteInfo.frames the count) instead of
+    stretching the whole multi-frame strip across the sprite's width --
+    and picks that frame by viewing angle when billboard_rotation_frames
+    is set, mirroring renderer.billboard_rotation_frame exactly."""
+    m = re.search(r"renderRaycastView\(ctx\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    body = m.group(1)
+    assert "b.inst.billboard_rotation_frames || 0" in body
+    assert "Math.atan2(camY - b.by, camX - b.bx)" in body
+    assert "(2 * Math.PI) / rotFrames" in body
+    # frame-slice math uses the PER-FRAME box size, not the whole image.
+    assert "const fw = b.inst.boxWidth(), fh = b.inst.boxHeight();" in body
+    assert "frameIdx * fw" in body
+
+
+def test_set_billboard_rotation_action_registered():
+    assert "registerExtensionAction('set_billboard_rotation'" in ENGINE
+    assert "obj.billboard_rotation_frames = Math.max(0, Math.floor(frames) || 0);" in ENGINE
+
+
 def test_build_walls_derives_edges_with_sprites():
     m = re.search(r"buildRaycastWalls\(cellSize\)\s*\{(.*?)\n    \}", ENGINE, re.S)
     assert m

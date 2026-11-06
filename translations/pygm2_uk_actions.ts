@@ -183,6 +183,10 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <translation>Надіслати мережеве повідомлення</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Задати обертання спрайту</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Задати захист блоків</translation>
     </message>

@@ -22,8 +22,8 @@ sky, and billboard sprites for pickups and monsters. The game's *logic*
 | `extension.json` | The manifest. Name, version, and `enabled: true`. Its presence is what marks this folder as an extension. |
 | `__init__.py` | The entry point. Declares the room-renderer hook and decides, per room, whether to claim the drawing. |
 | `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. The big file, ordinary Python. |
-| `actions.py` | The four "3D View" action **schemas** (`PLUGIN_ACTIONS`). |
-| `handlers.py` | The action **handlers** — what `enable_raycast_view` / `set_facing_angle` / `draw_minimap` / `draw_doom_hud` do at runtime. |
+| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`. |
+| `handlers.py` | The action **handlers** — what each of those does at runtime. |
 | `hud.py` | The minimap + DOOM-bar geometry builders (`build_minimap_commands`, `build_doom_hud_commands`), the single source the exports mirror. |
 | `state.py` | The per-room state helper — all raycast state lives under `room.extension_state["raycast"]`. |
 | `export_html5.js` | The **HTML5** port of the renderer + actions, injected into the exported `engine.js` (Stage C). |

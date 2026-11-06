@@ -1953,6 +1953,10 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <translation>Pošlji omrežno sporočilo</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Nastavi vrtenje sprite-a</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Nastavi zaščito blokov</translation>
     </message>

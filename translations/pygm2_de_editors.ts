@@ -1953,6 +1953,10 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <translation>Netzwerknachricht senden</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Sprite-Rotation festlegen</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Blockschutz festlegen</translation>
     </message>

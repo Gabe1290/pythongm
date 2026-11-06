@@ -8,6 +8,7 @@
         "enable_raycast_view",
         "set_facing_angle",
         "draw_minimap",
-        "draw_doom_hud"
+        "draw_doom_hud",
+        "set_billboard_rotation"
     ]
 }

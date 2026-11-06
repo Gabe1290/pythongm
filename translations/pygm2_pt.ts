@@ -1963,6 +1963,10 @@ Deseja salvar mesmo assim?</translation>
         <translation>Enviar mensagem de rede</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Definir rotação do sprite</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Definir proteção de blocos</translation>
     </message>
@@ -4465,6 +4469,10 @@ A ação em si não é afetada e será mantida exatamente como está ao salvar.<
     <message>
         <source>Send a Network Message</source>
         <translation>Enviar mensagem de rede</translation>
+    </message>
+    <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Definir rotação do sprite</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

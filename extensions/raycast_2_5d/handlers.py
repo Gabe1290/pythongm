@@ -71,6 +71,33 @@ class PluginExecutor:
         else:
             instance.facing_angle = angle % 360.0
 
+    def execute_set_billboard_rotation_action(self, instance, parameters):
+        """Give this instance rotation-by-viewing-angle billboard frames
+        instead of a flat always-the-same-image sprite in the raycast view.
+
+        The sprite's own frame strip is read as `frames` equally-spaced
+        views of the object, front view (the camera positioned along the
+        object's own facing_angle, set via set_facing_angle) at frame 0,
+        advancing clockwise. The billboard pass in the renderer (this
+        extension's renderer.billboard_rotation_frame / export_html5.js /
+        export_kivy.py all mirror the same formula) picks the frame from
+        the live angle between the camera and this instance each time it
+        draws — this action only records how many frames the strip has.
+
+        Parameters:
+            frames: Count of equally-spaced angle frames in the sprite
+                strip (0 disables — the normal animated image_index frame
+                draws instead, the pre-existing behaviour).
+        """
+        ae = self._executor(instance)
+        raw = parameters.get("frames", 8)
+        frames = ae._parse_value(raw, instance) if ae else raw
+        try:
+            frames = int(frames)
+        except (TypeError, ValueError):
+            frames = 0
+        instance.billboard_rotation_frames = max(0, frames)
+
     def execute_enable_raycast_view_action(self, instance, parameters):
         """Switch the current room to a Doom/Wolfenstein-style raycast
         first-person view (docs/RAYCAST_2_5D_PLAN.md), or back to the normal

@@ -80,6 +80,19 @@ def test_enable_raycast_view_disable():
     assert code == "self.scene.raycast_camera = {'enabled': False}"
 
 
+def test_set_billboard_rotation_codegen():
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action(
+        "set_billboard_rotation", {"frames": "4"}, "create")
+    assert code == "self.billboard_rotation_frames = max(0, int(4))"
+
+
+def test_set_billboard_rotation_codegen_default_frames():
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action("set_billboard_rotation", {}, "create")
+    assert code == "self.billboard_rotation_frames = max(0, int(8))"
+
+
 # ---------------------------------------------------------------------------
 # End-to-end export of the real sample
 # ---------------------------------------------------------------------------
@@ -432,6 +445,69 @@ def test_billboard_drawn_and_occluded_by_wall(exported):
         occluded = [c for c in _textured_rects(scene2)
                     if c.kw["texture"] is goal_tex2]
         assert not occluded, "billboard should be fully occluded by the wall"
+
+
+def test_billboard_texture_frame_idx_override(exported):
+    """_billboard_texture's frame_idx param overrides the normal animated
+    image_index frame -- what the rotation-by-viewing-angle billboard loop
+    below passes in. Without the override, the pre-existing image_index
+    behaviour is unchanged."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        tex = _FakeTex(64, 16)  # 4 frames of 16x16, packed horizontally
+        inst = _FakeInst(0, 0, 16, 16, solid=False)
+        inst._sprite_texture = tex
+        inst._sprite_frames = 4
+        inst._frame_w = 16
+        inst._frame_h = 16
+        inst.image_index = 1
+        region = scene._billboard_texture(inst, frame_idx=3)
+        assert region is tex
+        assert tex.regions[-1] == (48, 0, 16, 16)      # frame 3, override wins
+        scene._billboard_texture(inst)                 # no override
+        assert tex.regions[-1] == (16, 0, 16, 16)      # falls back to image_index
+
+
+def test_render_raycast_picks_billboard_rotation_frame_by_angle(exported):
+    """End-to-end: a billboard with billboard_rotation_frames set draws the
+    frame _billboard_rotation_frame picks for the camera's actual position,
+    not image_index -- the same geometry as
+    test_billboard_drawn_and_occluded_by_wall (a visible, unoccluded goal),
+    with rotation frames turned on. Spies on _billboard_texture rather than
+    parsing _FakeTex.get_region calls, since the stub returns itself (not a
+    narrower region) so its own .width/.height don't shrink after cropping
+    -- the per-column UV slices downstream aren't a reliable signal, only
+    the one frame-selection call _billboard_texture itself makes is."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        tex = _FakeTex(64, 16)  # 4 frames of 16x16
+        scene._raycast_tex_cache = {"spr_goal": tex}
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)   # facing east
+        goal = _FakeInst(96, 32, 16, 16, solid=False, sprite="spr_goal")
+        goal._sprite_texture = tex
+        goal._sprite_frames = 4
+        goal._frame_w = 16
+        goal._frame_h = 16
+        goal.billboard_rotation_frames = 4
+        goal.facing_angle = 0.0
+        goal.image_index = 0    # would pick frame 0 if rotation weren't honored
+        scene.instances = [cam, goal]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+        }
+        calls = []
+        orig = scene._billboard_texture
+        scene._billboard_texture = lambda inst, frame_idx=None: (
+            calls.append(frame_idx) or orig(inst, frame_idx))
+        scene._render_raycast()
+        # The camera sits (mostly) west of the goal, which faces east (0) --
+        # the "opposite side" view, frame 2 of 4.
+        assert calls == [2], (
+            f"expected the rotation-picked frame 2, got {calls} "
+            f"(image_index was {goal.image_index})")
 
 
 def test_floor_buffer_size_and_sampling(exported):

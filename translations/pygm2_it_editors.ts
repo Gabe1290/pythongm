@@ -1953,6 +1953,10 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <translation>Invia messaggio di rete</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Imposta rotazione sprite</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Imposta protezione blocchi</translation>
     </message>

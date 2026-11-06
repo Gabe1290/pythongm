@@ -232,7 +232,7 @@ def _extension_actions():
 
 
 def test_there_are_extension_actions_to_check():
-    """46, not 35.
+    """47, not 35.
 
     The first count came from "what did load_all_plugins ADD to
     ACTION_TYPES?", which misses check_sound and stop_sound -- both sit in the
@@ -246,9 +246,11 @@ def test_there_are_extension_actions_to_check():
     45 when multiplayer_files' 6 Phase 1 actions landed, then 45 -> 46 when
     Phase 2's send_network_message_files landed
     (docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md), same discipline: display names
-    translated the same commit, not left to lag."""
+    translated the same commit, not left to lag. 46 -> 47 when the raycast
+    extension's set_billboard_rotation (Doom/Build actor-rotation billboards)
+    landed, same discipline."""
     actions = _extension_actions()
-    assert len(actions) == 46, sorted(actions)
+    assert len(actions) == 47, sorted(actions)
 
 
 @pytest.mark.parametrize("lang", SHIPPED)

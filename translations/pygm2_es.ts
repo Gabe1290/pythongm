@@ -286,6 +286,10 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
         <translation>Enviar mensaje de red</translation>
     </message>
     <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Definir rotación del sprite</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Definir protección de bloques</translation>
     </message>
@@ -4453,6 +4457,10 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <source>Send a Network Message</source>
         <translation>Enviar mensaje de red</translation>
+    </message>
+    <message>
+        <source>Set Billboard Rotation</source>
+        <translation>Definir rotación del sprite</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

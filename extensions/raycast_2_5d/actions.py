@@ -133,6 +133,23 @@ PLUGIN_ACTIONS = {
                             "(0 = full window height, unchanged)"),
         ]
     ),
+    "set_billboard_rotation": ActionType(
+        name="set_billboard_rotation",
+        display_name="Set Billboard Rotation",
+        description="Give this instance multiple view-angle frames in the raycast "
+                    "view, so it looks like a real object with sides instead of a "
+                    "flat cutout as the camera walks around it — the sprite's frame "
+                    "strip is picked by viewing angle instead of by time",
+        category="3D View",
+        icon="🔄",
+        parameters=[
+            ActionParameter(name="frames", display_name="Angle Frames", param_type="number",
+                default_value=8,
+                description="How many equally-spaced views the sprite's frame strip "
+                            "holds, front view first (0 = off, use the normal "
+                            "animated frame instead)"),
+        ]
+    ),
     "draw_doom_hud": ActionType(
         name="draw_doom_hud",
         display_name="Draw DOOM HUD",

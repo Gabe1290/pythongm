@@ -32,7 +32,7 @@ from runtime.game_runner import GameRoom  # noqa: E402
 # the wall-edge sets cast_ray reads.
 from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 from extensions.raycast_2_5d.renderer import (  # noqa: E402
-    cast_ray, wall_shade,
+    cast_ray, wall_shade, billboard_rotation_frame,
     RAYCAST_SIDE_SHADE, RAYCAST_FOG_STRENGTH, RAYCAST_MIN_SHADE,
     RAYCAST_WALL_HEIGHT,
 )
@@ -389,6 +389,43 @@ def test_all_three_share_the_facing_angle_convention():
     # HTML5: (-facing_angle) in radians
     assert re.search(r"-\s*camera\.facing_angle\s*\*\s*Math\.PI\s*/\s*180", ENGINE) \
         or "-camera.facing_angle * Math.PI / 180" in ENGINE
+
+
+# --- set_billboard_rotation (Doom/Build actor-rotation billboards) --------
+
+def test_billboard_rotation_frame_matches_desktop_and_kivy():
+    """billboard_rotation_frame (desktop) and the Kivy scene's own
+    _billboard_rotation_frame method must be numerically identical, the
+    same exact-equality guarantee cast_ray/wall_shade get."""
+    game = _export_raycast_1()
+    with _stub_kivy_env(game):
+        cls = _scene_class(game)
+        cases = [
+            # (bx, by, facing_deg, cam_x, cam_y, frames)
+            (100, 100, 0.0, 200, 100, 4),    # camera due east -> front (0)
+            (100, 100, 0.0, 100, 200, 4),    # camera due south
+            (100, 100, 0.0, 0, 100, 4),      # camera due west -> back
+            (100, 100, 0.0, 100, 0, 4),      # camera due north
+            (100, 100, 90.0, 200, 100, 4),   # rotating facing_angle shifts it
+            (50, 50, 37.0, 180, 220, 8),     # arbitrary angle, 8 frames
+            (50, 50, 0.0, 51, 50, 3),        # near-zero distance, odd frame count
+        ]
+        for bx, by, facing, cx, cy, frames in cases:
+            d = billboard_rotation_frame(bx, by, facing, cx, cy, frames)
+            k = cls._billboard_rotation_frame(bx, by, facing, cx, cy, frames)
+            assert d == k, (bx, by, facing, cx, cy, frames, d, k)
+        # frames<=1 is the disabled case on both -- always frame 0.
+        assert billboard_rotation_frame(0, 0, 0, 5, 5, 1) == 0
+        assert cls._billboard_rotation_frame(0, 0, 0, 5, 5, 1) == 0
+
+
+def test_billboard_rotation_frame_front_view_is_frame_zero():
+    """The camera standing in the direction the object's facing_angle
+    points sees frame 0 -- the documented "front view" convention."""
+    assert billboard_rotation_frame(100, 100, 0.0, 200, 100, 4) == 0
+    assert billboard_rotation_frame(100, 100, 90.0, 100, 0, 4) == 0
+    assert billboard_rotation_frame(100, 100, 180.0, 0, 100, 4) == 0
+    assert billboard_rotation_frame(100, 100, 270.0, 100, 200, 4) == 0
 
 
 # --- In-view HUD compositing (RAYCAST_HUD_PLAN Unit 4) ---------------------

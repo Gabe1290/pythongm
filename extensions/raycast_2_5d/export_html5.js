@@ -256,7 +256,7 @@ Object.assign(GameRoom.prototype, {
             if (Math.abs(relAngle) > fovRad / 2 + 0.5) continue;  // margin for width
             const bcorr = bdist * Math.cos(relAngle);
             if (bcorr <= 1e-4) continue;
-            billboards.push({ corr: bcorr, relAngle: relAngle, inst: inst });
+            billboards.push({ corr: bcorr, relAngle: relAngle, inst: inst, bx: bx, by: by });
         }
         billboards.sort((a, b) => b.corr - a.corr);  // farthest first (painter's)
         for (const b of billboards) {
@@ -277,16 +277,37 @@ Object.assign(GameRoom.prototype, {
             const bVisH = by1 - by0;
             if (bVisH <= 0) continue;
             const img = b.inst.sprite;
+            // Which frame of the sprite's horizontal strip to show. A
+            // billboard_rotation_frames instance (set_billboard_rotation)
+            // picks its frame by viewing angle (Doom/Build actor-rotation
+            // trick: a 2D sprite with real "sides" instead of always the
+            // same flat cutout) -- see renderer.billboard_rotation_frame
+            // for the shared formula. Otherwise the normal animated
+            // image_index frame draws, same as before this feature.
+            const frames = b.inst.spriteInfo ? (b.inst.spriteInfo.frames || 1) : 1;
+            const rotFrames = b.inst.billboard_rotation_frames || 0;
+            let frameIdx;
+            if (rotFrames > 1) {
+                const facingRad = -(b.inst.facing_angle || 0) * Math.PI / 180;
+                const viewRad = Math.atan2(camY - b.by, camX - b.bx);
+                const relRot = ((viewRad - facingRad) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                const step = (2 * Math.PI) / rotFrames;
+                frameIdx = Math.round(relRot / step) % rotFrames;
+            } else {
+                frameIdx = Math.floor(b.inst.image_index || 0);
+            }
+            frameIdx = ((frameIdx % frames) + frames) % frames;
+            const fw = b.inst.boxWidth(), fh = b.inst.boxHeight();
+            const srcXBase = frameIdx * fw;
             const bv0 = (by0 - yTopF) / fullH, bv1 = (by1 - yTopF) / fullH;
-            const bSrcY = Math.max(0, Math.min(img.height, bv0 * img.height));
-            const bSrcH = Math.max(1e-3, Math.min(img.height - bSrcY,
-                                                  (bv1 - bv0) * img.height));
+            const bSrcY = Math.max(0, Math.min(fh, bv0 * fh));
+            const bSrcH = Math.max(1e-3, Math.min(fh - bSrcY, (bv1 - bv0) * fh));
             for (let sx = 0; sx < spriteW; sx++) {
                 const screenX = xLeft + sx;
                 if (screenX < 0 || screenX >= w) continue;
                 const colIdx = Math.min(numCols - 1, Math.max(0, Math.floor(screenX / colWidth)));
                 if (b.corr < colWallDist[colIdx]) {  // unoccluded by a nearer wall
-                    const srcX = Math.min(img.width - 1, Math.floor(sx / spriteW * img.width));
+                    const srcX = srcXBase + Math.min(fw - 1, Math.floor(sx / spriteW * fw));
                     ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH);
                 }
             }
@@ -573,6 +594,15 @@ registerExtensionAction('set_facing_angle', function(obj, params, game) {
                 obj.facing_angle = rel
                     ? ((obj.facing_angle + fa) % 360 + 360) % 360
                     : ((fa % 360) + 360) % 360;
+                return;
+            });
+
+registerExtensionAction('set_billboard_rotation', function(obj, params, game) {
+                // Rotation-by-viewing-angle billboard frames (see
+                // execute_set_billboard_rotation_action). 0 disables --
+                // the billboard draw falls back to image_index.
+                const frames = parseNumParam(params.frames, obj, 8);
+                obj.billboard_rotation_frames = Math.max(0, Math.floor(frames) || 0);
                 return;
             });
 

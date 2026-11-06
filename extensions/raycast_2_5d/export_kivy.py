@@ -213,8 +213,13 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         name = cfg.get('camera_object', '')
         return self._find_view_target(name) if name else None
 
-    def _billboard_texture(self, inst):
-        """Current-frame texture for a billboard instance (or None)."""
+    def _billboard_texture(self, inst, frame_idx=None):
+        """Current-frame texture for a billboard instance (or None).
+
+        frame_idx overrides the normal animated image_index frame — passed
+        by the billboard loop below when the instance has
+        billboard_rotation_frames set (rotation-by-viewing-angle, picked by
+        _billboard_rotation_frame)."""
         tex = getattr(inst, '_sprite_texture', None)
         if tex is None:
             return self._raycast_texture(getattr(inst, 'sprite_name', None))
@@ -222,9 +227,24 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         if frames > 1:
             fw = int(getattr(inst, '_frame_w', 0) or tex.width)
             fh = int(getattr(inst, '_frame_h', 0) or tex.height)
-            idx = int(getattr(inst, 'image_index', 0)) % frames
+            idx = int(getattr(inst, 'image_index', 0)) if frame_idx is None else frame_idx
+            idx = idx % frames
             return tex.get_region(idx * fw, 0, fw, fh)
         return tex
+
+    @staticmethod
+    def _billboard_rotation_frame(bx, by, facing_angle_deg, cam_x, cam_y, frames):
+        """Port of renderer.billboard_rotation_frame — see its docstring.
+        Numerically pinned against the desktop function by
+        tests/test_raycast_export_parity.py."""
+        import math
+        if frames <= 1:
+            return 0
+        facing_rad = math.radians(-facing_angle_deg)
+        view_rad = math.atan2(cam_y - by, cam_x - bx)
+        rel = (view_rad - facing_rad) % (2 * math.pi)
+        step = (2 * math.pi) / frames
+        return int(round(rel / step)) % frames
 
     def _raycast_texture_pixels(self, name):
         """(rgba_bytes, tw, th) for a floor/ceiling sprite NAME (cached), for
@@ -539,11 +559,17 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             corrected_b = dist_b * math.cos(rel_angle)
             if corrected_b <= 1e-4:
                 continue
-            billboards.append((corrected_b, rel_angle, inst, iw, ih))
+            billboards.append((corrected_b, rel_angle, inst, iw, ih, bx, by))
 
         billboards.sort(key=lambda b: -b[0])
-        for corrected_b, rel_angle, inst, iw, ih in billboards:
-            tex = self._billboard_texture(inst)
+        for corrected_b, rel_angle, inst, iw, ih, bx, by in billboards:
+            rot_frames = int(getattr(inst, 'billboard_rotation_frames', 0) or 0)
+            frame_idx = None
+            if rot_frames > 1:
+                facing = float(getattr(inst, 'facing_angle', 0.0) or 0.0)
+                frame_idx = self._billboard_rotation_frame(
+                    bx, by, facing, cam_x, cam_y, rot_frames)
+            tex = self._billboard_texture(inst, frame_idx)
             if tex is None:
                 continue
             # Unclamped height + a float (sub-texel) vertical slice — same as
@@ -610,6 +636,11 @@ def _cg_set_facing_angle(gen, params, event_type):
     if rel:
         return f"self.facing_angle = (self.facing_angle + {angle}) % 360"
     return f"self.facing_angle = ({angle}) % 360"
+
+def _cg_set_billboard_rotation(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    frames = _num_code(params.get('frames', 8), 8)
+    return f"self.billboard_rotation_frames = max(0, int({frames}))"
 
 def _cg_enable_raycast_view(gen, params, event_type):
     from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
@@ -745,6 +776,7 @@ def _cg_draw_minimap(gen, params, event_type):
 
 ACTION_CODEGEN = {
     'set_facing_angle': _cg_set_facing_angle,
+    'set_billboard_rotation': _cg_set_billboard_rotation,
     'enable_raycast_view': _cg_enable_raycast_view,
     'draw_doom_hud': _cg_draw_doom_hud,
     'draw_minimap': _cg_draw_minimap,
