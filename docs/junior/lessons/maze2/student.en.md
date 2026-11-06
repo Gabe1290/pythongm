@@ -148,20 +148,22 @@ The hero decides what happens. Open **obj_hero** again and add this event:
 
 ### 5f. The goal (6 min)
 
-Open **obj_goal**. This one asks a question: *are there any gems left?*
+Open **obj_goal**. This one asks a question: are there any gems left? Use the
+**If** block. It has two slots: **then** (when the answer is yes) and **else**
+(when the answer is no).
 
-| When this happens | Do this |
+| Where | Blocks |
 |---|---|
-| **When colliding with** obj_hero | **Test Instance Count**: Object obj_gem, Comparison equal, Number 0 |
-| (the same event) | **Start Block** |
-| (the same event) | **Show message** "You win!" |
-| (the same event) | **Restart Game** |
-| (the same event) | **End Block** |
-| (the same event) | **Else** |
-| (the same event) | **Show message** "Collect every gem first!" |
+| The event | **When colliding with** obj_hero |
+| Under the event | **If** count of object: type `obj_gem` in the box, keep `==`, and make the number **0** |
+| Inside **then** | **Show message** "You win!", then **Restart Game** under it |
+| Inside **else** | **Show message** "Collect every gem first!" |
 
-> INFO: If the answer is yes, everything between **Start Block** and
-> **End Block** happens. If not, only the block after **Else** happens.
+> TIP: The **If** block starts with the name `obj_coin` in its box. Click the
+> box and type `obj_gem` instead.
+
+> INFO: If there are no gems left (the number of gems is 0), the blocks inside
+> **then** happen. If not, the blocks inside **else** happen.
 
 ### 5g. Game over (2 min)
 

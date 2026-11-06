@@ -154,20 +154,23 @@ ajoute cet événement :
 
 ### 5f. Le but (6 min)
 
-Ouvre **obj_goal**. Celui-ci pose une question : *reste-t-il des gemmes ?*
+Ouvre **obj_goal**. Celui-ci pose une question : reste-t-il des gemmes ?
+Utilise le bloc **If**. Il a deux emplacements : **then** (quand la réponse est
+oui) et **else** (quand la réponse est non).
 
-| Quand ça arrive | Fais ceci |
+| Où | Blocs |
 |---|---|
-| **Quand collision avec** obj_hero | **Tester le nombre d'instances** : Objet obj_gem, Comparaison equal (égal), Nombre 0 |
-| (le même événement) | **Début de Bloc** |
-| (le même événement) | **Afficher message** « Tu as gagné ! » |
-| (le même événement) | **Redémarrer le Jeu** |
-| (le même événement) | **Fin de Bloc** |
-| (le même événement) | **Sinon** |
-| (le même événement) | **Afficher message** « Ramasse toutes les gemmes d'abord ! » |
+| L'événement | **Quand collision avec** obj_hero |
+| Sous l'événement | **If** count of object : écris `obj_gem` dans la case, garde `==`, et mets le nombre **0** |
+| Dans **then** | **Afficher message** « Tu as gagné ! », puis **Redémarrer le Jeu** en dessous |
+| Dans **else** | **Afficher message** « Ramasse toutes les gemmes d'abord ! » |
 
-> INFO : si la réponse est oui, tout ce qui est entre **Début de Bloc** et
-> **Fin de Bloc** se passe. Sinon, seul le bloc après **Sinon** se passe.
+> TIP : le bloc **If** commence avec le nom `obj_coin` dans sa case. Clique dans
+> la case et écris `obj_gem` à la place.
+
+> INFO : s'il ne reste aucune gemme (le nombre de gemmes est 0), les blocs dans
+> **then** se passent. Sinon, les blocs dans **else** se passent. Les mots du bloc
+> **If** sont en anglais, même quand l'IDE est en français.
 
 ### 5g. Fin de partie (2 min)
 

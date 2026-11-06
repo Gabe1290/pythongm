@@ -109,6 +109,15 @@ def test_the_maze_can_be_finished_avoiding_every_bomb_and_the_door_needs_the_key
 
 # ---------------------------------------------------- only Junior blocks used
 
+def _collect(actions, blocks, block_for):
+    """Add the block for each action, looking inside If blocks' then/else slots."""
+    for a in actions:
+        blocks.add(block_for(a))
+        params = a.get("parameters", {})
+        for slot in ("then_actions", "else_actions"):
+            _collect(params.get(slot, []), blocks, block_for)
+
+
 def test_the_finished_project_uses_only_junior_toolbox_blocks(tmp_path):
     from config.blockly_config import PRESETS
     from events.action_types import ACTION_TO_BLOCKLY_MAP
@@ -139,11 +148,28 @@ def test_the_finished_project_uses_only_junior_toolbox_blocks(tmp_path):
                 blocks.add("event_collision" if event.startswith("collision_with") else event)
                 subs = [body.get("actions", [])]
             for actions in subs:
-                blocks.update(block_for(a) for a in actions)
+                _collect(actions, blocks, block_for)
     assert {"lives_add", "score_add", "instance_destroy_object", "instance_destroy_other",
-            "test_instance_count", "start_block", "end_block", "else_action",
-            "jump_to_start", "restart_game", "event_other"} <= blocks
+            "if_condition", "jump_to_start", "restart_game", "event_other"} <= blocks
+    # the nested If block replaces the flat Test Instance Count + Start/End Block + Else
+    assert not ({"test_instance_count", "start_block", "end_block", "else_action"} & blocks)
     assert blocks <= junior, blocks - junior
+
+
+def test_the_goal_uses_the_nested_if_block_with_the_fields_blockly_writes(tmp_path):
+    """Parameter names/values must be exactly what blockly_generators.js emits for
+    the If block's "count of object" type, or the Blockly editor would not show it."""
+    data = json.loads(jm.build_finished(tmp_path).read_text(encoding="utf-8"))
+    actions = data["assets"]["objects"]["obj_goal"]["events"]["collision_with_obj_hero"]["actions"]
+    assert [a["action"] for a in actions] == ["if_condition"]
+    prm = actions[0]["parameters"]
+    assert (prm["condition_type"], prm["object_name"], prm["operator"], str(prm["value"])) == \
+        ("instance_count", "obj_gem", "==", "0")
+    assert [a["action"] for a in prm["then_actions"]] == ["show_message", "restart_game"]
+    assert [a["action"] for a in prm["else_actions"]] == ["show_message"]
+    gen = (REPO / "editors" / "object_editor" / "blockly" / "blockly_generators.js").read_text(encoding="utf-8")
+    for field in ("object_name", "then_actions", "else_actions", "condition_type"):
+        assert field in gen[gen.index("case 'if_condition':"):][:3500], field
 
 
 # --------------------------------------------------------------- the starter
@@ -445,8 +471,17 @@ def test_block_labels_in_the_student_sheets_are_the_real_ones():
                   "Up Arrow", "Down Arrow"):
         assert label in en_src or label in i18n, label
         assert label in en_student, label
-    for action in ("jump_to_start", "test_instance_count", "start_block", "end_block",
-                   "else_action", "restart_game"):                  # generated blocks
+    # The nested If block (hand-written, English labels in every language).
+    blocks_js = (blockly / "blockly_blocks.js").read_text(encoding="utf-8")
+    if_block = blocks_js[blocks_js.index("Blockly.Blocks['if_condition']"):][:2500]
+    for word in ('"If"', '"count of"', '"then"', '"else"', '"obj_coin"'):
+        assert word in if_block, word
+    for student in (en_student, fr_student):
+        for word in ("**If**", "**then**", "**else**", "`obj_gem`", "`obj_coin`", "`==`"):
+            assert word in student, word
+        for gone in ("Test Instance Count", "Start Block", "End Block", "Début de Bloc"):
+            assert gone not in student, gone
+    for action in ("jump_to_start", "restart_game"):                  # generated blocks
         name = ACTION_TYPES[action].display_name
         assert name in en_student, (action, name)
         fr_name = gen.get_translated_action_display_name(action, "fr", name)

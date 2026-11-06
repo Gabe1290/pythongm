@@ -104,21 +104,24 @@ Solides.
 
 **Partie 5, la programmation.**
 
-- *5a, le héros :* comme dans « Mon premier labyrinthe ». Sans les deux lignes de
+- 5a, le héros : comme dans « Mon premier labyrinthe ». Sans les deux lignes de
   **collision**, le héros traverse les murs et les portes.
-- *5b, les gemmes :* c'est la gemme qui fait le travail : *quand collision avec
+- 5b, les gemmes : c'est la gemme qui fait le travail : *quand collision avec
   obj_hero : Ajouter au score 10, Détruire cette instance*.
-- *5c, la clé :* **Détruire toutes les instances de** obj_door enlève toutes les
+- 5c, la clé : **Détruire toutes les instances de** obj_door enlève toutes les
   portes de la salle. Ensuite **Détruire cette instance** enlève la clé.
-- *5e, les bombes :* c'est le **héros** qui a l'événement, donc **Détruire autre
+- 5e, les bombes : c'est le **héros** qui a l'événement, donc **Détruire autre
   instance** désigne la bombe. Les quatre blocs s'exécutent dans l'ordre : perdre
   une vie, la bombe disparaît, arrêt, retour au départ. Sans **arrêter le
   mouvement**, le héros continue de bouger si une touche est maintenue.
-- *5f, le but :* **Tester le nombre d'instances** demande combien de gemmes
-  existent. Tout ce qui est entre **Début de Bloc** et **Fin de Bloc** ne se passe
-  que si la réponse est oui, et le bloc après **Sinon** ne se passe que si elle est
-  non. C'est la seule idée nouvelle de la leçon : prends ton temps.
-- *5g, fin de partie :* le bloc **Autre événement** a une liste déroulante ; choisis
+- 5f, le but : le bloc **If** demande combien de gemmes existent (*count of
+  object obj_gem == 0*). Les blocs placés dans son emplacement **then** se passent
+  quand la réponse est oui, ceux de son emplacement **else** quand elle est non.
+  C'est la seule idée nouvelle de la leçon : prends ton temps. Le bloc commence
+  avec le nom d'objet `obj_coin`, donc les élèves doivent écrire `obj_gem`. Ses
+  mots (If, count of, then, else) restent en anglais même quand l'IDE est en
+  français.
+- 5g, fin de partie : le bloc **Autre événement** a une liste déroulante ; choisis
   **Plus de vies**. **Redémarrer le Jeu** recommence tout : score 0, 3 vies, toutes
   les gemmes, portes, clés, cœurs et bombes reviennent (vérifié dans le moteur de
   jeu et dans un navigateur).
@@ -186,8 +189,8 @@ de sortie.
 | Le héros est coincé dans un chemin | Le chemin fait un carré de large. Élargis-le |
 | La clé ne fait rien | **Détruire toutes les instances de** obj_door manque ou vise le mauvais objet |
 | La porte ne peut jamais s'ouvrir | La clé est derrière la porte. Déplace-la |
-| Le but dit toujours « Collect every gem first! » | Une gemme est quelque part d'inatteignable, ou le nombre du test n'est pas 0 |
-| Le but gagne tout de suite | Le test manque, ou son objet n'est pas obj_gem |
+| Le but dit toujours « Collect every gem first! » | Une gemme est quelque part d'inatteignable, ou le nombre du bloc **If** n'est pas 0 |
+| Le but gagne tout de suite | Le bloc **If** manque, ou son objet n'est pas obj_gem (il commence à obj_coin) |
 | La bombe ne fait rien | L'événement est sur le héros : **Quand collision avec** obj_bomb |
 | Le héros ne peut pas esquiver une bombe | La bombe bloque tout le chemin. Mets-la au bord |
 | Les portes restent après la clé dans le navigateur | Ancienne version de l'export. Mets PyGameMaker à jour et exporte de nouveau |

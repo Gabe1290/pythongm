@@ -73,7 +73,7 @@ Dupliquer, puis on change la touche et le nombre.
 - Une vitesse de 4 déplace le héros de 4 pixels à chaque pas, 60 pas par seconde.
 
 **Partie 4, le but.** C'est l'objet but qui contient la logique de victoire :
-*quand collision avec obj_hero : Afficher message, puis Redémarrer le niveau*.
+quand collision avec obj_hero : Afficher message, puis Redémarrer le niveau.
 Le message peut dire ce qu'on veut, la ponctuation ne pose pas de problème.
 
 **Partie 5, le labyrinthe.**

@@ -218,13 +218,11 @@ def build_finished(root, hero_offset=(0, 0)):
         act("set_lives", value=1, relative=True), act("destroy_instance", target="self")]}})
     p.obj("obj_bomb", "spr_bomb")
     p.obj("obj_goal", "spr_goal", {"collision_with_obj_hero": {"target_object": "obj_hero", "actions": [
-        act("test_instance_count", object="obj_gem", number=0, operation="equal"),
-        act("start_block"),
-        act("show_message", message="You win!"),
-        act("restart_game"),
-        act("end_block"),
-        act("else_action"),
-        act("show_message", message="Collect every gem first!")]}})
+        # The nested If block: "If count of obj_gem == 0, then ... else ...".
+        act("if_condition", condition_type="instance_count", object_name="obj_gem",
+            operator="==", value=0,
+            then_actions=[act("show_message", message="You win!"), act("restart_game")],
+            else_actions=[act("show_message", message="Collect every gem first!")])]}})
     p.obj("obj_hero", "spr_hero", _hero_events())
     placements = []
     for r, row in enumerate(LEVEL):

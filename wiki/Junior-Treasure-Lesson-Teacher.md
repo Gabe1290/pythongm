@@ -104,20 +104,22 @@ Solid.
 
 **Part 5, programming.**
 
-- *5a, the hero:* as in "My First Maze". Without the two **collision** rows the
+- 5a, the hero: as in "My First Maze". Without the two **collision** rows the
   hero walks through walls and doors.
-- *5b, gems:* the gem does the work: *when colliding with obj_hero: Add to score
+- 5b, gems: the gem does the work: *when colliding with obj_hero: Add to score
   10, Destroy this instance*.
-- *5c, the key:* **Destroy all instances of** obj_door removes every door in the
+- 5c, the key: **Destroy all instances of** obj_door removes every door in the
   room. Then **Destroy this instance** removes the key.
-- *5e, bombs:* the **hero** has the event, so **Destroy other instance** means the
+- 5e, bombs: the **hero** has the event, so **Destroy other instance** means the
   bomb. The four blocks run in order: lose a life, bomb disappears, stop, go home.
   Without **Stop movement** the hero keeps moving if a key is held.
-- *5f, the goal:* **Test Instance Count** asks how many gems exist. Everything
-  between **Start Block** and **End Block** runs only when the answer is yes,
-  and the block after **Else** runs only when it is no. This is the one new idea
-  of the lesson: take your time with it.
-- *5g, game over:* the **Other event** block has a drop-down; choose **No More
+- 5f, the goal: the **If** block asks how many gems exist (*count of object
+  obj_gem == 0*). Blocks placed in its **then** slot run when the answer is yes,
+  blocks in its **else** slot when it is no. This is the one new idea of the
+  lesson: take your time with it. The block starts with the object name
+  `obj_coin`, so students must type `obj_gem`. Its words (If, count of, then,
+  else) stay in English even when the IDE is in French.
+- 5g, game over: the **Other event** block has a drop-down; choose **No More
   Lives**. **Restart Game** starts everything again: score 0, 3 lives, every gem,
   door, key, heart and bomb back (checked in the game engine and in a browser).
 
@@ -173,8 +175,8 @@ It" questions work as an exit ticket.
 | Hero stuck in a path | Path is one square wide. Widen it |
 | Key does nothing | **Destroy all instances of** obj_door missing or set to the wrong object |
 | The door can never be opened | The key is behind the door. Move it |
-| Goal always says "Collect every gem first!" | A gem is somewhere unreachable, or the number in the test is not 0 |
-| Goal wins at once | The test is missing, or its object is not obj_gem |
+| Goal always says "Collect every gem first!" | A gem is somewhere unreachable, or the number in the **If** block is not 0 |
+| Goal wins at once | The **If** block is missing, or its object is not obj_gem (it starts as obj_coin) |
 | Bomb does nothing | The event is on the hero: **When colliding with** obj_bomb |
 | Hero cannot dodge a bomb | The bomb blocks the whole path. Move it to the edge |
 | Doors stay after the key in the browser | An old build of the export. Update PyGameMaker and export again |
