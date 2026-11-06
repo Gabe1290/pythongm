@@ -112,7 +112,7 @@ class Handout(FPDF):
     def render_title(self, text):
         self.set_font("body", "B", 20)
         self.set_text_color(*INK)
-        self.multi_cell(0, 9, text, new_x="LMARGIN", new_y="NEXT")
+        self.multi_cell(0, 9, text, align="L", new_x="LMARGIN", new_y="NEXT")
         self.set_draw_color(*ACCENT)
         self.set_line_width(0.6)
         y = self.get_y() + 1
@@ -126,20 +126,20 @@ class Handout(FPDF):
             self.ln(2.5)
         self.set_font("body", "B", 13)
         self.set_text_color(*ACCENT)
-        self.multi_cell(0, 7, text, new_x="LMARGIN", new_y="NEXT")
+        self.multi_cell(0, 7, text, align="L", new_x="LMARGIN", new_y="NEXT")
         self.ln(1)
 
     def render_subheading(self, text):
         self.ln(1)
         self.set_font("body", "B", 10.5)
         self.set_text_color(*INK)
-        self.multi_cell(0, 6, text, new_x="LMARGIN", new_y="NEXT")
+        self.multi_cell(0, 6, text, align="L", new_x="LMARGIN", new_y="NEXT")
         self.ln(0.5)
 
     def render_para(self, text):
         self.set_font("body", "", 9.5)
         self.set_text_color(*INK)
-        self.multi_cell(0, 5.2, text, markdown=True, new_x="LMARGIN", new_y="NEXT")
+        self.multi_cell(0, 5.2, text, markdown=True, align="L", new_x="LMARGIN", new_y="NEXT")
         self.ln(1.5)
 
     def _fits_or_break(self, h):
@@ -156,7 +156,7 @@ class Handout(FPDF):
     def render_bullet(self, text):
         line_h = 5.2
         lines = self.multi_cell(self.epw - 8, line_h, text, dry_run=True,
-                                 output="LINES", markdown=True)
+                                 output="LINES", markdown=True, align="L")
         self._fits_or_break(max(1, len(lines)) * line_h + 0.8)
         x0 = self.l_margin
         self.set_xy(x0 + 4, self.get_y())
@@ -165,14 +165,14 @@ class Handout(FPDF):
         self.cell(3, line_h, "\u2022")
         self.set_xy(x0 + 8, self.get_y())
         self.set_font("body", "", 9.5)
-        self.multi_cell(self.epw - 8, line_h, text, markdown=True,
+        self.multi_cell(self.epw - 8, line_h, text, markdown=True, align="L",
                          new_x="LMARGIN", new_y="NEXT")
         self.ln(0.8)
 
     def render_checkbox(self, text):
         line_h, box = 5.2, 3.6
         lines = self.multi_cell(self.epw - box - 5, line_h, text, dry_run=True,
-                                 output="LINES", markdown=True)
+                                 output="LINES", markdown=True, align="L")
         self._fits_or_break(max(1, len(lines)) * line_h + 1.4)
         x0 = self.l_margin
         y0 = self.get_y()
@@ -182,14 +182,14 @@ class Handout(FPDF):
         self.set_xy(x0 + box + 5, y0)
         self.set_font("body", "", 9.5)
         self.set_text_color(*INK)
-        self.multi_cell(self.epw - box - 5, line_h, text, markdown=True,
+        self.multi_cell(self.epw - box - 5, line_h, text, markdown=True, align="L",
                          new_x="LMARGIN", new_y="NEXT")
         self.ln(1.4)
 
     def render_step(self, number, text):
         line_h, d = 5.2, 6.2
         lines = self.multi_cell(self.epw - d - 5, line_h, text, dry_run=True,
-                                 output="LINES", markdown=True)
+                                 output="LINES", markdown=True, align="L")
         self._fits_or_break(max(1, len(lines)) * line_h + 1.6)
         x0 = self.l_margin
         y0 = self.get_y()
@@ -202,11 +202,11 @@ class Handout(FPDF):
         self.set_xy(x0 + d + 5, y0)
         self.set_font("body", "", 9.5)
         self.set_text_color(*INK)
-        self.multi_cell(self.epw - d - 5, line_h, text, markdown=True,
+        self.multi_cell(self.epw - d - 5, line_h, text, markdown=True, align="L",
                          new_x="LMARGIN", new_y="NEXT")
         self.ln(1.6)
 
-    def render_callout(self, kind, text):
+    def render_callout(self, kind, text, tight_after=False):
         bg, border = {
             "TIP": (TIP_BG, TIP_BORDER),
             "INFO": (INFO_BG, INFO_BORDER),
@@ -217,7 +217,7 @@ class Handout(FPDF):
         self.set_font("body", "", 9.5)
         avail_w = self.epw - pad * 2 - 3
         lines = self.multi_cell(avail_w, 5.2, text, dry_run=True, output="LINES",
-                                 markdown=True)
+                                 markdown=True, align="L")
         h = max(1, len(lines)) * 5.2 + pad * 2
         x0, y0 = self.l_margin, self.get_y()
         if y0 + h > self.h - self.b_margin:
@@ -229,9 +229,15 @@ class Handout(FPDF):
         self.rect(x0, y0, 1.6, h, style="F")
         self.set_xy(x0 + pad + 2, y0 + pad)
         self.set_text_color(*INK)
-        self.multi_cell(avail_w, 5.2, text, markdown=True, new_x="LMARGIN", new_y="TOP")
+        self.multi_cell(avail_w, 5.2, text, markdown=True, align="L",
+                         new_x="LMARGIN", new_y="TOP")
         self.set_y(y0 + h)
-        self.ln(3)
+        # A run of several callouts in a row (separated only by a blank
+        # line in the source) reads as one disconnected stack if each gets
+        # the normal gap -- tighten it when another callout follows
+        # immediately, matching how the ODT/wiki rendering of the same
+        # source reads as one continuous block.
+        self.ln(1.2 if tight_after else 3)
 
     def render_notes_lines(self, n):
         self.ln(1)
@@ -299,7 +305,7 @@ class Handout(FPDF):
         self.set_font("body", "B" if bold else "", 9)
         for txt, w in zip(cells, widths):
             n = len(self.multi_cell(w - 3, line_h, txt, dry_run=True, output="LINES",
-                                     markdown=True))
+                                     markdown=True, align="L"))
             heights.append(max(1, n) * line_h + 2.2)
         h = max(heights)
         if y0 + h > self.h - self.b_margin:
@@ -313,7 +319,7 @@ class Handout(FPDF):
             self.rect(x, y0, w, h, style="DF" if fill else "D")
             self.set_xy(x + 1.5, y0 + 1.1)
             self.set_font("body", "B" if bold else "", 9)
-            self.multi_cell(w - 3, line_h, txt, markdown=True,
+            self.multi_cell(w - 3, line_h, txt, markdown=True, align="L",
                              new_x="RIGHT", new_y="TOP", max_line_height=line_h)
             x += w
         self.set_xy(x0, y0 + h)
@@ -414,7 +420,15 @@ def render(src_path, out_path):
             m2 = re.match(r"(TIP|INFO|DONE):\s*(.*)", text)
             if m2:
                 kind, text = m2.group(1), m2.group(2)
-            pdf.render_callout(kind, text)
+            # Peek past blank lines only: another callout immediately after
+            # (nothing but a blank line between them in the source) should
+            # read as one connected stack, not separate boxes with dead
+            # space between -- see render_callout's tight_after.
+            j = i
+            while j < n and lines[j].strip() == "":
+                j += 1
+            tight_after = j < n and lines[j].strip().startswith(">")
+            pdf.render_callout(kind, text, tight_after=tight_after)
             continue
 
         if stripped.startswith("|") and stripped.endswith("|"):
