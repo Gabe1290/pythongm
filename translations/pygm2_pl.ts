@@ -8784,4 +8784,157 @@ i spróbuj ponownie.</translation>
 {1}</translation>
     </message>
 </context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>FRONT</source>
+        <translation>PRZÓD</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>GND</source>
+        <translation>ZIEMIA</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Forward Button</source>
+        <translation>Przycisk do przodu</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Backward Button</source>
+        <translation>Przycisk do tyłu</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Left Button</source>
+        <translation>Przycisk w lewo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Right Button</source>
+        <translation>Przycisk w prawo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Center Button</source>
+        <translation>Przycisk środkowy</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 0 (Front Left Far)</source>
+        <translation>Czujnik zbliżeniowy 0 (przód, daleko w lewo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 1 (Front Left)</source>
+        <translation>Czujnik zbliżeniowy 1 (przód w lewo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 2 (Front Center)</source>
+        <translation>Czujnik zbliżeniowy 2 (przód środek)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 3 (Front Right)</source>
+        <translation>Czujnik zbliżeniowy 3 (przód w prawo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 4 (Front Right Far)</source>
+        <translation>Czujnik zbliżeniowy 4 (przód, daleko w prawo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 5 (Back Left)</source>
+        <translation>Czujnik zbliżeniowy 5 (tył w lewo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Proximity Sensor 6 (Back Right)</source>
+        <translation>Czujnik zbliżeniowy 6 (tył w prawo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Ground Sensor (Left)</source>
+        <translation>Czujnik podłoża (lewy)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Ground Sensor (Right)</source>
+        <translation>Czujnik podłoża (prawy)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Top RGB LED</source>
+        <translation>Górna dioda RGB</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Bottom Left LED</source>
+        <translation>Dolna lewa dioda LED</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Bottom Right LED</source>
+        <translation>Dolna prawa dioda LED</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 0 (Front)</source>
+        <translation>Dioda LED okręgu 0 (przód)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 1</source>
+        <translation>Dioda LED okręgu 1</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 2</source>
+        <translation>Dioda LED okręgu 2</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 3 (Right)</source>
+        <translation>Dioda LED okręgu 3 (prawo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 4 (Back)</source>
+        <translation>Dioda LED okręgu 4 (tył)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 5</source>
+        <translation>Dioda LED okręgu 5</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 6</source>
+        <translation>Dioda LED okręgu 6</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Circle LED 7 (Left)</source>
+        <translation>Dioda LED okręgu 7 (lewo)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Left Motor/Wheel</source>
+        <translation>Lewy silnik/koło</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Right Motor/Wheel</source>
+        <translation>Prawy silnik/koło</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py"/>
+        <source>Robot Body (Tap/Shock sensor)</source>
+        <translation>Korpus robota (czujnik dotyku/wstrząsu)</translation>
+    </message>
+</context>
 </TS>
