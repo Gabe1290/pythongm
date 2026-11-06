@@ -220,6 +220,7 @@ nom_du_projet/
 - [Ressources pour enseignants](Teacher-Resources_fr) - Fiches élèves, feuilles d'exercices et guides de l'enseignant·e pour les tutoriels intégrés
 - [Édition Junior : fiche de l'élève](Junior-Student-Handout_fr) et [guide de l'enseignant·e](Junior-Teacher-Guide_fr) - Utiliser l'édition Junior simplifiée avec des élèves de 8 à 9 ans
 - [Leçon Junior : Mon premier labyrinthe](Junior-Maze-Lesson-Student_fr) et [guide de l'enseignant·e](Junior-Maze-Lesson-Teacher_fr) - Une leçon de 90 minutes qui se termine par un jeu exporté en un seul fichier HTML
+- [Leçon Junior : Labyrinthe au trésor](Junior-Treasure-Lesson-Student_fr) et [guide de l'enseignant·e](Junior-Treasure-Lesson-Teacher_fr) - Une deuxième leçon de labyrinthe de 90 minutes : portes, clés, gemmes et bombes, exporté en un seul fichier HTML
 
 ### Où trouver...?
 

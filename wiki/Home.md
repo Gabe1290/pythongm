@@ -219,6 +219,7 @@ project_name/
 - [Teacher Resources](Teacher-Resources) - Student handouts, worksheets and teacher guides for the in-app tutorials
 - [Junior Edition: Student Handout](Junior-Student-Handout) and [Teacher Guide](Junior-Teacher-Guide) - Using the simplified Junior edition with 8-9 year olds
 - [Junior lesson: My First Maze](Junior-Maze-Lesson-Student) and [Teacher Guide](Junior-Maze-Lesson-Teacher) - A 90-minute lesson that ends with a game exported as one HTML file
+- [Junior lesson: Treasure Maze](Junior-Treasure-Lesson-Student) and [Teacher Guide](Junior-Treasure-Lesson-Teacher) - A second 90-minute maze lesson: doors, keys, gems and bombs, exported as one HTML file
 
 ### Where do I find...?
 

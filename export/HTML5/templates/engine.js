@@ -2477,6 +2477,17 @@ class GameObject {
                 const target = params.target || 'self';
                 if (target === 'other' && this._collision_other) {
                     this._collision_other.toDestroy = true;
+                } else if (target === 'object' && params.target_object) {
+                    // "Destroy all instances of <object>" (desktop:
+                    // runtime/action_spawn.py). Without this branch the
+                    // action fell through and destroyed the CALLER instead
+                    // -- e.g. a key that should open every door only
+                    // vanished itself.
+                    if (game.currentRoom) {
+                        game.currentRoom.instances.forEach(inst => {
+                            if (inst.name === params.target_object) inst.toDestroy = true;
+                        });
+                    }
                 } else {
                     this.toDestroy = true;
                 }

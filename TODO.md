@@ -1631,6 +1631,20 @@ lines rather than matching their text.
 
 ## Export
 
+### Kivy export: "Destroy all instances of <object>" destroys the caller instead
+- Found 2026-11-06 building the Junior "Treasure Maze" lesson
+  (`docs/junior/lessons/maze2/`): a key that runs `destroy_instance` with
+  `target: "object"` / `target_object: "obj_door"`. Desktop handles it
+  (`runtime/action_spawn.py`); **HTML5 did not either and is fixed**
+  (`export/HTML5/templates/engine.js`, `case 'destroy_instance'`, verified in
+  headless Chromium: doors 3 -> 0 after the key, previously only the key vanished).
+- **Still open on Kivy (Android/iOS):** `export/Kivy/code_generator.py`'s
+  `destroy_instance` branch only knows `self` and `other`, so the same action
+  generates `self.destroy()` and the doors stay. The Junior lessons target HTML5,
+  so this was not fixed here. Needs `for o in list(scene.objects): if o.object_name
+  == ...: o.destroy()` style codegen plus a stub-Kivy test (see
+  `tests/test_kivy_room_actions.py` for the harness pattern).
+
 ### HTML5 export: the game loop is not clocked, so it runs faster on 90/120 Hz screens
 - Found 2026-11-03 while building the Junior "My First Maze" lesson
   (`docs/junior/lessons/maze/`). `Game.gameLoop()` in

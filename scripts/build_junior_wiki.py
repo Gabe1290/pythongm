@@ -4,9 +4,10 @@
 Sources: docs/junior/{student,teacher}.{en,fr}.md (+ .pdf/.odt next to them)
 and the lessons under docs/junior/lessons/<name>/ (same file names).
 Outputs: wiki/Junior-Student-Handout[_fr].md, wiki/Junior-Teacher-Guide[_fr].md,
-wiki/Junior-Maze-Lesson-{Student,Teacher}[_fr].md and wiki/downloads/Junior-*
-({pdf,odt}, plus the maze lesson's starter/finished project zips from
-tools/junior_maze_lesson.py). Never hand-edit the outputs: edit the
+wiki/Junior-Maze-Lesson-{Student,Teacher}[_fr].md,
+wiki/Junior-Treasure-Lesson-{Student,Teacher}[_fr].md and wiki/downloads/Junior-*
+({pdf,odt}, plus each lesson's starter/finished project zips from
+tools/junior_maze_lesson.py and tools/junior_maze2_lesson.py). Never hand-edit the outputs: edit the
 .md (or hand-edit the .odt and fold it back, docs/TUTORIAL_HANDOUT_WORKFLOW.md)
 and re-run. Publishing to the live wiki is a separate, explicit step
 (scripts/sync_wiki.sh).
@@ -36,6 +37,14 @@ LESSONS = {
                          ("Finished project", "Junior-Maze-Finished.zip")],
                   "fr": [("Projet de départ", "Junior-Maze-Starter.zip"),
                          ("Projet terminé", "Junior-Maze-Finished.zip")]},
+    },
+    "maze2": {
+        "pages": {"student": "Junior-Treasure-Lesson-Student",
+                  "teacher": "Junior-Treasure-Lesson-Teacher"},
+        "extra": {"en": [("Starter project", "Junior-Treasure-Starter.zip"),
+                         ("Finished project", "Junior-Treasure-Finished.zip")],
+                  "fr": [("Projet de départ", "Junior-Treasure-Starter.zip"),
+                         ("Projet terminé", "Junior-Treasure-Finished.zip")]},
     },
 }
 NAV = {
@@ -107,7 +116,9 @@ def main():
     build_set(SRC, PAGES)
     sys.path.insert(0, str(ROOT / "tools"))
     import junior_maze_lesson
+    import junior_maze2_lesson
     junior_maze_lesson.write_zips(DL)
+    junior_maze2_lesson.write_zips(DL)
     for name, lesson in LESSONS.items():
         build_set(SRC / "lessons" / name, lesson["pages"], lesson["extra"])
 

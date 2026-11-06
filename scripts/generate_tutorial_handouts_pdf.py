@@ -293,6 +293,10 @@ class Handout(FPDF):
         x0 = self.l_margin
         y0 = self.get_y()
         heights = []
+        # Measure with the font the cells are DRAWN in: measuring in whatever
+        # font was last active under-counted wrapped lines, so a long cell
+        # overflowed its row and overlapped the next one.
+        self.set_font("body", "B" if bold else "", 9)
         for txt, w in zip(cells, widths):
             n = len(self.multi_cell(w - 3, line_h, txt, dry_run=True, output="LINES",
                                      markdown=True))
