@@ -27,11 +27,15 @@ MINIMAP_MARKER_HALF = 2.0
 # Half-size of an object marker dot. Deliberately smaller than the player's
 # cross so the player stays the thing your eye finds first.
 MINIMAP_MARK_HALF = 1.5
+# Half-size of a breadcrumb-trail dot. Smaller again than a mark dot, so a
+# trail of visited cells reads as a faint trace, not more pickups.
+MINIMAP_TRAIL_HALF = 1.0
 
 
 def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
                            cam_x, cam_y, facing_angle, x, y, size,
-                           back_color, wall_color, player_color, marks=None):
+                           back_color, wall_color, player_color, marks=None,
+                           trail=None, trail_color=None):
     """Project raycast wall edges to a north-up minimap; return draw commands.
 
     THE single source for the minimap's geometry. The HTML5 (engine.js) and
@@ -53,6 +57,13 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
     only: revealing pickups trivialises a gem-gated maze like raycast_2. But
     raycast_4 is KEY-gated, where finding the keys IS the task and a map that
     hides them is just a worse map. A parameter lets both samples be right.
+
+    trail / trail_color: optional breadcrumb trail -- world-pixel points,
+    one per visited grid cell, dotted onto the map under everything else so
+    a player can see where they've already explored. Sorted here (like
+    marks) since the caller's set iteration order isn't guaranteed stable
+    across the three engines. Also opt-in (trail_color falsy skips it) so
+    the three existing raycast samples render unchanged.
     """
     cmds = [{
         'type': 'rectangle',
@@ -79,6 +90,18 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
         x2, y2 = px((col + 1) * cs, line_y * cs)
         cmds.append({'type': 'line', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
                      'color': wall_color})
+
+    # Breadcrumb trail goes under the marks AND the player marker -- it's
+    # the least important layer, a faint trace of where the player has
+    # already been, not something that should compete for attention.
+    if trail_color:
+        th = MINIMAP_TRAIL_HALF
+        for (wx, wy) in sorted(trail or ()):
+            tx, ty = px(float(wx), float(wy))
+            cmds.append({'type': 'rectangle',
+                         'x1': tx - th, 'y1': ty - th,
+                         'x2': tx + th, 'y2': ty + th,
+                         'color': trail_color, 'filled': True})
 
     # Object dots go under the player marker, so the player is never hidden
     # by a pickup sitting on the same cell.

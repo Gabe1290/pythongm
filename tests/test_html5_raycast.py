@@ -144,6 +144,20 @@ def test_set_billboard_rotation_action_registered():
     assert "obj.billboard_rotation_frames = Math.max(0, Math.floor(frames) || 0);" in ENGINE
 
 
+def test_minimap_trail_persists_visited_cells_and_coerces_the_bool_param():
+    """show_trail arrives as a string from project JSON like every other
+    boolean action param -- the same true/false-as-string coercion
+    enable_views already established, not a bare truthiness check that
+    would treat the literal string 'false' as on."""
+    m = re.search(r"registerExtensionAction\('draw_minimap', function\(obj, params, game\) \{(.*?)\n            \}\);",
+                  ENGINE, re.S)
+    assert m, "draw_minimap action registration not found"
+    body = m.group(1)
+    assert "params.show_trail === 'true'" in body
+    assert "room._raycastTrail" in body
+    assert "new Set()" in body
+
+
 def test_build_walls_derives_edges_with_sprites():
     m = re.search(r"buildRaycastWalls\(cellSize\)\s*\{(.*?)\n    \}", ENGINE, re.S)
     assert m

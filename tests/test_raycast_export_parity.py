@@ -686,6 +686,38 @@ def test_marks_are_opt_in():
         marks=[{"color": "#00ffff", "points": []}], **common) ==         hud.build_minimap_commands(**common)
 
 
+def test_all_three_support_the_minimap_trail_param():
+    """The opt-in breadcrumb trail -- same three-engine agreement bar as
+    the mark_object dots: the parameter and the dot half-size must match
+    on every target, or the same sample draws a different map per engine."""
+    from events.action_types import ACTION_TYPES
+    from extensions.raycast_2_5d.hud import MINIMAP_TRAIL_HALF
+    params = {p.name for p in ACTION_TYPES["draw_minimap"].parameters}
+    assert {"show_trail", "trail_color"} <= params
+
+    kx, kg = KIVY, KG
+    assert MINIMAP_TRAIL_HALF == 1.0
+    assert "MINIMAP_TRAIL_HALF = 1.0" in HUD
+    assert "MM_TRAIL_HALF = 1.0" in ENGINE
+    assert "x1=tx - 1.0" in kx, "Kivy uses a different trail-dot size"
+    assert "show_trail" in kg, "Kivy codegen does not pass show_trail"
+    assert "_raycast_trail" in kx, "Kivy does not persist visited cells"
+    assert "room._raycastTrail" in ENGINE, "HTML5 does not persist visited cells"
+    assert "st.setdefault(\"trail\", set())" in HANDLERS
+
+
+def test_trail_renders_under_the_marks_on_every_target():
+    """Z-order: a faint trail of where you've been must not compete with
+    (or hide) the opt-in object dots or the player marker -- source-level
+    pin, since the three engines draw it in three separately-written loops."""
+    hud_block = HUD[HUD.index("def build_minimap_commands("):]
+    assert hud_block.index("trail_color") < hud_block.index("for group in (marks or ())")
+    kx_block = KIVY[KIVY.index("def _draw_minimap("):]
+    assert kx_block.index("if show_trail") < kx_block.index("def _mark_points(")
+    eng_block = ENGINE[ENGINE.index("registerExtensionAction('draw_minimap'"):]
+    assert eng_block.index("showTrail") < eng_block.index("mmMarkPoints")
+
+
 def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
     """The real parity check: run the desktop reference and a stand-in for the
     Kivy port over identical wall data and compare every emitted command.

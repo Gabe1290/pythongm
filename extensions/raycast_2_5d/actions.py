@@ -71,6 +71,16 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="mark_color_2", display_name="Mark Color 2",
                 param_type="color", default_value="#ff5050", required=False,
                 description="Colour of the Mark Object 2 dots"),
+            # Opt-in breadcrumb trail: a faint dot per grid cell the camera
+            # has visited, under everything else. Off by default so the
+            # existing raycast samples' minimaps render unchanged.
+            ActionParameter(name="show_trail", display_name="Show Trail",
+                param_type="boolean", default_value=False, required=False,
+                description="Dot every grid cell the camera has already "
+                            "visited, so you can see where you've been"),
+            ActionParameter(name="trail_color", display_name="Trail Color",
+                param_type="color", default_value="#406080", required=False,
+                description="Colour of the visited-cell trail dots"),
         ],
     ),
     "enable_raycast_view": ActionType(

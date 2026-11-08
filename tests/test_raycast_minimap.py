@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # for sibling test import
 from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 
 import os
@@ -26,6 +27,7 @@ from events.plugin_loader import load_all_plugins  # noqa: E402
 load_all_plugins()
 from extensions.raycast_2_5d.hud import (  # noqa: E402
     build_minimap_commands, MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF,
+    MINIMAP_MARK_HALF, MINIMAP_TRAIL_HALF,
 )
 
 # A 2x2-cell room with one vertical and one horizontal edge, so every
@@ -50,7 +52,8 @@ def test_action_is_registered():
     # six so an existing project's saved parameters keep their positions.
     assert names == ["x", "y", "size", "back_color", "wall_color",
                      "player_color", "mark_object", "mark_color",
-                     "mark_object_2", "mark_color_2"]
+                     "mark_object_2", "mark_color_2",
+                     "show_trail", "trail_color"]
 
 
 def test_handler_is_registered_from_the_extension():
@@ -135,6 +138,56 @@ def test_degenerate_room_returns_just_the_panel():
     """A zero-sized room would divide by zero in the scale."""
     cmds = build_minimap_commands(**{**SIMPLE, "room_width": 0, "room_height": 0})
     assert len(cmds) == 1 and cmds[0]["type"] == "rectangle"
+
+
+# --- Breadcrumb trail (opt-in) ----------------------------------------------
+
+def test_trail_is_off_by_default():
+    """No trail_color -> no trail dots, even if trail points are passed --
+    the three existing raycast samples' minimaps must render unchanged."""
+    cmds = build_minimap_commands(**SIMPLE, trail=[(0.0, 0.0), (32.0, 32.0)])
+    allowed = {SIMPLE["back_color"], SIMPLE["wall_color"], SIMPLE["player_color"]}
+    assert not any(c.get("color") not in allowed for c in cmds)
+
+
+def test_trail_dots_are_projected_like_everything_else():
+    scale = 2.0
+    cmds = build_minimap_commands(
+        **SIMPLE, trail=[(16.0, 16.0)], trail_color="#406080")
+    dots = [c for c in cmds if c.get("color") == "#406080"]
+    assert len(dots) == 1
+    d = dots[0]
+    tx, ty = 10.0 + 16.0 * scale, 20.0 + 16.0 * scale
+    assert d["type"] == "rectangle" and d["filled"] is True
+    assert d["x1"] == tx - MINIMAP_TRAIL_HALF and d["x2"] == tx + MINIMAP_TRAIL_HALF
+    assert d["y1"] == ty - MINIMAP_TRAIL_HALF and d["y2"] == ty + MINIMAP_TRAIL_HALF
+
+
+def test_trail_dot_is_smaller_than_a_mark_dot():
+    """So a trail reads as a faint trace, not more pickups."""
+    assert MINIMAP_TRAIL_HALF < MINIMAP_MARK_HALF
+
+
+def test_trail_renders_under_marks_and_the_player_marker():
+    """Z-order: trail (least important) first, then marks, then the player
+    marker on top -- matches the existing marks-under-player convention."""
+    cmds = build_minimap_commands(
+        **SIMPLE, trail=[(16.0, 16.0)], trail_color="#406080",
+        marks=[{"color": "#40e0ff", "points": [(16.0, 16.0)]}])
+    colors = [c.get("color") for c in cmds]
+    assert colors.index("#406080") < colors.index("#40e0ff") < colors.index("#ffd040")
+
+
+def test_trail_points_are_sorted_for_determinism():
+    """Same reasoning as walls/marks: a set's iteration order isn't stable,
+    and the parity test compares command lists element by element."""
+    a = build_minimap_commands(
+        **SIMPLE, trail=[(0.0, 0.0), (32.0, 32.0), (64.0, 0.0)],
+        trail_color="#406080")
+    b = build_minimap_commands(
+        **SIMPLE, trail=[(64.0, 0.0), (0.0, 0.0), (32.0, 32.0)],
+        trail_color="#406080")
+    assert a == b
 
 
 def test_output_is_deterministic():
@@ -397,3 +450,149 @@ def test_minimap_clears_the_android_dpad():
         f"(x {dp_x1}..{dp_x2}, y {dp_y1}..{dp_y2}) by "
         f"{overlap_x:.0f}x{overlap_y:.0f}px")
     assert mx + ms <= W and my + ms <= H, "minimap runs off screen"
+
+
+# --- Breadcrumb trail -- handler-level persistence --------------------------
+# The trail is state that must survive across frames (a point list would grow
+# forever; a visited-cell SET is bounded by the maze's own cell count) --
+# these exercise execute_draw_minimap_action directly, the same
+# _raycast_executor/_dispatch pattern test_raycast_billboard_rotation.py uses.
+
+from runtime.game_runner import GameInstance  # noqa: E402
+from test_raycast_view import _room, _raycast_executor, _dispatch  # noqa: E402
+
+
+def _camera(name, x, y, facing=0.0):
+    cam = GameInstance(name, x, y, {}, action_executor=None)
+    cam.facing_angle = facing
+    return cam
+
+
+class TestTrailPersistence:
+    def _room_with_camera(self, top_left_x, top_left_y):
+        """A camera's resolved CENTRE (what the handler buckets into a grid
+        cell) is its top-left + half its default 32x32 cached size, i.e.
+        +16/+16 -- so a top-left aligned to a cell boundary (gx*32, gy*32)
+        always resolves unambiguously to cell (gx, gy), never a boundary."""
+        room = _room(256, 256)
+        camera = _camera("obj_person", top_left_x, top_left_y)
+        room.instances.append(camera)
+        raycast_state(room)["camera"] = {
+            "enabled": True, "camera_object": "obj_person", "cell_size": 32,
+        }
+        return room, camera
+
+    def _draw(self, ex, room, params):
+        hud = GameInstance("obj_hud", 0, 0, {}, action_executor=None)
+        hud._draw_queue = []
+        ex.game_runner = type("GR", (), {"current_room": room})()
+        _dispatch(ex, "draw_minimap", hud, params)
+        return hud._draw_queue
+
+    def test_disabled_by_default_leaves_no_trail_state(self):
+        room, _ = self._room_with_camera(0, 0)
+        ex = _raycast_executor()
+        self._draw(ex, room, {"x": 0, "y": 0, "size": 100})
+        assert "trail" not in raycast_state(room)
+
+    def test_enabling_records_the_current_cell(self):
+        room, _ = self._room_with_camera(0, 0)      # cell (0, 0)
+        ex = _raycast_executor()
+        self._draw(ex, room, {"x": 0, "y": 0, "size": 100, "show_trail": True})
+        assert raycast_state(room)["trail"] == {(0, 0)}
+
+    def test_moving_accumulates_distinct_cells(self):
+        room, camera = self._room_with_camera(0, 0)         # cell (0, 0)
+        ex = _raycast_executor()
+        params = {"x": 0, "y": 0, "size": 100, "show_trail": True}
+        self._draw(ex, room, params)
+        camera.x, camera.y = 32, 0                           # cell (1, 0)
+        self._draw(ex, room, params)
+        camera.x, camera.y = 32, 32                          # cell (1, 1)
+        self._draw(ex, room, params)
+        assert raycast_state(room)["trail"] == {(0, 0), (1, 0), (1, 1)}
+
+    def test_revisiting_a_cell_does_not_duplicate(self):
+        room, camera = self._room_with_camera(0, 0)
+        ex = _raycast_executor()
+        params = {"x": 0, "y": 0, "size": 100, "show_trail": True}
+        self._draw(ex, room, params)
+        camera.x, camera.y = 32, 0
+        self._draw(ex, room, params)
+        camera.x, camera.y = 0, 0                            # back to (0, 0)
+        queue = self._draw(ex, room, params)
+        assert raycast_state(room)["trail"] == {(0, 0), (1, 0)}
+        dots = [c for c in queue if c.get("color") == "#406080"]
+        assert len(dots) == 2, "a revisited cell must not draw a second dot"
+
+    def test_trail_color_param_is_honored(self):
+        room, _ = self._room_with_camera(0, 0)
+        ex = _raycast_executor()
+        queue = self._draw(ex, room, {
+            "x": 0, "y": 0, "size": 100,
+            "show_trail": True, "trail_color": "#ff00ff"})
+        dots = [c for c in queue if c.get("color") == "#ff00ff"]
+        assert len(dots) == 1
+
+
+def test_trail_shows_the_real_explored_path_over_raycast_3():
+    """End to end through the real game loop: turn the sample's own minimap
+    trail on, walk the player, and confirm the trail grows with distinct
+    dots and survives the toggle-off/toggle-on cycle (press M to hide/show
+    doesn't wipe the room's own persisted visited-cell state)."""
+    from runtime.game_runner import GameRunner
+
+    runner = GameRunner(str(REPO_ROOT / "samples" / "raycast_3" / "project.json"))
+    runner.language = "en"
+    for attr in ("show_message_dialog", "show_highscore_dialog",
+                 "process_pending_messages"):
+        setattr(runner, attr, lambda *a, **k: None)
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+
+    mm = next(a for a in runner._objects_data["obj_hud"]["events"]["draw"]["actions"]
+              if a["action"] == "draw_minimap")
+    mm["parameters"] = dict(mm["parameters"], show_trail=True, trail_color="#406080")
+
+    trail_counts = []
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        if self.object_name == "obj_hud":
+            trail_counts.append(
+                sum(1 for c in self._draw_queue if c.get("color") == "#406080"))
+        self._draw_queue = []
+
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            f = state["f"] = state["f"] + 1
+            if f == 2:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+            if f == 3:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_m))
+            # Walk FORWARD for a while so the player actually crosses cells --
+            # left/right only TURN in this FPS-style sample (set_facing_angle);
+            # up/down are the ones that move (set_direction_speed).
+            if f == 4:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+            if f >= 120:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    GameInstance._process_draw_queue = spy
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real
+
+    assert raycast_state(runner.current_room)["trail"], "no cells recorded"
+    nonzero = [c for c in trail_counts if c > 0]
+    assert nonzero, "the trail never drew a single dot"
+    assert max(nonzero) >= 2, "walking never grew the trail past one cell"

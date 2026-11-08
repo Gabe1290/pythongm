@@ -15,6 +15,8 @@ The state dict holds:
 * ``v_walls`` / ``h_walls`` — derived thin wall-edge sets (None until built);
 * ``v_sprites`` / ``h_sprites`` — the sprite per edge, for wall texturing;
 * ``cell_size`` — the grid size the caches were built against.
+* ``trail`` — (lazily created) the set of ``(grid_x, grid_y)`` cells the
+  camera has visited, for ``draw_minimap``'s opt-in breadcrumb trail.
 """
 
 RAYCAST_KEY = "raycast"

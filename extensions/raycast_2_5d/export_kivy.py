@@ -17,6 +17,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         self._raycast_cell_size = None
         self._raycast_tex_cache = {}
         self._raycast_px_cache = {}
+        # Visited grid cells, for draw_minimap's opt-in breadcrumb trail.
+        self._raycast_trail = set()
 
     def _ext_overlay__raycast_2_5d(self):
         # Claim the frame when the raycast camera is enabled; the scene then
@@ -769,9 +771,16 @@ def _cg_draw_minimap(gen, params, event_type):
     mark_col = str(params.get('mark_color', '#40e0ff'))
     mark_obj2 = str(params.get('mark_object_2', '') or '')
     mark_col2 = str(params.get('mark_color_2', '#ff5050'))
+    show_trail_raw = params.get('show_trail', False)
+    if isinstance(show_trail_raw, str):
+        show_trail = show_trail_raw.strip().lower() in ('true', '1', 'yes')
+    else:
+        show_trail = bool(show_trail_raw)
+    trail_col = str(params.get('trail_color', '#406080'))
     return (f"self._draw_minimap({x}, {y}, {size}, "
             f"{back!r}, {wall!r}, {player!r}, "
-            f"{mark_obj!r}, {mark_col!r}, {mark_obj2!r}, {mark_col2!r})")
+            f"{mark_obj!r}, {mark_col!r}, {mark_obj2!r}, {mark_col2!r}, "
+            f"{show_trail!r}, {trail_col!r})")
 
 
 ACTION_CODEGEN = {
@@ -790,7 +799,8 @@ ACTION_CODEGEN = {
 # ---------------------------------------------------------------------------
 BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall_color, player_color,
                       mark_object='', mark_color='#40e0ff',
-                      mark_object_2='', mark_color_2='#ff5050'):
+                      mark_object_2='', mark_color_2='#ff5050',
+                      show_trail=False, trail_color='#406080'):
         """Queue a north-up minimap of the raycast room's wall edges.
 
         A MACRO action: appends ordinary rectangle/line draw-queue commands, so
@@ -832,6 +842,35 @@ BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall
             self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
                                          y2=y2, color=wall_color))
 
+        # Resolve the camera early (needed by both the trail and the player
+        # marker below) -- same ray ORIGIN renderRaycastView casts from.
+        cfg = getattr(scene, 'raycast_camera', None) or {}
+        camera = None
+        finder = getattr(scene, '_find_raycast_camera', None)
+        if callable(finder):
+            camera = finder(cfg)
+        gm_x = gm_y = None
+        if camera is not None:
+            gm_x, gm_y = scene._raycast_gm_xy(camera)
+            gm_x += float(getattr(camera, 'image_width', 0) or 0) / 2.0
+            gm_y += float(getattr(camera, 'image_height', 0) or 0) / 2.0
+
+        # Opt-in breadcrumb trail: a faint dot per grid cell the camera has
+        # visited, under everything else. Persisted on the scene (survives
+        # across frames, naturally bounded by the maze's own cell count) --
+        # mirrors handlers._record_trail_cell exactly.
+        if show_trail and gm_x is not None:
+            visited = getattr(scene, '_raycast_trail', None)
+            if visited is None:
+                visited = set()
+                scene._raycast_trail = visited
+            visited.add((int(gm_x // cs), int(gm_y // cs)))
+            for (tgx, tgy) in sorted(visited):
+                tx, ty = _px(tgx * cs + cs / 2.0, tgy * cs + cs / 2.0)
+                self._draw_queue.append(dict(
+                    type='rectangle', x1=tx - 1.0, y1=ty - 1.0,
+                    x2=tx + 1.0, y2=ty + 1.0, color=trail_color, filled=True))
+
         # Opt-in object dots, under the player marker so a pickup sharing a
         # cell never hides it. Mirrors hud.py's marks loop.
         def _mark_points(object_name):
@@ -862,19 +901,9 @@ BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall
                     type='rectangle', x1=mx - 1.5, y1=my - 1.5,
                     x2=mx + 1.5, y2=my + 1.5, color=_colour, filled=True))
 
-        cfg = getattr(scene, 'raycast_camera', None) or {}
-        camera = None
-        finder = getattr(scene, '_find_raycast_camera', None)
-        if callable(finder):
-            camera = finder(cfg)
         if camera is None:
             return
-        # The ray ORIGIN, not the sprite corner. _raycast_gm_xy converts Kivy's
-        # y-up instance position back to the GM y-down frame the whole raycast
-        # pipeline works in.
-        gm_x, gm_y = scene._raycast_gm_xy(camera)
-        cx, cy = _px(gm_x + float(getattr(camera, 'image_width', 0) or 0) / 2.0,
-                     gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0)
+        cx, cy = _px(gm_x, gm_y)
         _MM_MARK, _MM_HEAD = 2.0, 7.0
         self._draw_queue.append(dict(
             type='line', x1=cx - _MM_MARK, y1=cy, x2=cx + _MM_MARK, y2=cy,

@@ -87,6 +87,23 @@ def test_set_billboard_rotation_codegen():
     assert code == "self.billboard_rotation_frames = max(0, int(4))"
 
 
+def test_draw_minimap_codegen_passes_trail_params():
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action(
+        "draw_minimap", {"x": "0", "y": "0", "show_trail": "true",
+                         "trail_color": "#123456"}, "draw")
+    assert code == ("self._draw_minimap(0, 0, 120, '#101018', '#8080a0', "
+                    "'#ffd040', '', '#40e0ff', '', '#ff5050', True, "
+                    "'#123456')")
+
+
+def test_draw_minimap_codegen_defaults_trail_off():
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action(
+        "draw_minimap", {"x": "0", "y": "0"}, "draw")
+    assert code.endswith("False, '#406080')")
+
+
 def test_set_billboard_rotation_codegen_default_frames():
     gen = ActionCodeGenerator()
     code = gen._convert_simple_action("set_billboard_rotation", {}, "create")
@@ -644,3 +661,69 @@ def test_full_height_is_unchanged_no_band(exported):
         # No third fill spanning a reserved band (walls may follow, but the
         # first wall strip is centred on the horizon, not a full-width band at 0).
         assert rects[1].kw["size"] == (320.0, 100.0)
+
+
+# ---------------------------------------------------------------------------
+# draw_minimap's breadcrumb trail -- REAL execution of the generated
+# GameObject._draw_minimap (base_object.py), not the reimplemented-arithmetic
+# comparison test_raycast_export_parity.py uses for the rest of the minimap
+# (that one can't execute a .format() template; this one actually does, via
+# the stub-kivy harness, the same way the billboard-rotation tests above do).
+# ---------------------------------------------------------------------------
+
+def _minimap_drawer(exported, scene):
+    """A bare GameObject wired to `scene`, enough for _draw_minimap (which
+    only reads self.scene / self._draw_queue) -- __new__ skips the real
+    __init__ (project-data setup this test doesn't need)."""
+    import importlib
+    base_mod = importlib.import_module("objects.base_object")
+    obj = base_mod.GameObject.__new__(base_mod.GameObject)
+    obj.scene = scene
+    obj._draw_queue = []
+    return obj
+
+
+def test_draw_minimap_trail_accumulates_through_real_kivy_code(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._raycast_cell_size = 32
+        cam = _FakeInst(0, 96 - 32, 32, 32, solid=False, facing=0.0)  # gm cell (0,0)
+        scene.instances = [cam]
+        scene.raycast_camera = {"camera_instance": cam}
+
+        obj = _minimap_drawer(exported, scene)
+        obj._draw_minimap(0, 0, 100, '#101018', '#8080a0', '#ffd040',
+                          '', '#40e0ff', '', '#ff5050', True, '#406080')
+        assert scene._raycast_trail == {(0, 0)}
+        trail_dots = [c for c in obj._draw_queue if c['color'] == '#406080']
+        assert len(trail_dots) == 1
+
+        # Move to gm cell (1, 0) and draw again -- the FakeInst's x/y are
+        # Kivy y-up; gm (32, 64) at this room_height (96) and height (32)
+        # matches the first camera's gm y exactly, isolating the x move.
+        cam.x, cam.y = 32, 96 - 32
+        obj._draw_queue = []
+        obj._draw_minimap(0, 0, 100, '#101018', '#8080a0', '#ffd040',
+                          '', '#40e0ff', '', '#ff5050', True, '#406080')
+        assert scene._raycast_trail == {(0, 0), (1, 0)}
+        trail_dots = [c for c in obj._draw_queue if c['color'] == '#406080']
+        assert len(trail_dots) == 2, "both visited cells must still be drawn"
+
+
+def test_draw_minimap_trail_disabled_leaves_scene_state_untouched(exported):
+    """show_trail=False (the default) must not create _raycast_trail at
+    all -- the pre-existing samples' minimaps stay byte-for-byte unchanged."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._raycast_cell_size = 32
+        cam = _FakeInst(0, 96 - 32, 32, 32, solid=False, facing=0.0)
+        scene.instances = [cam]
+        scene.raycast_camera = {"camera_instance": cam}
+
+        obj = _minimap_drawer(exported, scene)
+        obj._draw_minimap(0, 0, 100, '#101018', '#8080a0', '#ffd040',
+                          '', '#40e0ff', '', '#ff5050')
+        assert not hasattr(scene, "_raycast_trail") or not scene._raycast_trail
+        assert not any(c['color'] == '#406080' for c in obj._draw_queue)

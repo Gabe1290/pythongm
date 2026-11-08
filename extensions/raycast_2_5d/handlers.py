@@ -253,10 +253,18 @@ class PluginExecutor:
             cam_x += (getattr(camera, "_cached_width", 0) or 0) / 2.0
             cam_y += (getattr(camera, "_cached_height", 0) or 0) / 2.0
 
+        cell_size = st["cell_size"] or 32
+        show_trail = parameters.get("show_trail", False)
+        if isinstance(show_trail, str):
+            show_trail = show_trail.strip().lower() in ("true", "1", "yes")
+        trail_points = None
+        if show_trail and cam_x is not None and cam_y is not None:
+            trail_points = self._record_trail_cell(st, cell_size, cam_x, cam_y)
+
         cmds = build_minimap_commands(
             v_walls=st["v_walls"],
             h_walls=st["h_walls"],
-            cell_size=st["cell_size"] or 32,
+            cell_size=cell_size,
             room_width=getattr(room, "width", 0),
             room_height=getattr(room, "height", 0),
             cam_x=cam_x,
@@ -276,8 +284,27 @@ class PluginExecutor:
                  "points": self._mark_points(
                      room, str(parameters.get("mark_object_2", "") or ""))},
             ],
+            trail=trail_points,
+            trail_color=parameters.get("trail_color", "#406080") if show_trail else None,
         )
         instance._draw_queue.extend(cmds)
+
+    @staticmethod
+    def _record_trail_cell(st, cell_size, cam_x, cam_y):
+        """Mark the camera's current grid cell visited and return every
+        visited cell's world-pixel CENTRE, for the minimap's breadcrumb
+        trail (build_minimap_commands' `trail` param).
+
+        Persisted in the room's own raycast state (st -- raycast_state(room)),
+        so it survives across frames but is naturally bounded by the maze's
+        cell count, not an ever-growing point list. A set, not a list: the
+        camera revisits cells constantly (standing still, backtracking)
+        and each one should only ever draw one dot.
+        """
+        cs = float(cell_size)
+        visited = st.setdefault("trail", set())
+        visited.add((int(cam_x // cs), int(cam_y // cs)))
+        return [(gx * cs + cs / 2.0, gy * cs + cs / 2.0) for (gx, gy) in visited]
 
     def execute_draw_doom_hud_action(self, instance, parameters):
         """Draw a DOOM-style bottom status bar over the raycast view.

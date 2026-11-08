@@ -529,6 +529,41 @@ registerExtensionAction('draw_minimap', function(obj, params, game) {
                     obj._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
                 }
 
+                // Resolve the camera early (needed by both the trail and the
+                // player marker below) -- same ray ORIGIN renderRaycastView
+                // casts from, not the sprite corner.
+                const mmCfg = room.raycastCamera || {};
+                const mmCam = room.findFirstInstance(mmCfg.camera_object || '');
+                let camWx = null, camWy = null;
+                if (mmCam) {
+                    const mmTL = GameRoom.spriteTopLeft(mmCam);
+                    camWx = mmTL.x + mmCam.boxWidth() / 2;
+                    camWy = mmTL.y + mmCam.boxHeight() / 2;
+                }
+
+                // Opt-in breadcrumb trail: a faint dot per grid cell the
+                // camera has visited, under everything else. Persisted on
+                // the room (survives across frames, naturally bounded by
+                // the maze's own cell count) -- mirrors
+                // handlers._record_trail_cell exactly.
+                const showTrail = params.show_trail === true || params.show_trail === 'true' ||
+                                   params.show_trail === 1 || params.show_trail === '1';
+                if (showTrail && camWx !== null) {
+                    if (!room._raycastTrail) room._raycastTrail = new Set();
+                    room._raycastTrail.add(Math.floor(camWx / mmCS) + ',' + Math.floor(camWy / mmCS));
+                    const trailColor = params.trail_color || '#406080';
+                    const MM_TRAIL_HALF = 1.0;
+                    for (const [gx, gy] of mmKeys(room._raycastTrail)) {
+                        const [tx, ty] = mmPx(gx * mmCS + mmCS / 2, gy * mmCS + mmCS / 2);
+                        obj._draw_queue.push({
+                            type: 'rectangle',
+                            x1: tx - MM_TRAIL_HALF, y1: ty - MM_TRAIL_HALF,
+                            x2: tx + MM_TRAIL_HALF, y2: ty + MM_TRAIL_HALF,
+                            color: trailColor, filled: true,
+                        });
+                    }
+                }
+
                 // Opt-in object dots, under the player marker so a pickup
                 // sharing a cell never hides it. Mirrors hud.py's marks loop.
                 const MM_MARK_HALF = 1.5;
@@ -561,14 +596,8 @@ registerExtensionAction('draw_minimap', function(obj, params, game) {
                     }
                 }
 
-                const mmCfg = room.raycastCamera || {};
-                const mmCam = room.findFirstInstance(mmCfg.camera_object || '');
                 if (!mmCam) return;
-                // The ray ORIGIN, not the sprite corner — same point
-                // renderRaycastView casts from.
-                const mmTL = GameRoom.spriteTopLeft(mmCam);
-                const [cx, cy] = mmPx(mmTL.x + mmCam.boxWidth() / 2,
-                                      mmTL.y + mmCam.boxHeight() / 2);
+                const [cx, cy] = mmPx(camWx, camWy);
                 const MM_MARK = 2.0, MM_HEAD = 7.0;
                 obj._draw_queue.push({
                     type: 'line', x1: cx - MM_MARK, y1: cy, x2: cx + MM_MARK, y2: cy,
