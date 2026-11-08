@@ -48,11 +48,36 @@ joué dans un navigateur pour vérifier chaque mécanisme.
 - **`obj_wall`**, avec `spr_wall`, **pas encore Solide**. Il doit exister parce
   que le bord de la salle est construit avec. Les élèves cochent Solide dans la
   partie 3.
-- **`room0`** : 640 sur 416 pixels, sur une grille de 32 pixels, avec le bord
-  construit et rien à l'intérieur.
+- **`room0`** : 960 sur 640 pixels (30 sur 20 carrés), sur une grille de 32
+  pixels, avec le bord construit et rien à l'intérieur.
 
 Les élèves dessinent seulement le héros. Tout le reste, ils le créent, le
 construisent et le programment.
+
+## Taille de la fenêtre (si un élève veut une zone de jeu plus grande)
+
+La fenêtre du jeu a exactement la taille de la salle. « Mon premier labyrinthe »
+utilise une petite salle (640 sur 416 pixels, soit 20 sur 13 carrés) ; cette
+leçon en utilise une plus grande (960 sur 640 pixels, soit 30 sur 20 carrés), qui
+laisse la place à un labyrinthe plus long, à des couloirs plus larges et à plus
+d'objets. Les élèves ne règlent jamais la taille de la fenêtre eux-mêmes, et la
+fiche de l'élève n'en parle pas.
+
+Si un élève demande une fenêtre plus grande :
+
+- **Réponse la plus simple :** la salle plus grande est déjà celle de ce projet de
+  départ. Un élève qui a terminé « Mon premier labyrinthe » et le trouve à l'étroit
+  peut simplement faire cette leçon ensuite.
+- **N'étire pas simplement une salle existante.** Les murs du contour sont placés
+  carré par carré : dans une salle agrandie, un bord serait ouvert et il faudrait
+  d'abord le reconstruire, sinon le héros sortirait du labyrinthe par là.
+- **Tous les chemins doivent rester larges de deux carrés**, quelle que soit la
+  taille de la salle.
+- **Sur un téléphone**, la page exportée se réduit pour tenir dans la largeur de
+  l'écran : une salle plus grande donne donc une image plus petite. La page a été vérifiée
+  dans un navigateur de la taille d'un téléphone sur un ordinateur, pas sur un
+  vrai téléphone : essaie avant de promettre une salle plus large ; beaucoup plus
+  large, le héros et les objets deviennent petits à voir et à diriger.
 
 ## Plan de la leçon (90 minutes)
 

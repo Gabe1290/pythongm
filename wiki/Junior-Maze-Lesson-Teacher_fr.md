@@ -44,6 +44,13 @@ une salle vide de 640 sur 416 (`room0`) dont le contour est déjà construit. Le
 élèves dessinent eux-mêmes leur héros et leur but, et font le reste. La salle
 est sur une grille de 32 pixels et l'aimantation à la grille est activée.
 
+**Taille de la fenêtre.** La fenêtre du jeu a exactement la taille de la salle,
+volontairement petite ici (640 sur 416 pixels, soit 20 sur 13 carrés) pour qu'un
+labyrinthe entier puisse être construit et vérifié en une leçon. Si un élève veut
+une zone de jeu plus grande, n'étire pas la salle (le contour resterait ouvert sur
+le nouveau bord) : propose-lui la leçon suivante, « Labyrinthe au trésor », dont
+la salle de départ fait 960 sur 640 pixels.
+
 ## Plan de la leçon (90 minutes)
 
 | Temps | Partie | Ce qui se passe | Si tu es en retard |

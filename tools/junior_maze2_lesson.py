@@ -3,7 +3,7 @@ the second maze lesson (after tools/junior_maze_lesson.py).
 
 * ``build_starter(root)``  -- what the TEACHER hands out: seven ready-made
   sprites (wall, door, gem, key, heart, bomb, goal), an ``obj_wall`` that is NOT
-  yet Solid (the room's border already uses it), and an empty 640x416 room with
+  yet Solid (the room's border already uses it), and an empty 960x640 room with
   its border built. Students draw the hero, create the other objects, build the
   maze, then program it.
 * ``build_finished(root)`` -- the finished game (a worked example).
@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from tutorial_reference_projects import Project, act  # noqa: E402
 
 CELL = 32
-COLS, ROWS = 20, 13
+COLS, ROWS = 30, 20
 SPEED = 4
 GEM_POINTS = 10
 
@@ -50,15 +50,15 @@ def _make_level():
         put(COLS - 1, r, "W")
     # Two horizontal walls, each with a two-cell gap (right, then left).
     for c in range(1, COLS - 1):
-        put(c, 4, "W" if c not in (17, 18) else ".")
-        put(c, 8, "W" if c not in (1, 2) else ".")
+        put(c, 6, "W" if c not in (27, 28) else ".")
+        put(c, 13, "W" if c not in (1, 2) else ".")
     # A door across the middle band.
-    for r in (5, 6, 7):
-        put(9, r, "D")
+    for r in range(7, 13):
+        put(15, r, "D")
     for (c, r, ch) in [
-        (1, 1, "P"), (9, 2, "G"), (13, 1, "B"), (18, 1, "H"),     # band A
-        (14, 6, "K"), (12, 5, "B"), (6, 6, "G"), (4, 7, "B"),     # band B
-        (8, 10, "G"), (14, 10, "G"), (11, 9, "B"), (18, 10, "E"),  # band C
+        (1, 1, "P"), (15, 3, "G"), (20, 1, "B"), (28, 1, "H"),     # band A
+        (22, 10, "K"), (24, 7, "B"), (8, 9, "G"), (11, 12, "B"),   # band B
+        (8, 16, "G"), (20, 16, "G"), (14, 18, "B"), (28, 16, "E"),  # band C
     ]:
         put(c, r, ch)
     return ["".join(r) for r in rows]

@@ -46,10 +46,32 @@ browser to check every mechanic.
   `spr_heart`, `spr_bomb`, `spr_goal`.
 - **`obj_wall`**, with `spr_wall`, **not yet Solid**. It has to exist because the
   room's border is built from it. Students tick Solid in Part 3.
-- **`room0`**: 640 by 416 pixels, on a 32-pixel grid, with the border built and
-  nothing inside.
+- **`room0`**: 960 by 640 pixels (30 by 20 squares), on a 32-pixel grid, with the
+  border built and nothing inside.
 
 Students draw only the hero. Everything else is theirs to create, build and program.
+
+## Window Size (if a student wants a bigger playing area)
+
+The game window is exactly the size of the room. "My First Maze" uses a small
+room (640 by 416 pixels, 20 by 13 squares); this lesson uses a bigger one
+(960 by 640 pixels, 30 by 20 squares), which leaves space for a longer maze,
+wider corridors and more items. The students never set the window size
+themselves, and the student sheet does not mention it.
+
+If a student asks for a bigger window:
+
+- **Easiest answer:** the bigger room is already the one in this starter. A
+  student who finished "My First Maze" and found it cramped can simply do this
+  lesson next.
+- **Do not just stretch an existing room.** The border walls are placed square by
+  square, so a larger room would have an open edge to rebuild first, and the
+  hero would walk out of the maze through it.
+- **Every path must stay two squares wide** whatever the room size.
+- **On a phone** the exported page shrinks to fit the screen width, so a bigger
+  room means a smaller picture. The page is checked in a phone-sized browser on a computer, not
+  on a real phone, so try it before promising a wider room; going much wider
+  makes the hero and the items small to see and to steer.
 
 ## Lesson Plan (90 minutes)
 

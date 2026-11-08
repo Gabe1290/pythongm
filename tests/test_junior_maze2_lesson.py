@@ -47,7 +47,7 @@ def where(ch):
 def test_level_has_the_promised_pieces():
     assert len(jm.LEVEL) == jm.ROWS and all(len(r) == jm.COLS for r in jm.LEVEL)
     assert {ch: len(where(ch)) for ch in "PEKHGBD"} == \
-        {"P": 1, "E": 1, "K": 1, "H": 1, "G": 4, "B": 4, "D": 3}
+        {"P": 1, "E": 1, "K": 1, "H": 1, "G": 4, "B": 4, "D": 6}
 
 
 def test_every_corridor_is_two_cells_wide():
@@ -84,9 +84,7 @@ def _tour():
     bombs = set(where("B"))
     danger = {(c + dc, r + dr) for c, r in bombs for dc in (-1, 0, 1) for dr in (-1, 0, 1)}
     doors = set(where("D"))
-    gems = sorted(where("G"))
-    stops = [gems[0] if gems[0][1] < 4 else gems[1]]           # the gem in the top band
-    stops = [(9, 2), where("K")[0], (6, 6), (8, 10), (14, 10), where("E")[0]]
+    stops = [(15, 3), where("K")[0], (8, 9), (8, 16), (20, 16), where("E")[0]]
     path, here, door_open = [], where("P")[0], False
     for stop in stops:
         blocked = danger - {stop} | (set() if door_open else doors)
@@ -104,7 +102,7 @@ def test_the_maze_can_be_finished_avoiding_every_bomb_and_the_door_needs_the_key
     assert not (set(path) & set(where("B")))
     # before the key the middle band is split by the door: the left half is unreachable
     with pytest.raises(AssertionError):
-        _bfs(where("P")[0], (6, 6), set(where("D")))
+        _bfs(where("P")[0], (8, 9), set(where("D")))
 
 
 # ---------------------------------------------------- only Junior blocks used
@@ -180,7 +178,7 @@ def test_starter_has_all_sprites_a_not_yet_solid_wall_and_a_bordered_room(tmp_pa
     assert set(data["assets"]["objects"]) == {"obj_wall"}
     assert data["assets"]["objects"]["obj_wall"]["solid"] is False
     room = data["assets"]["rooms"]["room0"]
-    assert (room["width"], room["height"]) == (640, 416)
+    assert (room["width"], room["height"]) == (960, 640)
     assert {i["object_name"] for i in room["instances"]} == {"obj_wall"}
     assert len(room["instances"]) == 2 * jm.COLS + 2 * (jm.ROWS - 2)
     for name in jm.ART:                                   # every sprite file really exists
@@ -221,11 +219,11 @@ def test_hero_stops_at_a_wall_and_a_closed_door(tmp_path):
 
     def steps(f, post, r, log):
         if f == 2:
-            _hero(r).x, _hero(r).y = 6 * CELL, 6 * CELL        # left of the door, row 6
+            _hero(r).x, _hero(r).y = 13 * CELL, 9 * CELL       # left of the door, row 9
             post(pygame.KEYDOWN, pygame.K_RIGHT)
         xs.append(_hero(r).x)
     _teleport(steps, tmp_path, frames=60)
-    assert xs[50] == 8 * CELL                      # flush against the door at column 9
+    assert xs[50] == 14 * CELL                     # flush against the door at column 15
 
 
 def test_gem_adds_ten_points_and_disappears(tmp_path):
@@ -251,7 +249,7 @@ def test_key_opens_every_door_and_is_used_up(tmp_path):
         if f == 8:
             seen["after"] = (len(insts(r, "obj_door")), len(insts(r, "obj_key")))
     _teleport(steps, tmp_path, frames=12)
-    assert seen["before"] == (3, 1) and seen["after"] == (0, 0)
+    assert seen["before"] == (6, 1) and seen["after"] == (0, 0)
 
 
 def test_heart_adds_a_life(tmp_path):
@@ -363,7 +361,7 @@ def test_a_whole_game_can_be_played_and_won(tmp_path, offset):
                     state["done"] = True
             r.show_message_dialog = message
         _steer(r, route, state, post)
-    play(path, script, 3000)
+    play(path, script, 6000)
     assert log["msgs"] == ["You win!"], log
     assert (log["score"], log["lives"]) == (4 * jm.GEM_POINTS, 3)
 

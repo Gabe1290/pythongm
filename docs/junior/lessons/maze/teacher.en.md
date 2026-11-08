@@ -37,6 +37,12 @@ empty 640 by 416 room (`room0`) with its border already built. Students draw
 their own hero and goal and do the rest. The room is on a 32-pixel grid and
 snap-to-grid is on.
 
+**Window size.** The game window is exactly the size of the room, which is small
+on purpose here (640 by 416 pixels, 20 by 13 squares) so the whole maze can be
+built and checked in one lesson. If a student wants a bigger playing area, do not
+stretch the room (the border walls would be left open on the new edge); point them
+to the next lesson, "Treasure Maze", whose starter room is 960 by 640 pixels.
+
 ## Lesson Plan (90 minutes)
 
 | Time | Part | What happens | If you are late |
