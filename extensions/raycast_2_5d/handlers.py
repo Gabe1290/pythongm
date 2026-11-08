@@ -256,7 +256,15 @@ class PluginExecutor:
         cell_size = st["cell_size"] or 32
         show_trail = parameters.get("show_trail", False)
         if isinstance(show_trail, str):
-            show_trail = show_trail.strip().lower() in ("true", "1", "yes")
+            # Route through _parse_value so show_trail can be a bare instance
+            # variable (e.g. a cheat-code-toggled flag), not just a literal
+            # "true"/"false" string -- the usual authoring convention for
+            # every other action parameter in this codebase.
+            resolved = ae._parse_value(show_trail, instance)
+            if isinstance(resolved, str):
+                show_trail = resolved.strip().lower() in ("true", "1", "yes")
+            else:
+                show_trail = bool(resolved)
         trail_points = None
         if show_trail and cam_x is not None and cam_y is not None:
             trail_points = self._record_trail_cell(st, cell_size, cam_x, cam_y)

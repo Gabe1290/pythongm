@@ -534,6 +534,32 @@ class TestTrailPersistence:
         dots = [c for c in queue if c.get("color") == "#ff00ff"]
         assert len(dots) == 1
 
+    def test_show_trail_resolves_a_bare_instance_variable_expression(self):
+        """Not limited to a literal "true"/"false" string -- show_trail goes
+        through _parse_value like every other action parameter, so it can be
+        a bare instance variable (e.g. a cheat-code-toggled flag; see
+        samples/raycast_3's Ctrl+C, Ctrl+T cheat in obj_hud.json)."""
+        room, _ = self._room_with_camera(0, 0)
+        ex = _raycast_executor()
+        hud = GameInstance("obj_hud", 0, 0, {}, action_executor=None)
+        hud._draw_queue = []
+        hud.trail_on = 1
+        ex.game_runner = type("GR", (), {"current_room": room})()
+        _dispatch(ex, "draw_minimap", hud,
+                  {"x": 0, "y": 0, "size": 100, "show_trail": "trail_on"})
+        assert raycast_state(room)["trail"] == {(0, 0)}
+
+    def test_show_trail_expression_can_resolve_falsy(self):
+        room, _ = self._room_with_camera(0, 0)
+        ex = _raycast_executor()
+        hud = GameInstance("obj_hud", 0, 0, {}, action_executor=None)
+        hud._draw_queue = []
+        hud.trail_on = 0
+        ex.game_runner = type("GR", (), {"current_room": room})()
+        _dispatch(ex, "draw_minimap", hud,
+                  {"x": 0, "y": 0, "size": 100, "show_trail": "trail_on"})
+        assert "trail" not in raycast_state(room)
+
 
 def test_trail_shows_the_real_explored_path_over_raycast_3():
     """End to end through the real game loop: turn the sample's own minimap

@@ -500,3 +500,134 @@ def test_room1_goal_is_the_final_one():
     acts = [a["action"] for a in goal["events"]["collision_with_obj_person"]["actions"]]
     assert "restart_game" in acts, "the final goal must end the game, not advance"
     assert "test_instance_count" in acts, "the final goal must be gem-gated too"
+
+
+# --- Cheat code: Ctrl+C, Ctrl+T enables the minimap breadcrumb trail -------
+#
+# Authoring-only (obj_hud.json's own keyboard_press/alarm_0/draw events) --
+# no engine change was needed. "control" is just an ordinary key name that
+# ends up in instance.keys_pressed while held (runtime/_keymap.py), so
+# checking for it inside the "c" and "t" keyboard_press handlers is enough
+# to detect the chord. alarm_0 (120 steps) clears cheat_stage if Ctrl+T
+# doesn't follow Ctrl+C in time.
+
+def _hud(room):
+    return next(i for i in room.instances if i.object_name == "obj_hud")
+
+
+def test_ctrl_c_then_ctrl_t_enables_the_trail():
+    runner = _runner()
+    script = {
+        3: [(pygame.KEYDOWN, pygame.K_m)],
+        4: [(pygame.KEYUP, pygame.K_m)],
+        10: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        11: [(pygame.KEYDOWN, pygame.K_c)],
+        12: [(pygame.KEYUP, pygame.K_c)],
+        13: [(pygame.KEYUP, pygame.K_LCTRL)],
+        20: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        21: [(pygame.KEYDOWN, pygame.K_t)],
+        22: [(pygame.KEYUP, pygame.K_t)],
+        23: [(pygame.KEYUP, pygame.K_LCTRL)],
+    }
+    _run(runner, script, 30)
+    hud = _hud(runner.current_room)
+    assert hud.map_on == 1
+    assert hud.trail_on == 1, "Ctrl+C then Ctrl+T should have enabled the trail"
+    assert hud.cheat_stage == 0, "the sequence state should reset after completing"
+
+
+def test_the_trail_cheat_toggles_back_off():
+    """Entering the same code twice turns the trail back off."""
+    runner = _runner()
+    script = {
+        10: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        11: [(pygame.KEYDOWN, pygame.K_c)],
+        12: [(pygame.KEYUP, pygame.K_c)],
+        13: [(pygame.KEYUP, pygame.K_LCTRL)],
+        20: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        21: [(pygame.KEYDOWN, pygame.K_t)],
+        22: [(pygame.KEYUP, pygame.K_t)],
+        23: [(pygame.KEYUP, pygame.K_LCTRL)],
+        30: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        31: [(pygame.KEYDOWN, pygame.K_c)],
+        32: [(pygame.KEYUP, pygame.K_c)],
+        33: [(pygame.KEYUP, pygame.K_LCTRL)],
+        40: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        41: [(pygame.KEYDOWN, pygame.K_t)],
+        42: [(pygame.KEYUP, pygame.K_t)],
+        43: [(pygame.KEYUP, pygame.K_LCTRL)],
+    }
+    _run(runner, script, 50)
+    hud = _hud(runner.current_room)
+    assert hud.trail_on == 0, "entering the code twice should toggle the trail back off"
+
+
+def test_the_cheat_window_expires():
+    """Ctrl+T arriving after alarm_0's timeout must NOT trigger -- the
+    sequence has to be entered within the window, not ever."""
+    runner = _runner()
+    script = {
+        10: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        11: [(pygame.KEYDOWN, pygame.K_c)],
+        12: [(pygame.KEYUP, pygame.K_c)],
+        13: [(pygame.KEYUP, pygame.K_LCTRL)],
+        # alarm_0 is set for 120 steps; wait well past it before Ctrl+T.
+        150: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        151: [(pygame.KEYDOWN, pygame.K_t)],
+        152: [(pygame.KEYUP, pygame.K_t)],
+        153: [(pygame.KEYUP, pygame.K_LCTRL)],
+    }
+    _run(runner, script, 160)
+    hud = _hud(runner.current_room)
+    assert hud.trail_on == 0, "the cheat should not fire after its timeout window"
+    assert hud.cheat_stage == 0, "the alarm should have reset cheat_stage to 0"
+
+
+def test_ctrl_t_alone_does_nothing():
+    """Guards against accidental activation during ordinary play."""
+    runner = _runner()
+    script = {
+        10: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+        11: [(pygame.KEYDOWN, pygame.K_t)],
+        12: [(pygame.KEYUP, pygame.K_t)],
+        13: [(pygame.KEYUP, pygame.K_LCTRL)],
+    }
+    _run(runner, script, 20)
+    hud = _hud(runner.current_room)
+    assert hud.trail_on == 0
+
+
+def test_the_trail_cheat_actually_draws_a_trail_dot():
+    """End-to-end through the real draw_minimap handler: once the cheat is
+    active and the map is open, the draw queue must contain a trail-colored
+    rectangle, not just a flipped instance variable."""
+    from runtime.game_runner import GameInstance
+    seen = []
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        if self.object_name == "obj_hud":
+            seen.extend(self._draw_queue)
+        self._draw_queue = []
+
+    GameInstance._process_draw_queue = spy
+    try:
+        runner = _runner()
+        script = {
+            3: [(pygame.KEYDOWN, pygame.K_m)],
+            4: [(pygame.KEYUP, pygame.K_m)],
+            10: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+            11: [(pygame.KEYDOWN, pygame.K_c)],
+            12: [(pygame.KEYUP, pygame.K_c)],
+            13: [(pygame.KEYUP, pygame.K_LCTRL)],
+            20: [(pygame.KEYDOWN, pygame.K_LCTRL)],
+            21: [(pygame.KEYDOWN, pygame.K_t)],
+            22: [(pygame.KEYUP, pygame.K_t)],
+            23: [(pygame.KEYUP, pygame.K_LCTRL)],
+        }
+        _run(runner, script, 25)
+    finally:
+        GameInstance._process_draw_queue = real
+
+    trail_cmds = [c for c in seen if c.get("color") == "#406080"]
+    assert trail_cmds, f"no trail-colored draw command found; saw {seen}"

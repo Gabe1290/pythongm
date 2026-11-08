@@ -17,10 +17,69 @@
             "scope": "instance",
             "relative": false
           }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "trail_on",
+            "value": "0",
+            "scope": "instance",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "cheat_stage",
+            "value": "0",
+            "scope": "instance",
+            "relative": false
+          }
         }
       ]
     },
     "keyboard_press": {
+      "c": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "key_pressed", "key": "control",
+              "then_actions": [
+                { "action": "set_variable", "parameters": { "variable": "cheat_stage", "value": "1", "scope": "instance", "relative": false } },
+                { "action": "set_alarm", "parameters": { "alarm_number": "0", "steps": "120" } }
+              ],
+              "else_actions": [
+                { "action": "set_variable", "parameters": { "variable": "cheat_stage", "value": "0", "scope": "instance", "relative": false } }
+              ]
+            }
+          }
+        ]
+      },
+      "t": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "key_pressed", "key": "control",
+              "then_actions": [
+                {
+                  "action": "if_condition",
+                  "parameters": {
+                    "condition_type": "expression", "expression": "cheat_stage == 1",
+                    "then_actions": [
+                      { "action": "set_variable", "parameters": { "variable": "trail_on", "value": "1 - trail_on", "scope": "instance", "relative": false } },
+                      { "action": "set_variable", "parameters": { "variable": "cheat_stage", "value": "0", "scope": "instance", "relative": false } }
+                    ],
+                    "else_actions": []
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      },
       "m": {
         "actions": [
           {
@@ -64,6 +123,19 @@
           }
         ]
       }
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "cheat_stage",
+            "value": "0",
+            "scope": "instance",
+            "relative": false
+          }
+        }
+      ]
     },
     "draw": {
       "actions": [
@@ -158,7 +230,9 @@
             "size": "300",
             "back_color": "#101018",
             "wall_color": "#8080a0",
-            "player_color": "#ffd040"
+            "player_color": "#ffd040",
+            "show_trail": "trail_on",
+            "trail_color": "#406080"
           }
         },
         {
