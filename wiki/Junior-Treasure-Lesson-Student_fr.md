@@ -171,12 +171,10 @@ oui) et **else** (quand la réponse est non).
 | Dans **then** | **Afficher message** « Tu as gagné ! », puis **Redémarrer le Jeu** en dessous |
 | Dans **else** | **Afficher message** « Ramasse toutes les gemmes d'abord ! » |
 
-> TIP : le bloc **If** commence avec le nom `obj_coin` dans sa case. Clique dans
-> la case et écris `obj_gem` à la place.
-
-> INFO : s'il ne reste aucune gemme (le nombre de gemmes est 0), les blocs dans
-> **then** se passent. Sinon, les blocs dans **else** se passent. Les mots du bloc
-> **If** sont en anglais, même quand l'IDE est en français.
+> INFO : le bloc **If** commence avec le nom `obj_coin` dans sa case — clique
+> dedans et écris `obj_gem` à la place. S'il ne reste aucune gemme (0), les
+> blocs dans **then** se passent, sinon ceux dans **else** se passent. (Les mots
+> du bloc restent en anglais, même en français.)
 
 ### 5g. Fin de partie (2 min)
 
