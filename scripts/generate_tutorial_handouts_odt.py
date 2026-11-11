@@ -76,7 +76,7 @@ _STYLE = """
 """
 
 # Inline-style building blocks (see the NOTE above for why these are inline).
-_TABLE_STYLE = "border-collapse:collapse;width:100%;margin:4pt 0 10pt 0;"
+_TABLE_STYLE = "border-collapse:collapse;width:100%;margin:4pt 0 10pt 0;page-break-inside:avoid;"
 _TH_STYLE = ("border:1px solid #dee2e6;padding:4pt 6pt;font-size:9.5pt;"
              "text-align:left;background-color:#d1ecf1;")
 _TD_STYLE = ("border:1px solid #dee2e6;padding:4pt 6pt;font-size:9.5pt;"
@@ -259,7 +259,8 @@ def md_to_html(md_text, src_dir=None):
                 kind, text = m2.group(1), m2.group(2)
             bg, border = _CALLOUT_COLORS[kind]
             style = (f"margin:6pt 0 10pt 0;padding:6pt 10pt;"
-                     f"background-color:{bg};border-left:4px solid {border};")
+                     f"background-color:{bg};border-left:4px solid {border};"
+                     f"page-break-inside:avoid;")
             out.append(f'<p style="{style}">{_inline(text)}</p>')
             continue
 

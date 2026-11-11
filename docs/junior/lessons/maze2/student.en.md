@@ -159,11 +159,9 @@ Open **obj_goal**. This one asks a question: are there any gems left? Use the
 | Inside **then** | **Show message** "You win!", then **Restart Game** under it |
 | Inside **else** | **Show message** "Collect every gem first!" |
 
-> TIP: The **If** block starts with the name `obj_coin` in its box. Click the
-> box and type `obj_gem` instead.
-
-> INFO: If there are no gems left (the number of gems is 0), the blocks inside
-> **then** happen. If not, the blocks inside **else** happen.
+> INFO: the **If** block starts with the name `obj_coin` in its box — click it
+> and type `obj_gem` instead. If there are no gems left (0), the blocks inside
+> **then** happen; otherwise the blocks inside **else** happen.
 
 ### 5g. Game over (2 min)
 
