@@ -105,6 +105,19 @@ if sys.platform == 'win32':
 if sys.platform not in ('win32', 'darwin'):
     os.environ.setdefault('LIBGL_ALWAYS_SOFTWARE', '1')
 
+# On GNOME, keep Qt off its GTK3 platform theme. Newer GNOME (seen on Ubuntu
+# 26.04, 2026-11-14) removed the 'antialiasing' key from the
+# org.gnome.settings-daemon.plugins.xsettings schema; the GTK3 theme still
+# reads it, and GLib aborts the whole process on a missing key -- the IDE dies
+# with "core dumped" before its window appears. 'xdgdesktopportal' is no
+# escape: on GNOME it delegates to the same GTK3 code and crashes identically.
+# 'generic' was verified to start the IDE normally. Only when the user hasn't
+# chosen a theme themselves.
+if (sys.platform not in ('win32', 'darwin')
+        and not os.environ.get('QT_QPA_PLATFORMTHEME')
+        and 'GNOME' in os.environ.get('XDG_CURRENT_DESKTOP', '').upper().split(':')):
+    os.environ['QT_QPA_PLATFORMTHEME'] = 'generic'
+
 
 def _find_file_in_tree(base, filename):
     """Search for *filename* under *base* directory, return first match or None."""
