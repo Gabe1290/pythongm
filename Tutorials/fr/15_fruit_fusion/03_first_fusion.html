@@ -115,13 +115,6 @@
     </div>
 
     <h2>Se souvenir du score et de ce qui est tenu</h2>
-    <div class="info">
-        <strong>Avant de continuer :</strong> le bloc <strong>Définir la
-        variable</strong> n'est pas activé par défaut. Va dans
-        <code>Outils &gt; Configurer les blocs d'action...</code>, déroule la
-        catégorie <strong>Control</strong>, coche <strong>Set Variable</strong>,
-        puis clique sur OK.
-    </div>
     <div class="step">
         <ol>
             <li>Toujours dans l'onglet Blockly de <code>obj_player</code>, ajoutez cet événement :</li>
@@ -148,11 +141,11 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Quand collision avec obj_fruit_cherry</span><br>
-            <span class="block block-control block-indent">Si <span class="block-num">held_level</span> est égal à <span class="block-num">1</span> alors</span><br>
+            <span class="block block-control block-indent">If variable <span class="block-num">held_level</span> == <span class="block-num">1</span> then</span><br>
             <span class="block block-instance block-indent2">Set Variable Variable: held_level Value: <span class="block-num">2</span> Scope: self Relative: off</span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">10</span></span><br>
             <span class="block block-instance block-indent2">Définir sprite à <span class="block-num">spr_basket_strawberry</span></span><br>
-            <span class="block block-control block-indent">Else</span><br>
+            <span class="block block-control block-indent">else</span><br>
             <span class="block block-score block-indent2">Ajouter au score <span class="block-num">1</span></span><br>
             <span class="block block-instance block-indent">Détruire autre instance</span>
         </div>

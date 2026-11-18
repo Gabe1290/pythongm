@@ -148,10 +148,16 @@ def build_t02(root, phase=4):
             "draw": {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}})
         placements.append(("obj_game_controller", 30, 10))
     if phase >= 4:
+        # Built the way a Beginner-edition student can (2026-11-18): the If
+        # block's "x position" condition, then Set variable x. 608 = room
+        # width 640 minus the 32-pixel sprite (no room-width value block).
         player_ev["step"] = {"actions": [
-            act("test_expression", expression="x < 0", then_actions=[act("set_variable", variable="x", value=0)]),
-            act("test_expression", expression="x > room_width - 32",
-                then_actions=[act("set_variable", variable="x", value="room_width - 32")])]}
+            act("if_condition", condition_type="position_check", check_type="x position",
+                operator="<", value="0", then_actions=[act("set_variable", variable="x", value=0)],
+                else_actions=[]),
+            act("if_condition", condition_type="position_check", check_type="x position",
+                operator=">", value="608", then_actions=[act("set_variable", variable="x", value=608)],
+                else_actions=[])]}
     p.obj("obj_player", "spr_player", player_ev)
     p.room("room_game", 640, 480, placements, "#101030" if phase >= 4 else "#000000")
     return p.save()
@@ -785,8 +791,10 @@ def build_t15(root, phase=4):
                         act("set_sprite", sprite=next_sprite)]
         if win:
             then_actions.append(act("goto_room", room="room_win"))
-        return [act("if_condition", condition_type="expression",
-                    expression=f"self.held_level == {matches_level}",
+        # The If block's "variable" option, as the handout and lesson page
+        # tell a Beginner-edition student to build it (2026-11-18).
+        return [act("if_condition", condition_type="variable_compare",
+                    variable="held_level", operator="==", value=str(matches_level),
                     then_actions=then_actions,
                     else_actions=[act("set_score", value=1, relative=True)]),
                 act("destroy_instance", target="other")]

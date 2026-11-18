@@ -163,6 +163,19 @@ def test_t02_phase4_player_is_kept_on_screen(tmp_path):
     assert snap["x"] >= -5      # clamped (one step of overshoot at most); phase 1 goes far below
 
 
+def test_t02_phase4_player_is_kept_on_screen_at_the_right_edge(tmp_path):
+    path = trp.build_t02(tmp_path, 4)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 250:
+            snap["x"] = insts(r, "obj_player")[0].x
+    play(path, script, 251)
+    assert snap["x"] <= 613     # 640 - 32 = 608, plus one step of overshoot at most
+
+
 def test_t02_checkpoint_zip_contains_every_phase(tmp_path):
     zips = trp.build_checkpoint_zips(tmp_path)
     z = next(p for p in zips if p.name.startswith("02_first_game"))
@@ -1434,7 +1447,9 @@ def test_t15_phase4_wins_via_the_real_action_list_not_a_hardcoded_test_shortcut(
     ev = data["assets"]["objects"]["obj_player"]["events"]["collision_with_obj_fruit_orange"]
     cond = ev["actions"][0]
     assert cond["action"] == "if_condition"
-    assert cond["parameters"]["condition_type"] == "expression"
+    # The If block's "variable" option -- what a Beginner student builds.
+    assert cond["parameters"]["condition_type"] == "variable_compare"
+    assert cond["parameters"]["variable"] == "held_level"
     then_actions = cond["parameters"]["then_actions"]
     assert any(a["action"] == "goto_room" and a["parameters"]["room"] == "room_win" for a in then_actions)
 

@@ -25,8 +25,8 @@
         <p>Abra <code>obj_player</code> no editor Blockly e adicione um evento <strong>Step</strong>
         com verificações de limite:</p>
         <ul>
-            <li>Se x &lt; 0, defina x = 0</li>
-            <li>Se x &gt; room_width &minus; sprite_width, defina x = room_width &minus; sprite_width</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &lt; 0 <em>then</em> <strong>Set variable</strong> x para 0</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &gt; 608 <em>then</em> <strong>Set variable</strong> x para 608 (608 = largura da sala 640 &minus; largura do sprite 32; estes blocos ficam em inglês)</li>
         </ul>
         <p>Isso impede que o jogador saia da tela.</p>
     </div>

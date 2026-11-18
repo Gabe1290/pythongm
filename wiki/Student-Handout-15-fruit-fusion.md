@@ -29,12 +29,12 @@ A basket that always holds one fruit, starting with a cherry. Cherries, strawber
 
 ## Phase 2: First Fusion
 
-- [ ] **5.** Create a sprite `spr_fruit_cherry` (20x20, a red circle) and an object `obj_fruit_cherry` with a **Create** event (*Set vertical speed 3*) and an **Outside Room** event (*Destroy this instance*). **Outside Room** is not its own block — in the Events category, drag out **Other event:** and pick "Outside Room" from its dropdown.
-- [ ] **6.** Create `obj_spawn_cherry` (no sprite) with a **Create** event (*Set alarm 0 to 90*) and an **Alarm 0** event (*Create instance of obj_fruit_cherry at x: random integer from 0 to 620, y: 0*, then *Set alarm 0 to 90* again). Place one in `room_main`. (620 = room width 640 minus the cherry's own width 20, so it never spawns hanging off the edge.)
+- [ ] **5.** Create a sprite `spr_fruit_cherry` (20x20, a red circle) and an object `obj_fruit_cherry` with a **When created** event (*Set vertical speed 3*) and an **Outside Room** event (*Destroy this instance*). **Outside Room** is not its own block — in the Events category, drag out **Other event:** and pick "Outside Room" from its dropdown.
+- [ ] **6.** Create `obj_spawn_cherry` (no sprite) with a **When created** event (*Set alarm 0 to 90*) and an **When alarm 0 triggers** event (*Create* `obj_fruit_cherry` *at x:* a *random integer from 0 to 620* block (Operators), *y:* 0, then *Set alarm 0 to 90* again). Place one in `room_main`. (620 = room width 640 minus the cherry's own width 20, so it never spawns hanging off the edge.)
 - [ ] **7.** Change `obj_player`'s sprite to a new sprite `spr_basket_cherry` (a bowl with a cherry in it) — the basket now starts out already holding a cherry.
-- [ ] **8.** Before this step: **Set Variable** is not turned on by default. Go to `Tools > Configure Action Blocks...`, expand **Control**, check **Set Variable**, click OK. Now in `obj_player`: **Create** event sets *score to 0* and *variable held_level to 1*; **Draw** event does *Draw score at x 10, y 10*.
+- [ ] **8.** In `obj_player`: **When created** event does *Set score to 0* and *Set variable* `held_level` to 1; **When drawing** event does *Draw score at x 10, y 10*.
 - [ ] **9.** Create a sprite `spr_basket_strawberry` (56x40, a bowl with a strawberry in it) — you'll need it in the next step.
-- [ ] **10.** Add **Collision with obj_fruit_cherry**: *If held_level equals 1 then* [*set held_level to 2*, *add 10 to score*, *set sprite to spr_basket_strawberry*] *Otherwise* [*add 1 to score*]; then *Destroy other instance*.
+- [ ] **10.** Add **When colliding with obj_fruit_cherry**: **If** *variable* `held_level` `==` 1 *then* [*Set variable* `held_level` to 2, *add 10 to score*, *set sprite to spr_basket_strawberry*] *else* [*add 1 to score*]; then *Destroy other instance*.
 
 > **Done:** **You should see:** press **F5**. Catch a falling cherry — the basket turns into a strawberry and the score jumps by 10.
 
@@ -47,7 +47,7 @@ This phase repeats the exact same recipe as Phase 2, with "cherry" changed to "s
 - [ ] **11.** Create a sprite `spr_fruit_strawberry` (26x26, a pink-red circle) and an object `obj_fruit_strawberry`, built exactly like `obj_fruit_cherry`.
 - [ ] **12.** Create `obj_spawn_strawberry` (alarm 0 to 120 this time; random x from 0 to 614, since the strawberry is 26 wide) and place one in `room_main`.
 - [ ] **13.** Create a sprite `spr_basket_orange` (56x40, a bowl with an orange in it) — you'll need it in the next step.
-- [ ] **14.** Add **Collision with obj_fruit_strawberry** on `obj_player`: *If held_level equals 2 then* [*set held_level to 3*, *add 20 to score*, *set sprite to spr_basket_orange*] *Otherwise* [*add 1 to score*]; then *Destroy other instance*.
+- [ ] **14.** Add **When colliding with obj_fruit_strawberry** on `obj_player`: **If** *variable* `held_level` `==` 2 *then* [*Set variable* `held_level` to 3, *add 20 to score*, *set sprite to spr_basket_orange*] *else* [*add 1 to score*]; then *Destroy other instance*.
 
 > **Done:** **You should see:** press **F5**. Catch a cherry, then a strawberry — the basket ends up an orange, having scored 30 points.
 
@@ -57,10 +57,10 @@ This phase repeats the exact same recipe as Phase 2, with "cherry" changed to "s
 
 - [ ] **15.** Create a sprite `spr_fruit_orange` (32x32, an orange circle) and an object `obj_fruit_orange`, built exactly like the others. There is no falling watermelon sprite or spawner — a watermelon is only ever something your basket becomes.
 - [ ] **16.** Create `obj_spawn_orange` (alarm 0 to 150; random x from 0 to 608, since the orange is 32 wide) and place one in `room_main`.
-- [ ] **17.** Create `obj_win_text`. **Draw** event: *Draw text* "YOU WIN! You made a watermelon!" at x 120, y 220 and "Press SPACE to play again" at x 190, y 260. **Key press: space**: *Restart game*.
+- [ ] **17.** Create `obj_win_text`. **When drawing** event: *Draw text* "YOU WIN! You made a watermelon!" at x 120, y 220 and "Press SPACE to play again" at x 190, y 260. **Key press: space**: *Restart game*.
 - [ ] **18.** Create `room_win` with a bright background color, and place one `obj_win_text` instance in it.
 - [ ] **19.** Create a sprite `spr_basket_watermelon` (56x40, a bowl with a green, watermelon-striped circle in it) — you'll need it in the next step.
-- [ ] **20.** Add **Collision with obj_fruit_orange** on `obj_player`: *If held_level equals 3 then* [*set held_level to 4*, *add 50 to score*, *set sprite to spr_basket_watermelon*, *Go to room room_win*] *Otherwise* [*add 1 to score*]; then *Destroy other instance*.
+- [ ] **20.** Add **When colliding with obj_fruit_orange** on `obj_player`: **If** *variable* `held_level` `==` 3 *then* [*Set variable* `held_level` to 4, *add 50 to score*, *set sprite to spr_basket_watermelon*, *Go to room room_win*] *else* [*add 1 to score*]; then *Destroy other instance*.
 
 > **Done:** **You should see:** press **F5**. Chain all three fusions and the YOU WIN! room appears. SPACE starts a new game.
 
@@ -76,13 +76,12 @@ either way — this is only worth doing once everything above already works.
 
 | What is wrong | Most likely cause | What to do |
 |---|---|---|
-| "Set variable" is not in the Control category | It is not turned on by default | `Tools > Configure Action Blocks...`, expand **Control**, check **Set Variable**, click OK |
-| The basket never changes picture | `set_sprite` is missing from the *If* branch, or it points at the wrong sprite name | Check the exact sprite name in *Set sprite to* |
-| Catching a matching fruit only gives 1 point | `held_level` is not actually equal to the number the *If* checks, or the condition uses the wrong operator | Check *If held_level equals* uses the right number for that phase (1, then 2, then 3) |
-| The basket is stuck as a cherry forever | The merge's *Otherwise* branch accidentally changed `held_level` too | Only the *If* branch should touch `held_level` and the sprite |
+| The basket never changes picture | `set_sprite` is missing from the *then* branch, or it points at the wrong sprite name | Check the exact sprite name in *Set sprite to* |
+| Catching a matching fruit only gives 1 point | `held_level` is not actually equal to the number the *If* checks, or the condition uses the wrong operator | Check **If** *variable* `held_level` `==` uses the right number for that phase (1, then 2, then 3) |
+| The basket is stuck as a cherry forever | The merge's *else* branch accidentally changed `held_level` too | Only the *then* branch should touch `held_level` and the sprite |
 | Fruit piles up and never disappears | The fruit's **Outside Room** event is missing | Add *Destroy this instance* in Outside Room |
-| No fruit ever falls | The spawner object has no instance placed in `room_main`, or its alarm was never set in Create | Place one spawner instance; check *Set alarm 0* is in **Create**, not somewhere else |
-| Catching an orange does not win | The *Go to room room_win* action is in the wrong place, or the room name is misspelled | It must be inside the *If held_level equals 3* branch, spelled exactly `room_win` |
+| No fruit ever falls | The spawner object has no instance placed in `room_main`, or its alarm was never set in Create | Place one spawner instance; check *Set alarm 0* is in **When created**, not somewhere else |
+| Catching an orange does not win | The *Go to room room_win* action is in the wrong place, or the room name is misspelled | It must be inside the *then* branch of **If** *variable* `held_level` `==` 3, spelled exactly `room_win` |
 | The win screen is blank | `obj_win_text` was not placed in `room_win`, or its Draw event is missing | Place one instance; check the Draw event exists |
 | SPACE does nothing on the win screen | The win room has no object with a **Key press: space** event | Add the event to `obj_win_text` |
 

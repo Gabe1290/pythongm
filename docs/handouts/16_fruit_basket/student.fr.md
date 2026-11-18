@@ -29,17 +29,17 @@ Un panier qui glisse à gauche et à droite le long du bas de la salle. Des frui
 
 ## Phase 3 : Ramasser et éviter
 
-- [ ] **8.** Dans `obj_player`, événement **Création** : *Définir le score à 0*. Événement **Dessin** : *Afficher le score à x 10, y 10*.
-- [ ] **9.** Ajoute **En collision avec obj_fruit** : *Ajouter 10 au score*, puis *Détruire l'autre instance* (le fruit, pas le panier !).
-- [ ] **10.** Ajoute **En collision avec obj_bomb** : *Redémarrer la salle*.
+- [ ] **8.** Dans `obj_player`, événement **Quand créé** : *Définir le score à 0*. Événement **Quand dessiner** : *Afficher le score à x 10, y 10*.
+- [ ] **9.** Ajoute **Quand collision avec obj_fruit** : *Ajouter 10 au score*, puis *Détruire l'autre instance* (le fruit, pas le panier !).
+- [ ] **10.** Ajoute **Quand collision avec obj_bomb** : *Redémarrer le niveau*.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Ramasser un fruit ajoute 10 au score et le fruit disparaît. Toucher une bombe remet tout exactement comme au début, score compris.
 
 ## Phase 4 : Gagner
 
-- [ ] **11.** Crée `obj_win_text`. Événement **Dessin** : *Dessiner du texte* « YOU WIN! » à x 412, y 320 et « Press SPACE to play again » à x 340, y 400. **Touche pressée : espace** : *Redémarrer le jeu*.
+- [ ] **11.** Crée `obj_win_text`. Événement **Quand dessiner** : *Dessiner texte* « YOU WIN! » à x 412, y 320 et « Press SPACE to play again » à x 340, y 400. **Touche pressée : espace** : *Redémarrer le jeu*.
 - [ ] **12.** Crée `room_win` avec une couleur d'arrière-plan vive, et place-y un `obj_win_text`.
-- [ ] **13.** Dans `obj_player`, ajoute un événement **Pas** : *Si le nombre de* `obj_fruit` *égale 0* alors *Aller à la salle* `room_win`.
+- [ ] **13.** Dans `obj_player`, ajoute un événement **À chaque étape** : **If** *count of object* `obj_fruit` `==` 0 *then* *Aller au niveau* `room_win` (les mots du bloc **If** restent en anglais).
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Ramasse tous les fruits et la salle YOU WIN! apparaît. ESPACE lance une nouvelle partie.
 
@@ -57,11 +57,11 @@ que lorsque tout ce qui précède fonctionne déjà.
 | Ce qui ne va pas | Cause la plus probable | Que faire |
 | Le panier ramasse un fruit dès le début de la partie | Un fruit a été placé trop près de l'endroit où démarre le panier | Éloigne ce fruit, ou déplace la position de départ du panier |
 | Mon panier disparaît quand il ramasse un fruit | J'ai utilisé *Détruire cette instance* | Utilise **Détruire l'autre instance** |
-| Toucher une bombe ne fait rien | Pas de **En collision avec obj_bomb** sur `obj_player`, ou la mauvaise action est utilisée | Ajoute la collision et utilise **Redémarrer la salle** |
-| Le score ne s'affiche pas | Pas d'événement **Dessin** sur le panier | Ajoute *Afficher le score* dans un événement Dessin |
+| Toucher une bombe ne fait rien | Pas de **Quand collision avec obj_bomb** sur `obj_player`, ou la mauvaise action est utilisée | Ajoute la collision et utilise **Redémarrer le niveau** |
+| Le score ne s'affiche pas | Pas d'événement **Quand dessiner** sur le panier | Ajoute *Afficher le score* dans un événement Quand dessiner |
 | Le jeu affiche YOU WIN! tout de suite | Il n'y a aucun fruit dans `room_main` (le nombre est déjà 0) | Place au moins un fruit dans la salle |
-| Je ramasse tous les fruits mais rien ne se passe | L'événement Pas ou le nom de la salle est faux | Vérifie *Si le nombre de obj_fruit égale 0* et le nom de salle `room_win` |
-| L'écran de victoire est vide | `obj_win_text` n'a pas été placé dans `room_win`, ou son événement Dessin est manquant | Place une instance ; vérifie que l'événement Dessin existe |
+| Je ramasse tous les fruits mais rien ne se passe | L'événement À chaque étape ou le nom de la salle est faux | Vérifie **If** *count of object* `obj_fruit` `==` 0 et le nom de salle `room_win` |
+| L'écran de victoire est vide | `obj_win_text` n'a pas été placé dans `room_win`, ou son événement Quand dessiner est manquant | Place une instance ; vérifie que l'événement Dessin existe |
 | ESPACE ne fait rien sur l'écran de victoire | La salle de victoire n'a pas d'objet avec un événement **Touche pressée : espace** | Ajoute l'événement à `obj_win_text` |
 
 ## Défis
@@ -75,7 +75,7 @@ que lorsque tout ce qui précède fonctionne déjà.
 | Terme | Ce que cela veut dire |
 | Collision | Un événement qui se déclenche au moment où deux objets se touchent |
 | Nombre d'instances | Combien de copies d'un objet existent en ce moment |
-| Redémarrer la salle | Une action qui remet la salle actuelle exactement comme au début |
+| Redémarrer le niveau | Une action qui remet la salle actuelle exactement comme au début |
 | Événement Pas | Un événement qui s'exécute à chaque image du jeu, encore et encore |
 
 ## Vérifie-toi

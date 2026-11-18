@@ -148,3 +148,49 @@ def test_a_saved_beginner_config_gains_the_new_blocks(tmp_path, monkeypatch):
 def test_a_teachers_custom_config_is_left_alone(tmp_path, monkeypatch):
     bc, _ = _save_old_config(tmp_path, monkeypatch, "custom", {"draw_variable"})
     assert "draw_variable" not in bc.load_config().enabled_blocks
+
+
+# --- Student handouts name the blocks as the Beginner toolbox shows them ---
+
+HANDOUTS = Path(__file__).parent.parent / "docs" / "handouts"
+
+# Wording the Beginner handouts used for blocks that read differently in the
+# editor (checked 2026-11-18 against the real Blockly page, EN + FR). In a
+# French IDE "Set variable" and the If block stay English, Go to room is
+# "Aller au niveau", Step is "À chaque étape", and so on.
+STALE_LABELS = {
+    "en": ["*Start moving in direction", "*Bounce against solid objects*", "*Show Highscore*",
+           "*If held_level equals", "*Otherwise*", "*If count of*", "Create instance of",
+           "**Other Events > No More Lives**", "**Create**", "**Draw**", "**Step**",
+           "**Alarm 0**", "**Collision with "],
+    "fr": ["*Définir variable*", "*Définir la variable", "*Commencer à se déplacer",
+           "*Rebondir contre", "*Si held_level", "*Sinon*", "*Si le nombre de",
+           "*Aller à la salle", "Redémarrer la salle", "*Dessiner le score",
+           "*Dessiner du texte*", "Créer une instance de", "**Autres événements >",
+           "*Afficher le tableau des meilleurs scores*", "**Création**", "**Dessin**",
+           "**Pas**", "**Alarme 0**", "**En collision avec "],
+}
+
+
+def _beginner_handouts():
+    for folder in EDITIONS["beginner"]["tutorial_folders"]:
+        for lang in ("en", "fr"):
+            path = HANDOUTS / folder / f"student.{lang}.md"
+            if path.exists():
+                yield folder, lang, path.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("folder,lang,text", list(_beginner_handouts()),
+                         ids=lambda v: v if isinstance(v, str) and len(v) < 40 else "")
+def test_beginner_handout_uses_the_real_block_names(folder, lang, text):
+    found = [s for s in STALE_LABELS[lang] if s in text]
+    assert not found, f"{folder} ({lang}) names blocks the editor doesn't show: {found}"
+
+
+@pytest.mark.parametrize("folder,lang,text", list(_beginner_handouts()),
+                         ids=lambda v: v if isinstance(v, str) and len(v) < 40 else "")
+def test_beginner_handout_needs_no_block_configuration(folder, lang, text):
+    """Every block a Beginner handout uses is already on; Junior even hides
+    the dialog."""
+    for phrase in ("Configure Action Blocks", "Configurer les blocs"):
+        assert phrase not in text, f"{folder} ({lang})"

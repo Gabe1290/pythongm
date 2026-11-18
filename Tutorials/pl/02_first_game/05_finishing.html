@@ -25,8 +25,8 @@
         <p>Otwórz <code>obj_player</code> w edytorze Blockly i dodaj zdarzenie <strong>Przy każdym kroku</strong>
         ze sprawdzaniem granic:</p>
         <ul>
-            <li>Jeśli x &lt; 0, ustaw x = 0</li>
-            <li>Jeśli x &gt; szerokość_sali &minus; szerokość_sprite'a, ustaw x = szerokość_sali &minus; szerokość_sprite'a</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &lt; 0 <em>then</em> <strong>Set variable</strong> x na 0</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &gt; 608 <em>then</em> <strong>Set variable</strong> x na 608 (608 = szerokość sali 640 &minus; szerokość sprite'a 32; te bloki pozostają po angielsku)</li>
         </ul>
         <p>To zapobiega wyjściu gracza poza ekran.</p>
     </div>

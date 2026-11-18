@@ -25,8 +25,8 @@
         <p>Open <code>obj_player</code> in the Blockly editor and add an <strong>Every step</strong> event
         with boundary checks:</p>
         <ul>
-            <li>If x &lt; 0, set x = 0</li>
-            <li>If x &gt; room_width &minus; sprite_width, set x = room_width &minus; sprite_width</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &lt; 0 <em>then</em> <strong>Set variable</strong> x to 0</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &gt; 608 <em>then</em> <strong>Set variable</strong> x to 608 (608 = room width 640 &minus; sprite width 32)</li>
         </ul>
         <p>This prevents the player from leaving the screen.</p>
     </div>

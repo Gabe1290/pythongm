@@ -29,17 +29,17 @@ A basket that slides left and right along the bottom of the room. Fruit and bomb
 
 ## Phase 3: Catching and Avoiding
 
-- [ ] **8.** In `obj_player`, **Create** event: *Set score to 0*. **Draw** event: *Draw score at x 10, y 10*.
-- [ ] **9.** Add **Collision with obj_fruit**: *Add 10 to score*, then *Destroy other instance* (the fruit, not the basket!).
-- [ ] **10.** Add **Collision with obj_bomb**: *Restart Room*.
+- [ ] **8.** In `obj_player`, **When created** event: *Set score to 0*. **When drawing** event: *Draw score at x 10, y 10*.
+- [ ] **9.** Add **When colliding with obj_fruit**: *Add 10 to score*, then *Destroy other instance* (the fruit, not the basket!).
+- [ ] **10.** Add **When colliding with obj_bomb**: *Restart Room*.
 
 > DONE: **You should see:** press **F5**. Catching a fruit adds 10 to the score and the fruit disappears. Touching a bomb puts everything back where it started, score included.
 
 ## Phase 4: Winning
 
-- [ ] **11.** Create `obj_win_text`. **Draw** event: *Draw text* "YOU WIN!" at x 412, y 320 and "Press SPACE to play again" at x 340, y 400. **Key press: space**: *Restart game*.
+- [ ] **11.** Create `obj_win_text`. **When drawing** event: *Draw text* "YOU WIN!" at x 412, y 320 and "Press SPACE to play again" at x 340, y 400. **Key press: space**: *Restart game*.
 - [ ] **12.** Create `room_win` with a bright background color, and place one `obj_win_text` in it.
-- [ ] **13.** In `obj_player`, add a **Step** event: *If count of* `obj_fruit` *equals 0* then *Go to room* `room_win`.
+- [ ] **13.** In `obj_player`, add a **Every step** event: **If** *count of object* `obj_fruit` `==` 0 *then* *Go to room* `room_win`.
 
 > DONE: **You should see:** press **F5**. Collect every fruit and the YOU WIN! room appears. SPACE starts a new game.
 
@@ -56,10 +56,10 @@ either way — this is only worth doing once everything above already works.
 | What is wrong | Most likely cause | What to do |
 | The basket catches a fruit the instant the game starts | A fruit was placed too close to the basket's own starting spot | Move that fruit further away, or move the basket's start position |
 | My basket disappears when it catches a fruit | I used *Destroy this instance* | Use **Destroy other instance** |
-| Touching a bomb does nothing | No **Collision with obj_bomb** on `obj_player`, or it uses the wrong action | Add the collision and use **Restart Room** |
-| The score does not show | No **Draw** event on the basket | Add *Draw score* to a Draw event |
+| Touching a bomb does nothing | No **When colliding with obj_bomb** on `obj_player`, or it uses the wrong action | Add the collision and use **Restart Room** |
+| The score does not show | No **When drawing** event on the basket | Add *Draw score* to a Draw event |
 | The game says YOU WIN! at once | There is no fruit in `room_main` (the count is already 0) | Place at least one fruit in the room |
-| I catch every fruit but nothing happens | The Step event or the room name is wrong | Check *If count of obj_fruit equals 0* and the room name `room_win` |
+| I catch every fruit but nothing happens | The Step event or the room name is wrong | Check **If** *count of object* `obj_fruit` `==` 0 and the room name `room_win` |
 | The win screen is blank | `obj_win_text` was not placed in `room_win`, or its Draw event is missing | Place one instance; check the Draw event exists |
 | SPACE does nothing on the win screen | The win room has no object with a **Key press: space** event | Add the event to `obj_win_text` |
 

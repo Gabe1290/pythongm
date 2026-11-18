@@ -111,13 +111,6 @@
     </div>
 
     <h2>Remember the Score and What's Held</h2>
-    <div class="info">
-        <strong>Before you continue:</strong> the <strong>Set variable</strong>
-        block is not turned on by default. Go to
-        <code>Tools &gt; Configure Action Blocks...</code>, expand the
-        <strong>Control</strong> category, check <strong>Set Variable</strong>,
-        then click OK.
-    </div>
     <div class="step">
         <ol>
             <li>Still in <code>obj_player</code>'s Blockly tab, add this event:</li>
@@ -143,11 +136,11 @@
         </ol>
         <div class="blockly-group">
             <span class="block block-event">When colliding with obj_fruit_cherry</span><br>
-            <span class="block block-control block-indent">If <span class="block-num">held_level</span> equals <span class="block-num">1</span> then</span><br>
+            <span class="block block-control block-indent">If variable <span class="block-num">held_level</span> == <span class="block-num">1</span> then</span><br>
             <span class="block block-instance block-indent2">Set Variable Variable: held_level Value: <span class="block-num">2</span> Scope: self Relative: off</span><br>
             <span class="block block-score block-indent2">Add to score <span class="block-num">10</span></span><br>
             <span class="block block-instance block-indent2">Set sprite to <span class="block-num">spr_basket_strawberry</span></span><br>
-            <span class="block block-control block-indent">Else</span><br>
+            <span class="block block-control block-indent">else</span><br>
             <span class="block block-score block-indent2">Add to score <span class="block-num">1</span></span><br>
             <span class="block block-instance block-indent">Destroy other instance</span>
         </div>
