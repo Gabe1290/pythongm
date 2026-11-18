@@ -394,13 +394,14 @@ def test_promoting_test_expression_to_a_block_kept_every_preset_showing_it():
     """Blockly audit B6c moved test_expression from GENERATED_ACTION_NAMES to
     a hand-written block. Six focused presets enabled it only through the
     generated set, so they silently lost it; PROMOTED_TO_HAND_WRITTEN_BLOCKS
-    keeps them as they were. Thymio never had it."""
+    keeps them as they were. Thymio never had it; junior dropped it on
+    2026-11-19 (its set is exactly what its tutorials use, and none does)."""
     from events.plugin_loader import load_all_plugins
     load_all_plugins()
     from config.blockly_config import PRESETS, GENERATED_ACTION_NAMES
     assert "test_expression" not in GENERATED_ACTION_NAMES
     missing = sorted(name for name, cfg in PRESETS.items()
-                     if name != "thymio" and "test_expression" not in cfg.enabled_blocks)
+                     if name not in ("thymio", "junior") and "test_expression" not in cfg.enabled_blocks)
     assert missing == []
 
 

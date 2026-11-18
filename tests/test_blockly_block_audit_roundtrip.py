@@ -588,6 +588,10 @@ CASES = {
     # 2026-11-18 -- a saved object name loads into the generated drop-down
     "test_instance_count_saved_object": {"create": {"actions": [
         {"action": "test_instance_count", "parameters": {"object": "obj_coin", "number": "0", "operation": "equal"}}]}},
+    # 2026-11-19 -- Pong's scoring: +1 to a global, relative
+    "set_variable_global_relative": {"create": {"actions": [
+        {"action": "set_variable", "parameters": {"variable": "p2score", "value": "1",
+                                                  "scope": "global", "relative": True}}]}},
     # 2026-11-18 -- older projects store the placeholder "box"
     "if_can_push_saved_box": {"create": {"actions": [
         {"action": "if_can_push", "parameters": {"direction": "facing", "object_type": "box",
@@ -622,6 +626,16 @@ DYNAMIC_BLOCK_DEFS = [
          {"name": "number", "display_name": "Number", "param_type": "number", "default_value": 0},
          {"name": "operation", "display_name": "Comparison", "param_type": "choice", "default_value": "equal",
           "choices": ["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]},
+     ]},
+    # 2026-11-19: set_variable is offered only as this generated block now
+    # (mirrors events/action_types.py's set_variable).
+    {"name": "set_variable", "display_name": "Set Variable",
+     "description": "", "category": "Control", "icon": "", "parameters": [
+         {"name": "variable", "display_name": "Variable", "param_type": "string", "default_value": ""},
+         {"name": "value", "display_name": "Value", "param_type": "string", "default_value": "0"},
+         {"name": "scope", "display_name": "Scope", "param_type": "choice", "default_value": "self",
+          "choices": ["self", "other", "global"]},
+         {"name": "relative", "display_name": "Relative", "param_type": "boolean", "default_value": False},
      ]},
     {"name": "move_to_contact", "display_name": "Move to Contact",
      "description": "", "category": "Movement", "icon": "", "parameters": [
@@ -802,6 +816,14 @@ def round_tripped():
         icp.setFieldValue('obj_wall', 'OBJECT_TYPE');
         saved.icp_saved = generateActionCode(icp).parameters.object_type;
         icp.dispose(true);
+        // set_variable: a "global." prefix typed in the name sets the scope
+        var svb = workspace.newBlock('custom_set_variable');
+        svb.setFieldValue('global.p2score', 'VARIABLE');
+        saved.setvar_prefixed = generateActionCode(svb).parameters;
+        svb.setFieldValue('lives_left', 'VARIABLE');
+        svb.setFieldValue('global', 'SCOPE');
+        saved.setvar_plain = generateActionCode(svb).parameters;
+        svb.dispose(true);
         window.blocklyApi.setAssetLists({objects: []});
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
@@ -1450,3 +1472,25 @@ class TestIfCanPushObjectFieldIsADropdown:
         assert params["object_type"] == "box"
         assert params["then_action"] == "push_and_move"
         assert params["else_action"] == "stop_movement"
+
+
+class TestSetVariableIsTheGeneratedBlock:
+    """2026-11-19: the toolbox offers one Set Variable -- the generated block,
+    with Scope and Relative (Pong adds 1 to a global score with it)."""
+
+    def test_pongs_relative_global_score_survives_load_and_save(self, round_tripped):
+        params = _params(round_tripped, "set_variable_global_relative")
+        assert params["variable"] == "p2score"
+        assert params["scope"] == "global"
+        assert params["relative"] is True
+        assert str(params["value"]) == "1"
+
+    def test_a_typed_global_prefix_becomes_the_scope(self, round_tripped):
+        params = round_tripped["__value_blocks_saved"]["setvar_prefixed"]
+        assert params["variable"] == "p2score"
+        assert params["scope"] == "global"
+
+    def test_a_plain_name_keeps_the_chosen_scope(self, round_tripped):
+        params = round_tripped["__value_blocks_saved"]["setvar_plain"]
+        assert params["variable"] == "lives_left"
+        assert params["scope"] == "global"

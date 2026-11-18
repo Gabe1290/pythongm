@@ -8,7 +8,7 @@
 
 ## Огляд
 
-Цей пресет вмикає **21** типів подій і **122** типів дій.
+Цей пресет вмикає **21** типів подій і **123** типів дій.
 
 ---
 
@@ -55,6 +55,7 @@
 | Рух до контакту | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Обернути горизонтально | `reverse_horizontal` | — |
 | Обернути вертикально | `reverse_vertical` | — |
+| Задати напрямок | `set_direction` | `direction` |
 | Задати напрямок і швидкість | `set_direction_speed` | `direction`, `speed` |
 | Задати тертя | `set_friction` | `friction` |
 | Задати гравітацію | `set_gravity` | `direction`, `gravity` |

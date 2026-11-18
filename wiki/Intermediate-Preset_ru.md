@@ -8,7 +8,7 @@
 
 ## Обзор
 
-Этот пресет включает **21** типов событий и **122** типов действий.
+Этот пресет включает **21** типов событий и **123** типов действий.
 
 ---
 
@@ -55,6 +55,7 @@
 | Движение до контакта | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Обратить горизонтально | `reverse_horizontal` | — |
 | Обратить вертикально | `reverse_vertical` | — |
+| Задать направление | `set_direction` | `direction` |
 | Задать направление и скорость | `set_direction_speed` | `direction`, `speed` |
 | Задать трение | `set_friction` | `friction` |
 | Задать гравитацию | `set_gravity` | `direction`, `gravity` |

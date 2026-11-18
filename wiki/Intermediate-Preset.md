@@ -8,7 +8,7 @@
 
 ## Overview
 
-This preset enables **21** event types and **122** action types.
+This preset enables **21** event types and **123** action types.
 
 ---
 
@@ -55,6 +55,7 @@ This preset enables **21** event types and **122** action types.
 | Move to Contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Reverse Horizontal | `reverse_horizontal` | — |
 | Reverse Vertical | `reverse_vertical` | — |
+| Set Direction | `set_direction` | `direction` |
 | Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
 | Set Friction | `set_friction` | `friction` |
 | Set Gravity | `set_gravity` | `direction`, `gravity` |

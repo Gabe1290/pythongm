@@ -58,6 +58,12 @@ raw ActionType text, via `get_translated_action_display_name` /
 # --------------------------------------------------------------------------- #
 
 ACTION_TRANSLATIONS = {
+    # 2026-11-19: generated since their hand-written toolbox duplicates were
+    # removed; names from tools/action_ref_i18n.py ACTIONS_FR.
+    "set_variable": {"fr": {"display_name": "Définir une variable", "description": "Définir une variable d'instance ou globale"}},
+    "set_speed": {"fr": {"display_name": "Définir la vitesse", "description": "Définir la vitesse de déplacement (magnitude)"}},
+    "set_direction": {"fr": {"display_name": "Définir la direction", "description": "Définir la direction du mouvement"}},
+    "exit_event": {"fr": {"display_name": "Quitter l'événement", "description": "Arrêter l'exécution des actions restantes de cet événement"}},
     "bounce": {"fr": {"display_name": "Rebondir", "description": "Rebondir sur les objets solides"}},
     "burst_particles": {"fr": {"display_name": "Explosion de particules", "description": "Émettre particules une fois"}},
     "change_instance": {"fr": {"display_name": "Changer d'instance", "description": "Se transformer en un autre type d'objet"}},
@@ -216,6 +222,7 @@ PARAM_LABEL_TRANSLATIONS = {
         "Question": "Question",
         "Radius": "Rayon",
         "Relative": "Relatif",
+        "Scope": "Portée",
         "Room": "Salle",
         "Script": "Script",
         "Shape": "Forme",

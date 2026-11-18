@@ -40,6 +40,11 @@ GROUP_COLORS = {
 # `categories` dict (the live toolbox's own source of truth for which
 # category a hand-written block belongs to).
 _LEGACY_SOUND_BLOCKS = {"music_play", "music_stop", "sound_play"}
+# Hand-written blocks dropped from the toolbox 2026-11-19 because they
+# duplicated the generated block for the same action; still defined so old
+# workspace XML loads, so they keep the colour of their former category.
+_LEGACY_DEDUPED_BLOCKS = {"set_speed": "Movement", "set_direction": "Movement",
+                          "set_variable": "Control", "exit_event": "Control"}
 
 
 def _category_of_block():
@@ -63,6 +68,7 @@ def _category_of_block():
             category_of[block_type] = cat
     for name in _LEGACY_SOUND_BLOCKS:
         category_of[name] = "Sound"
+    category_of.update(_LEGACY_DEDUPED_BLOCKS)
     return category_of
 
 

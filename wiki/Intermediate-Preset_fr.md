@@ -8,7 +8,7 @@
 
 ## Aperçu
 
-Ce préréglage active **21** types d'événements et **122** types d'actions.
+Ce préréglage active **21** types d'événements et **123** types d'actions.
 
 ---
 
@@ -55,6 +55,7 @@ Ce préréglage active **21** types d'événements et **122** types d'actions.
 | Déplacer jusqu'au contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverser horizontalement | `reverse_horizontal` | — |
 | Inverser verticalement | `reverse_vertical` | — |
+| Définir la direction | `set_direction` | `direction` |
 | Définir direction et vitesse | `set_direction_speed` | `direction`, `speed` |
 | Définir le frottement | `set_friction` | `friction` |
 | Définir la gravité | `set_gravity` | `direction`, `gravity` |

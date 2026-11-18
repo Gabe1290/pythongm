@@ -8,7 +8,7 @@
 
 ## Panoramica
 
-Questo preset abilita **21** tipi di eventi e **122** tipi di azioni.
+Questo preset abilita **21** tipi di eventi e **123** tipi di azioni.
 
 ---
 
@@ -55,6 +55,7 @@ Questo preset abilita **21** tipi di eventi e **122** tipi di azioni.
 | Muovi fino al contatto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverti orizzontale | `reverse_horizontal` | — |
 | Inverti verticale | `reverse_vertical` | — |
+| Imposta direzione | `set_direction` | `direction` |
 | Imposta direzione e velocità | `set_direction_speed` | `direction`, `speed` |
 | Imposta attrito | `set_friction` | `friction` |
 | Imposta gravità | `set_gravity` | `direction`, `gravity` |

@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Este preajuste habilita **21** tipos de eventos y **122** tipos de acciones.
+Este preajuste habilita **21** tipos de eventos y **123** tipos de acciones.
 
 ---
 
@@ -55,6 +55,7 @@ Este preajuste habilita **21** tipos de eventos y **122** tipos de acciones.
 | Mover hasta el contacto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Invertir horizontal | `reverse_horizontal` | — |
 | Invertir vertical | `reverse_vertical` | — |
+| Establecer dirección | `set_direction` | `direction` |
 | Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
 | Establecer fricción | `set_friction` | `friction` |
 | Establecer gravedad | `set_gravity` | `direction`, `gravity` |

@@ -8,7 +8,7 @@
 
 ## Pregled
 
-Ta preset omogoča **21** vrst dogodkov in **122** vrst dejanj.
+Ta preset omogoča **21** vrst dogodkov in **123** vrst dejanj.
 
 ---
 
@@ -55,6 +55,7 @@ Ta preset omogoča **21** vrst dogodkov in **122** vrst dejanj.
 | Premakni do stika | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Obrni vodoravno | `reverse_horizontal` | — |
 | Obrni navpično | `reverse_vertical` | — |
+| Nastavi smer | `set_direction` | `direction` |
 | Nastavi smer in hitrost | `set_direction_speed` | `direction`, `speed` |
 | Nastavi trenje | `set_friction` | `friction` |
 | Nastavi gravitacijo | `set_gravity` | `direction`, `gravity` |

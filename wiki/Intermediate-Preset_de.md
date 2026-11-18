@@ -8,7 +8,7 @@
 
 ## Übersicht
 
-Dieses Preset aktiviert **21** Ereignistypen und **122** Aktionstypen.
+Dieses Preset aktiviert **21** Ereignistypen und **123** Aktionstypen.
 
 ---
 
@@ -55,6 +55,7 @@ Dieses Preset aktiviert **21** Ereignistypen und **122** Aktionstypen.
 | Bis zum Kontakt bewegen | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Horizontal umkehren | `reverse_horizontal` | — |
 | Vertikal umkehren | `reverse_vertical` | — |
+| Richtung setzen | `set_direction` | `direction` |
 | Richtung und Geschwindigkeit setzen | `set_direction_speed` | `direction`, `speed` |
 | Reibung setzen | `set_friction` | `friction` |
 | Schwerkraft setzen | `set_gravity` | `direction`, `gravity` |

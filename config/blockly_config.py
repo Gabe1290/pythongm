@@ -314,6 +314,10 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
     "check_empty", "comment", "else_action", "end_block",
     "execute_script", "if_collision", "if_collision_at", "if_object_exists",
     "repeat", "start_block", "test_chance", "test_question",
+    # 2026-11-19: their hand-written toolbox duplicates were removed (the
+    # page never loads these actions as the hand-written block, so the
+    # generated one was always the real one).
+    "set_variable", "exit_event",
     # Game
     "draw_arrow", "draw_background", "draw_ellipse", "draw_line",
     "draw_scaled_text", "draw_sprite", "draw_variable", "fill_color",
@@ -331,6 +335,7 @@ GENERATED_ACTION_NAMES: frozenset = frozenset({
     "bounce", "jump_to_random", "jump_to_start", "move_grid",
     "move_to_contact", "move_towards_point", "set_direction_speed",
     "start_moving_direction", "test_alignment",
+    "set_speed", "set_direction",  # 2026-11-19, as set_variable above
     # Particles
     "burst_particles", "clear_particles", "create_emitter",
     "create_particle_system", "create_particle_type", "destroy_emitter",
@@ -650,7 +655,10 @@ class BlocklyConfig:
         "room_restart", "room_goto", "game_end", "restart_game",
         "show_highscore",
         # Control and output
-        "if_condition", "set_variable", "test_expression",
+        # test_expression dropped 2026-11-19: Tutorial 2's edge check is now
+        # built with the If block's "my position" option, so no junior
+        # tutorial uses it (and junior has no Values blocks to fill it).
+        "if_condition", "set_variable",
         "test_instance_count", "start_block", "end_block", "else_action",
         "output_message",
     })

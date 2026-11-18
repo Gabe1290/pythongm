@@ -3341,8 +3341,8 @@
                         '<block type="move_stop"></block>',
                         '<block type="move_direction"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="move_free"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
-                        '<block type="set_speed"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
-                        '<block type="set_direction"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        // set_speed / set_direction / set_variable / exit_event: no
+                        // hand-written entry here -- see the note in 'Control'.
                         '<block type="move_towards"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="move_snap_to_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
                         '<block type="move_jump_to"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
@@ -3413,10 +3413,19 @@
                     color: '#FFAB19',
                     blocks: [
                         '<block type="if_condition"><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
-                        '<block type="set_variable"><field name="VARIABLE">score</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="test_expression"><value name="CONDITION"><block type="logic_compare"><field name="OP">GT</field><value name="A"><block type="value_score"></block></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block></value></block>',
-                        '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
-                        '<block type="exit_event"></block>'
+                        '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
+                        // No hand-written set_variable / set_speed / set_direction /
+                        // exit_event
+                        // here (2026-11-19): those actions have no
+                        // actionToBlockType entry, so registerCustomBlocks
+                        // already offers their generated custom_* block --
+                        // the one a saved project reloads as, and the one
+                        // the tutorials show (Set Variable has Scope and
+                        // Relative, which Pong's scoring needs). Listing the
+                        // hand-written ones too put two look-alike blocks
+                        // in the drawer. Their definitions stay, so old
+                        // workspace XML still loads.
                     ]
                 },
                 'Room': {
@@ -3842,6 +3851,21 @@
                 } else {
                     var val = block.getFieldValue(fieldName);
                     params[param.name] = val !== null ? val : (param.default_value || '');
+                }
+            }
+
+            // set_variable (2026-11-19): the hand-written block that used to
+            // sit in the toolbox split a "global." / "self." / "other."
+            // prefix in the name into the scope; the runtime reads only
+            // `scope`, so "global.p2score" with Scope "self" would silently
+            // make an instance variable. Keep that behaviour here -- an
+            // explicit prefix wins over the Scope drop-down.
+            if (def.name === 'set_variable' && typeof parseScopedVariable === 'function'
+                    && typeof params.variable === 'string') {
+                var scopedVar = parseScopedVariable(params.variable);
+                if (scopedVar.name !== params.variable.trim()) {
+                    params.variable = scopedVar.name;
+                    params.scope = (scopedVar.scope === 'sel') ? 'self' : scopedVar.scope;
                 }
             }
 

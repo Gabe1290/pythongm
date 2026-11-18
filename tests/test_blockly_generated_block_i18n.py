@@ -180,7 +180,7 @@ def test_hand_written_blocks_are_unaffected_by_this_change(_qapp):
     before this fix -- JS is what skips creating a block for them), just
     with their own text untouched since they have no entry in
     ACTION_TRANSLATIONS."""
-    assert "set_variable" not in GENERATED_ACTION_NAMES  # hand-written, not this fix's concern
+    assert "if_condition" not in GENERATED_ACTION_NAMES  # hand-written, not this fix's concern
 
     from events.plugin_loader import load_all_plugins
     load_all_plugins()
@@ -198,8 +198,8 @@ def test_hand_written_blocks_are_unaffected_by_this_change(_qapp):
     widget = BlocklyWidget(ide)
     try:
         defs = _captured_action_defs(widget)
-        assert "set_variable" in defs
-        assert defs["set_variable"]["display_name"] == ACTION_TYPES["set_variable"].display_name
+        assert "if_condition" in defs
+        assert defs["if_condition"]["display_name"] == ACTION_TYPES["if_condition"].display_name
     finally:
         dispose_qt_widget(widget)
         manager.set_language(previous_language)
