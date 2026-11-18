@@ -588,6 +588,10 @@ CASES = {
     # 2026-11-18 -- a saved object name loads into the generated drop-down
     "test_instance_count_saved_object": {"create": {"actions": [
         {"action": "test_instance_count", "parameters": {"object": "obj_coin", "number": "0", "operation": "equal"}}]}},
+    # 2026-11-18 -- older projects store the placeholder "box"
+    "if_can_push_saved_box": {"create": {"actions": [
+        {"action": "if_can_push", "parameters": {"direction": "facing", "object_type": "box",
+                                                 "then_action": "push_and_move", "else_action": "stop_movement"}}]}},
     "test_expression_flat": {"create": {"actions": [
         {"action": "test_expression", "parameters": {"expression": "score > 3"}},
         {"action": "set_hspeed", "parameters": {"value": "5"}}]}},
@@ -789,6 +793,15 @@ def round_tripped():
         ifb.setFieldValue('solid', 'COLLISION_OBJECT');
         saved.if_coll_saved = generateActionCode(ifb).parameters.object;
         ifb.dispose(true);
+        // If can push (Sokoban): its pushed-object field too.
+        var icp = workspace.newBlock('if_can_push');
+        var icpField = icp.getField('OBJECT_TYPE');
+        saved.icp_is_dropdown = icpField instanceof Blockly.FieldDropdown;
+        saved.icp_options = (icpField.getOptions ? icpField.getOptions(false).map(function(o) { return o[1]; }) : []);
+        saved.icp_initial = icp.getFieldValue('OBJECT_TYPE');
+        icp.setFieldValue('obj_wall', 'OBJECT_TYPE');
+        saved.icp_saved = generateActionCode(icp).parameters.object_type;
+        icp.dispose(true);
         window.blocklyApi.setAssetLists({objects: []});
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
@@ -1417,3 +1430,23 @@ class TestIfBlockObjectFieldsAreDropdowns:
         saved = round_tripped["__value_blocks_saved"]
         assert saved["if_count_saved"] == "obj_wall"
         assert saved["if_coll_saved"] == "solid"
+
+
+class TestIfCanPushObjectFieldIsADropdown:
+    """2026-11-18: If can push's object field was a text box holding the
+    placeholder "box"; it is now the project's object drop-down."""
+
+    def test_lists_the_project_objects_and_starts_unset(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["icp_is_dropdown"] is True
+        assert {"obj_wall", "obj_ball"} <= set(saved["icp_options"])
+        assert saved["icp_initial"] == ""
+
+    def test_the_picked_object_is_what_gets_saved(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["icp_saved"] == "obj_wall"
+
+    def test_an_old_saved_box_still_round_trips(self, round_tripped):
+        params = _params(round_tripped, "if_can_push_saved_box")
+        assert params["object_type"] == "box"
+        assert params["then_action"] == "push_and_move"
+        assert params["else_action"] == "stop_movement"

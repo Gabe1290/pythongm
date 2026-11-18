@@ -1135,7 +1135,7 @@ function generateActionCodeInner(block, customBlockDefs, callStack) {
         case 'if_can_push':
             return {action: 'if_can_push', parameters: {
                 direction: block.getFieldValue('DIRECTION') || 'facing',
-                object_type: block.getFieldValue('OBJECT_TYPE') || 'box',
+                object_type: block.getFieldValue('OBJECT_TYPE') || '',
                 then_action: block.getFieldValue('THEN_ACTION') || 'push_and_move',
                 else_action: block.getFieldValue('ELSE_ACTION') || 'stop_movement'
             }};

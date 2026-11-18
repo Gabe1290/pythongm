@@ -447,7 +447,7 @@
             </block>
             <block type="controls_whileUntil"></block>
             <block type="if_can_push">
-                <field name="OBJECT_TYPE">box</field>
+                <field name="OBJECT_TYPE"></field>
                 <field name="DIRECTION">facing</field>
                 <field name="THEN_ACTION">push_and_move</field>
                 <field name="ELSE_ACTION">stop_movement</field>
@@ -1394,7 +1394,10 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('if_can_push_prefix', window.BLOCKLY_LANG) || "If can push")
-                    .appendField(new Blockly.FieldTextInput("box"), "OBJECT_TYPE")
+                    // The pushed object: the project's object drop-down (it was a
+                    // text box holding the placeholder "box"). Informational only --
+                    // the runtime pushes whatever the collision is with.
+                    .appendField(createAssetField('objects', '', [[_assetEmptyLabel(), '']]), "OBJECT_TYPE")
                     .appendField(getBlockMessage('if_can_push_direction', window.BLOCKLY_LANG) || "in direction")
                     .appendField(new Blockly.FieldDropdown([
                         ["facing", "facing"]
@@ -2999,7 +3002,7 @@
                     break;
 
                 case 'if_can_push':
-                    block.setFieldValue(params.object_type || 'box', 'OBJECT_TYPE');
+                    block.setFieldValue(params.object_type || '', 'OBJECT_TYPE');
                     block.setFieldValue(params.direction || 'facing', 'DIRECTION');
                     block.setFieldValue(params.then_action || 'push_and_move', 'THEN_ACTION');
                     block.setFieldValue(params.else_action || 'stop_movement', 'ELSE_ACTION');
@@ -3403,7 +3406,7 @@
                         '<block type="instance_destroy_other"></block>',
                         '<block type="instance_destroy_object"></block>',
                         '<block type="instance_create"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
-                        '<block type="if_can_push"><field name="OBJECT_TYPE">box</field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
+                        '<block type="if_can_push"><field name="OBJECT_TYPE"></field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
                     ]
                 },
                 'Control': {
