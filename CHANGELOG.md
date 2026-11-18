@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-11-18
+
+### Fixed
+- **The IDE could close straight away on every launch, for good.** A damaged
+  entry in a user's settings file (`~/.pygamemaker/config.json`) stopped the
+  IDE at startup, and the release build exited without any message; logging
+  out, rebooting or downloading again did not help (seen in a classroom on
+  Debian 12). The IDE now sets the damaged file aside
+  (`config.json.broken-<date>`, kept for diagnosis), records the error in
+  `~/.pygamemaker/startup_error.log` and starts with default settings. If it
+  still cannot start, it shows an error dialog (French and English) instead
+  of vanishing. A file named like the `~/PyGameMaker Projects` folder is no
+  longer fatal either, and native crashes are recorded in
+  `~/.pygamemaker/crash.log`.
+- **"Only one IDE at a time" is now per user, not per computer.** The lock
+  was shared by every account on the machine, so one user's IDE — or a stuck
+  one — silently turned every other launch away. It is now private to each
+  user (on Linux, in the session's runtime folder, emptied at logout).
+- The IDE can be stopped normally again: the sound library had been
+  swallowing the stop signal (`kill`, logout), so a stuck IDE kept running.
+- A second launch now brings back an IDE whose window was hidden, instead of
+  showing nothing.
+- On GNOME (seen on Ubuntu 26.04) the IDE no longer aborts before its window
+  appears; Qt now uses its generic platform theme there.
+- Thymio simulator: the ground sensors read the floor instead of the robot's
+  own shell, so black tape and table edges are detected; a button's handler
+  also runs on release (as on the real robot), and a draw event on a robot
+  object now draws.
+- HTML5 export: destroying all instances of an object (target "object") now
+  works.
+- The main toolbar's Save icon is a floppy disk, like every editor's.
+- Student handouts: French "MOT-CLÉ :" callouts no longer turn into
+  mis-coloured tip boxes, PDF text is left-aligned, and the Treasure Maze
+  handout no longer splits a table or callout across pages.
+- Polish: the Thymio robot diagram's labels and tooltips are translated.
+
+### Added
+- **Send to Thymio robot** (File menu): sends a program straight to a real
+  Thymio II through the Thymio Suite's device manager, without Aseba Studio.
+  New sample `thymio_hw_test` (six small programs for a first run on a real
+  robot).
+- The Thymio simulator is audible: tones and the factory sounds play through
+  the computer's speaker (press M to mute).
+- Thymio simulator activity sheets in French (nine sheets, with answer key,
+  PDF and ODT) and three starter projects.
+- Preferences → Extensions can switch an extension's interface on (Thymio's
+  tab and menus no longer need a config edit).
+- 2.5D view: `set_billboard_rotation` shows different sides of a billboard
+  as the camera walks around it; `draw_minimap` can draw a breadcrumb trail
+  of visited cells (`show_trail`, `trail_color`).
+- Junior lessons: "My First Maze" and "Treasure Maze" (90 minutes each,
+  English and French), with starter and finished projects, student handouts
+  and teacher guides.
+
 ## [1.6.0] - 2026-11-02
 
 ### Added
