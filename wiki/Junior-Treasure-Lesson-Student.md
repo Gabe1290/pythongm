@@ -161,12 +161,12 @@ Open **obj_goal**. This one asks a question: are there any gems left? Use the
 | Where | Blocks |
 |---|---|
 | The event | **When colliding with** obj_hero |
-| Under the event | **If** count of object: type `obj_gem` in the box, keep `==`, and make the number **0** |
+| Under the event | **If** count of object: pick `obj_gem` in the list, keep `==`, and make the number **0** |
 | Inside **then** | **Show message** "You win!", then **Restart Game** under it |
 | Inside **else** | **Show message** "Collect every gem first!" |
 
-> INFO: the **If** block starts with the name `obj_coin` in its box — click it
-> and type `obj_gem` instead. If there are no gems left (0), the blocks inside
+> INFO: the **If** block's object box starts empty — click it
+> and pick `obj_gem` in the list. If there are no gems left (0), the blocks inside
 > **then** happen; otherwise the blocks inside **else** happen.
 
 ### 5g. Game over (2 min)

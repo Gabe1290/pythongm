@@ -471,14 +471,21 @@ def test_block_labels_in_the_student_sheets_are_the_real_ones():
         assert label in en_student, label
     # The nested If block (hand-written, English labels in every language).
     blocks_js = (blockly / "blockly_blocks.js").read_text(encoding="utf-8")
-    if_block = blocks_js[blocks_js.index("Blockly.Blocks['if_condition']"):][:2500]
-    for word in ('"If"', '"count of"', '"then"', '"else"', '"obj_coin"'):
+    if_block = blocks_js[blocks_js.index("Blockly.Blocks['if_condition']"):][:3500]
+    for word in ('"If"', '"count of"', '"then"', '"else"'):
         assert word in if_block, word
+    # Its object box is a drop-down that starts empty (2026-11-18), so the
+    # sheets say to pick obj_gem from the list, not to type it over obj_coin.
+    assert 'ifConditionObjectField([])' in if_block
     for student in (en_student, fr_student):
-        for word in ("**If**", "**then**", "**else**", "`obj_gem`", "`obj_coin`", "`==`"):
+        for word in ("**If**", "**then**", "**else**", "`obj_gem`", "`==`"):
             assert word in student, word
+        for gone in ("obj_coin", "type `obj_gem`", "écris `obj_gem`"):
+            assert gone not in student, gone
         for gone in ("Test Instance Count", "Start Block", "End Block", "Début de Bloc"):
             assert gone not in student, gone
+    assert "pick `obj_gem` in the list" in en_student
+    assert "choisis `obj_gem` dans la liste" in fr_student
     for action in ("jump_to_start", "restart_game"):                  # generated blocks
         name = ACTION_TYPES[action].display_name
         assert name in en_student, (action, name)

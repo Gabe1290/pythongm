@@ -138,8 +138,8 @@ Solid.
 - 5f, the goal: the **If** block asks how many gems exist (*count of object
   obj_gem == 0*). Blocks placed in its **then** slot run when the answer is yes,
   blocks in its **else** slot when it is no. This is the one new idea of the
-  lesson: take your time with it. The block starts with the object name
-  `obj_coin`, so students must type `obj_gem`. Its words (If, count of, then,
+  lesson: take your time with it. The block's object box starts empty;
+  students pick `obj_gem` from its list. Its words (If, count of, then,
   else) stay in English even when the IDE is in French.
 - 5g, game over: the **Other event** block has a drop-down; choose **No More
   Lives**. **Restart Game** starts everything again: score 0, 3 lives, every gem,
@@ -198,7 +198,7 @@ It" questions work as an exit ticket.
 | Key does nothing | **Destroy all instances of** obj_door missing or set to the wrong object |
 | The door can never be opened | The key is behind the door. Move it |
 | Goal always says "Collect every gem first!" | A gem is somewhere unreachable, or the number in the **If** block is not 0 |
-| Goal wins at once | The **If** block is missing, or its object is not obj_gem (it starts as obj_coin) |
+| Goal wins at once | The **If** block is missing, or its object is not obj_gem (it starts empty) |
 | Bomb does nothing | The event is on the hero: **When colliding with** obj_bomb |
 | Hero cannot dodge a bomb | The bomb blocks the whole path. Move it to the edge |
 | Doors stay after the key in the browser | An old build of the export. Update PyGameMaker and export again |

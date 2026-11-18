@@ -161,12 +161,12 @@ oui) et **else** (quand la réponse est non).
 | Où | Blocs |
 |---|---|
 | L'événement | **Quand collision avec** obj_hero |
-| Sous l'événement | **If** count of object : écris `obj_gem` dans la case, garde `==`, et mets le nombre **0** |
+| Sous l'événement | **If** count of object : choisis `obj_gem` dans la liste, garde `==`, et mets le nombre **0** |
 | Dans **then** | **Afficher message** « Tu as gagné ! », puis **Redémarrer le Jeu** en dessous |
 | Dans **else** | **Afficher message** « Ramasse toutes les gemmes d'abord ! » |
 
-> INFO : le bloc **If** commence avec le nom `obj_coin` dans sa case — clique
-> dedans et écris `obj_gem` à la place. S'il ne reste aucune gemme (0), les
+> INFO : la case d'objet du bloc **If** commence vide — clique
+> dedans et choisis `obj_gem` dans la liste. S'il ne reste aucune gemme (0), les
 > blocs dans **then** se passent, sinon ceux dans **else** se passent. (Les mots
 > du bloc restent en anglais, même en français.)
 

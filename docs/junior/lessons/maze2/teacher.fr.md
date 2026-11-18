@@ -142,8 +142,8 @@ Solides.
 - 5f, le but : le bloc **If** demande combien de gemmes existent (*count of
   object obj_gem == 0*). Les blocs placés dans son emplacement **then** se passent
   quand la réponse est oui, ceux de son emplacement **else** quand elle est non.
-  C'est la seule idée nouvelle de la leçon : prends ton temps. Le bloc commence
-  avec le nom d'objet `obj_coin`, donc les élèves doivent écrire `obj_gem`. Ses
+  C'est la seule idée nouvelle de la leçon : prends ton temps. La case d'objet du
+  bloc commence vide ; les élèves choisissent `obj_gem` dans sa liste. Ses
   mots (If, count of, then, else) restent en anglais même quand l'IDE est en
   français.
 - 5g, fin de partie : le bloc **Autre événement** a une liste déroulante ; choisis
@@ -215,7 +215,7 @@ de sortie.
 | La clé ne fait rien | **Détruire toutes les instances de** obj_door manque ou vise le mauvais objet |
 | La porte ne peut jamais s'ouvrir | La clé est derrière la porte. Déplace-la |
 | Le but dit toujours « Collect every gem first! » | Une gemme est quelque part d'inatteignable, ou le nombre du bloc **If** n'est pas 0 |
-| Le but gagne tout de suite | Le bloc **If** manque, ou son objet n'est pas obj_gem (il commence à obj_coin) |
+| Le but gagne tout de suite | Le bloc **If** manque, ou son objet n'est pas obj_gem (sa case commence vide) |
 | La bombe ne fait rien | L'événement est sur le héros : **Quand collision avec** obj_bomb |
 | Le héros ne peut pas esquiver une bombe | La bombe bloque tout le chemin. Mets-la au bord |
 | Les portes restent après la clé dans le navigateur | Ancienne version de l'export. Mets PyGameMaker à jour et exporte de nouveau |
