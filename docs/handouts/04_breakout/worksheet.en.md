@@ -38,7 +38,7 @@ Write the action that does each job.
 
 [[notes:3]]
 
-3. In the No More Lives event, the actions are Show message, Show Highscore, End Game. Why do the tutorial and your teacher want them in this order?
+3. In the No More Lives event, the actions are Show message, Show High-Score Table, End Game. Why do the tutorial and your teacher want them in this order?
 
 [[notes:3]]
 

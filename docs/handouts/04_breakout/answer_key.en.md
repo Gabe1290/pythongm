@@ -14,6 +14,6 @@
 
 1. Set its **Parent** to `obj_brick_parent` (and Solid). No, the ball's event for the parent already covers it.
 2. Up and to the right. On the screen y grows downward, so a negative vertical speed means up.
-3. Show Highscore must come before End Game because the tutorial says ending the game first can stop the highscore from appearing. (In the desktop player both orders work; the safe order is still best.)
+3. Show High-Score Table must come before End Game because the tutorial says ending the game first can stop the highscore from appearing. (In the desktop player both orders work; the safe order is still best.)
 
 **Parts D and E:** completion and reflection.

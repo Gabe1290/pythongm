@@ -68,7 +68,7 @@ Le tutoriel annonce 10 à 15 minutes pour un·e élève à l'aise ; prévoyez du
 
 **Partie A :** 1-C, 2-B, 3-A, 4-D.
 
-**Partie B :** 1. `obj_player`, En collision avec `obj_fruit`. 2. `obj_player`, En collision avec `obj_bomb`. 3. `obj_player`, Pas. 4. `obj_win_text`, Dessin. 5. `obj_win_text`, Touche pressée : espace.
+**Partie B :** 1. `obj_player`, Quand collision avec `obj_fruit`. 2. `obj_player`, Quand collision avec `obj_bomb`. 3. `obj_player`, À chaque étape. 4. `obj_win_text`, Quand dessiner. 5. `obj_win_text`, Touche pressée : espace.
 
 **Partie C :**
 

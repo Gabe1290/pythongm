@@ -47,7 +47,7 @@ Write the object and the event for each rule.
 <br>
 
 
-2. What would happen if the orange collision's *Go to room room_win* action were accidentally placed in the *Otherwise* branch instead of the *If* branch?
+2. What would happen if the orange collision's *Go to room room_win* action were accidentally placed in the *else* branch instead of the *then* branch?
 
 <br>
 

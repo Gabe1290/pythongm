@@ -75,11 +75,11 @@ For a 45-minute slot, do Phases 1-3 and leave Phase 4 as homework.
 
 **Part A:** 1-C, 2-D, 3-B, 4-A.
 
-**Part B:** 1. Keyboard: Left Arrow (held). 2. Create (on `obj_star`). 3. Collision with `obj_star` (on the player). 4. Outside Room (on `obj_star`). 5. Draw (on the controller).
+**Part B:** 1. Keyboard: Left Arrow (held). 2. When created / Create (on `obj_star`). 3. When colliding with `obj_star` / Collision (on the player). 4. Other event: Outside Room (on `obj_star`). 5. When drawing / Draw (on the controller).
 
 **Part C:**
 
-1. In the spawner's **Create** event (to start the timer) and at the end of **Alarm 0** (to restart it, so stars keep coming).
+1. In the spawner's **When created** event (to start the timer) and at the end of **When alarm 0 triggers** (to restart it, so stars keep coming).
 2. One per second (60 steps at 60 steps per second). Set the alarm to 30 for twice as often.
 3. The player would be destroyed when it touches a star (the game would seem to end); *Destroy other instance* removes the star.
 

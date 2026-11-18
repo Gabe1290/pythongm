@@ -82,7 +82,7 @@ For a 45-minute slot, do Phases 1-2 in class, Phase 3 as homework.
 
 **Part A:** 1-D, 2-C, 3-A, 4-B.
 
-**Part B:** 1. `obj_paddle_left`. 2. `obj_ball`. 3. The ball (its Collision with a goal event adds to the score). 4. `obj_score`. 5. The paddle's Collision with `obj_wall` event.
+**Part B:** 1. `obj_paddle_left`. 2. `obj_ball`. 3. The ball (its When colliding with a goal event adds to the score). 4. `obj_score`. 5. The paddle's When colliding with `obj_wall` event.
 
 **Part C:**
 

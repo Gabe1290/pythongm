@@ -38,7 +38,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 
 ## Partie C : Réfléchis
 
-1. La balle a les événements **En collision avec obj_wall** et **En collision avec obj_paddle_left**, tous deux avec *Rebondir*. Pourquoi faut-il un événement séparé pour chaque objet ?
+1. La balle a les événements **Quand collision avec obj_wall** et **Quand collision avec obj_paddle_left**, tous deux avec *Rebondir*. Pourquoi faut-il un événement séparé pour chaque objet ?
 
 <br>
 

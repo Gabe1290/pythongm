@@ -14,12 +14,12 @@
 
 **Partie A :** 1-C, 2-D, 3-B, 4-A.
 
-**Partie B :** 1. Clavier : Flèche gauche (maintenue). 2. Création (sur `obj_star`). 3. En collision avec `obj_star` (sur le joueur). 4. Hors de la salle (sur `obj_star`). 5. Dessin (sur le contrôleur).
+**Partie B :** 1. Clavier : Flèche gauche (maintenue). 2. Quand créé / Création (sur `obj_star`). 3. Quand collision avec `obj_star` / Collision (sur le joueur). 4. Autre événement : Hors de la salle (sur `obj_star`). 5. Quand dessiner / Dessin (sur le contrôleur).
 
 **Partie C :**
 
-1. Dans l'événement **Création** du générateur (pour lancer le minuteur) et à la fin de **Alarme 0** (pour le relancer, afin que les étoiles continuent d'arriver).
-2. Une par seconde (60 pas à 60 pas par seconde). Régler l'alarme à 30 pour en avoir deux fois plus.
+1. Dans l'événement **Quand créé** du générateur (pour lancer le minuteur) et à la fin de **Quand alarme 0 se déclenche** (pour le relancer, afin que les étoiles continuent d'arriver).
+2. Une par seconde (60 étapes à 60 étapes par seconde). Régler l'alarme à 30 pour en avoir deux fois plus.
 3. Le joueur serait détruit en touchant une étoile (le jeu semblerait s'arrêter) ; *Détruire l'autre instance* supprime l'étoile.
 
 **Parties D et E :** réalisation et bilan.

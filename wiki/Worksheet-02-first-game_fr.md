@@ -47,7 +47,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 <br>
 
 
-2. Ton jeu tourne à 60 pas par seconde. À quelle fréquence apparaît une nouvelle étoile, et comment la faire apparaître deux fois plus souvent ?
+2. Ton jeu tourne à 60 étapes par seconde. À quelle fréquence apparaît une nouvelle étoile, et comment la faire apparaître deux fois plus souvent ?
 
 <br>
 

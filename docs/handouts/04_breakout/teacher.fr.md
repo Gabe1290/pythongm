@@ -73,13 +73,13 @@ Pour une séance de 45 minutes, faites les sprites et la phase 1 lors de la prem
 
 **Partie A :** 1-C, 2-A, 3-B, 4-D.
 
-**Partie B :** 1. Inverser le mouvement horizontal. 2. Détruire l'autre instance. 3. Ajouter aux vies -1 (définir les vies, relatif -1). 4. Afficher un message. 5. Terminer le jeu.
+**Partie B :** 1. Inverser le mouvement horizontal. 2. Détruire l'autre instance. 3. Ajouter aux vies -1 (définir les vies, relatif -1). 4. Afficher message. 5. Terminer le jeu.
 
 **Partie C :**
 
 1. Régler son **Parent** sur `obj_brick_parent` (et Solide). Non, l'événement de la balle pour le parent la couvre déjà.
 2. Vers le haut et vers la droite. À l'écran, y augmente vers le bas ; une vitesse verticale négative signifie donc vers le haut.
-3. Afficher le tableau des meilleurs scores doit venir avant Terminer le jeu, car le tutoriel indique que terminer d'abord le jeu peut empêcher le tableau de s'afficher. (Sur le lecteur de bureau, les deux ordres fonctionnent ; l'ordre sûr reste préférable.)
+3. Afficher le tableau des scores doit venir avant Terminer le jeu, car le tutoriel indique que terminer d'abord le jeu peut empêcher le tableau de s'afficher. (Sur le lecteur de bureau, les deux ordres fonctionnent ; l'ordre sûr reste préférable.)
 
 **Parties D et E :** réalisation et bilan.
 

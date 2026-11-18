@@ -14,7 +14,7 @@
 
 **Partie A :** 1-D, 2-C, 3-A, 4-B.
 
-**Partie B :** 1. `obj_paddle_left`. 2. `obj_ball`. 3. La balle (son événement de collision avec un but ajoute au score). 4. `obj_score`. 5. L'événement En collision avec `obj_wall` de la raquette.
+**Partie B :** 1. `obj_paddle_left`. 2. `obj_ball`. 3. La balle (son événement de collision avec un but ajoute au score). 4. `obj_score`. 5. L'événement Quand collision avec `obj_wall` de la raquette.
 
 **Partie C :**
 

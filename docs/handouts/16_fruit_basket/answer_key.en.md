@@ -8,7 +8,7 @@
 
 **Part A:** 1-C, 2-B, 3-A, 4-D.
 
-**Part B:** 1. `obj_player`, Collision with `obj_fruit`. 2. `obj_player`, Collision with `obj_bomb`. 3. `obj_player`, Step. 4. `obj_win_text`, When drawing. 5. `obj_win_text`, Key press: space.
+**Part B:** 1. `obj_player`, When colliding with `obj_fruit`. 2. `obj_player`, When colliding with `obj_bomb`. 3. `obj_player`, Every step. 4. `obj_win_text`, When drawing. 5. `obj_win_text`, Key press: space.
 
 **Part C:**
 

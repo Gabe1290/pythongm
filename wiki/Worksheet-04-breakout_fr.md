@@ -56,7 +56,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 <br>
 
 
-3. Dans l'événement Plus de vies, les actions sont Afficher un message, Afficher le tableau des meilleurs scores, Terminer le jeu. Pourquoi le tutoriel et ton enseignant·e veulent-ils cet ordre ?
+3. Dans l'événement Plus de vies, les actions sont Afficher message, Afficher le tableau des scores, Terminer le jeu. Pourquoi le tutoriel et ton enseignant·e veulent-ils cet ordre ?
 
 <br>
 

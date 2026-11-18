@@ -31,7 +31,7 @@ Associe chaque mot à sa signification. Écris la lettre à côté du numéro.
 Écris l'objet et l'événement pour chaque règle.
 
 1. Devenir une fraise quand une cerise correspondante est attrapée : ______________________
-2. Créer une nouvelle cerise toutes les 90 pas : ______________________
+2. Créer une nouvelle cerise toutes les 90 étapes : ______________________
 3. Retirer un fruit qui tombe sans avoir été attrapé par le panier : ______________________
 4. Afficher le message VOUS AVEZ GAGNÉ ! : ______________________
 5. Redémarrer le jeu quand ESPACE est pressé sur l'écran de victoire : ______________________
@@ -47,7 +47,7 @@ Associe chaque mot à sa signification. Écris la lettre à côté du numéro.
 <br>
 
 
-2. Que se passerait-il si l'action *Aller à la salle room_win* de la collision avec l'orange était placée par erreur dans la branche *Sinon* au lieu de la branche *Si* ?
+2. Que se passerait-il si l'action *Aller au niveau room_win* de la collision avec l'orange était placée par erreur dans la branche *else* au lieu de la branche *then* ?
 
 <br>
 

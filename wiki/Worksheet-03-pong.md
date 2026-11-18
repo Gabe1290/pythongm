@@ -38,7 +38,7 @@ Write which object each rule belongs to.
 
 ## Part C: Think about it
 
-1. The ball has the events **Collision with obj_wall** and **Collision with obj_paddle_left**, both with *Bounce*. Why do we need a separate event for each object?
+1. The ball has the events **When colliding with obj_wall** and **When colliding with obj_paddle_left**, both with *Bounce*. Why do we need a separate event for each object?
 
 <br>
 

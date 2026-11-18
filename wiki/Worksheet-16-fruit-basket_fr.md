@@ -18,7 +18,7 @@ Associe chaque mot à sa définition. Écris la lettre à côté du numéro.
 
 1. Collision ____
 2. Nombre d'instances ____
-3. Redémarrer la salle ____
+3. Redémarrer le niveau ____
 4. Événement Pas ____
 
 - **A.** Une action qui remet la salle actuelle exactement comme au début
@@ -31,7 +31,7 @@ Associe chaque mot à sa définition. Écris la lettre à côté du numéro.
 Écris l'objet et l'événement pour chaque règle.
 
 1. Ajouter 10 au score et enlever le fruit quand il est ramassé : ______________________
-2. Redémarrer la salle quand une bombe est touchée : ______________________
+2. Redémarrer le niveau quand une bombe est touchée : ______________________
 3. Vérifier si tous les fruits ont été ramassés : ______________________
 4. Afficher le message YOU WIN! : ______________________
 5. Redémarrer le jeu quand ESPACE est pressé sur l'écran de victoire : ______________________
@@ -47,7 +47,7 @@ Associe chaque mot à sa définition. Écris la lettre à côté du numéro.
 <br>
 
 
-2. Que se passerait-il si la vérification de victoire de l'événement Pas utilisait `obj_bomb` au lieu de `obj_fruit` ?
+2. Que se passerait-il si la vérification de victoire de l'événement À chaque étape utilisait `obj_bomb` au lieu de `obj_fruit` ?
 
 <br>
 
