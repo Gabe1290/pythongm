@@ -585,6 +585,9 @@ CASES = {
         {"action": "move_towards_point", "parameters": {"x": "320", "y": "240", "speed": "6"}}]}},
     "move_towards_expression": {"create": {"actions": [
         {"action": "move_towards_point", "parameters": {"x": "other.x", "y": "other.y + 16", "speed": 0}}]}},
+    # 2026-11-18 -- a saved object name loads into the generated drop-down
+    "test_instance_count_saved_object": {"create": {"actions": [
+        {"action": "test_instance_count", "parameters": {"object": "obj_coin", "number": "0", "operation": "equal"}}]}},
     "test_expression_flat": {"create": {"actions": [
         {"action": "test_expression", "parameters": {"expression": "score > 3"}},
         {"action": "set_hspeed", "parameters": {"value": "5"}}]}},
@@ -605,6 +608,22 @@ DYNAMIC_BLOCK_DEFS = [
      "description": "", "category": "Movement", "icon": "", "parameters": [
          {"name": "direction", "display_name": "Direction", "param_type": "number", "default_value": 0},
          {"name": "speed", "display_name": "Speed", "param_type": "float", "default_value": 4.0},
+     ]},
+    # 2026-11-18: generated asset params are project drop-downs, not text
+    # boxes -- mirrors events/action_types.py's test_instance_count and
+    # move_to_contact (whose object default is the special value 'all').
+    {"name": "test_instance_count", "display_name": "Test Instance Count",
+     "description": "", "category": "Instance", "icon": "", "parameters": [
+         {"name": "object", "display_name": "Object", "param_type": "object", "default_value": ""},
+         {"name": "number", "display_name": "Number", "param_type": "number", "default_value": 0},
+         {"name": "operation", "display_name": "Comparison", "param_type": "choice", "default_value": "equal",
+          "choices": ["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]},
+     ]},
+    {"name": "move_to_contact", "display_name": "Move to Contact",
+     "description": "", "category": "Movement", "icon": "", "parameters": [
+         {"name": "direction", "display_name": "Direction", "param_type": "number", "default_value": 0},
+         {"name": "max_distance", "display_name": "Max Distance", "param_type": "number", "default_value": 1000},
+         {"name": "object", "display_name": "Object", "param_type": "object", "default_value": "all"},
      ]},
 ]
 
@@ -740,6 +759,23 @@ def round_tripped():
         saved.ext_colour = m1a.getColour();
         saved.ext_colour_unknown = m1b.getColour();
         m1a.dispose(true); m1b.dispose(true);
+        // 2026-11-18: a generated block's object param is the project's
+        // object drop-down (Test Instance Count used to need a typed name).
+        window.blocklyApi.setAssetLists({objects: ['obj_wall', 'obj_ball']});
+        var tic = workspace.newBlock('custom_test_instance_count');
+        var ticField = tic.getField('OBJECT');
+        saved.tic_is_dropdown = ticField instanceof Blockly.FieldDropdown;
+        saved.tic_options = (ticField.getOptions ? ticField.getOptions(false).map(function(o) { return o[1]; }) : []);
+        saved.tic_initial = tic.getFieldValue('OBJECT');
+        tic.setFieldValue('obj_ball', 'OBJECT');
+        saved.tic_saved = generateActionCode(tic).parameters.object;
+        tic.dispose(true);
+        var mtc = workspace.newBlock('custom_move_to_contact');
+        saved.mtc_initial = mtc.getFieldValue('OBJECT');
+        var mtcField = mtc.getField('OBJECT');
+        saved.mtc_options = (mtcField.getOptions ? mtcField.getOptions(false).map(function(o) { return o[1]; }) : []);
+        mtc.dispose(true);
+        window.blocklyApi.setAssetLists({objects: []});
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
     })(%s, %s, %s, %s)""" % (json.dumps(CASES), json.dumps(DYNAMIC_BLOCK_DEFS),
@@ -1310,3 +1346,36 @@ def test_an_extension_category_takes_its_declared_colour_not_grey(round_tripped)
     saved = round_tripped["__value_blocks_saved"]
     assert saved["ext_colour"].lower() == "#1fa39b"
     assert saved["ext_colour_unknown"].lower() == "#888888"
+
+
+class TestGeneratedAssetParamsAreDropdowns:
+    """2026-11-18: an auto-generated block's object/sprite/sound/room
+    parameter used to be a free text box -- students doing a tutorial had to
+    type the object's name into Test Instance Count. It is now the same
+    project drop-down the hand-written blocks use."""
+
+    def test_object_param_is_a_dropdown_listing_the_project_objects(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["tic_is_dropdown"] is True
+        assert "obj_wall" in saved["tic_options"] and "obj_ball" in saved["tic_options"]
+
+    def test_a_fresh_block_starts_unset_rather_than_on_an_arbitrary_object(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["tic_initial"] == ""
+        assert "" in saved["tic_options"]
+
+    def test_the_picked_object_is_what_gets_saved(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["tic_saved"] == "obj_ball"
+
+    def test_a_special_default_stays_selectable(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["mtc_initial"] == "all"
+        assert "all" in saved["mtc_options"] and "obj_wall" in saved["mtc_options"]
+
+    def test_a_saved_object_name_loads_and_saves_back(self, round_tripped):
+        params = _params(round_tripped, "test_instance_count_saved_object")
+        assert params["object"] == "obj_coin"
+        assert params["operation"] == "equal"
+
+    def test_an_existing_generated_object_value_still_round_trips(self, round_tripped):
+        assert _params(round_tripped, "change_instance_perform_events_text_zero")["object"] == "obj_enemy"

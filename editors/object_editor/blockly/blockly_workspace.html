@@ -579,6 +579,12 @@
         // a prompt so users can still type a name that isn't in the list yet.
         var ASSET_CUSTOM_SENTINEL = '__custom__';
 
+        // ActionParameter.param_type → BLOCKLY_ASSET_LISTS key, for the
+        // auto-generated blocks (registerCustomBlocks).
+        var GENERATED_ASSET_PARAM_LISTS = {
+            object: 'objects', sprite: 'sprites', sound: 'sounds', room: 'rooms'
+        };
+
         function _assetCustomLabel() {
             return (window.BLOCKLY_LANG === 'fr') ? '✏ Nom personnalisé...' : '✏ Custom name...';
         }
@@ -3733,8 +3739,30 @@
                                         }
                                         input.appendField(param.display_name + ':')
                                              .appendField(new Blockly.FieldCheckbox(param.default_value ? 'TRUE' : 'FALSE'), fieldName);
+                                    } else if (GENERATED_ASSET_PARAM_LISTS[param.param_type]) {
+                                        // object / sprite / sound / room → the same
+                                        // project-asset drop-down the hand-written
+                                        // blocks use (it used to be a text box, so
+                                        // e.g. Test Instance Count made students type
+                                        // the object's name). A non-empty default
+                                        // ('all', '<self>') stays a real choice; an
+                                        // empty one becomes "(none)" so an optional
+                                        // asset can still be left unset.
+                                        var input = this.appendDummyInput();
+                                        if (!firstDone) {
+                                            input.appendField(label);
+                                            firstDone = true;
+                                        }
+                                        var assetDefault = String(param.default_value || '');
+                                        var assetExtra = assetDefault
+                                            ? [[assetDefault, assetDefault]]
+                                            : [[_assetEmptyLabel(), '']];
+                                        input.appendField(param.display_name + ':')
+                                             .appendField(createAssetField(
+                                                 GENERATED_ASSET_PARAM_LISTS[param.param_type],
+                                                 assetDefault, assetExtra), fieldName);
                                     } else {
-                                        // string, code, object, sprite, sound, room, etc. → text input
+                                        // string, code, script, etc. → text input
                                         var input = this.appendDummyInput();
                                         if (!firstDone) {
                                             input.appendField(label);
