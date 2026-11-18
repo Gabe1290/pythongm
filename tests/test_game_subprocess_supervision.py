@@ -199,6 +199,8 @@ class TestMinimizeForTestGame:
         stub = SimpleNamespace(
             windowState=lambda: state,
             isMinimized=MagicMock(return_value=False),
+            isVisible=MagicMock(return_value=True),
+            show=MagicMock(),
             showMinimized=MagicMock(),
             showMaximized=MagicMock(),
             showNormal=MagicMock(),

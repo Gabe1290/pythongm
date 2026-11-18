@@ -87,7 +87,10 @@ def test_both_entry_points_use_the_shared_loader():
     assert "ensure_plugins_loaded()" in mn
     # and the IDE must load them BEFORE constructing the window, since the
     # action picker / Blockly read ACTION_TYPES at construction time.
-    assert mn.index("ensure_plugins_loaded()") < mn.index("ide = PyGameMakerIDE()")
+    # The window is built in _start_ide (which retries with default settings
+    # after a damaged config.json), and main() gets it from there.
+    assert "ide = _start_ide(app)" in mn
+    assert mn.index("ensure_plugins_loaded()") < mn.index("return PyGameMakerIDE()")
 
 
 def test_the_alias_is_the_same_function():
