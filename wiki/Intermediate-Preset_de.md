@@ -8,7 +8,7 @@
 
 ## Übersicht
 
-Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
+Dieses Preset aktiviert **21** Ereignistypen und **122** Aktionstypen.
 
 ---
 
@@ -59,9 +59,12 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 | Reibung setzen | `set_friction` | `friction` |
 | Schwerkraft setzen | `set_gravity` | `direction`, `gravity` |
 | Horizontale Geschwindigkeit setzen | `set_hspeed` | `speed` |
+| Geschwindigkeit setzen | `set_speed` | `speed` |
 | Vertikale Geschwindigkeit setzen | `set_vspeed` | `speed` |
 | Losbewegen (Richtung) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Bewegung stoppen | `stop_movement` | — |
+| Gitterausrichtung testen | `test_alignment` | `hsnap`, `vsnap` |
+| Am Raumrand umbrechen | `wrap_around_room` | — |
 
 ### Gitter
 
@@ -69,7 +72,6 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 |--------|------------|------------|
 | Wenn am Gitter | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Am Gitter ausrichten | `snap_to_grid` | `grid_size` |
-| Gitterausrichtung testen | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instanz
 
@@ -92,17 +94,12 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|
-| Bestenliste löschen | `clear_highscore` | — |
 | Gesundheitsbalken zeichnen | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Leben zeichnen | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Punkte zeichnen | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Gesundheit setzen | `set_health` | `value`, `relative` |
 | Leben setzen | `set_lives` | `value`, `relative` |
 | Punkte setzen | `set_score` | `value`, `relative` |
-| Bestenliste anzeigen | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Gesundheit testen | `test_health` | `operation`, `value` |
-| Leben testen | `test_lives` | `value`, `operation` |
-| Punkte testen | `test_score` | `value`, `operation` |
 
 ### Zeitsteuerung
 
@@ -150,22 +147,11 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|
-| Pfeil zeichnen | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Hintergrund zeichnen | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Ellipse zeichnen | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Linie zeichnen | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Skalierten Text zeichnen | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Sprite zeichnen | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Text zeichnen | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Variable zeichnen | `draw_variable` | `x`, `y`, `variable` |
-| Bildschirm mit Farbe füllen | `fill_color` | `color` |
 | Spiel laden | `load_game` | `filename` |
 | Webseite öffnen | `open_webpage` | `url` |
 | Spiel neu starten | `restart_game` | — |
 | Spiel speichern | `save_game` | `filename` |
-| Farbe setzen | `set_color` | `color`, `alpha` |
-| Zeichenfarbe festlegen | `set_draw_color` | `color` |
-| Zeichenschrift festlegen | `set_draw_font` | `font`, `halign`, `valign` |
 | Fenstertitel festlegen | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Spielinfo anzeigen | `show_info` | — |
 | Nachricht anzeigen | `show_message` | `message` |
@@ -187,8 +173,10 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 | Wenn Schieben möglich | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Wenn Kollision | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Wenn Kollision bei | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Wenn Bedingung | `if_condition` | — |
 | Wenn Objekt existiert | `if_object_exists` | `object`, `not_flag` |
 | Wiederholen | `repeat` | `times`, `actions` |
+| Variable setzen | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Block beginnen | `start_block` | — |
 | Zufall testen | `test_chance` | `sides` |
 | Ausdruck testen | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 | Ansichten aktivieren | `enable_views` | `enable` |
 | Ansicht festlegen | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Zeichnen
+
+| Aktion | Blockname | Parameter |
+|--------|------------|------------|
+| Pfeil zeichnen | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Hintergrund zeichnen | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Ellipse zeichnen | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Linie zeichnen | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Skalierten Text zeichnen | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Sprite zeichnen | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Variable zeichnen | `draw_variable` | `x`, `y`, `variable` |
+| Bildschirm mit Farbe füllen | `fill_color` | `color` |
+| Farbe setzen | `set_color` | `color`, `alpha` |
+| Zeichenfarbe festlegen | `set_draw_color` | `color` |
+| Zeichenschrift festlegen | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Partikel
 
 | Aktion | Blockname | Parameter |
@@ -214,6 +218,16 @@ Dieses Preset aktiviert **21** Ereignistypen und **118** Aktionstypen.
 | Emitter entfernen | `destroy_emitter` | — |
 | Partikelsystem entfernen | `destroy_particle_system` | — |
 | Partikel strömen lassen | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Aktion | Blockname | Parameter |
+|--------|------------|------------|
+| Bestenliste löschen | `clear_highscore` | — |
+| Bestenliste anzeigen | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Gesundheit testen | `test_health` | `operation`, `value` |
+| Leben testen | `test_lives` | `value`, `operation` |
+| Punkte testen | `test_score` | `value`, `operation` |
 
 ---
 

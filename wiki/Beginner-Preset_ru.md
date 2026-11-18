@@ -8,7 +8,7 @@
 
 ## Обзор
 
-Этот пресет включает **19** типов событий и **54** типов действий.
+Этот пресет включает **20** типов событий и **68** типов действий.
 
 ---
 
@@ -20,6 +20,7 @@
 | Step | `step` | Объект | Выполняется на каждом кадре (используйте для непрерывных проверок) |
 | Keyboard (held) | `keyboard` | Ввод | Выполняется непрерывно, пока клавиша удерживается (для плавного движения) |
 | Keyboard <No Key> | `keyboard_no_key` | Ввод | Выполняется, когда в данный момент не нажата ни одна клавиша |
+| Keyboard Press | `keyboard_press` | Ввод | Выполняется один раз при первом нажатии клавиши (для движения по сетке) |
 | Collision With... | `collision` | Столкновение | Выполняется при столкновении с другим объектом |
 | Begin Step | `begin_step` | Шаг | Выполняется в начале каждого шага, перед другими событиями |
 | End Step | `end_step` | Шаг | Выполняется в конце каждого шага, после столкновений, но перед отрисовкой |
@@ -53,15 +54,18 @@
 | Задать направление и скорость | `set_direction_speed` | `direction`, `speed` |
 | Задать гравитацию | `set_gravity` | `direction`, `gravity` |
 | Задать горизонтальную скорость | `set_hspeed` | `speed` |
+| Задать скорость | `set_speed` | `speed` |
 | Задать вертикальную скорость | `set_vspeed` | `speed` |
 | Начать движение (направление) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Остановить движение | `stop_movement` | — |
+| Проверить выравнивание по сетке | `test_alignment` | `hsnap`, `vsnap` |
+| Оборачивание вокруг комнаты | `wrap_around_room` | — |
 
 ### Сетка
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Проверить выравнивание по сетке | `test_alignment` | `hsnap`, `vsnap` |
+| Привязать к сетке | `snap_to_grid` | `grid_size` |
 
 ### Экземпляр
 
@@ -71,6 +75,7 @@
 | Создать экземпляр | `create_instance` | `object`, `x`, `y`, `relative` |
 | Уничтожить экземпляр | `destroy_instance` | — |
 | Уничтожить в позиции | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Задать спрайт | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Проверить количество экземпляров | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Счёт
@@ -79,9 +84,9 @@
 |--------|------------|------------|
 | Нарисовать жизни | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Нарисовать счёт | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Задать здоровье | `set_health` | `value`, `relative` |
 | Задать жизни | `set_lives` | `value`, `relative` |
 | Задать счёт | `set_score` | `value`, `relative` |
-| Показать таблицу рекордов | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Время
 
@@ -95,8 +100,10 @@
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
 | Завершить игру | `game_end` | — |
+| Перейти в комнату | `goto_room` | `room`, `transition` |
 | Если следующая комната существует | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Если предыдущая комната существует | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Следующая комната | `next_room` | — |
 | Перезапустить комнату | `restart_room` | — |
 | Задать фон | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@
 |--------|------------|------------|
 | Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Перезапустить игру | `restart_game` | — |
-| Задать цвет рисования | `set_draw_color` | `color` |
 | Задать заголовок окна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Показать сообщение | `show_message` | `message` |
 
@@ -133,11 +139,35 @@
 | Выполнить скрипт | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Выйти из события | `exit_event` | — |
 | Если столкновение | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Если условие | `if_condition` | — |
 | Если объект существует | `if_object_exists` | `object`, `not_flag` |
+| Задать переменную | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Начало блока | `start_block` | — |
 | Проверить шанс | `test_chance` | `sides` |
 | Проверить выражение | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Проверить переменную | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Виды
+
+| Действие | Имя Блока | Параметры |
+|--------|------------|------------|
+| Включить виды | `enable_views` | `enable` |
+| Настроить вид | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Рисование
+
+| Действие | Имя Блока | Параметры |
+|--------|------------|------------|
+| Нарисовать спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Нарисовать переменную | `draw_variable` | `x`, `y`, `variable` |
+| Задать цвет рисования | `set_draw_color` | `color` |
+| Задать шрифт рисования | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Действие | Имя Блока | Параметры |
+|--------|------------|------------|
+| Показать таблицу рекордов | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

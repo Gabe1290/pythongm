@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
+Este preajuste habilita **20** tipos de eventos y **68** tipos de acciones.
 
 ---
 
@@ -20,6 +20,7 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 | Step | `step` | Objeto | Se ejecuta en cada fotograma (úsalo para comprobaciones continuas) |
 | Keyboard (held) | `keyboard` | Entrada | Se ejecuta continuamente mientras se mantiene pulsada una tecla (para movimiento suave) |
 | Keyboard <No Key> | `keyboard_no_key` | Entrada | Se ejecuta cuando no hay ninguna tecla pulsada actualmente |
+| Keyboard Press | `keyboard_press` | Entrada | Se ejecuta una vez cuando se pulsa una tecla por primera vez (para movimiento basado en cuadrícula) |
 | Collision With... | `collision` | Colisión | Se ejecuta al colisionar con otro objeto |
 | Begin Step | `begin_step` | Paso | Se ejecuta al principio de cada paso, antes que los demás eventos |
 | End Step | `end_step` | Paso | Se ejecuta al final de cada paso, después de las colisiones pero antes de dibujar |
@@ -53,15 +54,18 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 | Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
 | Establecer gravedad | `set_gravity` | `direction`, `gravity` |
 | Establecer velocidad horizontal | `set_hspeed` | `speed` |
+| Establecer velocidad | `set_speed` | `speed` |
 | Establecer velocidad vertical | `set_vspeed` | `speed` |
 | Empezar a moverse (dirección) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Detener movimiento | `stop_movement` | — |
+| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
+| Envolver alrededor de la sala | `wrap_around_room` | — |
 
 ### Cuadrícula
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
+| Ajustar a la cuadrícula | `snap_to_grid` | `grid_size` |
 
 ### Instancia
 
@@ -71,6 +75,7 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 | Crear instancia | `create_instance` | `object`, `x`, `y`, `relative` |
 | Destruir instancia | `destroy_instance` | — |
 | Destruir en posición | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Establecer sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Comprobar número de instancias | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Puntuación
@@ -79,9 +84,9 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 |--------|------------|------------|
 | Dibujar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dibujar puntuación | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Establecer salud | `set_health` | `value`, `relative` |
 | Establecer vidas | `set_lives` | `value`, `relative` |
 | Establecer puntuación | `set_score` | `value`, `relative` |
-| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Tiempo
 
@@ -95,8 +100,10 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
 | Finalizar juego | `game_end` | — |
+| Ir a la sala | `goto_room` | `room`, `transition` |
 | Si existe sala siguiente | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Si existe sala anterior | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Sala siguiente | `next_room` | — |
 | Reiniciar sala | `restart_room` | — |
 | Establecer fondo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 |--------|------------|------------|
 | Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Reiniciar juego | `restart_game` | — |
-| Establecer color de dibujo | `set_draw_color` | `color` |
 | Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostrar mensaje | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 | Ejecutar script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Salir del evento | `exit_event` | — |
 | Si colisión | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si condición | `if_condition` | — |
 | Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
+| Establecer variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Inicio de bloque | `start_block` | — |
 | Comprobar probabilidad | `test_chance` | `sides` |
 | Comprobar expresión | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Comprobar variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Vistas
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Habilitar vistas | `enable_views` | `enable` |
+| Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Dibujo
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
+| Establecer color de dibujo | `set_draw_color` | `color` |
+| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

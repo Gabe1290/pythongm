@@ -8,7 +8,7 @@
 
 ## Visão Geral
 
-Este preset habilita **21** tipos de eventos e **118** tipos de ações.
+Este preset habilita **21** tipos de eventos e **122** tipos de ações.
 
 ---
 
@@ -59,9 +59,12 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 | Definir atrito | `set_friction` | `friction` |
 | Definir gravidade | `set_gravity` | `direction`, `gravity` |
 | Definir velocidade horizontal | `set_hspeed` | `speed` |
+| Definir velocidade | `set_speed` | `speed` |
 | Definir velocidade vertical | `set_vspeed` | `speed` |
 | Começar a mover (direção) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Parar movimento | `stop_movement` | — |
+| Testar alinhamento à grade | `test_alignment` | `hsnap`, `vsnap` |
+| Envolver ao redor da sala | `wrap_around_room` | — |
 
 ### Grade
 
@@ -69,7 +72,6 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 |--------|------------|------------|
 | Se na grade | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Ajustar à grade | `snap_to_grid` | `grid_size` |
-| Testar alinhamento à grade | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instância
 
@@ -92,17 +94,12 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 
 | Ação | Nome do Bloco | Parâmetros |
 |--------|------------|------------|
-| Limpar tabela de recordes | `clear_highscore` | — |
 | Desenhar barra de saúde | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Desenhar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Desenhar pontuação | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Definir saúde | `set_health` | `value`, `relative` |
 | Definir vidas | `set_lives` | `value`, `relative` |
 | Definir pontuação | `set_score` | `value`, `relative` |
-| Mostrar tabela de recordes | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Testar saúde | `test_health` | `operation`, `value` |
-| Testar vidas | `test_lives` | `value`, `operation` |
-| Testar pontuação | `test_score` | `value`, `operation` |
 
 ### Tempo
 
@@ -150,22 +147,11 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 
 | Ação | Nome do Bloco | Parâmetros |
 |--------|------------|------------|
-| Desenhar seta | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Desenhar fundo | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Desenhar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Desenhar linha | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Desenhar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Desenhar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Desenhar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Desenhar variável | `draw_variable` | `x`, `y`, `variable` |
-| Preencher tela com cor | `fill_color` | `color` |
 | Carregar o jogo | `load_game` | `filename` |
 | Abrir página web | `open_webpage` | `url` |
 | Reiniciar jogo | `restart_game` | — |
 | Guardar o jogo | `save_game` | `filename` |
-| Definir cor | `set_color` | `color`, `alpha` |
-| Definir cor de desenho | `set_draw_color` | `color` |
-| Definir fonte de desenho | `set_draw_font` | `font`, `halign`, `valign` |
 | Definir título da janela | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostrar informações do jogo | `show_info` | — |
 | Mostrar mensagem | `show_message` | `message` |
@@ -187,8 +173,10 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 | Se pode empurrar | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Se colisão | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Se colisão em | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Se condição | `if_condition` | — |
 | Se o objeto existe | `if_object_exists` | `object`, `not_flag` |
 | Repetir | `repeat` | `times`, `actions` |
+| Definir variável | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Início de bloco | `start_block` | — |
 | Testar probabilidade | `test_chance` | `sides` |
 | Testar expressão | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 | Ativar vistas | `enable_views` | `enable` |
 | Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Desenho
+
+| Ação | Nome do Bloco | Parâmetros |
+|--------|------------|------------|
+| Desenhar seta | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Desenhar fundo | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Desenhar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Desenhar linha | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Desenhar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Desenhar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Desenhar variável | `draw_variable` | `x`, `y`, `variable` |
+| Preencher tela com cor | `fill_color` | `color` |
+| Definir cor | `set_color` | `color`, `alpha` |
+| Definir cor de desenho | `set_draw_color` | `color` |
+| Definir fonte de desenho | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Partículas
 
 | Ação | Nome do Bloco | Parâmetros |
@@ -214,6 +218,16 @@ Este preset habilita **21** tipos de eventos e **118** tipos de ações.
 | Destruir emissor | `destroy_emitter` | — |
 | Destruir sistema de partículas | `destroy_particle_system` | — |
 | Emitir partículas em contínuo | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Ação | Nome do Bloco | Parâmetros |
+|--------|------------|------------|
+| Limpar tabela de recordes | `clear_highscore` | — |
+| Mostrar tabela de recordes | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Testar saúde | `test_health` | `operation`, `value` |
+| Testar vidas | `test_lives` | `value`, `operation` |
+| Testar pontuação | `test_score` | `value`, `operation` |
 
 ---
 

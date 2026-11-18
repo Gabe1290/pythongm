@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
+Este preajuste habilita **21** tipos de eventos y **122** tipos de acciones.
 
 ---
 
@@ -59,9 +59,12 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 | Establecer fricción | `set_friction` | `friction` |
 | Establecer gravedad | `set_gravity` | `direction`, `gravity` |
 | Establecer velocidad horizontal | `set_hspeed` | `speed` |
+| Establecer velocidad | `set_speed` | `speed` |
 | Establecer velocidad vertical | `set_vspeed` | `speed` |
 | Empezar a moverse (dirección) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Detener movimiento | `stop_movement` | — |
+| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
+| Envolver alrededor de la sala | `wrap_around_room` | — |
 
 ### Cuadrícula
 
@@ -69,7 +72,6 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 |--------|------------|------------|
 | Si en la cuadrícula | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Ajustar a la cuadrícula | `snap_to_grid` | `grid_size` |
-| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instancia
 
@@ -92,17 +94,12 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Borrar tabla de récords | `clear_highscore` | — |
 | Dibujar barra de salud | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Dibujar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dibujar puntuación | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Establecer salud | `set_health` | `value`, `relative` |
 | Establecer vidas | `set_lives` | `value`, `relative` |
 | Establecer puntuación | `set_score` | `value`, `relative` |
-| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Comprobar salud | `test_health` | `operation`, `value` |
-| Comprobar vidas | `test_lives` | `value`, `operation` |
-| Comprobar puntuación | `test_score` | `value`, `operation` |
 
 ### Tiempo
 
@@ -150,22 +147,11 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Dibujar flecha | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Dibujar fondo | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Dibujar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
-| Rellenar pantalla con color | `fill_color` | `color` |
 | Cargar la partida | `load_game` | `filename` |
 | Abrir página web | `open_webpage` | `url` |
 | Reiniciar juego | `restart_game` | — |
 | Guardar la partida | `save_game` | `filename` |
-| Establecer color | `set_color` | `color`, `alpha` |
-| Establecer color de dibujo | `set_draw_color` | `color` |
-| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
 | Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostrar información del juego | `show_info` | — |
 | Mostrar mensaje | `show_message` | `message` |
@@ -187,8 +173,10 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 | Si se puede empujar | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Si colisión | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Si colisión en | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Si condición | `if_condition` | — |
 | Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
 | Repetir | `repeat` | `times`, `actions` |
+| Establecer variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Inicio de bloque | `start_block` | — |
 | Comprobar probabilidad | `test_chance` | `sides` |
 | Comprobar expresión | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 | Habilitar vistas | `enable_views` | `enable` |
 | Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Dibujo
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar flecha | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Dibujar fondo | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Dibujar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
+| Rellenar pantalla con color | `fill_color` | `color` |
+| Establecer color | `set_color` | `color`, `alpha` |
+| Establecer color de dibujo | `set_draw_color` | `color` |
+| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Partículas
 
 | Acción | Nombre del Bloque | Parámetros |
@@ -214,6 +218,16 @@ Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 | Destruir emisor | `destroy_emitter` | — |
 | Destruir sistema de partículas | `destroy_particle_system` | — |
 | Emitir partículas en continuo | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Borrar tabla de récords | `clear_highscore` | — |
+| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Comprobar salud | `test_health` | `operation`, `value` |
+| Comprobar vidas | `test_lives` | `value`, `operation` |
+| Comprobar puntuación | `test_score` | `value`, `operation` |
 
 ---
 

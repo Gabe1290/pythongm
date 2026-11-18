@@ -8,7 +8,7 @@
 
 ## Panoramica
 
-Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
+Questo preset abilita **21** tipi di eventi e **122** tipi di azioni.
 
 ---
 
@@ -59,9 +59,12 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 | Imposta attrito | `set_friction` | `friction` |
 | Imposta gravità | `set_gravity` | `direction`, `gravity` |
 | Imposta velocità orizzontale | `set_hspeed` | `speed` |
+| Imposta velocità | `set_speed` | `speed` |
 | Imposta velocità verticale | `set_vspeed` | `speed` |
 | Inizia a muoverti (direzione) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Ferma il movimento | `stop_movement` | — |
+| Verifica allineamento alla griglia | `test_alignment` | `hsnap`, `vsnap` |
+| Avvolgi attorno alla stanza | `wrap_around_room` | — |
 
 ### Griglia
 
@@ -69,7 +72,6 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 |--------|------------|------------|
 | Se sulla griglia | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Allinea alla griglia | `snap_to_grid` | `grid_size` |
-| Verifica allineamento alla griglia | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Istanza
 
@@ -92,17 +94,12 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Cancella tabella dei record | `clear_highscore` | — |
 | Disegna barra della salute | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Disegna vite | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Disegna punteggio | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Imposta salute | `set_health` | `value`, `relative` |
 | Imposta vite | `set_lives` | `value`, `relative` |
 | Imposta punteggio | `set_score` | `value`, `relative` |
-| Mostra tabella dei record | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Verifica salute | `test_health` | `operation`, `value` |
-| Verifica vite | `test_lives` | `value`, `operation` |
-| Verifica punteggio | `test_score` | `value`, `operation` |
 
 ### Tempo
 
@@ -150,22 +147,11 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Disegna freccia | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Disegna sfondo | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Disegna ellisse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Disegna linea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Disegna testo scalato | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Disegna sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Disegna testo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Disegna variabile | `draw_variable` | `x`, `y`, `variable` |
-| Riempi schermo con colore | `fill_color` | `color` |
 | Carica la partita | `load_game` | `filename` |
 | Apri pagina web | `open_webpage` | `url` |
 | Riavvia gioco | `restart_game` | — |
 | Salva la partita | `save_game` | `filename` |
-| Imposta colore | `set_color` | `color`, `alpha` |
-| Imposta colore di disegno | `set_draw_color` | `color` |
-| Imposta font di disegno | `set_draw_font` | `font`, `halign`, `valign` |
 | Imposta titolo finestra | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostra info gioco | `show_info` | — |
 | Mostra messaggio | `show_message` | `message` |
@@ -187,8 +173,10 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 | Se si può spingere | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Se collisione | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Se collisione in | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Se condizione | `if_condition` | — |
 | Se l'oggetto esiste | `if_object_exists` | `object`, `not_flag` |
 | Ripeti | `repeat` | `times`, `actions` |
+| Imposta variabile | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Inizio blocco | `start_block` | — |
 | Verifica probabilità | `test_chance` | `sides` |
 | Verifica espressione | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 | Abilita viste | `enable_views` | `enable` |
 | Imposta vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Disegno
+
+| Azione | Nome Blocco | Parametri |
+|--------|------------|------------|
+| Disegna freccia | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Disegna sfondo | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Disegna ellisse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Disegna linea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Disegna testo scalato | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Disegna sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Disegna variabile | `draw_variable` | `x`, `y`, `variable` |
+| Riempi schermo con colore | `fill_color` | `color` |
+| Imposta colore | `set_color` | `color`, `alpha` |
+| Imposta colore di disegno | `set_draw_color` | `color` |
+| Imposta font di disegno | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Particelle
 
 | Azione | Nome Blocco | Parametri |
@@ -214,6 +218,16 @@ Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 | Elimina emettitore | `destroy_emitter` | — |
 | Elimina sistema di particelle | `destroy_particle_system` | — |
 | Emetti particelle in continuo | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Azione | Nome Blocco | Parametri |
+|--------|------------|------------|
+| Cancella tabella dei record | `clear_highscore` | — |
+| Mostra tabella dei record | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Verifica salute | `test_health` | `operation`, `value` |
+| Verifica vite | `test_lives` | `value`, `operation` |
+| Verifica punteggio | `test_score` | `value`, `operation` |
 
 ---
 

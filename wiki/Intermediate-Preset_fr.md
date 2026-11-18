@@ -8,7 +8,7 @@
 
 ## Aperçu
 
-Ce préréglage active **21** types d'événements et **118** types d'actions.
+Ce préréglage active **21** types d'événements et **122** types d'actions.
 
 ---
 
@@ -59,9 +59,12 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 | Définir le frottement | `set_friction` | `friction` |
 | Définir la gravité | `set_gravity` | `direction`, `gravity` |
 | Définir la vitesse horizontale | `set_hspeed` | `speed` |
+| Définir la vitesse | `set_speed` | `speed` |
 | Définir la vitesse verticale | `set_vspeed` | `speed` |
 | Commencer à bouger (direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Arrêter le mouvement | `stop_movement` | — |
+| Tester l'alignement sur la grille | `test_alignment` | `hsnap`, `vsnap` |
+| Boucler autour de la salle | `wrap_around_room` | — |
 
 ### Grille
 
@@ -69,7 +72,6 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 |--------|------------|------------|
 | Si aligné sur la grille | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Aligner sur la grille | `snap_to_grid` | `grid_size` |
-| Tester l'alignement sur la grille | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instance
 
@@ -92,17 +94,12 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Effacer le tableau des scores | `clear_highscore` | — |
 | Dessiner la barre de santé | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Dessiner les vies | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dessiner le score | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Définir la santé | `set_health` | `value`, `relative` |
 | Définir les vies | `set_lives` | `value`, `relative` |
 | Définir le score | `set_score` | `value`, `relative` |
-| Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Tester la santé | `test_health` | `operation`, `value` |
-| Tester les vies | `test_lives` | `value`, `operation` |
-| Tester le score | `test_score` | `value`, `operation` |
 
 ### Minuterie
 
@@ -150,22 +147,11 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Dessiner une flèche | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Dessiner un arrière-plan | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Dessiner une ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Dessiner une ligne | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Dessiner du texte mis à l'échelle | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
-| Remplir l'écran d'une couleur | `fill_color` | `color` |
 | Charger la partie | `load_game` | `filename` |
 | Ouvrir une page web | `open_webpage` | `url` |
 | Redémarrer le jeu | `restart_game` | — |
 | Sauvegarder la partie | `save_game` | `filename` |
-| Définir la couleur | `set_color` | `color`, `alpha` |
-| Définir la couleur de dessin | `set_draw_color` | `color` |
-| Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
 | Définir le titre de la fenêtre | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Afficher les infos du jeu | `show_info` | — |
 | Afficher un message | `show_message` | `message` |
@@ -187,8 +173,10 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 | Si poussée possible | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Si collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Si collision à | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Si condition | `if_condition` | — |
 | Si l'objet existe | `if_object_exists` | `object`, `not_flag` |
 | Répéter | `repeat` | `times`, `actions` |
+| Définir une variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Début de bloc | `start_block` | — |
 | Tester la chance | `test_chance` | `sides` |
 | Tester une expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 | Activer les vues | `enable_views` | `enable` |
 | Définir une vue | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Dessin
+
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Dessiner une flèche | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Dessiner un arrière-plan | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Dessiner une ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Dessiner une ligne | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Dessiner du texte mis à l'échelle | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
+| Remplir l'écran d'une couleur | `fill_color` | `color` |
+| Définir la couleur | `set_color` | `color`, `alpha` |
+| Définir la couleur de dessin | `set_draw_color` | `color` |
+| Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Particules
 
 | Action | Nom du bloc | Paramètres |
@@ -214,6 +218,16 @@ Ce préréglage active **21** types d'événements et **118** types d'actions.
 | Supprimer l'émetteur | `destroy_emitter` | — |
 | Supprimer le système de particules | `destroy_particle_system` | — |
 | Émettre des particules en continu | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Effacer le tableau des scores | `clear_highscore` | — |
+| Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Tester la santé | `test_health` | `operation`, `value` |
+| Tester les vies | `test_lives` | `value`, `operation` |
+| Tester le score | `test_score` | `value`, `operation` |
 
 ---
 

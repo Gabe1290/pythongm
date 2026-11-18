@@ -8,7 +8,7 @@
 
 ## Übersicht
 
-Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
+Dieses Preset aktiviert **20** Ereignistypen und **68** Aktionstypen.
 
 ---
 
@@ -20,6 +20,7 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 | Step | `step` | Objekt | Wird bei jedem Bild ausgeführt (für fortlaufende Prüfungen) |
 | Keyboard (held) | `keyboard` | Eingabe | Wird fortlaufend ausgeführt, solange eine Taste gedrückt gehalten wird (für flüssige Bewegung) |
 | Keyboard <No Key> | `keyboard_no_key` | Eingabe | Wird ausgeführt, wenn aktuell keine Taste gedrückt ist |
+| Keyboard Press | `keyboard_press` | Eingabe | Wird einmal ausgeführt, wenn eine Taste erstmals gedrückt wird (für gitterbasierte Bewegung) |
 | Collision With... | `collision` | Kollision | Wird bei einer Kollision mit einem anderen Objekt ausgeführt |
 | Begin Step | `begin_step` | Schritt | Wird am Anfang jedes Schritts ausgeführt, vor anderen Ereignissen |
 | End Step | `end_step` | Schritt | Wird am Ende jedes Schritts ausgeführt, nach Kollisionen, aber vor dem Zeichnen |
@@ -53,15 +54,18 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 | Richtung und Geschwindigkeit setzen | `set_direction_speed` | `direction`, `speed` |
 | Schwerkraft setzen | `set_gravity` | `direction`, `gravity` |
 | Horizontale Geschwindigkeit setzen | `set_hspeed` | `speed` |
+| Geschwindigkeit setzen | `set_speed` | `speed` |
 | Vertikale Geschwindigkeit setzen | `set_vspeed` | `speed` |
 | Losbewegen (Richtung) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Bewegung stoppen | `stop_movement` | — |
+| Gitterausrichtung testen | `test_alignment` | `hsnap`, `vsnap` |
+| Am Raumrand umbrechen | `wrap_around_room` | — |
 
 ### Gitter
 
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|
-| Gitterausrichtung testen | `test_alignment` | `hsnap`, `vsnap` |
+| Am Gitter ausrichten | `snap_to_grid` | `grid_size` |
 
 ### Instanz
 
@@ -71,6 +75,7 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 | Instanz erstellen | `create_instance` | `object`, `x`, `y`, `relative` |
 | Instanz zerstören | `destroy_instance` | — |
 | An Position zerstören | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Sprite setzen | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Instanzanzahl testen | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Punkte
@@ -79,9 +84,9 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 |--------|------------|------------|
 | Leben zeichnen | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Punkte zeichnen | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Gesundheit setzen | `set_health` | `value`, `relative` |
 | Leben setzen | `set_lives` | `value`, `relative` |
 | Punkte setzen | `set_score` | `value`, `relative` |
-| Bestenliste anzeigen | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Zeitsteuerung
 
@@ -95,8 +100,10 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|
 | Spiel beenden | `game_end` | — |
+| Zu Raum gehen | `goto_room` | `room`, `transition` |
 | Wenn nächster Raum existiert | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Wenn vorheriger Raum existiert | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Nächster Raum | `next_room` | — |
 | Raum neu starten | `restart_room` | — |
 | Hintergrund setzen | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 |--------|------------|------------|
 | Text zeichnen | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Spiel neu starten | `restart_game` | — |
-| Zeichenfarbe festlegen | `set_draw_color` | `color` |
 | Fenstertitel festlegen | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Nachricht anzeigen | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ Dieses Preset aktiviert **19** Ereignistypen und **54** Aktionstypen.
 | Skript ausführen | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Ereignis verlassen | `exit_event` | — |
 | Wenn Kollision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Wenn Bedingung | `if_condition` | — |
 | Wenn Objekt existiert | `if_object_exists` | `object`, `not_flag` |
+| Variable setzen | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Block beginnen | `start_block` | — |
 | Zufall testen | `test_chance` | `sides` |
 | Ausdruck testen | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Variable testen | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Ansichten
+
+| Aktion | Blockname | Parameter |
+|--------|------------|------------|
+| Ansichten aktivieren | `enable_views` | `enable` |
+| Ansicht festlegen | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Zeichnen
+
+| Aktion | Blockname | Parameter |
+|--------|------------|------------|
+| Sprite zeichnen | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Variable zeichnen | `draw_variable` | `x`, `y`, `variable` |
+| Zeichenfarbe festlegen | `set_draw_color` | `color` |
+| Zeichenschrift festlegen | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Aktion | Blockname | Parameter |
+|--------|------------|------------|
+| Bestenliste anzeigen | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Обзор
 
-Этот пресет включает **21** типов событий и **118** типов действий.
+Этот пресет включает **21** типов событий и **122** типов действий.
 
 ---
 
@@ -59,9 +59,12 @@
 | Задать трение | `set_friction` | `friction` |
 | Задать гравитацию | `set_gravity` | `direction`, `gravity` |
 | Задать горизонтальную скорость | `set_hspeed` | `speed` |
+| Задать скорость | `set_speed` | `speed` |
 | Задать вертикальную скорость | `set_vspeed` | `speed` |
 | Начать движение (направление) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Остановить движение | `stop_movement` | — |
+| Проверить выравнивание по сетке | `test_alignment` | `hsnap`, `vsnap` |
+| Оборачивание вокруг комнаты | `wrap_around_room` | — |
 
 ### Сетка
 
@@ -69,7 +72,6 @@
 |--------|------------|------------|
 | Если на сетке | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Привязать к сетке | `snap_to_grid` | `grid_size` |
-| Проверить выравнивание по сетке | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Экземпляр
 
@@ -92,17 +94,12 @@
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Очистить таблицу рекордов | `clear_highscore` | — |
 | Нарисовать полосу здоровья | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Нарисовать жизни | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Нарисовать счёт | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Задать здоровье | `set_health` | `value`, `relative` |
 | Задать жизни | `set_lives` | `value`, `relative` |
 | Задать счёт | `set_score` | `value`, `relative` |
-| Показать таблицу рекордов | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Проверить здоровье | `test_health` | `operation`, `value` |
-| Проверить жизни | `test_lives` | `value`, `operation` |
-| Проверить счёт | `test_score` | `value`, `operation` |
 
 ### Время
 
@@ -150,22 +147,11 @@
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Нарисовать стрелку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Нарисовать фон | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Нарисовать эллипс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Нарисовать линию | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Нарисовать масштабированный текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Нарисовать спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Нарисовать переменную | `draw_variable` | `x`, `y`, `variable` |
-| Заполнить экран цветом | `fill_color` | `color` |
 | Загрузить игру | `load_game` | `filename` |
 | Открыть веб-страницу | `open_webpage` | `url` |
 | Перезапустить игру | `restart_game` | — |
 | Сохранить игру | `save_game` | `filename` |
-| Задать цвет | `set_color` | `color`, `alpha` |
-| Задать цвет рисования | `set_draw_color` | `color` |
-| Задать шрифт рисования | `set_draw_font` | `font`, `halign`, `valign` |
 | Задать заголовок окна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Показать информацию об игре | `show_info` | — |
 | Показать сообщение | `show_message` | `message` |
@@ -187,8 +173,10 @@
 | Если можно толкнуть | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Если столкновение | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Если столкновение в | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Если условие | `if_condition` | — |
 | Если объект существует | `if_object_exists` | `object`, `not_flag` |
 | Повторить | `repeat` | `times`, `actions` |
+| Задать переменную | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Начало блока | `start_block` | — |
 | Проверить шанс | `test_chance` | `sides` |
 | Проверить выражение | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@
 | Включить виды | `enable_views` | `enable` |
 | Настроить вид | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Рисование
+
+| Действие | Имя Блока | Параметры |
+|--------|------------|------------|
+| Нарисовать стрелку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Нарисовать фон | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Нарисовать эллипс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Нарисовать линию | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Нарисовать масштабированный текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Нарисовать спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Нарисовать переменную | `draw_variable` | `x`, `y`, `variable` |
+| Заполнить экран цветом | `fill_color` | `color` |
+| Задать цвет | `set_color` | `color`, `alpha` |
+| Задать цвет рисования | `set_draw_color` | `color` |
+| Задать шрифт рисования | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Частицы
 
 | Действие | Имя Блока | Параметры |
@@ -214,6 +218,16 @@
 | Удалить источник | `destroy_emitter` | — |
 | Удалить систему частиц | `destroy_particle_system` | — |
 | Испускать частицы потоком | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Действие | Имя Блока | Параметры |
+|--------|------------|------------|
+| Очистить таблицу рекордов | `clear_highscore` | — |
+| Показать таблицу рекордов | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Проверить здоровье | `test_health` | `operation`, `value` |
+| Проверить жизни | `test_lives` | `value`, `operation` |
+| Проверить счёт | `test_score` | `value`, `operation` |
 
 ---
 

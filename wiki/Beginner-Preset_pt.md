@@ -8,7 +8,7 @@
 
 ## Visão Geral
 
-Este preset habilita **19** tipos de eventos e **54** tipos de ações.
+Este preset habilita **20** tipos de eventos e **68** tipos de ações.
 
 ---
 
@@ -20,6 +20,7 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 | Step | `step` | Objeto | Executado a cada quadro (use para verificações contínuas) |
 | Keyboard (held) | `keyboard` | Entrada | Executado continuamente enquanto uma tecla é mantida pressionada (para movimento suave) |
 | Keyboard <No Key> | `keyboard_no_key` | Entrada | Executado quando nenhuma tecla está pressionada no momento |
+| Keyboard Press | `keyboard_press` | Entrada | Executado uma vez quando uma tecla é pressionada pela primeira vez (para movimento baseado em grade) |
 | Collision With... | `collision` | Colisão | Executado ao colidir com outro objeto |
 | Begin Step | `begin_step` | Passo | Executado no início de cada passo, antes dos outros eventos |
 | End Step | `end_step` | Passo | Executado no final de cada passo, após as colisões mas antes do desenho |
@@ -53,15 +54,18 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 | Definir direção e velocidade | `set_direction_speed` | `direction`, `speed` |
 | Definir gravidade | `set_gravity` | `direction`, `gravity` |
 | Definir velocidade horizontal | `set_hspeed` | `speed` |
+| Definir velocidade | `set_speed` | `speed` |
 | Definir velocidade vertical | `set_vspeed` | `speed` |
 | Começar a mover (direção) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Parar movimento | `stop_movement` | — |
+| Testar alinhamento à grade | `test_alignment` | `hsnap`, `vsnap` |
+| Envolver ao redor da sala | `wrap_around_room` | — |
 
 ### Grade
 
 | Ação | Nome do Bloco | Parâmetros |
 |--------|------------|------------|
-| Testar alinhamento à grade | `test_alignment` | `hsnap`, `vsnap` |
+| Ajustar à grade | `snap_to_grid` | `grid_size` |
 
 ### Instância
 
@@ -71,6 +75,7 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 | Criar instância | `create_instance` | `object`, `x`, `y`, `relative` |
 | Destruir instância | `destroy_instance` | — |
 | Destruir na posição | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Definir sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Testar número de instâncias | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Pontuação
@@ -79,9 +84,9 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 |--------|------------|------------|
 | Desenhar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Desenhar pontuação | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Definir saúde | `set_health` | `value`, `relative` |
 | Definir vidas | `set_lives` | `value`, `relative` |
 | Definir pontuação | `set_score` | `value`, `relative` |
-| Mostrar tabela de recordes | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Tempo
 
@@ -95,8 +100,10 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 | Ação | Nome do Bloco | Parâmetros |
 |--------|------------|------------|
 | Encerrar jogo | `game_end` | — |
+| Ir para a sala | `goto_room` | `room`, `transition` |
 | Se existe sala seguinte | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Se existe sala anterior | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Sala seguinte | `next_room` | — |
 | Reiniciar sala | `restart_room` | — |
 | Definir fundo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 |--------|------------|------------|
 | Desenhar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Reiniciar jogo | `restart_game` | — |
-| Definir cor de desenho | `set_draw_color` | `color` |
 | Definir título da janela | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostrar mensagem | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ Este preset habilita **19** tipos de eventos e **54** tipos de ações.
 | Executar script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Sair do evento | `exit_event` | — |
 | Se colisão | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Se condição | `if_condition` | — |
 | Se o objeto existe | `if_object_exists` | `object`, `not_flag` |
+| Definir variável | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Início de bloco | `start_block` | — |
 | Testar probabilidade | `test_chance` | `sides` |
 | Testar expressão | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Testar variável | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Vistas
+
+| Ação | Nome do Bloco | Parâmetros |
+|--------|------------|------------|
+| Ativar vistas | `enable_views` | `enable` |
+| Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Desenho
+
+| Ação | Nome do Bloco | Parâmetros |
+|--------|------------|------------|
+| Desenhar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Desenhar variável | `draw_variable` | `x`, `y`, `variable` |
+| Definir cor de desenho | `set_draw_color` | `color` |
+| Definir fonte de desenho | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Ação | Nome do Bloco | Parâmetros |
+|--------|------------|------------|
+| Mostrar tabela de recordes | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

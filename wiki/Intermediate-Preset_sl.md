@@ -8,7 +8,7 @@
 
 ## Pregled
 
-Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
+Ta preset omogoča **21** vrst dogodkov in **122** vrst dejanj.
 
 ---
 
@@ -59,9 +59,12 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 | Nastavi trenje | `set_friction` | `friction` |
 | Nastavi gravitacijo | `set_gravity` | `direction`, `gravity` |
 | Nastavi vodoravno hitrost | `set_hspeed` | `speed` |
+| Nastavi hitrost | `set_speed` | `speed` |
 | Nastavi navpično hitrost | `set_vspeed` | `speed` |
 | Začni se premikati (smer) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Ustavi gibanje | `stop_movement` | — |
+| Preveri poravnavo na mrežo | `test_alignment` | `hsnap`, `vsnap` |
+| Ovij okoli sobe | `wrap_around_room` | — |
 
 ### Mreža
 
@@ -69,7 +72,6 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 |--------|------------|------------|
 | Če na mreži | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Pripni na mrežo | `snap_to_grid` | `grid_size` |
-| Preveri poravnavo na mrežo | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instanca
 
@@ -92,17 +94,12 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
-| Počisti tabelo rekordov | `clear_highscore` | — |
 | Nariši vrstico zdravja | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Nariši življenja | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Nariši rezultat | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Nastavi zdravje | `set_health` | `value`, `relative` |
 | Nastavi življenja | `set_lives` | `value`, `relative` |
 | Nastavi rezultat | `set_score` | `value`, `relative` |
-| Prikaži tabelo rekordov | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Preveri zdravje | `test_health` | `operation`, `value` |
-| Preveri življenja | `test_lives` | `value`, `operation` |
-| Preveri rezultat | `test_score` | `value`, `operation` |
 
 ### Čas
 
@@ -150,22 +147,11 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
-| Nariši puščico | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Nariši ozadje | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Nariši elipso | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Nariši črto | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Nariši povečano besedilo | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Nariši sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Nariši besedilo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Nariši spremenljivko | `draw_variable` | `x`, `y`, `variable` |
-| Zapolni zaslon z barvo | `fill_color` | `color` |
 | Naloži igro | `load_game` | `filename` |
 | Odpri spletno stran | `open_webpage` | `url` |
 | Znova zaženi igro | `restart_game` | — |
 | Shrani igro | `save_game` | `filename` |
-| Nastavi barvo | `set_color` | `color`, `alpha` |
-| Nastavi barvo risanja | `set_draw_color` | `color` |
-| Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
 | Nastavi naslov okna | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Prikaži informacije o igri | `show_info` | — |
 | Prikaži sporočilo | `show_message` | `message` |
@@ -187,8 +173,10 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 | Če je mogoče potisniti | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Če trk | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Če trk pri | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Če pogoj | `if_condition` | — |
 | Če predmet obstaja | `if_object_exists` | `object`, `not_flag` |
 | Ponovi | `repeat` | `times`, `actions` |
+| Nastavi spremenljivko | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Začetek bloka | `start_block` | — |
 | Preveri verjetnost | `test_chance` | `sides` |
 | Preveri izraz | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 | Omogoči poglede | `enable_views` | `enable` |
 | Nastavi pogled | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Risanje
+
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Nariši puščico | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Nariši ozadje | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Nariši elipso | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Nariši črto | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Nariši povečano besedilo | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Nariši sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Nariši spremenljivko | `draw_variable` | `x`, `y`, `variable` |
+| Zapolni zaslon z barvo | `fill_color` | `color` |
+| Nastavi barvo | `set_color` | `color`, `alpha` |
+| Nastavi barvo risanja | `set_draw_color` | `color` |
+| Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Delci
 
 | Dejanje | Ime Bloka | Parametri |
@@ -214,6 +218,16 @@ Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 | Odstrani izvor | `destroy_emitter` | — |
 | Odstrani sistem delcev | `destroy_particle_system` | — |
 | Neprekinjeno oddajaj delce | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Počisti tabelo rekordov | `clear_highscore` | — |
+| Prikaži tabelo rekordov | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Preveri zdravje | `test_health` | `operation`, `value` |
+| Preveri življenja | `test_lives` | `value`, `operation` |
+| Preveri rezultat | `test_score` | `value`, `operation` |
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Pregled
 
-Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
+Ta preset omogoča **20** vrst dogodkov in **68** vrst dejanj.
 
 ---
 
@@ -20,6 +20,7 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 | Step | `step` | Objekt | Izvede se pri vsaki sličici (uporabite za neprekinjena preverjanja) |
 | Keyboard (held) | `keyboard` | Vnos | Izvaja se neprekinjeno, dokler je tipka pritisnjena (za gladko gibanje) |
 | Keyboard <No Key> | `keyboard_no_key` | Vnos | Izvede se, ko trenutno ni pritisnjena nobena tipka |
+| Keyboard Press | `keyboard_press` | Vnos | Izvede se enkrat, ko je tipka prvič pritisnjena (za gibanje po mreži) |
 | Collision With... | `collision` | Trk | Izvede se ob trku z drugim objektom |
 | Begin Step | `begin_step` | Korak | Izvede se na začetku vsakega koraka, pred drugimi dogodki |
 | End Step | `end_step` | Korak | Izvede se na koncu vsakega koraka, po trkih, a pred risanjem |
@@ -53,15 +54,18 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 | Nastavi smer in hitrost | `set_direction_speed` | `direction`, `speed` |
 | Nastavi gravitacijo | `set_gravity` | `direction`, `gravity` |
 | Nastavi vodoravno hitrost | `set_hspeed` | `speed` |
+| Nastavi hitrost | `set_speed` | `speed` |
 | Nastavi navpično hitrost | `set_vspeed` | `speed` |
 | Začni se premikati (smer) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Ustavi gibanje | `stop_movement` | — |
+| Preveri poravnavo na mrežo | `test_alignment` | `hsnap`, `vsnap` |
+| Ovij okoli sobe | `wrap_around_room` | — |
 
 ### Mreža
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
-| Preveri poravnavo na mrežo | `test_alignment` | `hsnap`, `vsnap` |
+| Pripni na mrežo | `snap_to_grid` | `grid_size` |
 
 ### Instanca
 
@@ -71,6 +75,7 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 | Ustvari instanco | `create_instance` | `object`, `x`, `y`, `relative` |
 | Uniči instanco | `destroy_instance` | — |
 | Uniči na položaju | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Nastavi sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Preveri število instanc | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Rezultat
@@ -79,9 +84,9 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 |--------|------------|------------|
 | Nariši življenja | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Nariši rezultat | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Nastavi zdravje | `set_health` | `value`, `relative` |
 | Nastavi življenja | `set_lives` | `value`, `relative` |
 | Nastavi rezultat | `set_score` | `value`, `relative` |
-| Prikaži tabelo rekordov | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Čas
 
@@ -95,8 +100,10 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
 | Končaj igro | `game_end` | — |
+| Pojdi v sobo | `goto_room` | `room`, `transition` |
 | Če obstaja naslednja soba | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Če obstaja prejšnja soba | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Naslednja soba | `next_room` | — |
 | Znova zaženi sobo | `restart_room` | — |
 | Nastavi ozadje | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 |--------|------------|------------|
 | Nariši besedilo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Znova zaženi igro | `restart_game` | — |
-| Nastavi barvo risanja | `set_draw_color` | `color` |
 | Nastavi naslov okna | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Prikaži sporočilo | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ Ta preset omogoča **19** vrst dogodkov in **54** vrst dejanj.
 | Izvedi skripto | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Zapusti dogodek | `exit_event` | — |
 | Če trk | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Če pogoj | `if_condition` | — |
 | Če predmet obstaja | `if_object_exists` | `object`, `not_flag` |
+| Nastavi spremenljivko | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Začetek bloka | `start_block` | — |
 | Preveri verjetnost | `test_chance` | `sides` |
 | Preveri izraz | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Preveri spremenljivko | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Pogledi
+
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Omogoči poglede | `enable_views` | `enable` |
+| Nastavi pogled | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Risanje
+
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Nariši sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Nariši spremenljivko | `draw_variable` | `x`, `y`, `variable` |
+| Nastavi barvo risanja | `set_draw_color` | `color` |
+| Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Prikaži tabelo rekordov | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

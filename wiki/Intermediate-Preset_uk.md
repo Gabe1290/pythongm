@@ -8,7 +8,7 @@
 
 ## Огляд
 
-Цей пресет вмикає **21** типів подій і **118** типів дій.
+Цей пресет вмикає **21** типів подій і **122** типів дій.
 
 ---
 
@@ -59,9 +59,12 @@
 | Задати тертя | `set_friction` | `friction` |
 | Задати гравітацію | `set_gravity` | `direction`, `gravity` |
 | Задати горизонтальну швидкість | `set_hspeed` | `speed` |
+| Задати швидкість | `set_speed` | `speed` |
 | Задати вертикальну швидкість | `set_vspeed` | `speed` |
 | Почати рух (напрямок) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Зупинити рух | `stop_movement` | — |
+| Перевірити вирівнювання по сітці | `test_alignment` | `hsnap`, `vsnap` |
+| Обгортання навколо кімнати | `wrap_around_room` | — |
 
 ### Сітка
 
@@ -69,7 +72,6 @@
 |--------|------------|------------|
 | Якщо на сітці | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Прив'язати до сітки | `snap_to_grid` | `grid_size` |
-| Перевірити вирівнювання по сітці | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Екземпляр
 
@@ -92,17 +94,12 @@
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
-| Очистити таблицю рекордів | `clear_highscore` | — |
 | Намалювати смугу здоров'я | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Намалювати життя | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Намалювати рахунок | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Задати здоров'я | `set_health` | `value`, `relative` |
 | Задати життя | `set_lives` | `value`, `relative` |
 | Задати рахунок | `set_score` | `value`, `relative` |
-| Показати таблицю рекордів | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Перевірити здоров'я | `test_health` | `operation`, `value` |
-| Перевірити життя | `test_lives` | `value`, `operation` |
-| Перевірити рахунок | `test_score` | `value`, `operation` |
 
 ### Час
 
@@ -150,22 +147,11 @@
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
-| Намалювати стрілку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Намалювати тло | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Намалювати еліпс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Намалювати лінію | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Намалювати масштабований текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Намалювати спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Намалювати текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Намалювати змінну | `draw_variable` | `x`, `y`, `variable` |
-| Заповнити екран кольором | `fill_color` | `color` |
 | Завантажити гру | `load_game` | `filename` |
 | Відкрити вебсторінку | `open_webpage` | `url` |
 | Перезапустити гру | `restart_game` | — |
 | Зберегти гру | `save_game` | `filename` |
-| Задати колір | `set_color` | `color`, `alpha` |
-| Задати колір малювання | `set_draw_color` | `color` |
-| Задати шрифт малювання | `set_draw_font` | `font`, `halign`, `valign` |
 | Задати заголовок вікна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Показати інформацію про гру | `show_info` | — |
 | Показати повідомлення | `show_message` | `message` |
@@ -187,8 +173,10 @@
 | Якщо можна штовхнути | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Якщо зіткнення | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | Якщо зіткнення в | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| Якщо умова | `if_condition` | — |
 | Якщо об'єкт існує | `if_object_exists` | `object`, `not_flag` |
 | Повторити | `repeat` | `times`, `actions` |
+| Задати змінну | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Початок блоку | `start_block` | — |
 | Перевірити шанс | `test_chance` | `sides` |
 | Перевірити вираз | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@
 | Увімкнути вигляди | `enable_views` | `enable` |
 | Налаштувати вигляд | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Малювання
+
+| Дія | Назва Блоку | Параметри |
+|--------|------------|------------|
+| Намалювати стрілку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Намалювати тло | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Намалювати еліпс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Намалювати лінію | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Намалювати масштабований текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Намалювати спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Намалювати змінну | `draw_variable` | `x`, `y`, `variable` |
+| Заповнити екран кольором | `fill_color` | `color` |
+| Задати колір | `set_color` | `color`, `alpha` |
+| Задати колір малювання | `set_draw_color` | `color` |
+| Задати шрифт малювання | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Частки
 
 | Дія | Назва Блоку | Параметри |
@@ -214,6 +218,16 @@
 | Видалити випромінювач | `destroy_emitter` | — |
 | Видалити систему часток | `destroy_particle_system` | — |
 | Випускати частки потоком | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Дія | Назва Блоку | Параметри |
+|--------|------------|------------|
+| Очистити таблицю рекордів | `clear_highscore` | — |
+| Показати таблицю рекордів | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Перевірити здоров'я | `test_health` | `operation`, `value` |
+| Перевірити життя | `test_lives` | `value`, `operation` |
+| Перевірити рахунок | `test_score` | `value`, `operation` |
 
 ---
 

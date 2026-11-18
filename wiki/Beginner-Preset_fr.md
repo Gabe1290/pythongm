@@ -8,7 +8,7 @@
 
 ## Aperçu
 
-Ce préréglage active **19** types d'événements et **54** types d'actions.
+Ce préréglage active **20** types d'événements et **68** types d'actions.
 
 ---
 
@@ -20,6 +20,7 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 | Step | `step` | Objet | Exécuté à chaque image (utilisez-le pour des vérifications continues) |
 | Keyboard (held) | `keyboard` | Entrée | Exécuté en continu tant qu'une touche est maintenue (pour un mouvement fluide) |
 | Keyboard <No Key> | `keyboard_no_key` | Entrée | Exécuté quand aucune touche du clavier n'est actuellement enfoncée |
+| Keyboard Press | `keyboard_press` | Entrée | Exécuté une fois quand une touche est enfoncée pour la première fois (pour un déplacement sur grille) |
 | Collision With... | `collision` | Collision | Exécuté lors d'une collision avec un autre objet |
 | Begin Step | `begin_step` | Étape | Exécuté au début de chaque image, avant les autres événements |
 | End Step | `end_step` | Étape | Exécuté à la fin de chaque image, après les collisions mais avant le dessin |
@@ -53,15 +54,18 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 | Définir direction et vitesse | `set_direction_speed` | `direction`, `speed` |
 | Définir la gravité | `set_gravity` | `direction`, `gravity` |
 | Définir la vitesse horizontale | `set_hspeed` | `speed` |
+| Définir la vitesse | `set_speed` | `speed` |
 | Définir la vitesse verticale | `set_vspeed` | `speed` |
 | Commencer à bouger (direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Arrêter le mouvement | `stop_movement` | — |
+| Tester l'alignement sur la grille | `test_alignment` | `hsnap`, `vsnap` |
+| Boucler autour de la salle | `wrap_around_room` | — |
 
 ### Grille
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Tester l'alignement sur la grille | `test_alignment` | `hsnap`, `vsnap` |
+| Aligner sur la grille | `snap_to_grid` | `grid_size` |
 
 ### Instance
 
@@ -71,6 +75,7 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 | Créer une instance | `create_instance` | `object`, `x`, `y`, `relative` |
 | Détruire une instance | `destroy_instance` | — |
 | Détruire à une position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Définir le sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Tester le nombre d'instances | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Score
@@ -79,9 +84,9 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 |--------|------------|------------|
 | Dessiner les vies | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dessiner le score | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Définir la santé | `set_health` | `value`, `relative` |
 | Définir les vies | `set_lives` | `value`, `relative` |
 | Définir le score | `set_score` | `value`, `relative` |
-| Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Minuterie
 
@@ -95,8 +100,10 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
 | Terminer le jeu | `game_end` | — |
+| Aller à la salle | `goto_room` | `room`, `transition` |
 | Si salle suivante existe | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Si salle précédente existe | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Salle suivante | `next_room` | — |
 | Redémarrer la salle | `restart_room` | — |
 | Définir l'arrière-plan | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 |--------|------------|------------|
 | Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Redémarrer le jeu | `restart_game` | — |
-| Définir la couleur de dessin | `set_draw_color` | `color` |
 | Définir le titre de la fenêtre | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Afficher un message | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ Ce préréglage active **19** types d'événements et **54** types d'actions.
 | Exécuter un script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Quitter l'événement | `exit_event` | — |
 | Si collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si condition | `if_condition` | — |
 | Si l'objet existe | `if_object_exists` | `object`, `not_flag` |
+| Définir une variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Début de bloc | `start_block` | — |
 | Tester la chance | `test_chance` | `sides` |
 | Tester une expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Tester une variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Vues
+
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Activer les vues | `enable_views` | `enable` |
+| Définir une vue | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Dessin
+
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
+| Définir la couleur de dessin | `set_draw_color` | `color` |
+| Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

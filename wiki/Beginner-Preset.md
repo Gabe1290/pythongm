@@ -8,7 +8,7 @@
 
 ## Overview
 
-This preset enables **19** event types and **54** action types.
+This preset enables **20** event types and **68** action types.
 
 ---
 
@@ -20,6 +20,7 @@ This preset enables **19** event types and **54** action types.
 | Step | `step` | Object | Executed every frame (use for continuous checks) |
 | Keyboard (held) | `keyboard` | Input | Executed continuously while a key is held down (for smooth movement) |
 | Keyboard <No Key> | `keyboard_no_key` | Input | Executed when no keyboard key is currently pressed |
+| Keyboard Press | `keyboard_press` | Input | Executed once when a key is first pressed (for grid-based movement) |
 | Collision With... | `collision` | Collision | Executed when colliding with another object |
 | Begin Step | `begin_step` | Step | Executed at the beginning of each step, before other events |
 | End Step | `end_step` | Step | Executed at the end of each step, after collisions but before drawing |
@@ -53,15 +54,18 @@ This preset enables **19** event types and **54** action types.
 | Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
 | Set Gravity | `set_gravity` | `direction`, `gravity` |
 | Set Horizontal Speed | `set_hspeed` | `speed` |
+| Set Speed | `set_speed` | `speed` |
 | Set Vertical Speed | `set_vspeed` | `speed` |
 | Start Moving (Direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Stop Movement | `stop_movement` | — |
+| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
+| Wrap Around Room | `wrap_around_room` | — |
 
 ### Grid
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
+| Snap to Grid | `snap_to_grid` | `grid_size` |
 
 ### Instance
 
@@ -71,6 +75,7 @@ This preset enables **19** event types and **54** action types.
 | Create Instance | `create_instance` | `object`, `x`, `y`, `relative` |
 | Destroy Instance | `destroy_instance` | — |
 | Destroy at Position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Set Sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
 | Test Instance Count | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Score
@@ -79,9 +84,9 @@ This preset enables **19** event types and **54** action types.
 |--------|------------|------------|
 | Draw Lives | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Draw Score | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Set Health | `set_health` | `value`, `relative` |
 | Set Lives | `set_lives` | `value`, `relative` |
 | Set Score | `set_score` | `value`, `relative` |
-| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ### Timing
 
@@ -95,8 +100,10 @@ This preset enables **19** event types and **54** action types.
 | Action | Block Name | Parameters |
 |--------|------------|------------|
 | End Game | `game_end` | — |
+| Go to Room | `goto_room` | `room`, `transition` |
 | If Next Room Exists | `if_next_room_exists` | `then_actions`, `else_actions` |
 | If Previous Room Exists | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Next Room | `next_room` | — |
 | Restart Room | `restart_room` | — |
 | Set Background | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
@@ -117,7 +124,6 @@ This preset enables **19** event types and **54** action types.
 |--------|------------|------------|
 | Draw Text | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Restart Game | `restart_game` | — |
-| Set Draw Color | `set_draw_color` | `color` |
 | Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Show Message | `show_message` | `message` |
 
@@ -133,11 +139,35 @@ This preset enables **19** event types and **54** action types.
 | Execute Script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
 | Exit Event | `exit_event` | — |
 | If Collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| If Condition | `if_condition` | — |
 | If Object Exists | `if_object_exists` | `object`, `not_flag` |
+| Set Variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Start Block | `start_block` | — |
 | Test Chance | `test_chance` | `sides` |
 | Test Expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Test Variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Views
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Enable Views | `enable_views` | `enable` |
+| Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Drawing
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
+| Set Draw Color | `set_draw_color` | `color` |
+| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
+
+### Score/Lives/Health
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
 
 ---
 

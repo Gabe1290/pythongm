@@ -8,7 +8,7 @@
 
 ## Overview
 
-This preset enables **21** event types and **118** action types.
+This preset enables **21** event types and **122** action types.
 
 ---
 
@@ -59,9 +59,12 @@ This preset enables **21** event types and **118** action types.
 | Set Friction | `set_friction` | `friction` |
 | Set Gravity | `set_gravity` | `direction`, `gravity` |
 | Set Horizontal Speed | `set_hspeed` | `speed` |
+| Set Speed | `set_speed` | `speed` |
 | Set Vertical Speed | `set_vspeed` | `speed` |
 | Start Moving (Direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
 | Stop Movement | `stop_movement` | — |
+| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
+| Wrap Around Room | `wrap_around_room` | — |
 
 ### Grid
 
@@ -69,7 +72,6 @@ This preset enables **21** event types and **118** action types.
 |--------|------------|------------|
 | If On Grid | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
 | Snap to Grid | `snap_to_grid` | `grid_size` |
-| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
 
 ### Instance
 
@@ -92,17 +94,12 @@ This preset enables **21** event types and **118** action types.
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Clear High-Score Table | `clear_highscore` | — |
 | Draw Health Bar | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
 | Draw Lives | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Draw Score | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Set Health | `set_health` | `value`, `relative` |
 | Set Lives | `set_lives` | `value`, `relative` |
 | Set Score | `set_score` | `value`, `relative` |
-| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Test Health | `test_health` | `operation`, `value` |
-| Test Lives | `test_lives` | `value`, `operation` |
-| Test Score | `test_score` | `value`, `operation` |
 
 ### Timing
 
@@ -150,22 +147,11 @@ This preset enables **21** event types and **118** action types.
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Draw Arrow | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Draw Background | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Draw Ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
 | Draw Text | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
-| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
-| Fill Screen Color | `fill_color` | `color` |
 | Load Game | `load_game` | `filename` |
 | Open Webpage | `open_webpage` | `url` |
 | Restart Game | `restart_game` | — |
 | Save Game | `save_game` | `filename` |
-| Set Color | `set_color` | `color`, `alpha` |
-| Set Draw Color | `set_draw_color` | `color` |
-| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
 | Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Show Game Info | `show_info` | — |
 | Show Message | `show_message` | `message` |
@@ -187,8 +173,10 @@ This preset enables **21** event types and **118** action types.
 | If Can Push | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | If Collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
 | If Collision At | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
+| If Condition | `if_condition` | — |
 | If Object Exists | `if_object_exists` | `object`, `not_flag` |
 | Repeat | `repeat` | `times`, `actions` |
+| Set Variable | `set_variable` | `variable`, `value`, `scope`, `relative` |
 | Start Block | `start_block` | — |
 | Test Chance | `test_chance` | `sides` |
 | Test Expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
@@ -202,6 +190,22 @@ This preset enables **21** event types and **118** action types.
 | Enable Views | `enable_views` | `enable` |
 | Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
+### Drawing
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw Arrow | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Draw Background | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Draw Ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
+| Fill Screen Color | `fill_color` | `color` |
+| Set Color | `set_color` | `color`, `alpha` |
+| Set Draw Color | `set_draw_color` | `color` |
+| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
+
 ### Particles
 
 | Action | Block Name | Parameters |
@@ -214,6 +218,16 @@ This preset enables **21** event types and **118** action types.
 | Destroy Emitter | `destroy_emitter` | — |
 | Destroy Particle System | `destroy_particle_system` | — |
 | Stream Particles | `stream_particles` | `particle_type`, `number` |
+
+### Score/Lives/Health
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Clear High-Score Table | `clear_highscore` | — |
+| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Test Health | `test_health` | `operation`, `value` |
+| Test Lives | `test_lives` | `value`, `operation` |
+| Test Score | `test_score` | `value`, `operation` |
 
 ---
 
