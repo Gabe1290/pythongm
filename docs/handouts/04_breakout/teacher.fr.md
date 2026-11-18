@@ -28,7 +28,7 @@ Pour une séance de 45 minutes, faites les sprites et la phase 1 lors de la prem
 
 - Deux objets mur (côté et haut) existent pour que la balle inverse la bonne direction : le mur latéral inverse l'horizontale, le mur du haut et la raquette inversent la verticale.
 - **Solide** est nécessaire pour les murs et la raquette ; la balle n'est *pas* Solide. Chaque rebond est un événement de collision séparé sur la balle.
-- La raquette a besoin de son propre événement **En collision avec obj_wall_side** avec *Arrêter le mouvement* ; sinon elle traverse les murs latéraux.
+- La raquette a besoin de son propre événement **Quand collision avec obj_wall_side** avec *Arrêter le mouvement* ; sinon elle traverse les murs latéraux.
 - **Il n'y a pas de mur en bas, exprès.** La zone de mort invisible en bas attrape la balle et la renvoie en (320, 100). Les élèves placent souvent un mur en bas ; demandez « comment la balle pourrait-elle alors être perdue ? ».
 - La balle rebondit indéfiniment entre les murs et la raquette ; c'est **normal**. La raquette sert seulement à empêcher la balle de tomber.
 
@@ -42,8 +42,8 @@ Pour une séance de 45 minutes, faites les sprites et la phase 1 lors de la prem
 **Phase 4 : contrôleur de jeu**
 
 - Le contrôleur doit être **placé dans la salle**, comme celui du Tutoriel 2.
-- Les vies sont réglées dans l'événement **Création** du contrôleur ; la balle retire une vie dans son événement de zone de mort (*Ajouter aux vies -1* avant le saut).
-- **Plus de vies** est un événement qui se déclenche automatiquement quand les vies atteignent zéro. Le tutoriel demande *Afficher un message*, *Afficher le tableau des meilleurs scores*, *Terminer le jeu* dans cet ordre et prévient que l'ordre compte. Sur le lecteur de bureau, le tableau s'affiche dans les deux cas, mais gardez l'ordre du tutoriel : c'est le plus sûr.
+- Les vies sont réglées dans l'événement **Quand créé** du contrôleur ; la balle retire une vie dans son événement de zone de mort (*Ajouter aux vies -1* avant le saut).
+- **Plus de vies** est un événement qui se déclenche automatiquement quand les vies atteignent zéro. Le tutoriel demande *Afficher message*, *Afficher le tableau des scores*, *Terminer le jeu* dans cet ordre et prévient que l'ordre compte. Sur le lecteur de bureau, le tableau s'affiche dans les deux cas, mais gardez l'ordre du tutoriel : c'est le plus sûr.
 - Le score et les vies sont dessinés en blanc à y 10, sur la rangée de murs gris du haut ; ils restent lisibles.
 
 > TIP: **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`04_breakout_checkpoints.zip`) : un projet pour la fin de chaque phase. Donnez à un élève bloqué la phase précédente pour qu'il continue.

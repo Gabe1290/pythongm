@@ -39,14 +39,14 @@ The tutorial says 20-25 minutes for a confident student; allow extra time for th
 
 - This is the phase that introduces every new idea at once: `held_level`, the basket's starting sprite swap to `spr_basket_cherry`, and the collision's If/Else. Budget the most time here.
 - **The basket's sprite changes to `spr_basket_cherry` BEFORE any gameplay** — this is a one-time manual sprite swap in the object's properties, not an action. A student who skips it will have a basket that never visually shows what it's holding, even though the logic underneath is correct; the game will still score correctly, which can make the mistake easy to miss.
-- `held_level` is set in **Create**, not anywhere else. A student who sets it in the spawner or the fruit object by mistake will see it reset unexpectedly.
-- The collision's *If held_level equals 1* branch must contain all three actions (set `held_level`, add score, set sprite) — a student who puts the score or sprite action in the wrong branch (or outside the If entirely) gets a game that scores correctly but never shows the fusion, or shows it on every catch including mismatches.
+- `held_level` is set in **When created**, not anywhere else. A student who sets it in the spawner or the fruit object by mistake will see it reset unexpectedly.
+- The *then* branch of the collision's **If** *variable* `held_level` `==` 1 must contain all three actions (set `held_level`, add score, set sprite) — a student who puts the score or sprite action in the wrong branch (or outside the If entirely) gets a game that scores correctly but never shows the fusion, or shows it on every catch including mismatches.
 - *Destroy other instance*, not *Destroy this instance* — the common one-letter mistake that destroys the basket instead of the caught fruit.
 
 **Phase 3: second fusion**
 
 - Deliberately the fast phase: the exact same four steps as Phase 2, with "cherry" renamed to "strawberry" and 1/2 changed to 2/3. If a student struggled with Phase 2's If/Else, this is where it clicks, because they're building the identical shape again with different names.
-- A frequent copy-paste slip: forgetting to change the *If held_level equals 1* condition to *equals 2*. The symptom is a strawberry catch doing nothing useful (held_level is never 1 once a cherry has already fused), which looks like a bigger bug than it is.
+- A frequent copy-paste slip: forgetting to change the **If** *variable* `held_level` `==` 1 condition to `==` 2. The symptom is a strawberry catch doing nothing useful (held_level is never 1 once a cherry has already fused), which looks like a bigger bug than it is.
 
 **Phase 4: winning**
 

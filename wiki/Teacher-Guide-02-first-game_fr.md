@@ -53,7 +53,7 @@ Pour une séance de 45 minutes, faites les phases 1 à 3 et laissez la phase 4 e
 
 **Phase 4 : finitions**
 
-- La vérification des limites est l'étape la moins détaillée du tutoriel : elle dit « si x < 0, définir x = 0 ». Les élèves ont besoin d'un bloc conditionnel (tester une expression) avec la comparaison, puis d'une action « définir x ». Donnez un indice ou montrez-le une fois. Dans le projet de référence, le joueur peut dépasser d'un pas (5 pixels) avant d'être ramené ; c'est normal.
+- La vérification des limites : les élèves utilisent deux blocs **If** réglés sur *my position* (*x position* `<` 0, puis *x position* `>` 608), chacun avec *Définir une variable* `x` (à 0, puis à 608). Le mode Débutant n'a pas de bloc pour x lui-même : une comparaison écrite n'est pas la bonne voie ici. Donnez un indice ou montrez-le une fois. Dans le projet de référence, le joueur peut dépasser d'un pas (5 pixels) avant d'être ramené ; c'est normal.
 - Le tutoriel suggère un arrière-plan « couleur d'espace sombre ». Le texte du score est blanc, il reste donc lisible sur les couleurs sombres.
 
 > **Astuce:** **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`02_first_game_checkpoints.zip`) : un projet pour la fin de chaque phase. Donnez à un élève bloqué le projet de la phase précédente pour qu'il continue au lieu de prendre du retard.

@@ -23,7 +23,7 @@ Le jeu d'arcade classique : deux raquettes, une balle qui rebondit, des buts inv
 
 - [ ] **7.** Crée un sprite `spr_goal` (32×32, de la couleur que tu veux).
 - [ ] **8.** Crée `obj_goal_left` et `obj_goal_right` (sprite `spr_goal`, **Visible décoché**, **Solide** coché).
-- [ ] **9.** Dans `obj_ball`, ajoute **Quand collision avec obj_goal_left** : *Set variable* `global.p2score` *relative* +1 (ce bloc reste en anglais), puis *Sauter à la position de départ*. Ajoute **Quand collision avec obj_goal_right** : la même chose avec `global.p1score`.
+- [ ] **9.** Dans `obj_ball`, ajoute **Quand collision avec obj_goal_left** : *Définir une variable* avec *Variable* `p2score`, *Valeur* 1, *Portée* `global` et *Relatif* coché, puis *Sauter à la position de départ*. Ajoute **Quand collision avec obj_goal_right** : la même chose avec `p1score`.
 - [ ] **10.** Dans la salle, empile `obj_goal_left` le long du bord gauche et `obj_goal_right` le long du bord droit, derrière les raquettes.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Quand la balle dépasse une raquette, elle retourne au centre. Tu ne vois pas encore le score.

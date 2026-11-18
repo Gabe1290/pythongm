@@ -40,17 +40,17 @@ Le tutoriel indique 20 à 25 minutes pour un élève à l'aise ; prévois du tem
 - C'est la phase qui introduit toutes les nouvelles idées à la fois : `held_level`, le changement du sprite de départ du panier vers `spr_basket_cherry`, et le Si/Sinon de la collision. Prévois le plus de temps ici.
 - **Le sprite du panier change vers `spr_basket_cherry` AVANT tout jeu** — c'est un changement de sprite manuel, ponctuel, dans les propriétés de l'objet, pas une action. Un élève qui le saute aura un panier qui ne montre jamais visuellement ce qu'il tient, même si la logique en dessous est correcte ; le jeu continuera à compter les points correctement, ce qui peut rendre l'erreur facile à manquer.
 - `held_level` est défini dans **Quand créé**, nulle part ailleurs. Un élève qui le définit par erreur dans le générateur ou dans l'objet fruit le verra se réinitialiser de façon inattendue.
-- La branche *Si held_level est égal à 1* de la collision doit contenir les trois actions (définir `held_level`, ajouter au score, définir le sprite) — un élève qui place l'action de score ou de sprite dans la mauvaise branche (ou en dehors du Si) obtient un jeu qui compte correctement les points mais ne montre jamais la fusion, ou la montre à chaque capture, même les mauvaises.
+- La branche *then* du **If** *variable* `held_level` `==` 1 de la collision doit contenir les trois actions (définir `held_level`, ajouter au score, définir le sprite) — un élève qui place l'action de score ou de sprite dans la mauvaise branche (ou en dehors du **If**) obtient un jeu qui compte correctement les points mais ne montre jamais la fusion, ou la montre à chaque capture, même les mauvaises.
 - *Détruire l'autre instance*, pas *Détruire cette instance* — l'erreur fréquente d'une seule lettre qui détruit le panier au lieu du fruit attrapé.
 
 **Phase 3 : deuxième fusion**
 
 - Délibérément la phase rapide : exactement les quatre mêmes étapes que la Phase 2, avec « cerise » renommé en « fraise » et 1/2 changé en 2/3. Si un élève a eu du mal avec le Si/Sinon de la Phase 2, c'est ici que ça clique, car il reconstruit la même forme avec des noms différents.
-- Une erreur de copier-coller fréquente : oublier de changer la condition *Si held_level est égal à 1* en *égal à 2*. Le symptôme est qu'attraper une fraise ne fait rien d'utile (held_level n'est jamais 1 une fois qu'une cerise a déjà fusionné), ce qui ressemble à un bug plus gros qu'il ne l'est.
+- Une erreur de copier-coller fréquente : oublier de changer la condition **If** *variable* `held_level` `==` 1 en `==` 2. Le symptôme est qu'attraper une fraise ne fait rien d'utile (held_level n'est jamais 1 une fois qu'une cerise a déjà fusionné), ce qui ressemble à un bug plus gros qu'il ne l'est.
 
 **Phase 4 : gagner la partie**
 
-- La condition de victoire n'est **pas** une vérification séparée ailleurs — *Aller à la salle room_win* est juste une action de plus dans la branche *Si* de la collision avec l'orange, exécutée exactement une fois, au moment où la quatrième fusion se produit. Les élèves venant de la vérification de victoire séparée du Tutoriel 9 (dans un événement Pas) cherchent parfois un équivalent ici et n'en ont pas besoin.
+- La condition de victoire n'est **pas** une vérification séparée ailleurs — *Aller au niveau room_win* est juste une action de plus dans la branche *then* de la collision avec l'orange, exécutée exactement une fois, au moment où la quatrième fusion se produit. Les élèves venant de la vérification de victoire séparée du Tutoriel 9 (dans un événement À chaque étape) cherchent parfois un équivalent ici et n'en ont pas besoin.
 - Il n'y a délibérément aucun sprite ni générateur de pastèque qui tombe. Si un élève demande « où est le fruit pastèque », la réponse est : il n'existe jamais que comme l'apparence finale du panier, jamais comme quelque chose qui tombe.
 - `obj_win_text` dessine son message à des coordonnées fixes dans la salle de 640x480 que ce tutoriel utilise partout (pas le 1024x768 par défaut d'autres tutoriels) — un élève qui tape de mémoire les coordonnées du Tutoriel 9 verra un texte mal placé ou hors écran.
 

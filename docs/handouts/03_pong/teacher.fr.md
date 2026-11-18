@@ -27,11 +27,11 @@ Pour une séance de 45 minutes, faites les phases 1 et 2 en classe, la phase 3 e
 **Phase 1 : raquettes et balle**
 
 - Les élèves créent six objets ici. Proposez une liste au tableau : mur, deux raquettes, balle, puis plus tard deux buts et un objet de score.
-- **Solide** est important. Les murs et les raquettes doivent être Solides pour que *Rebondir contre les objets solides* ait quelque chose sur quoi rebondir. La balle n'est *pas* Solide.
-- Chaque raquette a besoin de son propre événement **En collision avec obj_wall** avec *Arrêter le mouvement*. Sans lui, un mur solide n'arrête pas une raquette qui n'a pas d'événement de collision avec lui.
+- **Solide** est important. Les murs et les raquettes doivent être Solides pour que *Rebondir* ait quelque chose sur quoi rebondir. La balle n'est *pas* Solide.
+- Chaque raquette a besoin de son propre événement **Quand collision avec obj_wall** avec *Arrêter le mouvement*. Sans lui, un mur solide n'arrête pas une raquette qui n'a pas d'événement de collision avec lui.
 - La balle a besoin d'un événement de rebond **pour chaque objet** sur lequel elle doit rebondir (mur, raquette gauche, raquette droite). Les élèves n'ajoutent souvent que le mur.
 - Dans cette phase, la balle sort de l'écran sur les côtés ; c'est **normal**.
-- Si la balle ne va que sur le côté : le champ direction de *Commencer à se déplacer dans la direction* doit valoir 45 (vers le haut et la droite ; 0 est la droite et 90 le haut).
+- Si la balle ne va que sur le côté : le champ *ou angle* du bloc *Déplacer* doit valoir 45 (vers le haut et la droite ; 0 est la droite et 90 le haut).
 
 **Phase 2 : buts et score**
 

@@ -6,7 +6,7 @@ Companion for the in-app tutorial (**Help > Tutorials > Fruit Basket: Catch and 
 
 Students build a complete catch/avoid/win game without ever touching the idea of a variable. A basket moves along the bottom of the room; fruit and bombs are placed once and never move or respawn, so there's nothing to recycle and nothing to remember between frames. Four phases: a moving basket; placing fruit and bombs with no behaviour yet; wiring up collisions (catch a fruit for points, touch a bomb and the room restarts); and a win check once every fruit is gone.
 
-> INFO: If a student asks "how does the game know I caught every fruit", the honest answer is: it counts, every single step, how many `obj_fruit` instances still exist in the room — the **If count of** block. Nothing is stored or remembered on purpose; the count is just read fresh each time.
+> INFO: If a student asks "how does the game know I caught every fruit", the honest answer is: it counts, every single step, how many `obj_fruit` instances still exist in the room — the **If** block's *count of object* option. Nothing is stored or remembered on purpose; the count is just read fresh each time.
 
 ## Suggested Timing (30-35 minutes)
 
@@ -29,17 +29,17 @@ The tutorial says 10-15 minutes for a confident student; allow extra time for th
 **Phase 2: fruit and bombs**
 
 - The most common placement mistake: a fruit placed too close to where the basket starts, so the basket "catches" it just by existing, before the player presses a key. Walk students through checking the basket's starting box against each fruit's position if this happens.
-- Nothing falls and nothing moves here — a student coming from Tutorial 9 or Tutorial 15 may expect a **Create** event setting a fall speed. There isn't one; that's the point.
+- Nothing falls and nothing moves here — a student coming from Tutorial 9 or Tutorial 15 may expect a **When created** event setting a fall speed. There isn't one; that's the point.
 
 **Phase 3: catching and avoiding**
 
 - `obj_fruit`'s collision handler lives on `obj_player`, not on the fruit itself — same **Destroy other instance** pattern as every other catch-game tutorial (Tutorial 2, 9, 15). A student who writes *Destroy this instance* destroys the basket instead.
 - **Restart Room** is new vocabulary this tutorial introduces. It is deliberately NOT a punishment with lives or a game-over screen — make sure students notice it just starts the current room over, fruit and all, so touching a bomb costs a little time, not the game.
-- A student who skips the **Draw** event will still have a working game — the score just isn't visible. This is an easy, low-stakes thing to notice and fix without re-explaining anything.
+- A student who skips the **When drawing** event will still have a working game — the score just isn't visible. This is an easy, low-stakes thing to notice and fix without re-explaining anything.
 
 **Phase 4: winning**
 
-- The win check is a **Step** event on `obj_player`, exactly Tutorial 9's pattern (`If count of obj_coin` becomes `If count of obj_fruit`) — a student who has done Tutorial 9 will recognise this immediately.
+- The win check is an **Every step** event on `obj_player`, exactly Tutorial 9's pattern (`If count of obj_coin` becomes `If count of obj_fruit`) — a student who has done Tutorial 9 will recognise this immediately.
 - If a student placed zero fruit in Phase 2 (unlikely, but it happens), the win room appears the instant the game starts. This is a good moment to point out that the count really is checked fresh every step, not stored.
 
 > TIP: **Reference projects.** Download the checkpoint projects from the wiki (`16_fruit_basket_checkpoints.zip`): one project for the end of each phase. Give a stuck student the previous phase rather than troubleshooting their collisions from scratch.

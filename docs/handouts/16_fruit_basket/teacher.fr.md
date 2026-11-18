@@ -6,7 +6,7 @@ Document d'accompagnement du tutoriel intégré (**Aide > Tutoriels > Panier de 
 
 Les élèves construisent un jeu complet de ramassage et d'évitement sans jamais toucher à l'idée de variable. Un panier se déplace le long du bas de la salle ; les fruits et les bombes sont placés une fois pour toutes et ne bougent ni ne réapparaissent jamais, donc il n'y a rien à recycler ni à se souvenir d'une image à l'autre. Quatre phases : un panier mobile ; placer les fruits et les bombes sans aucun comportement encore ; relier les collisions (ramasser un fruit rapporte des points, toucher une bombe redémarre la salle) ; et une vérification de victoire une fois tous les fruits disparus.
 
-> INFO: Si un·e élève demande « comment le jeu sait-il que j'ai ramassé tous les fruits », la réponse honnête est : il compte, à chaque image, combien d'instances de `obj_fruit` existent encore dans la salle &mdash; le bloc **Si le nombre de**. Rien n'est stocké ou mémorisé exprès ; le nombre est juste relu à chaque fois.
+> INFO: Si un·e élève demande « comment le jeu sait-il que j'ai ramassé tous les fruits », la réponse honnête est : il compte, à chaque image, combien d'instances de `obj_fruit` existent encore dans la salle &mdash; l'option *count of object* du bloc **If**. Rien n'est stocké ou mémorisé exprès ; le nombre est juste relu à chaque fois.
 
 ## Durée suggérée (30 à 35 minutes)
 
@@ -29,17 +29,17 @@ Le tutoriel annonce 10 à 15 minutes pour un·e élève à l'aise ; prévoyez du
 **Phase 2 : fruits et bombes**
 
 - L'erreur de placement la plus courante : un fruit placé trop près de l'endroit où démarre le panier, de sorte que le panier le « ramasse » juste en existant, avant même que l'élève appuie sur une touche. Faites vérifier la boîte de départ du panier par rapport à la position de chaque fruit si cela arrive.
-- Rien ne tombe ni ne bouge ici &mdash; un·e élève venant du Tutoriel 9 ou du Tutoriel 15 peut s'attendre à un événement **Création** qui définit une vitesse de chute. Il n'y en a pas ; c'est le but.
+- Rien ne tombe ni ne bouge ici &mdash; un·e élève venant du Tutoriel 9 ou du Tutoriel 15 peut s'attendre à un événement **Quand créé** qui définit une vitesse de chute. Il n'y en a pas ; c'est le but.
 
 **Phase 3 : ramasser et éviter**
 
 - Le gestionnaire de collision de `obj_fruit` vit sur `obj_player`, pas sur le fruit lui-même &mdash; le même schéma **Détruire l'autre instance** que tous les autres tutoriels de ramassage (Tutoriel 2, 9, 15). Un·e élève qui écrit *Détruire cette instance* détruit le panier à la place.
-- **Redémarrer la salle** est un nouveau vocabulaire introduit par ce tutoriel. Ce n'est volontairement PAS une punition avec des vies ou un écran de fin de partie &mdash; assurez-vous que les élèves remarquent que cela remet simplement la salle actuelle à zéro, fruits compris, donc toucher une bombe coûte un peu de temps, pas la partie.
-- Un·e élève qui oublie l'événement **Dessin** aura quand même un jeu qui fonctionne &mdash; seul le score n'est pas visible. C'est facile à remarquer et à corriger sans tout réexpliquer.
+- **Redémarrer le niveau** est un nouveau vocabulaire introduit par ce tutoriel. Ce n'est volontairement PAS une punition avec des vies ou un écran de fin de partie &mdash; assurez-vous que les élèves remarquent que cela remet simplement la salle actuelle à zéro, fruits compris, donc toucher une bombe coûte un peu de temps, pas la partie.
+- Un·e élève qui oublie l'événement **Quand dessiner** aura quand même un jeu qui fonctionne &mdash; seul le score n'est pas visible. C'est facile à remarquer et à corriger sans tout réexpliquer.
 
 **Phase 4 : gagner**
 
-- La vérification de victoire est un événement **Pas** sur `obj_player`, exactement le schéma du Tutoriel 9 (*Si le nombre de obj_coin* devient *Si le nombre de obj_fruit*) &mdash; un·e élève ayant fait le Tutoriel 9 le reconnaîtra immédiatement.
+- La vérification de victoire est un événement **À chaque étape** sur `obj_player`, exactement le schéma du Tutoriel 9 (**If** *count of object* `obj_coin` devient **If** *count of object* `obj_fruit`) &mdash; un·e élève ayant fait le Tutoriel 9 le reconnaîtra immédiatement.
 - Si un·e élève a placé zéro fruit à la Phase 2 (rare, mais ça arrive), la salle de victoire apparaît dès le début de la partie. C'est un bon moment pour rappeler que le nombre est vraiment vérifié à chaque image, pas stocké.
 
 > TIP: **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`16_fruit_basket_checkpoints.zip`) : un projet pour la fin de chaque phase. Donnez à un·e élève bloqué·e la phase précédente plutôt que de dépanner ses collisions à partir de rien.
@@ -49,13 +49,13 @@ Le tutoriel annonce 10 à 15 minutes pour un·e élève à l'aise ; prévoyez du
 | Terme | Ce que cela signifie ici |
 | Collision | Un événement qui se déclenche au moment où deux objets se touchent |
 | Nombre d'instances | Combien de copies d'un objet existent en ce moment |
-| Redémarrer la salle | Une action qui remet la salle actuelle exactement comme au début |
+| Redémarrer le niveau | Une action qui remet la salle actuelle exactement comme au début |
 | Événement Pas | S'exécute à chaque image ; utilisé ici pour vérifier la victoire |
 
 ## Questions de discussion
 
 - Pourquoi `obj_fruit` n'a-t-il besoin d'aucun événement, alors que `obj_coin` du Tutoriel 9 avait besoin d'un événement Création et d'un événement Hors de la salle ?
-- Quelle est la différence entre **Redémarrer la salle** et **Redémarrer le jeu** ? Quand voudrait-on l'un plutôt que l'autre ?
+- Quelle est la différence entre **Redémarrer le niveau** et **Redémarrer le jeu** ? Quand voudrait-on l'un plutôt que l'autre ?
 - Pourquoi la vérification de victoire de la Phase 4 peut-elle « simplement compter » au lieu d'avoir besoin de se souvenir de quoi que ce soit d'une image précédente ?
 - Quels autres jeux laissent « juste réessayer » au lieu de punir une erreur avec un écran de fin de partie ?
 

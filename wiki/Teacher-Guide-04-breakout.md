@@ -36,7 +36,7 @@ For a 45-minute slot, do sprites and Phase 1 in the first session and the rest i
 
 - Two wall objects (side and top) exist so the ball can reverse the right direction: side wall reverses horizontal, top wall and paddle reverse vertical.
 - **Solid** on walls and paddle is needed; the ball is *not* Solid. Every bounce is a separate Collision event on the ball.
-- The paddle needs its own **Collision with obj_wall_side** event with *Stop movement*; otherwise it goes through the side walls.
+- The paddle needs its own **When colliding with obj_wall_side** event with *Stop movement*; otherwise it goes through the side walls.
 - **There is no bottom wall on purpose.** The invisible death zone at the bottom catches the ball and jumps it to (320, 100). Students often place a wall at the bottom; ask "how would the ball ever get lost?".
 - The ball keeps bouncing forever between walls and the paddle; that is **expected**. The paddle is only needed to stop the ball from falling.
 
@@ -50,8 +50,8 @@ For a 45-minute slot, do sprites and Phase 1 in the first session and the rest i
 **Phase 4: game controller**
 
 - The controller must be **placed in the room**, like the controller in Tutorial 2.
-- Lives are set in the controller's **Create** event; the ball subtracts a life in its death-zone event (*Add to lives -1* before the jump).
-- **No More Lives** is an event that fires automatically when lives reach zero. The tutorial asks for *Show message*, *Show Highscore*, *End Game* in that order and warns that order matters. On the desktop player the highscore is shown either way, but keep the tutorial's order: it is the safe one.
+- Lives are set in the controller's **When created** event; the ball subtracts a life in its death-zone event (*Add to lives -1* before the jump).
+- **No More Lives** is an event that fires automatically when lives reach zero. The tutorial asks for *Show message*, *Show High-Score Table*, *End Game* in that order and warns that order matters. On the desktop player the highscore is shown either way, but keep the tutorial's order: it is the safe one.
 - The score and lives are drawn in white at y 10, over the grey top wall row; they stay readable.
 
 > **Tip:** **Reference projects.** Download the checkpoint projects from the wiki (`04_breakout_checkpoints.zip`): one project for the end of each phase. Give a stuck student the previous phase so they can continue.

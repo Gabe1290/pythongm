@@ -29,7 +29,7 @@ The classic arcade game: two paddles, a bouncing ball, invisible goals behind ea
 
 - [ ] **7.** Create a sprite `spr_goal` (32×32, any colour).
 - [ ] **8.** Create `obj_goal_left` and `obj_goal_right` (sprite `spr_goal`, **Visible unchecked**, **Solid** checked).
-- [ ] **9.** In `obj_ball`, add **When colliding with obj_goal_left**: *Set variable* `global.p2score` *relative* +1, then *Jump to start position*. Add **When colliding with obj_goal_right**: the same with `global.p1score`.
+- [ ] **9.** In `obj_ball`, add **When colliding with obj_goal_left**: *Set Variable* with *Variable* `p2score`, *Value* 1, *Scope* `global` and *Relative* ticked, then *Jump to start position*. Add **When colliding with obj_goal_right**: the same with `p1score`.
 - [ ] **10.** In the room, stack `obj_goal_left` along the left edge and `obj_goal_right` along the right edge, behind the paddles.
 
 > **Done:** **You should see:** press **F5**. When the ball passes a paddle it goes back to the centre. You cannot see the score yet.

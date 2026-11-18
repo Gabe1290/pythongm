@@ -32,9 +32,9 @@ Un panier qui tient toujours un seul fruit, en commençant par une cerise. Des c
 - [ ] **5.** Crée un sprite `spr_fruit_cherry` (20x20, un cercle rouge) et un objet `obj_fruit_cherry` avec un événement **Quand créé** (*Définir vitesse verticale à 3*) et un événement **Hors de la salle** (*Détruire cette instance*). **Hors de la salle** n'est pas un bloc à part — dans la catégorie Events, sors le bloc **Autre événement :** et choisis « Hors de la salle » dans son menu déroulant.
 - [ ] **6.** Crée `obj_spawn_cherry` (sans sprite) avec un événement **Quand créé** (*Définir l'alarme 0 à 90*) et un événement **Quand alarme 0 se déclenche** (*Créer* `obj_fruit_cherry` *à x :* un bloc *entier aléatoire entre 0 et 620* (Opérateurs), *y :* 0, puis *Définir l'alarme 0 à 90* à nouveau). Place-en une dans `room_main`. (620 = largeur de la salle 640 moins la largeur de la cerise 20, pour qu'elle ne dépasse jamais du bord.)
 - [ ] **7.** Change le sprite de `obj_player` vers un nouveau sprite `spr_basket_cherry` (un panier avec une cerise dedans) — le panier commence maintenant en tenant déjà une cerise.
-- [ ] **8.** Dans `obj_player` : l'événement **Quand créé** fait *Définir le score à 0* et *Set variable* `held_level` à 1 ; l'événement **Quand dessiner** fait *Afficher score à x 10, y 10*.
+- [ ] **8.** Dans `obj_player` : l'événement **Quand créé** fait *Définir le score à 0* et *Définir une variable* `held_level` à 1 ; l'événement **Quand dessiner** fait *Afficher score à x 10, y 10*.
 - [ ] **9.** Crée un sprite `spr_basket_strawberry` (56x40, un panier avec une fraise dedans) — tu en auras besoin à l'étape suivante.
-- [ ] **10.** Ajoute **Quand collision avec obj_fruit_cherry** : **If** *variable* `held_level` `==` 1 *then* [*Set variable* `held_level` à 2, *ajouter 10 au score*, *définir le sprite à spr_basket_strawberry*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
+- [ ] **10.** Ajoute **Quand collision avec obj_fruit_cherry** : **If** *variable* `held_level` `==` 1 *then* [*Définir une variable* `held_level` à 2, *ajouter 10 au score*, *définir le sprite à spr_basket_strawberry*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
 
 > **Réussi:** **Tu dois voir :** appuie sur **F5**. Attrape une cerise qui tombe — le panier devient une fraise et le score bondit de 10.
 
@@ -47,7 +47,7 @@ Cette phase répète exactement la même recette que la Phase 2, avec « cerise 
 - [ ] **11.** Crée un sprite `spr_fruit_strawberry` (26x26, un cercle rose-rouge) et un objet `obj_fruit_strawberry`, construit exactement comme `obj_fruit_cherry`.
 - [ ] **12.** Crée `obj_spawn_strawberry` (alarme 0 à 120 cette fois ; x aléatoire de 0 à 614, car la fraise fait 26 de large) et place-en un dans `room_main`.
 - [ ] **13.** Crée un sprite `spr_basket_orange` (56x40, un panier avec une orange dedans) — tu en auras besoin à l'étape suivante.
-- [ ] **14.** Ajoute **Quand collision avec obj_fruit_strawberry** sur `obj_player` : **If** *variable* `held_level` `==` 2 *then* [*Set variable* `held_level` à 3, *ajouter 20 au score*, *définir le sprite à spr_basket_orange*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
+- [ ] **14.** Ajoute **Quand collision avec obj_fruit_strawberry** sur `obj_player` : **If** *variable* `held_level` `==` 2 *then* [*Définir une variable* `held_level` à 3, *ajouter 20 au score*, *définir le sprite à spr_basket_orange*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
 
 > **Réussi:** **Tu dois voir :** appuie sur **F5**. Attrape une cerise, puis une fraise — le panier devient une orange, avec un score de 30 points.
 
@@ -60,7 +60,7 @@ Cette phase répète exactement la même recette que la Phase 2, avec « cerise 
 - [ ] **17.** Crée `obj_win_text`. Événement **Quand dessiner** : *Dessiner texte* « VOUS AVEZ GAGNÉ ! Vous avez fait une pastèque ! » à x 120, y 220 et « Appuyez sur ESPACE pour rejouer » à x 190, y 260. **Touche pressée : Espace** : *Redémarrer le jeu*.
 - [ ] **18.** Crée `room_win` avec une couleur d'arrière-plan vive, et place-y une instance de `obj_win_text`.
 - [ ] **19.** Crée un sprite `spr_basket_watermelon` (56x40, un panier avec un cercle vert rayé dedans) — tu en auras besoin à l'étape suivante.
-- [ ] **20.** Ajoute **Quand collision avec obj_fruit_orange** sur `obj_player` : **If** *variable* `held_level` `==` 3 *then* [*Set variable* `held_level` à 4, *ajouter 50 au score*, *définir le sprite à spr_basket_watermelon*, *Aller au niveau room_win*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
+- [ ] **20.** Ajoute **Quand collision avec obj_fruit_orange** sur `obj_player` : **If** *variable* `held_level` `==` 3 *then* [*Définir une variable* `held_level` à 4, *ajouter 50 au score*, *définir le sprite à spr_basket_watermelon*, *Aller au niveau room_win*] *else* [*ajouter 1 au score*] ; puis *Détruire l'autre instance*.
 
 > **Réussi:** **Tu dois voir :** appuie sur **F5**. Enchaîne les trois fusions et la salle VOUS AVEZ GAGNÉ ! apparaît. ESPACE lance une nouvelle partie.
 

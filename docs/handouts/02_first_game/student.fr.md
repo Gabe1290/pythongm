@@ -38,7 +38,7 @@ Un petit jeu complet : tu déplaces un vaisseau à gauche et à droite en bas de
 
 ## Phase 4 : Finitions
 
-- [ ] **14.** Dans `obj_player`, ajoute un événement **À chaque étape** qui garde le joueur à l'écran, avec deux blocs **If** réglés sur *my position* : **If** *x position* `<` 0 *then* *Set variable* `x` à 0 ; **If** *x position* `>` 608 *then* *Set variable* `x` à 608 (608 = largeur de la salle 640 moins la largeur du sprite 32 ; les mots de ces blocs restent en anglais).
+- [ ] **14.** Dans `obj_player`, ajoute un événement **À chaque étape** qui garde le joueur à l'écran, avec deux blocs **If** réglés sur *my position* : **If** *x position* `<` 0 *then* *Définir une variable* `x` à 0 ; **If** *x position* `>` 608 *then* *Définir une variable* `x` à 608 (608 = largeur de la salle 640 moins la largeur du sprite 32 ; les mots du bloc **If** restent en anglais).
 - [ ] **15.** Donne à `room_game` une couleur d'arrière-plan que tu aimes.
 
 > DONE: **Tu dois voir :** le joueur s'arrête aux deux bords de la fenêtre, et ton jeu terminé est prêt à être joué.

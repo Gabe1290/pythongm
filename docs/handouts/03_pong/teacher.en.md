@@ -27,11 +27,11 @@ For a 45-minute slot, do Phases 1-2 in class, Phase 3 as homework.
 **Phase 1: paddles and ball**
 
 - Students create six objects here. Suggest a checklist on the board: wall, two paddles, ball, then later two goals and a score object.
-- **Solid** matters. Walls and paddles must be Solid so that *Bounce against solid objects* has something to bounce off. The ball is *not* Solid.
-- Each paddle needs its own **Collision with obj_wall** event with *Stop movement*. Without it, a solid wall does not stop a paddle that has no collision event for it.
+- **Solid** matters. Walls and paddles must be Solid so that *Bounce* has something to bounce off. The ball is *not* Solid.
+- Each paddle needs its own **When colliding with obj_wall** event with *Stop movement*. Without it, a solid wall does not stop a paddle that has no collision event for it.
 - The ball needs a Bounce event **for each object** it should bounce off (wall, left paddle, right paddle). Students often add only the wall.
 - In this phase, the ball leaves the screen at the sides; that is **expected**.
-- If students have the ball moving only sideways: the direction field of *Start moving in direction* must be 45 (up and to the right, 0 is right and 90 is up).
+- If students have the ball moving only sideways: the *or angle* field of the *Move* block must be 45 (up and to the right, 0 is right and 90 is up).
 
 **Phase 2: goals and scoring**
 

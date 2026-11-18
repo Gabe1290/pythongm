@@ -45,7 +45,7 @@ For a 45-minute slot, do Phases 1-3 and leave Phase 4 as homework.
 
 **Phase 4: finishing touches**
 
-- The boundary check is the least detailed step in the tutorial: it says "if x < 0, set x = 0". Students need a conditional (test expression) block with the comparison, then a "set x" action. Give a hint or show it once. In the reference project the player can overshoot by one step (5 pixels) before being pulled back; that is normal.
+- The boundary check: students use two **If** blocks set to *my position* (*x position* `<` 0, then *x position* `>` 608), each with *Set Variable* `x` (to 0, then to 608). Beginner has no block for x itself, so a typed comparison is not the way here. Give a hint or show it once. In the reference project the player can overshoot by one step (5 pixels) before being pulled back; that is normal.
 - The tutorial suggests a "dark space colour" background. The score text is white, so it stays readable on dark colours.
 
 > TIP: **Reference projects.** Download the checkpoint projects from the wiki (`02_first_game_checkpoints.zip`): one project for the end of each phase. Give a stuck student the checkpoint of the previous phase so they can continue instead of falling behind.

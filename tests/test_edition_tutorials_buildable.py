@@ -162,7 +162,8 @@ STALE_LABELS = {
     "en": ["*Start moving in direction", "*Bounce against solid objects*", "*Show Highscore*",
            "*If held_level equals", "*Otherwise*", "*If count of*", "Create instance of",
            "**Other Events > No More Lives**", "**Create**", "**Draw**", "**Step**",
-           "**Alarm 0**", "**Collision with ", "Show Highscore"],
+           "**Alarm 0**", "**Collision with ", "Show Highscore", "*Otherwise*",
+           "*If held_level", "test expression) block"],
     "fr": ["*Définir variable*", "*Définir la variable", "*Commencer à se déplacer",
            "*Rebondir contre", "*Si held_level", "*Sinon*", "*Si le nombre de",
            "*Aller à la salle", "Redémarrer la salle", "*Dessiner le score",
@@ -170,15 +171,16 @@ STALE_LABELS = {
            "*Afficher le tableau des meilleurs scores*", "**Création**", "**Dessin**",
            "**Pas**", "**Alarme 0**", "**En collision avec ", "Afficher un message",
            "Afficher le tableau des meilleurs scores", "événement Pas", " pas par seconde",
-           "90 pas"],
+           "90 pas", "*Set variable*", "*Otherwise*", "*Sinon*", "branche *Si*"],
 }
 
 
 def _beginner_handouts():
-    """Student handouts, worksheets and answer keys (what students' answers
-    are marked against) of every tutorial the Beginner edition shows."""
+    """Student handouts, worksheets, answer keys (what students' answers are
+    marked against) and teacher guides of every tutorial the Beginner
+    edition shows."""
     for folder in EDITIONS["beginner"]["tutorial_folders"]:
-        for kind in ("student", "worksheet", "answer_key"):
+        for kind in ("student", "worksheet", "answer_key", "teacher"):
             for lang in ("en", "fr"):
                 path = HANDOUTS / folder / f"{kind}.{lang}.md"
                 if path.exists():
