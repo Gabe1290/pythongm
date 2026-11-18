@@ -58,7 +58,7 @@ case "${1:-check}" in
     # The live wiki stores LF. A Windows working tree can hold CRLF copies (a checkout that
     # predates .gitattributes' `*.md text eol=lf`), and a raw copy would rewrite every such
     # page for no content change. Normalise what we copy; binaries are left alone.
-    sed -i 's/$//' "$LIVE"/*.md
+    sed -i $'s/\r$//' "$LIVE"/*.md
     if [ -d "$REPO_WIKI/images" ]; then
       mkdir -p "$LIVE/images"
       cp -r "$REPO_WIKI"/images/. "$LIVE/images"/

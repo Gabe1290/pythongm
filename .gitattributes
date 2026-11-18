@@ -15,3 +15,7 @@ extensions/microbit/export/firmware/*.hex binary
 # Force Markdown (incl. wiki/ sources) to LF so wiki sync doesn't report
 # spurious CRLF-vs-LF drift on Windows checkouts
 *.md text eol=lf
+
+# Shell scripts must stay LF: bash on Linux/macOS cannot run a CRLF script
+# (scripts/sync_wiki.sh was stored CRLF and failed with "set: pipefail: invalid option").
+*.sh text eol=lf
