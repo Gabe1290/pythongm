@@ -597,6 +597,17 @@ class BlocklyConfig:
         config.enable_block("enable_views")     # views_1/2
         config.enable_block("set_view")         # views_1/2
 
+        # Tutorial gaps (2026-11-18): the beginner edition shows the same
+        # tutorials as junior (01-04, 15, 16), but only JUNIOR_BLOCKS had been
+        # derived from them -- students doing Pong in beginner could not find
+        # Draw Variable to show each player's score. Pinned by
+        # tests/test_edition_tutorials_buildable.py (beginner must offer every
+        # junior block, and every block its tutorials' reference projects use).
+        config.enable_block("draw_variable")         # Pong (each player's score)
+        config.enable_block("room_goto")             # Fruit Fusion / Fruit Basket
+        config.enable_block("event_keyboard_press")  # Fruit Fusion / Fruit Basket lessons
+        config.enable_block("set_speed")             # Getting Started "next steps" page
+
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
@@ -1423,6 +1434,21 @@ def load_config() -> BlocklyConfig:
                         print(f"Blockly config migration: Adding {len(new_categories)} new categories: {new_categories}")
                         for category in new_categories:
                             config.enabled_categories.add(category)
+                        needs_save = True
+
+                # Migrate: a saved, still-unedited built-in preset (editing in
+                # the Configure dialog renames it "custom") picks up blocks
+                # the preset gained since it was saved -- e.g. beginner's
+                # draw_variable for Pong (2026-11-18). Only adds; never
+                # removes a block the saved config has.
+                elif config.preset_name in PRESETS and config.preset_name != "custom":
+                    new_blocks = PRESETS[config.preset_name].enabled_blocks - config.enabled_blocks
+                    new_categories = PRESETS[config.preset_name].enabled_categories - config.enabled_categories
+                    if new_blocks or new_categories:
+                        print(f"Blockly config migration: Adding {sorted(new_blocks)} to the "
+                              f"'{config.preset_name}' preset")
+                        config.enabled_blocks.update(new_blocks)
+                        config.enabled_categories.update(new_categories)
                         needs_save = True
 
                 # Save the migrated config so it persists (either migration
