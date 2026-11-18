@@ -118,6 +118,11 @@ class TestGameMixin:
         """
         if self.isMinimized():
             self.showNormal()
+        elif not self.isVisible():
+            # A process whose main window was closed/hidden but which is still
+            # alive answers the single-instance probe; without this the second
+            # launch exits and the student sees nothing at all.
+            self.show()
         self.raise_()
         self.activateWindow()
         QApplication.alert(self)
@@ -208,6 +213,10 @@ class TestGameMixin:
             if sys.platform != 'win32' and sys.platform != 'darwin':
                 # Force X11 driver on Linux for better compatibility when launched from Qt
                 env['SDL_VIDEODRIVER'] = 'x11'
+            # main.py disables SDL's signal handlers for the IDE (whose Qt
+            # loop never reads SDL_QUIT); a game does read it, so let the
+            # child keep the graceful SIGTERM -> SDL_QUIT path.
+            env.pop('SDL_NO_SIGNAL_HANDLERS', None)
 
             # On Windows, suppress the brief python.exe console window that
             # would otherwise flash before pygame's SDL window appears.

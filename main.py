@@ -118,6 +118,16 @@ if (sys.platform not in ('win32', 'darwin')
         and 'GNOME' in os.environ.get('XDG_CURRENT_DESKTOP', '').upper().split(':')):
     os.environ['QT_QPA_PLATFORMTHEME'] = 'generic'
 
+# Keep SDL from catching SIGTERM/SIGINT in the IDE process. The IDE calls
+# pygame.mixer.init() (core/asset_manager.py) for sound previews, and SDL_Init
+# then installs handlers that turn SIGTERM into an SDL_QUIT event -- which the
+# Qt IDE never reads, so `kill <pid>` (and a session manager's polite TERM)
+# was silently ignored and the process lived on, still holding the
+# single-instance lock (core/single_instance.py) so every later launch exited
+# at once. Real classroom incident 2026-11-18. Test Game children get the
+# variable removed again (core/ide/_test_game.py): a game does read SDL_QUIT.
+os.environ.setdefault('SDL_NO_SIGNAL_HANDLERS', '1')
+
 
 def _find_file_in_tree(base, filename):
     """Search for *filename* under *base* directory, return first match or None."""

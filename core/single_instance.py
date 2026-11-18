@@ -34,6 +34,8 @@ here is that a SECOND process never gets to open the project at all.
 """
 
 import os
+import re
+import sys
 
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
@@ -44,6 +46,47 @@ logger = get_logger(__name__)
 
 SERVER_NAME = "PyGameMakerIDE-single-instance"
 _CONNECT_TIMEOUT_MS = 500
+
+# AF_UNIX socket paths are limited to 108 bytes (sun_path) on Linux.
+_MAX_SOCKET_PATH = 100
+
+
+def _user_tag() -> str:
+    """A filename-safe tag for the current user ('' if none can be found)."""
+    user = ''
+    try:
+        import getpass
+        user = getpass.getuser()
+    except Exception:
+        if hasattr(os, 'getuid'):
+            user = str(os.getuid())
+    return re.sub(r'[^A-Za-z0-9_.-]', '_', user or '')
+
+
+def server_name() -> str:
+    """The lock name for THIS user.
+
+    One IDE per *user*, not per machine. The fixed name used to be the same
+    for everyone: on Linux, Qt put it at ``/tmp/<name>``, shared by every
+    account on the computer (and on Windows a named pipe is global across
+    sessions), so one user's IDE -- or a hung leftover process -- made every
+    other user's launch exit silently with no window. Real classroom
+    incident 2026-11-18 (Debian 12).
+
+    On Linux/macOS it lives in ``$XDG_RUNTIME_DIR`` when there is one: that
+    directory is private to the user and emptied at logout, so a stale lock
+    cannot outlive the session. Read at call time, so tests can still
+    monkeypatch ``SERVER_NAME``.
+    """
+    tag = _user_tag()
+    name = f"{SERVER_NAME}-{tag}" if tag else SERVER_NAME
+    if sys.platform != 'win32':
+        runtime_dir = os.environ.get('XDG_RUNTIME_DIR', '')
+        if runtime_dir and os.path.isdir(runtime_dir) and os.access(runtime_dir, os.W_OK):
+            path = os.path.join(runtime_dir, name)
+            if len(path.encode('utf-8')) <= _MAX_SOCKET_PATH:
+                return path
+    return name
 
 
 def multiple_instances_allowed() -> bool:
@@ -76,6 +119,7 @@ class SingleInstanceGuard(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._server = None
+        self._name = server_name()
         self.is_primary = self._acquire()
 
     def _acquire(self) -> bool:
@@ -85,7 +129,7 @@ class SingleInstanceGuard(QObject):
         # attempt (a readyRead-driven async read here was the first draft;
         # it segfaulted under PySide6 -- see _on_new_connection).
         probe = QLocalSocket(self)
-        probe.connectToServer(SERVER_NAME)
+        probe.connectToServer(self._name)
         connected = probe.waitForConnected(_CONNECT_TIMEOUT_MS)
         probe.close()
         probe.deleteLater()
@@ -97,9 +141,9 @@ class SingleInstanceGuard(QObject):
         # behind, which otherwise makes listen() fail with
         # AddressInUseError even though (as just proven above) nothing is
         # actually listening on it.
-        QLocalServer.removeServer(SERVER_NAME)
+        QLocalServer.removeServer(self._name)
         server = QLocalServer(self)
-        if not server.listen(SERVER_NAME):
+        if not server.listen(self._name):
             # Could not become the primary either (permissions, an odd
             # platform quirk). Fail OPEN -- never block a student from
             # launching the IDE at all just because this guard couldn't
@@ -136,4 +180,4 @@ class SingleInstanceGuard(QObject):
         if self._server is not None:
             self._server.close()
             self._server = None
-            QLocalServer.removeServer(SERVER_NAME)
+            QLocalServer.removeServer(self._name)
