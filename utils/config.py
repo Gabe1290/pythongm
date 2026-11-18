@@ -126,6 +126,28 @@ class Config:
             return cls._config_data
 
     @classmethod
+    def quarantine_config_file(cls):
+        """Move a damaged config.json aside and fall back to defaults.
+
+        Called by main.py when startup fails with the saved settings. The
+        file is renamed to ``config.json.broken-<timestamp>`` (kept for
+        diagnosis), never deleted. Returns the new path, or None when there
+        was no file to move (the failure is then not the config's fault).
+        """
+        import datetime
+        if not cls._config_file.exists():
+            return None
+        stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        target = cls._config_file.with_name(f"{cls._config_file.name}.broken-{stamp}")
+        try:
+            cls._config_file.replace(target)
+        except OSError as e:
+            _safe_print(f"❌ Could not move damaged config aside: {e}")
+            return None
+        cls.load()  # no file now -> defaults
+        return target
+
+    @classmethod
     def save(cls, config_data=None):
         """Save configuration with JSON-safe filtering"""
         try:

@@ -333,9 +333,8 @@ def qt_message_handler(mode, context, message):
         print(f"Qt Fatal: {message}")
     # Ignore QtDebugMsg and QtInfoMsg for cleaner output
 
-def setup_application():
-    from PySide6.QtGui import QFont
-
+def create_application():
+    """The QApplication itself, plus the user's config loaded (not applied)."""
     # Install custom message handler before creating QApplication
     qInstallMessageHandler(qt_message_handler)
 
@@ -348,6 +347,27 @@ def setup_application():
 
     # Load config first to get preferences
     load_config()
+    return app
+
+
+def setup_application():
+    app = create_application()
+    configure_application(app)
+    return app
+
+
+def configure_application(app):
+    """Apply the saved settings (language, theme, font, icon) to *app*.
+
+    May raise on a damaged config.json -- main() catches that, sets the file
+    aside and calls this again with defaults (_start_ide).
+    """
+    from PySide6.QtGui import QFont
+
+    # A retry after a failed first attempt must not stack translators.
+    for old in getattr(app, '_translators', []):
+        app.removeTranslator(old)
+    app._translators = []
 
     # Load translations based on config or system locale
     from PySide6.QtCore import QTranslator
@@ -430,18 +450,114 @@ def setup_application():
     return app
 
 def setup_directories():
+    """Create the per-user folders. Never fatal: a FILE squatting on one of
+    these names used to stop the IDE at every launch (FileExistsError)."""
     app_dir = Path.home() / ".pygamemaker"
-    app_dir.mkdir(exist_ok=True)
-
     projects_dir = Path.home() / "PyGameMaker Projects"
-    projects_dir.mkdir(exist_ok=True)
-
+    for folder in (app_dir, projects_dir):
+        try:
+            folder.mkdir(exist_ok=True)
+        except OSError as e:
+            print(f"⚠️ Could not create {folder}: {e}")
     return app_dir, projects_dir
 
 
-def main():
+# Startup diagnostics live next to config.json, so a teacher can find them.
+STARTUP_ERROR_LOG = Path.home() / ".pygamemaker" / "startup_error.log"
+CRASH_LOG = Path.home() / ".pygamemaker" / "crash.log"
+
+
+def _enable_crash_log():
+    """Record native crashes (segfault/abort) to ~/.pygamemaker/crash.log.
+
+    The release build has no console, so a native crash otherwise leaves no
+    trace at all. faulthandler only writes when the process actually dies."""
     try:
-        app = setup_application()
+        import faulthandler
+        CRASH_LOG.parent.mkdir(exist_ok=True)
+        handle = open(CRASH_LOG, 'a', encoding='utf-8')
+        faulthandler.enable(file=handle, all_threads=True)
+        globals()['_crash_log_handle'] = handle  # keep the file open
+    except Exception:
+        pass
+
+
+def _log_startup_error(note):
+    """Append the current exception's traceback to startup_error.log."""
+    import traceback
+    import datetime
+    text = traceback.format_exc()
+    print(text)
+    try:
+        STARTUP_ERROR_LOG.parent.mkdir(exist_ok=True)
+        with open(STARTUP_ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"\n=== {datetime.datetime.now().isoformat(timespec='seconds')}"
+                    f" -- {note}\n{text}")
+    except Exception:
+        pass
+
+
+def _start_ide(app):
+    """Apply settings and build the main window, recovering from a damaged
+    config.json.
+
+    Real classroom incident 2026-11-18 (Debian 12): after some language
+    switching and restarts the IDE closed at once on EVERY launch -- through
+    logout, reboot and a fresh download -- until the student's whole account
+    was deleted. A wrong-typed entry in ~/.pygamemaker/config.json makes
+    configure_application / PyGameMakerIDE() raise (found by starting the
+    real IDE against damaged configs: font, appearance, editor,
+    recent_projects ...), and nothing ever reset it. Now the first failure
+    moves config.json aside (config.json.broken-<timestamp>, kept for
+    diagnosis) and tries once more with default settings.
+    """
+    from events.plugin_loader import ensure_plugins_loaded
+    for attempt in (1, 2):
+        try:
+            configure_application(app)
+            setup_directories()
+            # Load plugins/extensions BEFORE the IDE is constructed: the action
+            # list editor and Blockly build their action lists from ACTION_TYPES
+            # at construction time, so anything registered later is invisible.
+            # No executor here — the IDE needs the schemas, not the runtime
+            # handlers (GameRunner registers those in the game process). See
+            # events/plugin_loader.ensure_plugins_loaded.
+            ensure_plugins_loaded()
+            return PyGameMakerIDE()
+        except Exception:
+            if attempt == 2:
+                _log_startup_error("startup failed again with default settings")
+                raise
+            _log_startup_error("startup failed; resetting settings")
+            moved = Config.quarantine_config_file()
+            if moved is None:
+                raise
+            print(f"⚠️ Settings were damaged; moved to {moved} and "
+                  "starting with defaults")
+
+
+def _show_fatal_startup_error(error):
+    """Last resort: never exit without telling anyone (no console in the
+    release build). Bilingual because it may appear before any translation
+    could be loaded."""
+    try:
+        from PySide6.QtWidgets import QMessageBox
+        if QApplication.instance() is None:
+            return
+        QMessageBox.critical(
+            None, "PyGameMaker",
+            "PyGameMaker n'a pas pu démarrer.\n"
+            "PyGameMaker could not start.\n\n"
+            f"{type(error).__name__}: {error}\n\n"
+            f"{STARTUP_ERROR_LOG}")
+    except Exception:
+        pass
+
+
+def main():
+    _enable_crash_log()
+    try:
+        app = create_application()
 
         # One IDE process per machine. Multiple instances of the same
         # project silently corrupt it (each instance's saves write only the
@@ -455,7 +571,11 @@ def main():
         guard = None
         from core.single_instance import (
             SingleInstanceGuard, multiple_instances_allowed)
-        if not multiple_instances_allowed():
+        try:
+            allow_multiple = multiple_instances_allowed()
+        except Exception:
+            allow_multiple = False  # damaged config: _start_ide resets it
+        if not allow_multiple:
             guard = SingleInstanceGuard()
             if not guard.is_primary:
                 # Another instance is already running and has been asked to
@@ -464,18 +584,7 @@ def main():
             app._single_instance_guard = guard  # keep alive; would GC otherwise
             app.aboutToQuit.connect(guard.close)
 
-        app_dir, projects_dir = setup_directories()
-
-        # Load plugins/extensions BEFORE the IDE is constructed: the action
-        # list editor and Blockly build their action lists from ACTION_TYPES at
-        # construction time, so anything registered later is invisible. No
-        # executor here — the IDE needs the schemas, not the runtime handlers
-        # (GameRunner registers those in the game process). See
-        # events/plugin_loader.ensure_plugins_loaded.
-        from events.plugin_loader import ensure_plugins_loaded
-        ensure_plugins_loaded()
-
-        ide = PyGameMakerIDE()
+        ide = _start_ide(app)
         if guard is not None:
             guard.raise_requested.connect(ide.bring_to_front)
         ide.show()
@@ -519,6 +628,7 @@ def main():
 
     except Exception as e:
         print(f"Fatal error: {e}")
+        _show_fatal_startup_error(e)
         sys.exit(1)
 
 
