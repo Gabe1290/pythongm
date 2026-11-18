@@ -775,6 +775,20 @@ def round_tripped():
         var mtcField = mtc.getField('OBJECT');
         saved.mtc_options = (mtcField.getOptions ? mtcField.getOptions(false).map(function(o) { return o[1]; }) : []);
         mtc.dispose(true);
+        // The hand-written If block's "count of" / "with" object fields too.
+        var ifb = workspace.newBlock('if_condition');
+        var ifCount = ifb.getField('OBJECT_NAME'), ifColl = ifb.getField('COLLISION_OBJECT');
+        saved.if_count_is_dropdown = ifCount instanceof Blockly.FieldDropdown;
+        saved.if_count_options = (ifCount.getOptions ? ifCount.getOptions(false).map(function(o) { return o[1]; }) : []);
+        saved.if_count_initial = ifb.getFieldValue('OBJECT_NAME');
+        saved.if_coll_is_dropdown = ifColl instanceof Blockly.FieldDropdown;
+        saved.if_coll_options = (ifColl.getOptions ? ifColl.getOptions(false).map(function(o) { return o[1]; }) : []);
+        ifb.setFieldValue('obj_wall', 'OBJECT_NAME');
+        saved.if_count_saved = generateActionCode(ifb).parameters.object_name;
+        ifb.setFieldValue('collision_check', 'CONDITION_TYPE');
+        ifb.setFieldValue('solid', 'COLLISION_OBJECT');
+        saved.if_coll_saved = generateActionCode(ifb).parameters.object;
+        ifb.dispose(true);
         window.blocklyApi.setAssetLists({objects: []});
         out.__value_blocks_saved = saved;
         return JSON.stringify(out);
@@ -1379,3 +1393,27 @@ class TestGeneratedAssetParamsAreDropdowns:
 
     def test_an_existing_generated_object_value_still_round_trips(self, round_tripped):
         assert _params(round_tripped, "change_instance_perform_events_text_zero")["object"] == "obj_enemy"
+
+
+class TestIfBlockObjectFieldsAreDropdowns:
+    """2026-11-18: the If block's "count of" (instance_count) and "with"
+    (collision_check) object fields were text boxes; they are now the
+    project's object drop-down."""
+
+    def test_count_of_lists_the_project_objects(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["if_count_is_dropdown"] is True
+        assert {"obj_wall", "obj_ball"} <= set(saved["if_count_options"])
+
+    def test_a_fresh_block_starts_unset(self, round_tripped):
+        assert round_tripped["__value_blocks_saved"]["if_count_initial"] == ""
+
+    def test_collision_lists_special_values_and_objects(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["if_coll_is_dropdown"] is True
+        assert {"any", "solid", "all", "obj_wall"} <= set(saved["if_coll_options"])
+
+    def test_picked_values_are_what_gets_saved(self, round_tripped):
+        saved = round_tripped["__value_blocks_saved"]
+        assert saved["if_count_saved"] == "obj_wall"
+        assert saved["if_coll_saved"] == "solid"

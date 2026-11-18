@@ -882,6 +882,18 @@ var IF_CONDITION_GROUPS = {
     "expression": "EXPRESSION_GROUP"
 };
 
+// The If block's object fields ("count of", "with") are the project's object
+// drop-down (createAssetField, blockly_workspace.html), not a text box students
+// must type a name into (2026-11-18). A new block starts on "(none)" so it never
+// silently picks an arbitrary object; `extra` lists special values first.
+function ifConditionObjectField(extra) {
+    if (typeof createAssetField !== 'function') {
+        return new Blockly.FieldTextInput("");
+    }
+    var none = (typeof _assetEmptyLabel === 'function') ? _assetEmptyLabel() : '(none)';
+    return createAssetField('objects', '', [[none, '']].concat(extra));
+}
+
 Blockly.Blocks['if_condition'] = {
     init: function() {
         this.appendDummyInput()
@@ -890,7 +902,7 @@ Blockly.Blocks['if_condition'] = {
 
         this.appendDummyInput("INSTANCE_COUNT_GROUP")
             .appendField("count of")
-            .appendField(new Blockly.FieldTextInput("obj_coin"), "OBJECT_NAME")
+            .appendField(ifConditionObjectField([]), "OBJECT_NAME")
             .appendField(new Blockly.FieldDropdown(IF_CONDITION_COMPARE_OPS), "OPERATOR")
             .appendField(new Blockly.FieldNumber(0, 0), "VALUE");
 
@@ -909,7 +921,7 @@ Blockly.Blocks['if_condition'] = {
 
         this.appendDummyInput("COLLISION_CHECK_GROUP")
             .appendField("with")
-            .appendField(new Blockly.FieldTextInput("obj_wall"), "COLLISION_OBJECT")
+            .appendField(ifConditionObjectField([["any", "any"], ["solid", "solid"], ["all", "all"]]), "COLLISION_OBJECT")
             .appendField("offset x:")
             .appendField(new Blockly.FieldNumber(0), "COLLISION_OFFSET_X")
             .appendField("y:")
