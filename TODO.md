@@ -1631,7 +1631,7 @@ lines rather than matching their text.
 
 ## Export
 
-### Kivy export: "Destroy all instances of <object>" destroys the caller instead
+### ~~Kivy export: "Destroy all instances of <object>" destroys the caller instead~~ (DONE 2026-11-19)
 - Found 2026-11-06 building the Junior "Treasure Maze" lesson
   (`docs/junior/lessons/maze2/`): a key that runs `destroy_instance` with
   `target: "object"` / `target_object: "obj_door"`. Desktop handles it
@@ -1644,6 +1644,13 @@ lines rather than matching their text.
   so this was not fixed here. Needs `for o in list(scene.objects): if o.object_name
   == ...: o.destroy()` style codegen plus a stub-Kivy test (see
   `tests/test_kivy_room_actions.py` for the harness pattern).
+- **Fixed 2026-11-19.** `code_generator.py`'s `destroy_instance` branch now emits
+  `[_o.destroy() for _o in list(self.scene.instances) if getattr(_o, 'object_name',
+  _o.__class__.__name__) == '<object>']` for `target: "object"` (a bare
+  `pass` when no object is named; `self`/`other` unchanged). `tests/
+  test_kivy_destroy_all_of_object.py` executes the generated line against a
+  stand-in scene and compiles a real export of the Treasure Maze. **Not run on a
+  device or under real Kivy.**
 
 ### ~~HTML5 export: the game loop is not clocked, so it runs faster on 90/120 Hz screens~~ (DONE 2026-11-19)
 - Found 2026-11-03 while building the Junior "My First Maze" lesson

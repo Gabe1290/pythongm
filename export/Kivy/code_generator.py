@@ -1393,6 +1393,16 @@ if dist > 0:
 
         elif action_type == 'destroy_instance':
             target = params.get('target', 'self')
+            if target == 'object':
+                # Destroy EVERY instance of the named object (desktop:
+                # runtime/action_spawn.py). A list() snapshot because
+                # destroy() only queues the removal, and getattr falls back to
+                # the class name like the other object-name matches here.
+                target_object = str(params.get('target_object', '') or '')
+                if not target_object:
+                    return "pass"
+                return (f"[_o.destroy() for _o in list(self.scene.instances) "
+                        f"if getattr(_o, 'object_name', _o.__class__.__name__) == {target_object!r}]")
             if target == 'other' and 'collision' in event_type:
                 return "other.destroy()"
             else:
