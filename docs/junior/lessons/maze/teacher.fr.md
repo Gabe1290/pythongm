@@ -121,12 +121,7 @@ Ce qu'il faut prévoir :
   particulier). La méthode fiable est de mettre le fichier à une **adresse web**
   (l'espace web de l'école ou un hébergeur gratuit), puis d'ouvrir cette adresse
   sur le téléphone. Cela n'a pas été testé ici.
-- **Vitesse sur un écran rapide.** Le jeu exporté fait un pas à chaque
-  rafraîchissement de l'écran. Sur un écran de 60 Hz, c'est la vitesse prévue.
-  Sur un téléphone avec un écran de 90 ou 120 Hz, le héros ira plus vite, jusqu'à
-  deux fois plus vite. C'est une limite connue de l'export HTML5, pas encore
-  corrigée. Un labyrinthe reste jouable, mais pense-y pour tout jeu qui demande
-  un timing précis.
+- **Vitesse sur un écran rapide.** Le jeu exporté fait 60 pas par seconde quel que soit le taux de rafraîchissement de l'écran : le héros va à la même vitesse sur un téléphone de 60, 90 ou 120 Hz. (Les anciens exports faisaient un pas à chaque rafraîchissement et allaient jusqu'à deux fois plus vite sur un écran rapide : exporte de nouveau si tu as un ancien fichier.) Cela a été vérifié avec un écran simulé de 30 à 144 Hz, pas sur un vrai téléphone.
 
 ## Différenciation
 

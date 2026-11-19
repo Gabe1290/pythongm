@@ -163,11 +163,7 @@ What to plan for:
   from their storage (iPhones in particular). The dependable way is to put the
   file on a **web address** (the school's web space or a free site host), then
   open that address on the phone. This was not tested here.
-- **Speed on a fast screen.** The exported game takes one step per screen
-  refresh. On a 60 Hz screen this is the intended speed. On a phone with a
-  90 or 120 Hz screen the hero will move faster, up to twice as fast. This is
-  a known limit of the HTML5 export that has not been fixed. This maze is still
-  playable, but bombs are harder to dodge at double speed.
+- **Speed on a fast screen.** The exported game runs 60 steps a second whatever the screen's refresh rate, so the hero moves at the same speed on a 60, 90 or 120 Hz phone. (Older exports took one step per screen refresh and ran up to twice as fast on a fast screen: export again if you have an old file.) This was checked with a simulated 30 to 144 Hz screen, not on a real phone.
 
 ## Differentiation
 
