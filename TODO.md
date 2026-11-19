@@ -2063,6 +2063,18 @@ lines rather than matching their text.
     that page do not exist. The wiki `Network` pages are updated in all nine languages
     (the seven non-fr translations have had **no native-speaker read**).
 
+### HTML5/Kivy: network actions follow-ups (2026-11-19)
+- **HTML5 DONE:** a browser player now controls the avatar the host assigns it (own/input
+  frames, `is_instance_owner`, `bind_network_input`, `set_sync_rate`, host-loss keeps the
+  avatar), and `if_condition` `key_pressed` was ported to `engine.js` (it never worked on
+  that target; `mouse_check` is still not ported -- no mouse-button state in the engine).
+  See the addendum in `docs/MULTIPLAYER_LAN_V2_PLAN.md`.
+- **Open:** the **Kivy** client still only WATCHES; porting the owned-avatar promotion and
+  named input from `export_html5.js` to `extensions/multiplayer_lan/kivy_glue.py` is the
+  natural next step. `sync_instance` / `set_instance_owner` are unsupported on both exports.
+  The wiki `Network` pages were updated in nine languages (the eight non-fr ones have had no
+  native-speaker read).
+
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
 - Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase
   7.3. This entry said Kivy had "no global-variable storage at all to

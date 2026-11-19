@@ -23,8 +23,9 @@ Una exportación **Kivy/Android** también es un cliente: un teléfono se une a 
 anfitrión de escritorio (escribe la dirección del anfitrión en `join_game`; la
 detección automática solo existe en el escritorio), participa en las variables
 compartidas, los mensajes y los eventos de red, y ve las instancias en red del
-anfitrión. Como el navegador, no puede ser anfitrión ni poseer una instancia
-propia.
+anfitrión. Como el navegador, no puede ser anfitrión; pero, a diferencia del navegador (cuyo
+jugador controla el avatar que el anfitrión le asigna), solo observa y no puede
+tomar el control de un avatar.
 
 ---
 

@@ -22,8 +22,9 @@ Desktop-Host bei; sie kann nicht selbst hosten). Ein **Kivy/Android**-Export
 ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adresse
 des Hosts in `join_game` ein; die automatische Suche gibt es nur am Desktop),
 nimmt an gemeinsamen Variablen, Nachrichten und Netzwerkereignissen teil und
-sieht die vernetzten Instanzen des Hosts. Wie der Browser kann es nicht selbst
-hosten und keine eigene Instanz besitzen.
+sieht die vernetzten Instanzen des Hosts. Wie der Browser kann es nicht selbst hosten; anders als der Browser (dessen
+Spieler den vom Host zugewiesenen Avatar steuert) schaut es aber nur zu und kann
+keinen Avatar übernehmen.
 
 ---
 

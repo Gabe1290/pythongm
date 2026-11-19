@@ -1312,3 +1312,27 @@ single-player) and `remote_input` is always false. Tests:
 `tests/test_kivy_multiplayer_client.py` (a real desktop host over 127.0.0.1, plus a
 real-Kivy run of the generated scene). **Not tried on a phone or a real school
 network.**
+
+## Addendum 2026-11-19 (2) -- the HTML5 client can now PLAY, not just watch
+
+Phase 7.2 left a browser as a viewer: `is_instance_owner` was an unknown question (so
+it was always false, and an avatar guarded by it never moved even single player) and
+nothing was ever reported up. Now (`extensions/multiplayer_lan/export_html5.js`) an
+instance the host assigned to this player is promoted from a puppet to a locally
+simulated avatar; this page sends `own` frames and the held named inputs (`input`
+frames; arrows + space by default) every logic step, exactly as the desktop client;
+`is_instance_owner` is true for it (and for everything with no session),
+`remote_input` is false (host-side), `bind_network_input` and `set_sync_rate` (the
+interpolation delay) work, and losing the host keeps the player's own avatar.
+`network_spawn`, `sync_instance` and `set_instance_owner` are host-side and warn once;
+the seven shared-folder actions warn once (a page cannot use a folder).
+
+**A pre-existing engine gap this exposed:** the HTML5 engine's `if_condition` never
+implemented `key_pressed` (a stale comment claimed it tracked no held keys; it does,
+`game.keys`), so ANY project steering with `key_pressed` -- not just the multiplayer
+samples -- always took its else branch in a browser. Ported, in `engine.js`.
+Tests: `tests/test_html5_multiplayer_owned_avatar.py`, driving a real export in
+Chromium against a real desktop host over 127.0.0.1 (dev box only; the structure runs
+in CI). **Not tried on a phone's browser or a real school network.** The Kivy client
+still only watches.
+
