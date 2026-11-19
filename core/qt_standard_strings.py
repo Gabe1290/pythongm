@@ -108,5 +108,11 @@ class QtStandardStringsTranslator(QTranslator):
         if context in CONTEXTS:
             entry = _STRINGS.get(source_text)
             if entry:
-                return entry.get(self._lang, "")
-        return ""
+                found = entry.get(self._lang)
+                if found:
+                    return found
+        # A NULL string ("not mine, ask the next translator"). Returning ""
+        # from a PySide6 override is a non-null empty QString, which Qt takes
+        # as "translated to nothing" and stops there -- every menu and label
+        # in the IDE rendered blank (2026-11-19).
+        return None
