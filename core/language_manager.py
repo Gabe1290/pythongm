@@ -173,6 +173,36 @@ class LanguageManager:
             app.removeTranslator(translator)
         self.translators.clear()
         app.removeTranslator(self.qt_translator)
+        fallback = getattr(self, 'qt_fallback_translator', None)
+        if fallback is not None:
+            app.removeTranslator(fallback)
+            self.qt_fallback_translator = None
+
+    def install_qt_standard_translators(self, app, language_code: str):
+        """Install translations for Qt's own dialog strings (standard buttons...).
+
+        Used at startup (main.py) and on every language switch.  Installs our
+        fallback catalog first, then Qt's ``qtbase_<lang>``, so Qt's wins where
+        it has a translation (it is consulted first).
+        """
+        from PySide6.QtCore import QLibraryInfo
+        from core.qt_standard_strings import QtStandardStringsTranslator
+
+        app.removeTranslator(self.qt_translator)
+        old = getattr(self, 'qt_fallback_translator', None)
+        if old is not None:
+            app.removeTranslator(old)
+
+        self.qt_fallback_translator = QtStandardStringsTranslator(language_code)
+        app.installTranslator(self.qt_fallback_translator)
+
+        # Qt ships regional files for some codes (pt_BR, zh_CN).
+        qt_code = {'pt': 'pt_BR', 'zh': 'zh_CN'}.get(language_code, language_code)
+        path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+        if self.qt_translator.load(f"qtbase_{qt_code}", path):
+            app.installTranslator(self.qt_translator)
+        else:
+            logger.debug(f"Qt base translations not found for {language_code}; using fallback strings")
 
     def set_language(self, language_code: str):
         """Set the application language"""
@@ -214,14 +244,8 @@ class LanguageManager:
                     logger.debug(f"   ✅ {loaded_count} translator(s) installed")
 
                     if app:
-                        # Load Qt's built-in translations for standard buttons (Yes, No, OK, Cancel, etc.)
-                        from PySide6.QtCore import QLibraryInfo
-                        qt_translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
-                        if self.qt_translator.load(f"qtbase_{language_code}", qt_translations_path):
-                            app.installTranslator(self.qt_translator)
-                            logger.debug(f"   ✅ Qt base translator installed for {language_code}")
-                        else:
-                            logger.warning(f"   ⚠️ Qt base translations not found for {language_code}")
+                        # Qt's built-in strings (Save/Discard/Cancel, Yes/No, file dialog...)
+                        self.install_qt_standard_translators(app, language_code)
 
                         # Trigger retranslation of all existing widgets
                         from PySide6.QtCore import QEvent
