@@ -2831,6 +2831,37 @@ Ziehen Sie diese Datei auf das USB-Laufwerk MICROBIT des micro:bit, um ihn zu fl
         <source>V1 or V2</source>
         <translation>V1 oder V2</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>Open-Roberta-Export</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>Open &amp;Roberta XML exportieren...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>Open Roberta XML exportieren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Open-Roberta-Export abgeschlossen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>Open Roberta XML wurde gespeichert unter:
+{0}
+
+Importieren Sie die Datei in https://lab.open-roberta.org/</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

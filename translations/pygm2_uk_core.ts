@@ -2695,6 +2695,37 @@ Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
         <source>V1 or V2</source>
         <translation>V1 або V2</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>Експорт в Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>Експортувати &amp;Open Roberta XML...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>Експортувати Open Roberta XML</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Експорт в Open Roberta завершено</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>Open Roberta XML збережено в:
+{0}
+
+Імпортуйте його в https://lab.open-roberta.org/</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

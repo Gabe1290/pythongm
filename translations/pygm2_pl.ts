@@ -8783,6 +8783,37 @@ i spróbuj ponownie.</translation>
 
 {1}</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>Eksport do Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>Eksportuj XML Open &amp;Roberta...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>Eksportuj XML Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Eksport do Open Roberta zakończony</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>XML Open Roberta zapisano w:
+{0}
+
+Zaimportuj go w https://lab.open-roberta.org/</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>

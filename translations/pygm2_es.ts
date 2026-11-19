@@ -7945,6 +7945,37 @@ Arrastre este archivo a la unidad USB MICROBIT de la micro:bit para grabarla.</t
         <source>V1 or V2</source>
         <translation>V1 o V2</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>Exportar a Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>Exportar &amp;Open Roberta XML...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>Exportar Open Roberta XML</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Exportación a Open Roberta completada</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>Open Roberta XML guardado en:
+{0}
+
+Impórtalo en https://lab.open-roberta.org/</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

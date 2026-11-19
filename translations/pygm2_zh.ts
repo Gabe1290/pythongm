@@ -8320,5 +8320,36 @@ Drag this file onto the micro:bit's MICROBIT USB drive to flash it.</source>
         <source>V1 or V2</source>
         <translation>V1 或 V2</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>导出到 Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>导出 Open Roberta XML(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>导出 Open Roberta XML</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Open Roberta 导出完成</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>Open Roberta XML 已保存到:
+{0}
+
+请在 https://lab.open-roberta.org/ 中导入</translation>
+    </message>
 </context>
 </TS>
