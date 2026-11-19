@@ -1336,3 +1336,25 @@ Chromium against a real desktop host over 127.0.0.1 (dev box only; the structure
 in CI). **Not tried on a phone's browser or a real school network.** The Kivy client
 still only watches.
 
+## Addendum 2026-11-19 (3) -- the Kivy client plays too
+
+`kivy_glue.py` now does what the HTML5 client does: an instance whose snapshot owner is this
+player is promoted from a puppet to a locally simulated avatar (spawned where the host put it),
+`own` frames and the held named inputs go up to the host (arrows + space by default;
+`bind_network_input`; `set_sync_rate` sets the interpolation delay), `is_instance_owner` is true
+for the avatar (and for everything with no session), and losing the host keeps the avatar.
+Reports are PACED (own state 30/s, inputs on change plus a half-second refresh): a scene updates
+once per display frame (90-120 a second on a fast phone) and the host drops a client past ~60
+frames a second, which dropped a key change and left the input stuck (found with the real-Kivy
+test, which runs far faster than 60 fps). The HTML5 client got the same pacing.
+Only host-side actions stay unsupported on a phone: `host_game`, `start_networked_game`,
+`set_network_mode`, `network_spawn`, `sync_instance`, `set_instance_owner`.
+
+**Another generic gap this exposed (Kivy):** the generator's `if_condition` only understood
+`instance_count` and `expression`; every other `condition_type` became `if True:`, so the reseau
+avatar (four `key_pressed` conditions) moved in every direction at once. `key_pressed`,
+`random_chance` and `variable_compare` are generated now (`position_check`, `collision_check`,
+`mouse_check` still are not). Tests: `tests/test_kivy_multiplayer_client.py` (incl. a real-Kivy run of
+the generated avatar step against a real desktop host) and `tests/test_kivy_if_condition_types.py`.
+**Not tried on a phone.**
+

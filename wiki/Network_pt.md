@@ -21,9 +21,7 @@ em um anfitrião desktop; ela não consegue hospedar). Uma exportação
 **Kivy/Android** também é um cliente: um telemóvel junta-se a um anfitrião desktop
 (escreve o endereço do anfitrião em `join_game`; a descoberta automática só existe
 no desktop), participa nas variáveis partilhadas, nas mensagens e nos eventos de
-rede, e vê as instâncias em rede do anfitrião. Tal como o navegador, não consegue hospedar; mas, ao contrário do navegador (cujo
-jogador controla o avatar que o anfitrião lhe atribui), só observa e não consegue
-assumir o controlo de um avatar.
+rede, e vê as instâncias em rede do anfitrião. Controla o avatar que o anfitrião lhe atribui, tal como o navegador. Não consegue hospedar.
 
 ---
 

@@ -19,8 +19,7 @@ and the **HTML5** export as a client (a browser page joins a desktop host;
 it can't host itself). A **Kivy/Android** export is a client too: a phone
 joins a desktop host (type the host's address in `join_game`; automatic
 discovery is desktop-only) and takes part in shared variables, messages and
-the network events, and sees the host's networked instances. Like the browser, it can't host; but unlike the browser (whose player controls the
-avatar the host assigns to it), it only watches and can't take control of an avatar.
+the network events, and sees the host's networked instances. It controls the avatar the host assigns to it, like the browser. It can't host.
 
 ---
 

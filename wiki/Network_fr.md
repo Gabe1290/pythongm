@@ -23,9 +23,7 @@ un hôte ordinateur ; elle ne peut pas héberger elle-même). Un export
 **Kivy/Android** est aussi un client : un téléphone rejoint un hôte ordinateur
 (écris l'adresse de l'hôte dans `join_game` ; la découverte automatique n'existe
 que sur ordinateur) et participe aux variables partagées, aux messages et aux
-événements réseau, et voit les instances en réseau de l'hôte. Comme le navigateur, il ne peut pas héberger ; mais contrairement au navigateur
-(dont le joueur contrôle l'avatar que l'hôte lui attribue), il ne fait que regarder
-et ne peut pas prendre le contrôle d'un avatar.
+événements réseau, et voit les instances en réseau de l'hôte. Il contrôle l'avatar que l'hôte lui attribue, comme le navigateur. Il ne peut pas héberger.
 
 ---
 

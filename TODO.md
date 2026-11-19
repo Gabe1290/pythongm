@@ -2069,11 +2069,15 @@ lines rather than matching their text.
   avatar), and `if_condition` `key_pressed` was ported to `engine.js` (it never worked on
   that target; `mouse_check` is still not ported -- no mouse-button state in the engine).
   See the addendum in `docs/MULTIPLAYER_LAN_V2_PLAN.md`.
-- **Open:** the **Kivy** client still only WATCHES; porting the owned-avatar promotion and
-  named input from `export_html5.js` to `extensions/multiplayer_lan/kivy_glue.py` is the
-  natural next step. `sync_instance` / `set_instance_owner` are unsupported on both exports.
-  The wiki `Network` pages were updated in nine languages (the eight non-fr ones have had no
-  native-speaker read).
+- **Kivy DONE (same day):** the owned avatar was ported to `kivy_glue.py` (promotion, `own` /
+  `input` frames paced for fast displays, `bind_network_input`, `set_sync_rate`, host-loss keeps
+  the avatar). It exposed the same generic gap as HTML5: the Kivy generator's `if_condition` turned
+  every `condition_type` except `instance_count`/`expression` into `if True:`; `key_pressed`,
+  `random_chance` and `variable_compare` are generated now.
+- **Open:** Kivy `if_condition` `position_check` / `collision_check` / `mouse_check` still become
+  `if True:` (position_check needs the y-up flip). `sync_instance` / `set_instance_owner` are
+  host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
+  languages (the eight non-fr ones have had no native-speaker read).
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
 - Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase
