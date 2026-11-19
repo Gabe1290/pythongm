@@ -8725,11 +8725,6 @@ puis réessayez.</translation>
     </message>
     <message>
         <location filename="../extensions/thymio/export/__init__.py"/>
-        <source>Open Roberta XML (*.xml)</source>
-        <translation>XML Open Roberta (*.xml)</translation>
-    </message>
-    <message>
-        <location filename="../extensions/thymio/export/__init__.py"/>
         <source>Open Roberta export complete</source>
         <translation>Export Open Roberta terminé</translation>
     </message>
