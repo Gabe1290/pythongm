@@ -884,6 +884,41 @@ class ActionCodeGenerator:
                 except (TypeError, ValueError):
                     chance = 50
                 condition = f"__import__('random').randint(1, 100) <= {chance}"
+            elif condition_type == 'position_check':
+                # Compare this instance's x or y (desktop: "x" anywhere in check_type
+                # means x, otherwise y) with an integer. Kivy's y is up from the
+                # sprite's BOTTOM, the author's is down from its TOP, so y is converted
+                # back to the author's.
+                check_type = str(params.get('check_type', 'x position') or 'x position').lower()
+                operator = str(params.get('operator', '==') or '==').strip()
+                operator = _COMPARISON_OPS.get(operator, operator)
+                if operator not in ('==', '!=', '<', '<=', '>', '>='):
+                    operator = '=='
+                try:
+                    value = int(params.get('value', 0))
+                except (TypeError, ValueError):
+                    value = 0            # desktop: int(value) or 0, no expression evaluation
+                if 'x' in check_type:
+                    current = "self.x"
+                else:
+                    current = ("(self.scene.room_height - self.y - "
+                               "(self.image_height or self.grid_size))")
+                condition = f"{current} {operator} {value}"
+            elif condition_type == 'collision_check':
+                # Would this instance overlap `object` at an offset? Offsets are the
+                # author's (+y is down), so y is subtracted -- the same flip if_collision
+                # makes. Desktop's object_type: "any" means SOLID objects only and "all"
+                # any overlapping instance; Kivy's check_collision_at names those the
+                # other way round, so translate.
+                obj = str(params.get('object', '') or '').strip()
+                if not obj:
+                    condition = "False"
+                else:
+                    target = {'any': 'solid', 'all': 'any'}.get(obj, obj)
+                    ox = _num_code(params.get('offset_x', 0))
+                    oy = _num_code(params.get('offset_y', 0))
+                    condition = (f"self.check_collision_at(self.x + ({ox}), "
+                                 f"self.y - ({oy}), {target!r})")
             elif condition_type == 'variable_compare':
                 variable = str(params.get('variable', '') or '').strip()
                 operator = str(params.get('operator', '==') or '==').strip()

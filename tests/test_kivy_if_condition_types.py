@@ -86,3 +86,82 @@ def test_the_existing_condition_types_are_unchanged():
     assert "count_instances('obj_gem') == 0" in _gen({"condition_type": "instance_count",
                                                       "object_name": "obj_gem", "operator": "==", "value": 0})
     assert "if True" in _gen({"expression": ""}) or "if " in _gen({"expression": "score > 3"})
+
+
+# ---------------------------------------------------------------- position_check / collision_check
+
+class _Room:
+    room_height = 480
+
+
+def test_position_check_x_compares_the_instance_x():
+    pc = {"condition_type": "position_check", "check_type": "x position", "operator": ">=", "value": 100}
+    assert _branches(pc, x=100, scene=_Room()).hit == 1
+    assert _branches(pc, x=99, scene=_Room()).hit == 2
+
+
+def test_position_check_y_is_the_authors_y_down_from_the_sprite_top():
+    """Kivy's y is up from the sprite's BOTTOM; the author's is down from its TOP: a 32 px
+    sprite whose Kivy y is 400 in a 480 px room is at the author's y = 480 - 400 - 32 = 48."""
+    pc = {"condition_type": "position_check", "check_type": "y position", "operator": "==", "value": 48}
+    assert _branches(pc, y=400, image_height=32, grid_size=32, scene=_Room()).hit == 1
+    assert _branches(pc, y=401, image_height=32, grid_size=32, scene=_Room()).hit == 2
+    # a spriteless instance falls back to the grid size, as the rest of the generator does
+    pc2 = {**pc, "value": 480 - 400 - 32}
+    assert _branches(pc2, y=400, image_height=0, grid_size=32, scene=_Room()).hit == 1
+
+
+def test_position_check_operator_names_junk_values_and_the_default_axis():
+    base = {"condition_type": "position_check", "check_type": "x position"}
+    assert _branches({**base, "operator": "greater", "value": 5}, x=9, scene=_Room()).hit == 1
+    assert _branches({**base, "operator": "not_equal", "value": 9}, x=9, scene=_Room()).hit == 2
+    assert _branches({**base, "operator": "==", "value": "junk"}, x=0, scene=_Room()).hit == 1   # int() or 0
+    assert _branches({**base, "operator": "; import os", "value": 3}, x=3, scene=_Room()).hit == 1
+    assert "import os" not in _gen({**base, "operator": "; import os", "value": 3})
+    # anything without an "x" in check_type is the y axis, as on desktop
+    assert "room_height - self.y" in _gen({"condition_type": "position_check", "check_type": "Vertical"})
+
+
+class _Probe:
+    """Stand-in for a GameObject: records the collision question it is asked."""
+
+    def __init__(self, answer):
+        self.answer, self.asked = answer, []
+
+    def check_collision_at(self, x, y, obj):
+        self.asked.append((x, y, obj))
+        return self.answer
+
+
+def _collision(params, answer, **attrs):
+    then = [{"action": "set_variable", "parameters": {"variable": "hit", "value": "1", "scope": "self"}}]
+    other = [{"action": "set_variable", "parameters": {"variable": "hit", "value": "2", "scope": "self"}}]
+    code = _gen({"condition_type": "collision_check", **params, "then_actions": then, "else_actions": other})
+    src = ("class _C:\n    def m(self):\n        self.out = []\n" + code + "\n")
+    ns = {}
+    exec(compile(src, "<gen>", "exec"), ns)
+    probe = _Probe(answer)
+    inst = type("_I", (ns["_C"], _Probe), {})(answer)
+    for k, v in attrs.items():
+        setattr(inst, k, v)
+    inst.m()
+    return inst
+
+
+def test_collision_check_asks_at_the_offset_with_the_y_flip():
+    inst = _collision({"object": "obj_wall", "offset_x": 4, "offset_y": 8}, True, x=100, y=200)
+    assert inst.hit == 1
+    # +8 is DOWN for the author, so one step towards the floor is y - 8 in Kivy
+    assert inst.asked == [(104, 192, "obj_wall")]
+    assert _collision({"object": "obj_wall"}, False, x=1, y=2).hit == 2
+
+
+def test_collision_check_translates_desktops_any_and_all():
+    assert _collision({"object": "any"}, True, x=0, y=0).asked[0][2] == "solid"
+    assert _collision({"object": "all"}, True, x=0, y=0).asked[0][2] == "any"
+
+
+def test_collision_check_without_an_object_is_false_and_offsets_may_be_expressions():
+    assert "False" in _gen({"condition_type": "collision_check", "object": ""})
+    inst = _collision({"object": "obj_wall", "offset_x": "hspeed + 2", "offset_y": 0}, True, x=10, y=5, hspeed=3)
+    assert inst.asked[0][0] == 15

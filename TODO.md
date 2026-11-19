@@ -2074,8 +2074,13 @@ lines rather than matching their text.
   the avatar). It exposed the same generic gap as HTML5: the Kivy generator's `if_condition` turned
   every `condition_type` except `instance_count`/`expression` into `if True:`; `key_pressed`,
   `random_chance` and `variable_compare` are generated now.
-- **Open:** Kivy `if_condition` `position_check` / `collision_check` / `mouse_check` still become
-  `if True:` (position_check needs the y-up flip). `sync_instance` / `set_instance_owner` are
+- **Kivy `position_check` / `collision_check` DONE 2026-11-19** (`tests/test_kivy_if_condition_types.py`):
+  `position_check` compares x, or the author's y-down y (converted from Kivy's y-up bottom
+  anchor); `collision_check` asks `check_collision_at` at the offset with the same y flip as
+  `if_collision`, and translates desktop's `any` (= solid only) / `all` (= any overlap), which
+  Kivy's helper names the other way round. Not run on a device.
+- **Open:** Kivy `if_condition` `mouse_check` still becomes `if True:` (the engine tracks no
+  mouse-button state; HTML5 has the same gap). `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).
 
