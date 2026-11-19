@@ -582,6 +582,18 @@ class ActionCodeGenerator:
             self._pop_block()
             self._await_else = True
 
+    def _script_call_name(self, params):
+        """The script's name when an execute_code body is JUST that name (as
+        GameMaker imports write a script call), else ''. Mirrors desktop's
+        `stripped.isidentifier() and stripped in scripts`."""
+        code = (params or {}).get('code', '')
+        if not isinstance(code, str):
+            return ''
+        stripped = code.strip()
+        if stripped.isidentifier() and stripped in self.scripts:
+            return stripped
+        return ''
+
     def process_action(self, action: Dict, event_type: str = ''):
         """
         Process a single action and generate appropriate code.
@@ -1022,7 +1034,7 @@ class ActionCodeGenerator:
             self._complete_unit()
             return
 
-        elif action_type in ('execute_code', 'code'):
+        elif action_type in ('execute_code', 'code') and not self._script_call_name(params):
             # Run the user's code via a real exec() call at runtime instead
             # of inlining it as literal Python — mirrors the desktop/HTML5
             # runtimes' actual execute_code semantics exactly
@@ -1080,7 +1092,7 @@ class ActionCodeGenerator:
                 'check=self._check_key, is_pressed=self._check_key)'
             )
             self.add_line(
-                '_exec_globals = {"self": self, "instance": self, '
+                '_exec_globals = {"self": self, "sel": self, "instance": self, '
                 f'"other": {other_expr}, "game": game, '
                 '"keyboard": _exec_keyboard, "math": math, '
                 '"random": random, "__builtins__": __builtins__}'
@@ -1105,7 +1117,8 @@ class ActionCodeGenerator:
             self._complete_unit()
             return
 
-        elif action_type in ('execute_script', 'script'):
+        elif (action_type in ('execute_script', 'script')
+              or (action_type in ('execute_code', 'code') and self._script_call_name(params))):
             # Run a project script's body (self.scripts is the {name: code}
             # map) via a real exec() call at runtime, mirroring the desktop
             # runtime's execute_execute_script_action and execute_code's own
@@ -1117,7 +1130,10 @@ class ActionCodeGenerator:
             # in an argument value keeps working) and passed into exec()'s
             # globals as already-computed values rather than embedded into
             # the exec'd string itself.
-            script_name = str(params.get('script', '') or '')
+            # Imported GameMaker projects call a script by writing just its
+            # name in an execute_code action (desktop delegates the same way:
+            # runtime/action_misc.py execute_execute_code_action).
+            script_name = str(params.get('script', '') or self._script_call_name(params) or '')
             sdata = self.scripts.get(script_name)
             code = sdata.get('code', '') if isinstance(sdata, dict) else (sdata or '')
             if not script_name or not str(code).strip():
@@ -1146,7 +1162,7 @@ class ActionCodeGenerator:
                 'check=self._check_key, is_pressed=self._check_key)'
             )
             self.add_line(
-                '_exec_globals = {"self": self, "instance": self, '
+                '_exec_globals = {"self": self, "sel": self, "instance": self, '
                 f'"other": {other_expr}, "game": game, '
                 '"keyboard": _exec_keyboard, "math": math, "random": random, '
                 '"argument0": argument0, "argument1": argument1, '

@@ -1824,6 +1824,13 @@ lines rather than matching their text.
     covers (for-loop targets, `with...as`, tuple unpacking, augmented
     assignment) to get full parity. See item 9 of a now-removed plan
     doc.
+  - **Last two desktop differences closed 2026-11-19.** Kivy's `execute_code`/
+    `execute_script` now bind `sel` (GameMaker's name for the instance), and an
+    `execute_code` whose whole body is a project script's name runs that script
+    (desktop's `stripped.isidentifier() and stripped in scripts` delegation) --
+    both only matter for imported GameMaker projects. Done by routing such code
+    through the `execute_script` branch of `code_generator.py`
+    (`_script_call_name`). `tests/test_kivy_execute_code_sel_and_script_call.py`.
   - **Both adjacent follow-up gaps also DONE, same day.** `keyboard` is
     now bound in Kivy's `execute_code`/`execute_script` namespaces via a
     new `GameObject._check_key(key)` method (`kivy_exporter.py`'s
