@@ -2306,6 +2306,29 @@ if dist > 0:
                         f"play_sound('{path}', {volume})")
             return f"pass  # play_sound: sound '{sound}' not found in export"
 
+        elif action_type == 'play_music':
+            # Music assets live in the same sounds dict/folder as sound
+            # effects, so the same path map resolves them (desktop reads the
+            # asset's kind instead). Same parameters as the desktop action:
+            # music, loop (default True), volume (default 0.7).
+            music = params.get('music', params.get('sound', ''))
+            path = self.sound_paths.get(music)
+            if not path:
+                return f"pass  # play_music: music '{music}' not found in export"
+            loop = params.get('loop', True)
+            if isinstance(loop, str):
+                loop = loop.strip().lower() not in ('false', '0', 'no', '')
+            volume = _num_code(params.get('volume', 0.7), 0.7)
+            return (f"from main import play_music; "
+                    f"play_music('{path}', {bool(loop)}, {volume})")
+
+        elif action_type == 'stop_music':
+            return "from main import stop_music; stop_music()"
+
+        elif action_type == 'set_volume':
+            volume = _num_code(params.get('volume', 1.0), 1.0)
+            return f"from main import set_volume; set_volume({volume})"
+
         elif action_type == 'show_highscore':
             # Show the high-score table (highscore.py module), prompting for a
             # name when the current score qualifies unless disabled.

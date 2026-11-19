@@ -2034,6 +2034,19 @@ lines rather than matching their text.
   `_UNSUPPORTED_ACTIONS` remains as a safety net for any FUTURE action that
   falls through unhandled — a regression, not a known gap, if it's ever
   non-empty on a real export. `tests/test_kivy_tier3_actions_export.py`.
+  - **Re-measured 2026-11-19** by running every registered action (185, all
+    extensions on) through `ActionCodeGenerator`: 25 fell through as
+    unsupported -- 22 Network actions (deliberate: a phone cannot host/join the
+    LAN session; reported honestly rather than silently dropped) and **3 real
+    gaps, closed the same day**: `play_music`, `stop_music`, `set_volume`.
+    Music assets share the sounds dict, so the existing sound path map resolves
+    them; `main.py` gained `play_music(path, loop, volume)` (one track at a time,
+    like pygame.mixer.music), `stop_music()` and `set_volume(v)` (applies to the
+    music and every loaded effect, as on desktop). `tests/
+    test_kivy_music_volume_actions.py` executes the generated helpers against a
+    fake `SoundLoader`. **Not heard on a device.** The remaining 22 are the
+    only unsupported actions left: any other name appearing there is a
+    regression.
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
 - Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase

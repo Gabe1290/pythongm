@@ -641,6 +641,53 @@ def stop_sound(path):
         _log(f"stop_sound failed for {{path}}: {{_e}}")
 
 
+# Background music (play_music / stop_music / set_volume). One track at a time,
+# like the desktop's pygame.mixer.music; it is NOT kept in _sound_cache, so a
+# sound effect and the music never share a Sound object.
+_music = None
+
+
+def play_music(path, loop=True, volume=0.7):
+    """Start background music by its exported asset path, replacing any track
+    already playing (desktop: pygame.mixer.music.load/play)."""
+    global _music
+    try:
+        from kivy.core.audio import SoundLoader
+        if _music is not None:
+            _music.stop()
+        _music = SoundLoader.load(path)
+        if _music:
+            _music.loop = bool(loop)
+            _music.volume = max(0.0, min(1.0, float(volume)))
+            _music.play()
+    except Exception as _e:
+        _log(f"play_music failed for {{path}}: {{_e}}")
+
+
+def stop_music():
+    """Stop the background music (no-op if none is playing)."""
+    try:
+        if _music is not None:
+            _music.stop()
+    except Exception as _e:
+        _log(f"stop_music failed: {{_e}}")
+
+
+def set_volume(volume):
+    """Set the volume of the music and of every sound effect loaded so far, as
+    the desktop does (it does not change the volume of sounds played later:
+    each play_sound sets its own)."""
+    try:
+        v = max(0.0, min(1.0, float(volume)))
+        if _music is not None:
+            _music.volume = v
+        for _snd in _sound_cache.values():
+            if _snd:
+                _snd.volume = v
+    except Exception as _e:
+        _log(f"set_volume failed: {{_e}}")
+
+
 def is_sound_playing(path):
     """True if the sound at `path` is currently playing -- Tier 3's
     check_sound. A sound that was never played (never cached) is not
