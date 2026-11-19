@@ -229,7 +229,7 @@ PLUGIN_ASSET_TREE_CATEGORIES = [_register_asset_tree_category()]
 # contract only supports appending (or insertAction with a known sibling,
 # which the built-in menu doesn't expose here).
 def _build_file_menu(ide, menu):
-    from .export import export_aseba_code, import_roberta_xml, send_to_thymio
+    from .export import export_aseba_code, export_roberta_xml, import_roberta_xml, send_to_thymio
 
     # Attached to ide under their pre-hidden names (bound methods before
     # this stage, plain callables now -- Python doesn't care which for a
@@ -239,6 +239,7 @@ def _build_file_menu(ide, menu):
     # enable/disable check below) both rely on these exact names, unchanged.
     ide.export_aseba_code = lambda: export_aseba_code(ide)
     ide.import_roberta_xml = lambda: import_roberta_xml(ide)
+    ide.export_roberta_xml = lambda: export_roberta_xml(ide)
     ide.send_to_thymio = lambda: send_to_thymio(ide)
 
     menu.addSeparator()
@@ -257,6 +258,10 @@ def _build_file_menu(ide, menu):
         ide.tr("Send to &Thymio robot..."), None, ide.send_to_thymio)
     ide.send_to_thymio_action.setProperty("pygm_requires_project", True)
     menu.addAction(ide.send_to_thymio_action)
+    ide.export_roberta_action = ide.create_action(
+        ide.tr("Export Open &Roberta XML..."), None, ide.export_roberta_xml)
+    ide.export_roberta_action.setProperty("pygm_requires_project", True)
+    menu.addAction(ide.export_roberta_action)
     import_action = ide.create_action(
         ide.tr("Import Open &Roberta XML..."), None, ide.import_roberta_xml)
     # Imports a new PROJECT (like GameMaker .gmk import), so it must stay
@@ -284,7 +289,7 @@ def _build_tools_menu(ide, menu):
         configure_thymio, toggle_thymio_tab, show_thymio_playground,
         show_thymio_event_selector, show_thymio_action_selector,
     )
-    from .export import import_roberta_xml
+    from .export import export_roberta_xml, import_roberta_xml
 
     configure_action = ide.create_action(
         ide.tr("Configure &Thymio Blocks..."), None, lambda: configure_thymio(ide))
@@ -317,6 +322,11 @@ def _build_tools_menu(ide, menu):
     thymio_menu.addAction(ide.thymio_add_event_action)
     thymio_menu.addAction(ide.thymio_add_action_action)
     thymio_menu.addSeparator()
+
+    ide.thymio_export_roberta_action = ide.create_action(
+        ide.tr("Export Open &Roberta XML..."), None, lambda: export_roberta_xml(ide))
+    ide.thymio_export_roberta_action.setProperty("pygm_requires_project", True)
+    thymio_menu.addAction(ide.thymio_export_roberta_action)
 
     # A second copy of the File menu's Roberta import, for convenience while
     # already working in this submenu -- imports a new PROJECT, so it must

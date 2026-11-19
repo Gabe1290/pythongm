@@ -8708,6 +8708,42 @@ puis réessayez.</translation>
 
 {1}</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta Export</source>
+        <translation>Export Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open &amp;Roberta XML...</source>
+        <translation>Exporter en XML Open &amp;Roberta...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Export Open Roberta XML</source>
+        <translation>Exporter en XML Open Roberta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML (*.xml)</source>
+        <translation>XML Open Roberta (*.xml)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta export complete</source>
+        <translation>Export Open Roberta terminé</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py"/>
+        <source>Open Roberta XML written to:
+{0}
+
+Import it in https://lab.open-roberta.org/</source>
+        <translation>XML Open Roberta enregistré dans :
+{0}
+
+Importez-le dans https://lab.open-roberta.org/</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

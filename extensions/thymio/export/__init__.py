@@ -187,6 +187,42 @@ def send_to_thymio(ide) -> None:
         ide.update_status(ide.tr("Thymio send failed"))
 
 
+def export_roberta_xml(ide) -> None:
+    """Export a Thymio object as Open Roberta Lab XML (opens in https://lab.open-roberta.org/).
+
+    Roberta programs are single-robot, so the first Thymio object in the project is exported. The project is saved
+    first when it has unsaved changes, because the exporter reads ``project.json`` from disk."""
+    from .roberta_exporter import RobertaExporter
+
+    title = ide.tr("Open Roberta Export")
+    if not ide._require_open_project():
+        return
+    if ide.project_manager.is_dirty():
+        ide.save_project()
+    project_file = Path(ide.current_project_path) / "project.json"
+    default_name = f"{Path(ide.current_project_path).name}.xml"
+    file_path, _ = QFileDialog.getSaveFileName(
+        ide, ide.tr("Export Open Roberta XML"),
+        str(Path(ide.current_project_path) / default_name),
+        ide.tr("Open Roberta XML (*.xml)"))
+    if not file_path:
+        return
+    try:
+        ok = RobertaExporter().export(str(project_file), file_path)
+    except Exception as exc:
+        logger.error(f"Open Roberta export failed: {exc}", exc_info=True)
+        QMessageBox.critical(ide, title, str(exc))
+        return
+    if not ok:
+        QMessageBox.warning(ide, title, ide.tr(
+            "No Thymio objects found in this project. Add one (name it starting with \"thymio\") and try again."))
+        return
+    ide.update_status(ide.tr("Open Roberta export complete"))
+    QMessageBox.information(
+        ide, title, ide.tr("Open Roberta XML written to:\n{0}\n\n"
+                           "Import it in https://lab.open-roberta.org/").format(file_path))
+
+
 def import_roberta_xml(ide) -> None:
     """Import an Open Roberta Lab XML program as a new project."""
     file_path, _ = QFileDialog.getOpenFileName(
