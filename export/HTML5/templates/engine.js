@@ -1686,11 +1686,11 @@ class GameObject {
                 // fully implements it) silently always took the else
                 // branch on this export target only -- condition_type was
                 // never read at all. Mirrors ActionExecutor.
-                // _evaluate_if_condition's dispatch; key_pressed/
-                // mouse_check are the two condition_types NOT ported here
-                // (no held-key-set or mouse-button state tracked anywhere
-                // in this engine) -- they fall through to false, same as
-                // every condition_type did before this fix.
+                // _evaluate_if_condition's dispatch; mouse_check is the one
+                // condition_type NOT ported here (no mouse-button state is
+                // tracked in this engine) -- it falls through to false.
+                // key_pressed is ported (below): the engine DOES track the
+                // held keys (game.keys), which the original note missed.
                 const conditionType = params.condition_type || 'instance_count';
                 switch (conditionType) {
                     case 'expression': {
@@ -1718,6 +1718,23 @@ class GameObject {
                     case 'random_chance': {
                         const chance = parseInt(params.chance) || 50;
                         return (Math.random() * 100) < chance;
+                    }
+                    case 'key_pressed': {
+                        // Is the named key held right now? The author's key is a
+                        // runtime name (left, right, up, down, space, a, enter...).
+                        // Without this every if_condition key_pressed took its else
+                        // branch on this target, so an avatar steered by one (the
+                        // reseau samples) never moved in a browser.
+                        let want = String(params.key || '').trim().toLowerCase();
+                        if (want.indexOf('k_') === 0) want = want.slice(2);
+                        const aliases = { return: 'enter', esc: 'escape', ctrl: 'control',
+                            lshift: 'shift', rshift: 'shift', lctrl: 'control', rctrl: 'control' };
+                        want = aliases[want] || want;
+                        if (!want) return false;
+                        for (const k of Object.keys(game.keys)) {
+                            if (game.keys[k] && inputKeyName(k) === want) return true;
+                        }
+                        return false;
                     }
                     case 'collision_check': {
                         const obj = params.object || '';

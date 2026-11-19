@@ -10,16 +10,19 @@
 // text frame per message, no newline framing needed (a WS frame already
 // delimits one message).
 //
-// Scope, deliberately (see the plan doc's Phase 7.2 entry): full Tier A
-// (shared variables, custom messages, player identity/roster, lifecycle
-// events) and Tier B ghost VIEWING -- other players' network_spawn'd /
-// sync_instance'd instances render and interpolate here exactly like the
-// desktop client. A browser player cannot yet register or own a synced
-// instance itself: sync_instance / set_instance_owner / is_instance_owner /
-// bind_network_input / remote_input / set_sync_rate are no-ops (one console
-// warning each, the first time they're called) -- doing that needs a
-// periodic "own" state report, which this pass doesn't build. That's a
-// scoped, documented limitation, not a silent gap.
+// Scope: full Tier A (shared variables, custom messages, player identity/roster,
+// lifecycle events) and Tier B. Other players' network_spawn'd instances render
+// and interpolate here exactly like the desktop client; an instance the host
+// assigned to THIS player (network_spawn owner=player_id) is promoted from a
+// puppet to a locally simulated avatar: its own events run here, this page
+// reports its state up to the host every step ("own" frames) and the held named
+// inputs ("input" frames, arrows and space by default, bind_network_input to
+// change), exactly as the desktop client does. is_instance_owner is true for
+// that avatar, and true for everything while not in a session; remote_input is
+// host-side only. Still not available in a browser: host_game and
+// start_networked_game (a page cannot accept connections), network_spawn
+// (host-only), and sync_instance / set_instance_owner (one console warning
+// each). The shared-folder actions cannot work in a page at all.
 
 // ---------------------------------------------------------------------------
 // Pure helpers: mirror extensions/multiplayer_lan/state.py and replication.py
@@ -116,7 +119,39 @@ class MultiplayerClient {
         this.started = false;
         this.interpDelayMs = MP_DEFAULT_INTERP_DELAY_MS;
         this._events = [];         // queued [name, ...payload]
-        this.ghosts = new Map();   // nid -> {obj, vars, owner, samples, inst}
+        this.ghosts = new Map();   // nid -> {obj, vars, owner, samples, inst, local}
+        // Named inputs reported to the host: name -> key name (as inputKeyName gives).
+        this.bindings = { left: 'left', right: 'right', up: 'up', down: 'down', space: 'space' };
+        this._lastInput = null;
+    }
+
+    // The bound named inputs whose key is held right now.
+    heldInputs() {
+        const down = new Set();
+        const keys = this.game ? this.game.keys : null;
+        if (keys) {
+            for (const k of Object.keys(keys)) {
+                if (keys[k]) down.add(inputKeyName(k));
+            }
+        }
+        const held = [];
+        for (const name of Object.keys(this.bindings)) {
+            if (down.has(this.bindings[name])) held.push(name);
+        }
+        return held.sort();
+    }
+
+    // Report the held inputs, only when they changed since the last report.
+    sendInput(held) {
+        const key = held.join(',');
+        if (key === this._lastInput) return;
+        this._lastInput = key;
+        this._send({ t: 'input', held: held });
+    }
+
+    // Report the instances this player owns, up to the host.
+    sendOwn(rows) {
+        if (rows.length) this._send({ t: 'own', i: rows });
     }
 
     join(host, port, playerName) {
@@ -202,7 +237,7 @@ class MultiplayerClient {
         this.connectionLost = true;
         console.log('multiplayer: connection lost (' + reason + ')');
         this._queueEvent('connection_lost', reason);
-        this._teardownGhosts();
+        this._teardownGhosts(true);
     }
 
     _onMessage(ev) {
@@ -357,11 +392,14 @@ class MultiplayerClient {
         return [last[1], last[2], last[3], last[4], last[5]];   // unreachable, but safe
     }
 
-    _teardownGhosts() {
-        for (const g of this.ghosts.values()) {
+    // keepLocal: a lost host never sends another snapshot, so the puppets of other
+    // players go, but this player's own avatar keeps running single player.
+    _teardownGhosts(keepLocal) {
+        for (const [nid, g] of Array.from(this.ghosts.entries())) {
+            if (keepLocal && g.local) continue;
             if (g.inst) g.inst.toDestroy = true;
+            this.ghosts.delete(nid);
         }
-        this.ghosts.clear();
     }
 }
 
@@ -408,8 +446,21 @@ registerFrameUpdate(function mpFrameUpdate(game) {
     }
 
     const renderTime = performance.now() - client.interpDelayMs;
+    const ownRows = [];
     for (const [nid, g] of client.ghosts) {
         if (!g.inst) continue;
+        g.inst._netOwner = (g.owner === null || g.owner === undefined) ? 0 : g.owner;
+        if (client.connected && g.owner === client.playerId) {
+            // Mine: promoted from a puppet to a locally simulated avatar. Its
+            // own events move it; this page is the authority for it now.
+            g.local = true;
+            ownRows.push({
+                nid: nid, x: g.inst.x, y: g.inst.y, r: g.inst.rotation || 0,
+                f: g.inst.image_index || 0, v: g.inst.visible !== false,
+            });
+            continue;
+        }
+        if (g.local) continue;           // lost the host: still mine, keep it running
         const pos = client.sampleGhost(nid, renderTime);
         if (!pos) continue;
         const [x, y, r, f, v] = pos;
@@ -424,6 +475,10 @@ registerFrameUpdate(function mpFrameUpdate(game) {
                 g.inst[key] = val;
             }
         }
+    }
+    if (client.connected) {
+        client.sendOwn(ownRows);
+        client.sendInput(client.heldInputs());
     }
 });
 
@@ -477,14 +532,46 @@ registerExtensionAction('send_network_message', (inst, params, game) => {
     client.sendMessage(params.event, mpResolveValue(params.data, inst, game), params.target);
 });
 
+registerExtensionAction('bind_network_input', (inst, params, game) => {
+    const name = params.name ? String(params.name).trim() : '';
+    if (!name) return;
+    let key = String(params.key || '').trim().toLowerCase();
+    if (key.indexOf('k_') === 0) key = key.slice(2);
+    const aliases = { return: 'enter', ctrl: 'control', esc: 'escape' };
+    _mpClient(game).bindings[name] = aliases[key] || key;
+});
+
+registerExtensionAction('set_sync_rate', (inst, params, game) => {
+    // Only the interpolation delay matters to a client; the snapshot rate is the host's.
+    const ms = Number(params.interp_ms);
+    if (isFinite(ms) && ms >= 0) _mpClient(game).interpDelayMs = ms;
+});
+
+// True for the avatar the host assigned to this player. With no session you own
+// everything, so control logic guarded by it still runs single player.
+registerExtensionCondition('is_instance_owner', (inst, params, game) => {
+    const client = game._multiplayerClient;
+    if (!client || !client.ws) return true;
+    return inst._netOwner !== undefined && inst._netOwner === client.playerId;
+});
+
+// Host-side question: a browser never hosts, so nobody is ever reported here.
+registerExtensionCondition('remote_input', () => false);
+
 const _mpUnsupportedWarned = new Set();
-for (const name of ['network_spawn', 'sync_instance', 'set_instance_owner',
-    'bind_network_input', 'set_sync_rate']) {
-    registerExtensionAction(name, () => {
-        if (_mpUnsupportedWarned.has(name)) return;
-        _mpUnsupportedWarned.add(name);
-        console.warn(`multiplayer: ${name} is not yet supported in the HTML5 export `
-            + '(a browser player can view other players\' synced instances, but cannot '
-            + 'register or own one itself).');
-    });
+function _mpWarnOnce(name, why) {
+    if (_mpUnsupportedWarned.has(name)) return;
+    _mpUnsupportedWarned.add(name);
+    console.warn('multiplayer: ' + name + ' is not available in the HTML5 export. ' + why);
+}
+for (const name of ['network_spawn', 'sync_instance', 'set_instance_owner']) {
+    registerExtensionAction(name, () => _mpWarnOnce(name,
+        'Only the host creates and assigns networked instances; a browser player '
+        + 'controls the avatar the host gave it.'));
+}
+// The shared-folder extension: a page cannot read or write a shared folder.
+for (const name of ['host_game_files', 'join_game_files', 'leave_game_files',
+    'set_shared_var_files', 'get_shared_var_files', 'send_network_message_files', 'end_turn']) {
+    registerExtensionAction(name, () => _mpWarnOnce(name,
+        'A browser page cannot use a shared folder; use a desktop or Android export for file exchange.'));
 }

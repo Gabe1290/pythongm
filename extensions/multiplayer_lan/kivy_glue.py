@@ -4,11 +4,13 @@ Shipped into the game as ``mp_lan/glue.py`` beside the desktop session code
 (``mp_lan/session.py`` and friends, byte for byte -- see export_kivy.py), so the
 phone speaks exactly the desktop protocol over raw TCP.
 
-Scope, like the HTML5 export (extensions/multiplayer_lan/export_html5.js): a
-phone can JOIN a desktop-hosted game and take part in Tier A (shared variables,
-custom messages, identity, the lifecycle events) and VIEW the host's networked
-instances (ghosts, interpolated). It cannot host (no listening socket on a
-phone), and it cannot own a synced instance, so ``host_game``,
+Scope: a phone can JOIN a desktop-hosted game and take part in Tier A (shared
+variables, custom messages, identity, the lifecycle events) and VIEW the host's
+networked instances (ghosts, interpolated). It cannot host (no listening socket
+on a phone), and it cannot own a synced instance (the HTML5 export CAN: it
+promotes the avatar the host assigned and reports it up, see
+extensions/multiplayer_lan/export_html5.js -- porting that here is the natural
+next step), so ``host_game``,
 ``start_networked_game``, ``network_spawn``, ``sync_instance``,
 ``set_instance_owner``, ``bind_network_input`` and ``set_sync_rate`` warn once
 and do nothing, and ``is_instance_owner`` / ``remote_input`` are false while a
