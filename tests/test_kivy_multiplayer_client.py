@@ -452,3 +452,175 @@ def test_under_real_kivy_the_scene_hook_joins_and_spawns_a_real_ghost(tmp_path):
     g = data["ghosts"][0]
     assert g["object"] == "obj_person" and g["x"] == pytest.approx(128, abs=2)
     assert g["y"] == pytest.approx(g["room_height"] - 96 - g["image_height"], abs=2)
+    # ...and it is THIS player's avatar: promoted, driven by the real generated step event
+    # (is_instance_owner + key_pressed) with the right arrow held, reported up to the host.
+    assert data["promoted"] is True
+    assert data["avatar_moved"] > 20, data["avatar_moved"]
+    assert data["held_right"] is True and data["released_right"] is False
+    rows = data["own_rows"]
+    assert rows and all(r["from"] == 1 for r in rows)
+    assert max(r["x"] for r in rows) > 128 + 20
+    assert all(r["y"] == pytest.approx(96, abs=2) for r in rows)      # wire y is the room's y-down 96
+
+
+# ---------------------------------------------------------------- the owned avatar
+
+def _own_row(nid, x, y, owner):
+    return {"nid": nid, "o": "obj_ball", "x": x, "y": y, "r": 0, "f": 0, "v": True, "own": owner}
+
+
+def _run_until(g, scene, host, done, seconds=3.0):
+    """Pump until done() -- paced reports (kivy_glue throttles them) need real time, not a frame count."""
+    end = time.monotonic() + seconds
+    while time.monotonic() < end:
+        host.pump_before_step()
+        g.update(scene)
+        host.pump_after_update()
+        if done():
+            return True
+        time.sleep(0.004)
+    return done()
+
+
+def test_the_avatar_the_host_assigned_is_promoted_owned_and_starts_where_the_host_put_it(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        mine, theirs = host.next_netid(), host.next_netid()
+        host.push_local_instances([_own_row(mine, 96, 64, 1), _own_row(theirs, 200, 40, 0)])
+        _run(g, scene, host, 40)
+        assert g._local == {mine} and len(scene.created) == 2
+        avatar = next(i for i in scene.created if i._net_ghost == mine)
+        puppet = next(i for i in scene.created if i._net_ghost == theirs)
+        assert (avatar.x, avatar.y) == (96, 400 - 64 - 32)          # not left in the corner
+        assert g.is_owner(avatar) is True and g.is_owner(puppet) is False
+        assert g.is_owner(_Inst(scene, "obj_placed")) is False      # a room-placed instance has no owner
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_the_owner_moves_its_avatar_and_the_host_hears_it_in_room_coordinates(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    reports = []
+    try:
+        _join(g, scene, host)
+        nid = host.next_netid()
+        host.push_local_instances([_own_row(nid, 96, 64, 1)])
+        _run(g, scene, host, 40)
+        avatar = scene.created[0]
+
+        def step():
+            avatar.x += 4                      # the avatar's own events move it, in Kivy coordinates
+            reports.extend(host.take_own_state().values())
+            return any(r["x"] > 96 + 30 for r in reports)
+        assert _run_until(g, scene, host, step)
+        last = reports[-1]
+        assert last["_from"] == 1 and last["y"] == 64          # wire y is the room's y-down 64
+        assert avatar.x > 96 + 30                              # and the glue never overwrote it
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_a_puppet_is_never_reported_up(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    reports = []
+    try:
+        _join(g, scene, host)
+        nid = host.next_netid()
+        host.push_local_instances([_own_row(nid, 300, 40, 0)])
+
+        def step():
+            reports.extend(host.take_own_state().values())
+            return False
+        _run_until(g, scene, host, step, seconds=1.0)
+        assert not reports and not g._local
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_held_keys_reach_the_host_as_named_inputs_and_a_dropped_report_is_refreshed(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    scene.keys_pressed = {}
+    try:
+        _join(g, scene, host)
+        nid = host.next_netid()
+        host.push_local_instances([_own_row(nid, 96, 64, 1)])
+        _run(g, scene, host, 20)
+        scene.keys_pressed[275] = True                         # the right arrow's Kivy keycode
+        assert _run_until(g, scene, host, lambda: host.remote_input(1, "right"))
+        scene.keys_pressed[275] = False
+        assert _run_until(g, scene, host, lambda: not host.remote_input(1, "right"))
+        # a lost report heals: wipe what the host believes, the refresh puts it back
+        scene.keys_pressed[32] = True                          # space
+        assert _run_until(g, scene, host, lambda: host.remote_input(1, "space"))
+        host._input_state[1] = set()
+        assert _run_until(g, scene, host, lambda: host.remote_input(1, "space"), seconds=2.0)
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_bind_network_input_and_set_sync_rate(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    scene.keys_pressed = {97: True}                            # 'a'
+    try:
+        g.set_sync_rate(250)                                   # before joining: applied on join
+        g.bind("fire", "A")
+        g.bind("jump", "K_SPACE")
+        g.bind("go", "ctrl")
+        _join(g, scene, host)
+        assert g._session.interp_delay == pytest.approx(0.25)
+        assert g._held_inputs(scene) == ["fire"]
+        scene.keys_pressed = {32: True}
+        assert g._held_inputs(scene) == ["jump", "space"]
+        g.set_sync_rate(40)
+        assert g._session.interp_delay == pytest.approx(0.04)
+        g.set_sync_rate("junk")                                # ignored
+        assert g._session.interp_delay == pytest.approx(0.04)
+    finally:
+        g._bindings.clear()
+        g._bindings.update({"left": "left", "right": "right", "up": "up", "down": "down", "space": "space"})
+        g._interp_ms = None
+        g.leave()
+        host.close()
+
+
+def test_losing_the_host_keeps_the_players_own_avatar_and_drops_the_puppets(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        mine, theirs = host.next_netid(), host.next_netid()
+        host.push_local_instances([_own_row(mine, 96, 64, 1), _own_row(theirs, 200, 40, 0)])
+        _run(g, scene, host, 40)
+        avatar = next(i for i in scene.created if i._net_ghost == mine)
+        puppet = next(i for i in scene.created if i._net_ghost == theirs)
+        host.close()
+        for _ in range(80):
+            g.update(scene)
+            time.sleep(0.004)
+        assert app.globals["network_connected"] == 0
+        assert avatar in scene.instances and puppet not in scene.instances
+        assert g._local == {mine}
+    finally:
+        g.leave()
+
+
+def test_the_generated_code_binds_inputs_and_the_only_unsupported_ones_are_host_side(export_dir):
+    from export.Kivy.code_generator import ActionCodeGenerator
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action("bind_network_input", {"name": "fire", "key": "a"}, "create")
+    assert code == "from mp_lan.glue import bind; bind('fire', 'a')"
+    code = gen._convert_simple_action("set_sync_rate", {"hz": 20, "interp_ms": 150}, "create")
+    assert code == "from mp_lan.glue import set_sync_rate; set_sync_rate(150)"
+    for name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn",
+                 "sync_instance", "set_instance_owner"):
+        assert "unsupported" in gen._convert_simple_action(name, {}, "create"), name

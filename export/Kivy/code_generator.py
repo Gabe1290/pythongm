@@ -861,6 +861,39 @@ class ActionCodeGenerator:
                 operator = params.get('operator', '==')
                 value = params.get('value', 0)
                 condition = f"self.scene.count_instances('{obj_name}') {operator} {value}"
+            elif condition_type == 'key_pressed':
+                # Is the named key held? (desktop: key in instance.keys_pressed.) The
+                # scene tracks held keys by raw Kivy keycode. Until 2026-11-19 every
+                # condition_type except instance_count/expression fell through to
+                # `if True:`, so a key-steered avatar (the reseau samples) moved
+                # in every direction at once.
+                key = str(params.get('key', '') or '').strip().lower()
+                if key.endswith(' arrow'):
+                    key = key[:-len(' arrow')]
+                if key in _KIVY_KEY_NAME_TO_CODE:
+                    code = _KIVY_KEY_NAME_TO_CODE[key]
+                elif len(key) == 1 and (key.isalpha() or key.isdigit()):
+                    code = ord(key)
+                else:
+                    code = None
+                condition = ("False" if code is None
+                             else f"self.scene.keys_pressed.get({code}, False)")
+            elif condition_type == 'random_chance':
+                try:
+                    chance = int(params.get('chance', 50))
+                except (TypeError, ValueError):
+                    chance = 50
+                condition = f"__import__('random').randint(1, 100) <= {chance}"
+            elif condition_type == 'variable_compare':
+                variable = str(params.get('variable', '') or '').strip()
+                operator = str(params.get('operator', '==') or '==').strip()
+                if operator not in ('==', '!=', '<', '<=', '>', '>='):
+                    operator = '=='
+                if not variable:
+                    condition = "False"
+                else:
+                    condition = (f"{_variable_read_code(variable, event_type)} {operator} "
+                                 f"{_value_code(params.get('value', 0))}")
             else:
                 condition = _resolve_instance_names(
                     params.get('condition', params.get('expression', 'True')))

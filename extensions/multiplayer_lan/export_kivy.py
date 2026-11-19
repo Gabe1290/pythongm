@@ -1,9 +1,9 @@
 """LAN multiplayer on the Kivy (Android/iOS) export.
 
-A phone is a CLIENT only: it joins a desktop-hosted game and takes part in Tier A
-(shared variables, messages, identity, the Reseau events) and sees the host's
-networked instances as interpolated ghosts. Hosting, owning an instance and named
-input are not available there (see kivy_glue.py). The desktop session code is
+A phone is a CLIENT: it joins a desktop-hosted game, takes part in Tier A (shared
+variables, messages, identity, the Reseau events), sees the host's networked
+instances as interpolated ghosts and plays the avatar the host assigned to it
+(own/input frames, named input). Hosting is not available there (see kivy_glue.py). The desktop session code is
 shipped verbatim as the ``mp_lan`` package, so the wire protocol is the host's own.
 
 The extension loader ``exec``s this file without ``__file__``, so everything here
@@ -64,6 +64,16 @@ def _cg_send_network_message(gen, params, event_type):
             f"send_message({_raw(params, 'event')!r}, {expr}, {target!r})")
 
 
+def _cg_bind_network_input(gen, params, event_type):
+    return ("from mp_lan.glue import bind; "
+            f"bind({_raw(params, 'name')!r}, {_raw(params, 'key')!r})")
+
+
+def _cg_set_sync_rate(gen, params, event_type):
+    num, _ = _helpers()
+    return f"from mp_lan.glue import set_sync_rate; set_sync_rate({num(params.get('interp_ms'), 100)})"
+
+
 def _unsupported(name):
     def _cg(gen, params, event_type):
         return f"from mp_lan.glue import unsupported; unsupported({name!r})"
@@ -76,10 +86,12 @@ ACTION_CODEGEN = {
     "set_shared_var": _cg_set_shared_var,
     "get_shared_var": _cg_get_shared_var,
     "send_network_message": _cg_send_network_message,
+    "bind_network_input": _cg_bind_network_input,
+    "set_sync_rate": _cg_set_sync_rate,
 }
-# A phone cannot do these (see the module docstring): one warning, then a no-op.
+# Host-side, so a phone cannot do these (see the module docstring): one warning, then a no-op.
 for _name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn",
-              "sync_instance", "set_instance_owner", "bind_network_input", "set_sync_rate"):
+              "sync_instance", "set_instance_owner"):
     ACTION_CODEGEN[_name] = _unsupported(_name)
 
 

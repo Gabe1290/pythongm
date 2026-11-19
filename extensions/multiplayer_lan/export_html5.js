@@ -123,6 +123,8 @@ class MultiplayerClient {
         // Named inputs reported to the host: name -> key name (as inputKeyName gives).
         this.bindings = { left: 'left', right: 'right', up: 'up', down: 'down', space: 'space' };
         this._lastInput = null;
+        this._lastInputAt = 0;
+        this._lastOwnAt = 0;
     }
 
     // The bound named inputs whose key is held right now.
@@ -141,17 +143,25 @@ class MultiplayerClient {
         return held.sort();
     }
 
-    // Report the held inputs, only when they changed since the last report.
+    // Report the held inputs when they change, and again every half second: the host
+    // drops frames past about 60 a second, and a change lost that way would leave an
+    // input stuck until the next change.
     sendInput(held) {
         const key = held.join(',');
-        if (key === this._lastInput) return;
+        const now = performance.now();
+        if (key === this._lastInput && now - this._lastInputAt < 500) return;
         this._lastInput = key;
+        this._lastInputAt = now;
         this._send({ t: 'input', held: held });
     }
 
-    // Report the instances this player owns, up to the host.
+    // Report the instances this player owns, up to the host, at most 30 times a second
+    // (the game steps 60 times a second, right at the host's inbound ceiling).
     sendOwn(rows) {
-        if (rows.length) this._send({ t: 'own', i: rows });
+        const now = performance.now();
+        if (!rows.length || now - this._lastOwnAt < 1000 / 30 - 2) return;
+        this._lastOwnAt = now;
+        this._send({ t: 'own', i: rows });
     }
 
     join(host, port, playerName) {

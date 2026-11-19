@@ -34,7 +34,9 @@ try:
     host = NetworkSession(mode="host", port=0, player_name="Prof")
     host.start()
     nid = host.next_netid()
-    host.push_local_instances([{"nid": nid, "o": "obj_person", "x": 128, "y": 96, "r": 0, "f": 0, "v": True}])
+    host.push_local_instances([{"nid": nid, "o": "obj_person", "x": 128, "y": 96, "r": 0, "f": 0, "v": True,
+                                "own": 1}])      # assigned to the phone (player 1): it becomes ITS avatar
+    own_rows = []
 
     import mp_lan.glue as glue
     glue.join("127.0.0.1", host.bound_port, "Ada")
@@ -44,9 +46,31 @@ try:
         host.pump_after_update()
         time.sleep(0.004)
     ghosts = [i for i in scene.instances if getattr(i, "_net_ghost", None) is not None]
+    avatar = ghosts[0]
+    result["promoted"] = bool(glue._local) and avatar._net_owner == 1
     result["ghosts"] = [{"object": g.object_name, "x": float(g.x), "y": float(g.y),
                          "image_height": float(g.image_height), "room_height": float(scene.room_height)}
-                        for g in ghosts]
+                        for g in ghosts]                  # where the host put it, before the player moves it
+    x0 = float(avatar.x)
+    scene.keys_pressed[275] = True                      # the right arrow, held (Kivy keycode 275)
+    t_end = time.monotonic() + 1.0          # long enough for a refresh of a dropped input (see kivy_glue)
+    while time.monotonic() < t_end:
+        host.pump_before_step()
+        scene.update(1.0 / 60.0)             # the generated avatar step: is_instance_owner + key_pressed right
+        own_rows.extend(host.take_own_state().values())
+        host.pump_after_update()
+        time.sleep(0.004)
+    result["held_right"] = host.remote_input(1, "right")
+    scene.keys_pressed[275] = False
+    t_end = time.monotonic() + 1.0
+    while time.monotonic() < t_end:
+        host.pump_before_step()
+        scene.update(1.0 / 60.0)
+        host.pump_after_update()
+        time.sleep(0.004)
+    result["released_right"] = host.remote_input(1, "right")
+    result["avatar_moved"] = float(avatar.x) - x0
+    result["own_rows"] = [{"x": r["x"], "y": r["y"], "from": r["_from"]} for r in own_rows]
     result["player_id"] = glue._session.player_id        # (main has no GameApp here, so no globals store)
     glue.leave(scene)
     host.close()
