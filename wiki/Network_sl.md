@@ -17,8 +17,11 @@ lestvico točk v živo in sodelovalno iskanje zaklada za dva.
 
 Danes podprto: izvoz za **namizje** (pygame), kot gostitelj in kot odjemalec, ter
 izvoz **HTML5** kot odjemalec (brskalniška stran se pridruži gostitelju na
-namizju; sama ne more gostiti). Izvoz **Kivy/Android** igro izvaja kot
-enoigralsko — omrežna dejanja tam varno ne naredijo ničesar.
+namizju; sama ne more gostiti). Izvoz **Kivy/Android** je prav tako
+odjemalec: telefon se pridruži gostitelju na namizju (v `join_game` vpiši naslov
+gostitelja; samodejno iskanje obstaja samo na namizju), sodeluje pri skupnih
+spremenljivkah, sporočilih in omrežnih dogodkih ter vidi gostiteljeve omrežne
+primerke. Kot brskalnik ne more gostiti in ne more imeti lastnega primerka.
 
 ---
 

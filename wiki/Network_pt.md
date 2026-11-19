@@ -18,8 +18,11 @@ de turma com placar ao vivo e uma caça ao tesouro cooperativa para dois.
 Compatível hoje: a exportação para **desktop** (pygame), como anfitrião e como
 cliente, e a exportação **HTML5** como cliente (uma página do navegador entra
 em um anfitrião desktop; ela não consegue hospedar). Uma exportação
-**Kivy/Android** executa o jogo como um jogador só — as ações de rede lá não
-fazem nada, sem risco.
+**Kivy/Android** também é um cliente: um telemóvel junta-se a um anfitrião desktop
+(escreve o endereço do anfitrião em `join_game`; a descoberta automática só existe
+no desktop), participa nas variáveis partilhadas, nas mensagens e nos eventos de
+rede, e vê as instâncias em rede do anfitrião. Tal como o navegador, não
+consegue hospedar nem possuir uma instância própria.
 
 ---
 

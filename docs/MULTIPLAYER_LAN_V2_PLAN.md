@@ -1290,3 +1290,25 @@ each phase self-contained.
 - **HTML5 (Phase 7)** — no Node in CI; verify JS by structure/parity +
   ad-hoc Playwright + a manual Chromebook join, matching the
   `engine.js`/raycast precedent.
+
+---
+
+## Addendum 2026-11-19 -- Kivy (Android/iOS) is now a CLIENT
+
+The "out of scope / no-op placeholder" decision above is superseded. A phone is a
+client, like the HTML5 export: `extensions/multiplayer_lan/export_kivy.py` ships
+the desktop session modules verbatim as the `mp_lan` package (so the wire protocol
+IS the host's) plus `kivy_glue.py` (`mp_lan.glue`), and generates calls into it.
+Supported: `join_game` (an explicit host address -- `"auto"` discovery is
+desktop-only), `leave_game`, `set_shared_var`, `get_shared_var`,
+`send_network_message`, the six Reseau events, the identity globals, and ghost
+VIEWING of the host's networked instances (interpolated, no create event, y-up
+flip, rebuilt on a room change, replicated var names checked against the instance's
+own engine attributes). A phone cannot host, own an instance or send named input:
+`host_game`, `start_networked_game`, `set_network_mode`, `network_spawn`,
+`sync_instance`, `set_instance_owner`, `bind_network_input` and `set_sync_rate`
+warn once and do nothing; `is_instance_owner` is false while joined (true
+single-player) and `remote_input` is always false. Tests:
+`tests/test_kivy_multiplayer_client.py` (a real desktop host over 127.0.0.1, plus a
+real-Kivy run of the generated scene). **Not tried on a phone or a real school
+network.**

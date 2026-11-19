@@ -2047,6 +2047,15 @@ lines rather than matching their text.
     fake `SoundLoader`. **Not heard on a device.** The remaining 22 are the
     only unsupported actions left: any other name appearing there is a
     regression.
+  - **Network actions on Kivy -- DONE 2026-11-19** (a phone is now a LAN
+    client; see the addendum in `docs/MULTIPLAYER_LAN_V2_PLAN.md`). Of the 22
+    left above, the 15 `multiplayer_lan` ones are handled: 5 do real work (join,
+    leave, shared vars, messages) and 8 warn once as phone-impossible (host,
+    start, spawn, sync, ownership, input binding, sync rate); the two guards are
+    false/true as described. **7 remain unsupported on purpose**: the shared-folder
+    extension's `end_turn` and `*_files` actions (`multiplayer_files` is documented
+    "desktop only"). The wiki `Network` pages are updated in all nine languages
+    (the seven non-fr translations have had **no native-speaker read**).
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
 - Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase

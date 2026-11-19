@@ -19,8 +19,12 @@ cooperativa para dos.
 Compatible hoy: la exportación de **escritorio** (pygame), tanto como
 anfitrión como cliente, y la exportación **HTML5** como cliente (una página
 del navegador se une a un anfitrión de escritorio; no puede ser anfitrión).
-Una exportación **Kivy/Android** ejecuta el juego en modo un jugador — las
-acciones de red no hacen nada, sin riesgo.
+Una exportación **Kivy/Android** también es un cliente: un teléfono se une a un
+anfitrión de escritorio (escribe la dirección del anfitrión en `join_game`; la
+detección automática solo existe en el escritorio), participa en las variables
+compartidas, los mensajes y los eventos de red, y ve las instancias en red del
+anfitrión. Como el navegador, no puede ser anfitrión ni poseer una instancia
+propia.
 
 ---
 

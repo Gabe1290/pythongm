@@ -19,8 +19,11 @@ Schatzsuche für zwei.
 Heute unterstützt: der **Desktop**-Export (pygame), als Host und als Client,
 und der **HTML5**-Export als Client (eine Browserseite tritt einem
 Desktop-Host bei; sie kann nicht selbst hosten). Ein **Kivy/Android**-Export
-führt das Spiel als Einzelspieler aus — die Netzwerkaktionen tun dort
-gefahrlos nichts.
+ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adresse
+des Hosts in `join_game` ein; die automatische Suche gibt es nur am Desktop),
+nimmt an gemeinsamen Variablen, Nachrichten und Netzwerkereignissen teil und
+sieht die vernetzten Instanzen des Hosts. Wie der Browser kann es nicht selbst
+hosten und keine eigene Instanz besitzen.
 
 ---
 

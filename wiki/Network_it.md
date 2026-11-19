@@ -19,8 +19,11 @@ due.
 Supportato oggi: l'esportazione **desktop** (pygame), sia come host sia come
 client, e l'esportazione **HTML5** come client (una pagina del browser si
 unisce a un host desktop; non può fare da host). Un'esportazione
-**Kivy/Android** esegue il gioco in modalità giocatore singolo — le azioni di
-rete lì non fanno nulla, senza rischi.
+**Kivy/Android** è anch'essa un client: un telefono si unisce a un host desktop
+(scrivi l'indirizzo dell'host in `join_game`; la ricerca automatica esiste solo
+sul desktop), partecipa alle variabili condivise, ai messaggi e agli eventi di
+rete, e vede le istanze in rete dell'host. Come il browser, non può fare da host
+né possedere un'istanza propria.
 
 ---
 

@@ -20,8 +20,11 @@ coopérative à deux joueurs.
 Pris en charge aujourd'hui : l'export **ordinateur** (pygame), en hôte comme
 en client, et l'export **HTML5** en client (une page de navigateur rejoint
 un hôte ordinateur ; elle ne peut pas héberger elle-même). Un export
-**Kivy/Android** fait tourner le jeu en solo — les actions réseau n'y font
-tout simplement rien.
+**Kivy/Android** est aussi un client : un téléphone rejoint un hôte ordinateur
+(écris l'adresse de l'hôte dans `join_game` ; la découverte automatique n'existe
+que sur ordinateur) et participe aux variables partagées, aux messages et aux
+événements réseau, et voit les instances en réseau de l'hôte. Comme le
+navigateur, il ne peut pas héberger, ni posséder une instance à lui.
 
 ---
 
