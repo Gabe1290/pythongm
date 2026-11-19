@@ -2052,9 +2052,15 @@ lines rather than matching their text.
     left above, the 15 `multiplayer_lan` ones are handled: 5 do real work (join,
     leave, shared vars, messages) and 8 warn once as phone-impossible (host,
     start, spawn, sync, ownership, input binding, sync rate); the two guards are
-    false/true as described. **7 remain unsupported on purpose**: the shared-folder
-    extension's `end_turn` and `*_files` actions (`multiplayer_files` is documented
-    "desktop only"). The wiki `Network` pages are updated in all nine languages
+    false/true as described. **The other 7 (the shared-folder extension's
+    `end_turn` and `*_files` actions) were then DONE too, same day**: that
+    session is plain file I/O, so a phone can host AND join
+    (`extensions/multiplayer_files/export_kivy.py`, `mp_files` package,
+    `tests/test_kivy_multiplayer_files_client.py`); only the lobby screen and
+    `folder="auto"` stay desktop-only, and which folders a phone can reach is the
+    real limit. **The Kivy generator now reports ZERO unsupported actions across
+    all 185.** Wiki: `FileExchange` en/fr updated; the other seven languages of
+    that page do not exist. The wiki `Network` pages are updated in all nine languages
     (the seven non-fr translations have had **no native-speaker read**).
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)

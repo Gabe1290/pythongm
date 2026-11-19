@@ -21,9 +21,13 @@ et lu par l'autre machine. Appuyez sur **Tester le jeu** sur les deux
 machines, puis sur **H** pour héberger sur l'une et **J** pour rejoindre
 sur l'autre.
 
-Pris en charge aujourd'hui : l'export **ordinateur** (pygame) uniquement,
-en hôte comme en client. Voir « Pourquoi pas tous les exports » ci-dessous
-pour savoir pourquoi HTML5 et Kivy/Android n'ont pas cette extension.
+Pris en charge aujourd'hui : l'export **ordinateur** (pygame), en hôte comme
+en client, et l'export **Kivy/Android**, lui aussi en hôte comme en client (la
+session n'est que de la lecture et de l'écriture de fichiers : un téléphone peut
+tout faire). Deux choses restent réservées à l'ordinateur : l'écran de salle
+d'attente (`show_lobby` est ignoré) et `folder="auto"` (indique le dossier dans
+l'action). Voir « Pourquoi pas tous les exports » ci-dessous pour HTML5 et pour
+ce qui limite un téléphone.
 
 ---
 
@@ -188,14 +192,16 @@ chemin de lecteur partagé arbitraire sans permissions supplémentaires
 qu'une salle informatique scolaire n'a probablement pas accordées ; cette
 extension ne tente donc pas de le faire là.
 
-**Kivy/Android** — écrire sur un partage réseau depuis une application
-téléphone ou tablette se heurte aux mêmes restrictions de stockage
-modernes, et un appareil mobile n'est souvent même pas sur le même réseau
-local que le lecteur partagé.
+**Kivy/Android** — le code y fonctionne, mais écrire sur un partage réseau
+depuis une application téléphone ou tablette se heurte aux restrictions de
+stockage modernes : l'application ne peut utiliser que les dossiers qui lui
+appartiennent ou qui lui ont été accordés, et un Dropbox ou un partage d'école
+que ton ordinateur voit n'est généralement pas visible pour elle. Un appareil
+mobile n'est aussi souvent pas sur le même réseau local que le lecteur partagé.
+Cela n'a pas été essayé sur un vrai appareil.
 
-Ces deux restrictions ont exactement la même forme que celles déjà en
-place pour le [Réseau (multijoueur LAN)](Network_fr) — voir la remarque
-« Pris en charge aujourd'hui » de la page [Réseau](Network_fr).
+Voir la remarque « Pris en charge aujourd'hui » de la page
+[Réseau](Network_fr) pour la même histoire avec le multijoueur LAN.
 
 ---
 

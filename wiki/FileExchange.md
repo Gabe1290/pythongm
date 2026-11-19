@@ -18,9 +18,12 @@ written to a file on the shared drive and picked up by the other machine.
 Press **Test Game** on both machines, then **H** to host on one and **J**
 to join on the other.
 
-Supported today: the **desktop** (pygame) export only, as host or client.
-See "Why not every export" below for why HTML5 and Kivy/Android don't have
-this extension.
+Supported today: the **desktop** (pygame) export, as host or client, and the
+**Kivy/Android** export, also as host or client (the session is plain file
+reading and writing, so a phone can do both). Two things stay desktop-only on a
+phone: the waiting-room screen (`show_lobby` is ignored) and `folder="auto"`
+(give the folder in the action). See "Why not every export" below for HTML5 and
+for what limits a phone.
 
 ---
 
@@ -161,14 +164,15 @@ Tic-Tac-Toe") for this worked out in full, including the win check.
 at all without extra permissions a school computer lab is unlikely to have
 granted, so this extension doesn't attempt it there.
 
-**Kivy/Android** — writing to a network share from a phone or tablet app
-runs into the same modern storage restrictions, and a mobile device is
-often not even on the same local network as the shared drive in the first
-place.
+**Kivy/Android** — the code runs there, but writing to a network share from a
+phone or tablet app runs into modern storage restrictions: the app can only use
+folders it owns or was granted, and a Dropbox or school share that your desktop
+sees is usually not visible to it. A mobile device is also often not on the same
+local network as the shared drive in the first place. It has not been tried on a
+real device.
 
-Both restrictions are the same shape [LAN Multiplayer](Network) already
-has for its own export limits — see [Network](Network)'s own "Supported
-today" note.
+See [Network](Network)'s own "Supported today" note for the same story with
+LAN Multiplayer.
 
 ---
 

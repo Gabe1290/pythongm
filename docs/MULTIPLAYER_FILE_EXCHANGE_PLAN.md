@@ -384,8 +384,11 @@ design, not a lesser version of the same thing.
 - **Kivy / Android export.** Scoped storage on modern Android makes
   writing to an arbitrary network share from an app a real fight even
   before considering whether the tablet is even on the same LAN as the
-  drive. Desktop-only for the same reason as above — revisit only on a
-  concrete ask.
+  drive. **Built anyway 2026-11-19** (the session is plain file I/O, so it
+  ports as-is -- `extensions/multiplayer_files/export_kivy.py`,
+  `kivy_glue.py`, tests `tests/test_kivy_multiplayer_files_client.py`): a
+  phone can host and join, but the connect/lobby screen is desktop-only and
+  the folder must be one the app can reach. **Not tried on a real device.**
 - **Live position sync (Tier B equivalent).** Covered above — genuinely
   the wrong transport for it.
 - **Network-share auto-discovery / a folder browser UI in Phase 1.** Type
