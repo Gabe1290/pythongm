@@ -91,7 +91,7 @@ def test_change_room_immediate_still_has_the_original_switch_logic():
 
 def test_render_fade_transition_method_exists_and_is_called_from_game_loop():
     assert "_renderFadeTransition() {" in ENGINE
-    m = re.search(r"gameLoop\(\) \{(.*?)requestAnimationFrame", ENGINE, re.S)
+    m = re.search(r"gameLoop\(frameTime\) \{(.*?)requestAnimationFrame", ENGINE, re.S)
     assert m, "gameLoop body not found"
     body = m.group(1)
     # Called after drawHUD (the fade overlay sits on top of the HUD, same

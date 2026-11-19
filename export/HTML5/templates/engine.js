@@ -4398,6 +4398,8 @@ class Game {
         this.sounds = {};           // sound name -> data URL (loadGame)
         this._audioPool = {};       // sound name -> [Audio] (play_sound)
         this._sleepUntil = 0;       // sleep action deadline
+        this._lastFrameTime = null; // fixed-step loop clock (see gameLoop)
+        this._stepAcc = 0;
         this._gameStartFired = false;
         // goto_room's transition='fade' (desktop: GameRunner.change_room /
         // _fade_overlay, _FADE_TRANSITION_SECONDS=0.25). Non-blocking state
@@ -4845,8 +4847,44 @@ class Game {
         this.gameLoop();
     }
 
-    gameLoop() {
+    // One logic step: input, extension per-step hooks, then the room. Exactly
+    // what the loop used to do once per animation frame.
+    _logicStep() {
+        if (!this.paused && Date.now() >= this._sleepUntil) {
+            this.processKeyboard();
+            this.processKeyboardRelease();
+            runExtensionFrameUpdates(this);
+            if (this.currentRoom) {
+                this.currentRoom.step(this);
+            }
+        }
+    }
+
+    // The game runs at a fixed LOGIC rate of 60 steps per real second,
+    // whatever the screen's refresh rate. Every per-step quantity in this
+    // engine (hspeed/vspeed, the roomSpeed/60 scale factor, alarms, gravity)
+    // was written assuming a 60 Hz step; a loop that stepped once per
+    // requestAnimationFrame ran up to 2x too fast on a 90/120 Hz phone or
+    // monitor. Drawing still happens once per animation frame.
+    gameLoop(frameTime) {
         if (!this.running) return;
+
+        const STEP_MS = 1000 / 60;
+        const TOLERANCE_MS = 2;          // forgive vsync jitter so 60 Hz never skips/doubles a step
+        const MAX_STEPS_PER_FRAME = 5;   // after a stall, drop the backlog instead of racing to catch up
+        const nowT = (typeof frameTime === 'number') ? frameTime : performance.now();
+        let dtMs = (this._lastFrameTime === null || this._lastFrameTime === undefined)
+            ? STEP_MS : nowT - this._lastFrameTime;
+        this._lastFrameTime = nowT;
+        if (!(dtMs >= 0) || dtMs > 250) dtMs = STEP_MS;   // hidden tab / clock jump: do not fast-forward
+        this._stepAcc = (this._stepAcc || 0) + dtMs;
+        let steps = 0;
+        while (this._stepAcc >= STEP_MS - TOLERANCE_MS && steps < MAX_STEPS_PER_FRAME && this.running) {
+            this._stepAcc -= STEP_MS;
+            steps++;
+            this._logicStep();
+        }
+        if (steps >= MAX_STEPS_PER_FRAME) this._stepAcc = 0;
 
         this.frameCount++;
         const now = Date.now();
@@ -4855,15 +4893,6 @@ class Game {
             this.frameCount = 0;
             this.lastFpsUpdate = now;
             document.getElementById('fps').textContent = `FPS: ${this.fps}`;
-        }
-
-        if (!this.paused && Date.now() >= this._sleepUntil) {
-            this.processKeyboard();
-            this.processKeyboardRelease();
-            runExtensionFrameUpdates(this);
-            if (this.currentRoom) {
-                this.currentRoom.step(this);
-            }
         }
 
         if (this.currentRoom) {
@@ -4902,7 +4931,7 @@ class Game {
             });
         }
 
-        requestAnimationFrame(() => this.gameLoop());
+        requestAnimationFrame((t) => this.gameLoop(t));
     }
 
     _renderFadeTransition() {

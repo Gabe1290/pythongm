@@ -54,8 +54,8 @@ def test_engine_core_declares_frame_update_registry():
 
 
 def test_game_loop_calls_frame_updates_before_room_step():
-    m = re.search(r"gameLoop\(\)\s*\{(.*?)\n    \}", ENGINE_CORE, re.S)
-    assert m, "gameLoop not found"
+    m = re.search(r"_logicStep\(\)\s*\{(.*?)\n    \}", ENGINE_CORE, re.S)
+    assert m, "_logicStep not found (the per-step body of the fixed-step game loop)"
     body = m.group(1)
     update_pos = body.index("runExtensionFrameUpdates(this)")
     step_pos = body.index("this.currentRoom.step(this)")

@@ -1645,7 +1645,7 @@ lines rather than matching their text.
   == ...: o.destroy()` style codegen plus a stub-Kivy test (see
   `tests/test_kivy_room_actions.py` for the harness pattern).
 
-### HTML5 export: the game loop is not clocked, so it runs faster on 90/120 Hz screens
+### ~~HTML5 export: the game loop is not clocked, so it runs faster on 90/120 Hz screens~~ (DONE 2026-11-19)
 - Found 2026-11-03 while building the Junior "My First Maze" lesson
   (`docs/junior/lessons/maze/`). `Game.gameLoop()` in
   `export/HTML5/templates/engine.js` takes one step per
@@ -1660,6 +1660,19 @@ lines rather than matching their text.
   timing, and CI has no JS engine, so it wants a real-browser check
   (Playwright works on the dev box) at 60 and a forced higher refresh rate.
 - The lesson's teacher guide states the limit honestly instead.
+- **Fixed 2026-11-19.** `Game.gameLoop(frameTime)` is now a fixed-step
+  accumulator: 60 LOGIC steps per real second (`_logicStep`: input, extension
+  per-step hooks, `room.step`), one render per animation frame. 60 was chosen
+  because every per-step quantity in the engine (the `roomSpeed/60` factor,
+  gravity, alarms, micro:bit `dt`) already assumed a 60 Hz step, so exports on a
+  60 Hz screen behave exactly as before. A 2 ms tolerance absorbs vsync jitter
+  (no skipped/doubled steps at 60 Hz); a hidden tab (>250 ms gap) or a stall
+  drops the backlog instead of fast-forwarding. Verified in real Chromium with a
+  fake animation-frame clock at 30/50/60/75/90/120/144 Hz: 120 steps in 2 s every
+  time (`tests/test_html5_fixed_step_loop.py`, browser half skips without
+  Playwright). **Not measured on a real high-refresh phone.** Old exported files
+  keep the old behaviour until re-exported. The Kivy export has its own
+  (already dt-based) loop and was never affected.
 
 ### ~~HTML5 export has no `remember_destroyed` support either~~ (DONE 2026-09-09)
 - Found 2026-09-08 while fixing L17 of `docs/FULL_AUDIT_2026-09-07.md`
