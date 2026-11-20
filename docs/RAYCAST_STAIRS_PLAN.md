@@ -340,16 +340,43 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   the one-call `drawImage`, `posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH`);
   each was repointed at the equivalent new expression, keeping the property
   it protects (unclamped height, cropped texture, view-height scaling).
-- [ ] **S5 — Desktop stairs path, flat colours.** Crossing recorder in the DDA,
-  column walk, risers, clipped walls, flat-colour treads; fast path untouched.
-  Tests drive the real `GameRunner.run()` loop (the raycast landmine:
-  hand-built rooms lack `_cached_width`/sprites) and intercept the walk's
-  output for geometry assertions: a riser's screen extent at a known
-  distance, a lower ledge hidden, a step above eye height showing only its
-  riser, early stop. Pixel-identity proof for rooms without steps.
-- [ ] **S6 — Textured treads and risers** (column-major floor cast, per-span
-  height; ceiling cast uses `eye_z`). Assert the texel under a riser's base
-  is at the riser's distance.
+- [x] **S5 — Desktop stairs path.** `b1c41d69` (2026-11-20). In
+  `renderer.py`: `build_floor_heights` runs every frame; a room with no
+  step keeps the old single-hit code untouched (still byte-identical to
+  pre-S4 HEAD over the 768-frame proof). With steps, each column takes
+  `_draw_stairs_column`: `cast_ray_steps` (cast_ray plus the crossings where
+  the floor height changes; its wall result equals `cast_ray`'s bit for bit,
+  pinned over 300 random rays), `layout_column` (pure geometry, the parity
+  target for S10/S11: treads at every height incl. 0, risers, the clipped
+  wall, per-crossing occluders for S7), then drawing. The eye is the floor
+  under the camera's centre + `RAYCAST_EYE_HEIGHT` (snaps; S8 eases it);
+  the ground floor/ceiling casts take their plane heights from it.
+  **Change from the plan: risers are already TEXTURED here** (step side
+  texture, else wall texture, else flat wall colour) -- a riser is just the
+  slice of a wall between two heights, so `draw_wall_rows` draws walls and
+  risers alike, tiles anchored at height 0. Only raised TREADS are still flat
+  (floor colour); S6 casts them.
+  **Speed:** first cut 35 ms vs 20 ms for the same room without steps
+  (640×480, textured, staircase filling the view) -- over the plan's 1.6×.
+  A per-frame cache of scaled+shaded strips (a riser facing the camera has
+  the same distance in every column) plus cheaper clamps brought it to
+  **30 ms (1.5×)**; a full turn 25.5 vs 21 ms. Both changes were proven not to
+  move a pixel (150 stairs frames hashed before/after, and cache on vs off).
+  Guard added: stairs < 1.6× flat + 5 ms. Lesson: reordering a float
+  expression (`* (view_h / d)` vs `* view_h / d`, `a // b` vs
+  `floor(a / b)`) DID change pixels -- keep the original expressions.
+  `tests/test_raycast_stairs_render.py` (17 tests: ray/crossings, exact
+  riser/tread/wall rows, ledge hiding the near lower floor, a step above the
+  eye, a riser hidden behind a taller nearer one, early stop, miss to the
+  horizon, rendered rows, the raised eye, side texture, a room without steps
+  never entering the path, an authored project through the real GameRunner,
+  the speed guard). Mutations: 8 of 9 caught; the survivor (draw risers on
+  drops too) is equivalent -- a drop's front is always below the clip.
+- [ ] **S6 — Textured treads** (column-major floor cast, per-span height,
+  over the treads `layout_column` already returns; ceiling cast already
+  uses `eye_z` since S5; risers are textured since S5). Assert the texel
+  under a riser's base is at the riser's distance. Keep the S5 speed guard
+  green (the column-major cast REPLACES the row-major one in stairs rooms).
 - [ ] **S7 — Billboards on steps.** Lift by their cell's floor; per-column clip
   profile occlusion. Tests: a pickup on a platform is drawn higher by the
   predicted amount; a billboard behind a riser loses exactly its lower rows.
