@@ -185,12 +185,17 @@ def resolve_global_refs(expr: str) -> str:
 _strip_global_refs = resolve_global_refs
 
 
-def _resolve_instance_names(expr) -> str:
+def _resolve_instance_names(expr, gm=False) -> str:
     """Bind bare instance/custom variable names in ``expr`` to self.<name>.
 
     Already-qualified names (self.x, other.y) are left untouched, as are the
     game-global names the export can't map. Malformed or non-string
     expressions are returned unchanged so codegen never crashes on bad input.
+
+    gm=True: a read of ``y`` (bare, ``self.y``, ``other.y``) is the AUTHOR's y -- down from
+    the sprite's top, as the editor and the desktop runtime see it -- converted from Kivy's
+    (see _ConditionNameResolver). For an expression whose RESULT is written back into the
+    instance (set_variable), where the author's arithmetic is in that space.
     """
     if not isinstance(expr, str) or not expr.strip():
         return expr
@@ -199,7 +204,7 @@ def _resolve_instance_names(expr) -> str:
         tree = ast.parse(expr, mode='eval')
     except SyntaxError:
         return expr
-    _SelfNameResolver().visit(tree)
+    (_ConditionNameResolver if gm else _SelfNameResolver)().visit(tree)
     ast.fix_missing_locations(tree)
     try:
         return ast.unparse(tree)
@@ -245,7 +250,7 @@ _VALUE_IS_EXPRESSION = re.compile(
     r'|\b(?:self|other|global)\.')
 
 
-def _value_code(raw):
+def _value_code(raw, gm=False):
     """Emit a custom variable's VALUE, which may be a number, an expression or
     plain text.
 
@@ -274,7 +279,7 @@ def _value_code(raw):
         return repr(stripped[1:-1])
     if not _VALUE_IS_EXPRESSION.search(stripped):
         return _literal(text)
-    resolved = _resolve_instance_names(stripped)
+    resolved = _resolve_instance_names(stripped, gm)
     try:
         ast.parse(resolved, mode='eval')
     except SyntaxError:
@@ -314,7 +319,7 @@ def _variable_read_code(var_name, event_type=''):
     return f"getattr(self, {name!r}, 0)"
 
 
-def _num_code(value, default=0):
+def _num_code(value, default=0, gm=False):
     """Emit a NUMERIC parameter that may be an expression ("direction+90").
 
     view_* variables become 0 (views unimplemented — matches the pygame
@@ -329,7 +334,7 @@ def _num_code(value, default=0):
         return str(int(f)) if f.is_integer() else str(f)
     except ValueError:
         pass
-    resolved = _resolve_instance_names(s)
+    resolved = _resolve_instance_names(s, gm)
     # Only emit the expression if it actually parses — a malformed field
     # ("10 pixels", "x >") would otherwise become uncompilable Python and
     # kill the whole exported object module. Fall back to the numeric
@@ -2345,8 +2350,11 @@ if dist > 0:
             numeric_attrs = ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction',
                              'visible', 'solid']
 
-            value = (_num_code(raw) if var_name in numeric_attrs
-                     else _value_code(raw))
+            # gm=True: the author's arithmetic on `y` (`y = y - 4`, `hp = y`) is in the editor's
+            # y-down space, so a read of y is converted from Kivy's, and a WRITE to y is
+            # converted back below. x needs neither.
+            value = (_num_code(raw, gm=True) if var_name in numeric_attrs
+                     else _value_code(raw, gm=True))
 
             # The NAME may carry a scope prefix -- the action's own parameter
             # description offers "self.var, global.var, or bare names", and
@@ -2376,11 +2384,17 @@ if dist > 0:
                     return (f"pass  # set_variable {var_name!r}: 'other' only "
                             "exists in a collision event")
                 attr = name[len('other.'):]
+                if attr == 'y':
+                    # The author's y is down from the top; Kivy's y is up from the bottom.
+                    return (f"other.y -= {value}" if relative else f"other._set_gm_y({value})")
                 if relative:
                     return (f"other.{attr} = getattr(other, {attr!r}, 0) "
                             f"+ {value}")
                 return f"other.{attr} = {value}"
 
+            if name == 'y':
+                # Moving DOWN (+) is a smaller Kivy y; an absolute y is the author's, converted.
+                return f"self.y -= {value}" if relative else f"self._set_gm_y({value})"
             if name in numeric_attrs and relative:
                 return f"self.{name} += {value}"
             if relative:

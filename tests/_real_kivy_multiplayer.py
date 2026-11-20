@@ -69,8 +69,24 @@ try:
         host.pump_after_update()
         time.sleep(0.004)
     result["released_right"] = host.remote_input(1, "right")
+    result["own_rows"] = [{"x": r["x"], "y": r["y"], "from": r["_from"]} for r in own_rows]   # the right-arrow phase
+    # The vertical keys: the avatar's step does `y = y - 4` for UP. Up is a SMALLER author's y on the
+    # wire (down from the top) and a LARGER Kivy y (up from the bottom).
+    y_before, rows_before = float(avatar.y), len(own_rows)
+    scene.keys_pressed[273] = True                      # the up arrow
+    t_end = time.monotonic() + 0.6
+    while time.monotonic() < t_end:
+        host.pump_before_step()
+        scene.update(1.0 / 60.0)
+        own_rows.extend(host.take_own_state().values())
+        host.pump_after_update()
+        time.sleep(0.004)
+    scene.keys_pressed[273] = False
+    result["up_kivy_y_delta"] = float(avatar.y) - y_before
+    result["up_wire_y_before"] = own_rows[rows_before - 1]["y"] if rows_before else None
+    result["up_wire_y_after"] = own_rows[-1]["y"]
     result["avatar_moved"] = float(avatar.x) - x0
-    result["own_rows"] = [{"x": r["x"], "y": r["y"], "from": r["_from"]} for r in own_rows]
+    result["own_rows_all"] = [{"x": r["x"], "y": r["y"], "from": r["_from"]} for r in own_rows]
     result["player_id"] = glue._session.player_id        # (main has no GameApp here, so no globals store)
     glue.leave(scene)
     host.close()

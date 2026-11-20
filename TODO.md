@@ -2116,11 +2116,18 @@ lines rather than matching their text.
   and its legacy "Left Arrow" key spelling never matched; the HTML5 evaluator quietly accepted `&&`/`||`/`!`
   (desktop: false + a warning). Not changed: an instance variable named `name` collides with the HTML5
   engine's own `inst.name` (the object's name).
-- **Open, found by that audit (not fixed): Kivy `set_variable` on `y` is not converted** -- the author's
-  `y = y - 4` (the `reseau` avatar's "up" key) becomes `self.y = self.y - 4`, which is DOWN on screen in
-  Kivy's y-up space, so the vertical keys of any such project are inverted on Android/iOS (x is fine).
-  The condition fix above does not cover assignments; it needs the value read through `_gm_y()` and the
-  result converted back, and a check that no sample leans on today's behaviour.
+- **Kivy `set_variable` on `y` DONE 2026-11-20** (`tests/test_kivy_set_variable_y.py`): the author's y is
+  down from the sprite's top, Kivy's is up from its bottom, so `y = y - 4` (the `reseau` avatar's "up" key)
+  moved the avatar DOWN on Android/iOS and an absolute `y = 100` landed 100 px from the bottom. A write to
+  `y` (`self.y`, `y`, `other.y`) is now relative `self.y -= v` or absolute `GameObject._set_gm_y(v)`, and a
+  read of `y` inside ANY `set_variable` value is the author's (`hp = y`, `x = y`); x is untouched. The
+  differential test runs 14 cases against the desktop's `execute_set_variable_action`, and the real-Kivy
+  `reseau_1` test holds UP and checks the Kivy y rises while the wire y falls. Verified under real Kivy; not on
+  a device. **Still in Kivy's raw y** (the same class of gap, not audited): reads of `y` in other actions'
+  value expressions (`set_hspeed`, `create_instance`, `draw_*` ...), and `set_variable`'s `scope: "other"`
+  parameter (only a `other.` NAME prefix is honoured). Desktop's own `set_variable` does not strip a
+  `self.` prefix (it sets an attribute literally named `self.y`); Kivy strips it, as the action's description
+  promises.
 - **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).

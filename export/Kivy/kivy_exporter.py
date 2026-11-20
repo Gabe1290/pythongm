@@ -4571,6 +4571,15 @@ class GameObject(Widget):
             return self.y
         return scene.room_height - self.y - (self.image_height or self.grid_size)
 
+    def _set_gm_y(self, gm_y):
+        """Place this instance at the author's y (down from the sprite's TOP): the inverse of
+        _gm_y(). set_variable y writes through it."""
+        scene = self.scene
+        if scene is None:
+            self.y = gm_y
+        else:
+            self.y = scene.room_height - gm_y - (self.image_height or self.grid_size)
+
     def _mouse_check(self, check):
         """if_condition mouse_check, as the desktop runtime answers it: which
         button is held, or whether the pointer is over this instance. "In region"

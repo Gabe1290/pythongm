@@ -461,6 +461,9 @@ def test_under_real_kivy_the_scene_hook_joins_and_spawns_a_real_ghost(tmp_path):
     assert rows and all(r["from"] == 1 for r in rows)
     assert max(r["x"] for r in rows) > 128 + 20
     assert all(r["y"] == pytest.approx(96, abs=2) for r in rows)      # wire y is the room's y-down 96
+    # holding UP (`y = y - 4`): a larger Kivy y on screen, and a SMALLER y on the wire
+    assert data["up_kivy_y_delta"] > 10, data["up_kivy_y_delta"]
+    assert data["up_wire_y_after"] < data["up_wire_y_before"] - 10
 
 
 # ---------------------------------------------------------------- the owned avatar
