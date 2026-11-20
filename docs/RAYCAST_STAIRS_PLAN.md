@@ -290,12 +290,24 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   - Regression guard to add in S6 (relative, CI-noise-proof like the existing
     one): the stairs frame stays under 1.6× today's renderer on the same
     room (measured 1.27×).
-- [ ] **S3 — `Set Floor Height` + the height map.** Schema in `actions.py`
-  (category "3D View", icon, params `height`, `top_texture`, `side_texture`),
-  handler, `extension.json` `provides_actions`, `heights.py`
-  (`build_floor_heights`, cell coverage, highest wins, clamping + warning),
-  billboard exclusion. Tests: coverage of multi-cell sprites, overlap, runtime
-  create/destroy reflected next frame, a step never becomes a billboard.
+- [x] **S3 — `Set Floor Height` + the height map.** `f0b05af9` (2026-11-20).
+  Schema in `actions.py` (category "3D View", icon 🪜, params `height` default
+  8, `top_texture`, `side_texture`), handler (records
+  `raycast_floor_height` / `raycast_step_top_texture` /
+  `raycast_step_side_texture`; garbage, NaN or inf height -> 0),
+  `extension.json` `provides_actions`, new `heights.py`
+  (`is_step`, `max_floor_height`, `build_floor_heights`: sprite-box cell
+  coverage, origin-aware, a box ending on a grid line stays in its cells,
+  highest wins with its textures, clamped to `0..max` with ONE warning per
+  instance, solid instances never steps; stored as `floor_heights` /
+  `floor_textures` in the raycast state), billboard exclusion (desktop).
+  `tests/test_raycast_floor_heights.py` (20 tests, five mutations all caught).
+  **Scope moved here from S13:** the action's display name is translated in
+  all ten languages in this commit (both Qt contexts, `.qm` recompiled) --
+  `tests/test_extension_action_i18n.py` requires it (count 47 -> 48), and
+  the repo's rule is "translated the same commit". Parameter labels and
+  descriptions are still S13. Nothing calls `build_floor_heights` yet (S5
+  does); HTML5/Kivy still draw a step as a billboard until S10/S11.
 - [ ] **S4 — `wall_height` + eye-height constant split.** New optional
   parameter on Enable Raycast View; `RAYCAST_EYE_HEIGHT` / wall height named
   separately in all three renderers. Proof: default renders pixel-identical
@@ -338,8 +350,9 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   `README.fr.md` (accents checked), Welcome-tab entry + its translation in
   every shipped `.ts`, smoke list, `test_edition_sample_filter` if needed,
   a sample test that climbs to the goal through the real loop.
-- [ ] **S13 — Docs and translations.** Extension `README.md`; the new action
-  and parameter strings in all ten languages' `.ts` (split files for
+- [ ] **S13 — Docs and translations.** Extension `README.md`; the new
+  parameter strings (action display names are done with their unit, as S3
+  did) in all ten languages' `.ts` (split files for
   de/it/ru/sl/uk, monolithic for the rest — re-derive per context, don't
   assume); `wiki/3D-View.md` + `_fr` (other languages fall back, as before);
   regenerate the action reference with `tools/gen_action_reference.py`
