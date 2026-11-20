@@ -1,10 +1,12 @@
 """LAN multiplayer on the Kivy (Android/iOS) export.
 
-A phone is a CLIENT: it joins a desktop-hosted game, takes part in Tier A (shared
-variables, messages, identity, the Reseau events), sees the host's networked
-instances as interpolated ghosts and plays the avatar the host assigned to it
-(own/input frames, named input). Hosting is not available there (see kivy_glue.py). The desktop session code is
-shipped verbatim as the ``mp_lan`` package, so the wire protocol is the host's own.
+A phone can JOIN a desktop-hosted game (Tier A: shared variables, messages, identity, the
+Reseau events; the host's networked instances as interpolated ghosts; the avatar the host assigned,
+with own/input frames and named input; room-placed instances marked with sync_instance) and can
+HOST one (host_game, start_networked_game, network_spawn, host-owned sync_instance,
+set_instance_owner, remote_input, and the older set_network_mode). Not on a phone: the waiting-room
+screen and the discovery beacon -- see kivy_glue.py. The desktop session code is shipped verbatim
+as the ``mp_lan`` package, so the wire protocol is the host's own.
 
 The extension loader ``exec``s this file without ``__file__``, so everything here
 is plain data.
@@ -85,10 +87,37 @@ def _cg_set_instance_owner(gen, params, event_type):
             f"set_instance_owner(self, {num(params.get('player'), 0)})")
 
 
-def _unsupported(name):
-    def _cg(gen, params, event_type):
-        return f"from mp_lan.glue import unsupported; unsupported({name!r})"
-    return _cg
+def _truthy(value):
+    if isinstance(value, str):
+        return value.strip().lower() not in ("", "0", "false", "no")
+    return bool(value)
+
+
+def _cg_host_game(gen, params, event_type):
+    num, _ = _helpers()
+    return ("from mp_lan.glue import host; "
+            f"host({num(params.get('port'), 45782)}, {_raw(params, 'player_name')!r}, "
+            f"{num(params.get('max_players'), 8)}, {_truthy(params.get('show_lobby'))!r})")
+
+
+def _cg_start_networked_game(gen, params, event_type):
+    return "from mp_lan.glue import start_networked_game; start_networked_game()"
+
+
+def _cg_set_network_mode(gen, params, event_type):
+    num, _ = _helpers()
+    return ("from mp_lan.glue import set_network_mode; "
+            f"set_network_mode({_raw(params, 'mode')!r}, {_raw(params, 'host')!r}, "
+            f"{num(params.get('port'), 45782)})")
+
+
+def _cg_network_spawn(gen, params, event_type):
+    num, _ = _helpers()
+    x, y = num(params.get('x'), 0), num(params.get('y'), 0)
+    if _truthy(params.get('relative')):
+        x, y = f"self.x + {x}", f"self._gm_y() + {y}"            # the author's y: down from the top
+    return ("from mp_lan.glue import network_spawn; "
+            f"network_spawn(self, {_raw(params, 'object')!r}, {x}, {y}, {num(params.get('owner'), 0)})")
 
 
 ACTION_CODEGEN = {
@@ -101,10 +130,11 @@ ACTION_CODEGEN = {
     "set_sync_rate": _cg_set_sync_rate,
     "sync_instance": _cg_sync_instance,
     "set_instance_owner": _cg_set_instance_owner,
+    "host_game": _cg_host_game,
+    "start_networked_game": _cg_start_networked_game,
+    "set_network_mode": _cg_set_network_mode,
+    "network_spawn": _cg_network_spawn,
 }
-# Host-side, so a phone cannot do these (see the module docstring): one warning, then a no-op.
-for _name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn"):
-    ACTION_CODEGEN[_name] = _unsupported(_name)
 
 
 def _cc_is_instance_owner(gen, params, event_type):
@@ -112,7 +142,9 @@ def _cc_is_instance_owner(gen, params, event_type):
 
 
 def _cc_remote_input(gen, params, event_type):
-    return "False"          # host-side only: a phone never hosts
+    num, _ = _helpers()
+    return ("__import__('mp_lan.glue', fromlist=['remote_input']).remote_input("
+            f"{num(params.get('player'), 0)}, {_raw(params, 'name')!r})")
 
 
 CONDITION_CODEGEN = {

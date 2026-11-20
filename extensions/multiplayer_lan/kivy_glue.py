@@ -1,4 +1,4 @@
-"""LAN multiplayer CLIENT for the Kivy (Android/iOS) export.
+"""LAN multiplayer for the Kivy (Android/iOS) export: a CLIENT, and a HOST.
 
 Shipped into the game as ``mp_lan/glue.py`` beside the desktop session code
 (``mp_lan/session.py`` and friends, byte for byte -- see export_kivy.py), so the
@@ -19,9 +19,17 @@ room, so the same instance gets the same network id ``<object>#<ordinal>`` every
 follows the host's copy unless the host gave it to this player, in which case it runs here
 and is reported up. ``set_instance_owner`` is the host's decision; on a phone it only sets
 the local ``_net_owner``, which the next snapshot overrides, exactly as on the desktop
-client. It cannot host (no listening socket on a phone), so ``host_game``,
-``start_networked_game`` and ``network_spawn`` warn once and do nothing; ``remote_input``
-is host-side and always false.
+client.
+
+A phone can also HOST (a device can listen on a socket, so the desktop's own host session is used
+as it is): ``host_game`` starts it, ``start_networked_game`` ends the waiting room,
+``network_spawn`` creates a networked instance for everyone (with an owner), ``sync_instance`` marks
+a room-placed instance as host-owned, ``set_instance_owner`` hands one to a player, and
+``remote_input`` asks what a player is holding. What a phone does NOT have is the desktop's waiting-
+room screen and the discovery beacon (``show_lobby`` is ignored; a joiner types the host's address,
+which the game can read from the global ``host_address``), and phones on a school's guest Wi-Fi are
+often isolated from each other, so hosting there may be unreachable. ``set_network_mode`` is the
+older spectator mode (the host's positions are copied to a joiner's instances).
 
 This module is pure Python and duck-typed against the Kivy scene (``instances``,
 ``create_instance``, ``destroy_instance``, ``room_height``) so it is testable
@@ -42,6 +50,8 @@ _scene = None        # the scene _ghosts belong to
 _synced_local = {}   # nid -> room-placed instance registered by sync_instance in _sync_scene
 _sync_ord = {}       # object name -> how many sync_instance calls so far in _sync_scene
 _sync_scene = None   # the scene the two above belong to
+_host_synced = {}    # HOST: nid -> instance (sync_instance / network_spawn) replicated to every client
+_v1 = None           # the older spectator mode (set_network_mode): {"mode", "net", "scene"}
 _warned = set()
 _interp_ms = None    # set_sync_rate's interpolation delay, applied to every session
 
@@ -97,12 +107,8 @@ def _warn_once(name, why):
 
 
 def unsupported(name):
-    """Actions a phone cannot do: say so once, then do nothing."""
-    if name in ("host_game", "start_networked_game", "set_network_mode"):
-        _warn_once(name, "a phone cannot host a game; host from a desktop export")
-    else:
-        _warn_once(name, "only the host creates networked instances; a phone plays the avatar "
-                         "the host gave it")
+    """Kept for an action added later that a phone cannot do: say so once, then do nothing."""
+    _warn_once(name, "a phone cannot do this")
 
 
 # -- lifecycle -------------------------------------------------------------------
@@ -110,7 +116,7 @@ def unsupported(name):
 def join(host, port, player_name):
     """join_game: connect to a desktop host over TCP. Never raises."""
     global _session
-    if _session is not None:
+    if _session is not None or _v1 is not None:
         return
     host = str(host or "").strip() or "127.0.0.1"
     if host == "auto":
@@ -145,13 +151,20 @@ def join(host, port, player_name):
 
 def leave(scene=None):
     """leave_game: close the session, drop the ghosts, clear the identity globals."""
-    global _session
+    global _session, _v1
     s, _session = _session, None
     if s is not None:
         try:
             s.close()
         except Exception:
             pass
+    v1, _v1 = _v1, None
+    if v1 is not None:
+        try:
+            v1["net"].close()
+        except Exception:
+            pass
+    _host_synced.clear()
     _destroy_ghosts(scene or _scene)
     _known.clear()
     _known_pos.clear()
@@ -163,14 +176,14 @@ def leave(scene=None):
     _last_own_at = _last_input_at = 0.0
     try:
         g = _main().get_game_app().globals
-        for key in NETWORK_GLOBALS:
+        for key in NETWORK_GLOBALS + ("host_address",):
             g.pop(key, None)
     except Exception:
         pass
 
 
 def active():
-    return _session is not None
+    return _session is not None or _v1 is not None
 
 
 # -- Tier A ----------------------------------------------------------------------
@@ -214,8 +227,10 @@ def sync_instance(inst, names=""):
     scene = getattr(inst, "scene", None)
     if scene is not _sync_scene:                 # a new room: its own registry and ordinals
         _synced_local.clear()
+        _host_synced.clear()
         _sync_ord.clear()
         _sync_scene = scene
+    registry = _host_synced if _session.mode == "host" else _synced_local
     name = str(getattr(inst, "object_name", "") or inst.__class__.__name__)
     nid = getattr(inst, "_net_id", None)
     if not nid:
@@ -227,7 +242,9 @@ def sync_instance(inst, names=""):
     listed = [n.strip() for n in str(names or "").split(",") if n.strip()]
     if listed:
         inst._net_sync_vars = listed
-    _synced_local[nid] = inst
+    registry[nid] = inst
+    if _session.mode == "host":
+        return
 
 
 def set_instance_owner(inst, player):
@@ -287,20 +304,28 @@ def update(scene):
     from the scene's extension hook; a no-op until join_game."""
     s = _session
     if s is None:
+        if _v1 is not None:
+            _update_v1(scene)
         return
     s.pump_before_step()
     _apply_state(scene, s)
+    if s.mode == "host":
+        _apply_host_own_state(scene, s)
+        _push_host_state(scene, s)
+        s.pump_after_update()                    # (the snapshot goes out here)
+        return
     _apply_ghosts(scene, s)
     s.pump_after_update()
 
 
 def _apply_state(scene, s):
-    connected = (not s.connection_lost) and s.player_id >= 0
+    hosting = s.mode == "host"
+    connected = (not s.connection_lost) and (hosting or s.player_id >= 0)
     _set_global("player_id", s.player_id)
     _set_global("player_count", s.player_count)
     _set_global("network_role", s.mode)
-    _set_global("is_host", 0)
-    _set_global("is_client", 1)
+    _set_global("is_host", 1 if hosting else 0)
+    _set_global("is_client", 0 if hosting else 1)
     _set_global("network_connected", 1 if connected else 0)
     for key, val in s.shared.items():
         _set_global(key, val)
@@ -513,3 +538,231 @@ def _apply_ghosts(scene, s):
             _last_input, _last_input_at = key, now
             s._last_input_sent = None            # the session dedups; a refresh must really go out
             s.send_input(held)
+
+
+# -- hosting ------------------------------------------------------------------------------
+
+def _lan_address(port):
+    """This device's address on the local network, as "ip:port" (the address a joiner types)."""
+    import socket
+    ip = "127.0.0.1"
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        probe.connect(("10.255.255.255", 1))     # no packet is sent; it only picks the outgoing interface
+        ip = probe.getsockname()[0]
+    except OSError:
+        pass
+    finally:
+        probe.close()
+    return "%s:%d" % (ip, port)
+
+
+def host(port, player_name, max_players, show_lobby=False):
+    """host_game: listen for players. Never raises (a busy port is logged and the game goes on)."""
+    global _session
+    if _session is not None or _v1 is not None:
+        return
+    from .session import NetworkSession
+    from .state import DEFAULT_PORT
+    try:
+        port = int(float(port))
+    except (TypeError, ValueError):
+        port = DEFAULT_PORT
+    try:
+        max_players = int(float(max_players))
+    except (TypeError, ValueError):
+        max_players = 8
+    session = NetworkSession(mode="host", port=port, max_players=max_players,
+                             player_name=str(player_name or "").strip() or "Joueur")
+    try:
+        session.start()
+    except OSError as exc:
+        log.warning("multiplayer: could not host on port %s: %s", port, exc)
+        try:
+            session.close()
+        except Exception:
+            pass
+        try:
+            _main()._log("multiplayer: could not host on port %s (%s)" % (port, exc))
+        except Exception:
+            pass
+        return
+    if show_lobby:
+        _warn_once("lobby", "the waiting-room screen is desktop-only; the game starts hosting at once "
+                            "(read the global host_address to show players where to join)")
+    _session = session
+    _host_synced.clear()
+    if _interp_ms is not None:
+        _session.set_sync_rate(20.0, _interp_ms)
+    try:
+        _set_global("host_address", _lan_address(session.bound_port))
+    except Exception:
+        pass
+
+
+def start_networked_game():
+    """start_networked_game: end the waiting room (host only): everyone gets network_game_started."""
+    if _session is not None and _session.mode == "host":
+        _session.start_game()
+
+
+def network_spawn(inst, object_name, gm_x, gm_y, owner):
+    """network_spawn (host only): create an instance of `object_name` at the author's position and
+    replicate it to every client, owned by player `owner` (0 = the host). A no-op for a client, as
+    on desktop."""
+    global _sync_scene
+    if _session is None or _session.mode != "host" or not object_name:
+        return None
+    scene = getattr(inst, "scene", None)
+    if scene is not _sync_scene:
+        _synced_local.clear()
+        _host_synced.clear()
+        _sync_ord.clear()
+        _sync_scene = scene
+    new = inst._create_gm(str(object_name), gm_x, gm_y)
+    if new is None:
+        return None
+    nid = _session.next_netid()
+    new._net_id = nid
+    try:
+        new._net_owner = int(float(owner))
+    except (TypeError, ValueError):
+        new._net_owner = 0
+    _host_synced[nid] = new
+    return new
+
+
+def remote_input(player, name):
+    """remote_input (host only): is `player` holding the named input? False everywhere else."""
+    if _session is None or _session.mode != "host":
+        return False
+    return bool(_session.remote_input(player, name))
+
+
+def _host_row(scene, nid, inst):
+    height = _finite(getattr(inst, "image_height", 0), 0.0)
+    row = {
+        "nid": nid, "o": str(getattr(inst, "object_name", "") or inst.__class__.__name__),
+        "x": _finite(inst.x, 0.0), "y": scene.room_height - _finite(inst.y, 0.0) - height,
+        "r": 0, "f": _finite(getattr(inst, "image_index", 0.0), 0.0),
+        "v": bool(getattr(inst, "visible", True)),
+        "own": getattr(inst, "_net_owner", 0) or 0,
+    }
+    names = getattr(inst, "_net_sync_vars", None)
+    if names:
+        values = {}
+        for name in names:
+            value = getattr(inst, name, None)
+            if isinstance(value, _GHOST_VAR_TYPES) and (not isinstance(value, float) or value == value):
+                values[name] = value
+        if values:
+            row["vars"] = values
+    return row
+
+
+def _push_host_state(scene, s):
+    """Host, every frame: this frame's replicated instances go into the next snapshot, and the held
+    named inputs become player 0's (so remote_input(0, ...) works like for a client)."""
+    live = set(map(id, getattr(scene, "instances", ())))
+    rows = []
+    for nid in list(_host_synced):
+        inst = _host_synced[nid]
+        if id(inst) not in live:
+            del _host_synced[nid]
+            continue
+        rows.append(_host_row(scene, nid, inst))
+    s.push_local_instances(rows)
+    s.set_local_input(_held_inputs(scene))
+    try:
+        _set_global("host_address", _lan_address(s.bound_port))
+    except Exception:
+        pass
+
+
+def _apply_host_own_state(scene, s):
+    """Host: fold each client's reported state for the instances IT owns into the host's copy, so the
+    host sim and the outgoing snapshot agree. A claim is accepted only from the recorded owner."""
+    for nid, row in s.take_own_state().items():
+        inst = _host_synced.get(nid)
+        if inst is None or getattr(inst, "_net_owner", 0) != row.get("_from"):
+            continue                              # a client cannot take an instance it does not own
+        height = _finite(getattr(inst, "image_height", 0), 0.0)
+        inst.x = _finite(row.get("x"), inst.x)
+        inst.y = scene.room_height - _finite(row.get("y"), 0.0) - height
+        inst.image_index = _finite(row.get("f"), getattr(inst, "image_index", 0.0))
+        inst.visible = bool(row.get("v", getattr(inst, "visible", True)))
+        allowed = getattr(inst, "_net_sync_vars", None) or ()
+        for key, val in (row.get("vars") or {}).items():
+            if (key in allowed and isinstance(val, _GHOST_VAR_TYPES) and not key.startswith("_")
+                    and not hasattr(type(inst), key)):
+                setattr(inst, key, val)
+
+
+# -- the older spectator mode (set_network_mode) ---------------------------------------------
+
+def set_network_mode(mode, host_addr, port):
+    """set_network_mode: the v1 spectator sync. A host broadcasts every instance's position; a joiner's
+    instances (matched by their order in the room) copy it. Never raises."""
+    global _v1
+    if _session is not None or _v1 is not None:
+        return
+    mode = str(mode or "").strip().lower()
+    if mode not in ("host", "client"):
+        return
+    from .network import NetworkClient, NetworkHost
+    from .state import DEFAULT_PORT
+    try:
+        port = int(float(port))
+    except (TypeError, ValueError):
+        port = DEFAULT_PORT
+    try:
+        if mode == "host":
+            net = NetworkHost(port=port)
+            net.start()
+        else:
+            net = NetworkClient(str(host_addr or "").strip() or "127.0.0.1", port=port)
+            net.connect()
+    except OSError as exc:
+        log.warning("multiplayer: could not start %s mode on port %s: %s", mode, port, exc)
+        return
+    _v1 = {"mode": mode, "net": net, "scene": None}
+
+
+def _update_v1(scene):
+    v1 = _v1
+    if v1["scene"] is not scene:                 # number the room's instances once: both sides load the same room
+        v1["scene"] = scene
+        for index, inst in enumerate(getattr(scene, "instances", ())):
+            inst._sync_id = index
+    if v1["mode"] == "host":
+        rows = []
+        for inst in getattr(scene, "instances", ()):
+            sid = getattr(inst, "_sync_id", None)
+            if sid is None:
+                continue
+            height = _finite(getattr(inst, "image_height", 0), 0.0)
+            rows.append((sid, _finite(inst.x, 0.0), scene.room_height - _finite(inst.y, 0.0) - height,
+                         0, _finite(getattr(inst, "image_index", 0.0), 0.0),
+                         bool(getattr(inst, "visible", True))))
+        v1["net"].broadcast_snapshot(rows)
+        return
+    msg = v1["net"].poll()
+    if not msg or msg.get("t") != "snap":
+        return
+    by_id = {}
+    for inst in getattr(scene, "instances", ()):
+        sid = getattr(inst, "_sync_id", None)
+        if sid is not None:
+            by_id[sid] = inst
+    for row in msg.get("i", ()):
+        try:
+            sid, x, y, _rot, frame, visible = row
+        except (TypeError, ValueError):
+            continue
+        inst = by_id.get(sid)
+        if inst is None:
+            continue
+        _place(scene, inst, x, y)
+        inst.image_index = _finite(frame, getattr(inst, "image_index", 0.0))
+        inst.visible = bool(visible)
+

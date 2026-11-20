@@ -66,7 +66,7 @@ def test_generated_code_calls_the_glue_and_every_module_compiles(export_dir):
     quiz = (export_dir / "objects" / "obj_quiz.py").read_text(encoding="utf-8")
     assert "from mp_lan.glue import join; join('auto', 45782, '')" in quiz
     assert "from mp_lan.glue import send_message; send_message('reponse', 'A', 'host')" in quiz
-    assert "from mp_lan.glue import unsupported; unsupported('host_game')" in quiz
+    assert "from mp_lan.glue import host; host(45782, '', 4, True)" in quiz            # a phone can host now
     assert "def on_network_message(self):" in quiz and "def on_network_game_started(self):" in quiz
     scene = (export_dir / "scenes" / "room0.py").read_text(encoding="utf-8")
     assert "def _ext_update__multiplayer_lan(self, dt):" in scene
@@ -617,15 +617,15 @@ def test_losing_the_host_keeps_the_players_own_avatar_and_drops_the_puppets(glue
         g.leave()
 
 
-def test_the_generated_code_binds_inputs_and_the_only_unsupported_ones_are_host_side(export_dir):
+def test_the_generated_code_binds_inputs_syncs_instances_and_sets_owners(export_dir):
     from export.Kivy.code_generator import ActionCodeGenerator
     gen = ActionCodeGenerator()
     code = gen._convert_simple_action("bind_network_input", {"name": "fire", "key": "a"}, "create")
     assert code == "from mp_lan.glue import bind; bind('fire', 'a')"
     code = gen._convert_simple_action("set_sync_rate", {"hz": 20, "interp_ms": 150}, "create")
     assert code == "from mp_lan.glue import set_sync_rate; set_sync_rate(150)"
-    for name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn"):
-        assert "unsupported" in gen._convert_simple_action(name, {}, "create"), name
+    # (host_game, start_networked_game, set_network_mode, network_spawn, remote_input are covered in
+    # tests/test_kivy_multiplayer_host.py: a phone can host, so nothing is host-only any more)
     code = gen._convert_simple_action("sync_instance", {"vars": "hp, colour"}, "create")
     assert code == "from mp_lan.glue import sync_instance; sync_instance(self, 'hp, colour')"
     code = gen._convert_simple_action("set_instance_owner", {"player": "2"}, "create")
