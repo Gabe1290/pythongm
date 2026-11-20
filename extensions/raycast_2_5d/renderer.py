@@ -219,35 +219,14 @@ RAYCAST_MIN_SHADE = 0.35     # never fully black
 # building" look, especially with a ceiling instead of a sky. Applies to
 # WALLS only, not billboards (which stay sprite-sized). HTML5 (engine.js)
 # and Kivy mirror it -- pinned by tests/test_raycast_export_parity.py.
-RAYCAST_WALL_HEIGHT = 1.5
-# The vertical model behind it (docs/RAYCAST_STAIRS_PLAN.md, S4), in grid
-# cells. The eye sits RAYCAST_EYE_HEIGHT above the floor -- half the default
-# wall, so the horizon is the middle of a default wall. Walls (and the
-# ceiling plane) rise to the camera's `wall_height`, default
-# RAYCAST_WALL_HEIGHT; a wall texture covers RAYCAST_TEXTURE_HEIGHT of it and
-# REPEATS above that (anchored at the floor), so raising the walls for stairs
-# keeps the bricks their usual size instead of stretching them. With the
-# default height a wall is exactly one tile: today's picture, bit for bit.
-RAYCAST_EYE_HEIGHT = 0.75
-RAYCAST_TEXTURE_HEIGHT = 1.5
-# Where the eye sits inside one texture tile, from its top (0.5: mid-tile).
-# Kept as a ratio so the default wall's top is computed as
-# `half_h - tile_h * 0.5`, numerically identical to the old `full_h / 2.0`.
-_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT
-# Allowed wall_height range (cells): the ceiling must clear the eye.
-RAYCAST_MIN_WALL_HEIGHT = 1.0
-RAYCAST_MAX_WALL_HEIGHT = 10.0
-
-
-def clamp_wall_height(value) -> float:
-    """A camera's wall_height in cells, defaulted and clamped to the range."""
-    try:
-        v = float(value)
-    except (TypeError, ValueError):
-        return RAYCAST_WALL_HEIGHT
-    if v != v:                                   # NaN
-        return RAYCAST_WALL_HEIGHT
-    return min(RAYCAST_MAX_WALL_HEIGHT, max(RAYCAST_MIN_WALL_HEIGHT, v))
+# The vertical model (eye height, wall height, texture tile, wall_height
+# clamp) lives in heights.py since stairs S8 -- the climbing rule needs it
+# and must not import pygame. Re-exported here; nothing about it changed.
+from .heights import (  # noqa: E402,F401
+    RAYCAST_WALL_HEIGHT, RAYCAST_EYE_HEIGHT, RAYCAST_TEXTURE_HEIGHT,
+    _EYE_FROM_TILE_TOP, RAYCAST_MIN_WALL_HEIGHT, RAYCAST_MAX_WALL_HEIGHT,
+    clamp_wall_height,
+)
 
 
 def wall_shade(side: int, corrected: float, max_dist: float) -> float:
@@ -599,9 +578,14 @@ def render_raycast_view(room, screen: pygame.Surface):
     cam_x = _cx + camera._cached_width / 2
     cam_y = _cy + camera._cached_height / 2
     # Eye height in room px: the floor under the camera's centre plus the
-    # eye height. (S8 eases it between steps instead of snapping.)
-    floor_z = heights.get((int(cam_x // cell_size), int(cam_y // cell_size)), 0.0) \
-        if stairs else 0.0
+    # eye height. While the game runs, climbing.after_collision eases that
+    # floor (st["eye_floor"]) so the view rises step by step instead of
+    # snapping; without it (a bare render) it snaps to the floor.
+    floor_z = 0.0
+    if stairs:
+        floor_z = st.get("eye_floor")
+        if floor_z is None:
+            floor_z = heights.get((int(cam_x // cell_size), int(cam_y // cell_size)), 0.0)
     eye_z = floor_z + RAYCAST_EYE_HEIGHT * cell_size
     eye_cells = eye_z / cell_size
 

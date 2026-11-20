@@ -31,6 +31,41 @@ from .state import raycast_state
 
 logger = logging.getLogger(__name__)
 
+# --- The vertical model (moved from renderer.py in stairs S8, unchanged) ---
+# Wall strips project this many times taller than a cube would (1.0 =
+# cube): the default wall height, in cells. HTML5 and Kivy mirror it --
+# pinned by tests/test_raycast_export_parity.py.
+RAYCAST_WALL_HEIGHT = 1.5
+# The vertical model behind it (docs/RAYCAST_STAIRS_PLAN.md, S4), in grid
+# cells. The eye sits RAYCAST_EYE_HEIGHT above the floor -- half the default
+# wall, so the horizon is the middle of a default wall. Walls (and the
+# ceiling plane) rise to the camera's `wall_height`, default
+# RAYCAST_WALL_HEIGHT; a wall texture covers RAYCAST_TEXTURE_HEIGHT of it and
+# REPEATS above that (anchored at the floor), so raising the walls for stairs
+# keeps the bricks their usual size instead of stretching them. With the
+# default height a wall is exactly one tile: today's picture, bit for bit.
+RAYCAST_EYE_HEIGHT = 0.75
+RAYCAST_TEXTURE_HEIGHT = 1.5
+# Where the eye sits inside one texture tile, from its top (0.5: mid-tile).
+# Kept as a ratio so the default wall's top is computed as
+# `half_h - tile_h * 0.5`, numerically identical to the old `full_h / 2.0`.
+_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT
+# Allowed wall_height range (cells): the ceiling must clear the eye.
+RAYCAST_MIN_WALL_HEIGHT = 1.0
+RAYCAST_MAX_WALL_HEIGHT = 10.0
+
+
+def clamp_wall_height(value) -> float:
+    """A camera's wall_height in cells, defaulted and clamped to the range."""
+    try:
+        v = float(value)
+    except (TypeError, ValueError):
+        return RAYCAST_WALL_HEIGHT
+    if v != v:                                   # NaN
+        return RAYCAST_WALL_HEIGHT
+    return min(RAYCAST_MAX_WALL_HEIGHT, max(RAYCAST_MIN_WALL_HEIGHT, v))
+
+
 # Never let the eye get closer than this to the ceiling (room pixels).
 CEILING_MARGIN = 4.0
 

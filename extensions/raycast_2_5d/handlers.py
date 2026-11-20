@@ -142,6 +142,7 @@ class PluginExecutor:
             wall_textured, floor_cast_res: Phase 5 texturing
             viewport_height: DOOM-bar letterbox (0 = full window height)
             wall_height: walls/ceiling height in grid cells (default 1.5)
+            max_step: highest climbable step in room px (default 12)
         """
         ae = self._executor(instance)
         if ae is None or not ae.game_runner or not ae.game_runner.current_room:
@@ -201,6 +202,8 @@ class PluginExecutor:
             # defaults and clamps it where it is used (this module must not
             # import the pygame renderer).
             "wall_height": _num("wall_height", 1.5),
+            # Highest climbable step, room px (stairs plan S8; climbing.py).
+            "max_step": _num("max_step", 12),
             # DOOM-bar letterbox: shrink the 3D view to this many pixels tall
             # and reserve the band below for a status bar. 0 = full window
             # height, so every existing raycast game renders unchanged.

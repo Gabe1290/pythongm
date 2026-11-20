@@ -141,6 +141,11 @@ PLUGIN_ACTIONS = {
                 description="Height of the walls and ceiling, in grid cells "
                             "(1.5 = usual; raise it to 3 for stairs and "
                             "platforms, so there is headroom above them)"),
+            ActionParameter(name="max_step", display_name="Max Step",
+                param_type="number", default_value=12, required=False,
+                description="Highest step, in room pixels, the player (and "
+                            "anything else that moves) can climb; anything "
+                            "higher blocks like a wall"),
             ActionParameter(name="viewport_height", display_name="Viewport Height",
                 param_type="number", default_value=0, required=False,
                 description="Letterbox the 3D view into this many pixels tall, "

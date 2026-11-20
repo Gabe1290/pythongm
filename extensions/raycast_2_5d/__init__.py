@@ -25,7 +25,8 @@ plugin uses:
   ``draw_minimap``, ``draw_doom_hud`` moved out of core in Stage B3, plus
   ``set_billboard_rotation`` and ``set_floor_height``), with their HUD builders
   (hud.py) and the floor-height map for stairs (heights.py);
-* ``PLUGIN_ROOM_RENDERERS`` (below) — the room-render hook.
+* ``PLUGIN_ROOM_RENDERERS`` (below) — the room-render hook;
+* ``PLUGIN_FRAME_UPDATES`` (below) — climbing stairs (climbing.py).
 
 All raycast state (the camera config + the derived wall-edge caches) lives under
 ``room.extension_state["raycast"]`` (state.py, Stage B3b), so ``GameRoom`` holds
@@ -60,3 +61,13 @@ def render_room(room, screen):
 
 
 PLUGIN_ROOM_RENDERERS = [render_room]
+
+# Climbing stairs (docs/RAYCAST_STAIRS_PLAN.md, S8): remember where movers
+# stand before the frame moves them; after core has moved them and resolved
+# the walls, refuse climbs higher than max_step and ease the view height.
+from . import climbing  # noqa: E402
+
+PLUGIN_FRAME_UPDATES = [
+    (climbing.before_step, "before_step"),
+    (climbing.after_collision, "after_collision"),
+]
