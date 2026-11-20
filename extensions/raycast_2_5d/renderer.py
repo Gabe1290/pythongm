@@ -841,6 +841,14 @@ def render_raycast_view(room, screen: pygame.Surface):
         x_center = col_center * col_width
         x_left = int(x_center - sprite_w / 2)
         y_top_f = half_h - full_h / 2.0
+        if stairs:
+            # Stairs (S7): a billboard stands on the floor of its own cell,
+            # placed relative to it exactly as on flat ground (centred one eye
+            # height above the floor) -- so it moves by the difference between
+            # the camera's eye and that cell's "eye". Zero on flat ground.
+            b_floor = heights.get((int(bx // cell_size), int(by // cell_size)), 0.0)
+            y_top_f += (eye_z - (b_floor + RAYCAST_EYE_HEIGHT * cell_size)) \
+                * view_h / max(corrected, 1e-4)
         y0 = max(0, int(math.floor(y_top_f)))
         y1 = min(view_h, int(math.ceil(y_top_f + full_h)))
         vis_h = y1 - y0
@@ -875,8 +883,18 @@ def render_raycast_view(room, screen: pygame.Surface):
             if 0 <= screen_x < w:
                 col_idx = min(num_columns - 1, max(0, int(screen_x / col_width)))
                 if corrected < col_wall_dist[col_idx]:
-                    screen.blit(scaled, (screen_x, y0),
-                                (slice_x, off, 1, blit_h))
+                    col_h = blit_h
+                    if stairs:
+                        # Steps nearer than the billboard hide its lower rows:
+                        # draw only above the free-rows limit the column walk
+                        # had reached before this distance (S7).
+                        limit = _clip_before(stairs_layouts[col_idx]["occluders"],
+                                             corrected, view_h)
+                        if y0 + col_h > limit:
+                            col_h = max(0, limit - y0)
+                    if col_h > 0:
+                        screen.blit(scaled, (screen_x, y0),
+                                    (slice_x, off, 1, col_h))
             slice_x += 1
 
     # DOOM-bar letterbox: fill the reserved band below the 3D view opaque
@@ -885,6 +903,19 @@ def render_raycast_view(room, screen: pygame.Surface):
     # when view_h == h (the default full-height case).
     if view_h < h:
         screen.fill((0, 0, 0), (0, view_h, w, h - view_h))
+
+
+def _clip_before(occluders, dist, view_h):
+    """The first screen row hidden, in one column, for something at corrected
+    distance ``dist``: the column walk's free-rows limit after the last
+    crossing nearer than it (occluders run near -> far). view_h = nothing
+    nearer hides anything."""
+    limit = float(view_h)
+    for d, clip in occluders:
+        if d >= dist:
+            break
+        limit = clip
+    return _row(limit)
 
 
 def _layout_stairs_column(room, sf, ray_angle, cos_off):
