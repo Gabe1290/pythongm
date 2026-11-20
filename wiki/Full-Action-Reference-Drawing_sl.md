@@ -198,7 +198,7 @@ Nastavi pisavo in poravnavo za naslednje risanje besedila
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (3)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (18)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
 - [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)

@@ -301,7 +301,7 @@ Testar o valor de uma variável de instância ou global
 - [Jogo](Full-Action-Reference-Game_pt) (14)
 - [Grade](Full-Action-Reference-Grid_pt) (3)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (18)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (20)
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)

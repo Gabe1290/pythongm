@@ -278,6 +278,30 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <source>Send a Network Message (File Exchange)</source>
         <translation>Pošlji omrežno sporočilo (izmenjava datotek)</translation>
     </message>
+        <message>
+            <source>Height</source>
+            <translation>Višina</translation>
+        </message>
+        <message>
+            <source>Top Texture</source>
+            <translation>Tekstura zgoraj</translation>
+        </message>
+        <message>
+            <source>Side Texture</source>
+            <translation>Tekstura ob strani</translation>
+        </message>
+        <message>
+            <source>Wall Height</source>
+            <translation>Višina sten</translation>
+        </message>
+        <message>
+            <source>Max Step</source>
+            <translation>Največja stopnica</translation>
+        </message>
+        <message>
+            <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+            <translation>Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva njegov sprite, postanejo dvignjena tla te višine, narisana kot stopnica, na katero se igralec lahko povzpne (ali rob, s katerega lahko skoči). Uporabite v dogodku Create netrdnega objekta</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

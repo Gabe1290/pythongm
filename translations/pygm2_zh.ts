@@ -2123,6 +2123,30 @@ Do you want to save anyway?</source>
         <source>Send a Network Message (File Exchange)</source>
         <translation>发送网络消息 (文件交换)</translation>
     </message>
+    <message>
+        <source>Height</source>
+        <translation>高度</translation>
+    </message>
+    <message>
+        <source>Top Texture</source>
+        <translation>顶部纹理</translation>
+    </message>
+    <message>
+        <source>Side Texture</source>
+        <translation>侧面纹理</translation>
+    </message>
+    <message>
+        <source>Wall Height</source>
+        <translation>墙壁高度</translation>
+    </message>
+    <message>
+        <source>Max Step</source>
+        <translation>最大台阶</translation>
+    </message>
+    <message>
+        <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+        <translation>让此实例成为光线投射视图中的台阶：其精灵覆盖的网格单元变为该高度的抬高地面，绘制成玩家可以登上的台阶（或可以跳下的边缘）。在非实心对象的 Create 事件中使用</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

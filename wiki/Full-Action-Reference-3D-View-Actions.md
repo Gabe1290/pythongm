@@ -119,6 +119,8 @@ Draw a north-up minimap of the raycast room's walls, with a marker showing where
 | `mark_color` | Color | `#40e0ff` | Colour of the Mark Object dots; optional |
 | `mark_object_2` | Object | — | A second object to dot on, in its own colour; optional |
 | `mark_color_2` | Color | `#ff5050` | Colour of the Mark Object 2 dots; optional |
+| `show_trail` | Yes/No | No | Dot every grid cell the camera has already visited, so you can see where you've been; optional |
+| `trail_color` | Color | `#406080` | Colour of the visited-cell trail dots; optional |
 
 ### Enable Block World View
 
@@ -180,6 +182,8 @@ Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, fl
 | `ceiling_texture` | Sprite | — | Sprite cast onto the ceiling when no sky is set; optional |
 | `wall_textured` | Yes/No | Yes | Off forces flat wall colours even when a texture is set; optional |
 | `floor_cast_res` | Number | `4` | Floor-cast downsample (higher = faster + chunkier); optional |
+| `wall_height` | Number | `1.5` | Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them); optional |
+| `max_step` | Number | `12` | Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall; optional |
 | `viewport_height` | Number | `0` | Letterbox the 3D view into this many pixels tall, reserving the band below for a DOOM-style status bar (0 = full window height, unchanged); optional |
 
 ### Jump
@@ -271,6 +275,20 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | `index` | Number | `0` | Hotbar slot index, wrapping around at either end |
 | `relative` | Yes/No | No | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; optional |
 
+### Set Billboard Rotation
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_billboard_rotation` |
+| **Icon** | 🔄 |
+| **Category** | 3D View |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `frames` | Number | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Set Block Protection
 
 | Property | Value |
@@ -336,6 +354,22 @@ Set the instance's look direction for a raycast (first-person) camera — indepe
 |-----------|------|---------|-------|
 | `angle` | Number | `0` | Degrees (0=right, 90=up, 180=left, 270=down) |
 | `relative` | Yes/No | No | Add to the current facing angle instead of replacing it; optional |
+
+### Set Floor Height
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_floor_height` |
+| **Icon** | 🪜 |
+| **Category** | 3D View |
+
+Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `height` | Number | `8` | Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level) |
+| `top_texture` | Sprite | — | Sprite for the top of the step (blank = the floor texture); optional |
+| `side_texture` | Sprite | — | Sprite for the front of the step (blank = the wall texture); optional |
 
 ---
 

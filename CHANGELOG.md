@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Climbable stairs in the 2.5D (raycast) view.** A new **Set Floor Height**
+  action (3D View) turns a non-solid object into a step: the cells it covers
+  become raised floor, drawn as real steps — fronts, textured tops, walls
+  hidden behind them — with pickups and monsters standing on their own
+  floor. The player (and anything that moves) climbs steps up to **Max
+  Step** pixels, slides along higher ones and can walk off ledges; the view
+  rises and falls smoothly. New **Wall Height** and **Max Step** settings on
+  Enable Raycast View; two readable variables, `raycast_floor_z` and
+  `raycast_step_blocked`; the minimap shades raised cells. Works on desktop,
+  in the HTML5 export and in the Kivy (Android/iOS) export. New sample
+  **raycast_5** (*2.5 D — Level 5*, « Les escaliers »). Plan and proofs:
+  `docs/RAYCAST_STAIRS_PLAN.md`.
+- **Wall Height** for every raycast room: taller walls repeat their
+  texture instead of stretching it.
+
+### Fixed
+- **2.5D floors now line up with the walls.** The floor and ceiling were
+  drawn as if the eye were lower than the walls assumed, so floor tiles were
+  two-thirds of a cell wide and slid against the wall bases as you walked.
+- **Kivy (Android/iOS) exports: Begin Step and End Step events broke every
+  frame.** Their handlers were generated without the `dt` argument the scene
+  passes, so each call failed and the rest of that frame was skipped — in
+  `maze_4` and `treasure`, among others.
+
 ## [1.6.1] - 2026-11-18
 
 ### Fixed

@@ -22,7 +22,7 @@ PyGameMaker utilise des **préréglages** pour contrôler quels événements et 
 |------------|------------|-----------------|
 | [**Débutant**](Beginner-Preset_fr) | Nouveaux en développement de jeux | L'essentiel — mouvement, collisions, score, salles |
 | [**Intermédiaire**](Intermediate-Preset_fr) | Quelques connaissances | Ajoute vies, santé, son, alarmes, dessin |
-| **Avancé (Complet)** | Utilisateurs expérimentés | Tout — les 37 événements et 184 actions |
+| **Avancé (Complet)** | Utilisateurs expérimentés | Tout — les 37 événements et 186 actions |
 
 **Nouveaux utilisateurs:** Commencez avec le [Préréglage Débutant](Beginner-Preset_fr) pour apprendre les bases sans être submergé.
 
@@ -102,7 +102,7 @@ Déclencheurs qui exécutent des actions lorsque des conditions spécifiques se 
 Consultez la [Référence des Événements](Event-Reference_fr) pour la documentation complète.
 
 ### Actions
-Opérations effectuées quand les événements se déclenchent. **184** actions intégrées pour:
+Opérations effectuées quand les événements se déclenchent. **186** actions intégrées pour:
 - Mouvement et physique
 - Dessin et sprites
 - Score, vies et santé

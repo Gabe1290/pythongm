@@ -22,7 +22,7 @@ PyGameMaker uses **presets** to control which events and actions are available. 
 |--------|----------|----------|
 | [**Beginner**](Beginner-Preset) | New to game development | Essentials — movement, collisions, score, rooms |
 | [**Intermediate**](Intermediate-Preset) | Some experience | Adds lives, health, sound, alarms, drawing |
-| **Advanced (Full)** | Experienced users | Everything — all 37 events and 184 actions |
+| **Advanced (Full)** | Experienced users | Everything — all 37 events and 186 actions |
 
 **New users:** Start with the [Beginner Preset](Beginner-Preset) to learn the fundamentals without being overwhelmed.
 
@@ -102,7 +102,7 @@ Triggers that execute actions when specific conditions occur:
 See the [Event Reference](Event-Reference) for complete documentation.
 
 ### Actions
-Operations performed when events trigger. **184** built-in actions for:
+Operations performed when events trigger. **186** built-in actions for:
 - Movement and physics
 - Drawing and sprites
 - Score, lives, and health

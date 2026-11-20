@@ -4754,3 +4754,86 @@ NOTES_FR.update({
     "Variable that receives the reading": "Variable qui reçoit la mesure",
     "A number, an expression or quoted text": "Un nombre, une expression ou un texte entre guillemets",
 })
+
+
+# --- Raycast stairs (docs/RAYCAST_STAIRS_PLAN.md, S13) ---------------------
+ACTIONS_FR.update({
+    'set_floor_height': {'display': 'Définir la hauteur du sol', 'desc': "Fait de cette instance une MARCHE dans la vue raycast : les cases de la grille couvertes par son sprite deviennent un sol surélevé de cette hauteur, dessiné comme une marche que le joueur peut monter (ou un rebord d'où descendre). À utiliser dans l'événement Create d'un objet non solide"},
+})
+NOTES_FR.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Hauteur du sol en pixels de la salle, la même unité que x/y et Cell Size (0 = niveau du sol)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite du dessus de la marche (vide = la texture du sol)',
+    'Sprite for the front of the step (blank = the wall texture)': "Sprite de l'avant de la marche (vide = la texture des murs)",
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': "Hauteur des murs et du plafond, en cases (1.5 = habituel ; montez à 3 pour des escaliers et des plates-formes, afin d'avoir de la place au-dessus)",
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Plus haute marche, en pixels de la salle, que le joueur (et tout ce qui bouge) peut monter ; plus haut, elle bloque comme un mur',
+})
+ACTIONS_DE.update({
+    'set_floor_height': {'display': 'Bodenhöhe festlegen', 'desc': 'Macht diese Instanz in der Raycast-Ansicht zu einer STUFE: Die Rasterzellen, die ihr Sprite bedeckt, werden zu erhöhtem Boden dieser Höhe, gezeichnet als Stufe, die der Spieler hinaufsteigen kann (oder als Kante, von der er hinunterspringen kann). Im Create-Ereignis eines nicht soliden Objekts verwenden'},
+})
+NOTES_DE.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Bodenhöhe in Raumpixeln, dieselbe Einheit wie x/y und Cell Size (0 = Bodenniveau)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite für die Oberseite der Stufe (leer = die Bodentextur)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Sprite für die Vorderseite der Stufe (leer = die Wandtextur)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Höhe der Wände und der Decke in Rasterzellen (1.5 = üblich; für Treppen und Plattformen auf 3 erhöhen, damit darüber Platz bleibt)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Höchste Stufe in Raumpixeln, die der Spieler (und alles, was sich bewegt) hinaufsteigen kann; alles Höhere blockiert wie eine Wand',
+})
+ACTIONS_UK.update({
+    'set_floor_height': {'display': 'Задати висоту підлоги', 'desc': "Робить цей екземпляр СХОДИНКОЮ у вигляді raycast: клітинки сітки, які покриває його спрайт, стають піднятою підлогою цієї висоти й малюються як сходинка, на яку гравець може піднятися (або край, з якого можна зістрибнути). Використовуйте в події Create нетвердого об'єкта"},
+})
+NOTES_UK.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Висота підлоги в пікселях кімнати, та сама одиниця, що й x/y та Cell Size (0 = рівень підлоги)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Спрайт для верху сходинки (порожньо = текстура підлоги)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Спрайт для передньої частини сходинки (порожньо = текстура стін)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Висота стін і стелі в клітинках сітки (1.5 = звичайно; збільште до 3 для сходів і платформ, щоб над ними було місце)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Найвища сходинка в пікселях кімнати, на яку може піднятися гравець (і все, що рухається); вища блокує, як стіна',
+})
+ACTIONS_RU.update({
+    'set_floor_height': {'display': 'Задать высоту пола', 'desc': 'Делает этот экземпляр СТУПЕНЬКОЙ в виде raycast: клетки сетки, которые покрывает его спрайт, становятся приподнятым полом этой высоты и рисуются как ступенька, на которую игрок может подняться (или край, с которого можно спрыгнуть). Используйте в событии Create нетвёрдого объекта'},
+})
+NOTES_RU.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Высота пола в пикселях комнаты, та же единица, что x/y и Cell Size (0 = уровень пола)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Спрайт для верха ступеньки (пусто = текстура пола)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Спрайт для передней стороны ступеньки (пусто = текстура стен)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Высота стен и потолка в клетках сетки (1.5 = обычно; увеличьте до 3 для лестниц и платформ, чтобы над ними было место)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Самая высокая ступенька в пикселях комнаты, на которую может подняться игрок (и всё, что движется); более высокая блокирует, как стена',
+})
+ACTIONS_IT.update({
+    'set_floor_height': {'display': 'Imposta altezza del pavimento', 'desc': "Rende questa istanza un GRADINO nella vista raycast: le celle della griglia coperte dal suo sprite diventano pavimento rialzato di questa altezza, disegnato come un gradino che il giocatore può salire (o un bordo da cui scendere). Da usare nell'evento Create di un oggetto non solido"},
+})
+NOTES_IT.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Altezza del pavimento in pixel della stanza, la stessa unità di x/y e Cell Size (0 = livello del suolo)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite per la parte superiore del gradino (vuoto = la texture del pavimento)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Sprite per la parte frontale del gradino (vuoto = la texture dei muri)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': "Altezza dei muri e del soffitto, in celle della griglia (1.5 = normale; portala a 3 per scale e piattaforme, così c'è spazio sopra)",
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Gradino più alto, in pixel della stanza, che il giocatore (e tutto ciò che si muove) può salire; uno più alto blocca come un muro',
+})
+ACTIONS_ES.update({
+    'set_floor_height': {'display': 'Definir altura del suelo', 'desc': 'Convierte esta instancia en un ESCALÓN de la vista raycast: las casillas de la cuadrícula que cubre su sprite se convierten en suelo elevado de esta altura, dibujado como un escalón que el jugador puede subir (o un borde desde el que bajar). Úsala en el evento Create de un objeto no sólido'},
+})
+NOTES_ES.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Altura del suelo en píxeles de la sala, la misma unidad que x/y y Cell Size (0 = nivel del suelo)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite para la parte superior del escalón (vacío = la textura del suelo)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Sprite para la parte frontal del escalón (vacío = la textura de los muros)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Altura de los muros y del techo, en casillas de la cuadrícula (1.5 = lo habitual; súbela a 3 para escaleras y plataformas, así queda espacio encima)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Escalón más alto, en píxeles de la sala, que el jugador (y todo lo que se mueve) puede subir; uno más alto bloquea como un muro',
+})
+ACTIONS_PT.update({
+    'set_floor_height': {'display': 'Definir altura do piso', 'desc': 'Transforma esta instância num DEGRAU na vista raycast: as células da grelha cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido'},
+})
+NOTES_PT.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Altura do chão em píxeis da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite para o topo do degrau (vazio = a textura do chão)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Sprite para a frente do degrau (vazio = a textura das paredes)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Altura das paredes e do teto, em células da grelha (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Degrau mais alto, em píxeis da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede',
+})
+ACTIONS_SL.update({
+    'set_floor_height': {'display': 'Nastavi višino tal', 'desc': 'Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva njegov sprite, postanejo dvignjena tla te višine, narisana kot stopnica, na katero se igralec lahko povzpne (ali rob, s katerega lahko skoči). Uporabite v dogodku Create netrdnega objekta'},
+})
+NOTES_SL.update({
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Višina tal v slikovnih pikah sobe, ista enota kot x/y in Cell Size (0 = raven tal)',
+    'Sprite for the top of the step (blank = the floor texture)': 'Sprite za vrh stopnice (prazno = tekstura tal)',
+    'Sprite for the front of the step (blank = the wall texture)': 'Sprite za sprednjo stran stopnice (prazno = tekstura sten)',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Višina sten in stropa v celicah mreže (1.5 = običajno; za stopnice in ploščadi jo povečajte na 3, da je nad njimi prostor)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Najvišja stopnica v slikovnih pikah sobe, na katero se lahko povzpne igralec (in vse, kar se premika); višja ovira kot zid',
+})

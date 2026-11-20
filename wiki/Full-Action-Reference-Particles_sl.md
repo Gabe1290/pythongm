@@ -141,7 +141,7 @@ Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za 
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (3)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (18)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)

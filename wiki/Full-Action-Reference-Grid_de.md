@@ -61,7 +61,7 @@ Bewegung am Gitter stoppen, wenn keine Bewegungstaste gedrückt ist (ideal für 
 - [Spiel](Full-Action-Reference-Game_de) (14)
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (20)
 - [Zeichnen](Full-Action-Reference-Drawing_de) (11)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
 - [Partikel](Full-Action-Reference-Particles_de) (8)

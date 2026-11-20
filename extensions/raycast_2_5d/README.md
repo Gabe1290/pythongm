@@ -1,7 +1,7 @@
 # 2.5D Raycast View — a worked extension
 
 This folder is a real PyGameMaker feature that lives **outside** the core
-engine: the Doom/Wolfenstein-style first-person view the `raycast_1`–`raycast_4`
+engine: the Doom/Wolfenstein-style first-person view the `raycast_1`–`raycast_5`
 samples use. It is here to be read. If you want to see how someone adds a whole
 new way of drawing a room to an IDE — and export it to the web and Android too —
 open the files below top to bottom.
@@ -22,10 +22,12 @@ sky, and billboard sprites for pickups and monsters. The game's *logic*
 | `extension.json` | The manifest. Name, version, and `enabled: true`. Its presence is what marks this folder as an extension. |
 | `__init__.py` | The entry point. Declares the room-renderer hook and decides, per room, whether to claim the drawing. |
 | `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. The big file, ordinary Python. |
-| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`. |
+| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`, `set_floor_height`. |
 | `handlers.py` | The action **handlers** — what each of those does at runtime. |
 | `hud.py` | The minimap + DOOM-bar geometry builders (`build_minimap_commands`, `build_doom_hud_commands`), the single source the exports mirror. |
 | `state.py` | The per-room state helper — all raycast state lives under `room.extension_state["raycast"]`. |
+| `heights.py` | Stairs: the floor-height map built every frame from the step instances (`set_floor_height`), and the vertical model (eye height, wall height, texture tile). No pygame. |
+| `climbing.py` | Stairs: the climbing rule (`max_step`, sliding along ledges, eased view height) as two frame hooks (`PLUGIN_FRAME_UPDATES`). No pygame. |
 | `export_html5.js` | The **HTML5** port of the renderer + actions, injected into the exported `engine.js` (Stage C). |
 | `export_kivy.py` | The **Kivy** port: `SCENE_CODE` (renderer), `BASE_OBJECT_CODE` (`_draw_minimap`), and `ACTION_CODEGEN` (the action codegen), injected into the Kivy export. |
 | `README.md` | This file. |
@@ -89,6 +91,22 @@ Later stages moved everything that used to be in core into this folder:
   `tests/test_raycast_export_parity.py` still pins the three ports to the same
   numbers; `tests/test_export_raycast_ownership.py` guards that none of it
   leaks back into an export engine.
+
+## Stairs
+
+A room with at least one **step** (a non-solid instance that ran
+`set_floor_height`) is drawn by a front-to-back *column walk* instead of "one
+wall strip per column": the ray keeps going past steps, each rise in floor
+height is drawn as a riser, a drop hides the lower floor behind its edge, and
+the wall that stops the ray is drawn only down to what stands in front of it.
+The floor of such a room is cast column by column, each pixel at its own
+tread's height. A room without steps never takes this path — it renders
+byte-for-byte as before. Climbing (`climbing.py`) is a pure frame hook: it
+undoes a move whose floor rises more than `max_step`, one axis at a time.
+The HTML5 and Kivy ports follow the same structure and are pinned by
+`tests/test_html5_raycast_stairs.py` and `tests/test_kivy_raycast_stairs.py`.
+The design, the decisions and the proofs are in
+`docs/RAYCAST_STAIRS_PLAN.md`; the `raycast_5` sample is built around it.
 
 ## What is deliberately NOT here
 

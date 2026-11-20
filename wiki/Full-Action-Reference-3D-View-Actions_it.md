@@ -119,6 +119,8 @@ Disegna una minimappa orientata a nord dei muri della stanza raycast, con un ind
 | `mark_color` | Colore | `#40e0ff` | Colore dei punti di «Segna oggetto»; facoltativo |
 | `mark_object_2` | Oggetto | — | Un secondo oggetto da segnare, con un colore proprio; facoltativo |
 | `mark_color_2` | Colore | `#ff5050` | Colore dei punti di «Segna oggetto 2»; facoltativo |
+| `show_trail` | Sì/No | No | Dot every grid cell the camera has already visited, so you can see where you've been; facoltativo |
+| `trail_color` | Colore | `#406080` | Colour of the visited-cell trail dots; facoltativo |
 
 ### Attiva vista Block World
 
@@ -180,6 +182,8 @@ Renderizza la stanza come vista 3D in prima persona in stile Doom/Wolfenstein (m
 | `ceiling_texture` | Sprite | — | Sprite proiettato sul soffitto quando non è impostato un cielo; facoltativo |
 | `wall_textured` | Sì/No | Sì | Disattivo forza colori uniformi dei muri anche quando è impostata una texture; facoltativo |
 | `floor_cast_res` | Numero | `4` | Sottocampionamento del pavimento proiettato (più alto = più veloce + più grezzo); facoltativo |
+| `wall_height` | Numero | `1.5` | Altezza dei muri e del soffitto, in celle della griglia (1.5 = normale; portala a 3 per scale e piattaforme, così c'è spazio sopra); facoltativo |
+| `max_step` | Numero | `12` | Gradino più alto, in pixel della stanza, che il giocatore (e tutto ciò che si muove) può salire; uno più alto blocca come un muro; facoltativo |
 | `viewport_height` | Numero | `0` | Riduci la vista 3D a questa altezza in pixel (letterbox), riservando la fascia sottostante per una barra di stato in stile DOOM (0 = altezza piena della finestra, invariato); facoltativo |
 
 ### Salta
@@ -271,6 +275,20 @@ Sceglie quale blocco è selezionato nella barra rapida, con cui «Posiziona bloc
 | `index` | Numero | `0` | Indice della casella nella barra rapida, che riparte da capo a entrambe le estremità |
 | `relative` | Sì/No | No | Attivo = aggiungere alla casella corrente, per scorrere con [ ] o con la rotella; disattivo = andarci direttamente; facoltativo |
 
+### Set Billboard Rotation
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `set_billboard_rotation` |
+| **Icona** | 🔄 |
+| **Categoria** | Vista 3D |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `frames` | Numero | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Imposta protezione blocchi
 
 | Proprietà | Valore |
@@ -336,6 +354,22 @@ Imposta la direzione dello sguardo dell'istanza per una camera raycast (in prima
 |-----------|------|---------|-------|
 | `angle` | Numero | `0` | Gradi (0=destra, 90=su, 180=sinistra, 270=giù) |
 | `relative` | Sì/No | No | Aggiungi all'angolo di sguardo attuale invece di sostituirlo; facoltativo |
+
+### Imposta altezza del pavimento
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `set_floor_height` |
+| **Icona** | 🪜 |
+| **Categoria** | Vista 3D |
+
+Rende questa istanza un GRADINO nella vista raycast: le celle della griglia coperte dal suo sprite diventano pavimento rialzato di questa altezza, disegnato come un gradino che il giocatore può salire (o un bordo da cui scendere). Da usare nell'evento Create di un oggetto non solido
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `height` | Numero | `8` | Altezza del pavimento in pixel della stanza, la stessa unità di x/y e Cell Size (0 = livello del suolo) |
+| `top_texture` | Sprite | — | Sprite per la parte superiore del gradino (vuoto = la texture del pavimento); facoltativo |
+| `side_texture` | Sprite | — | Sprite per la parte frontale del gradino (vuoto = la texture dei muri); facoltativo |
 
 ---
 

@@ -278,6 +278,30 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <source>Send a Network Message (File Exchange)</source>
         <translation>Отправить сетевое сообщение (обмен файлами)</translation>
     </message>
+        <message>
+            <source>Height</source>
+            <translation>Высота</translation>
+        </message>
+        <message>
+            <source>Top Texture</source>
+            <translation>Текстура сверху</translation>
+        </message>
+        <message>
+            <source>Side Texture</source>
+            <translation>Текстура сбоку</translation>
+        </message>
+        <message>
+            <source>Wall Height</source>
+            <translation>Высота стен</translation>
+        </message>
+        <message>
+            <source>Max Step</source>
+            <translation>Макс. ступенька</translation>
+        </message>
+        <message>
+            <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+            <translation>Делает этот экземпляр СТУПЕНЬКОЙ в виде raycast: клетки сетки, которые покрывает его спрайт, становятся приподнятым полом этой высоты и рисуются как ступенька, на которую игрок может подняться (или край, с которого можно спрыгнуть). Используйте в событии Create нетвёрдого объекта</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

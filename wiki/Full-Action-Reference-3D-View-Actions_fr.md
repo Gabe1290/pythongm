@@ -119,6 +119,8 @@ Dessiner une mini-carte orientée nord des murs de la salle en lancer de rayons,
 | `mark_color` | Couleur | `#40e0ff` | Couleur des points de « Marquer l'objet »; optionnel |
 | `mark_object_2` | Objet | — | Un deuxième objet à marquer, avec sa propre couleur; optionnel |
 | `mark_color_2` | Couleur | `#ff5050` | Couleur des points de « Marquer l'objet 2 »; optionnel |
+| `show_trail` | Oui/Non | Non | Dot every grid cell the camera has already visited, so you can see where you've been; optionnel |
+| `trail_color` | Couleur | `#406080` | Colour of the visited-cell trail dots; optionnel |
 
 ### Activer la vue Block World
 
@@ -180,6 +182,8 @@ Afficher la salle en vue 3D à la première personne façon Doom/Wolfenstein (mu
 | `ceiling_texture` | Sprite | — | Sprite projeté sur le plafond lorsqu'aucun ciel n'est défini; optionnel |
 | `wall_textured` | Oui/Non | Oui | Désactivé force des couleurs de mur unies même si une texture est définie; optionnel |
 | `floor_cast_res` | Nombre | `4` | Sous-échantillonnage du sol projeté (plus élevé = plus rapide + plus grossier); optionnel |
+| `wall_height` | Nombre | `1.5` | Hauteur des murs et du plafond, en cases (1.5 = habituel ; montez à 3 pour des escaliers et des plates-formes, afin d'avoir de la place au-dessus); optionnel |
+| `max_step` | Nombre | `12` | Plus haute marche, en pixels de la salle, que le joueur (et tout ce qui bouge) peut monter ; plus haut, elle bloque comme un mur; optionnel |
 | `viewport_height` | Nombre | `0` | Réduire la vue 3D à cette hauteur en pixels (format boîte aux lettres), en réservant la bande inférieure pour une barre d'état façon DOOM (0 = pleine hauteur de la fenêtre, inchangé); optionnel |
 
 ### Sauter
@@ -271,6 +275,20 @@ Choisit le bloc sélectionné dans la barre d'accès rapide, avec lequel « Pose
 | `index` | Nombre | `0` | Numéro de case dans la barre d'accès rapide, qui reboucle aux deux extrémités |
 | `relative` | Oui/Non | Non | Activé = ajouter à la case actuelle, pour faire défiler avec [ ] ou la molette ; désactivé = y aller directement; optionnel |
 
+### Set Billboard Rotation
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `set_billboard_rotation` |
+| **Icône** | 🔄 |
+| **Catégorie** | Vue 3D |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `frames` | Nombre | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Définir la protection des blocs
 
 | Propriété | Valeur |
@@ -336,6 +354,22 @@ Définir la direction du regard de l'instance pour une caméra à lancer de rayo
 |-----------|------|---------|-------|
 | `angle` | Nombre | `0` | Degrés (0=droite, 90=haut, 180=gauche, 270=bas) |
 | `relative` | Oui/Non | Non | Ajouter à l'angle de vue actuel au lieu de le remplacer; optionnel |
+
+### Définir la hauteur du sol
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `set_floor_height` |
+| **Icône** | 🪜 |
+| **Catégorie** | Vue 3D |
+
+Fait de cette instance une MARCHE dans la vue raycast : les cases de la grille couvertes par son sprite deviennent un sol surélevé de cette hauteur, dessiné comme une marche que le joueur peut monter (ou un rebord d'où descendre). À utiliser dans l'événement Create d'un objet non solide
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `height` | Nombre | `8` | Hauteur du sol en pixels de la salle, la même unité que x/y et Cell Size (0 = niveau du sol) |
+| `top_texture` | Sprite | — | Sprite du dessus de la marche (vide = la texture du sol); optionnel |
+| `side_texture` | Sprite | — | Sprite de l'avant de la marche (vide = la texture des murs); optionnel |
 
 ---
 

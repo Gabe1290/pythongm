@@ -250,7 +250,7 @@ Couper le haut-parleur et abandonner les sons en attente
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (20)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)

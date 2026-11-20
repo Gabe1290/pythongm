@@ -59,7 +59,7 @@ Konfiguriraj pogled kamere: kateri del sobe prikazuje, kje se izriše na zaslonu
 - [Igra](Full-Action-Reference-Game_sl) (14)
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (3)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (18)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)

@@ -119,6 +119,8 @@ Desenhar um minimapa orientado ao norte dos muros da sala raycast, com um marcad
 | `mark_color` | Cor | `#40e0ff` | Cor dos pontos de «Marcar objeto»; opcional |
 | `mark_object_2` | Objeto | — | Um segundo objeto a marcar, com cor própria; opcional |
 | `mark_color_2` | Cor | `#ff5050` | Cor dos pontos de «Marcar objeto 2»; opcional |
+| `show_trail` | Sim/Não | Não | Dot every grid cell the camera has already visited, so you can see where you've been; opcional |
+| `trail_color` | Cor | `#406080` | Colour of the visited-cell trail dots; opcional |
 
 ### Ativar vista Block World
 
@@ -180,6 +182,8 @@ Renderizar a sala como uma vista 3D em primeira pessoa no estilo Doom/Wolfenstei
 | `ceiling_texture` | Sprite | — | Sprite projetado no teto quando não há céu; opcional |
 | `wall_textured` | Sim/Não | Sim | Desativado força cores uniformes dos muros mesmo quando há uma textura; opcional |
 | `floor_cast_res` | Número | `4` | Subamostragem do chão projetado (maior = mais rápido + mais grosseiro); opcional |
+| `wall_height` | Número | `1.5` | Altura das paredes e do teto, em células da grelha (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima); opcional |
+| `max_step` | Número | `12` | Degrau mais alto, em píxeis da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede; opcional |
 | `viewport_height` | Número | `0` | Reduz a vista 3D para esta altura em pixels (letterbox), reservando a faixa inferior para uma barra de status no estilo DOOM (0 = altura total da janela, inalterado); opcional |
 
 ### Saltar
@@ -271,6 +275,20 @@ Escolhe qual o bloco selecionado na barra de acesso rápido, com o qual «Coloca
 | `index` | Número | `0` | Índice do espaço na barra de acesso rápido, que dá a volta em ambas as pontas |
 | `relative` | Sim/Não | Não | Ligado = somar ao espaço atual, para percorrer com [ ] ou com a roda do rato; desligado = ir diretamente para ele; opcional |
 
+### Set Billboard Rotation
+
+| Propriedade | Valor |
+|----------|-------|
+| **Nome** | `set_billboard_rotation` |
+| **Ícone** | 🔄 |
+| **Categoria** | Vista 3D |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parâmetro | Tipo | Padrão | Notas |
+|-----------|------|---------|-------|
+| `frames` | Número | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Definir proteção de blocos
 
 | Propriedade | Valor |
@@ -336,6 +354,22 @@ Definir a direção do olhar da instância para uma câmera raycast (em primeira
 |-----------|------|---------|-------|
 | `angle` | Número | `0` | Graus (0=direita, 90=cima, 180=esquerda, 270=baixo) |
 | `relative` | Sim/Não | Não | Somar ao ângulo de visão atual em vez de substituí-lo; opcional |
+
+### Definir altura do piso
+
+| Propriedade | Valor |
+|----------|-------|
+| **Nome** | `set_floor_height` |
+| **Ícone** | 🪜 |
+| **Categoria** | Vista 3D |
+
+Transforma esta instância num DEGRAU na vista raycast: as células da grelha cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido
+
+| Parâmetro | Tipo | Padrão | Notas |
+|-----------|------|---------|-------|
+| `height` | Número | `8` | Altura do chão em píxeis da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão) |
+| `top_texture` | Sprite | — | Sprite para o topo do degrau (vazio = a textura do chão); opcional |
+| `side_texture` | Sprite | — | Sprite para a frente do degrau (vazio = a textura das paredes); opcional |
 
 ---
 

@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-Ta stran navaja vseh **184** dejanj, ki so na voljo v PyGameMaker, natanko tako, kot so prikazana v izbirniku dejanj IDE (vključno z vtičnikom Audio in razširitvijo Pogled 3D). Dejanja so ukazi, ki se izvedejo, ko se sproži dogodek.
+Ta stran navaja vseh **186** dejanj, ki so na voljo v PyGameMaker, natanko tako, kot so prikazana v izbirniku dejanj IDE (vključno z vtičnikom Audio in razširitvijo Pogled 3D). Dejanja so ukazi, ki se izvedejo, ko se sproži dogodek.
 
 ## Kategorije
 
@@ -18,7 +18,7 @@ Ta stran navaja vseh **184** dejanj, ki so na voljo v PyGameMaker, natanko tako,
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (3)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (18)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)

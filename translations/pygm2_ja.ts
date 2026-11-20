@@ -2299,6 +2299,30 @@ Do you want to save anyway?</source>
         <source>Send a Network Message (File Exchange)</source>
         <translation>ネットワークメッセージを送る (ファイル交換)</translation>
     </message>
+    <message>
+        <source>Height</source>
+        <translation>高さ</translation>
+    </message>
+    <message>
+        <source>Top Texture</source>
+        <translation>上面テクスチャ</translation>
+    </message>
+    <message>
+        <source>Side Texture</source>
+        <translation>側面テクスチャ</translation>
+    </message>
+    <message>
+        <source>Wall Height</source>
+        <translation>壁の高さ</translation>
+    </message>
+    <message>
+        <source>Max Step</source>
+        <translation>最大段差</translation>
+    </message>
+    <message>
+        <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+        <translation>このインスタンスをレイキャスト表示の段にします。スプライトが覆うグリッドのセルがこの高さの床になり、プレイヤーが上れる段（または飛び降りられる縁）として描かれます。ソリッドでないオブジェクトの Create イベントで使います</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

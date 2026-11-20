@@ -141,7 +141,7 @@
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Сетка](Full-Action-Reference-Grid_ru) (3)
 - [Виды](Full-Action-Reference-Views_ru) (2)
-- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (18)
+- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (20)
 - [Рисование](Full-Action-Reference-Drawing_ru) (11)
 - [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
 - [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_ru) (5)

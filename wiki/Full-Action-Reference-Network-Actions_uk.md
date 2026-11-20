@@ -344,7 +344,7 @@ Stage a variable to publish to everyone. It takes effect once you call "End Turn
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (3)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
-- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (18)
+- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (20)
 - [Малювання](Full-Action-Reference-Drawing_uk) (11)
 - [Частки](Full-Action-Reference-Particles_uk) (8)
 - [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_uk) (5)

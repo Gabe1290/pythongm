@@ -119,6 +119,8 @@ Eine nach Norden ausgerichtete Minikarte der Wände des Raycast-Raums zeichnen, 
 | `mark_color` | Farbe | `#40e0ff` | Farbe der Punkte von „Objekt markieren“; optional |
 | `mark_object_2` | Objekt | — | Ein zweites Objekt, das in einer eigenen Farbe als Punkt erscheint; optional |
 | `mark_color_2` | Farbe | `#ff5050` | Farbe der Punkte von „Objekt 2 markieren“; optional |
+| `show_trail` | Ja/Nein | Nein | Dot every grid cell the camera has already visited, so you can see where you've been; optional |
+| `trail_color` | Farbe | `#406080` | Colour of the visited-cell trail dots; optional |
 
 ### Block-World-Ansicht aktivieren
 
@@ -180,6 +182,8 @@ Den Raum als First-Person-3D-Ansicht im Doom/Wolfenstein-Stil (Wände, Himmel, B
 | `ceiling_texture` | Sprite | — | Auf die Decke projiziertes Sprite, wenn kein Himmel gesetzt ist; optional |
 | `wall_textured` | Ja/Nein | Ja | Aus erzwingt einfarbige Wandfarben, auch wenn eine Textur gesetzt ist; optional |
 | `floor_cast_res` | Zahl | `4` | Boden-Downsampling (höher = schneller + grobkörniger); optional |
+| `wall_height` | Zahl | `1.5` | Höhe der Wände und der Decke in Rasterzellen (1.5 = üblich; für Treppen und Plattformen auf 3 erhöhen, damit darüber Platz bleibt); optional |
+| `max_step` | Zahl | `12` | Höchste Stufe in Raumpixeln, die der Spieler (und alles, was sich bewegt) hinaufsteigen kann; alles Höhere blockiert wie eine Wand; optional |
 | `viewport_height` | Zahl | `0` | Die 3D-Ansicht auf diese Pixelhöhe verkleinern (Letterbox) und das Band darunter für eine DOOM-Statusleiste reservieren (0 = volle Fensterhöhe, unverändert); optional |
 
 ### Springen
@@ -271,6 +275,20 @@ Wählt, welcher Block in der Schnellzugriffsleiste ausgewählt ist, damit „Blo
 | `index` | Zahl | `0` | Platznummer in der Schnellzugriffsleiste, umlaufend an beiden Enden |
 | `relative` | Ja/Nein | Nein | Ein = zur aktuellen Platznummer addieren, für ein Durchblättern mit [ ] oder dem Mausrad; aus = direkt dorthin springen; optional |
 
+### Set Billboard Rotation
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `set_billboard_rotation` |
+| **Symbol** | 🔄 |
+| **Kategorie** | 3D-Ansicht |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `frames` | Zahl | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Blockschutz festlegen
 
 | Eigenschaft | Wert |
@@ -336,6 +354,22 @@ Die Blickrichtung der Instanz für eine Raycast-Kamera (First-Person) festlegen 
 |-----------|------|---------|-------|
 | `angle` | Zahl | `0` | Grad (0=rechts, 90=oben, 180=links, 270=unten) |
 | `relative` | Ja/Nein | Nein | Zum aktuellen Blickwinkel addieren, statt ihn zu ersetzen; optional |
+
+### Bodenhöhe festlegen
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `set_floor_height` |
+| **Symbol** | 🪜 |
+| **Kategorie** | 3D-Ansicht |
+
+Macht diese Instanz in der Raycast-Ansicht zu einer STUFE: Die Rasterzellen, die ihr Sprite bedeckt, werden zu erhöhtem Boden dieser Höhe, gezeichnet als Stufe, die der Spieler hinaufsteigen kann (oder als Kante, von der er hinunterspringen kann). Im Create-Ereignis eines nicht soliden Objekts verwenden
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `height` | Zahl | `8` | Bodenhöhe in Raumpixeln, dieselbe Einheit wie x/y und Cell Size (0 = Bodenniveau) |
+| `top_texture` | Sprite | — | Sprite für die Oberseite der Stufe (leer = die Bodentextur); optional |
+| `side_texture` | Sprite | — | Sprite für die Vorderseite der Stufe (leer = die Wandtextur); optional |
 
 ---
 

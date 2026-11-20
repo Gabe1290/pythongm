@@ -2058,6 +2058,30 @@ Deseja salvar mesmo assim?</translation>
         <source>Send a Network Message (File Exchange)</source>
         <translation>Enviar mensagem de rede (troca de ficheiros)</translation>
     </message>
+    <message>
+        <source>Height</source>
+        <translation>Altura</translation>
+    </message>
+    <message>
+        <source>Top Texture</source>
+        <translation>Textura superior</translation>
+    </message>
+    <message>
+        <source>Side Texture</source>
+        <translation>Textura lateral</translation>
+    </message>
+    <message>
+        <source>Wall Height</source>
+        <translation>Altura das paredes</translation>
+    </message>
+    <message>
+        <source>Max Step</source>
+        <translation>Degrau máximo</translation>
+    </message>
+    <message>
+        <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+        <translation>Transforma esta instância num DEGRAU na vista raycast: as células da grelha cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

@@ -119,6 +119,8 @@ Dibujar un minimapa orientado al norte de los muros de la sala raycast, con un m
 | `mark_color` | Color | `#40e0ff` | Color de los puntos de «Marcar objeto»; opcional |
 | `mark_object_2` | Objeto | — | Un segundo objeto que se marca con un color propio; opcional |
 | `mark_color_2` | Color | `#ff5050` | Color de los puntos de «Marcar objeto 2»; opcional |
+| `show_trail` | Sí/No | No | Dot every grid cell the camera has already visited, so you can see where you've been; opcional |
+| `trail_color` | Color | `#406080` | Colour of the visited-cell trail dots; opcional |
 
 ### Activar vista Block World
 
@@ -180,6 +182,8 @@ Renderizar la sala como una vista 3D en primera persona al estilo Doom/Wolfenste
 | `ceiling_texture` | Sprite | — | Sprite proyectado sobre el techo cuando no hay cielo; opcional |
 | `wall_textured` | Sí/No | Sí | Desactivado fuerza colores uniformes de muros incluso cuando hay una textura; opcional |
 | `floor_cast_res` | Número | `4` | Submuestreo del suelo proyectado (mayor = más rápido + más tosco); opcional |
+| `wall_height` | Número | `1.5` | Altura de los muros y del techo, en casillas de la cuadrícula (1.5 = lo habitual; súbela a 3 para escaleras y plataformas, así queda espacio encima); opcional |
+| `max_step` | Número | `12` | Escalón más alto, en píxeles de la sala, que el jugador (y todo lo que se mueve) puede subir; uno más alto bloquea como un muro; opcional |
 | `viewport_height` | Número | `0` | Reduce la vista 3D a esta altura en píxeles (letterbox), reservando la franja inferior para una barra de estado al estilo DOOM (0 = altura completa de la ventana, sin cambios); opcional |
 
 ### Saltar
@@ -271,6 +275,20 @@ Elige qué bloque tiene seleccionado la barra de acceso rápido, para que «Colo
 | `index` | Número | `0` | Índice de la casilla de la barra, que da la vuelta en ambos extremos |
 | `relative` | Sí/No | No | Activado = sumar a la casilla actual, para ir pasando con [ ] o con la rueda del ratón; desactivado = saltar directamente a ella; opcional |
 
+### Set Billboard Rotation
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_billboard_rotation` |
+| **Icono** | 🔄 |
+| **Categoría** | Vista 3D |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `frames` | Número | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Definir protección de bloques
 
 | Propiedad | Valor |
@@ -336,6 +354,22 @@ Establecer la dirección de mirada de la instancia para una cámara raycast (en 
 |-----------|------|---------|-------|
 | `angle` | Número | `0` | Grados (0=derecha, 90=arriba, 180=izquierda, 270=abajo) |
 | `relative` | Sí/No | No | Sumar al ángulo de mirada actual en lugar de reemplazarlo; opcional |
+
+### Definir altura del suelo
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_floor_height` |
+| **Icono** | 🪜 |
+| **Categoría** | Vista 3D |
+
+Convierte esta instancia en un ESCALÓN de la vista raycast: las casillas de la cuadrícula que cubre su sprite se convierten en suelo elevado de esta altura, dibujado como un escalón que el jugador puede subir (o un borde desde el que bajar). Úsala en el evento Create de un objeto no sólido
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `height` | Número | `8` | Altura del suelo en píxeles de la sala, la misma unidad que x/y y Cell Size (0 = nivel del suelo) |
+| `top_texture` | Sprite | — | Sprite para la parte superior del escalón (vacío = la textura del suelo); opcional |
+| `side_texture` | Sprite | — | Sprite para la parte frontal del escalón (vacío = la textura de los muros); opcional |
 
 ---
 

@@ -535,14 +535,33 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   Writing the guide caught two wrong "things to tweak" claims (fixed before
   commit). Level fix found by playing: the goal first sat one row off the
   gallery path.
-- [ ] **S13 — Docs and translations.** Extension `README.md`; the new
-  parameter strings (action display names are done with their unit, as S3
-  did) in all ten languages' `.ts` (split files for
-  de/it/ru/sl/uk, monolithic for the rest — re-derive per context, don't
-  assume); `wiki/3D-View.md` + `_fr` (other languages fall back, as before);
-  regenerate the action reference with `tools/gen_action_reference.py`
-  (force all extensions on for that process on this machine) and add the
-  localized strings to `tools/action_ref_i18n.py`; CHANGELOG.
+- [x] **S13 — Docs and translations.** `HASH_S13` (2026-11-20). The five
+  new parameter labels (Height, Top Texture, Side Texture, Wall Height, Max
+  Step) and Set Floor Height's description translated in the ten shipped
+  languages in the `ActionConfigDialog` context (the configure dialog passes
+  labels and the description through `tr()`), `.qm` recompiled,
+  `tests/test_raycast_stairs_i18n.py` resolving all six through the real
+  LanguageManager. (No OTHER raycast parameter label is translated in any
+  language -- an existing gap, left as is.) `wiki/3D-View.md` + `_fr`: a
+  "Stairs and platforms" section, Set Floor Height and Set Billboard Rotation
+  in the actions table, `wall_height`/`max_step`, and two stale claims fixed
+  (walls are rebuilt every frame since 2026-10-06; there are more than "four
+  actions"). Action reference regenerated in nine languages with every
+  extension forced on (`tools/action_ref_i18n.py` gained the stairs strings
+  in eight): 184 → 186 actions -- `set_floor_height` and
+  `set_billboard_rotation`, which had never been regenerated in (it still
+  falls back to English in the eight other languages). Extension README
+  (Stairs section, `heights.py`/`climbing.py`), CHANGELOG `[Unreleased]`,
+  `docs/RELEASE_QA_CHECKLIST.md` §8 (raycast_5: how climbing feels, browser,
+  phone).
+
+**Plan status (2026-11-20): S0–S13 all done.** Still needs human eyes and
+hands: how climbing *feels* (2 px/frame easing, 12-px Max Step), stairs in a
+real browser by a person, and on an Android phone. Not done, by design (see
+Non-goals): pitch, jumping, slopes, per-area ceilings. Possible follow-ups
+noticed on the way: translate the other raycast parameter labels; the
+`set_billboard_rotation` action-reference strings; the `maze_4` real-Kivy
+worker run that does not finish within 240 s.
 
 Optional, only on request: a tutorial lesson 15 following
 `docs/RAYCAST_TUTORIALS_PLAN.md`'s format, and the teacher-resource handouts.

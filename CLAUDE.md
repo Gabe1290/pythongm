@@ -2734,3 +2734,30 @@ loudness (AMPLITUDE 4000, a guess like the micro:bit's), how the jingles sound, 
 Desktop only; Thymio has no HTML5/Kivy renderer. `audio.forget()` must stop the voices or a looping tone leaks into
 the next test. PDF/ODT of all sheets are committed in `docs/thymio_fiches/{pdf,odt}` (the ODT generator never
 overwrites: delete an ODT to regenerate it).
+
+**2026-11-20 — Climbable stairs in the 2.5D view (plan `docs/RAYCAST_STAIRS_PLAN.md`,
+S0–S13 all done).** A non-solid object with **Set Floor Height** in its Create event
+is a step; the raycast renderer switches, per room, from one wall hit per column to a
+front-to-back *column walk* (risers, treads cast column-major at their own height,
+walls clipped, billboards lifted/clipped) -- a room with NO step keeps the old code
+byte-for-byte (a 768-frame old-vs-new proof was re-run after every unit). Climbing is
+a pure extension frame hook (`climbing.py`: per-axis undo above `max_step`, eased
+view, `raycast_floor_z` / `raycast_step_blocked` on every mover). Ported to HTML5
+(verified in headless Chromium, parity to 1e-12) and Kivy (stub harness + real Kivy);
+sample `raycast_5`. Also fixed on the way: the floor/ceiling eye-height mismatch
+(S1), Kivy Begin/End Step handlers missing `dt` (`016f5424` -- every frame aborted
+in exports using those events), and `tests/_real_kivy_game.py` reading
+`export_as_image()` pixels upside down.
+- **Landmines:** (1) reordering a float expression (`* (view_h / d)` vs
+  `* view_h / d`, `a // b` vs `floor(a / b)`) changed pixels -- the identity proofs
+  caught it; keep the original expressions. (2) HTML5's `registerFrameUpdate(fn,
+  phase)` now has an `'after_collision'` phase; Kivy has only the after-collision
+  `_ext_update__*` hook, so its climbing compares against the previous frame's
+  snapshot. (3) **Browser tests run on this Linux box** without touching the
+  project venv: `pip install --target <scratch>/pw312 --python-version 3.12
+  --only-binary=:all: playwright` from any pip, `playwright install chromium`, then
+  `PYTHONPATH=<scratch>/pw312` -- the micro:bit browser tests run that way too.
+  `test_html5_multiplayer_owned_avatar.py::test_losing_the_host_keeps_the_players_own_avatar`
+  is flaky here (real WebSocket close; fails ~1 in 5, also before these changes).
+  (4) `export_as_image().texture.pixels` is TOP-down; `Fbo.pixels` is bottom-up.
+- **Needs human eyes:** how climbing feels; stairs in a real browser and on a phone.

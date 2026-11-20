@@ -119,6 +119,8 @@ Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki pri
 | `mark_color` | Barva | `#40e0ff` | Barva pik iz »Označi objekt«; neobvezno |
 | `mark_object_2` | Predmet | — | Drug objekt, ki se označi s svojo barvo; neobvezno |
 | `mark_color_2` | Barva | `#ff5050` | Barva pik iz »Označi objekt 2«; neobvezno |
+| `show_trail` | Da/Ne | Ne | Dot every grid cell the camera has already visited, so you can see where you've been; neobvezno |
+| `trail_color` | Barva | `#406080` | Colour of the visited-cell trail dots; neobvezno |
 
 ### Vklopi pogled Block World
 
@@ -180,6 +182,8 @@ Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, 
 | `ceiling_texture` | Sprite | — | Sprite, projiciran na strop, ko nebo ni nastavljeno; neobvezno |
 | `wall_textured` | Da/Ne | Da | Izklop vsili enotne barve sten, tudi ko je tekstura nastavljena; neobvezno |
 | `floor_cast_res` | Število | `4` | Podvzorčenje projiciranih tal (višje = hitreje + bolj grobo); neobvezno |
+| `wall_height` | Število | `1.5` | Višina sten in stropa v celicah mreže (1.5 = običajno; za stopnice in ploščadi jo povečajte na 3, da je nad njimi prostor); neobvezno |
+| `max_step` | Število | `12` | Najvišja stopnica v slikovnih pikah sobe, na katero se lahko povzpne igralec (in vse, kar se premika); višja ovira kot zid; neobvezno |
 | `viewport_height` | Število | `0` | Skrči 3D-pogled na to višino v pikslih (letterbox), pri čemer se pod njim rezervira pas za vrstico stanja v slogu DOOM (0 = polna višina okna, nespremenjeno); neobvezno |
 
 ### Skoči
@@ -271,6 +275,20 @@ Izbere, kateri blok je izbran v vrstici za hiter dostop in s katerim bo gradilo 
 | `index` | Število | `0` | Zaporedna številka mesta v vrstici za hiter dostop, ki se na obeh koncih ovije |
 | `relative` | Da/Ne | Ne | Vklopljeno = prišteje trenutnemu mestu, za listanje s [ ] ali kolescem miške; izklopljeno = skoči neposredno nanj; neobvezno |
 
+### Set Billboard Rotation
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_billboard_rotation` |
+| **Ikona** | 🔄 |
+| **Kategorija** | Pogled 3D |
+
+Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `frames` | Število | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+
 ### Nastavi zaščito blokov
 
 | Lastnost | Vrednost |
@@ -336,6 +354,22 @@ Nastavi smer pogleda instance za kamero raycast (iz prve osebe) — neodvisno od
 |-----------|------|---------|-------|
 | `angle` | Število | `0` | Stopinje (0=desno, 90=gor, 180=levo, 270=dol) |
 | `relative` | Da/Ne | Ne | Prištej trenutnemu kotu pogleda namesto zamenjave; neobvezno |
+
+### Nastavi višino tal
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_floor_height` |
+| **Ikona** | 🪜 |
+| **Kategorija** | Pogled 3D |
+
+Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva njegov sprite, postanejo dvignjena tla te višine, narisana kot stopnica, na katero se igralec lahko povzpne (ali rob, s katerega lahko skoči). Uporabite v dogodku Create netrdnega objekta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `height` | Število | `8` | Višina tal v slikovnih pikah sobe, ista enota kot x/y in Cell Size (0 = raven tal) |
+| `top_texture` | Sprite | — | Sprite za vrh stopnice (prazno = tekstura tal); neobvezno |
+| `side_texture` | Sprite | — | Sprite za sprednjo stran stopnice (prazno = tekstura sten); neobvezno |
 
 ---
 

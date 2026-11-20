@@ -4,7 +4,7 @@
 
 > **Згенеровано автоматично** з реєстру дій IDE за допомогою `tools/gen_action_reference.py` — не редагуйте вручну; повторно запустіть генератор після зміни дій. Переклади взято з `tools/action_ref_i18n.py`.
 
-Ця сторінка містить усі **184** дії, доступні в PyGameMaker, саме так, як вони відображаються в засобі вибору дій IDE (включно з плагіном Audio та розширенням 3D-вигляд). Дії — це команди, що виконуються, коли спрацьовує подія.
+Ця сторінка містить усі **186** дії, доступні в PyGameMaker, саме так, як вони відображаються в засобі вибору дій IDE (включно з плагіном Audio та розширенням 3D-вигляд). Дії — це команди, що виконуються, коли спрацьовує подія.
 
 ## Категорії
 
@@ -18,7 +18,7 @@
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (3)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
-- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (18)
+- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (20)
 - [Малювання](Full-Action-Reference-Drawing_uk) (11)
 - [Мережа](Full-Action-Reference-Network-Actions_uk) (22)
 - [Частки](Full-Action-Reference-Particles_uk) (8)

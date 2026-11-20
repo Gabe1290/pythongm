@@ -381,6 +381,30 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
         <source>Send a Network Message (File Exchange)</source>
         <translation>Enviar mensaje de red (intercambio de archivos)</translation>
     </message>
+        <message>
+            <source>Height</source>
+            <translation>Altura</translation>
+        </message>
+        <message>
+            <source>Top Texture</source>
+            <translation>Textura superior</translation>
+        </message>
+        <message>
+            <source>Side Texture</source>
+            <translation>Textura lateral</translation>
+        </message>
+        <message>
+            <source>Wall Height</source>
+            <translation>Altura de los muros</translation>
+        </message>
+        <message>
+            <source>Max Step</source>
+            <translation>Escalón máximo</translation>
+        </message>
+        <message>
+            <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
+            <translation>Convierte esta instancia en un ESCALÓN de la vista raycast: las casillas de la cuadrícula que cubre su sprite se convierten en suelo elevado de esta altura, dibujado como un escalón que el jugador puede subir (o un borde desde el que bajar). Úsala en el evento Create de un objeto no sólido</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

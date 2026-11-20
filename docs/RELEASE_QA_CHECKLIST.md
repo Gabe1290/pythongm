@@ -484,7 +484,7 @@ game genre, each adding the events/actions the previous didn't need:
 
 ---
 
-## 8. 2.5D raycast extension (`raycast_1`–`4`)
+## 8. 2.5D raycast extension (`raycast_1`–`5`)
 
 - L [ ] M [ ] W [ ] **raycast_1** — first-person view draws: textured
   walls, floor cast, sky, billboard sprites (`obj_goal` is visible);
@@ -505,6 +505,14 @@ game genre, each adding the events/actions the previous didn't need:
   walls block movement.
 - L [ ] M [ ] W [ ] Minimap is north-up, shows walls + player only,
   whole-map scale; the `M` toggle works in every raycast sample.
+- L [ ] M [ ] W [ ] **raycast_5** (stairs) — walking straight ahead climbs
+  the staircase onto the gallery; **how climbing feels** (the view rising
+  2 px a frame, the 12-px Max Step) is the thing to judge; the 48-px pillar
+  blocks and you slide along it; walking off the gallery drops you with a
+  short fall; the flag is drawn on the gallery and ends the game; the
+  monster turns back at the pillar; the minimap shades the gallery and the
+  steps. Also in a browser (HTML5 export) and on an Android phone (Kivy) —
+  nobody has played stairs on a real phone yet.
 
 ---
 
@@ -774,7 +782,7 @@ each row names what used to be wrong so a regression is recognisable.
 - L [ ] M [ ] W [ ] Switch to **French**: menus, dialogs, Welcome tab are
   French, correct accents, **no mojibake** (`Ã©`, `â€"`).
 - L [ ] M [ ] W [ ] Welcome tab lists the 2.5D samples as
-  `2.5 D — Level 1…4` (French `2.5 D — Niveau 1`), not longer pre-rename
+  `2.5 D — Level 1…5` (French `2.5 D — Niveau 1`), not longer pre-rename
   wording.
 - L [ ] M [ ] W [ ] Spot-check **日本語 / 中文**: glyphs render, not
   boxes (a font-availability question — genuinely differs per platform).

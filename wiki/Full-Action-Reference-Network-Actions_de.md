@@ -344,7 +344,7 @@ Markiert die Instanz, die diese Aktion ausführt, als synchronisiert: ihre Posit
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Gitter](Full-Action-Reference-Grid_de) (3)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (20)
 - [Zeichnen](Full-Action-Reference-Drawing_de) (11)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
 - [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_de) (5)
