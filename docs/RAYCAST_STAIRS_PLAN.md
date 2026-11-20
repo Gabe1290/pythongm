@@ -443,10 +443,42 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   `floor_heights`; no new parameter. `tests/test_raycast_stairs_minimap.py`
   (5 tests, incl. the real handler); 4 of 4 mutations caught. **The HTML5
   and Kivy minimap ports gain the same squares in S10/S11.**
-- [ ] **S10 — HTML5 port** (render path, action, movement). Structural tests +
-  real export string checks + brace-balance guard (no `//` pairs or brackets
-  inside string literals — `test_export_html5_extension_syntax.py`); a
-  dev-box Playwright frame comparison against desktop.
+- [x] **S10 — HTML5 port.** `28043ecb` (2026-11-20). In
+  `export_html5.js`, same names and arithmetic as desktop: `buildFloorHeights`,
+  `castRaySteps`, `raycastLayoutColumn`, `drawStairsWallRows`,
+  `drawStairsColumn`, `castStairsFloor` (column-major ImageData), billboards
+  lifted and clipped (`raycastClipBefore`), steps never billboards, the
+  minimap's raised squares (`raycastBlendHex`, with Python's banker's
+  rounding mirrored), the `set_floor_height` action, `max_step` in the camera
+  config, and climbing (`raycastClimbBefore` / `raycastClimbAfter`). Top-level
+  helpers are all `raycast…`-prefixed (a duplicate top-level name in the
+  combined engine silently overrides).
+  **One generic engine change:** `registerFrameUpdate(fn, phase)` gained an
+  optional `'after_collision'` phase, run inside `GameRoom.step` between
+  collision events and End Step -- where desktop runs its after_collision
+  hooks. Existing callers (multiplayer) keep the default phase. Without it a
+  refused step would be drawn for a frame before being undone. Known small
+  difference: HTML5's before-step hook runs after keyboard events (desktop's
+  before), so a keyboard event that MOVES an instance directly is not
+  checked; speed-based movement (how the samples walk) is.
+  **Verified in real Chromium** (Playwright installed for this check only,
+  in scratch space, not a project dependency):
+  `tests/test_html5_raycast_stairs.py` -- structural checks (run everywhere)
+  plus 6 browser tests (skip without Playwright, like the micro:bit ones):
+  `raycastLayoutColumn` vs Python `layout_column` on 300 random columns and
+  `castRaySteps` vs `cast_ray_steps` on 300 random rays (equal to 1e-12); an
+  exported staircase's rows on the predicted projection; climbing onto a
+  platform with real ArrowUp presses, the view never rising more than 2 px
+  a step; a 16-px block stopping the player; the minimap's five shades equal
+  to Python's. 6 of 6 mutations caught (incl. removing the engine seam),
+  after strengthening the minimap test (all-equal heights hid the shading).
+  Regression: every html5/raycast/microbit/multiplayer/exporter/extension test
+  file with Chromium available -- 3124 passed; one source-text check pinned
+  `registerFrameUpdate(fn)`'s old signature (repointed). Noted, not caused
+  here: `test_html5_multiplayer_owned_avatar.py::test_losing_the_host_keeps_the_players_own_avatar`
+  is FLAKY on this box (waits on a real WebSocket close; failed 1 of 6 runs
+  on the pre-change files too) -- browser tests had never run on this
+  machine before.
 - [ ] **S11 — Kivy port** (codegen, `SCENE_CODE`, movement hook). Parity test
   (exact column walk), stub harness, generated-file compile, a real-Kivy
   render under `tests/_real_kivy_render.py`, and the all-extensions-on
