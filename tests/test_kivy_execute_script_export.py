@@ -54,6 +54,8 @@ def _is_valid_python(src):
 
 _STUB_HEADER = (
     "class _C:\n"
+    "    def _gm_view(self, *target):\n"
+    "        return target[0] if target else self\n"
     "    def _script_game(self):\n"
     "        return None\n"
     "    def _check_key(self, key):\n"
@@ -141,6 +143,8 @@ def test_keyboard_check_is_wired_to_the_check_key_method():
     out = _gen("jump_check", 'self.jumped = keyboard.check("space")')
     src = (
         "class _C:\n"
+        "    def _gm_view(self, *target):\n"
+        "        return target[0] if target else self\n"
         "    def _script_game(self):\n"
         "        return None\n"
         "    def _check_key(self, key):\n"

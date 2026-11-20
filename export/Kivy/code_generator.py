@@ -1218,13 +1218,16 @@ class ActionCodeGenerator:
             # matching the desktop runtime's `_collision_other`-or-None
             # binding.
             is_collision = event_type == 'collision' or event_type.startswith('collision_with_')
-            other_expr = 'other' if is_collision else 'None'
+            # `self` and `other` are handed to the author's Python through _gm_view: the author's
+            # Python sees y (and vspeed) in the editor's space, not Kivy's.
+            other_expr = 'self._gm_view(other)' if is_collision else 'None'
             # `game`/`instance` — same names + same _script_game() proxy the
             # execute_script branch below binds, closing the "game is
             # undefined on Kivy" gap (score/lives/health specifically;
             # anything else raises AttributeError, caught below rather than
             # crashing). Always bound (cheap; an unused local costs nothing).
             self.add_line('instance = self')
+            self.add_line('_gv = self._gm_view()')
             self.add_line('game = self._script_game()')
             # Wrapped the same way execute_script is: an error (e.g. an
             # unsupported game.* call, or now also a syntax error in the
@@ -1244,7 +1247,7 @@ class ActionCodeGenerator:
                 'check=self._check_key, is_pressed=self._check_key)'
             )
             self.add_line(
-                '_exec_globals = {"self": self, "sel": self, "instance": self, '
+                '_exec_globals = {"self": _gv, "sel": _gv, "instance": _gv, '
                 f'"other": {other_expr}, "game": game, '
                 '"keyboard": _exec_keyboard, "math": math, '
                 '"random": random, "__builtins__": __builtins__}'
@@ -1258,7 +1261,7 @@ class ActionCodeGenerator:
             self.push_indent()
             self.add_line('if not _k.startswith("__"):')
             self.push_indent()
-            self.add_line('setattr(self, _k, _v)')
+            self.add_line('setattr(_gv, _k, _v)')
             self.pop_indent()
             self.pop_indent()
             self.pop_indent()
@@ -1295,7 +1298,9 @@ class ActionCodeGenerator:
                 self._complete_unit()
                 return
             is_collision = event_type == 'collision' or event_type.startswith('collision_with_')
-            other_expr = 'other' if is_collision else 'None'
+            # `self` and `other` are handed to the author's Python through _gm_view: the author's
+            # Python sees y (and vspeed) in the editor's space, not Kivy's.
+            other_expr = 'self._gm_view(other)' if is_collision else 'None'
             argument_count = 0
             for i in range(5):
                 argv = params.get(f'arg{i}', '')
@@ -1305,6 +1310,7 @@ class ActionCodeGenerator:
                     self.add_line(f'argument{i} = {_resolve_instance_names(str(argv))}')
                     argument_count += 1
             self.add_line('instance = self')
+            self.add_line('_gv = self._gm_view()')
             self.add_line('game = self._script_game()')
             self.add_line('try:')
             self.push_indent()
@@ -1314,7 +1320,7 @@ class ActionCodeGenerator:
                 'check=self._check_key, is_pressed=self._check_key)'
             )
             self.add_line(
-                '_exec_globals = {"self": self, "sel": self, "instance": self, '
+                '_exec_globals = {"self": _gv, "sel": _gv, "instance": _gv, '
                 f'"other": {other_expr}, "game": game, '
                 '"keyboard": _exec_keyboard, "math": math, "random": random, '
                 '"argument0": argument0, "argument1": argument1, '
@@ -1331,7 +1337,7 @@ class ActionCodeGenerator:
             self.push_indent()
             self.add_line('if not _k.startswith("__"):')
             self.push_indent()
-            self.add_line('setattr(self, _k, _v)')
+            self.add_line('setattr(_gv, _k, _v)')
             self.pop_indent()
             self.pop_indent()
             self.pop_indent()

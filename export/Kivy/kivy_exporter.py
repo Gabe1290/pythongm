@@ -3698,6 +3698,54 @@ except Exception:
 _KIVY_KEY_NAME_TO_CODE = dict({key_map_items})
 
 
+class _GmView(object):
+    """An instance as the AUTHOR's Python sees it (execute_code / execute_script). The editor and
+    the desktop runtime give `self.y` as down from the sprite's TOP and `self.vspeed` as positive
+    DOWN; a Kivy instance keeps y up from its bottom and vspeed positive UP. Everything else
+    passes straight through, and a write to y / vspeed converts back."""
+    __slots__ = ('_o',)
+
+    def __init__(self, target):
+        object.__setattr__(self, '_o', target)
+
+    def __getattr__(self, name):
+        target = object.__getattribute__(self, '_o')
+        if name == 'y':
+            return target._gm_y()
+        if name == 'vspeed':
+            return -target.vspeed
+        value = getattr(target, name)
+        if callable(value) and getattr(value, '__self__', None) is target:
+            # A method of the real instance: hand it REAL instances, not views (it reads their
+            # Kivy y), so `self.check_collision(other)` works on the right numbers.
+            def call(*args, **kwargs):
+                args = [object.__getattribute__(a, '_o') if isinstance(a, _GmView) else a for a in args]
+                # (no braces here: this class lives in a .format() template)
+                kwargs = dict((k, object.__getattribute__(v, '_o') if isinstance(v, _GmView) else v)
+                              for k, v in kwargs.items())
+                return value(*args, **kwargs)
+            return call
+        return value
+
+    def __setattr__(self, name, value):
+        target = object.__getattribute__(self, '_o')
+        if name == 'y':
+            target._set_gm_y(value)
+        elif name == 'vspeed':
+            target.vspeed = -value
+        else:
+            setattr(target, name, value)
+
+    def __eq__(self, other):
+        return object.__getattribute__(self, '_o') is getattr(other, '_o', other)
+
+    def __hash__(self):
+        return hash(object.__getattribute__(self, '_o'))
+
+    def __repr__(self):
+        return 'GmView(%r)' % (object.__getattribute__(self, '_o'),)
+
+
 class GameObject(Widget):
     """Base class for all game objects - GAMEMAKER 7.0 COMPATIBLE"""
 
@@ -4523,6 +4571,12 @@ class GameObject(Widget):
                     break
             if not blocked:
                 break
+
+    def _gm_view(self, *target):
+        """`self` -- or the one argument, e.g. a collision's `other` -- as the author's Python
+        sees it: see _GmView. An explicit None stays None."""
+        picked = target[0] if target else self
+        return None if picked is None else _GmView(picked)
 
     def _script_game(self):
         """A minimal `game` API for execute_script/execute_code bodies,

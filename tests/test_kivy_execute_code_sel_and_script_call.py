@@ -17,6 +17,8 @@ from export.Kivy.code_generator import ActionCodeGenerator  # noqa: E402
 
 _HEADER = (
     "class _C:\n"
+    "    def _gm_view(self, *target):\n"
+    "        return target[0] if target else self\n"
     "    def _script_game(self):\n"
     "        return None\n"
     "    def _check_key(self, key):\n"
