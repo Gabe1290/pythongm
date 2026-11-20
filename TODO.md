@@ -2134,8 +2134,7 @@ lines rather than matching their text.
   each candidate), `move_towards_point`, `check_empty` (an absolute y; a missing one is "where I am").
   Differential against the desktop handlers where they run on a stand-in. Also fixed: the legacy
   `move_towards` action emitted an `if` whose body was not re-indented -- an IndentationError that stopped
-  the whole object module importing; it now delegates to `move_towards_point`. **Not converted (not
-  audited as wrong): particle emitters' `x`/`y`** (their render path was not traced), `execute_code`'s own
+  the whole object module importing; it now delegates to `move_towards_point`. **Particle emitters need no conversion** (traced and pinned the same day, `tests/test_kivy_particle_y.py`): the simulation is already in the author's space on both targets -- y grows downward, direction 90 is up -- and `render_particles` is the one place that flips to Kivy's y-up, so an emitter at `y = 200` really is 200 from the top; only a `y` READ inside an emitter expression (`create_emitter` at `y + 200`) was Kivy's, fixed by the `gm=True` default above. **Not converted: `execute_code`'s own
   Python (`self.y` there is Kivy's, as `self.x` is -- a documented power-user escape), and `set_variable`'s
   `scope: "other"` parameter (only an `other.` NAME prefix is honoured). Verified by executing the generated
   code; not on a device. Desktop's own `set_variable` does not strip a
