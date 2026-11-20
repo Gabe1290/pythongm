@@ -433,8 +433,16 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   the view never rising more than 2 px a frame, stopped by a 16-px block, a
   monster turning back). 8 of 8 mutations caught. Rooms without steps still
   byte-identical over the 768-frame proof.
-- [ ] **S9 — Minimap shows raised cells** (shade by height; ordinary
-  rectangle commands, so `draw_minimap` stays a macro action on every target).
+- [x] **S9 — Minimap shows raised cells.** `443ce6ee` (2026-11-20).
+  `hud.build_minimap_commands(raised=...)`: each raised cell a filled square
+  under the wall lines, shaded panel → wall colour by height (25 % for the
+  lowest, up to 75 % for the highest; `blend_hex`, which returns the wall
+  colour when either colour is a name it cannot blend). No raised cells ->
+  the command list is exactly what it was (the three-engine minimap parity
+  test still compares like with like). `draw_minimap` passes the room's
+  `floor_heights`; no new parameter. `tests/test_raycast_stairs_minimap.py`
+  (5 tests, incl. the real handler); 4 of 4 mutations caught. **The HTML5
+  and Kivy minimap ports gain the same squares in S10/S11.**
 - [ ] **S10 — HTML5 port** (render path, action, movement). Structural tests +
   real export string checks + brace-balance guard (no `//` pairs or brackets
   inside string literals — `test_export_html5_extension_syntax.py`); a
