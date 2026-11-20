@@ -1385,6 +1385,13 @@ page cannot accept connections.
 
 `mp_lan/discovery.py` is shipped with the Kivy export. A hosting phone runs the beacon; `join_game` with host
 `auto` runs the listener from `update()` and joins the first host with a free slot (no picker; gives up after
-`AUTO_TIMEOUT`, 20 s, with one warning). Still missing on a phone: the waiting-room screen (`host_address` instead).
+`AUTO_TIMEOUT`, 20 s, with one warning). Still missing on a phone: the waiting-room screen (`host_address` instead) -- added the same day, see below.
 Tests: `tests/test_kivy_multiplayer_discovery.py`.
+
+## Addendum 2026-11-20 (6) -- the waiting room on a phone
+
+`host_game` with `show_lobby` opens a Kivy overlay (`mp_lan/glue.py`, `_open_lobby`): it pauses the game loop the way
+`show_message` does, keeps pumping the session, lists the players, and has Démarrer (`start_game`) and Annuler
+(`leave`). There is no picker screen for `join_game` `auto` (the first free host is joined). Tests:
+`tests/test_kivy_multiplayer_lobby.py` (real Kivy, hidden window). Not run on a real Android/iOS device.
 

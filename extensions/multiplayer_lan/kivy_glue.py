@@ -26,8 +26,8 @@ as it is): ``host_game`` starts it, ``start_networked_game`` ends the waiting ro
 ``network_spawn`` creates a networked instance for everyone (with an owner), ``sync_instance`` marks
 a room-placed instance as host-owned, ``set_instance_owner`` hands one to a player, and
 ``remote_input`` asks what a player is holding. What a phone does NOT have is the desktop's waiting-
-room screen (``show_lobby`` is ignored; the game can read the global ``host_address`` to show
-players where to join). LAN discovery works as on the desktop: a hosting phone broadcasts the same UDP
+room screen too (``show_lobby``: an overlay that pauses the game, shows the address and the players who have
+joined, and has Démarrer / Annuler; the game can also read the global ``host_address``). LAN discovery works as on the desktop: a hosting phone broadcasts the same UDP
 beacon, and ``join_game`` with host ``auto`` listens for one and joins the first host with a free slot
 (no picker screen -- it gives up after AUTO_TIMEOUT seconds). Discovery is best effort: phones on a
 school's guest Wi-Fi are often isolated from each other, so it, and hosting itself, may not work there. ``set_network_mode`` is the
@@ -54,6 +54,7 @@ _sync_ord = {}       # object name -> how many sync_instance calls so far in _sy
 _sync_scene = None   # the scene the two above belong to
 _host_synced = {}    # HOST: nid -> instance (sync_instance / network_spawn) replicated to every client
 _v1 = None           # the older spectator mode (set_network_mode): {"mode", "net", "scene"}
+_lobby = None        # HOST: the waiting-room overlay while it is open
 _beacon = None       # HOST: the discovery beacon (a daemon thread broadcasting once a second)
 _auto = None         # join_game('auto') waiting for a beacon: {"listener", "name", "deadline"}
 AUTO_TIMEOUT = 20.0  # seconds join_game('auto') listens before it gives up
@@ -227,6 +228,7 @@ def _connect(host, port, player_name):
 def leave(scene=None):
     """leave_game: close the session, drop the ghosts, clear the identity globals."""
     global _session, _v1
+    _close_lobby()
     _stop_discovery()
     s, _session = _session, None
     if s is not None:
@@ -637,6 +639,125 @@ def _lan_address(port):
     return "%s:%d" % (ip, port)
 
 
+def _roster_text(session):
+    lines = []
+    for slot, name in session.roster:
+        lines.append("%s : %s" % ("Hôte" if slot == 0 else "Joueur %d" % slot, name))
+    return "\n".join(lines)
+
+
+def _open_lobby(session):
+    """The waiting room (host_game with show_lobby): an overlay on the game's root layout, in French like the
+    desktop's screen. It pauses the game loop, keeps pumping the session so players can join, lists them, and
+    has Démarrer (start_networked_game) and Annuler (leave_game). Best effort: without Kivy it just warns."""
+    global _lobby
+    if _lobby is not None:
+        return
+    try:
+        from kivy.clock import Clock
+        from kivy.core.window import Window
+        from kivy.graphics import Color, Rectangle
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.button import Button
+        from kivy.uix.floatlayout import FloatLayout
+        from kivy.uix.label import Label
+    except Exception as exc:
+        _warn_once("lobby", "the waiting room needs Kivy (%s); the game starts hosting at once" % exc)
+        return
+
+    class _Overlay(FloatLayout):
+        def on_touch_down(self, touch):          # the game underneath must not see touches
+            super().on_touch_down(touch)
+            return True
+
+        def on_touch_move(self, touch):
+            super().on_touch_move(touch)
+            return True
+
+        def on_touch_up(self, touch):
+            super().on_touch_up(touch)
+            return True
+
+    app = None
+    try:
+        app = _main().get_game_app()
+    except Exception:
+        pass
+    parent = getattr(app, "root_layout", None) or Window
+    overlay = _Overlay()
+    with overlay.canvas.before:
+        Color(0, 0, 0, 0.75)
+        bg = Rectangle(pos=overlay.pos, size=overlay.size)
+    overlay.bind(pos=lambda w, v: setattr(bg, "pos", v), size=lambda w, v: setattr(bg, "size", v))
+    panel = BoxLayout(orientation="vertical", padding=16, spacing=10, size_hint=(0.86, 0.8),
+                      pos_hint={"center_x": 0.5, "center_y": 0.5})
+    title = Label(text="Héberger une partie\nEn attente de joueurs…", font_size="20sp", size_hint_y=0.22)
+    address = Label(text="Adresse à donner : %s" % _lan_address(session.bound_port), size_hint_y=0.14)
+    roster = Label(text=_roster_text(session))
+    buttons = BoxLayout(orientation="horizontal", spacing=10, size_hint_y=0.2)
+    start = Button(text="Démarrer")
+    cancel = Button(text="Annuler")
+    for w in (title, address, roster, buttons):
+        panel.add_widget(w)
+    buttons.add_widget(start)
+    buttons.add_widget(cancel)
+    overlay.add_widget(panel)
+
+    paused = False
+    if app is not None and getattr(app, "update_event", None):
+        Clock.unschedule(app.update_event)             # the same pause show_message uses
+        app.update_event = None
+        paused = True
+
+    def tick(dt):
+        s = _session
+        if s is None or s.mode != "host":
+            _close_lobby()
+            return
+        s.pump_before_step()
+        s.pump_after_update()
+        if _beacon is not None:
+            _beacon.update(players=s.player_count, max_players=s.max_players)
+        roster.text = _roster_text(s)
+        if s.started:                                  # start_networked_game ran from somewhere else
+            _close_lobby()
+
+    def on_start(*_):
+        if _session is not None:
+            _session.start_game()
+        _close_lobby()
+
+    def on_cancel(*_):
+        scene = _scene
+        _close_lobby()
+        leave(scene)
+
+    start.bind(on_release=on_start)
+    cancel.bind(on_release=on_cancel)
+    parent.add_widget(overlay)
+    _lobby = {"overlay": overlay, "parent": parent, "app": app, "paused": paused,
+              "clock": Clock.schedule_interval(tick, 0.1)}
+
+
+def _close_lobby():
+    global _lobby
+    lobby, _lobby = _lobby, None
+    if lobby is None:
+        return
+    try:
+        lobby["clock"].cancel()
+    except Exception:
+        pass
+    try:
+        lobby["parent"].remove_widget(lobby["overlay"])
+    except Exception:
+        pass
+    app = lobby["app"]
+    if lobby["paused"] and app is not None and getattr(app, "scene", None) and not app.update_event:
+        from kivy.clock import Clock
+        app.update_event = Clock.schedule_interval(app.scene.update, 1.0 / 60.0)
+
+
 def host(port, player_name, max_players, show_lobby=False, game_name="PyGameMaker"):
     """host_game: listen for players. Never raises (a busy port is logged and the game goes on)."""
     global _session
@@ -667,9 +788,6 @@ def host(port, player_name, max_players, show_lobby=False, game_name="PyGameMake
         except Exception:
             pass
         return
-    if show_lobby:
-        _warn_once("lobby", "the waiting-room screen is desktop-only; the game starts hosting at once "
-                            "(read the global host_address to show players where to join)")
     _session = session
     _host_synced.clear()
     _start_beacon(str(game_name or "").strip() or "PyGameMaker", session.bound_port, session.max_players)
@@ -679,6 +797,8 @@ def host(port, player_name, max_players, show_lobby=False, game_name="PyGameMake
         _set_global("host_address", _lan_address(session.bound_port))
     except Exception:
         pass
+    if show_lobby:
+        _open_lobby(session)
 
 
 def start_networked_game():

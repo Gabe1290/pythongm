@@ -5,7 +5,7 @@ A device can listen on a socket, so ``mp_lan.glue`` runs the desktop's own host 
 ``sync_instance``, ``set_instance_owner``, ``remote_input``, and the older ``set_network_mode`` spectator mode.
 Driven against REAL desktop peers (``NetworkSession`` / ``NetworkClient`` over 127.0.0.1) with the real
 GameObject helpers from a real export. Not available on a phone: the waiting-room screen and the discovery
-beacon (``show_lobby`` is ignored; the game reads the global ``host_address`` and shows it).
+(``show_lobby`` opens a waiting-room overlay -- tests/test_kivy_multiplayer_lobby.py -- and the game can read the global ``host_address``).
 """
 import socket
 import sys
@@ -147,11 +147,13 @@ def test_leave_game_frees_the_port_and_clears_the_address(glue, world):
         again.close()
 
 
-def test_the_waiting_room_screen_is_desktop_only_and_warns_once(glue, world):
+def test_show_lobby_opens_the_waiting_room(glue, world, monkeypatch):
     g, app = glue
+    opened = []
+    monkeypatch.setattr(g, "_open_lobby", lambda session: opened.append(session))   # the overlay: test_kivy_multiplayer_lobby.py
     try:
         g.host(0, "Prof", 4, True)
-        assert "lobby" in g._warned and g.active()
+        assert opened == [g._session] and g.active()
     finally:
         g.leave()
 
