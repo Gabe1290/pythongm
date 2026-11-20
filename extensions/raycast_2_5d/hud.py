@@ -32,10 +32,35 @@ MINIMAP_MARK_HALF = 1.5
 MINIMAP_TRAIL_HALF = 1.0
 
 
+def _parse_hex(colour):
+    """(r, g, b) from '#rgb' / '#rrggbb', else None (a named colour, say)."""
+    if not isinstance(colour, str):
+        return None
+    c = colour.strip().lstrip('#')
+    if len(c) == 3:
+        c = ''.join(ch * 2 for ch in c)
+    if len(c) != 6:
+        return None
+    try:
+        return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+    except ValueError:
+        return None
+
+
+def blend_hex(a, b, t):
+    """Colour a -> b at fraction t, as '#rrggbb'. When either colour is not a
+    hex string it cannot be blended: b is returned unchanged."""
+    ca, cb = _parse_hex(a), _parse_hex(b)
+    if ca is None or cb is None:
+        return b
+    return '#%02x%02x%02x' % tuple(
+        int(round(x + (y - x) * t)) for x, y in zip(ca, cb))
+
+
 def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
                            cam_x, cam_y, facing_angle, x, y, size,
                            back_color, wall_color, player_color, marks=None,
-                           trail=None, trail_color=None):
+                           trail=None, trail_color=None, raised=None):
     """Project raycast wall edges to a north-up minimap; return draw commands.
 
     THE single source for the minimap's geometry. The HTML5 (engine.js) and
@@ -57,6 +82,13 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
     only: revealing pickups trivialises a gem-gated maze like raycast_2. But
     raycast_4 is KEY-gated, where finding the keys IS the task and a map that
     hides them is just a worse map. A parameter lets both samples be right.
+
+    raised: optional {(gx, gy): height} -- the raised floor cells of a room
+    with steps (docs/RAYCAST_STAIRS_PLAN.md, S9), drawn as filled cells
+    UNDER the wall lines, shaded from the panel colour toward the wall colour
+    by height (25% for the lowest step, up to 75% for the highest), so a
+    staircase reads as a ramp of shades. Empty/None (every room without
+    steps) adds no command at all: the list is exactly what it was.
 
     trail / trail_color: optional breadcrumb trail -- world-pixel points,
     one per visited grid cell, dotted onto the map under everything else so
@@ -80,6 +112,17 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
         return x + wx * scale, y + wy * scale
 
     cs = float(cell_size)
+    # Raised floor cells (stairs) go under the walls, the lowest layer after
+    # the panel. Sorted for the same cross-engine parity reason as the rest.
+    if raised:
+        top = max(raised.values())
+        for (gx, gy) in sorted(raised):
+            t = 0.25 + 0.5 * (raised[(gx, gy)] / top if top > 0 else 1.0)
+            x1, y1 = px(gx * cs, gy * cs)
+            x2, y2 = px((gx + 1) * cs, (gy + 1) * cs)
+            cmds.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
+                         'color': blend_hex(back_color, wall_color, t),
+                         'filled': True})
     for (line_x, row) in sorted(v_walls or ()):
         x1, y1 = px(line_x * cs, row * cs)
         x2, y2 = px(line_x * cs, (row + 1) * cs)

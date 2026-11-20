@@ -329,6 +329,9 @@ class PluginExecutor:
                      room, str(parameters.get("mark_object_2", "") or ""))},
             ],
             trail=trail_points,
+            # Raised floor cells (stairs plan S9): the map the renderer and
+            # the climbing rule rebuild every frame; absent/empty -> no change.
+            raised=st.get("floor_heights") or None,
             trail_color=parameters.get("trail_color", "#406080") if show_trail else None,
         )
         instance._draw_queue.extend(cmds)
