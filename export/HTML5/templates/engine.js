@@ -4621,8 +4621,13 @@ class Game {
             // getBoundingClientRect includes.
             const cw = this.canvas.clientWidth, ch = this.canvas.clientHeight;
             if (!cw || !ch) return;
-            const mx = (clientX - rect.left - this.canvas.clientLeft) * this.canvas.width / cw;
-            const my = (clientY - rect.top - this.canvas.clientTop) * this.canvas.height / ch;
+            // Window pixels -> canvas pixels -> ROOM coordinates: in a views room the canvas
+            // shows a scrolled window onto the room, and authors compare mouse_x/mouse_y
+            // with instance positions (desktop: input_handler's screen_to_room). With no
+            // views this is the identity.
+            const [mx, my] = this.currentRoom.screenToRoom(
+                (clientX - rect.left - this.canvas.clientLeft) * this.canvas.width / cw,
+                (clientY - rect.top - this.canvas.clientTop) * this.canvas.height / ch);
             [...this.currentRoom.instances].forEach(inst => {
                 if (inst.toDestroy || !inst.events) return;
                 for (const key of eventKeys) {

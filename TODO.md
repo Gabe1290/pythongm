@@ -2094,8 +2094,12 @@ lines rather than matching their text.
   by the new `GameRoom.screenToRoom`, a mirror of `runtime/room.py`'s `screen_to_room`; false for a
   spriteless instance); "In region" is never true. Unlike Kivy this DOES track the pointer on hover
   (canvas `mousemove`). Verified with real mouse events in Chromium (dev box) -- not on a phone.
-  Note the existing mouse EVENTS (`mouse_x`/`mouse_y`) still use raw canvas coordinates in a views
-  room; only `mouse_check` goes through `screenToRoom`.
+  **Mouse EVENTS in a views room, DONE 2026-11-20:** the press/release dispatcher
+  now maps the canvas pixel through `screenToRoom` too, so `mouse_x`/`mouse_y` are ROOM coordinates
+  (they were the raw canvas pixel, off by the camera's scroll -- a click at canvas (200, 150) with the
+  camera at (400, 100) read 200, 150 instead of 600, 250). No views: the identity, unchanged.
+  Verified with a real click on `views_1` in Chromium. The extension input hooks still get screen
+  coordinates, as on desktop.
 - **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).

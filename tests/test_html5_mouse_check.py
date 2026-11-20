@@ -38,25 +38,31 @@ def test_the_stale_note_that_mouse_check_is_unported_is_gone():
 # -- real browser (dev box only) ---------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def page():
+def browser():
+    """One Chromium for the whole module (two sync_playwright() contexts in one module clash)."""
     sync_api = pytest.importorskip("playwright.sync_api")
+    with sync_api.sync_playwright() as pw:
+        try:
+            chromium = pw.chromium.launch()
+        except Exception as exc:
+            pytest.skip(f"no Chromium: {exc}")
+        yield chromium
+        chromium.close()
+
+
+@pytest.fixture(scope="module")
+def page(browser):
     from export.HTML5.html5_exporter import HTML5Exporter
     src = ROOT / "samples" / "maze_1"
     out = Path(tempfile.mkdtemp(prefix="html5_mouse_")) / "out"
     out.mkdir(parents=True)
     assert HTML5Exporter().export(src, out)
-    html = next(out.glob("*.html"))
-    with sync_api.sync_playwright() as pw:
-        try:
-            browser = pw.chromium.launch()
-        except Exception as exc:
-            pytest.skip(f"no Chromium: {exc}")
-        pg = browser.new_page(viewport={"width": 900, "height": 700})
-        pg.goto(html.as_uri())
-        pg.wait_for_function("window.game && window.game.currentRoom && window.game.currentRoom.instances.filter(i => i.sprite).length > 10",
-                             timeout=20000)
-        yield pg
-        browser.close()
+    pg = browser.new_page(viewport={"width": 900, "height": 700})
+    pg.goto(next(out.glob("*.html")).as_uri())
+    pg.wait_for_function("window.game && window.game.currentRoom && window.game.currentRoom.instances.filter(i => i.sprite).length > 10",
+                         timeout=20000)
+    yield pg
+    pg.close()
 
 
 _HELPERS = """
@@ -150,3 +156,50 @@ def test_spriteless_instances_are_never_over_and_views_translate_the_pointer(pag
         return [spriteless, mapped, outside, room.screenToRoom(10, 20)];
     })()""")
     assert got == [False, [110, 70], [700, 20], [10, 20]]
+
+
+# ---------------------------------------------------------------- mouse events in a views room
+
+def test_mouse_events_carry_room_coordinates_not_canvas_pixels(browser):
+    """In a views room the canvas shows a scrolled window onto the room. mouse_x/mouse_y must be ROOM
+    coordinates (desktop: screen_to_room) -- they were the raw canvas pixel, off by the view's scroll."""
+    from export.HTML5.html5_exporter import HTML5Exporter
+    out = Path(tempfile.mkdtemp(prefix="html5_views_mouse_")) / "out"
+    out.mkdir(parents=True)
+    assert HTML5Exporter().export(ROOT / "samples" / "views_1", out)
+    pg = browser.new_page(viewport={"width": 1000, "height": 800})
+    pg.goto(next(out.glob("*.html")).as_uri())
+    pg.wait_for_function("window.game && window.game.currentRoom && window.game.currentRoom.viewsEnabled "
+                         "&& window.game.currentRoom.instances.length > 2", timeout=20000)
+    got = pg.evaluate("""(() => {
+        const room = window.game.currentRoom, v = room.views[0];
+        v.follow = null; v.view_x = 400; v.view_y = 100;          // a scrolled camera, held still
+        const probe = room.instances[0];
+        probe.events = Object.assign({}, probe.events, {mouse_left_press: {actions: []}});
+        const c = window.game.canvas, r = c.getBoundingClientRect();
+        const client = (cx, cy) => [r.left + c.clientLeft + cx * c.clientWidth / c.width,
+                                    r.top + c.clientTop + cy * c.clientHeight / c.height];
+        window.__probe = probe; window.__client = client;
+        return [v.port_x, v.port_y];
+    })()""")
+    port_x, port_y = got
+    x, y = pg.evaluate("window.__client(200, 150)")
+    pg.mouse.click(x, y)
+    mx, my = pg.evaluate("[window.__probe.mouse_x, window.__probe.mouse_y]")
+    assert (round(mx), round(my)) == (200 - port_x + 400, 150 - port_y + 100)
+    pg.close()
+
+
+def test_without_views_the_mouse_event_coordinates_are_unchanged(page):
+    page.evaluate(_HELPERS)
+    (ax, ay), _ = _two_instances(page)
+    page.evaluate("""(() => { const i = window.__inst;
+        i.events = Object.assign({}, i.events, {mouse_left_press: {actions: []}}); })()""")
+    page.mouse.click(ax, ay)
+    mx, my = page.evaluate("[window.__inst.mouse_x, window.__inst.mouse_y]")
+    box = page.evaluate("[window.__inst.x, window.__inst.y, window.__inst.spriteInfo.width, window.__inst.spriteInfo.height]")
+    assert box[0] <= mx < box[0] + box[2] and box[1] <= my < box[1] + box[3]
+
+
+def test_the_dispatcher_maps_through_screen_to_room():
+    assert "this.currentRoom.screenToRoom(" in ENGINE
