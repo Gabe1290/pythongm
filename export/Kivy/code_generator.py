@@ -81,6 +81,62 @@ class _SelfNameResolver(ast.NodeTransformer):
         return ast.copy_location(new, node)
 
 
+class _ConditionNameResolver(_SelfNameResolver):
+    """_SelfNameResolver for a CONDITION expression. Authors write `y` (and `self.y`,
+    `other.y`) in the editor's y-DOWN, top-anchored space, as the desktop runtime evaluates
+    them; an instance here keeps Kivy's y-UP, bottom-anchored one, so each read is converted
+    back through GameObject._gm_y(). (`vspeed` already is, in the parent class.) Without it
+    `y < other.y + 8` -- the platformer stomp test -- compared the wrong way round."""
+
+    def visit_Name(self, node):
+        if isinstance(node.ctx, ast.Load) and node.id == 'y':
+            return ast.copy_location(
+                ast.parse('self._gm_y()', mode='eval').body, node)
+        return super().visit_Name(node)
+
+    def visit_Attribute(self, node):
+        self.generic_visit(node)
+        if (isinstance(node.ctx, ast.Load) and node.attr == 'y'
+                and isinstance(node.value, ast.Name) and node.value.id in ('self', 'other')):
+            return ast.copy_location(
+                ast.Call(func=ast.Attribute(value=node.value, attr='_gm_y', ctx=ast.Load()),
+                         args=[], keywords=[]), node)
+        return node
+
+
+def _bool_expression_code(raw) -> str:
+    """Python source for a boolean expression the way the desktop's _eval_bool_expression
+    answers it: empty, malformed, or failing at run time (an unknown name, `other` outside a
+    collision) is FALSE, never an exception. A malformed expression used to be pasted into
+    the generated file verbatim, so one typo (`x > 5 && hp < 10`, or an empty field) was a
+    SyntaxError that stopped the WHOLE object module from importing."""
+    text = str(raw if raw is not None else '').strip()
+    if not text:
+        return 'False'
+    text = resolve_global_refs(text)
+    try:
+        tree = ast.parse(text, mode='eval')
+    except SyntaxError:
+        return 'False'
+    _ConditionNameResolver().visit(tree)
+    ast.fix_missing_locations(tree)
+    try:
+        return f"self._cond(lambda: ({ast.unparse(tree)}))"
+    except Exception:
+        return 'False'
+
+
+def _compare_value_code(raw) -> str:
+    """The right-hand side of a variable_compare, as the desktop's _parse_value reads it: a
+    bare name that is one of this instance's variables is that variable's value, anything
+    else is a number / expression / text. (`hp == hp` and `hp == 2 + 3` compared against the
+    TEXT "hp" / "2 + 3" before.)"""
+    text = str(raw if raw is not None else '').strip()
+    if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', text) and text.lower() not in ('true', 'false', 'none'):
+        return f"getattr(self, {text!r}, {text!r})"
+    return _value_code(raw)
+
+
 # `global.<name>` (e.g. the LAN multiplayer extension's `global.is_host`,
 # `global.network_connected`, or any author-defined shared global) is not
 # even syntactically valid Python -- `global` is a reserved keyword, so
@@ -706,7 +762,7 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'test_expression':
-            expr = _resolve_instance_names(params.get('expression', 'False'))
+            expr = _bool_expression_code(params.get('expression', ''))
             then_actions = params.get('then_actions') or []
             else_actions = params.get('else_actions') or []
             if then_actions or else_actions:
@@ -857,10 +913,20 @@ class ActionCodeGenerator:
             # Build condition from condition_type or direct expression
             condition_type = params.get('condition_type', '')
             if condition_type == 'instance_count':
-                obj_name = params.get('object_name', '')
-                operator = params.get('operator', '==')
-                value = params.get('value', 0)
-                condition = f"self.scene.count_instances('{obj_name}') {operator} {value}"
+                obj_name = str(params.get('object_name', '') or '').strip()
+                operator = str(params.get('operator', '==') or '==').strip()
+                operator = _COMPARISON_OPS.get(operator, operator)
+                if operator not in ('==', '!=', '<', '<=', '>', '>='):
+                    operator = '=='
+                try:
+                    value = int(params.get('value', 0))
+                except (TypeError, ValueError):
+                    value = 0                      # desktop: int(value) or 0
+                # No object named: false (desktop), not "zero of nothing" == 0 -> true.
+                condition = ("False" if not obj_name else
+                             f"self.scene.count_instances({obj_name!r}) {operator} {value}")
+            elif condition_type == 'expression':
+                condition = _bool_expression_code(params.get('expression', ''))
             elif condition_type == 'key_pressed':
                 # Is the named key held? (desktop: key in instance.keys_pressed.) The
                 # scene tracks held keys by raw Kivy keycode. Until 2026-11-19 every
@@ -933,7 +999,7 @@ class ActionCodeGenerator:
                     condition = "False"
                 else:
                     condition = (f"{_variable_read_code(variable, event_type)} {operator} "
-                                 f"{_value_code(params.get('value', 0))}")
+                                 f"{_compare_value_code(params.get('value', 0))}")
             else:
                 condition = _resolve_instance_names(
                     params.get('condition', params.get('expression', 'True')))

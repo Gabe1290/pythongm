@@ -63,7 +63,7 @@ class TestConditionalScoping:
             {'action': 'set_vspeed', 'parameters': {'value': 2}},
         ])
         lines = code.splitlines()
-        assert any(l.strip() == 'if self.x > 0:' for l in lines)
+        assert any(l.strip().startswith('if ') and 'self.x > 0' in l for l in lines)
         hs = next(l for l in lines if 'hspeed' in l)
         vs = next(l for l in lines if 'vspeed' in l)
         # hspeed is guarded (deeper), vspeed is back at event level

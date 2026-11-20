@@ -2102,6 +2102,25 @@ lines rather than matching their text.
   camera at (400, 100) read 200, 150 instead of 600, 250). No views: the identity, unchanged.
   Verified with a real click on `views_1` in Chromium. The extension input hooks still get screen
   coordinates, as on desktop.
+- **if_condition parity audit DONE 2026-11-20** (`tests/test_if_condition_parity.py`, 125 tests):
+  all eight condition types now have an implementation on both exports (that was already true), so the
+  remaining gaps were in their ANSWERS. A differential matrix (the desktop's `_evaluate_if_condition` as the
+  reference, the Kivy generator's code executed, the real HTML5 engine in Chromium) found and fixed:
+  Kivy read `y` / `self.y` / `other.y` in Kivy's y-up space instead of the author's y-down one (the
+  platformer stomp test `y < other.y + 8` compared the wrong way round; now via `GameObject._gm_y()`);
+  a malformed or empty `expression` (also `test_expression`) was pasted into the generated file and was
+  a SyntaxError that stopped the WHOLE object module importing, and a failing one raised instead of being
+  false (now `GameObject._cond(lambda: ...)`, False as on desktop); Kivy `instance_count` with an empty object
+  name was TRUE and took its operator/value unvalidated; `variable_compare` compared against the TEXT of a
+  name or sum (`hp`, `2 + 3`) on BOTH exports; HTML5 `random_chance` 0 happened half the time (`|| 50`)
+  and its legacy "Left Arrow" key spelling never matched; the HTML5 evaluator quietly accepted `&&`/`||`/`!`
+  (desktop: false + a warning). Not changed: an instance variable named `name` collides with the HTML5
+  engine's own `inst.name` (the object's name).
+- **Open, found by that audit (not fixed): Kivy `set_variable` on `y` is not converted** -- the author's
+  `y = y - 4` (the `reseau` avatar's "up" key) becomes `self.y = self.y - 4`, which is DOWN on screen in
+  Kivy's y-up space, so the vertical keys of any such project are inverted on Android/iOS (x is fine).
+  The condition fix above does not cover assignments; it needs the value read through `_gm_y()` and the
+  result converted back, and a check that no sample leans on today's behaviour.
 - **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).

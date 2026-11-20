@@ -4554,6 +4554,23 @@ class GameObject(Widget):
             return False
         return bool(self.scene.keys_pressed.get(code, False))
 
+    def _cond(self, test):
+        """A boolean expression condition, as the desktop answers one: an error while
+        evaluating it (an unknown name, `other` outside a collision) is False."""
+        try:
+            return bool(test())
+        except Exception:
+            return False
+
+    def _gm_y(self):
+        """This instance's y in the author's space (down from the sprite's TOP), as the
+        desktop runtime and the editor's expressions see it; self.y is Kivy's (up from the
+        BOTTOM)."""
+        scene = self.scene
+        if scene is None:
+            return self.y
+        return scene.room_height - self.y - (self.image_height or self.grid_size)
+
     def _mouse_check(self, check):
         """if_condition mouse_check, as the desktop runtime answers it: which
         button is held, or whether the pointer is over this instance. "In region"

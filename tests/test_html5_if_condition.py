@@ -72,7 +72,8 @@ def test_evaluate_condition_implements_the_condition_types():
 
 def test_expression_condition_type_delegates_to_gm_expression_value():
     body = _method_body("evaluateCondition")
-    assert "gmExpressionValue(params.expression, this, game)" in body
+    # via gmBoolExpression (which wraps gmExpressionValue and rejects C-style operators, as desktop does)
+    assert "gmBoolExpression(params.expression, this, game)" in body
 
 
 def test_execute_action_copy_is_a_documented_noop_not_a_second_impl():

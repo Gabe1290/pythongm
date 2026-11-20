@@ -673,6 +673,22 @@ function gmSafeMath(fn, x) {
     return (typeof r === 'number' && isFinite(r)) ? r : 0;
 }
 
+// A boolean condition expression the way the desktop's _eval_bool_expression answers it. The
+// project teaches Python, so the C/GameMaker operators (&&, ||, a lone !) are a SyntaxError there
+// -- the condition is false and the student is told why. This evaluator turns `and`/`or`/`not`
+// into the JS ones, so it would also quietly ACCEPT those, and a condition that never works on
+// desktop worked in a browser. (An operator inside a quoted string is fine, as in Python.)
+function gmBoolExpression(expr, inst, game) {
+    const text = String(expr === undefined || expr === null ? '' : expr);
+    const unquoted = text.replace(/"[^"]*"|'[^']*'/g, '""');
+    if (/&&|\|\||!(?!=)/.test(unquoted)) {
+        console.warn('Condition not evaluated: use and / or / not, not && / || / !  in: ' + text);
+        return false;
+    }
+    const val = gmExpressionValue(text, inst, game);
+    return val === undefined ? false : !!val;
+}
+
 function gmExpressionValue(expr, inst, game) {
     if (expr === undefined || expr === null || String(expr).trim() === '') return undefined;
     const js = String(expr)
@@ -1691,15 +1707,24 @@ class GameObject {
                 // both used to fall through to false.
                 const conditionType = params.condition_type || 'instance_count';
                 switch (conditionType) {
-                    case 'expression': {
-                        const val = gmExpressionValue(params.expression, this, game);
-                        return val === undefined ? false : !!val;
-                    }
+                    case 'expression':
+                        return gmBoolExpression(params.expression, this, game);
                     case 'variable_compare': {
                         const variable = params.variable || '';
                         if (!variable) return false;
                         const current = this[variable] !== undefined ? this[variable] : 0;
-                        return gmCompareOp(current, params.operator || '==', params.value);
+                        // The right-hand side is read as the desktop's _parse_value reads it: a
+                        // number stays a number, a name or expression (hp, 2 + 3, "text") is
+                        // evaluated in the instance's scope, and anything that is not one is
+                        // plain text. It was compared as the raw text, so `hp == hp` and
+                        // `hp == 2 + 3` were always false.
+                        let compareTo = params.value;
+                        if (typeof compareTo === 'string' && compareTo.trim() !== ''
+                                && isNaN(Number(compareTo))) {
+                            const evaluated = gmExpressionValue(compareTo, this, game);
+                            if (evaluated !== undefined && evaluated !== null) compareTo = evaluated;
+                        }
+                        return gmCompareOp(current, params.operator || '==', compareTo);
                     }
                     case 'instance_count': {
                         const objectName = params.object_name || '';
@@ -1714,8 +1739,11 @@ class GameObject {
                         return gmCompareOp(current, params.operator || '==', parseInt(params.value) || 0);
                     }
                     case 'random_chance': {
-                        const chance = parseInt(params.chance) || 50;
-                        return (Math.random() * 100) < chance;
+                        // 0 percent is 0 (it was `|| 50`, so a chance of 0 happened half the time);
+                        // only a value that is not a number falls back to 50, as on desktop.
+                        const parsedChance = parseInt(params.chance);
+                        const chance = isNaN(parsedChance) ? 50 : parsedChance;
+                        return Math.floor(Math.random() * 100) + 1 <= chance;
                     }
                     case 'key_pressed': {
                         // Is the named key held right now? The author's key is a
@@ -1725,6 +1753,7 @@ class GameObject {
                         // reseau samples) never moved in a browser.
                         let want = String(params.key || '').trim().toLowerCase();
                         if (want.indexOf('k_') === 0) want = want.slice(2);
+                        if (want.slice(-6) === ' arrow') want = want.slice(0, -6);   // the editor's old spelling
                         const aliases = { return: 'enter', esc: 'escape', ctrl: 'control',
                             lshift: 'shift', rshift: 'shift', lctrl: 'control', rctrl: 'control' };
                         want = aliases[want] || want;
@@ -1972,8 +2001,7 @@ class GameObject {
             case 'test_expression': {
                 // Evaluate a Python/GML boolean expression (runtime
                 // _eval_bool_expression). Empty/error -> false.
-                const val = gmExpressionValue(params.expression, this, game);
-                return val === undefined ? false : !!val;
+                return gmBoolExpression(params.expression, this, game);
             }
 
             case 'check_empty':

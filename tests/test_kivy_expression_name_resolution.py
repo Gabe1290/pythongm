@@ -99,5 +99,7 @@ def test_codegen_emits_resolved_condition():
     out = gen.get_code()
     assert "vspeed > 0 and y <" not in out, "bare names leaked into export"
     assert "self.vspeed" in out
-    assert "self.y" in out
-    assert "other.y" in out
+    # y is the author's y-DOWN space, converted from Kivy's y-up (2026-11-20): a bare `y` and
+    # `other.y` are both read through _gm_y(), so the comparison means what it does on desktop
+    assert "self._gm_y()" in out and "other._gm_y()" in out
+    assert "self.y <" not in out and "other.y" not in out.replace("_gm_y", "")

@@ -1078,7 +1078,7 @@ class TestActionCodeGeneratorBlocks:
         }, 'step')
         code = code_generator.get_code()
 
-        assert 'if self.x > 100:' in code
+        assert any(l.strip().startswith('if ') and 'self.x > 100' in l for l in code.splitlines())
         assert 'else:' in code
         assert 'self.hspeed = 5' in code
         assert 'self.hspeed = -5' in code
