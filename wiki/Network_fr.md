@@ -22,10 +22,7 @@ en client, et l'export **HTML5** en client (une page de navigateur rejoint
 un hôte ordinateur ; elle ne peut pas héberger elle-même). Un export
 **Kivy/Android** est aussi un client : un téléphone rejoint un hôte ordinateur
 (écris l'adresse de l'hôte dans `join_game`, ou « auto » : il rejoint le premier hôte trouvé sur le réseau, sans écran de choix) et participe aux variables partagées, aux messages et aux
-événements réseau, et voit les instances en réseau de l'hôte. Il contrôle l'avatar que l'hôte lui attribue, comme le navigateur. Contrairement au navigateur, il peut aussi héberger : il écoute comme un hôte
-ordinateur, mais il n'a pas d'écran de salle d'attente ; le jeu doit donc
-afficher l'adresse que les autres joueurs doivent taper (la variable globale
-`host_address`).
+événements réseau, et voit les instances en réseau de l'hôte. Il contrôle l'avatar que l'hôte lui attribue, comme le navigateur. Contrairement au navigateur, il peut aussi héberger : il écoute comme un hôte ordinateur et peut afficher une salle d'attente (un écran avec les joueurs arrivés et un bouton Démarrer) ; l'adresse à communiquer se trouve aussi dans la variable globale `host_address`.
 Un téléphone ou un navigateur peut aussi participer à une instance placée dans
 la salle : quand l'instance est marquée comme synchronisée sur chaque machine,
 elle suit la copie de l'hôte, et elle tourne sur l'appareil du joueur si l'hôte

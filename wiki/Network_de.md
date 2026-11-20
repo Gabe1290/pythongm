@@ -21,9 +21,7 @@ und der **HTML5**-Export als Client (eine Browserseite tritt einem
 Desktop-Host bei; sie kann nicht selbst hosten). Ein **Kivy/Android**-Export
 ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adresse des Hosts in `join_game` ein oder „auto“: Es tritt dem ersten gefundenen Host im Netzwerk bei, ohne Auswahlbildschirm),
 nimmt an gemeinsamen Variablen, Nachrichten und Netzwerkereignissen teil und
-sieht die vernetzten Instanzen des Hosts. Es steuert den vom Host zugewiesenen Avatar, wie der Browser. Anders als der Browser kann es auch hosten: Es lauscht wie ein Desktop-Host, hat
-aber keinen Warteraum-Bildschirm, das Spiel sollte also die Adresse anzeigen,
-die die anderen Spieler eingeben müssen (die globale Variable `host_address`).
+sieht die vernetzten Instanzen des Hosts. Es steuert den vom Host zugewiesenen Avatar, wie der Browser. Anders als der Browser kann es auch hosten: Es lauscht wie ein Desktop-Host und kann einen Warteraum anzeigen (ein Bildschirm mit den beigetretenen Spielern und einer Start-Schaltfläche); die weiterzugebende Adresse steht auch in der globalen Variable `host_address`.
 Ein Handy oder ein Browser kann auch an einer im Raum platzierten Instanz
 teilnehmen: Ist die Instanz auf jedem Rechner als synchronisiert markiert, folgt
 sie der Kopie des Hosts und läuft auf dem eigenen Gerät des Spielers, wenn der

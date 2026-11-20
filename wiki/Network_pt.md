@@ -20,10 +20,7 @@ cliente, e a exportação **HTML5** como cliente (uma página do navegador entra
 em um anfitrião desktop; ela não consegue hospedar). Uma exportação
 **Kivy/Android** também é um cliente: um telemóvel junta-se a um anfitrião desktop
 (escreve o endereço do anfitrião em `join_game`, ou «auto»: junta-se ao primeiro anfitrião que encontrar na rede, sem ecrã de escolha), participa nas variáveis partilhadas, nas mensagens e nos eventos de
-rede, e vê as instâncias em rede do anfitrião. Controla o avatar que o anfitrião lhe atribui, tal como o navegador. Ao contrário do navegador, também pode ser anfitrião: escuta como um anfitrião
-desktop, mas não tem ecrã de sala de espera, por isso o jogo deve mostrar o
-endereço que os outros jogadores têm de escrever (a variável global
-`host_address`).
+rede, e vê as instâncias em rede do anfitrião. Controla o avatar que o anfitrião lhe atribui, tal como o navegador. Ao contrário do navegador, também pode ser anfitrião: escuta como um anfitrião desktop e pode mostrar uma sala de espera (um ecrã com os jogadores que entraram e um botão Iniciar); o endereço a comunicar também está na variável global `host_address`.
 Um telemóvel ou um navegador também pode participar numa instância colocada na
 sala: quando a instância está marcada como sincronizada em cada máquina, segue a
 cópia do anfitrião e corre no dispositivo do jogador se o anfitrião lha atribuiu

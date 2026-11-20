@@ -22,10 +22,7 @@ del navegador se une a un anfitrión de escritorio; no puede ser anfitrión).
 Una exportación **Kivy/Android** también es un cliente: un teléfono se une a un
 anfitrión de escritorio (escribe la dirección del anfitrión en `join_game`, o «auto»: se une al primer anfitrión que encuentra en la red, sin pantalla de selección), participa en las variables
 compartidas, los mensajes y los eventos de red, y ve las instancias en red del
-anfitrión. Controla el avatar que el anfitrión le asigna, como el navegador. A diferencia del navegador, también puede ser anfitrión: escucha como un
-anfitrión de escritorio, pero no tiene pantalla de sala de espera, así que el
-juego debe mostrar la dirección que los demás jugadores deben escribir (la
-variable global `host_address`).
+anfitrión. Controla el avatar que el anfitrión le asigna, como el navegador. A diferencia del navegador, también puede ser anfitrión: escucha como un anfitrión de escritorio y puede mostrar una sala de espera (una pantalla con los jugadores que se han unido y un botón Iniciar); la dirección que hay que dar también está en la variable global `host_address`.
 Un teléfono o un navegador también puede participar en una instancia colocada en
 la sala: cuando la instancia está marcada como sincronizada en cada máquina,
 sigue la copia del anfitrión y se ejecuta en el dispositivo del jugador si el
