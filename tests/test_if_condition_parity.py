@@ -135,7 +135,7 @@ def kivy_base_methods():
     cls = next(n for n in ast.parse(src).body if isinstance(n, ast.ClassDef) and n.name == "GameObject")
     lines = ["class _C:"]
     for fn in cls.body:
-        if isinstance(fn, ast.FunctionDef) and fn.name in ("_cond", "_gm_y", "_set_gm_y", "_create_gm", "destroy_at_position"):
+        if isinstance(fn, ast.FunctionDef) and fn.name in ("_cond", "_gm_y", "_set_gm_y", "_create_gm", "destroy_at_position", "_set_var_all", "_var_of"):
             seg = ast.get_source_segment(src, fn).splitlines()
             lines += ["    " + seg[0]] + seg[1:]
     return "\n".join(lines) + "\n"

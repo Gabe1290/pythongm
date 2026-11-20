@@ -4572,6 +4572,42 @@ class GameObject(Widget):
             if not blocked:
                 break
 
+    def _set_var_all(self, object_name, attr, value, relative=False):
+        """set_variable applied to EVERY live instance of `object_name` (GameMaker's "Applies to":
+        an object). y and vspeed are the author's (see _set_gm_y); a relative value is added to
+        each instance's own current one."""
+        if not self.scene:
+            return
+        for other in list(self.scene.instances):
+            if getattr(other, 'object_name', other.__class__.__name__) != object_name:
+                continue
+            if attr == 'y':
+                if relative:
+                    other.y -= value
+                else:
+                    other._set_gm_y(value)
+            elif attr == 'vspeed':
+                if relative:
+                    other.vspeed -= value
+                else:
+                    other.vspeed = -value
+            elif relative:
+                setattr(other, attr, getattr(other, attr, 0) + value)
+            else:
+                setattr(other, attr, value)
+
+    def _var_of(self, object_name, attr):
+        """The author's value of `attr` on the first live instance of `object_name` (test_variable
+        with "Applies to" an object); NaN when there is none, which no comparison satisfies."""
+        for other in (self.scene.instances if self.scene else ()):
+            if getattr(other, 'object_name', other.__class__.__name__) == object_name:
+                if attr == 'y':
+                    return other._gm_y()
+                if attr == 'vspeed':
+                    return -other.vspeed
+                return getattr(other, attr, 0)
+        return float('nan')
+
     def _gm_view(self, *target):
         """`self` -- or the one argument, e.g. a collision's `other` -- as the author's Python
         sees it: see _GmView. An explicit None stays None."""

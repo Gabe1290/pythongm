@@ -290,7 +290,30 @@ def _value_code(raw, gm=True):
     return f"({resolved})"
 
 
-def _variable_read_code(var_name, event_type=''):
+def _applies_to(params):
+    """Who a variable action applies to, as the desktop resolves it (execute_set_variable_action /
+    execute_test_variable_action): ``("global", None)``, ``("self", None)``, ``("other", None)`` or
+    ``("object", <object name>)``. The `scope` parameter (self / other / global) and GameMaker's
+    "Applies to" (`target`: self / other / object + `target_object`, emitted by the GMK importer)
+    both count: global scope wins, then `target` when present, then `scope`. The generator used to
+    read neither, so a variable set with scope "global" -- or "other" -- was written to THIS
+    instance's attribute instead."""
+    scope = str(params.get('scope', 'self') or 'self').strip().lower()
+    if scope == 'global':
+        return ('global', None)
+    if 'target' in params:
+        target = params.get('target')
+        if target == 'other':
+            return ('other', None)
+        if target == 'object':
+            return ('object', str(params.get('target_object', '') or ''))
+        return ('self', None)
+    if scope == 'other':
+        return ('other', None)
+    return ('self', None)
+
+
+def _variable_read_code(var_name, event_type='', applies=('self', None)):
     """Read one variable by the name an author typed, honouring its scope
     prefix -- `self.x`, `other.x`, `global.x` or a bare name.
 
@@ -305,13 +328,15 @@ def _variable_read_code(var_name, event_type=''):
     if name.startswith('self.'):
         name = name[len('self.'):]
     elif name.startswith('other.'):
-        attr = name[len('other.'):]
-        if 'collision' not in (event_type or ''):
-            # `other` is None outside a collision handler, as everywhere else
-            # in this generator; the runtime's own unresolved-variable answer
-            # is 0.
-            return '0'
-        return f"getattr(other, {attr!r}, 0)"
+        return _other_read_code(name[len('other.'):], event_type)
+    elif applies[0] == 'global':
+        return _GLOBAL_READ.format(name=name)
+    elif applies[0] == 'other':
+        return _other_read_code(name, event_type)
+    elif applies[0] == 'object':
+        # the first live instance of that object; no such instance is NaN, which no comparison
+        # satisfies (desktop: the condition is false)
+        return f"self._var_of({applies[1]!r}, {name!r})"
     if name == 'vspeed':
         # Kivy's Y axis is inverted and set_vspeed flips the sign on export,
         # so compare the GameMaker-space value.
@@ -319,6 +344,18 @@ def _variable_read_code(var_name, event_type=''):
     if name == 'y':
         return "self._gm_y()"       # the author's y, not Kivy's (see _ConditionNameResolver)
     return f"getattr(self, {name!r}, 0)"
+
+
+def _other_read_code(attr, event_type):
+    """`other.<attr>` as the author reads it: only a collision handler has an `other` (else the
+    runtime's own unresolved answer, 0), and y / vspeed are the author's (down), not Kivy's."""
+    if 'collision' not in (event_type or ''):
+        return '0'
+    if attr == 'y':
+        return 'other._gm_y()'
+    if attr == 'vspeed':
+        return '-(other.vspeed)'
+    return f"getattr(other, {attr!r}, 0)"
 
 
 def _num_code(value, default=0, gm=True):
@@ -918,7 +955,7 @@ class ActionCodeGenerator:
             # `getattr(self, 'global.coins', 0)` and was silently always 0,
             # and the VALUE went through _literal, so comparing against
             # `coins + 1` compared against that text.
-            current = _variable_read_code(var_name, event_type)
+            current = _variable_read_code(var_name, event_type, _applies_to(params))
             self._open_guard(f"if {current} {op} {_value_code(value)}:")
             return
 
@@ -2368,50 +2405,60 @@ class ActionCodeGenerator:
             value = (_num_code(raw, gm=True) if var_name in numeric_attrs
                      else _value_code(raw, gm=True))
 
-            # The NAME may carry a scope prefix -- the action's own parameter
-            # description offers "self.var, global.var, or bare names", and
-            # desktop honours all of them. This used to prepend `self.`
-            # unconditionally, so `self.coins` wrote to `self.self.coins` and
-            # `global.coins` emitted `self.global.coins`, which is a
-            # SyntaxError (`global` is reserved) that took the whole generated
-            # module's import with it.
+            # Who it applies to: the `scope` parameter (self / other / global) or GameMaker's
+            # "Applies to" `target`, as the desktop resolves them (see _applies_to) -- unless the
+            # NAME carries its own prefix, which the action's description also offers
+            # ("self.var, global.var, or bare names"). This used to prepend `self.`
+            # unconditionally, so `self.coins` wrote to `self.self.coins` and `global.coins`
+            # emitted `self.global.coins`, a SyntaxError (`global` is reserved) that took the
+            # whole generated module's import with it -- and the scope parameter was ignored.
             name = str(var_name).strip()
+            kind, object_name = _applies_to(params)
 
             target = _GLOBAL_REF_RE.fullmatch(name)
             if target:
-                key = target.group(1)
-                if relative:
-                    value = "%s + %s" % (_GLOBAL_READ.format(name=key), value)
-                return _GLOBAL_WRITE.format(name=key, value=value)
-
-            if name.startswith('self.'):
-                name = name[len('self.'):]
+                kind, name = 'global', target.group(1)
+            elif name.startswith('self.'):
+                kind, name = 'self', name[len('self.'):]
             elif name.startswith('other.'):
-                # `other` is a real name only inside a collision handler; the
-                # generator emits None for it everywhere else (see the
-                # other_expr sites), matching the runtime's
-                # _collision_other-or-None. Writing through None would raise,
-                # so drop the write the way the runtime silently does.
+                kind, name = 'other', name[len('other.'):]
+
+            if kind == 'global':
+                if relative:
+                    value = "%s + %s" % (_GLOBAL_READ.format(name=name), value)
+                return _GLOBAL_WRITE.format(name=name, value=value)
+
+            if kind == 'object':
+                if not object_name:
+                    return f"pass  # set_variable {var_name!r}: 'object' target with no object"
+                # Every live instance of that object (GM's "Applies to": an object).
+                return (f"self._set_var_all({object_name!r}, {name!r}, {value}, "
+                        f"{bool(relative)!r})")
+
+            holder = 'self'
+            if kind == 'other':
+                # `other` is a real name only inside a collision handler; the generator emits
+                # None for it everywhere else (see the other_expr sites), matching the runtime's
+                # _collision_other-or-None. Writing through None would raise, so drop the write
+                # the way the runtime silently does.
                 if 'collision' not in (event_type or ''):
                     return (f"pass  # set_variable {var_name!r}: 'other' only "
                             "exists in a collision event")
-                attr = name[len('other.'):]
-                if attr == 'y':
-                    # The author's y is down from the top; Kivy's y is up from the bottom.
-                    return (f"other.y -= {value}" if relative else f"other._set_gm_y({value})")
-                if relative:
-                    return (f"other.{attr} = getattr(other, {attr!r}, 0) "
-                            f"+ {value}")
-                return f"other.{attr} = {value}"
+                holder = 'other'
 
             if name == 'y':
-                # Moving DOWN (+) is a smaller Kivy y; an absolute y is the author's, converted.
-                return f"self.y -= {value}" if relative else f"self._set_gm_y({value})"
+                # The author's y is down from the top; Kivy's is up from the bottom: +y is DOWN
+                # (a smaller Kivy y), and an absolute y is converted.
+                return (f"{holder}.y -= {value}" if relative else f"{holder}._set_gm_y({value})")
+            if name == 'vspeed':
+                # The author's vspeed is positive DOWN; Kivy's is positive UP (set_vspeed flips on
+                # export the same way), so a jump written `vspeed = -8` went DOWN.
+                return (f"{holder}.vspeed -= {value}" if relative else f"{holder}.vspeed = -({value})")
             if name in numeric_attrs and relative:
-                return f"self.{name} += {value}"
+                return f"{holder}.{name} += {value}"
             if relative:
-                return f"self.{name} = getattr(self, {name!r}, 0) + {value}"
-            return f"self.{name} = {value}"
+                return f"{holder}.{name} = getattr({holder}, {name!r}, 0) + {value}"
+            return f"{holder}.{name} = {value}"
 
         elif action_type == 'comment':
             # GM comments are real (no-op) actions: they can be the guarded
