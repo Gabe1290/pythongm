@@ -19,10 +19,14 @@
 // inputs ("input" frames, arrows and space by default, bind_network_input to
 // change), exactly as the desktop client does. is_instance_owner is true for
 // that avatar, and true for everything while not in a session; remote_input is
-// host-side only. Still not available in a browser: host_game and
-// start_networked_game (a page cannot accept connections), network_spawn
-// (host-only), and sync_instance / set_instance_owner (one console warning
-// each). The shared-folder actions cannot work in a page at all.
+// host-side only. An instance PLACED IN THE ROOM and marked with sync_instance
+// takes part too: it gets the desktop's id (<object>#<ordinal>), follows the
+// host's copy, and runs here (reported up) when the host gave it to this player.
+// set_instance_owner is the host's decision: here it only sets the local owner,
+// which the next snapshot overrides, as on the desktop client. Still not
+// available in a browser: host_game and start_networked_game (a page cannot
+// accept connections) and network_spawn (host-only), one console warning each.
+// The shared-folder actions cannot work in a page at all.
 
 // ---------------------------------------------------------------------------
 // Pure helpers: mirror extensions/multiplayer_lan/state.py and replication.py
@@ -125,6 +129,11 @@ class MultiplayerClient {
         this._lastInput = null;
         this._lastInputAt = 0;
         this._lastOwnAt = 0;
+        // Room-placed instances registered by sync_instance: nid -> instance, with their ordinals
+        // counted per object in call order, for ONE room (a new room starts again).
+        this.synced = new Map();
+        this.syncOrd = {};
+        this._syncRoom = null;
     }
 
     // The bound named inputs whose key is held right now.
@@ -341,9 +350,15 @@ class MultiplayerClient {
     }
 
     _createGhost(nid, objectName) {
-        const g = { obj: objectName, vars: {}, owner: null, samples: [], inst: null };
+        const g = { obj: objectName, vars: {}, owner: null, samples: [], inst: null, registered: false };
         this.ghosts.set(nid, g);
-        this._spawnGhostInstance(nid, g);
+        const placed = this.synced.get(nid);
+        if (placed && !placed.toDestroy) {
+            g.inst = placed;               // the room's own instance stands in: no duplicate puppet
+            g.registered = true;
+        } else {
+            this._spawnGhostInstance(nid, g);
+        }
         return g;
     }
 
@@ -458,16 +473,25 @@ registerFrameUpdate(function mpFrameUpdate(game) {
     const renderTime = performance.now() - client.interpDelayMs;
     const ownRows = [];
     for (const [nid, g] of client.ghosts) {
-        if (!g.inst) continue;
+        if (!g.inst || g.inst.toDestroy) continue;
         g.inst._netOwner = (g.owner === null || g.owner === undefined) ? 0 : g.owner;
         if (client.connected && g.owner === client.playerId) {
             // Mine: promoted from a puppet to a locally simulated avatar. Its
             // own events move it; this page is the authority for it now.
             g.local = true;
-            ownRows.push({
+            const row = {
                 nid: nid, x: g.inst.x, y: g.inst.y, r: g.inst.rotation || 0,
                 f: g.inst.image_index || 0, v: g.inst.visible !== false,
-            });
+            };
+            const listed = g.inst._netSyncVars;
+            if (listed && listed.length) {
+                const values = {};
+                for (const name of listed) {
+                    if (pyIsPlain(g.inst[name])) values[name] = g.inst[name];
+                }
+                if (Object.keys(values).length) row.vars = values;
+            }
+            ownRows.push(row);
             continue;
         }
         if (g.local) continue;           // lost the host: still mine, keep it running
@@ -479,11 +503,15 @@ registerFrameUpdate(function mpFrameUpdate(game) {
         g.inst.rotation = r;
         g.inst.image_index = f;
         g.inst.visible = v;
+        // Replicated variables: plain values under an AUTHOR's name only -- never the engine's own
+        // attributes (events, alarms, a method) -- and, for a room-placed instance, only the names the
+        // author listed in sync_instance.
+        const listedNames = g.registered ? (g.inst._netSyncVars || []) : null;
         for (const key of Object.keys(g.vars)) {
             const val = g.vars[key];
-            if (typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean') {
-                g.inst[key] = val;
-            }
+            if (!pyIsAuthorVar(key) || !pyIsPlain(val)) continue;
+            if (listedNames && listedNames.indexOf(key) < 0) continue;
+            g.inst[key] = val;
         }
     }
     if (client.connected) {
@@ -574,11 +602,52 @@ function _mpWarnOnce(name, why) {
     _mpUnsupportedWarned.add(name);
     console.warn('multiplayer: ' + name + ' is not available in the HTML5 export. ' + why);
 }
-for (const name of ['network_spawn', 'sync_instance', 'set_instance_owner']) {
-    registerExtensionAction(name, () => _mpWarnOnce(name,
-        'Only the host creates and assigns networked instances; a browser player '
-        + 'controls the avatar the host gave it.'));
-}
+registerExtensionAction('network_spawn', () => _mpWarnOnce('network_spawn',
+    'Only the host creates networked instances; a browser player controls the avatar the host gave it.'));
+
+// Mark a ROOM-PLACED instance as networked. Its id is <object>#<ordinal> -- the ordinal counted per room
+// per object in the order this runs -- so every machine that loads the same room and runs its create
+// events in the same order agrees on it with no negotiation (the desktop's own scheme). It follows the
+// host's copy unless this player owns it. With no session it does nothing, as on desktop.
+registerExtensionAction('sync_instance', (inst, params, game) => {
+    const client = game._multiplayerClient;
+    if (!client || !client.ws) return;
+    if (client._syncRoom !== game.currentRoom) {     // a new room: its own registry and ordinals
+        client.synced.clear();
+        client.syncOrd = {};
+        client._syncRoom = game.currentRoom;
+    }
+    let nid = inst._netId;
+    if (!nid) {
+        const count = client.syncOrd[inst.name] || 0;
+        client.syncOrd[inst.name] = count + 1;
+        nid = inst.name + '#' + count;
+    }
+    inst._netId = nid;
+    if (inst._netOwner === undefined || inst._netOwner === null) inst._netOwner = 0;
+    const listed = String(params.vars === undefined || params.vars === null ? '' : params.vars)
+        .split(',').map(n => n.trim()).filter(n => n);
+    if (listed.length) inst._netSyncVars = listed;
+    client.synced.set(nid, inst);
+    // A snapshot may have arrived first and spawned a puppet for this id: the room's own
+    // instance replaces it.
+    const existing = client.ghosts.get(nid);
+    if (existing && !existing.registered) {
+        if (existing.inst) existing.inst.toDestroy = true;
+        existing.inst = inst;
+        existing.registered = true;
+        existing.local = false;
+    }
+});
+
+// The host decides who drives an instance, so in a browser this only sets the local owner, which the
+// next snapshot overrides -- exactly the desktop client's behaviour.
+registerExtensionAction('set_instance_owner', (inst, params, game) => {
+    const client = game._multiplayerClient;
+    if (!client || !client.ws) return;
+    const player = Math.trunc(parseNumParam(params.player, inst, 0));
+    inst._netOwner = isFinite(player) ? player : 0;
+});
 // The shared-folder extension: a page cannot read or write a shared folder.
 for (const name of ['host_game_files', 'join_game_files', 'leave_game_files',
     'set_shared_var_files', 'get_shared_var_files', 'send_network_message_files', 'end_turn']) {

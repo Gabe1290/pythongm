@@ -1367,3 +1367,8 @@ the room's own instance stands in for the ghost the snapshot would otherwise spa
 the local `_net_owner` on a client (the host decides; the next snapshot overrides it), as on desktop. Only
 `host_game`, `start_networked_game`, `set_network_mode` and `network_spawn` stay host-only warnings on a phone.
 
+The HTML5 client got the same two actions the same day (`export_html5.js`; tests
+`tests/test_html5_multiplayer_sync_instance.py`). Replicated variables are now applied to a puppet only under an
+author's name -- never the engine's own attributes -- and to a room-placed instance only under the names listed in
+`sync_instance`.
+

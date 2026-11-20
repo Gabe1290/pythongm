@@ -43,9 +43,10 @@ def test_ownership_questions_and_input_actions_are_registered():
     for name in ("host_game_files", "join_game_files", "leave_game_files", "set_shared_var_files",
                  "get_shared_var_files", "send_network_message_files", "end_turn"):
         assert f"'{name}'" in JS
-    # bind_network_input / set_sync_rate are real now, no longer in the "unsupported" loop
-    loop = re.search(r"for \(const name of \['network_spawn'.*?\]\)", JS, re.S).group(0)
-    assert "bind_network_input" not in loop and "set_sync_rate" not in loop
+    # bind_network_input / set_sync_rate / sync_instance / set_instance_owner are real now; only network_spawn
+    # (the host creates networked instances) is still a warning
+    assert "registerExtensionAction('network_spawn', () => _mpWarnOnce('network_spawn'," in JS
+    assert "registerExtensionAction('sync_instance'" in JS and "registerExtensionAction('set_instance_owner'" in JS
 
 
 # -- real browser against a real host (dev box only) ---------------------------------

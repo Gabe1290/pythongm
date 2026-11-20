@@ -2169,9 +2169,7 @@ lines rather than matching their text.
   it (no duplicate ghost); if the host gave it to this player it runs here and is reported up with its listed
   variables. `set_instance_owner` is the host's decision, so on a phone it only sets the local `_net_owner`, which
   the next snapshot overrides -- exactly the desktop client's behaviour. Like desktop, `sync_instance` with no session
-  registers nothing (join first, then enter the room), and a new room starts its own registry. **Still open:** the
-  HTML5 export has neither action (`network_spawn`, `host_game` and `start_networked_game` stay host-only on both
-  exports). The wiki `Network` pages were updated in nine languages (the eight non-fr ones have had no native-speaker
+  registers nothing (join first, then enter the room), and a new room starts its own registry. **HTML5 DONE the same day** (`tests/test_html5_multiplayer_sync_instance.py`, 11 tests against a real desktop host in Chromium): the browser client registers a room-placed instance under the same `<object>#<ordinal>` id, the instance stands in for the puppet (also when a snapshot arrived first and a puppet was already spawned), follows the host's copy, and runs in the page and is reported up when the host gave it to this player; `set_instance_owner` only sets the local owner. Hardened on the way: a replicated variable is now applied only under an AUTHOR's name (never the engine's own attributes -- a hostile or buggy host row could set `events` or `toDestroy`), and for a room-placed instance only the names the author listed. Only `network_spawn`, `host_game` and `start_networked_game` stay host-only on both exports. The wiki `Network` pages were updated in nine languages (the eight non-fr ones have had no native-speaker
   read).
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
