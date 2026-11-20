@@ -5,7 +5,7 @@ Reseau events; the host's networked instances as interpolated ghosts; the avatar
 with own/input frames and named input; room-placed instances marked with sync_instance) and can
 HOST one (host_game, start_networked_game, network_spawn, host-owned sync_instance,
 set_instance_owner, remote_input, and the older set_network_mode). Not on a phone: the waiting-room
-screen and the discovery beacon -- see kivy_glue.py. The desktop session code is shipped verbatim
+screen -- see kivy_glue.py (LAN discovery, beacon and join_game 'auto', does work). The desktop session code is shipped verbatim
 as the ``mp_lan`` package, so the wire protocol is the host's own.
 
 The extension loader ``exec``s this file without ``__file__``, so everything here
@@ -21,6 +21,7 @@ SUPPORT_FILES = {
     "mp_lan/replication.py": "replication.py",
     "mp_lan/ws_transport.py": "ws_transport.py",
     "mp_lan/session.py": "session.py",
+    "mp_lan/discovery.py": "discovery.py",
     "mp_lan/glue.py": "kivy_glue.py",
 }
 
@@ -97,7 +98,8 @@ def _cg_host_game(gen, params, event_type):
     num, _ = _helpers()
     return ("from mp_lan.glue import host; "
             f"host({num(params.get('port'), 45782)}, {_raw(params, 'player_name')!r}, "
-            f"{num(params.get('max_players'), 8)}, {_truthy(params.get('show_lobby'))!r})")
+            f"{num(params.get('max_players'), 8)}, {_truthy(params.get('show_lobby'))!r}, "
+            f"{_raw(params, 'game_name', 'PyGameMaker')!r})")
 
 
 def _cg_start_networked_game(gen, params, event_type):

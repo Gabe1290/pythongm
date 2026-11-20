@@ -26,9 +26,11 @@ as it is): ``host_game`` starts it, ``start_networked_game`` ends the waiting ro
 ``network_spawn`` creates a networked instance for everyone (with an owner), ``sync_instance`` marks
 a room-placed instance as host-owned, ``set_instance_owner`` hands one to a player, and
 ``remote_input`` asks what a player is holding. What a phone does NOT have is the desktop's waiting-
-room screen and the discovery beacon (``show_lobby`` is ignored; a joiner types the host's address,
-which the game can read from the global ``host_address``), and phones on a school's guest Wi-Fi are
-often isolated from each other, so hosting there may be unreachable. ``set_network_mode`` is the
+room screen (``show_lobby`` is ignored; the game can read the global ``host_address`` to show
+players where to join). LAN discovery works as on the desktop: a hosting phone broadcasts the same UDP
+beacon, and ``join_game`` with host ``auto`` listens for one and joins the first host with a free slot
+(no picker screen -- it gives up after AUTO_TIMEOUT seconds). Discovery is best effort: phones on a
+school's guest Wi-Fi are often isolated from each other, so it, and hosting itself, may not work there. ``set_network_mode`` is the
 older spectator mode (the host's positions are copied to a joiner's instances).
 
 This module is pure Python and duck-typed against the Kivy scene (``instances``,
@@ -52,6 +54,11 @@ _sync_ord = {}       # object name -> how many sync_instance calls so far in _sy
 _sync_scene = None   # the scene the two above belong to
 _host_synced = {}    # HOST: nid -> instance (sync_instance / network_spawn) replicated to every client
 _v1 = None           # the older spectator mode (set_network_mode): {"mode", "net", "scene"}
+_beacon = None       # HOST: the discovery beacon (a daemon thread broadcasting once a second)
+_auto = None         # join_game('auto') waiting for a beacon: {"listener", "name", "deadline"}
+AUTO_TIMEOUT = 20.0  # seconds join_game('auto') listens before it gives up
+_discovery_port = None   # None = the protocol's own UDP port (tests use another)
+_beacon_target = None    # None = broadcast; tests aim it at 127.0.0.1
 _warned = set()
 _interp_ms = None    # set_sync_rate's interpolation delay, applied to every session
 
@@ -113,16 +120,84 @@ def unsupported(name):
 
 # -- lifecycle -------------------------------------------------------------------
 
+def _start_beacon(game_name, tcp_port, max_players):
+    global _beacon
+    try:
+        from .discovery import DiscoveryBeacon
+        kwargs = {"target": (_beacon_target[0], _beacon_target[1])} if _beacon_target else {}
+        beacon = DiscoveryBeacon(game_name, tcp_port, players=1, max_players=max_players, **kwargs)
+        beacon.start()
+        _beacon = beacon
+    except Exception as exc:                       # best effort: hosting works without it
+        log.debug("multiplayer: discovery beacon unavailable: %s", exc)
+
+
+def _stop_discovery():
+    global _beacon, _auto
+    beacon, _beacon = _beacon, None
+    if beacon is not None:
+        try:
+            beacon.stop()
+        except Exception:
+            pass
+    auto, _auto = _auto, None
+    if auto is not None:
+        try:
+            auto["listener"].stop()
+        except Exception:
+            pass
+
+
+def _start_auto(player_name):
+    """join_game('auto'): listen for a host's beacon; update() joins the first one with a free slot."""
+    global _auto
+    if _auto is not None:
+        return
+    try:
+        from .discovery import DiscoveryListener
+        kwargs = {"port": _discovery_port} if _discovery_port else {}
+        listener = DiscoveryListener(**kwargs)
+        listener.start()
+    except Exception as exc:
+        _warn_once("join_game(host='auto')", "LAN discovery could not start here (%s); pass the host's address" % exc)
+        return
+    _auto = {"listener": listener, "name": player_name, "deadline": time.monotonic() + AUTO_TIMEOUT}
+
+
+def _poll_auto():
+    global _auto
+    auto = _auto
+    found = [s for s in auto["listener"].servers() if s.get("players", 0) < s.get("max", 0) or not s.get("max")]
+    if found:
+        _auto = None
+        try:
+            auto["listener"].stop()
+        except Exception:
+            pass
+        _connect(found[0]["ip"], found[0]["port"], auto["name"])
+    elif time.monotonic() > auto["deadline"]:
+        _auto = None
+        try:
+            auto["listener"].stop()
+        except Exception:
+            pass
+        _warn_once("join_game(host='auto')/none", "no host was found on this network within %d seconds; "
+                                                  "pass the host's address" % AUTO_TIMEOUT)
+
+
 def join(host, port, player_name):
     """join_game: connect to a desktop host over TCP. Never raises."""
-    global _session
-    if _session is not None or _v1 is not None:
+    if _session is not None or _v1 is not None or _auto is not None:
         return
     host = str(host or "").strip() or "127.0.0.1"
     if host == "auto":
-        _warn_once("join_game(host='auto')",
-                   "LAN discovery is not available on a phone; pass the host's address")
+        _start_auto(str(player_name or "").strip() or "Joueur")
         return
+    _connect(host, port, player_name)
+
+
+def _connect(host, port, player_name):
+    global _session
     from .session import NetworkSession
     from .state import DEFAULT_PORT
     try:
@@ -152,6 +227,7 @@ def join(host, port, player_name):
 def leave(scene=None):
     """leave_game: close the session, drop the ghosts, clear the identity globals."""
     global _session, _v1
+    _stop_discovery()
     s, _session = _session, None
     if s is not None:
         try:
@@ -302,11 +378,15 @@ def update(scene):
     """Pump the connection, mirror state into globals, fire the lifecycle events
     on the scene's instances, and keep the ghosts in step. Called once a frame
     from the scene's extension hook; a no-op until join_game."""
+    if _auto is not None:
+        _poll_auto()
     s = _session
     if s is None:
         if _v1 is not None:
             _update_v1(scene)
         return
+    if _beacon is not None and s.mode == "host":
+        _beacon.update(players=s.player_count, max_players=s.max_players)
     s.pump_before_step()
     _apply_state(scene, s)
     if s.mode == "host":
@@ -557,7 +637,7 @@ def _lan_address(port):
     return "%s:%d" % (ip, port)
 
 
-def host(port, player_name, max_players, show_lobby=False):
+def host(port, player_name, max_players, show_lobby=False, game_name="PyGameMaker"):
     """host_game: listen for players. Never raises (a busy port is logged and the game goes on)."""
     global _session
     if _session is not None or _v1 is not None:
@@ -592,6 +672,7 @@ def host(port, player_name, max_players, show_lobby=False):
                             "(read the global host_address to show players where to join)")
     _session = session
     _host_synced.clear()
+    _start_beacon(str(game_name or "").strip() or "PyGameMaker", session.bound_port, session.max_players)
     if _interp_ms is not None:
         _session.set_sync_rate(20.0, _interp_ms)
     try:

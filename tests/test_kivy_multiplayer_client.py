@@ -54,7 +54,7 @@ def export_dir():
 def test_the_session_modules_and_glue_are_shipped(export_dir):
     shipped = {p.name for p in (export_dir / "mp_lan").glob("*.py")}
     assert shipped == {"__init__.py", "state.py", "framing.py", "network.py", "replication.py",
-                       "ws_transport.py", "session.py", "glue.py"}
+                       "ws_transport.py", "session.py", "discovery.py", "glue.py"}
     ext = ROOT / "extensions" / "multiplayer_lan"
     for name in ("state", "framing", "network", "replication", "ws_transport", "session"):
         assert (export_dir / "mp_lan" / f"{name}.py").read_bytes() == (ext / f"{name}.py").read_bytes()
@@ -66,7 +66,7 @@ def test_generated_code_calls_the_glue_and_every_module_compiles(export_dir):
     quiz = (export_dir / "objects" / "obj_quiz.py").read_text(encoding="utf-8")
     assert "from mp_lan.glue import join; join('auto', 45782, '')" in quiz
     assert "from mp_lan.glue import send_message; send_message('reponse', 'A', 'host')" in quiz
-    assert "from mp_lan.glue import host; host(45782, '', 4, True)" in quiz            # a phone can host now
+    assert "from mp_lan.glue import host; host(45782, '', 4, True, 'Quiz de classe')" in quiz            # a phone can host now
     assert "def on_network_message(self):" in quiz and "def on_network_game_started(self):" in quiz
     scene = (export_dir / "scenes" / "room0.py").read_text(encoding="utf-8")
     assert "def _ext_update__multiplayer_lan(self, dt):" in scene
@@ -405,8 +405,6 @@ def test_what_a_phone_cannot_do_warns_once_and_changes_nothing(glue):
         g.unsupported("host_game")
         g.unsupported("network_spawn")
         assert {"host_game", "network_spawn"} <= g._warned and not g.active()
-        g.join("auto", 45782, "Ada")                         # LAN discovery is desktop-only
-        assert not g.active()
         _join(g, scene, host)
         assert g.is_owner(object()) is False                 # in a session a phone owns nothing
         g.leave()

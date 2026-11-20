@@ -1381,3 +1381,10 @@ unsupported network action. Missing on a phone: the waiting-room screen and the 
 reads the global `host_address`). Tests: `tests/test_kivy_multiplayer_host.py`. HTML5 stays client-only -- a browser
 page cannot accept connections.
 
+## Addendum 2026-11-20 (5) -- discovery on a phone
+
+`mp_lan/discovery.py` is shipped with the Kivy export. A hosting phone runs the beacon; `join_game` with host
+`auto` runs the listener from `update()` and joins the first host with a free slot (no picker; gives up after
+`AUTO_TIMEOUT`, 20 s, with one warning). Still missing on a phone: the waiting-room screen (`host_address` instead).
+Tests: `tests/test_kivy_multiplayer_discovery.py`.
+

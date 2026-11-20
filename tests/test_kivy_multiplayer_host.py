@@ -399,7 +399,7 @@ def test_the_generated_code_for_the_host_actions(export_dir):
     gen = ActionCodeGenerator()
     code = lambda a, p: gen._convert_simple_action(a, p, "create")  # noqa: E731
     assert code("host_game", {"port": 4000, "player_name": "Prof", "max_players": 6, "show_lobby": True}) == \
-        "from mp_lan.glue import host; host(4000, 'Prof', 6, True)"
+        "from mp_lan.glue import host; host(4000, 'Prof', 6, True, 'PyGameMaker')"
     assert code("start_networked_game", {}) == "from mp_lan.glue import start_networked_game; start_networked_game()"
     assert code("set_network_mode", {"mode": "client", "host": "10.0.0.5", "port": 4000}) == \
         "from mp_lan.glue import set_network_mode; set_network_mode('client', '10.0.0.5', 4000)"
