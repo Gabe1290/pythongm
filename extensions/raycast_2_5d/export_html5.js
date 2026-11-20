@@ -143,6 +143,11 @@ Object.assign(GameRoom.prototype, {
         // 2026-10-06) so a solid instance created/destroyed at runtime shows
         // up immediately instead of only on room re-entry/cell_size change.
         this.buildRaycastWalls(cellSize);
+        // Stairs (S10): the floor-height map, rebuilt every frame like the
+        // walls. Empty -> the single-hit path below, unchanged.
+        const floorMap = this.buildFloorHeights(cellSize, raycastMaxFloorHeight(cellSize, wallH));
+        const heights = floorMap.heights;
+        const stairs = heights.size > 0;
 
         const w = ctx.canvas.width, h = ctx.canvas.height;
         // DOOM-bar letterbox: the 3D view occupies only the top viewH px; the
@@ -164,6 +169,15 @@ Object.assign(GameRoom.prototype, {
         const camTL = GameRoom.spriteTopLeft(camera);
         const camX = camTL.x + camera.boxWidth() / 2;
         const camY = camTL.y + camera.boxHeight() / 2;
+        // Eye height: the floor under the camera (eased by the climbing hook)
+        // plus the eye height.
+        let floorZ = 0;
+        if (stairs) {
+            floorZ = (typeof this._raycastEyeFloor === 'number') ? this._raycastEyeFloor
+                : (heights.get(Math.floor(camX / cellSize) + ',' + Math.floor(camY / cellSize)) || 0);
+        }
+        const eyeZ = floorZ + RAYCAST_EYE_HEIGHT * cellSize;
+        const eyeCells = eyeZ / cellSize;
 
         const wallColor = cfg.wall_color || '#993333';
         const fovRad = (cfg.fov || 66) * Math.PI / 180;
@@ -196,7 +210,7 @@ Object.assign(GameRoom.prototype, {
         const castRes = Math.max(1, Math.floor(cfg.floor_cast_res || 4));
         const floorTex = cfg.floor_texture ? this._textureData(sprites[cfg.floor_texture]) : null;
         const camCx = camX / cellSize, camCy = camY / cellSize;
-        if (floorTex) {
+        if (floorTex && !stairs) {      // stairs rooms: castStairsFloor, below
             this.castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false, viewH);
         }
         const ceilTex = (cfg.ceiling_texture && !skyTex)
@@ -204,7 +218,7 @@ Object.assign(GameRoom.prototype, {
         if (ceilTex) {
             // The ceiling plane is the top of the walls: (wallH - eye) above the eye.
             this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true, viewH,
-                                wallH - RAYCAST_EYE_HEIGHT);
+                                stairs ? wallH - eyeCells : wallH - RAYCAST_EYE_HEIGHT);
         }
 
         // CAMERA-PLANE projection (not uniform-angle) — screen columns are
@@ -216,9 +230,26 @@ Object.assign(GameRoom.prototype, {
         // game_runner and the floor cast.
         const planeTan = Math.tan(fovRad / 2);
         const colWallDist = new Array(numCols).fill(Infinity);  // for billboard occlusion
+        const stairsLayouts = [];
+        const sf = stairs ? {
+            stepTextures: floorMap.textures, sprites, camX, camY, eyeZ, floorZ,
+            cellSize, halfH, viewH, colWidth, textured, wallTex, wallColor,
+            floorColor: cfg.floor_color || '#464632', maxDist: renderDist * cellSize,
+        } : null;
         for (let col = 0; col < numCols; col++) {
             const cameraX = 2.0 * (col + 0.5) / numCols - 1.0;
             const rayOffset = Math.atan(planeTan * cameraX);
+            if (stairs) {
+                const cosOff = Math.cos(rayOffset);
+                const rs = this.castRaySteps(camX, camY, facingScreenRad + rayOffset, cellSize,
+                                             renderDist, heights);
+                const lay = raycastLayoutColumn(rs.crossings, rs.hit, floorZ, eyeZ,
+                                                wallH * cellSize, cellSize, cosOff, halfH, viewH,
+                                                renderDist);
+                stairsLayouts.push(lay);
+                colWallDist[col] = lay.wallDist;
+                continue;
+            }
             const r = this.castRay(camX, camY, facingScreenRad + rayOffset, cellSize, renderDist);
             if (!r.hit) continue;  // open sight-line: leave floor/ceiling/sky showing
             const corrected = r.dist * Math.cos(rayOffset);  // fisheye correction
@@ -273,12 +304,31 @@ Object.assign(GameRoom.prototype, {
             }
         }
 
+        if (stairs) {
+            // Floor cast (textured floor or any step top texture), then
+            // risers + walls at full resolution on top.
+            const topTex = new Map();
+            for (const [key, tex] of floorMap.textures) {
+                const td = tex[0] ? this._textureData(sprites[tex[0]]) : null;
+                if (td) topTex.set(key, td);
+            }
+            const floorCast = !!floorTex || topTex.size > 0;
+            if (floorCast) {
+                this.castStairsFloor(ctx, stairsLayouts, sf, floorTex, topTex, facingScreenRad,
+                                     fovRad, castRes);
+            }
+            for (let col = 0; col < stairsLayouts.length; col++) {
+                this.drawStairsColumn(ctx, sf, col, stairsLayouts[col], floorCast);
+            }
+        }
+
         // Billboard sprites (Phase 6 port): every visible, non-solid, sprited
         // instance as a camera-facing sprite scaled by distance, with real
         // per-column occlusion against colWallDist (farthest-first).
         const billboards = [];
         for (const inst of this.instances) {
             if (inst === camera || !inst.visible || !inst.sprite || inst.solid) continue;
+            if (raycastIsStep(inst)) continue;   // a step is floor, not a cutout
             if (!inst.sprite.complete || inst.sprite.width <= 0) continue;
             const bTL = GameRoom.spriteTopLeft(inst);
             const bx = bTL.x + inst.boxWidth() / 2, by = bTL.y + inst.boxHeight() / 2;
@@ -305,7 +355,14 @@ Object.assign(GameRoom.prototype, {
             const bCameraX = planeTan ? Math.tan(b.relAngle) / planeTan : 0;
             const colCenter = (bCameraX + 1) * 0.5 * numCols;
             const xLeft = Math.floor(colCenter * colWidth - spriteW / 2);
-            const yTopF = halfH - fullH / 2;
+            let yTopF = halfH - fullH / 2;
+            if (stairs) {
+                // Stands on the floor of its own cell (renderer.py, S7).
+                const bFloor = heights.get(Math.floor(b.bx / cellSize) + ',' +
+                                           Math.floor(b.by / cellSize)) || 0;
+                yTopF += (eyeZ - (bFloor + RAYCAST_EYE_HEIGHT * cellSize)) * viewH /
+                    Math.max(b.corr, 1e-4);
+            }
             const by0 = Math.max(0, Math.floor(yTopF));
             const by1 = Math.min(viewH, Math.ceil(yTopF + fullH));
             const bVisH = by1 - by0;
@@ -342,7 +399,17 @@ Object.assign(GameRoom.prototype, {
                 const colIdx = Math.min(numCols - 1, Math.max(0, Math.floor(screenX / colWidth)));
                 if (b.corr < colWallDist[colIdx]) {  // unoccluded by a nearer wall
                     const srcX = srcXBase + Math.min(fw - 1, Math.floor(sx / spriteW * fw));
-                    ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH);
+                    if (stairs) {
+                        // Steps nearer than it hide its lower rows (S7).
+                        const limit = raycastClipBefore(stairsLayouts[colIdx].occluders, b.corr, viewH);
+                        const colH = Math.min(bVisH, limit - by0);
+                        if (colH > 0) {
+                            ctx.drawImage(img, srcX, bSrcY, 1, bSrcH * colH / bVisH,
+                                          screenX, by0, 1, colH);
+                        }
+                    } else {
+                        ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH);
+                    }
                 }
             }
         }
@@ -441,6 +508,420 @@ Object.assign(GameRoom.prototype, {
         }
     }
 });
+
+// ===========================================================================
+// Stairs (docs/RAYCAST_STAIRS_PLAN.md, S10): the HTML5 port of renderer.py's
+// stairs path, heights.py and climbing.py. Same names, same order, same
+// arithmetic -- tests/test_html5_raycast_stairs.py runs this in Chromium
+// against the Python originals.
+// ===========================================================================
+
+// Room px kept between the eye and the ceiling (heights.CEILING_MARGIN).
+const RAYCAST_CEILING_MARGIN = 4.0;
+const RAYCAST_DEFAULT_MAX_STEP = 12.0;   // climbing.DEFAULT_MAX_STEP
+const RAYCAST_CLIMB_SPEED = 2.0;         // climbing.CLIMB_SPEED
+const RAYCAST_FALL_GRAVITY = 0.6;        // climbing.FALL_GRAVITY
+
+function raycastIsStep(inst) {
+    return inst.raycast_floor_height !== undefined && inst.raycast_floor_height !== null;
+}
+
+function raycastMaxFloorHeight(cellSize, wallH) {
+    return Math.max(0, (wallH - RAYCAST_EYE_HEIGHT) * cellSize - RAYCAST_CEILING_MARGIN);
+}
+
+// renderer.stairs_y: screen row of world height z at corrected distance d.
+function raycastStairsY(z, eyeZ, d, halfH, viewH) {
+    return halfH + (eyeZ - z) * viewH / d;
+}
+
+// renderer._row: the screen row a float boundary falls on.
+function raycastRow(y) {
+    return Math.floor(y + 0.5);
+}
+
+// renderer.layout_column, verbatim. crossings: [distCells, hNext, side,
+// texU, cellKey] arrays; hit: {dist, side, hit, texU, sprite}.
+function raycastLayoutColumn(crossings, hit, h0, eyeZ, wallTopZ, cellSize, cosOff,
+                             halfH, viewH, maxCells) {
+    let clip = viewH;
+    const treads = [], risers = [], occluders = [];
+    let hCur = h0, dPrev = 0.0;
+    for (const c of crossings) {
+        const d = Math.max(c[0] * cellSize * cosOff, 1e-4);
+        const yCur = raycastStairsY(hCur, eyeZ, d, halfH, viewH);
+        if (yCur < clip) {
+            treads.push([yCur, clip, hCur, dPrev]);
+            clip = yCur;
+        }
+        if (c[1] > hCur) {
+            const yTop = raycastStairsY(c[1], eyeZ, d, halfH, viewH);
+            if (yTop < clip) {
+                risers.push([yTop, clip, d, c[2], c[3], c[4], hCur, c[1]]);
+                clip = yTop;
+            }
+        }
+        occluders.push([d, clip]);
+        hCur = c[1];
+        dPrev = d;
+        if (clip <= 0) {
+            return { treads, risers, wall: null, occluders, wallDist: Infinity };
+        }
+    }
+    let d = Math.max(hit.dist * cosOff, 1e-4);
+    if (!hit.hit) d = Math.max(maxCells * cellSize * cosOff, 1e-4);
+    const yCur = raycastStairsY(hCur, eyeZ, d, halfH, viewH);
+    if (yCur < clip) {
+        treads.push([yCur, clip, hCur, dPrev]);
+        clip = yCur;
+    }
+    let wall = null;
+    if (hit.hit) {
+        const yTop = raycastStairsY(wallTopZ, eyeZ, d, halfH, viewH);
+        if (yTop < clip) wall = [yTop, clip, d, hit.side, hit.texU, hit.sprite];
+        occluders.push([d, Math.min(clip, yTop)]);
+    }
+    return { treads, risers, wall, occluders, wallDist: hit.hit ? d : Infinity };
+}
+
+// renderer._clip_before: first hidden row, in one column, for something at
+// corrected distance dist.
+function raycastClipBefore(occluders, dist, viewH) {
+    let limit = viewH;
+    for (const o of occluders) {
+        if (o[0] >= dist) break;
+        limit = o[1];
+    }
+    return raycastRow(limit);
+}
+
+// hud.blend_hex (Python round() is banker's rounding -- mirrored).
+function raycastPyRound(x) {
+    const f = Math.floor(x), diff = x - f;
+    if (diff > 0.5) return f + 1;
+    if (diff < 0.5) return f;
+    return (f % 2 === 0) ? f : f + 1;
+}
+function raycastParseHex(colour) {
+    if (typeof colour !== 'string') return null;
+    let c = colour.trim().replace(/^#+/, '');
+    if (c.length === 3) c = c.split('').map(ch => ch + ch).join('');
+    if (c.length !== 6 || !/^[0-9a-fA-F]{6}$/.test(c)) return null;
+    return [0, 2, 4].map(i => parseInt(c.slice(i, i + 2), 16));
+}
+function raycastBlendHex(a, b, t) {
+    const ca = raycastParseHex(a), cb = raycastParseHex(b);
+    if (!ca || !cb) return b;
+    return '#' + ca.map((x, i) => raycastPyRound(x + (cb[i] - x) * t)
+        .toString(16).padStart(2, '0')).join('');
+}
+
+Object.assign(GameRoom.prototype, {
+    // heights.build_floor_heights: raised cells from the step instances.
+    // Returns {heights: Map key->h, textures: Map key->[top, side]} and keeps
+    // the height map on the room (the minimap and climbing read it).
+    buildFloorHeights(cellSize, maxHeight) {
+        const heights = new Map(), textures = new Map();
+        for (const inst of this.instances) {
+            if (!raycastIsStep(inst) || inst.solid) continue;
+            let hgt = Number(inst.raycast_floor_height);
+            if (!isFinite(hgt)) hgt = 0;
+            if (hgt < 0 || hgt > maxHeight) {
+                const clamped = Math.min(Math.max(hgt, 0), maxHeight);
+                if (!inst._raycastHeightWarned) {
+                    inst._raycastHeightWarned = true;
+                    console.warn('set_floor_height: height ' + hgt + ' clamped to ' + clamped);
+                }
+                hgt = clamped;
+            }
+            if (hgt <= 0) continue;
+            const tl = GameRoom.spriteTopLeft(inst);
+            const bw = inst.boxWidth(), bh = inst.boxHeight();
+            const gx0 = Math.floor(tl.x / cellSize), gy0 = Math.floor(tl.y / cellSize);
+            const gx1 = bw > 0 ? Math.floor((tl.x + bw) / cellSize - 1e-9) : gx0;
+            const gy1 = bh > 0 ? Math.floor((tl.y + bh) / cellSize - 1e-9) : gy0;
+            const tex = [inst.raycast_step_top_texture || '', inst.raycast_step_side_texture || ''];
+            for (let gx = gx0; gx <= Math.max(gx0, gx1); gx++) {
+                for (let gy = gy0; gy <= Math.max(gy0, gy1); gy++) {
+                    const key = gx + ',' + gy;
+                    if (hgt > (heights.get(key) || 0)) {
+                        heights.set(key, hgt);
+                        textures.set(key, tex);
+                    }
+                }
+            }
+        }
+        this._raycastFloorHeights = heights;
+        return { heights, textures };
+    },
+
+    // renderer.cast_ray_steps: castRay, also recording each change of floor
+    // height. Its wall result equals castRay's for the same ray.
+    castRaySteps(px, py, angleRad, cellSize, maxCells, heights) {
+        const pxCell = px / cellSize, pyCell = py / cellSize;
+        const dx = Math.cos(angleRad), dy = Math.sin(angleRad);
+        let mapX = Math.floor(pxCell), mapY = Math.floor(pyCell);
+        const deltaX = dx !== 0 ? Math.abs(1 / dx) : 1e30;
+        const deltaY = dy !== 0 ? Math.abs(1 / dy) : 1e30;
+        let stepX, sideX, stepY, sideY;
+        if (dx < 0) { stepX = -1; sideX = (pxCell - mapX) * deltaX; }
+        else { stepX = 1; sideX = (mapX + 1 - pxCell) * deltaX; }
+        if (dy < 0) { stepY = -1; sideY = (pyCell - mapY) * deltaY; }
+        else { stepY = 1; sideY = (mapY + 1 - pyCell) * deltaY; }
+        const crossings = [];
+        let hPrev = heights.get(mapX + ',' + mapY) || 0;
+        let side = 0;
+        for (let i = 0; i < maxCells; i++) {
+            let key, hit;
+            if (sideX < sideY) {
+                sideX += deltaX; mapX += stepX; side = 0;
+                key = (stepX > 0 ? mapX : mapX + 1) + ',' + mapY;
+                hit = this._vWalls.has(key);
+            } else {
+                sideY += deltaY; mapY += stepY; side = 1;
+                key = mapX + ',' + (stepY > 0 ? mapY : mapY + 1);
+                hit = this._hWalls.has(key);
+            }
+            const dCells = side === 0 ? (sideX - deltaX) : (sideY - deltaY);
+            let wallCoord;
+            if (side === 0) {
+                wallCoord = pyCell + dCells * dy;
+                if (dx > 0) wallCoord = -wallCoord;
+            } else {
+                wallCoord = pxCell + dCells * dx;
+                if (dy < 0) wallCoord = -wallCoord;
+            }
+            const texU = wallCoord - Math.floor(wallCoord);
+            if (hit) {
+                const sprite = side === 0 ? this._vWallSprites.get(key) : this._hWallSprites.get(key);
+                return { crossings, hit: { dist: Math.max(dCells, 1e-4) * cellSize, side,
+                                           hit: true, texU, sprite } };
+            }
+            const cellKey = mapX + ',' + mapY;
+            const hNext = heights.get(cellKey) || 0;
+            if (hNext !== hPrev) {
+                crossings.push([dCells, hNext, side, texU, cellKey]);
+                hPrev = hNext;
+            }
+        }
+        return { crossings, hit: { dist: Math.max(maxCells, 1e-4) * cellSize, side,
+                                   hit: false, texU: 0, sprite: null } };
+    },
+
+    // renderer.draw_wall_rows: rows [r0, r1) of a wall (or a riser: the slice
+    // of a wall between two heights) at corrected distance d; texture tiles
+    // anchored at height 0. img null/unloaded -> flat colour.
+    drawStairsWallRows(ctx, img, colorHex, texU, x0, stripW, d, eyeZ, cellSize,
+                       halfH, viewH, r0, r1, shade) {
+        if (r0 < 0) r0 = 0;
+        if (r1 > viewH) r1 = viewH;
+        if (r1 <= r0) return;
+        if (!(img && img.complete && img.width > 0)) {
+            ctx.fillStyle = this._shadeColor(colorHex, shade);
+            ctx.fillRect(x0, r0, stripW, r1 - r0);
+            return;
+        }
+        const tw = img.width, th = img.height;
+        const tileZ = RAYCAST_TEXTURE_HEIGHT * cellSize;
+        const tileH = viewH * tileZ / d;
+        const texX = Math.min(tw - 1, Math.max(0, Math.floor(texU * tw)));
+        const zBot = eyeZ - (r1 - halfH) * d / viewH;
+        const zTop = eyeZ - (r0 - halfH) * d / viewH;
+        const k0 = Math.max(0, Math.floor(zBot / tileZ));
+        const k1 = Math.max(k0, Math.floor(zTop / tileZ));
+        for (let k = k0; k <= k1; k++) {
+            const segTop = halfH + (eyeZ - (k + 1) * tileZ) * viewH / d;
+            const sy0 = Math.max(r0, Math.floor(segTop));
+            const sy1 = Math.min(r1, Math.ceil(segTop + tileH));
+            if (sy1 <= sy0) continue;
+            const v0 = (sy0 - segTop) / tileH, v1 = (sy1 - segTop) / tileH;
+            const srcY = Math.max(0, Math.min(th, v0 * th));
+            const srcH = Math.max(1e-3, Math.min(th - srcY, (v1 - v0) * th));
+            ctx.drawImage(img, texX, srcY, 1, srcH, x0, sy0, stripW, sy1 - sy0);
+        }
+        if (shade < 1.0) {
+            ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
+            ctx.fillRect(x0, r0, stripW, r1 - r0);
+        }
+    },
+
+    // renderer._draw_stairs_column: flat raised treads (only without a floor
+    // cast), then risers and the wall, over the low-res floor.
+    drawStairsColumn(ctx, sf, col, lay, floorCast) {
+        const x0 = Math.floor(col * sf.colWidth);
+        const stripW = Math.max(1, Math.floor((col + 1) * sf.colWidth) - x0);
+        const viewH = sf.viewH;
+        if (!floorCast) {
+            ctx.fillStyle = sf.floorColor;
+            for (const t of lay.treads) {
+                if (t[2] <= 0) continue;
+                const r0 = Math.max(0, raycastRow(t[0])), r1 = Math.min(viewH, raycastRow(t[1]));
+                if (r1 > r0) ctx.fillRect(x0, r0, stripW, r1 - r0);
+            }
+        }
+        for (const r of lay.risers) {
+            let img = null;
+            if (sf.textured) {
+                const tex = sf.stepTextures.get(r[5]);
+                const name = tex ? tex[1] : '';
+                img = (name && sf.sprites[name]) || sf.wallTex || null;
+            }
+            this.drawStairsWallRows(ctx, img, sf.wallColor, r[4], x0, stripW, r[2], sf.eyeZ,
+                                    sf.cellSize, sf.halfH, viewH, raycastRow(r[0]), raycastRow(r[1]),
+                                    this.wallShade(r[3], r[2], sf.maxDist));
+        }
+        const wall = lay.wall;
+        if (wall) {
+            const img = sf.textured ? (sf.wallTex || wall[5] || null) : null;
+            this.drawStairsWallRows(ctx, img, sf.wallColor, wall[4], x0, stripW, wall[2], sf.eyeZ,
+                                    sf.cellSize, sf.halfH, viewH, raycastRow(wall[0]), raycastRow(wall[1]),
+                                    this.wallShade(wall[3], wall[2], sf.maxDist));
+        }
+    },
+
+    // renderer.cast_stairs_floor: the floor of a room with steps, cast column
+    // by column, each low-res pixel at its own tread's height.
+    castStairsFloor(ctx, layouts, sf, floorTex, topTex, facingScreenRad, fovRad, res) {
+        const w = ctx.canvas.width;
+        const viewH = sf.viewH;
+        const halfH = Math.floor(viewH / 2);
+        const regionH = viewH - halfH;
+        if (regionH <= 0) return;
+        const cellSize = sf.cellSize;
+        const eyeCells = sf.eyeZ / cellSize;
+        const camCx = sf.camX / cellSize, camCy = sf.camY / cellSize;
+        const dirX = Math.cos(facingScreenRad), dirY = Math.sin(facingScreenRad);
+        const plane = Math.tan(fovRad / 2);
+        const planeX = -dirY * plane, planeY = dirX * plane;
+        const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
+        const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
+        const sw = Math.max(1, Math.floor(w / res));
+        const sh = Math.max(1, Math.floor(regionH / res));
+        if (!this._stairsFloorSmall) this._stairsFloorSmall = document.createElement('canvas');
+        const small = this._stairsFloorSmall;
+        if (small.width !== sw || small.height !== sh) { small.width = sw; small.height = sh; }
+        const sctx = small.getContext('2d');
+        const img = sctx.createImageData(sw, sh);
+        const out = img.data;
+        const flat = raycastParseHex(sf.floorColor) || [70, 70, 50];
+        for (let i = 0; i < sw * sh; i++) {
+            out[i * 4] = flat[0]; out[i * 4 + 1] = flat[1]; out[i * 4 + 2] = flat[2]; out[i * 4 + 3] = 255;
+        }
+        const ncol = layouts.length;
+        for (let i = 0; i < sw; i++) {
+            const sx = i * res;
+            let c = Math.floor(sx / sf.colWidth);
+            if (c >= ncol) c = ncol - 1;
+            const spans = layouts[c].treads;
+            if (!spans.length) continue;
+            const t = sx / w;
+            const rdx = rdx0 + (rdx1 - rdx0) * t, rdy = rdy0 + (rdy1 - rdy0) * t;
+            let k = 0;
+            const n = spans.length;
+            for (let j = sh - 1; j >= 0; j--) {
+                const y = halfH + j * res;
+                while (k < n - 1 && y < spans[k][0]) k++;
+                const hgt = spans[k][2];
+                const dz = eyeCells - hgt / cellSize;
+                if (dz <= 0) continue;
+                let p = j * res; if (p <= 0) p = 1;
+                const rowd = dz * viewH / p;
+                const fx = camCx + rowd * rdx, fy = camCy + rowd * rdy;
+                let tex = null;
+                if (topTex.size && hgt > 0) tex = topTex.get(Math.floor(fx) + ',' + Math.floor(fy)) || null;
+                if (!tex) tex = floorTex;
+                const di = (j * sw + i) * 4;
+                if (tex) {
+                    const tw = tex.width, th = tex.height;
+                    let tx = (tw * (fx - Math.floor(fx))) | 0;
+                    let ty = (th * (fy - Math.floor(fy))) | 0;
+                    if (tx >= tw) tx = tw - 1;
+                    if (ty >= th) ty = th - 1;
+                    const si = (ty * tw + tx) * 4;
+                    out[di] = tex.data[si]; out[di + 1] = tex.data[si + 1]; out[di + 2] = tex.data[si + 2];
+                }
+            }
+        }
+        sctx.putImageData(img, 0, 0);
+        ctx.drawImage(small, 0, 0, sw, sh, 0, halfH, w, regionH);
+    },
+});
+
+// climbing.before_step / after_collision (the extension's frame hooks).
+function raycastClimbCamera(game) {
+    const room = game && game.currentRoom;
+    const cfg = room && room.raycastCamera;
+    if (!cfg || !cfg.enabled) return null;
+    return room;
+}
+function raycastIsMover(inst) {
+    return !raycastIsStep(inst) && !inst.solid;
+}
+function raycastCentreOffset(inst) {
+    const tl = GameRoom.spriteTopLeft(inst);
+    return [tl.x - inst.x + inst.boxWidth() / 2, tl.y - inst.y + inst.boxHeight() / 2];
+}
+function raycastClimbBefore(game) {
+    const room = raycastClimbCamera(game);
+    if (!room) return;
+    room._raycastStepPrev = room.instances.filter(raycastIsMover)
+        .map(inst => [inst, inst.x, inst.y]);
+}
+function raycastClimbAfter(game) {
+    const room = raycastClimbCamera(game);
+    if (!room) return;
+    const cfg = room.raycastCamera;
+    const prev = room._raycastStepPrev || [];
+    room._raycastStepPrev = null;
+    const cellSize = cfg.cell_size || 32;
+    const wallH = raycastClampWallHeight(cfg.wall_height);
+    const heights = room.buildFloorHeights(cellSize, raycastMaxFloorHeight(cellSize, wallH)).heights;
+    let maxStep = Number(cfg.max_step);
+    if (cfg.max_step === undefined || cfg.max_step === null || !isFinite(maxStep)) {
+        maxStep = RAYCAST_DEFAULT_MAX_STEP;
+    }
+    maxStep = Math.max(0, maxStep);
+    const floorAt = (cx, cy) => heights.get(Math.floor(cx / cellSize) + ',' + Math.floor(cy / cellSize)) || 0;
+    const alive = new Set(room.instances);
+    for (const [inst, ox, oy] of prev) {
+        if (!alive.has(inst) || inst.toDestroy) continue;
+        const off = raycastCentreOffset(inst);
+        const nx = inst.x, ny = inst.y;
+        let blocked = 0;
+        if ((nx !== ox || ny !== oy) && Math.abs(nx - ox) <= cellSize && Math.abs(ny - oy) <= cellSize) {
+            const fOld = floorAt(ox + off[0], oy + off[1]);
+            if (floorAt(nx + off[0], ny + off[1]) - fOld > maxStep) {
+                blocked = 1;
+                for (const [tx, ty] of [[nx, oy], [ox, ny], [ox, oy]]) {
+                    if ((tx === ox && ty === oy) || floorAt(tx + off[0], ty + off[1]) - fOld <= maxStep) {
+                        inst.x = tx; inst.y = ty;
+                        break;
+                    }
+                }
+            }
+        }
+        inst.raycast_step_blocked = blocked;
+        inst.raycast_floor_z = floorAt(inst.x + off[0], inst.y + off[1]);
+    }
+    const camera = room.findFirstInstance(cfg.camera_object || '');
+    if (!camera) return;
+    const off = raycastCentreOffset(camera);
+    const target = floorAt(camera.x + off[0], camera.y + off[1]);
+    camera.raycast_floor_z = target;
+    let cur = room._raycastEyeFloor;
+    let vz = room._raycastEyeVz || 0;
+    if (typeof cur !== 'number') { cur = target; vz = 0; }
+    else if (cur < target) { cur = Math.min(target, cur + RAYCAST_CLIMB_SPEED); vz = 0; }
+    else if (cur > target) {
+        vz += RAYCAST_FALL_GRAVITY;
+        cur = Math.max(target, cur - vz);
+        if (cur === target) vz = 0;
+    } else { vz = 0; }
+    room._raycastEyeFloor = cur;
+    room._raycastEyeVz = vz;
+}
+registerFrameUpdate(raycastClimbBefore);
+registerFrameUpdate(raycastClimbAfter, 'after_collision');
 
 // The render hook: claim any room whose raycast camera is enabled. Replaces
 // engine.js's old inline dispatch -- the engine now gives every room to
@@ -555,6 +1036,20 @@ registerExtensionAction('draw_minimap', function(obj, params, game) {
                 const mmKeys = (set) => [...(set || [])]
                     .map(k => k.split(',').map(Number))
                     .sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]));
+
+                // Raised floor cells (stairs, hud.build_minimap_commands
+                // `raised`): filled squares under the walls, shaded by height.
+                const mmRaised = room._raycastFloorHeights;
+                if (mmRaised && mmRaised.size) {
+                    const mmTop = Math.max(...mmRaised.values());
+                    for (const [gx, gy] of mmKeys(mmRaised.keys())) {
+                        const t = 0.25 + 0.5 * (mmTop > 0 ? mmRaised.get(gx + ',' + gy) / mmTop : 1.0);
+                        const [x1, y1] = mmPx(gx * mmCS, gy * mmCS);
+                        const [x2, y2] = mmPx((gx + 1) * mmCS, (gy + 1) * mmCS);
+                        obj._draw_queue.push({type: 'rectangle', x1, y1, x2, y2,
+                            color: raycastBlendHex(backColor, wallColor, t), filled: true});
+                    }
+                }
 
                 for (const [lineX, row] of mmKeys(room._vWalls)) {
                     const [x1, y1] = mmPx(lineX * mmCS, row * mmCS);
@@ -673,6 +1168,20 @@ registerExtensionAction('set_billboard_rotation', function(obj, params, game) {
                 return;
             });
 
+registerExtensionAction('set_floor_height', function(obj, params, game) {
+                // Make this instance a step (execute_set_floor_height_action):
+                // records the height and textures; buildFloorHeights clamps.
+                let hgt = 8;
+                if (params.height !== undefined && params.height !== null && params.height !== '') {
+                    hgt = parseNumParam(params.height, obj, NaN);
+                    if (typeof hgt !== 'number' || !isFinite(hgt)) hgt = 0;
+                }
+                obj.raycast_floor_height = hgt;
+                obj.raycast_step_top_texture = params.top_texture ? String(params.top_texture) : '';
+                obj.raycast_step_side_texture = params.side_texture ? String(params.side_texture) : '';
+                return;
+            });
+
 registerExtensionAction('enable_raycast_view', function(obj, params, game) {
                 // Switch the room to / from the Doom-style first-person raycast
                 // view (mirrors execute_enable_raycast_view_action). Config
@@ -709,6 +1218,8 @@ registerExtensionAction('enable_raycast_view', function(obj, params, game) {
                     // Walls + ceiling height in cells (stairs plan S4);
                     // clamped where it is used (raycastClampWallHeight).
                     wall_height: rNum('wall_height', 1.5),
+                    // Highest climbable step, room px (stairs S8/S10).
+                    max_step: rNum('max_step', 12),
                     // DOOM-bar letterbox (0 = full height). renderRaycastView
                     // reads obj; without it here an exported game ignores a
                     // viewport_height the desktop runtime honours.

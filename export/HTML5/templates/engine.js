@@ -97,14 +97,26 @@ function registerExtensionCondition(name, fn) {
 // ghost must keep moving smoothly between two snapshots on every rendered
 // frame in between). Mirrors desktop's runtime/extension_hooks.py
 // register_frame_update.
+//
+// Optional `phase`, like desktop's: 'before_step' (the default, as above) or
+// 'after_collision' -- run inside GameRoom.step after movement and collision
+// events and BEFORE End Step, exactly where desktop runs its after_collision
+// hooks. The raycast stairs' climbing rule needs it: a too-high step must be
+// refused after the move and before anything draws or reads the position.
 const _extFrameUpdates = [];
-function registerFrameUpdate(fn) {
-    if (typeof fn === 'function' && !_extFrameUpdates.includes(fn)) {
-        _extFrameUpdates.push(fn);
-    }
+const _extAfterCollisionUpdates = [];
+function registerFrameUpdate(fn, phase) {
+    if (typeof fn !== 'function') return;
+    const list = phase === 'after_collision' ? _extAfterCollisionUpdates : _extFrameUpdates;
+    if (!list.includes(fn)) list.push(fn);
 }
 function runExtensionFrameUpdates(game) {
     for (const fn of _extFrameUpdates) {
+        try { fn(game); } catch (e) { console.error('Extension frame update failed:', e); }
+    }
+}
+function runExtensionAfterCollisionUpdates(game) {
+    for (const fn of _extAfterCollisionUpdates) {
         try { fn(game); } catch (e) { console.error('Extension frame update failed:', e); }
     }
 }
@@ -4438,6 +4450,10 @@ class GameRoom {
         this.instances.forEach(inst => {
             if (!inst.toDestroy) inst.checkCollisions(game);
         });
+
+        // 6b. Extension hooks between collision and End Step (desktop's
+        // 'after_collision' phase; see registerFrameUpdate).
+        runExtensionAfterCollisionUpdates(game);
 
         // 7. End Step events
         this.instances.forEach(inst => {

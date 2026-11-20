@@ -49,7 +49,9 @@ def _extract_js_number(name):
 
 def test_engine_core_declares_frame_update_registry():
     assert "const _extFrameUpdates = [];" in ENGINE_CORE
-    assert "function registerFrameUpdate(fn)" in ENGINE_CORE
+    # The optional phase (raycast stairs S10) keeps one-argument callers --
+    # this extension's -- on the default before-step list.
+    assert "function registerFrameUpdate(fn, phase)" in ENGINE_CORE
     assert "function runExtensionFrameUpdates(game)" in ENGINE_CORE
 
 
