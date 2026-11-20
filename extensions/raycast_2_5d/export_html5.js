@@ -362,7 +362,9 @@ Object.assign(GameRoom.prototype, {
         const planeX = -dirY * plane, planeY = dirX * plane;
         const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
         const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
-        const posZ = 0.5 * viewH;
+        // Eye height matches the wall pass (RAYCAST_WALL_HEIGHT/2 cells) --
+        // desktop cast_floor_plane, docs/RAYCAST_STAIRS_PLAN.md F1.
+        const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH;
         const sw = Math.max(1, Math.floor(w / res));
         const sh = Math.max(1, Math.floor(regionH / res));
         const stepScale = res / w;

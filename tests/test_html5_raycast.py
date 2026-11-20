@@ -190,7 +190,7 @@ def test_cast_floor_plane_mirrors_desktop():
     assert m, "castFloorPlane not found"
     body = m.group(1)
     # row distance from the same projection the walls use (viewH: DOOM HUD Unit 2)
-    assert "const posZ = 0.5 * viewH" in body
+    assert "const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH" in body
     assert "const rowd = posZ / p" in body
     # the two FOV-edge rays interpolated across columns (camera-plane method)
     assert "const rdx0 = dirX - planeX" in body and "const rdx1 = dirX + planeX" in body
@@ -349,5 +349,5 @@ def test_html5_floor_cast_receives_viewH():
     cf = ENGINE[ENGINE.index("castFloorPlane(ctx, texData"):]
     cf = cf[:cf.index("\n    render(ctx)")] if "\n    render(ctx)" in cf else cf[:4000]
     assert "res, ceiling, viewH) {" in cf
-    assert "const posZ = 0.5 * viewH;" in cf
+    assert "const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH;" in cf
     assert "const regionH = viewH - halfH;" in cf

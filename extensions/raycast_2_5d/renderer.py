@@ -572,9 +572,9 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
 
     The plane is sampled in CELL units so the texture tiles once per grid
     cell and lines up with the wall bases. Row distance is derived from the
-    same projection the wall pass uses (a wall 1 cell away has its base at
-    the screen bottom), so floor and walls meet seamlessly:
-    rowDistance_cells = (0.5*h) / (y - horizon). The two FOV-edge ray
+    same projection the wall pass uses (eye height RAYCAST_WALL_HEIGHT/2
+    cells), so floor and walls meet seamlessly:
+    rowDistance_cells = (0.5*RAYCAST_WALL_HEIGHT*h) / (y - horizon). The two FOV-edge ray
     directions (camera-plane method) are interpolated across columns, which
     keeps floor lines straight (the fisheye-correct equivalent of the wall
     pass). `ceiling` mirrors the same cast into the top half.
@@ -598,7 +598,12 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
     plane_x, plane_y = -dir_y * plane, dir_x * plane
     rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y   # leftmost column ray
     rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y   # rightmost column ray
-    pos_z = 0.5 * view_h
+    # Eye height in the same units as the wall pass: walls span world height
+    # 0..RAYCAST_WALL_HEIGHT cells centred on the horizon, so the eye is at
+    # RAYCAST_WALL_HEIGHT/2 cells. Using 0.5 here (the pre-1.5 value) sampled
+    # the floor under a wall's base at 2/3 of the wall's distance, so the
+    # floor slid against the wall bases (docs/RAYCAST_STAIRS_PLAN.md, F1).
+    pos_z = 0.5 * RAYCAST_WALL_HEIGHT * view_h
 
     sw = max(1, w // res)
     sh = max(1, region_h // res)

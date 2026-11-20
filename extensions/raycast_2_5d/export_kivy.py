@@ -271,12 +271,12 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                       cam_cx, cam_cy, view_h=None):
         """Faithful port of _cast_floor_plane's cast into an RGBA byte buffer
         (returns buf, sw, sh). Camera-plane FOV-edge rays interpolated across
-        columns; row distance 0.5*view_h/(y-horizon); texture tiled per grid
+        columns; row distance 0.5*RAYCAST_WALL_HEIGHT*view_h/(y-horizon); texture tiled per grid
         cell. `pixels` is bottom-up (Kivy), so the source row is flipped to
         sample the tile the same way the desktop's top-down get_at does.
 
         view_h is the DOOM-bar letterbox height (the floor band is view_h/2
-        tall and the projection reference is 0.5*view_h); None = full height."""
+        tall and the projection reference is 0.5*RAYCAST_WALL_HEIGHT*view_h); None = full height."""
         import math
         w = float(self.display_width)
         h = float(self.display_height)
@@ -293,7 +293,9 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         plane_x, plane_y = -dir_y * plane, dir_x * plane
         rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
         rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
-        pos_z = 0.5 * view_h
+        # Eye height matches the wall pass (RAYCAST_WALL_HEIGHT/2 cells) --
+        # desktop cast_floor_plane, docs/RAYCAST_STAIRS_PLAN.md F1.
+        pos_z = 0.5 * self.RAYCAST_WALL_HEIGHT * view_h
         step_scale = res / w
         floor = math.floor
         for j in range(sh):
