@@ -1686,11 +1686,9 @@ class GameObject {
                 // fully implements it) silently always took the else
                 // branch on this export target only -- condition_type was
                 // never read at all. Mirrors ActionExecutor.
-                // _evaluate_if_condition's dispatch; mouse_check is the one
-                // condition_type NOT ported here (no mouse-button state is
-                // tracked in this engine) -- it falls through to false.
-                // key_pressed is ported (below): the engine DOES track the
-                // held keys (game.keys), which the original note missed.
+                // _evaluate_if_condition's dispatch. key_pressed (game.keys) and
+                // mouse_check (game.mouseButtons / game.pointer) are ported below;
+                // both used to fall through to false.
                 const conditionType = params.condition_type || 'instance_count';
                 switch (conditionType) {
                     case 'expression': {
@@ -1733,6 +1731,27 @@ class GameObject {
                         if (!want) return false;
                         for (const k of Object.keys(game.keys)) {
                             if (game.keys[k] && inputKeyName(k) === want) return true;
+                        }
+                        return false;
+                    }
+                    case 'mouse_check': {
+                        // Which button is held, or is the pointer over this instance
+                        // (runtime/action_executor.py's mouse_check). "In region" has no
+                        // region parameters in the editor, so it is never true.
+                        const check = params.check || '';
+                        const held = game.mouseButtons || {};
+                        if (check === 'Left button pressed') return !!held.left;
+                        if (check === 'Middle button pressed') return !!held.middle;
+                        if (check === 'Right button pressed') return !!held.right;
+                        if (check === 'Over object') {
+                            if (!this.sprite) return false;     // no sprite, no footprint
+                            const p = game.pointer || { x: 0, y: 0 };
+                            const r = game.currentRoom
+                                ? game.currentRoom.screenToRoom(p.x, p.y) : [p.x, p.y];
+                            const w = this.spriteInfo ? this.spriteInfo.width : 32;
+                            const h = this.spriteInfo ? this.spriteInfo.height : 32;
+                            return this.x <= r[0] && r[0] < this.x + w
+                                && this.y <= r[1] && r[1] < this.y + h;
                         }
                         return false;
                     }
@@ -4078,6 +4097,18 @@ class GameRoom {
         }
     }
 
+    // A screen point in room coordinates (runtime/room.py screen_to_room): with no views
+    // the identity; otherwise undo the translation of the visible view whose port holds it.
+    screenToRoom(sx, sy) {
+        if (!this.viewsEnabled) return [sx, sy];
+        for (const [, v] of this._activeViews()) {
+            if (v.port_x <= sx && sx < v.port_x + v.port_w && v.port_y <= sy && sy < v.port_y + v.port_h) {
+                return [sx - (v.port_x - v.view_x), sy - (v.port_y - v.view_y)];
+            }
+        }
+        return [sx, sy];
+    }
+
     _activeViews() {
         const out = [];
         this.views.forEach((v, i) => { if (v.visible) out.push([i, v]); });
@@ -4552,6 +4583,19 @@ class Game {
             if (pt) this.pointer = pt;
         };
         this.pointer = {x: 0, y: 0};
+        // Which buttons are held right now (mouse_check): DOM button 0/1/2 = left/middle/right,
+        // a touch is the left button. A release anywhere, or losing focus, ends the hold.
+        this.mouseButtons = {left: false, middle: false, right: false};
+        const BUTTON_NAME = {0: 'left', 1: 'middle', 2: 'right'};
+        window.addEventListener('mouseup', (e) => {
+            const name = BUTTON_NAME[e.button];
+            if (name) this.mouseButtons[name] = false;
+        });
+        window.addEventListener('blur', () => {
+            this.mouseButtons.left = this.mouseButtons.middle = this.mouseButtons.right = false;
+        });
+        window.addEventListener('touchend', () => { this.mouseButtons.left = false; });
+        window.addEventListener('touchcancel', () => { this.mouseButtons.left = false; });
         this.canvas.addEventListener('mousemove', (e) => trackPointer(e.clientX, e.clientY));
         this.canvas.addEventListener('touchmove', (e) => {
             const t = e.changedTouches[0];
@@ -4596,6 +4640,8 @@ class Game {
         // DOM MouseEvent.button: 0=left, 1=middle, 2=right.
         this.canvas.addEventListener('mousedown', (e) => {
             trackPointer(e.clientX, e.clientY);
+            const heldName = BUTTON_NAME[e.button];
+            if (heldName) this.mouseButtons[heldName] = true;
             if (hookMouse('mouse_down', DOM_TO_PYGAME_BUTTON[e.button], e.clientX, e.clientY)) return;
             if (e.button === 0) dispatch(e.clientX, e.clientY, PRESS_KEYS);
             else if (e.button === 2) dispatch(e.clientX, e.clientY, RIGHT_PRESS_KEYS);
@@ -4614,6 +4660,7 @@ class Game {
             e.preventDefault();
             const t = e.changedTouches[0];
             if (t) trackPointer(t.clientX, t.clientY);
+            this.mouseButtons.left = true;
             if (t && hookMouse('mouse_down', 1, t.clientX, t.clientY)) return;
             if (t) dispatch(t.clientX, t.clientY, PRESS_KEYS);
         }, { passive: false });

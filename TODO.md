@@ -2087,8 +2087,16 @@ lines rather than matching their text.
   the left button and the pointer stays where the finger last was; there is no hover tracking, so
   "Over object" with no finger down only reflects the last touch. Verified with real touch calls
   under real Kivy; not on a device.
-- **Open:** HTML5 `if_condition` `mouse_check` still takes the else branch (it tracks no
-  mouse-button state; the Kivy implementation is the model). `sync_instance` / `set_instance_owner` are
+- **HTML5 `mouse_check` DONE 2026-11-20** (`tests/test_html5_mouse_check.py`): the engine keeps
+  `game.mouseButtons` (DOM button 0/1/2 = left/middle/right, a touch is the left button, any release
+  or a window blur ends the hold) beside the `game.pointer` it already tracked, and `if_condition`
+  answers the three button options and "Over object" (the instance's frame box, pointer translated
+  by the new `GameRoom.screenToRoom`, a mirror of `runtime/room.py`'s `screen_to_room`; false for a
+  spriteless instance); "In region" is never true. Unlike Kivy this DOES track the pointer on hover
+  (canvas `mousemove`). Verified with real mouse events in Chromium (dev box) -- not on a phone.
+  Note the existing mouse EVENTS (`mouse_x`/`mouse_y`) still use raw canvas coordinates in a views
+  room; only `mouse_check` goes through `screenToRoom`.
+- **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).
 
