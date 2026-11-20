@@ -391,9 +391,19 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   raised eye from the platform, per-cell top textures, top texture alone,
   no gaps at res 1 and 4 over six poses, flat rooms skip the cast); 6 of 7
   mutations caught, the survivor is the magenta pre-fill above.
-- [ ] **S7 — Billboards on steps.** Lift by their cell's floor; per-column clip
-  profile occlusion. Tests: a pickup on a platform is drawn higher by the
-  predicted amount; a billboard behind a riser loses exactly its lower rows.
+- [x] **S7 — Billboards on steps.** `3150aec5` (2026-11-20). In a stairs
+  room a billboard's vertical position moves by
+  `(eye_z − (floor(cell) + eye height)) × view_h / d` (zero on flat ground,
+  so the fast path is untouched -- the 768-frame proof includes 6 billboards
+  per room), and each 1-px slice is clipped at `_clip_before(occluders, d)`:
+  the column walk's free-rows limit after the last crossing NEARER than the
+  billboard (on top of the existing wall-distance test).
+  `tests/test_raycast_stairs_billboards.py` (7 tests: flat ground unchanged,
+  lifted by 16·view_h/d on a 16-px block, lowered from a raised eye, lower
+  rows hidden behind an eye-height block exactly at its limit, a low block
+  hides nothing, a billboard is never cut by its own step, a step BEHIND it
+  hides nothing); 4 of 4 mutations caught (the last one after adding the
+  "step behind" test, which the first draft lacked).
 - [ ] **S8 — Climbing.** Frame hooks (`before_step` snapshot, `after_collision`
   per-axis undo), `max_step` parameter, eye easing up/gravity down,
   `raycast_floor_z`, reset on room entry/restart. Tests through the real loop:
