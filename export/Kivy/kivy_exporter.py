@@ -4472,13 +4472,14 @@ class GameObject(Widget):
         """Destroy matching instances within radius px of (x, y).
 
         Mirrors the IDE runtime's execute_destroy_at_position_action,
-        excluding the caller. Relative GM offsets: y grows downward in GM
-        room coords, so the kivy-space offset is self.y - y.
+        excluding the caller. y is the author's (grows downward from the top).
         """
         if not self.scene:
             return
+        # Author space throughout (y down from the sprite's top): the centre, and each
+        # candidate's own y, so a relative offset and an absolute point mean the same as on desktop.
         cx = self.x + x if relative else x
-        cy = self.y - y if relative else y
+        cy = self._gm_y() + y if relative else y
         for other in list(self.scene.instances):
             if other is self:
                 continue
@@ -4491,7 +4492,7 @@ class GameObject(Widget):
                 if other_name != object_filter and other.__class__.__name__ != object_filter:
                     continue
             dx = other.x - cx
-            dy = other.y - cy
+            dy = other._gm_y() - cy
             in_range = (dx * dx + dy * dy <= radius * radius) if radius > 0 \
                 else (dx == 0 and dy == 0)
             if in_range:
@@ -4570,6 +4571,18 @@ class GameObject(Widget):
         if scene is None:
             return self.y
         return scene.room_height - self.y - (self.image_height or self.grid_size)
+
+    def _create_gm(self, name, x, gm_y):
+        """Create an instance of `name` at the AUTHOR's position (y down from the sprite's TOP),
+        whatever its own height: build it, then place it with _set_gm_y and make that its spawn
+        point (jump_to_start returns there)."""
+        if not self.scene:
+            return None
+        inst = self.scene.create_instance(name, x, 0)
+        if inst is not None:
+            inst._set_gm_y(gm_y)
+            inst.xstart, inst.ystart = inst.x, inst.y
+        return inst
 
     def _set_gm_y(self, gm_y):
         """Place this instance at the author's y (down from the sprite's TOP): the inverse of

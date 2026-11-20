@@ -185,7 +185,7 @@ def resolve_global_refs(expr: str) -> str:
 _strip_global_refs = resolve_global_refs
 
 
-def _resolve_instance_names(expr, gm=False) -> str:
+def _resolve_instance_names(expr, gm=True) -> str:
     """Bind bare instance/custom variable names in ``expr`` to self.<name>.
 
     Already-qualified names (self.x, other.y) are left untouched, as are the
@@ -250,7 +250,7 @@ _VALUE_IS_EXPRESSION = re.compile(
     r'|\b(?:self|other|global)\.')
 
 
-def _value_code(raw, gm=False):
+def _value_code(raw, gm=True):
     """Emit a custom variable's VALUE, which may be a number, an expression or
     plain text.
 
@@ -316,10 +316,12 @@ def _variable_read_code(var_name, event_type=''):
         # Kivy's Y axis is inverted and set_vspeed flips the sign on export,
         # so compare the GameMaker-space value.
         return "-(self.vspeed)"
+    if name == 'y':
+        return "self._gm_y()"       # the author's y, not Kivy's (see _ConditionNameResolver)
     return f"getattr(self, {name!r}, 0)"
 
 
-def _num_code(value, default=0, gm=False):
+def _num_code(value, default=0, gm=True):
     """Emit a NUMERIC parameter that may be an expression ("direction+90").
 
     view_* variables become 0 (views unimplemented — matches the pygame
@@ -862,15 +864,21 @@ class ActionCodeGenerator:
 
         elif action_type == 'check_empty':
             # Check if position is collision-free
-            x = _num_code(params.get('x', 'self.x'))
-            y = _num_code(params.get('y', 'self.y'))
-            # relative parameter means offset from current position
+            # A missing coordinate means "where I am now" -- written here in Kivy's own space.
+            x = 'self.x' if params.get('x') in (None, '') else _num_code(params.get('x'))
             relative = params.get('relative', False)
             if relative:
+                y = _num_code(params.get('y', 0))
                 # Same GM-offset-to-Kivy flip as if_collision above.
                 self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y - ({y})):")
+            elif params.get('y') in (None, ''):
+                self._open_guard(f"if not self.check_collision_at({x}, self.y):")
             else:
-                self._open_guard(f"if not self.check_collision_at({x}, {y}):")
+                y = _num_code(params.get('y'))
+                # An absolute y is the author's (down from the top); convert to Kivy's.
+                self._open_guard(
+                    f"if not self.check_collision_at({x}, self.scene.room_height - ({y}) "
+                    f"- (self.image_height or self.grid_size)):")
             return
 
         elif action_type == 'if_key_pressed':
@@ -1505,17 +1513,10 @@ class ActionCodeGenerator:
             return f"self.hspeed = {dx * speed}; self.vspeed = {dy * speed}; self._move_grid({move_x}, {move_y})"
 
         elif action_type == 'move_towards':
-            # Move towards a specific point at given speed
-            x = params.get('x', 0)
-            y = params.get('y', 0)
-            speed = params.get('speed', 4)
-            return f"""import math
-dx = {x} - self.x
-dy = {y} - self.y
-dist = math.sqrt(dx*dx + dy*dy)
-if dist > 0:
-    self.hspeed = (dx / dist) * {speed}
-    self.vspeed = (dy / dist) * {speed}"""
+            # The old name of move_towards_point. Its own block used to emit an `if` whose body was
+            # not re-indented (an IndentationError that stopped the WHOLE object module importing),
+            # and took x/y/speed as raw text; it is move_towards_point now.
+            return self._convert_simple_action('move_towards_point', params, event_type)
 
         elif action_type == 'set_gravity':
             # Set gravity direction and strength
@@ -1546,10 +1547,12 @@ if dist > 0:
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
             relative = params.get('relative', False)
+            # The position is the author's (y down from the TOP); _create_gm places the new
+            # instance there, whatever its own height.
             if relative:
-                return f"self.scene.create_instance({obj_name!r}, self.x + {x}, self.y + {y})"
+                return f"self._create_gm({obj_name!r}, self.x + {x}, self._gm_y() + {y})"
             else:
-                return f"self.scene.create_instance({obj_name!r}, {x}, {y})"
+                return f"self._create_gm({obj_name!r}, {x}, {y})"
 
         elif action_type == 'destroy_instance':
             target = params.get('target', 'self')
@@ -2036,7 +2039,7 @@ if dist > 0:
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
             return (f"import random as _rnd; "
-                    f"self.scene.create_instance(_rnd.choice({choices!r}), {x}, {y})")
+                    f"self._create_gm(_rnd.choice({choices!r}), {x}, {y})")
 
         elif action_type == 'jump_to_random':
             snap_h = _num_code(params.get('snap_h', 1), 1)
@@ -2101,7 +2104,8 @@ if dist > 0:
             speed = _num_code(params.get('speed', 4))
             return (
                 f"_mtp_dx = ({tx}) - self.x\n"
-                f"_mtp_dy = ({ty}) - self.y\n"
+                # the target is the author's y (down); hspeed/vspeed stay in Kivy's space (up)
+                f"_mtp_dy = -(({ty}) - self._gm_y())\n"
                 f"_mtp_dist = (_mtp_dx ** 2 + _mtp_dy ** 2) ** 0.5\n"
                 f"self.hspeed = 0 if _mtp_dist == 0 else _mtp_dx / _mtp_dist * ({speed})\n"
                 f"self.vspeed = 0 if _mtp_dist == 0 else _mtp_dy / _mtp_dist * ({speed})"
@@ -2285,10 +2289,12 @@ if dist > 0:
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
             relative = params.get('relative', False)
+            # The author's y is down from the top: +y is DOWN (a smaller Kivy y), and an
+            # absolute y is converted.
             if relative:
-                return f"self.x += {x}; self.y += {y}"
+                return f"self.x += {x}; self.y -= {y}"
             else:
-                return f"self.x = {x}; self.y = {y}"
+                return f"self.x = {x}; self._set_gm_y({y})"
 
         elif action_type == 'change_instance':
             # Change the object type (sprite) of this instance

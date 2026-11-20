@@ -930,7 +930,9 @@ class TestActionCodeGeneration:
     def test_convert_move_towards(self, action_gen):
         """_convert_simple_action should handle move_towards"""
         code = action_gen._convert_simple_action('move_towards', {'x': 100, 'y': 200, 'speed': 5}, 'step')
-        assert 'math' in code
+        # it is move_towards_point now: its own block emitted an `if` whose body was not re-indented
+        # (an IndentationError that stopped the whole object module importing)
+        compile("def m(self):\n" + "\n".join("    " + line for line in code.splitlines()) + "\n", "<gen>", "exec")
         assert '100' in code
         assert '200' in code
         assert 'self.hspeed' in code
@@ -979,7 +981,9 @@ class TestActionCodeGeneratorBlocks:
             'parameters': {'x': 100, 'y': 200}
         }, 'step')
         code = code_generator.get_code()
-        assert 'if not self.check_collision_at(100, 200)' in code
+        # an absolute y is the author's (down from the top), converted to Kivy's (up from the bottom)
+        assert ('if not self.check_collision_at(100, self.scene.room_height - (200) - '
+                '(self.image_height or self.grid_size)):') in code
 
     def test_check_empty_relative(self, code_generator):
         """check_empty with relative should offset from current position"""

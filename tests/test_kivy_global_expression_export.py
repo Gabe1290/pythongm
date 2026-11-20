@@ -120,7 +120,7 @@ class TestResolveInstanceNamesWithGlobals:
     def test_ordinary_expression_unaffected(self):
         """No 'global.' present -- must behave exactly as before."""
         resolved = _resolve_instance_names("vspeed > 0 and y < other.y+8")
-        assert _equiv(resolved, "-(self.vspeed) > 0 and self.y < other.y + 8")
+        assert _equiv(resolved, "-(self.vspeed) > 0 and self._gm_y() < other._gm_y() + 8")
 
 
 # ---------------------------------------------------------------------------

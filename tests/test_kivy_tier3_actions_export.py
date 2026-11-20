@@ -39,10 +39,13 @@ def test_move_free_matches_set_direction_speed():
     assert _valid(out)
 
 
-def test_move_towards_point_uses_direct_kivy_space_no_flip():
+def test_move_towards_point_target_is_the_authors_y_and_speeds_stay_in_kivy_space():
+    """The target (x, y) is the author's (y down from the top); hspeed/vspeed are Kivy's (up), so
+    the vertical difference is taken in the author's space and negated (2026-11-20; it used to
+    compare the author's target with Kivy's raw y)."""
     out = _gen("move_towards_point", {"x": "10", "y": "20", "speed": "4"})
     assert "(10) - self.x" in out
-    assert "(20) - self.y" in out
+    assert "_mtp_dy = -((20) - self._gm_y())" in out
     assert "self.hspeed" in out and "self.vspeed" in out
     assert _valid(out)
 

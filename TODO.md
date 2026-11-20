@@ -2123,9 +2123,22 @@ lines rather than matching their text.
   read of `y` inside ANY `set_variable` value is the author's (`hp = y`, `x = y`); x is untouched. The
   differential test runs 14 cases against the desktop's `execute_set_variable_action`, and the real-Kivy
   `reseau_1` test holds UP and checks the Kivy y rises while the wire y falls. Verified under real Kivy; not on
-  a device. **Still in Kivy's raw y** (the same class of gap, not audited): reads of `y` in other actions'
-  value expressions (`set_hspeed`, `create_instance`, `draw_*` ...), and `set_variable`'s `scope: "other"`
-  parameter (only a `other.` NAME prefix is honoured). Desktop's own `set_variable` does not strip a
+  a device.
+- **Kivy `y` in every other action DONE 2026-11-20** (`tests/test_kivy_y_in_actions.py`, 26 tests): the same
+  author-space rule now covers the rest. Every author expression reads `y` (`y`, `self.y`, `other.y`, and
+  a variable named `y` in `test_variable`) as the author's -- `_resolve_instance_names`/`_num_code`/
+  `_value_code` default to `gm=True`, so `set_hspeed y / 10` and `draw_text` at `y + 8` are right too --
+  and every action that TAKES a position converts it: `create_instance` and `create_random_instance`
+  (new `GameObject._create_gm`: build, place with `_set_gm_y`, make that the spawn point),
+  `jump_to_position` (relative +y is DOWN), `destroy_at_position` (author space for both the centre and
+  each candidate), `move_towards_point`, `check_empty` (an absolute y; a missing one is "where I am").
+  Differential against the desktop handlers where they run on a stand-in. Also fixed: the legacy
+  `move_towards` action emitted an `if` whose body was not re-indented -- an IndentationError that stopped
+  the whole object module importing; it now delegates to `move_towards_point`. **Not converted (not
+  audited as wrong): particle emitters' `x`/`y`** (their render path was not traced), `execute_code`'s own
+  Python (`self.y` there is Kivy's, as `self.x` is -- a documented power-user escape), and `set_variable`'s
+  `scope: "other"` parameter (only an `other.` NAME prefix is honoured). Verified by executing the generated
+  code; not on a device. Desktop's own `set_variable` does not strip a
   `self.` prefix (it sets an attribute literally named `self.y`); Kivy strips it, as the action's description
   promises.
 - **Open:** `sync_instance` / `set_instance_owner` are

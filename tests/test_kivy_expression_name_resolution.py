@@ -39,9 +39,10 @@ def _equiv(a, b):
 
 
 def test_reported_crash_expression_resolves():
-    # vspeed is compared in GameMaker space (sign-flipped), y/other unchanged.
+    # vspeed AND y are read in the author's (GameMaker) space: vspeed sign-flipped, y converted
+    # from Kivy's y-up through _gm_y() -- for `self`, bare names and `other` alike.
     assert _equiv(_R("vspeed > 0 and y < other.y+8"),
-                  "-(self.vspeed) > 0 and self.y < other.y + 8")
+                  "-(self.vspeed) > 0 and self._gm_y() < other._gm_y() + 8")
 
 
 def test_bare_instance_vars_get_self_prefix():
@@ -56,7 +57,7 @@ def test_custom_instance_variable_resolves():
 
 def test_already_qualified_names_untouched():
     assert _equiv(_R("self.vspeed > 0 and self.y < other.y"),
-                  "self.vspeed > 0 and self.y < other.y")
+                  "self.vspeed > 0 and self._gm_y() < other._gm_y()")
 
 
 def test_other_partner_attributes_untouched():
