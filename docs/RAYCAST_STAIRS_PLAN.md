@@ -479,10 +479,38 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   is FLAKY on this box (waits on a real WebSocket close; failed 1 of 6 runs
   on the pre-change files too) -- browser tests had never run on this
   machine before.
-- [ ] **S11 — Kivy port** (codegen, `SCENE_CODE`, movement hook). Parity test
-  (exact column walk), stub harness, generated-file compile, a real-Kivy
-  render under `tests/_real_kivy_render.py`, and the all-extensions-on
-  coexistence test.
+- [x] **S11 — Kivy port.** `ea842f57` (2026-11-20). In `export_kivy.py`
+  `SCENE_CODE`: `_raycast_build_floor_heights`, `_cast_ray_steps` and
+  `_layout_column` (VERBATIM copies of the desktop functions), riser/wall
+  slices (`_stairs_wall_rows`, Kivy y = h − row, bottom-origin tex_coords),
+  `_draw_stairs_column`, the column-major floor (`_stairs_floor_buffer` →
+  one Texture, laid out like `_floor_buffer`), billboards lifted/clipped/
+  excluded, the minimap's raised squares in `BASE_OBJECT_CODE`, the
+  `set_floor_height` codegen, `max_step`, and climbing in
+  `_ext_update__raycast_2_5d`. Kivy has only one extension hook (after
+  collisions, before End Step), so moves are measured against the snapshot
+  taken there the previous frame -- every move since is checked, the fix
+  still lands before drawing.
+  Tests (`tests/test_kivy_raycast_stairs.py`, 12): codegen + constants;
+  through the stub harness, `_cast_ray_steps` / `_layout_column` EQUAL the
+  desktop functions over 300 random rays, the riser rectangle at the
+  predicted Kivy position, a textured riser sampling the bottom 1/6 of its
+  tile, a billboard behind a step cut at the right row, climbing / sliding /
+  teleport / easing, the minimap's five shades (executing
+  `BASE_OBJECT_CODE`); and under REAL Kivy 2.3.2: an exported staircase's
+  colours on the predicted rows, and a monster turning back at a high block.
+  7 of 8 mutations caught; the survivor (`>=` for `>` on a riser) is
+  equivalent -- crossings only exist where the height changes.
+  **Found on the way, fixed separately:** (1) `016f5424` -- Begin/End Step
+  handlers were generated without the `dt` the Kivy scene passes, so every
+  call raised a TypeError that `update()` swallowed, abandoning the rest of
+  that frame in EVERY Kivy export using those events (maze_4, treasure);
+  (2) here -- `tests/_real_kivy_game.py` read `export_as_image()` pixels as
+  bottom-up, but they come back TOP-down (a control showed it), so its
+  `points` were flipped; the only previous user just compared ceiling ≠
+  floor, so it never noticed. The Kivy raycast view itself is the right way
+  up. Not resolved: a real-Kivy run of `maze_4` in that worker does not
+  finish within 240 s (not investigated).
 - [ ] **S12 — Sample `raycast_5` ("Stairs" / « Les escaliers »).** A small
   level built to show the feature: a staircase up to a gallery with the goal
   on it, a block too high to climb, a ledge to drop from, a monster on the
