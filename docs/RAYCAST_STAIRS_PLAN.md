@@ -535,7 +535,7 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   Writing the guide caught two wrong "things to tweak" claims (fixed before
   commit). Level fix found by playing: the goal first sat one row off the
   gallery path.
-- [x] **S13 — Docs and translations.** `HASH_S13` (2026-11-20). The five
+- [x] **S13 — Docs and translations.** `9fd099f7` (2026-11-20). The five
   new parameter labels (Height, Top Texture, Side Texture, Wall Height, Max
   Step) and Set Floor Height's description translated in the ten shipped
   languages in the `ActionConfigDialog` context (the configure dialog passes
