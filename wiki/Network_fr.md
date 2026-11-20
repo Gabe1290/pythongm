@@ -24,6 +24,10 @@ un hôte ordinateur ; elle ne peut pas héberger elle-même). Un export
 (écris l'adresse de l'hôte dans `join_game` ; la découverte automatique n'existe
 que sur ordinateur) et participe aux variables partagées, aux messages et aux
 événements réseau, et voit les instances en réseau de l'hôte. Il contrôle l'avatar que l'hôte lui attribue, comme le navigateur. Il ne peut pas héberger.
+Un téléphone ou un navigateur peut aussi participer à une instance placée dans
+la salle : quand l'instance est marquée comme synchronisée sur chaque machine,
+elle suit la copie de l'hôte, et elle tourne sur l'appareil du joueur si l'hôte
+la lui a confiée (choisir le propriétaire est le travail de l'hôte).
 
 ---
 

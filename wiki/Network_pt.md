@@ -22,6 +22,10 @@ em um anfitrião desktop; ela não consegue hospedar). Uma exportação
 (escreve o endereço do anfitrião em `join_game`; a descoberta automática só existe
 no desktop), participa nas variáveis partilhadas, nas mensagens e nos eventos de
 rede, e vê as instâncias em rede do anfitrião. Controla o avatar que o anfitrião lhe atribui, tal como o navegador. Não consegue hospedar.
+Um telemóvel ou um navegador também pode participar numa instância colocada na
+sala: quando a instância está marcada como sincronizada em cada máquina, segue a
+cópia do anfitrião e corre no dispositivo do jogador se o anfitrião lha atribuiu
+(escolher o proprietário cabe ao anfitrião).
 
 ---
 

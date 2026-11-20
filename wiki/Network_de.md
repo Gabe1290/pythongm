@@ -23,6 +23,10 @@ ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adress
 des Hosts in `join_game` ein; die automatische Suche gibt es nur am Desktop),
 nimmt an gemeinsamen Variablen, Nachrichten und Netzwerkereignissen teil und
 sieht die vernetzten Instanzen des Hosts. Es steuert den vom Host zugewiesenen Avatar, wie der Browser. Es kann nicht selbst hosten.
+Ein Handy oder ein Browser kann auch an einer im Raum platzierten Instanz
+teilnehmen: Ist die Instanz auf jedem Rechner als synchronisiert markiert, folgt
+sie der Kopie des Hosts und läuft auf dem eigenen Gerät des Spielers, wenn der
+Host sie ihm zugewiesen hat (den Besitzer bestimmt der Host).
 
 ---
 

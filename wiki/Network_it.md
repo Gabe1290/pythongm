@@ -23,6 +23,10 @@ unisce a un host desktop; non può fare da host). Un'esportazione
 (scrivi l'indirizzo dell'host in `join_game`; la ricerca automatica esiste solo
 sul desktop), partecipa alle variabili condivise, ai messaggi e agli eventi di
 rete, e vede le istanze in rete dell'host. Controlla l'avatar che l'host gli assegna, come il browser. Non può fare da host.
+Anche un telefono o un browser può partecipare a un'istanza collocata nella
+stanza: quando l'istanza è segnata come sincronizzata su ogni macchina, segue la
+copia dell'host e gira sul dispositivo del giocatore se l'host gliel'ha
+assegnata (scegliere il proprietario spetta all'host).
 
 ---
 

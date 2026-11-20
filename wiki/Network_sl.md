@@ -22,6 +22,10 @@ odjemalec: telefon se pridruži gostitelju na namizju (v `join_game` vpiši nasl
 gostitelja; samodejno iskanje obstaja samo na namizju), sodeluje pri skupnih
 spremenljivkah, sporočilih in omrežnih dogodkih ter vidi gostiteljeve omrežne
 primerke. Upravlja avatar, ki mu ga dodeli gostitelj, kot brskalnik. Ne more gostiti.
+Telefon ali brskalnik lahko sodeluje tudi pri primerku, postavljenem v sobo: če
+je primerek na vsakem računalniku označen kot sinhroniziran, sledi gostiteljevi
+kopiji in teče na igralčevi napravi, če mu ga je gostitelj dodelil (lastnika
+izbere gostitelj).
 
 ---
 
