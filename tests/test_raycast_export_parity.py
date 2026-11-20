@@ -293,10 +293,13 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # building-like walls). Both == 1.0-equivalent until set; here 1.5.
     # Desktop uses the bare RAYCAST_WALL_HEIGHT (module constant) now the code
     # is a free function, not a GameRoom method; Kivy keeps self.RAYCAST_...
-    assert "full_h = view_h * cell_size * RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in RENDERER, "renderer"
-    assert "full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in kx, "kivy_exporter"
-    assert "const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4)" in ENGINE
-    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
+    # Since stairs S4 the unclamped height is per texture TILE (the whole
+    # wall at the default wall_height; taller walls stack tiles), and each
+    # tile is cropped to its own visible rows.
+    assert "tile_h = view_h * cell_size * RAYCAST_TEXTURE_HEIGHT / max(corrected, 1e-4)" in RENDERER, "renderer"
+    assert "tile_h = view_h * cell_size * self.RAYCAST_TEXTURE_HEIGHT / max(corrected, 1e-4)" in kx, "kivy_exporter"
+    assert "const tileH = viewH * cellSize * RAYCAST_TEXTURE_HEIGHT / Math.max(corrected, 1e-4)" in ENGINE
+    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, sy0, stripW, sy1 - sy0)" in ENGINE
 
     # SUB-TEXEL accuracy: on a close wall one texel covers tens of screen px, so
     # snapping the crop to whole texels per column produced jagged edges.

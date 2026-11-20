@@ -139,5 +139,9 @@ def test_html5_uses_the_wall_pass_eye_height():
     of the HTML5 raycast tests)."""
     js = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").read_text(
         encoding="utf-8")
-    assert "const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH;" in js
+    # Since S4 the plane height is a parameter defaulting to the eye height,
+    # which is half the default wall height (the wall pass's eye).
+    assert "if (planeHeight === undefined || planeHeight === null) planeHeight = RAYCAST_EYE_HEIGHT;" in js
+    assert "const posZ = planeHeight * viewH;" in js
+    assert "const RAYCAST_EYE_HEIGHT = 0.75;" in js and "const RAYCAST_WALL_HEIGHT = 1.5;" in js
     assert "const posZ = 0.5 * viewH" not in js

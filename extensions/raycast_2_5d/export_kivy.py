@@ -157,6 +157,26 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
     RAYCAST_MIN_SHADE = 0.35
     RAYCAST_WALL_HEIGHT = 1.5    # walls project 1.5x taller than a cube (walls
                                  # only, not billboards); see game_runner
+    # The vertical model (renderer.py, stairs plan S4), in grid cells: eye
+    # RAYCAST_EYE_HEIGHT above the floor; walls + ceiling rise to the camera's
+    # wall_height (default RAYCAST_WALL_HEIGHT); a wall texture covers
+    # RAYCAST_TEXTURE_HEIGHT and repeats above that, anchored at the floor.
+    RAYCAST_EYE_HEIGHT = 0.75
+    RAYCAST_TEXTURE_HEIGHT = 1.5
+    RAYCAST_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT
+    RAYCAST_MIN_WALL_HEIGHT = 1.0
+    RAYCAST_MAX_WALL_HEIGHT = 10.0
+
+    @classmethod
+    def _clamp_wall_height(cls, value):
+        """wall_height in cells, defaulted and clamped (renderer.clamp_wall_height)."""
+        try:
+            v = float(value)
+        except (TypeError, ValueError):
+            return cls.RAYCAST_WALL_HEIGHT
+        if v != v:
+            return cls.RAYCAST_WALL_HEIGHT
+        return min(cls.RAYCAST_MAX_WALL_HEIGHT, max(cls.RAYCAST_MIN_WALL_HEIGHT, v))
 
     @classmethod
     def _wall_shade(cls, side, corrected, max_dist):
@@ -268,15 +288,16 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         return result
 
     def _floor_buffer(self, pixels, tw, th, res, facing_screen_rad, fov_rad,
-                      cam_cx, cam_cy, view_h=None):
+                      cam_cx, cam_cy, view_h=None, plane_height=None):
         """Faithful port of _cast_floor_plane's cast into an RGBA byte buffer
         (returns buf, sw, sh). Camera-plane FOV-edge rays interpolated across
-        columns; row distance 0.5*RAYCAST_WALL_HEIGHT*view_h/(y-horizon); texture tiled per grid
-        cell. `pixels` is bottom-up (Kivy), so the source row is flipped to
+        columns; row distance plane_height*view_h/(y-horizon), plane_height =
+        the plane's distance from the eye in cells (default the eye height,
+        i.e. the floor); texture tiled per grid cell. `pixels` is bottom-up (Kivy), so the source row is flipped to
         sample the tile the same way the desktop's top-down get_at does.
 
         view_h is the DOOM-bar letterbox height (the floor band is view_h/2
-        tall and the projection reference is 0.5*RAYCAST_WALL_HEIGHT*view_h); None = full height."""
+        tall and the projection reference is plane_height*view_h); None = full height."""
         import math
         w = float(self.display_width)
         h = float(self.display_height)
@@ -293,9 +314,10 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         plane_x, plane_y = -dir_y * plane, dir_x * plane
         rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
         rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
-        # Eye height matches the wall pass (RAYCAST_WALL_HEIGHT/2 cells) --
-        # desktop cast_floor_plane, docs/RAYCAST_STAIRS_PLAN.md F1.
-        pos_z = 0.5 * self.RAYCAST_WALL_HEIGHT * view_h
+        # Matches the wall pass (desktop cast_floor_plane; stairs plan F1/S4).
+        if plane_height is None:
+            plane_height = self.RAYCAST_EYE_HEIGHT
+        pos_z = plane_height * view_h
         step_scale = res / w
         floor = math.floor
         for j in range(sh):
@@ -325,7 +347,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         return bytes(out), sw, sh
 
     def _render_floor_plane(self, group, px, res, facing_screen_rad, fov_rad,
-                            cam_cx, cam_cy, w, h, ceiling, view_h=None):
+                            cam_cx, cam_cy, w, h, ceiling, view_h=None,
+                            plane_height=None):
         """Cast the floor (or, if `ceiling`, the top half) into a low-res
         Texture and add it to the overlay, GPU-upscaled to the region. Kivy is
         y-up: the floor is the BOTTOM half of the view and the cast buffer's
@@ -342,7 +365,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         view_h = max(1.0, min(float(view_h), h))
         buf, sw, sh = self._floor_buffer(px[0], px[1], px[2], res,
                                          facing_screen_rad, fov_rad, cam_cx,
-                                         cam_cy, view_h)
+                                         cam_cy, view_h, plane_height)
         tex = Texture.create(size=(sw, sh), colorfmt='rgba')
         tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
         region_h = view_h / 2.0
@@ -377,6 +400,9 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             self.canvas.after.add(self._raycast_group)
 
         cell_size = int(cfg.get('cell_size', 32))
+        wall_h = self._clamp_wall_height(cfg.get('wall_height', self.RAYCAST_WALL_HEIGHT))
+        wall_tiles = wall_h / self.RAYCAST_TEXTURE_HEIGHT   # 1.0 for default walls
+        n_tiles = max(1, int(math.ceil(wall_tiles - 1e-9)))
         # Rebuilt every frame (parity with the desktop renderer.py fix,
         # 2026-10-06) so a solid instance created/destroyed at runtime shows
         # up immediately instead of only on room re-entry/cell_size change.
@@ -465,8 +491,11 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         if ceil_name and sky_tex is None:
             ceil_px = self._raycast_texture_pixels(ceil_name)
             if ceil_px is not None:
+                # The ceiling plane is the top of the walls: (wall_h - eye)
+                # above the eye.
                 self._render_floor_plane(group, ceil_px, cast_res, facing_screen_rad,
-                                         fov_rad, cam_cx, cam_cy, w, h, True, view_h)
+                                         fov_rad, cam_cx, cam_cy, w, h, True, view_h,
+                                         wall_h - self.RAYCAST_EYE_HEIGHT)
 
         # CAMERA-PLANE projection (not uniform-angle) — screen columns are
         # evenly spaced, so rays must be evenly spaced on the camera plane:
@@ -494,15 +523,19 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             # screen-clamped strip — the real "bent wall" bug (close columns
             # clamped and compressed the whole brick texture while farther ones
             # didn't, breaking the courses across a flat wall).
-            full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)
-            y_bot = mid - full_h / 2.0           # y-up: bottom of the full strip
+            # tile_h: one texture tile's projected height (the whole wall for
+            # the default wall_height). y-up: y_bot is the wall's bottom; tiles
+            # stack UPWARD from it, the wall's real top is wall_tiles tiles up.
+            tile_h = view_h * cell_size * self.RAYCAST_TEXTURE_HEIGHT / max(corrected, 1e-4)
+            y_bot = mid - tile_h * self.RAYCAST_EYE_FROM_TILE_TOP
+            y_wall_top = y_bot + wall_tiles * tile_h
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
             # Clamp to the VIEW bottom, not the window bottom, so a close wall
             # never paints down into the reserved status-bar band.
             y0 = max(view_bottom, y_bot)
-            y1 = min(h, y_bot + full_h)
+            y1 = min(h, y_wall_top)
             vis_h = y1 - y0
             if vis_h <= 0:
                 continue
@@ -521,14 +554,22 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 # texel spans tens of screen px, so per-column snapping produced
                 # jagged edges. tex_coords are sub-texel exact. Kivy textures
                 # are bottom-origin and y0/y_bot are too, so v maps directly.
-                v0 = (y0 - y_bot) / full_h
-                v1 = (y1 - y_bot) / full_h
                 region = tex.get_region(tex_x, 0, 1, th)
                 group.add(Color(shade, shade, shade, 1))
-                group.add(Rectangle(texture=region, pos=(x0, y0),
-                                    size=(strip_w, vis_h),
-                                    tex_coords=(0.0, v0, 1.0, v0,
-                                                1.0, v1, 0.0, v1)))
+                # One Rectangle per texture tile, bottom tile first; the top
+                # tile is cut at the wall's real top.
+                for k in range(n_tiles):
+                    seg_bot = y_bot + k * tile_h
+                    sy0 = max(view_bottom, seg_bot)
+                    sy1 = min(h, seg_bot + tile_h, y_wall_top)
+                    if sy1 - sy0 <= 0:
+                        continue
+                    v0 = (sy0 - seg_bot) / tile_h
+                    v1 = (sy1 - seg_bot) / tile_h
+                    group.add(Rectangle(texture=region, pos=(x0, sy0),
+                                        size=(strip_w, sy1 - sy0),
+                                        tex_coords=(0.0, v0, 1.0, v0,
+                                                    1.0, v1, 0.0, v1)))
             else:
                 color = tuple(c * shade for c in wall_color)
                 group.add(Color(*color, 1))
@@ -679,6 +720,9 @@ def _cg_enable_raycast_view(gen, params, event_type):
         # reads this; without it here, an exported game would ignore a
         # viewport_height the desktop runtime honours.
         'viewport_height': int(_tofloat(params.get('viewport_height'), 0)),
+        # Walls + ceiling height in cells (stairs plan S4); the scene clamps
+        # it where it is used (_clamp_wall_height).
+        'wall_height': _tofloat(params.get('wall_height'), 1.5),
     }
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera;

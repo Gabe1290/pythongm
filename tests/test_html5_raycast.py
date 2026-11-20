@@ -88,12 +88,14 @@ def test_wall_render_samples_texture_strip():
     assert "buildRaycastWalls(cellSize)" in body
     assert "Math.cos(rayOffset)" in body          # fisheye correction
     # viewH (letterbox height, == h until a viewport_height is set), DOOM HUD Unit 2
-    assert "viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected" in body
+    # one texture TILE's height (stairs S4; the whole wall by default)
+    assert "viewH * cellSize * RAYCAST_TEXTURE_HEIGHT / Math.max(corrected" in body
     # 1px source-column drawImage scaled to the strip (Canvas equiv of pygame
     # subsurface+scale)
     # the texture is CROPPED to the visible span (srcY/srcH), not the whole
     # column squeezed into a screen-clamped strip
-    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in body
+    # one cropped drawImage per tile (stairs S4), on that tile's visible rows
+    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, sy0, stripW, sy1 - sy0)" in body
     assert "if (!r.hit) continue" in body         # miss columns draw no wall
     # depth cue is now the shared shading model (subtle side hint + distance
     # falloff), not the old binary `r.side === 1` half-brightness overlay
@@ -185,12 +187,14 @@ def test_floor_casting_pass_invoked_before_walls():
 
 def test_cast_floor_plane_mirrors_desktop():
     """castFloorPlane ports _cast_floor_plane's camera-plane cast faithfully."""
-    m = re.search(r"castFloorPlane\(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH\)\s*\{(.*?)\n    \}",
+    m = re.search(r"castFloorPlane\(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH, planeHeight\)\s*\{(.*?)\n    \}",
                   ENGINE, re.S)
     assert m, "castFloorPlane not found"
     body = m.group(1)
     # row distance from the same projection the walls use (viewH: DOOM HUD Unit 2)
-    assert "const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH" in body
+    # plane distance from the eye (stairs S4): the eye height for the floor
+    assert "if (planeHeight === undefined || planeHeight === null) planeHeight = RAYCAST_EYE_HEIGHT;" in body
+    assert "const posZ = planeHeight * viewH" in body
     assert "const rowd = posZ / p" in body
     # the two FOV-edge rays interpolated across columns (camera-plane method)
     assert "const rdx0 = dirX - planeX" in body and "const rdx1 = dirX + planeX" in body
@@ -327,7 +331,7 @@ def test_html5_vertical_math_uses_viewH_not_h():
     # Horizon, fills, wall + billboard scale all key off viewH now.
     assert "const halfH = Math.floor(viewH / 2);" in rv
     assert "ctx.fillRect(0, halfH, w, viewH - halfH);" in rv
-    assert "const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4);" in rv
+    assert "const tileH = viewH * cellSize * RAYCAST_TEXTURE_HEIGHT / Math.max(corrected, 1e-4);" in rv
     assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4);" in rv
     assert "Math.floor(viewH * b.inst.boxWidth()" in rv
     # width is NEVER shrunk — strictly a vertical letterbox.
@@ -348,6 +352,6 @@ def test_html5_floor_cast_receives_viewH():
     assert "castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false, viewH)" in rv
     cf = ENGINE[ENGINE.index("castFloorPlane(ctx, texData"):]
     cf = cf[:cf.index("\n    render(ctx)")] if "\n    render(ctx)" in cf else cf[:4000]
-    assert "res, ceiling, viewH) {" in cf
-    assert "const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH;" in cf
+    assert "res, ceiling, viewH, planeHeight) {" in cf
+    assert "const posZ = planeHeight * viewH;" in cf
     assert "const regionH = viewH - halfH;" in cf

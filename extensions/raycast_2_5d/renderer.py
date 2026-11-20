@@ -220,6 +220,34 @@ RAYCAST_MIN_SHADE = 0.35     # never fully black
 # WALLS only, not billboards (which stay sprite-sized). HTML5 (engine.js)
 # and Kivy mirror it -- pinned by tests/test_raycast_export_parity.py.
 RAYCAST_WALL_HEIGHT = 1.5
+# The vertical model behind it (docs/RAYCAST_STAIRS_PLAN.md, S4), in grid
+# cells. The eye sits RAYCAST_EYE_HEIGHT above the floor -- half the default
+# wall, so the horizon is the middle of a default wall. Walls (and the
+# ceiling plane) rise to the camera's `wall_height`, default
+# RAYCAST_WALL_HEIGHT; a wall texture covers RAYCAST_TEXTURE_HEIGHT of it and
+# REPEATS above that (anchored at the floor), so raising the walls for stairs
+# keeps the bricks their usual size instead of stretching them. With the
+# default height a wall is exactly one tile: today's picture, bit for bit.
+RAYCAST_EYE_HEIGHT = 0.75
+RAYCAST_TEXTURE_HEIGHT = 1.5
+# Where the eye sits inside one texture tile, from its top (0.5: mid-tile).
+# Kept as a ratio so the default wall's top is computed as
+# `half_h - tile_h * 0.5`, numerically identical to the old `full_h / 2.0`.
+_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT
+# Allowed wall_height range (cells): the ceiling must clear the eye.
+RAYCAST_MIN_WALL_HEIGHT = 1.0
+RAYCAST_MAX_WALL_HEIGHT = 10.0
+
+
+def clamp_wall_height(value) -> float:
+    """A camera's wall_height in cells, defaulted and clamped to the range."""
+    try:
+        v = float(value)
+    except (TypeError, ValueError):
+        return RAYCAST_WALL_HEIGHT
+    if v != v:                                   # NaN
+        return RAYCAST_WALL_HEIGHT
+    return min(RAYCAST_MAX_WALL_HEIGHT, max(RAYCAST_MIN_WALL_HEIGHT, v))
 
 
 def wall_shade(side: int, corrected: float, max_dist: float) -> float:
@@ -273,6 +301,7 @@ def render_raycast_view(room, screen: pygame.Surface):
     st = raycast_state(room)
     cfg = st["camera"]
     cell_size = int(cfg.get('cell_size', 32))
+    wall_h = clamp_wall_height(cfg.get('wall_height', RAYCAST_WALL_HEIGHT))
     # Rebuilt every frame -- see build_raycast_walls's docstring. Billboards
     # (below) already read room.instances fresh each frame with no cache;
     # walls now do too, so a create_instance/destroy_instance of a solid
@@ -372,9 +401,12 @@ def render_raycast_view(room, screen: pygame.Surface):
                                cam_cx, cam_cy, facing_screen_rad, fov_rad,
                                cast_res, ceiling=False, view_h=view_h)
     if ceil_sprite is not None and sky_sprite is None:
+        # The ceiling plane is the top of the walls: wall_height above the
+        # floor, so (wall_height - eye) above the eye.
         cast_floor_plane(screen, ceil_sprite.get_frame(0),
                                cam_cx, cam_cy, facing_screen_rad, fov_rad,
-                               cast_res, ceiling=True, view_h=view_h)
+                               cast_res, ceiling=True, view_h=view_h,
+                               plane_height=wall_h - RAYCAST_EYE_HEIGHT)
 
     # Phase 5: sample a vertical texture strip per wall column (per the
     # plan). Off -> flat colour (the pre-Phase-5 look), also the automatic
@@ -383,6 +415,8 @@ def render_raycast_view(room, screen: pygame.Surface):
     # choice — the derived thin edge-wall collision sprites are not real
     # wall art); without it, each wall samples its own instance sprite.
     textured = bool(cfg.get('wall_textured', True))
+    wall_tiles = wall_h / RAYCAST_TEXTURE_HEIGHT     # 1.0 for the default walls
+    n_tiles = max(1, int(math.ceil(wall_tiles - 1e-9)))
     wall_texture_name = cfg.get('wall_texture', '')
     wall_texture = (getattr(room, '_all_sprites', {}) or {}).get(wall_texture_name) \
         if wall_texture_name else None
@@ -421,13 +455,18 @@ def render_raycast_view(room, screen: pygame.Surface):
         # courses across a FLAT wall, and the clamp boundary marches along
         # the wall as you walk toward/away from it -- exactly the "corner
         # that moves" users reported (2026-07-19).
-        full_h = view_h * cell_size * RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)
-        y_top = half_h - full_h / 2.0
+        # tile_h: the projected height of ONE texture tile (the whole wall
+        # when wall_height is the default). y_tile0: the top of the bottom
+        # tile, the wall's top for a default wall. Tiles stack upward from
+        # the floor; the wall's real top is (wall_tiles - 1) tiles higher.
+        tile_h = view_h * cell_size * RAYCAST_TEXTURE_HEIGHT / max(corrected, 1e-4)
+        y_tile0 = half_h - tile_h * _EYE_FROM_TILE_TOP
+        y_wall_top = y_tile0 - (wall_tiles - 1.0) * tile_h
         x0 = int(col * col_width)
         x1 = int((col + 1) * col_width)
         strip_w = max(1, x1 - x0)
-        y0 = max(0, int(math.floor(y_top)))
-        y1 = min(view_h, int(math.ceil(y_top + full_h)))
+        y0 = max(0, int(math.floor(y_wall_top)))
+        y1 = min(view_h, int(math.ceil(y_tile0 + tile_h)))
         vis_h = y1 - y0
         if vis_h <= 0:
             continue
@@ -438,30 +477,16 @@ def render_raycast_view(room, screen: pygame.Surface):
         tex_sprite = wall_texture if wall_texture is not None else wall_sprite
         if textured and tex_sprite is not None:
             frame = tex_sprite.get_frame(0)
-            tw, th = frame.get_width(), frame.get_height()
-            tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-            # Texture rows that map onto the visible screen span. subsurface
-            # needs INTEGER rows, but on a close wall one texel covers tens
-            # of screen pixels, so rounding src_y per column made adjacent
-            # columns snap to different texels -- a jump of a whole texel
-            # (~30-60px), i.e. the jagged close-up edges. Crop to the floor
-            # texel (+ margin) and carry the SUB-TEXEL remainder as a
-            # blit offset instead, so the residual error is <=1px.
-            texels_per_px = th / full_h
-            src_y_f = (y0 - y_top) * texels_per_px
-            src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
-            frac_px = (src_y_f - src_y) / texels_per_px   # in screen px
-            need = int(math.ceil(vis_h * texels_per_px)) + 2
-            src_h = max(1, min(th - src_y, need))
-            dest_h = max(1, int(round(src_h / texels_per_px)))
-            col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
-            strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
-            if shade < 1.0:
-                v = int(shade * 255)
-                strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
-            off = max(0, min(dest_h - 1, int(round(frac_px))))
-            screen.blit(strip, (x0, y0),
-                        (0, off, strip_w, min(vis_h, dest_h - off)))
+            tex_x = min(frame.get_width() - 1, max(0, int(tex_u * frame.get_width())))
+            # One cropped blit per texture tile, bottom tile first; the top
+            # tile is cut at the wall's real top (its lower part shows).
+            for k in range(n_tiles):
+                seg_top = y_tile0 - k * tile_h
+                sy0 = max(0, int(math.floor(max(seg_top, y_wall_top))))
+                sy1 = min(view_h, int(math.ceil(seg_top + tile_h)))
+                if sy1 - sy0 > 0:
+                    blit_wall_tile(screen, frame, tex_x, x0, strip_w,
+                                   seg_top, tile_h, sy0, sy1 - sy0, shade)
         else:
             color = tuple(int(c * shade) for c in wall_color)
             screen.fill(color, (x0, y0, strip_w, vis_h))
@@ -566,18 +591,50 @@ def render_raycast_view(room, screen: pygame.Surface):
         screen.fill((0, 0, 0), (0, view_h, w, h - view_h))
 
 
+def blit_wall_tile(screen, frame, tex_x, x0, strip_w, y_top, full_h, y0, vis_h,
+                   shade):
+    """Draw the visible rows [y0, y0+vis_h) of one wall texture tile whose
+    full (unclamped) projection spans [y_top, y_top+full_h), sampling texture
+    column tex_x, darkened by shade."""
+    th = frame.get_height()
+    # Texture rows that map onto the visible screen span. subsurface
+    # needs INTEGER rows, but on a close wall one texel covers tens
+    # of screen pixels, so rounding src_y per column made adjacent
+    # columns snap to different texels -- a jump of a whole texel
+    # (~30-60px), i.e. the jagged close-up edges. Crop to the floor
+    # texel (+ margin) and carry the SUB-TEXEL remainder as a
+    # blit offset instead, so the residual error is <=1px.
+    texels_per_px = th / full_h
+    src_y_f = (y0 - y_top) * texels_per_px
+    src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
+    frac_px = (src_y_f - src_y) / texels_per_px   # in screen px
+    need = int(math.ceil(vis_h * texels_per_px)) + 2
+    src_h = max(1, min(th - src_y, need))
+    dest_h = max(1, int(round(src_h / texels_per_px)))
+    col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
+    strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
+    if shade < 1.0:
+        v = int(shade * 255)
+        strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+    off = max(0, min(dest_h - 1, int(round(frac_px))))
+    screen.blit(strip, (x0, y0),
+                (0, off, strip_w, min(vis_h, dest_h - off)))
+
+
 def cast_floor_plane(screen, frame, cam_cx, cam_cy,
                      facing_screen_rad, fov_rad, res, ceiling=False,
-                     view_h=None):
+                     view_h=None, plane_height=None):
     """Low-res floor/ceiling texture casting (Phase 5). Renders the ground
     (or ceiling) plane into a downsampled surface, then upscales — full-res
     per-pixel casting is ~13x too slow in pure Python (timing spike).
 
     The plane is sampled in CELL units so the texture tiles once per grid
     cell and lines up with the wall bases. Row distance is derived from the
-    same projection the wall pass uses (eye height RAYCAST_WALL_HEIGHT/2
-    cells), so floor and walls meet seamlessly:
-    rowDistance_cells = (0.5*RAYCAST_WALL_HEIGHT*h) / (y - horizon). The two FOV-edge ray
+    same projection the wall pass uses, so floor and walls meet seamlessly:
+    rowDistance_cells = (plane_height*h) / (y - horizon), where plane_height
+    is the plane's distance from the eye in cells -- RAYCAST_EYE_HEIGHT for
+    the floor (the default), wall_height - RAYCAST_EYE_HEIGHT for the
+    ceiling. The two FOV-edge ray
     directions (camera-plane method) are interpolated across columns, which
     keeps floor lines straight (the fisheye-correct equivalent of the wall
     pass). `ceiling` mirrors the same cast into the top half.
@@ -601,12 +658,14 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
     plane_x, plane_y = -dir_y * plane, dir_x * plane
     rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y   # leftmost column ray
     rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y   # rightmost column ray
-    # Eye height in the same units as the wall pass: walls span world height
-    # 0..RAYCAST_WALL_HEIGHT cells centred on the horizon, so the eye is at
-    # RAYCAST_WALL_HEIGHT/2 cells. Using 0.5 here (the pre-1.5 value) sampled
-    # the floor under a wall's base at 2/3 of the wall's distance, so the
-    # floor slid against the wall bases (docs/RAYCAST_STAIRS_PLAN.md, F1).
-    pos_z = 0.5 * RAYCAST_WALL_HEIGHT * view_h
+    # Distance between the eye and the plane, in cells: the floor is
+    # RAYCAST_EYE_HEIGHT below the eye, like the wall pass's floor line. (It
+    # used 0.5 here until S1 -- the pre-1.5-walls value -- which sampled the
+    # floor under a wall's base at 2/3 of the wall's distance; see
+    # docs/RAYCAST_STAIRS_PLAN.md, F1.)
+    if plane_height is None:
+        plane_height = RAYCAST_EYE_HEIGHT
+    pos_z = plane_height * view_h
 
     sw = max(1, w // res)
     sh = max(1, region_h // res)

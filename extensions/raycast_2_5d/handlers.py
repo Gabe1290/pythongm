@@ -141,6 +141,7 @@ class PluginExecutor:
             wall_texture / sky_texture / floor_texture / ceiling_texture,
             wall_textured, floor_cast_res: Phase 5 texturing
             viewport_height: DOOM-bar letterbox (0 = full window height)
+            wall_height: walls/ceiling height in grid cells (default 1.5)
         """
         ae = self._executor(instance)
         if ae is None or not ae.game_runner or not ae.game_runner.current_room:
@@ -195,6 +196,11 @@ class PluginExecutor:
             "floor_texture": str(parameters.get("floor_texture", "")),
             "ceiling_texture": str(parameters.get("ceiling_texture", "")),
             "floor_cast_res": int(_num("floor_cast_res", 4)),
+            # Height of the walls and the ceiling plane, in grid cells
+            # (stairs plan S4). Stored as given; renderer.clamp_wall_height
+            # defaults and clamps it where it is used (this module must not
+            # import the pygame renderer).
+            "wall_height": _num("wall_height", 1.5),
             # DOOM-bar letterbox: shrink the 3D view to this many pixels tall
             # and reserve the band below for a status bar. 0 = full window
             # height, so every existing raycast game renders unchanged.

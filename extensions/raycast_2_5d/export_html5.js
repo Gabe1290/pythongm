@@ -16,6 +16,23 @@ const RAYCAST_MIN_SHADE = 0.35;     // never fully black
 const RAYCAST_WALL_HEIGHT = 1.5;    // walls project this many x taller than a
                                     // cube (walls only, not billboards) -- see
                                     // game_runner RAYCAST_WALL_HEIGHT
+// The vertical model (renderer.py, stairs plan S4), in grid cells: the eye is
+// RAYCAST_EYE_HEIGHT above the floor; walls and the ceiling rise to the
+// camera's wall_height (default RAYCAST_WALL_HEIGHT); a wall texture covers
+// RAYCAST_TEXTURE_HEIGHT and repeats above that, anchored at the floor.
+const RAYCAST_EYE_HEIGHT = 0.75;
+const RAYCAST_TEXTURE_HEIGHT = 1.5;
+const RAYCAST_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT;
+const RAYCAST_MIN_WALL_HEIGHT = 1.0;
+const RAYCAST_MAX_WALL_HEIGHT = 10.0;
+
+function raycastClampWallHeight(value) {
+    const v = Number(value);
+    if (value === undefined || value === null || value === '' || !Number.isFinite(v)) {
+        return RAYCAST_WALL_HEIGHT;
+    }
+    return Math.min(RAYCAST_MAX_WALL_HEIGHT, Math.max(RAYCAST_MIN_WALL_HEIGHT, v));
+}
 
 Object.assign(GameRoom.prototype, {
     buildRaycastWalls(cellSize) {
@@ -119,6 +136,9 @@ Object.assign(GameRoom.prototype, {
     renderRaycastView(ctx) {
         const cfg = this.raycastCamera;
         const cellSize = cfg.cell_size || 32;
+        const wallH = raycastClampWallHeight(cfg.wall_height);
+        const wallTiles = wallH / RAYCAST_TEXTURE_HEIGHT;      // 1 for default walls
+        const nTiles = Math.max(1, Math.ceil(wallTiles - 1e-9));
         // Rebuilt every frame (parity with the desktop renderer.py fix,
         // 2026-10-06) so a solid instance created/destroyed at runtime shows
         // up immediately instead of only on room re-entry/cell_size change.
@@ -182,7 +202,9 @@ Object.assign(GameRoom.prototype, {
         const ceilTex = (cfg.ceiling_texture && !skyTex)
             ? this._textureData(sprites[cfg.ceiling_texture]) : null;
         if (ceilTex) {
-            this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true, viewH);
+            // The ceiling plane is the top of the walls: (wallH - eye) above the eye.
+            this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true, viewH,
+                                wallH - RAYCAST_EYE_HEIGHT);
         }
 
         // CAMERA-PLANE projection (not uniform-angle) — screen columns are
@@ -207,12 +229,16 @@ Object.assign(GameRoom.prototype, {
             // close columns clamped and compressed the entire brick texture
             // while farther columns didn't, breaking the courses across a flat
             // wall, with the boundary marching along as you moved.
-            const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4);
-            const yTop = halfH - fullH / 2;
+            // tileH: one texture tile's projected height (the whole wall for
+            // the default wall_height); yTile0: the bottom tile's top. Tiles
+            // stack upward from the floor -- same as renderer.py.
+            const tileH = viewH * cellSize * RAYCAST_TEXTURE_HEIGHT / Math.max(corrected, 1e-4);
+            const yTile0 = halfH - tileH * RAYCAST_EYE_FROM_TILE_TOP;
+            const yWallTop = yTile0 - (wallTiles - 1) * tileH;
             const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
             const stripW = Math.max(1, x1 - x0);
-            const y0 = Math.max(0, Math.floor(yTop));
-            const y1 = Math.min(viewH, Math.ceil(yTop + fullH));
+            const y0 = Math.max(0, Math.floor(yWallTop));
+            const y1 = Math.min(viewH, Math.ceil(yTile0 + tileH));
             const visH = y1 - y0;
             if (visH <= 0) continue;
             // Subtle side hint + distance falloff (see wallShade).
@@ -221,14 +247,22 @@ Object.assign(GameRoom.prototype, {
             if (textured && texSprite && texSprite.complete && texSprite.width > 0) {
                 const tw = texSprite.width, th = texSprite.height;
                 const texX = Math.min(tw - 1, Math.max(0, Math.floor(r.texU * tw)));
-                // FLOAT source rows — drawImage samples sub-texel, so no
-                // per-column snapping to whole texels (which on a close wall,
-                // where one texel spans tens of screen px, produced jagged
-                // edges). Canvas interpolates for us; nothing to round.
-                const v0 = (y0 - yTop) / fullH, v1 = (y1 - yTop) / fullH;
-                const srcY = Math.max(0, Math.min(th, v0 * th));
-                const srcH = Math.max(1e-3, Math.min(th - srcY, (v1 - v0) * th));
-                ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH);
+                // One cropped drawImage per texture tile, bottom tile first;
+                // the top tile is cut at the wall's real top.
+                for (let k = 0; k < nTiles; k++) {
+                    const segTop = yTile0 - k * tileH;
+                    const sy0 = Math.max(0, Math.floor(Math.max(segTop, yWallTop)));
+                    const sy1 = Math.min(viewH, Math.ceil(segTop + tileH));
+                    if (sy1 - sy0 <= 0) continue;
+                    // FLOAT source rows — drawImage samples sub-texel, so no
+                    // per-column snapping to whole texels (which on a close
+                    // wall, where one texel spans tens of screen px, produced
+                    // jagged edges). Canvas interpolates for us.
+                    const v0 = (sy0 - segTop) / tileH, v1 = (sy1 - segTop) / tileH;
+                    const srcY = Math.max(0, Math.min(th, v0 * th));
+                    const srcH = Math.max(1e-3, Math.min(th - srcY, (v1 - v0) * th));
+                    ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, sy0, stripW, sy1 - sy0);
+                }
                 if (shade < 1.0) {
                     ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
                     ctx.fillRect(x0, y0, stripW, visH);
@@ -345,7 +379,7 @@ Object.assign(GameRoom.prototype, {
     // by sampling `texData` in CELL units (so the texture tiles once per grid
     // cell and meets the wall bases), then upscales with drawImage. `ceiling`
     // mirrors the same cast into the top half via a vertical flip.
-    castFloorPlane(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH) {
+    castFloorPlane(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH, planeHeight) {
         const w = ctx.canvas.width, h = ctx.canvas.height;
         // Letterbox: cast into the shrunk 3D view's floor/ceiling, so the
         // horizon and projection reference are viewH, not the true height.
@@ -362,9 +396,11 @@ Object.assign(GameRoom.prototype, {
         const planeX = -dirY * plane, planeY = dirX * plane;
         const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
         const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
-        // Eye height matches the wall pass (RAYCAST_WALL_HEIGHT/2 cells) --
-        // desktop cast_floor_plane, docs/RAYCAST_STAIRS_PLAN.md F1.
-        const posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH;
+        // planeHeight: the plane's distance from the eye in cells -- the eye
+        // height for the floor (default), wallH - eye for the ceiling. Matches
+        // the wall pass (desktop cast_floor_plane; stairs plan F1/S4).
+        if (planeHeight === undefined || planeHeight === null) planeHeight = RAYCAST_EYE_HEIGHT;
+        const posZ = planeHeight * viewH;
         const sw = Math.max(1, Math.floor(w / res));
         const sh = Math.max(1, Math.floor(regionH / res));
         const stepScale = res / w;
@@ -670,6 +706,9 @@ registerExtensionAction('enable_raycast_view', function(obj, params, game) {
                     floor_texture: params.floor_texture || '',
                     ceiling_texture: params.ceiling_texture || '',
                     floor_cast_res: Math.max(1, Math.floor(rNum('floor_cast_res', 4))),
+                    // Walls + ceiling height in cells (stairs plan S4);
+                    // clamped where it is used (raycastClampWallHeight).
+                    wall_height: rNum('wall_height', 1.5),
                     // DOOM-bar letterbox (0 = full height). renderRaycastView
                     // reads obj; without it here an exported game ignores a
                     // viewport_height the desktop runtime honours.
