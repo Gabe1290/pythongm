@@ -1372,3 +1372,12 @@ The HTML5 client got the same two actions the same day (`export_html5.js`; tests
 author's name -- never the engine's own attributes -- and to a room-placed instance only under the names listed in
 `sync_instance`.
 
+## Addendum 2026-11-20 (4) -- a phone can host
+
+The "a phone cannot host" assumption was wrong: a device can listen on a socket, so `mp_lan.glue` now runs the
+desktop's own host session on Kivy (`host_game`, `start_networked_game`, `network_spawn`, host-owned
+`sync_instance`, `set_instance_owner`, `remote_input`, `set_network_mode`). The Kivy generator reports no
+unsupported network action. Missing on a phone: the waiting-room screen and the discovery beacon (the game
+reads the global `host_address`). Tests: `tests/test_kivy_multiplayer_host.py`. HTML5 stays client-only -- a browser
+page cannot accept connections.
+

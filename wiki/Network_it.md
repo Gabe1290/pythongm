@@ -22,7 +22,10 @@ unisce a un host desktop; non può fare da host). Un'esportazione
 **Kivy/Android** è anch'essa un client: un telefono si unisce a un host desktop
 (scrivi l'indirizzo dell'host in `join_game`; la ricerca automatica esiste solo
 sul desktop), partecipa alle variabili condivise, ai messaggi e agli eventi di
-rete, e vede le istanze in rete dell'host. Controlla l'avatar che l'host gli assegna, come il browser. Non può fare da host.
+rete, e vede le istanze in rete dell'host. Controlla l'avatar che l'host gli assegna, come il browser. A differenza del browser, può fare anche da host: ascolta come un host desktop,
+ma non ha la schermata della sala d'attesa, quindi il gioco deve mostrare
+l'indirizzo che gli altri giocatori devono digitare (la variabile globale
+`host_address`).
 Anche un telefono o un browser può partecipare a un'istanza collocata nella
 stanza: quando l'istanza è segnata come sincronizzata su ogni macchina, segue la
 copia dell'host e gira sul dispositivo del giocatore se l'host gliel'ha

@@ -21,7 +21,9 @@ namizju; sama ne more gostiti). Izvoz **Kivy/Android** je prav tako
 odjemalec: telefon se pridruži gostitelju na namizju (v `join_game` vpiši naslov
 gostitelja; samodejno iskanje obstaja samo na namizju), sodeluje pri skupnih
 spremenljivkah, sporočilih in omrežnih dogodkih ter vidi gostiteljeve omrežne
-primerke. Upravlja avatar, ki mu ga dodeli gostitelj, kot brskalnik. Ne more gostiti.
+primerke. Upravlja avatar, ki mu ga dodeli gostitelj, kot brskalnik. Za razliko od brskalnika lahko tudi gosti: posluša kot namizni gostitelj, vendar
+nima zaslona čakalnice, zato naj igra prikaže naslov, ki ga morajo drugi igralci
+vpisati (globalna spremenljivka `host_address`).
 Telefon ali brskalnik lahko sodeluje tudi pri primerku, postavljenem v sobo: če
 je primerek na vsakem računalniku označen kot sinhroniziran, sledi gostiteljevi
 kopiji in teče na igralčevi napravi, če mu ga je gostitelj dodelil (lastnika
