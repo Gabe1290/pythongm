@@ -20,8 +20,7 @@ Compatible hoy: la exportación de **escritorio** (pygame), tanto como
 anfitrión como cliente, y la exportación **HTML5** como cliente (una página
 del navegador se une a un anfitrión de escritorio; no puede ser anfitrión).
 Una exportación **Kivy/Android** también es un cliente: un teléfono se une a un
-anfitrión de escritorio (escribe la dirección del anfitrión en `join_game`; la
-detección automática solo existe en el escritorio), participa en las variables
+anfitrión de escritorio (escribe la dirección del anfitrión en `join_game`, o «auto»: se une al primer anfitrión que encuentra en la red, sin pantalla de selección), participa en las variables
 compartidas, los mensajes y los eventos de red, y ve las instancias en red del
 anfitrión. Controla el avatar que el anfitrión le asigna, como el navegador. A diferencia del navegador, también puede ser anfitrión: escucha como un
 anfitrión de escritorio, pero no tiene pantalla de sala de espera, así que el

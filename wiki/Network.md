@@ -17,8 +17,7 @@ quiz with a live scoreboard, and a two-player co-op treasure hunt.
 Supported today: the **desktop** (pygame) export, both as host and client,
 and the **HTML5** export as a client (a browser page joins a desktop host;
 it can't host itself). A **Kivy/Android** export is a client too: a phone
-joins a desktop host (type the host's address in `join_game`; automatic
-discovery is desktop-only) and takes part in shared variables, messages and
+joins a desktop host (type the host's address in `join_game`, or use "auto": it joins the first host it finds on the network, with no picker screen) and takes part in shared variables, messages and
 the network events, and sees the host's networked instances. It controls the avatar the host assigns to it, like the browser. Unlike the browser, it can also host: it listens like a desktop host, but it has
 no waiting-room screen, so the game should show the address the other players
 must type (the global `host_address`).

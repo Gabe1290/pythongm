@@ -20,8 +20,7 @@ Supportato oggi: l'esportazione **desktop** (pygame), sia come host sia come
 client, e l'esportazione **HTML5** come client (una pagina del browser si
 unisce a un host desktop; non può fare da host). Un'esportazione
 **Kivy/Android** è anch'essa un client: un telefono si unisce a un host desktop
-(scrivi l'indirizzo dell'host in `join_game`; la ricerca automatica esiste solo
-sul desktop), partecipa alle variabili condivise, ai messaggi e agli eventi di
+(scrivi l'indirizzo dell'host in `join_game`, oppure «auto»: si unisce al primo host trovato in rete, senza schermata di scelta), partecipa alle variabili condivise, ai messaggi e agli eventi di
 rete, e vede le istanze in rete dell'host. Controlla l'avatar che l'host gli assegna, come il browser. A differenza del browser, può fare anche da host: ascolta come un host desktop,
 ma non ha la schermata della sala d'attesa, quindi il gioco deve mostrare
 l'indirizzo che gli altri giocatori devono digitare (la variabile globale

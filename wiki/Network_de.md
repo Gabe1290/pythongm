@@ -19,8 +19,7 @@ Schatzsuche für zwei.
 Heute unterstützt: der **Desktop**-Export (pygame), als Host und als Client,
 und der **HTML5**-Export als Client (eine Browserseite tritt einem
 Desktop-Host bei; sie kann nicht selbst hosten). Ein **Kivy/Android**-Export
-ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adresse
-des Hosts in `join_game` ein; die automatische Suche gibt es nur am Desktop),
+ist ebenfalls ein Client: Ein Handy tritt einem Desktop-Host bei (gib die Adresse des Hosts in `join_game` ein oder „auto“: Es tritt dem ersten gefundenen Host im Netzwerk bei, ohne Auswahlbildschirm),
 nimmt an gemeinsamen Variablen, Nachrichten und Netzwerkereignissen teil und
 sieht die vernetzten Instanzen des Hosts. Es steuert den vom Host zugewiesenen Avatar, wie der Browser. Anders als der Browser kann es auch hosten: Es lauscht wie ein Desktop-Host, hat
 aber keinen Warteraum-Bildschirm, das Spiel sollte also die Adresse anzeigen,

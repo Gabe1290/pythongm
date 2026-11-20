@@ -18,8 +18,7 @@ lestvico točk v živo in sodelovalno iskanje zaklada za dva.
 Danes podprto: izvoz za **namizje** (pygame), kot gostitelj in kot odjemalec, ter
 izvoz **HTML5** kot odjemalec (brskalniška stran se pridruži gostitelju na
 namizju; sama ne more gostiti). Izvoz **Kivy/Android** je prav tako
-odjemalec: telefon se pridruži gostitelju na namizju (v `join_game` vpiši naslov
-gostitelja; samodejno iskanje obstaja samo na namizju), sodeluje pri skupnih
+odjemalec: telefon se pridruži gostitelju na namizju (v `join_game` vpiši naslov gostitelja ali »auto«: pridruži se prvemu gostitelju, ki ga najde v omrežju, brez zaslona za izbiro), sodeluje pri skupnih
 spremenljivkah, sporočilih in omrežnih dogodkih ter vidi gostiteljeve omrežne
 primerke. Upravlja avatar, ki mu ga dodeli gostitelj, kot brskalnik. Za razliko od brskalnika lahko tudi gosti: posluša kot namizni gostitelj, vendar
 nima zaslona čakalnice, zato naj igra prikaže naslov, ki ga morajo drugi igralci
