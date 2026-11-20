@@ -153,7 +153,9 @@ Per-column work grows from one hit to at most `2 × render_distance` crossings
    tread span of known height `h`, so its distance is
    `d = (eye_z − h) × view_h / (y − horizon)` and the texel is
    `camera + d × ray_dir`. Same number of texel lookups as today (only floor
-   pixels are cast), different `h` per span. Treads use the step's
+   pixels are cast), different `h` per span. Measured in S2: casting the
+   whole floor this way beats keeping today's row-major ground cast and
+   re-casting only the treads (that casts tread pixels twice). Treads use the step's
    `top_texture` (falls back to the floor texture, then to a flat colour);
    risers use `side_texture` (falls back to the wall texture, then flat), with
    the same `wall_shade` side/fog model as walls. The ceiling cast keeps its
@@ -247,13 +249,47 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   asserts the floor texel sampled at a wall's base row is at the wall's own
   distance (assert *where*, not that something drew). Before/after PNGs of
   `raycast_1`–`4` via `PYGM_SCREENSHOT` for the owner.
-- [ ] **S2 — Timing spike (throwaway, not committed code; result recorded here).**
-  Column-major floor cast + column walk in pure Python on a stairs room at the
-  samples' settings (640-wide, 320 columns, `floor_cast_res` 4). Gate: the
-  stairs frame stays inside the budget `test_raycast_view.py`'s floor-cast
-  timing test already uses. If not: fall back to flat-coloured treads at
-  `floor_cast_res`-stride and texture only the base floor (decide here, before
-  S6).
+- [x] **S2 — Timing spike (throwaway, not committed code; result recorded here).**
+  Done 2026-11-20 on the Linux box (Python 3.12, pygame 2.6.1). **Gate
+  passed; design confirmed: the stairs path casts the WHOLE floor
+  column-major (variant A), the ceiling stays row-major.**
+  - Prototype: a copy of `render_raycast_view` with the crossing-recording
+    DDA, the column walk, textured risers (same crop/scale/shade trick as
+    walls), textured walls clipped to `clip_bottom`, a column-major low-res
+    floor cast over the recorded spans, and the ceiling as today's row-major
+    cast with `pos_z` from `eye_z`. Room: 15×15 cells, 5-wide staircase of
+    8-px steps to a 32-px platform, a 64-px block, `wall_height` 3, 320
+    columns, `floor_cast_res` 4, raycast_4's real textures. Screenshots from
+    three poses (facing the stairs, at their foot, on the platform looking
+    down) were checked by eye: steps, treads lined up with the grid, the
+    lower floor seen from the platform, the too-high block -- all correct.
+  - Two floor designs measured (ms/frame, two runs agreed within 0.5 ms):
+
+    | 640×480 | today's renderer | B: row-major base floor + re-cast treads | **A: whole floor column-major** |
+    |---|---|---|---|
+    | staircase filling the view | 17.8 | 27.0–27.4 | **22.1–22.6** |
+    | on the platform looking down | 17.8 | 23.0 | **18.2–18.4** |
+    | full turn in the stairs room | 17.8 | 21.4–21.6 | **18.5–18.8** |
+
+    (480×480: today 14.4; A 19.2–19.7 / 15.3 / 15.3–15.6.) B casts every
+    tread pixel twice (as ground, then as tread), so it is strictly worse; A
+    casts each floor pixel exactly once at its own height. A's worst case is
+    +27 % over today, a full turn +5 %; the existing guard
+    (`textured < flat × 6 + 15 ms`) is nowhere near. 22.6 ms leaves ~10 ms of
+    a 30-fps frame for game logic on this machine; `floor_cast_res` 8 and
+    fewer `columns` remain the escape hatches on slow school PCs.
+  - Profile (stairs ahead): the two plane casts are about half the frame;
+    the column walk (recording ~10–20 crossings per column) about 10 %;
+    risers (one scale+blit each, like a wall strip) are cheap. Lesson for
+    S5/S6: write the per-pixel loops the way `cast_floor_plane` does (plain
+    `if` clamps, local aliases) -- a `min()` per pixel cost the first spike
+    run ~4 ms.
+  - Also seen: in the walk, a miss column (no wall within render distance)
+    needs a final span from the last crossing to the horizon, or its floor
+    is left unpainted. Keep that in S5/S6.
+  - Regression guard to add in S6 (relative, CI-noise-proof like the existing
+    one): the stairs frame stays under 1.6× today's renderer on the same
+    room (measured 1.27×).
 - [ ] **S3 — `Set Floor Height` + the height map.** Schema in `actions.py`
   (category "3D View", icon, params `height`, `top_texture`, `side_texture`),
   handler, `extension.json` `provides_actions`, `heights.py`
