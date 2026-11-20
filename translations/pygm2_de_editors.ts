@@ -1957,6 +1957,10 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <translation>Sprite-Rotation festlegen</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Bodenhöhe festlegen</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Blockschutz festlegen</translation>
     </message>

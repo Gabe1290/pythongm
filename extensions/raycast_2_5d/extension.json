@@ -9,6 +9,7 @@
         "set_facing_angle",
         "draw_minimap",
         "draw_doom_hud",
-        "set_billboard_rotation"
+        "set_billboard_rotation",
+        "set_floor_height"
     ]
 }

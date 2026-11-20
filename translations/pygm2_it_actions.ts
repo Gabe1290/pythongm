@@ -187,6 +187,10 @@ Usa invece gli operatori Python (and / or / not), ad esempio "vspeed &gt; 0 and 
         <translation>Imposta rotazione sprite</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Imposta altezza del pavimento</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Imposta protezione blocchi</translation>
     </message>

@@ -187,6 +187,10 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <translation>Задать вращение спрайта</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Задать высоту пола</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Задать защиту блоков</translation>
     </message>

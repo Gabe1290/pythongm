@@ -1957,6 +1957,10 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <translation>Nastavi vrtenje sprite-a</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Nastavi višino tal</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Nastavi zaščito blokov</translation>
     </message>

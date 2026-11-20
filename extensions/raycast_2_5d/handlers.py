@@ -98,6 +98,33 @@ class PluginExecutor:
             frames = 0
         instance.billboard_rotation_frames = max(0, frames)
 
+    def execute_set_floor_height_action(self, instance, parameters):
+        """Make this instance a step: the cells its sprite covers become
+        raised floor in the raycast view (docs/RAYCAST_STAIRS_PLAN.md).
+
+        Only RECORDS the height and textures on the instance, like
+        set_billboard_rotation: the height map is derived every frame from
+        the live instances by heights.build_floor_heights, which is also
+        where out-of-range heights are clamped (one place, one warning).
+
+        Parameters:
+            height: Floor height in room pixels (expression allowed).
+            top_texture / side_texture: Sprite names (blank = fall back to
+                the camera's floor / wall texture).
+        """
+        ae = self._executor(instance)
+        raw = parameters.get("height", 8)
+        height = ae._parse_value(raw, instance) if ae else raw
+        try:
+            height = float(height)
+        except (TypeError, ValueError):
+            height = 0.0
+        if height != height or height in (float("inf"), float("-inf")):
+            height = 0.0                      # NaN / inf from an expression
+        instance.raycast_floor_height = height
+        instance.raycast_step_top_texture = str(parameters.get("top_texture", "") or "")
+        instance.raycast_step_side_texture = str(parameters.get("side_texture", "") or "")
+
     def execute_enable_raycast_view_action(self, instance, parameters):
         """Switch the current room to a Doom/Wolfenstein-style raycast
         first-person view (docs/RAYCAST_2_5D_PLAN.md), or back to the normal

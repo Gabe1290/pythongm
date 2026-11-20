@@ -2032,6 +2032,10 @@ Do you want to save anyway?</source>
         <translation>设置精灵旋转</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>设置地面高度</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>设置方块保护</translation>
     </message>
@@ -4473,6 +4477,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Set Billboard Rotation</source>
         <translation>设置精灵旋转</translation>
+    </message>
+    <message>
+        <source>Set Floor Height</source>
+        <translation>设置地面高度</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

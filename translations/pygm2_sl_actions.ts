@@ -187,6 +187,10 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <translation>Nastavi vrtenje sprite-a</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Nastavi višino tal</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Nastavi zaščito blokov</translation>
     </message>

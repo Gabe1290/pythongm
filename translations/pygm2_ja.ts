@@ -2208,6 +2208,10 @@ Do you want to save anyway?</source>
         <translation>スプライトの回転を設定</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>床の高さを設定</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>ブロック保護を設定</translation>
     </message>
@@ -4473,6 +4477,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Set Billboard Rotation</source>
         <translation>スプライトの回転を設定</translation>
+    </message>
+    <message>
+        <source>Set Floor Height</source>
+        <translation>床の高さを設定</translation>
     </message>
     <message>
         <source>Set Block Protection</source>

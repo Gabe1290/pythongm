@@ -1957,6 +1957,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <translation>Задать вращение спрайта</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Задать высоту пола</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Задать защиту блоков</translation>
     </message>

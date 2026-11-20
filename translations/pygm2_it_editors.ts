@@ -1957,6 +1957,10 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <translation>Imposta rotazione sprite</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Imposta altezza del pavimento</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Imposta protezione blocchi</translation>
     </message>

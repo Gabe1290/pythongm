@@ -160,6 +160,30 @@ PLUGIN_ACTIONS = {
                             "animated frame instead)"),
         ]
     ),
+    "set_floor_height": ActionType(
+        name="set_floor_height",
+        display_name="Set Floor Height",
+        description="Make this instance a STEP in the raycast view: the grid "
+                    "cells its sprite covers become raised floor of this height, "
+                    "drawn as a step the player can climb (or a ledge to drop "
+                    "from). Use it in the Create event of a non-solid object",
+        category="3D View",
+        icon="🪜",
+        parameters=[
+            ActionParameter(name="height", display_name="Height", param_type="number",
+                default_value=8,
+                description="Floor height in room pixels, the same unit as x/y "
+                            "and Cell Size (0 = ground level)"),
+            ActionParameter(name="top_texture", display_name="Top Texture",
+                param_type="sprite", default_value="", required=False,
+                description="Sprite for the top of the step (blank = the "
+                            "floor texture)"),
+            ActionParameter(name="side_texture", display_name="Side Texture",
+                param_type="sprite", default_value="", required=False,
+                description="Sprite for the front of the step (blank = the "
+                            "wall texture)"),
+        ]
+    ),
     "draw_doom_hud": ActionType(
         name="draw_doom_hud",
         display_name="Draw DOOM HUD",

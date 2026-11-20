@@ -31,7 +31,7 @@ def test_raycast_manifest_declares_its_actions():
         (REPO_ROOT / "extensions" / "raycast_2_5d" / "extension.json").read_text(encoding="utf-8"))
     assert set(manifest.get("provides_actions", [])) == {
         "enable_raycast_view", "set_facing_angle", "draw_minimap", "draw_doom_hud",
-        "set_billboard_rotation"}
+        "set_billboard_rotation", "set_floor_height"}
 
 
 def test_list_available_extensions_exposes_provides_actions():

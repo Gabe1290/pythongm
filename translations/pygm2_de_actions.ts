@@ -187,6 +187,10 @@ Verwenden Sie stattdessen die Python-Operatoren (and / or / not), z. B. "vspeed 
         <translation>Sprite-Rotation festlegen</translation>
     </message>
     <message>
+        <source>Set Floor Height</source>
+        <translation>Bodenhöhe festlegen</translation>
+    </message>
+    <message>
         <source>Set Block Protection</source>
         <translation>Blockschutz festlegen</translation>
     </message>
