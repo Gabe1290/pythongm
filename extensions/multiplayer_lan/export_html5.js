@@ -543,9 +543,18 @@ registerExtensionAction('leave_game', (inst, params, game) => {
     if (game._multiplayerClient) game._multiplayerClient.leave();
 });
 
-registerExtensionAction('host_game', () => {
-    console.warn('multiplayer: host_game is not available in the HTML5 export '
-        + '-- a browser page cannot accept incoming connections. Host from a desktop export instead.');
+registerExtensionAction('host_game', () => _mpWarnOnce('host_game',
+    'A browser page cannot accept incoming connections; host from a desktop or Android export.'));
+
+// The older v1 action. Client mode is a join (the browser speaks the same protocol as for join_game);
+// host mode cannot work in a page.
+registerExtensionAction('set_network_mode', (inst, params, game) => {
+    if (String(params.mode || 'host').trim().toLowerCase() !== 'client') {
+        _mpWarnOnce('set_network_mode',
+            'Host mode needs to accept connections, which a browser page cannot; host from a desktop or Android export.');
+        return;
+    }
+    _extActions['join_game'](inst, { host: params.host, port: params.port, player_name: '' }, game);
 });
 
 registerExtensionAction('start_networked_game', () => {
