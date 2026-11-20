@@ -308,10 +308,38 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   the repo's rule is "translated the same commit". Parameter labels and
   descriptions are still S13. Nothing calls `build_floor_heights` yet (S5
   does); HTML5/Kivy still draw a step as a billboard until S10/S11.
-- [ ] **S4 — `wall_height` + eye-height constant split.** New optional
-  parameter on Enable Raycast View; `RAYCAST_EYE_HEIGHT` / wall height named
-  separately in all three renderers. Proof: default renders pixel-identical
-  (frame diff of all raycast samples against pre-change HEAD).
+- [x] **S4 — `wall_height` + eye-height constant split.** `00d811a2` (2026-11-20).
+  New optional `wall_height` on Enable Raycast View (cells, default 1.5,
+  clamped to 1–10 where it is used: `renderer.clamp_wall_height`, HTML5
+  `raycastClampWallHeight`, Kivy `_clamp_wall_height`; the handler and both
+  export config builders store the number as given). Named constants on all
+  three targets: `RAYCAST_EYE_HEIGHT` 0.75, `RAYCAST_TEXTURE_HEIGHT` 1.5,
+  min/max wall height; `RAYCAST_WALL_HEIGHT` 1.5 stays as the default.
+  Walls grow UPWARD from a fixed base (eye, horizon and wall bases never
+  move); **the wall texture repeats every 1.5 cells, anchored at the floor,
+  instead of stretching** (decided here: bricks keep their size, as in Doom;
+  the default wall is exactly one tile). The ceiling cast takes the plane's
+  height from the eye (`plane_height` / `planeHeight`, default the eye
+  height; the ceiling passes `wall_height − eye`). Desktop's per-tile blit
+  moved verbatim into `blit_wall_tile`.
+  **Proof the default is unchanged**, against a snapshot of the previous
+  HEAD: desktop 768 frames byte-identical (8 settings incl. letterbox, sky,
+  textured/flat, 97 columns; 2 window sizes; random poses incl. exactly on
+  grid lines); Kivy 150 frames instruction-for-instruction identical through
+  the stub harness (and the same harness does see `wall_height` 3 as a
+  change); the four raycast samples' frame-90 screenshots identical. HTML5
+  could not be executed here (no Playwright on this box): the edit mirrors
+  desktop line for line and its source is pinned structurally.
+  `tests/test_raycast_wall_height.py` (22 tests: wall top/base rows against
+  the projection formula, texture repeat vs stretch, floor anchoring, half
+  tile, ceiling meeting the raised wall top both directly and through the
+  real render, clamping, schema, handler, HTML5 structure, Kivy stacked tile
+  rectangles); six mutations all caught. Six existing SOURCE-TEXT checks
+  (`test_html5_raycast.py` ×4, `test_raycast_export_parity.py`, and S1's
+  HTML5 check) pinned the old expressions (`full_h = … RAYCAST_WALL_HEIGHT`,
+  the one-call `drawImage`, `posZ = 0.5 * RAYCAST_WALL_HEIGHT * viewH`);
+  each was repointed at the equivalent new expression, keeping the property
+  it protects (unclamped height, cropped texture, view-height scaling).
 - [ ] **S5 — Desktop stairs path, flat colours.** Crossing recorder in the DDA,
   column walk, risers, clipped walls, flat-colour treads; fast path untouched.
   Tests drive the real `GameRunner.run()` loop (the raycast landmine:
