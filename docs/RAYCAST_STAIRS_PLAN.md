@@ -241,8 +241,8 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
 
 ## Units (one commit + push each; full raycast test files + smoke after each)
 
-- [ ] **S0 — This plan.** Commit it.
-- [ ] **S1 — F1 fix (only if D1 = yes).** `pos_z` follows the wall pass's eye
+- [x] **S0 — This plan.** `d936e1ae`
+- [x] **S1 — F1 fix (only if D1 = yes).** `ee271f2d` (D1 = yes, owner 2026-11-20). `pos_z` follows the wall pass's eye
   height on desktop, HTML5, Kivy. Parity test pins the shared formula; a test
   asserts the floor texel sampled at a wall's base row is at the wall's own
   distance (assert *where*, not that something drew). Before/after PNGs of
