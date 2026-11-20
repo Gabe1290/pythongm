@@ -216,6 +216,32 @@ def _get_inst(inst_id):
         _instances[inst_id] = inst
     return inst
 
+# State shared with the page. The page owns the instance (it moves, tests and draws it), so what the
+# author's Python assigns to self -- self.hspeed = 4, self.hp = 9, a new self.counter -- must reach it,
+# and what the page holds (its motion, its variables) must be there to read. Motion attributes and plain
+# (number / text / boolean) variables are synced in before the code runs and any change is diffed back out.
+_RESERVED = ('x', 'y', 'visible', 'mouse_x', 'mouse_y')
+
+def _plain(value):
+    if isinstance(value, bool) or isinstance(value, str):
+        return True
+    return isinstance(value, (int, float)) and math.isfinite(value)
+
+def _sync_in(obj, state):
+    for key, value in (state.get('vars') or {}).items():
+        setattr(obj, key, value)
+    for key, value in (state.get('motion') or {}).items():
+        setattr(obj, key, value)
+    return _snapshot(obj)
+
+def _snapshot(obj):
+    return {k: v for k, v in obj.__dict__.items()
+            if not k.startswith('_') and k not in _RESERVED and _plain(v)}
+
+def _diff(obj, before):
+    now = _snapshot(obj)
+    return {k: v for k, v in now.items() if k not in before or before[k] != v}
+
 class _Keyboard:
     def __init__(self, held):
         self._held = set(held)
@@ -263,13 +289,22 @@ def run_code(inst_id, code, sync_json):
     for key in ('x', 'y', 'mouse_x', 'mouse_y'):
         if key in sync:
             setattr(self, key, sync[key])
+    before = _sync_in(self, sync)
+    other = None
+    other_state = sync.get('other')
+    if other_state:
+        other = _get_inst(other_state['id'])
+        for key in ('x', 'y'):
+            if key in other_state:
+                setattr(other, key, other_state[key])
+        other_before = _sync_in(other, other_state)
     game = _get_game(sync.get('score', 0), sync.get('lives', 0), sync.get('health', 100))
     exec_globals = {
         '__builtins__': __builtins__,
         'self': self,
         'sel': self,
         'instance': self,
-        'other': None,
+        'other': other,
         'game': game,
         'math': math,
         'random': random,
@@ -284,6 +319,19 @@ def run_code(inst_id, code, sync_json):
     for key in ('x', 'y', 'visible'):
         if key in sync and getattr(self, key, sync.get(key)) != sync.get(key):
             patch[key] = getattr(self, key)
+    changed = _diff(self, before)
+    if changed:
+        patch['vars'] = changed
+    if other is not None:
+        other_patch = {}
+        for key in ('x', 'y'):
+            if key in other_state and getattr(other, key, other_state[key]) != other_state[key]:
+                other_patch[key] = getattr(other, key)
+        other_changed = _diff(other, other_before)
+        if other_changed:
+            other_patch['vars'] = other_changed
+        if other_patch:
+            patch['other'] = other_patch
     for key in ('score', 'lives', 'health'):
         if getattr(game, key) != sync.get(key):
             patch[key] = getattr(game, key)
@@ -342,6 +390,62 @@ function playQueuedSounds(sounds, game) {
             if (playPromise && playPromise.catch) playPromise.catch(() => {});
         } catch (e) {
             console.warn('queued sound play failed:', e);
+        }
+    }
+}
+
+// ---- instance state shared with the Python bridge (see PY_BOOTSTRAP's _sync_in / _diff) -------------
+// Motion attributes the author's Python may read and write (the page's own accessors).
+const PY_MOTION_ATTRS = ['hspeed', 'vspeed', 'speed', 'direction', 'gravity', 'gravity_direction',
+    'friction', 'image_index', 'image_speed'];
+let _pyEngineAttrs = null;
+// Names that are the ENGINE's, not the author's variables: every own property a fresh instance has, plus
+// everything on the prototype (methods, accessors). Built from a real instance so it cannot drift out of step.
+function pyEngineAttrs() {
+    if (!_pyEngineAttrs) {
+        const probe = new GameObject('probe', 0, 0, {}, {});
+        _pyEngineAttrs = new Set(Object.keys(probe));
+        for (let proto = Object.getPrototypeOf(probe); proto && proto !== Object.prototype;
+             proto = Object.getPrototypeOf(proto)) {
+            for (const name of Object.getOwnPropertyNames(proto)) _pyEngineAttrs.add(name);
+        }
+        for (const name of ['x', 'y', 'visible', 'mouse_x', 'mouse_y', 'name']) _pyEngineAttrs.add(name);
+    }
+    return _pyEngineAttrs;
+}
+function pyIsPlain(value) {
+    return typeof value === 'string' || typeof value === 'boolean'
+        || (typeof value === 'number' && isFinite(value));
+}
+function pyIsAuthorVar(key) {
+    return /^[A-Za-z][A-Za-z0-9_]*$/.test(key) && !pyEngineAttrs().has(key) && PY_MOTION_ATTRS.indexOf(key) < 0;
+}
+// The instance's own plain variables (set_variable, an earlier execute_code): what the author named.
+function pyPackVars(inst) {
+    const out = {};
+    for (const key of Object.keys(inst)) {
+        if (pyIsAuthorVar(key) && pyIsPlain(inst[key])) out[key] = inst[key];
+    }
+    return out;
+}
+function pyPackMotion(inst) {
+    const out = {};
+    for (const key of PY_MOTION_ATTRS) {
+        const value = inst[key];
+        if (typeof value === 'number' && isFinite(value)) out[key] = value;
+    }
+    return out;
+}
+// What Python changed: motion goes through the page's setters, anything else must be a plain value under a
+// name that is not the engine's (so Python can never overwrite `events`, `alarms` or a method).
+function pyApplyVars(inst, changed) {
+    if (!changed) return;
+    for (const key of Object.keys(changed)) {
+        const value = changed[key];
+        if (PY_MOTION_ATTRS.indexOf(key) >= 0) {
+            if (typeof value === 'number' && isFinite(value)) inst[key] = value;
+        } else if (pyIsAuthorVar(key) && pyIsPlain(value)) {
+            inst[key] = value;
         }
     }
 }
@@ -475,12 +579,23 @@ class PythonBridge {
         const held = Object.keys(game.keys || {})
             .filter(k => game.keys[k])
             .map(k => k.toLowerCase());
-        return JSON.stringify({
+        const state = {
             x: inst.x, y: inst.y, visible: inst.visible,
             mouse_x: inst.mouse_x || 0, mouse_y: inst.mouse_y || 0,
             keys: held,
             score: game.score, lives: game.lives, health: game.health,
-        });
+            vars: pyPackVars(inst), motion: pyPackMotion(inst),
+        };
+        // In a collision event, `other` is the partner: the same state, so `other.hp -= 1` works.
+        const partner = inst._collision_other;
+        if (partner) {
+            if (!partner._pyId) partner._pyId = ++GameObject._nextInstanceId;
+            state.other = {
+                id: partner._pyId, x: partner.x, y: partner.y,
+                vars: pyPackVars(partner), motion: pyPackMotion(partner),
+            };
+        }
+        return JSON.stringify(state);
     }
 
     // Run one execute_code action; apply the returned JS-relevant patch.
@@ -491,6 +606,13 @@ class PythonBridge {
             if ('x' in patch) inst.x = patch.x;
             if ('y' in patch) inst.y = patch.y;
             if ('visible' in patch) inst.visible = patch.visible;
+            pyApplyVars(inst, patch.vars);
+            if (patch.other && inst._collision_other) {
+                const partner = inst._collision_other;
+                if ('x' in patch.other) partner.x = patch.other.x;
+                if ('y' in patch.other) partner.y = patch.other.y;
+                pyApplyVars(partner, patch.other.vars);
+            }
             // Plain writes, matching the desktop runtime's actual
             // execute_code semantics (see PY_BOOTSTRAP's _Game docstring)
             // — no caption update, no no_more_lives/no_more_health

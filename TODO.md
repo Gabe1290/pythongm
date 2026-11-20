@@ -2150,12 +2150,17 @@ lines rather than matching their text.
   `move_towards`, which took the raw parameter text) so it did nothing in a browser; `jump_to_position` did not
   resolve a bare name (`x + 5`, `y`, `hp`). Verified equal to the desktop for `jump_to_position`,
   `move_towards_point`, `create_instance` (absolute / relative / y reads) and `destroy_at_position`.
-- **Open, found by that audit (not fixed): HTML5 `execute_code` only syncs `x`, `y`, `visible`, the mouse, held keys
-  and score/lives/health between the page and Pyodide.** `self.hspeed = 4`, `self.vspeed = -8` or `self.hp = 9`
-  written in execute_code stay inside Python (they persist there between calls) and never reach the instance the
-  engine moves, tests and draws -- nor does Python see the page's hspeed or custom variables. Needs a two-way
-  sync of the motion attributes and the instance's own variables (a design question: which attributes, and
-  what a Python-only attribute means to a conditional).
+- **HTML5 `execute_code` state sync DONE 2026-11-20** (`tests/test_html5_execute_code_state_sync.py`, 22 tests, incl.
+  real Pyodide in Chromium on the dev box): the author's Python ran against a stand-in that only exchanged x, y,
+  visible, the mouse, held keys and score/lives/health, so `self.hspeed = 4`, `self.vspeed = -8` or `self.hp = 9`
+  stayed inside Python and never reached the instance the engine moves, tests and draws, and Python never saw the
+  page's motion or variables. Now the motion attributes (`hspeed vspeed speed direction gravity gravity_direction
+  friction image_index image_speed`) and the instance's plain variables (number / text / boolean) are packed in
+  before the code runs and any change is diffed back out (a bare local copied onto the instance included); in a
+  collision event `other` is the partner (it was always `None`), synced the same way. Python can never overwrite the
+  engine's own attributes: the deny-list is built from a real `GameObject` and its prototype, and only plain values
+  cross. Python-only attributes that are not plain (a list, a dict) still persist in Python between calls.
+  Compared with the desktop's `execute_execute_code_action`. Not on a phone's browser.
 - **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).
