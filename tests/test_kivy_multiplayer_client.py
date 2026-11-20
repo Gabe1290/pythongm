@@ -624,6 +624,175 @@ def test_the_generated_code_binds_inputs_and_the_only_unsupported_ones_are_host_
     assert code == "from mp_lan.glue import bind; bind('fire', 'a')"
     code = gen._convert_simple_action("set_sync_rate", {"hz": 20, "interp_ms": 150}, "create")
     assert code == "from mp_lan.glue import set_sync_rate; set_sync_rate(150)"
-    for name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn",
-                 "sync_instance", "set_instance_owner"):
+    for name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn"):
         assert "unsupported" in gen._convert_simple_action(name, {}, "create"), name
+    code = gen._convert_simple_action("sync_instance", {"vars": "hp, colour"}, "create")
+    assert code == "from mp_lan.glue import sync_instance; sync_instance(self, 'hp, colour')"
+    code = gen._convert_simple_action("set_instance_owner", {"player": "2"}, "create")
+    assert code == "from mp_lan.glue import set_instance_owner; set_instance_owner(self, 2)"
+
+
+
+# ---------------------------------------------------------------- sync_instance / set_instance_owner
+
+def _room_inst(scene, name="obj_ball", x=0, y=0, **attrs):
+    inst = _Inst(scene, name)
+    inst.x, inst.y = x, 400 - y - 32               # Kivy y-up; `y` is the author's
+    inst.hp, inst.colour = 5, "red"
+    inst.__dict__.update(attrs)
+    scene.instances.append(inst)
+    return inst
+
+
+def _synced_row(nid, x, y, owner, **extra):
+    return {"nid": nid, "o": "obj_ball", "x": x, "y": y, "r": 0, "f": 1, "v": True, "own": owner, **extra}
+
+
+def test_a_synced_room_instance_follows_the_host_and_is_not_also_spawned_as_a_ghost(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        ball = _room_inst(scene, x=0, y=0)
+        g.sync_instance(ball, "hp, colour")
+        assert ball._net_id == "obj_ball#0" and ball._net_owner == 0
+        host.push_local_instances([_synced_row("obj_ball#0", 200, 100, 0, vars={"hp": 9, "colour": "blue", "secret": 1})])
+        _run(g, scene, host, 60)
+        assert (ball.x, ball.y) == pytest.approx((200, 400 - 100 - 32), abs=1.0)    # the host's copy, y flipped
+        assert ball.image_index == 1
+        assert (ball.hp, ball.colour) == (9, "blue")
+        assert not hasattr(ball, "secret")                       # only the names the author listed
+        assert not scene.created and not g._ghosts               # the room's own instance stands in for it
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_ids_are_the_object_name_and_an_ordinal_in_call_order_per_object(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        a, b, c = _room_inst(scene, "obj_ball"), _room_inst(scene, "obj_ball"), _room_inst(scene, "obj_coin")
+        for inst in (a, b, c):
+            g.sync_instance(inst, "")
+        assert (a._net_id, b._net_id, c._net_id) == ("obj_ball#0", "obj_ball#1", "obj_coin#0")
+        g.sync_instance(a, "")                                    # idempotent: keeps its id
+        assert a._net_id == "obj_ball#0" and len(g._synced_local) == 3
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_an_instance_the_host_gave_this_player_is_left_alone_and_reported_up(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    reports = []
+    try:
+        _join(g, scene, host)
+        ball = _room_inst(scene, x=40, y=60)
+        g.sync_instance(ball, "hp")
+        host.push_local_instances([_synced_row("obj_ball#0", 500, 500, 1)])    # owner 1 = this player
+
+        def step():
+            ball.x += 3                                            # its own events move it
+            reports.extend(host.take_own_state().values())
+            return any(r["nid"] == "obj_ball#0" and r["x"] > 60 for r in reports)
+        assert _run_until(g, scene, host, step)
+        assert ball._net_owner == 1 and ball.x < 400               # never pulled to the host's 500
+        last = reports[-1]
+        assert last["_from"] == 1 and last["y"] == 60 and last["vars"] == {"hp": 5}
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_a_synced_instance_someone_else_owns_stays_a_puppet(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    reports = []
+    try:
+        _join(g, scene, host)
+        ball = _room_inst(scene)
+        g.sync_instance(ball, "")
+        host.push_local_instances([_synced_row("obj_ball#0", 120, 30, 2)])      # owner 2: another player
+
+        def step():
+            reports.extend(host.take_own_state().values())
+            return False
+        _run_until(g, scene, host, step, seconds=1.0)
+        assert ball._net_owner == 2 and not reports
+        assert ball.x == pytest.approx(120, abs=1.0)
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_without_a_session_nothing_is_registered_and_set_instance_owner_is_harmless(glue):
+    g, app = glue
+    scene = _Scene()
+    ball = _room_inst(scene)
+    g.sync_instance(ball, "hp")
+    assert not g._synced_local and not hasattr(ball, "_net_id")
+    g.set_instance_owner(ball, 3)
+    assert not hasattr(ball, "_net_owner")
+
+
+def test_set_instance_owner_sets_the_local_owner_and_a_snapshot_overrides_it(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        ball = _room_inst(scene)
+        g.sync_instance(ball, "")
+        g.set_instance_owner(ball, "2")
+        assert ball._net_owner == 2
+        g.set_instance_owner(ball, "junk")
+        assert ball._net_owner == 0
+        host.push_local_instances([_synced_row("obj_ball#0", 10, 10, 0)])
+        _run(g, scene, host, 40)
+        assert ball._net_owner == 0                                # the snapshot's owner wins
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_a_new_room_starts_its_own_registry_and_ordinals(glue):
+    g, app = glue
+    host, scene_a = _host(), _Scene()
+    try:
+        _join(g, scene_a, host)
+        first = _room_inst(scene_a)
+        g.sync_instance(first, "")
+        scene_b = _Scene()
+        second = _room_inst(scene_b)
+        g.sync_instance(second, "")
+        assert second._net_id == "obj_ball#0"                      # counted again in the new room
+        assert list(g._synced_local) == ["obj_ball#0"] and g._synced_local["obj_ball#0"] is second
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_a_destroyed_synced_instance_is_forgotten(glue):
+    g, app = glue
+    host, scene = _host(), _Scene()
+    try:
+        _join(g, scene, host)
+        ball = _room_inst(scene)
+        g.sync_instance(ball, "")
+        scene.instances.remove(ball)
+        host.push_local_instances([_synced_row("obj_ball#0", 10, 10, 0)])
+        _run(g, scene, host, 30)
+        assert not g._synced_local
+    finally:
+        g.leave()
+        host.close()
+
+
+def test_the_id_matches_the_desktop_handlers_scheme():
+    """`<object>#<ordinal>`, counted per object in call order -- the desktop's own _deterministic_netid."""
+    from extensions.multiplayer_lan.handlers import _deterministic_netid
+    st = {}
+    assert [_deterministic_netid(st, "obj_ball"), _deterministic_netid(st, "obj_ball"),
+            _deterministic_netid(st, "obj_coin")] == ["obj_ball#0", "obj_ball#1", "obj_coin#0"]

@@ -1358,3 +1358,12 @@ avatar (four `key_pressed` conditions) moved in every direction at once. `key_pr
 the generated avatar step against a real desktop host) and `tests/test_kivy_if_condition_types.py`.
 **Not tried on a phone.**
 
+## Addendum 2026-11-20 -- Kivy `sync_instance` / `set_instance_owner`
+
+The two actions the Kivy client left as host-only warnings now work. A phone registers a ROOM-PLACED instance
+with `sync_instance` under the desktop's own id (`<object>#<ordinal>`), follows the host's copy (or, when the
+snapshot says this player owns it, runs it locally and reports it up, with the variables the author listed), and
+the room's own instance stands in for the ghost the snapshot would otherwise spawn. `set_instance_owner` only sets
+the local `_net_owner` on a client (the host decides; the next snapshot overrides it), as on desktop. Only
+`host_game`, `start_networked_game`, `set_network_mode` and `network_spawn` stay host-only warnings on a phone.
+

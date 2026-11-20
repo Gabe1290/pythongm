@@ -2161,9 +2161,18 @@ lines rather than matching their text.
   engine's own attributes: the deny-list is built from a real `GameObject` and its prototype, and only plain values
   cross. Python-only attributes that are not plain (a list, a dict) still persist in Python between calls.
   Compared with the desktop's `execute_execute_code_action`. Not on a phone's browser.
-- **Open:** `sync_instance` / `set_instance_owner` are
-  host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
-  languages (the eight non-fr ones have had no native-speaker read).
+- **Kivy `sync_instance` / `set_instance_owner` DONE 2026-11-20** (`tests/test_kivy_multiplayer_client.py`, 9 new
+  tests with a real desktop host): a phone now takes part in an instance PLACED IN THE ROOM. `sync_instance`
+  registers it under the desktop's own id scheme (`<object>#<ordinal>`, counted per room per object in call order,
+  so every machine that loads the room agrees with no negotiation); it follows the host's interpolated copy (y
+  flipped, frame, visibility, and ONLY the variables the author listed) and the room's own instance stands in for
+  it (no duplicate ghost); if the host gave it to this player it runs here and is reported up with its listed
+  variables. `set_instance_owner` is the host's decision, so on a phone it only sets the local `_net_owner`, which
+  the next snapshot overrides -- exactly the desktop client's behaviour. Like desktop, `sync_instance` with no session
+  registers nothing (join first, then enter the room), and a new room starts its own registry. **Still open:** the
+  HTML5 export has neither action (`network_spawn`, `host_game` and `start_networked_game` stay host-only on both
+  exports). The wiki `Network` pages were updated in nine languages (the eight non-fr ones have had no native-speaker
+  read).
 
 ### ~~Kivy export — `draw_text` doesn't resolve a bare `global.X` reference~~ (DONE 2026-09-06, stale entry corrected 2026-09-09)
 - Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase

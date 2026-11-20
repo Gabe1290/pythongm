@@ -13,10 +13,15 @@ locally simulated avatar (its own events run here), and every frame this module
 reports its state up to the host ("own" frames) and the held named inputs
 ("input" frames, arrows and space by default, ``bind_network_input`` to change),
 exactly as the desktop client does. ``is_instance_owner`` is true for that
-avatar, and for everything while there is no session. It cannot host (no
-listening socket on a phone), so ``host_game``, ``start_networked_game`` and the
-host-side ``network_spawn`` / ``sync_instance`` / ``set_instance_owner`` warn once
-and do nothing; ``remote_input`` is host-side and always false.
+avatar, and for everything while there is no session. It can also take part in an
+instance PLACED IN THE ROOM and marked with ``sync_instance`` (every machine loads the same
+room, so the same instance gets the same network id ``<object>#<ordinal>`` everywhere): it
+follows the host's copy unless the host gave it to this player, in which case it runs here
+and is reported up. ``set_instance_owner`` is the host's decision; on a phone it only sets
+the local ``_net_owner``, which the next snapshot overrides, exactly as on the desktop
+client. It cannot host (no listening socket on a phone), so ``host_game``,
+``start_networked_game`` and ``network_spawn`` warn once and do nothing; ``remote_input``
+is host-side and always false.
 
 This module is pure Python and duck-typed against the Kivy scene (``instances``,
 ``create_instance``, ``destroy_instance``, ``room_height``) so it is testable
@@ -34,6 +39,9 @@ _known_pos = {}      # nid -> (x, y) the host last placed it at (room coordinate
 _ghosts = {}         # nid -> live instance in the CURRENT scene
 _local = set()       # nids of _ghosts this player owns (promoted to avatars)
 _scene = None        # the scene _ghosts belong to
+_synced_local = {}   # nid -> room-placed instance registered by sync_instance in _sync_scene
+_sync_ord = {}       # object name -> how many sync_instance calls so far in _sync_scene
+_sync_scene = None   # the scene the two above belong to
 _warned = set()
 _interp_ms = None    # set_sync_rate's interpolation delay, applied to every session
 
@@ -93,8 +101,8 @@ def unsupported(name):
     if name in ("host_game", "start_networked_game", "set_network_mode"):
         _warn_once(name, "a phone cannot host a game; host from a desktop export")
     else:
-        _warn_once(name, "only the host creates and assigns networked instances; a "
-                         "phone plays the avatar the host gave it")
+        _warn_once(name, "only the host creates networked instances; a phone plays the avatar "
+                         "the host gave it")
 
 
 # -- lifecycle -------------------------------------------------------------------
@@ -148,6 +156,8 @@ def leave(scene=None):
     _known.clear()
     _known_pos.clear()
     _local.clear()
+    _synced_local.clear()
+    _sync_ord.clear()
     global _last_input, _last_own_at, _last_input_at
     _last_input = None
     _last_own_at = _last_input_at = 0.0
@@ -190,6 +200,45 @@ def is_owner(instance):
         return True
     owner = getattr(instance, "_net_owner", None)
     return owner is not None and owner == _session.player_id
+
+
+def sync_instance(inst, names=""):
+    """sync_instance: mark a ROOM-PLACED instance as networked. Its id is ``<object>#<ordinal>`` --
+    the ordinal counted per room per object in the order this is called -- so every machine that
+    loads the same room and runs its create events in the same order agrees on it with no
+    negotiation. It follows the host's copy unless this player owns it. With no session it does
+    nothing (as on desktop): join first, then enter the room."""
+    global _sync_scene
+    if _session is None:
+        return
+    scene = getattr(inst, "scene", None)
+    if scene is not _sync_scene:                 # a new room: its own registry and ordinals
+        _synced_local.clear()
+        _sync_ord.clear()
+        _sync_scene = scene
+    name = str(getattr(inst, "object_name", "") or inst.__class__.__name__)
+    nid = getattr(inst, "_net_id", None)
+    if not nid:
+        nid = "%s#%d" % (name, _sync_ord.get(name, 0))
+        _sync_ord[name] = _sync_ord.get(name, 0) + 1
+    inst._net_id = nid
+    if getattr(inst, "_net_owner", None) is None:
+        inst._net_owner = 0                      # the host, until a snapshot says otherwise
+    listed = [n.strip() for n in str(names or "").split(",") if n.strip()]
+    if listed:
+        inst._net_sync_vars = listed
+    _synced_local[nid] = inst
+
+
+def set_instance_owner(inst, player):
+    """set_instance_owner: the host decides who drives an instance, so on a phone this only sets the
+    local `_net_owner` -- which the next snapshot overrides -- exactly as on the desktop client."""
+    if _session is None:
+        return
+    try:
+        inst._net_owner = int(float(player))
+    except (TypeError, ValueError):
+        inst._net_owner = 0
 
 
 def bind(name, key):
@@ -344,6 +393,58 @@ def _finite(value, default):
     return f if f == f and f not in (float("inf"), float("-inf")) else default
 
 
+def _own_row(scene, nid, inst):
+    """The row reporting an instance this player owns, in room coordinates (y down)."""
+    height = _finite(getattr(inst, "image_height", 0), 0.0)
+    row = {
+        "nid": nid, "x": _finite(inst.x, 0.0),
+        "y": scene.room_height - _finite(inst.y, 0.0) - height,
+        "r": 0, "f": _finite(getattr(inst, "image_index", 0.0), 0.0),
+        "v": bool(getattr(inst, "visible", True)),
+    }
+    names = getattr(inst, "_net_sync_vars", None)
+    if names:
+        values = {}
+        for name in names:
+            value = getattr(inst, name, None)
+            if isinstance(value, _GHOST_VAR_TYPES) and (not isinstance(value, float) or value == value):
+                values[name] = value
+        if values:
+            row["vars"] = values
+    return row
+
+
+def _apply_synced_local(scene, s, connected, own_rows):
+    """Room-placed instances registered by sync_instance: mine (the host gave it to this player)
+    runs here and is reported up; anyone else's follows the interpolated snapshot."""
+    if scene is not _sync_scene:
+        return
+    live = set(map(id, getattr(scene, "instances", ())))
+    for nid in list(_synced_local):
+        inst = _synced_local[nid]
+        if id(inst) not in live:
+            del _synced_local[nid]
+            continue
+        owner = s.ghost_owner(nid)
+        inst._net_owner = 0 if owner is None else owner
+        if connected and owner == s.player_id:
+            own_rows.append(_own_row(scene, nid, inst))
+            continue
+        pos = s.sample_ghost(nid)
+        if pos is None:
+            continue
+        gx, gy, _rot, frame, visible = pos
+        _place(scene, inst, gx, gy)
+        inst.image_index = _finite(frame, getattr(inst, "image_index", 0.0))
+        inst.visible = bool(visible)
+        allowed = getattr(inst, "_net_sync_vars", None) or ()
+        for key, val in s.ghost_vars(nid).items():
+            # only the names the author listed, and never anything the class itself defines
+            if (key in allowed and isinstance(val, _GHOST_VAR_TYPES) and not key.startswith("_")
+                    and not hasattr(type(inst), key)):
+                setattr(inst, key, val)
+
+
 def _apply_ghosts(scene, s):
     global _scene, _last_input, _last_own_at, _last_input_at
     if scene is not _scene:                      # a room change: rebuild from what we know
@@ -351,6 +452,8 @@ def _apply_ghosts(scene, s):
         _local.clear()
         _scene = scene
         for nid, obj in _known.items():
+            if nid in _synced_local:             # the room's own instance stands in for it
+                continue
             inst = _spawn(scene, nid, obj)
             if inst is not None:
                 _ghosts[nid] = inst
@@ -358,7 +461,7 @@ def _apply_ghosts(scene, s):
     for nid, obj, x, y in creates:
         _known[nid] = obj
         _known_pos[nid] = (x, y)
-        if nid not in _ghosts:
+        if nid not in _ghosts and nid not in _synced_local:
             inst = _spawn(scene, nid, obj)
             if inst is not None:
                 _ghosts[nid] = inst
@@ -384,13 +487,7 @@ def _apply_ghosts(scene, s):
             # Mine: promoted from a puppet to a locally simulated avatar. Its own
             # events move it; this device is the authority for it now.
             _local.add(nid)
-            height = _finite(getattr(inst, "image_height", 0), 0.0)
-            own_rows.append({
-                "nid": nid, "x": _finite(inst.x, 0.0),
-                "y": scene.room_height - _finite(inst.y, 0.0) - height,
-                "r": 0, "f": _finite(getattr(inst, "image_index", 0.0), 0.0),
-                "v": bool(getattr(inst, "visible", True)),
-            })
+            own_rows.append(_own_row(scene, nid, inst))
             continue
         if nid in _local:
             continue                             # lost the host: still mine, keep it running
@@ -404,6 +501,7 @@ def _apply_ghosts(scene, s):
         for key, val in s.ghost_vars(nid).items():
             if isinstance(val, _GHOST_VAR_TYPES) and _safe_var_key(inst, key):
                 setattr(inst, key, val)
+    _apply_synced_local(scene, s, connected, own_rows)
     if connected:
         now = time.monotonic()
         if now - _last_own_at >= _OWN_EVERY:

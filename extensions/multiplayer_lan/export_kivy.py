@@ -74,6 +74,17 @@ def _cg_set_sync_rate(gen, params, event_type):
     return f"from mp_lan.glue import set_sync_rate; set_sync_rate({num(params.get('interp_ms'), 100)})"
 
 
+def _cg_sync_instance(gen, params, event_type):
+    return ("from mp_lan.glue import sync_instance; "
+            f"sync_instance(self, {_raw(params, 'vars')!r})")
+
+
+def _cg_set_instance_owner(gen, params, event_type):
+    num, _ = _helpers()
+    return ("from mp_lan.glue import set_instance_owner; "
+            f"set_instance_owner(self, {num(params.get('player'), 0)})")
+
+
 def _unsupported(name):
     def _cg(gen, params, event_type):
         return f"from mp_lan.glue import unsupported; unsupported({name!r})"
@@ -88,10 +99,11 @@ ACTION_CODEGEN = {
     "send_network_message": _cg_send_network_message,
     "bind_network_input": _cg_bind_network_input,
     "set_sync_rate": _cg_set_sync_rate,
+    "sync_instance": _cg_sync_instance,
+    "set_instance_owner": _cg_set_instance_owner,
 }
 # Host-side, so a phone cannot do these (see the module docstring): one warning, then a no-op.
-for _name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn",
-              "sync_instance", "set_instance_owner"):
+for _name in ("host_game", "start_networked_game", "set_network_mode", "network_spawn"):
     ACTION_CODEGEN[_name] = _unsupported(_name)
 
 
