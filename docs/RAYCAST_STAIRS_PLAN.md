@@ -404,13 +404,35 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   hides nothing, a billboard is never cut by its own step, a step BEHIND it
   hides nothing); 4 of 4 mutations caught (the last one after adding the
   "step behind" test, which the first draft lacked).
-- [ ] **S8 — Climbing.** Frame hooks (`before_step` snapshot, `after_collision`
-  per-axis undo), `max_step` parameter, eye easing up/gravity down,
-  `raycast_floor_z`, reset on room entry/restart. Tests through the real loop:
-  walk up a staircase of 8 px steps; blocked by a 16 px block; slide along a
-  ledge; drop off and land; a monster patrolling into a high block turns back
-  (its own collision/stop logic, not stuck in place); `restart_room` resets
-  the eye.
+- [x] **S8 — Climbing.** `cd4cb2e6` (2026-11-20). New `climbing.py`
+  (pygame-free), registered as `PLUGIN_FRAME_UPDATES`: `before_step`
+  remembers every mover (non-solid, non-step: camera, monsters,
+  projectiles -- D4); `after_collision` undoes a move that raises the floor
+  under the mover's centre by more than `max_step`, one axis at a time
+  (keep x, else keep y, else neither: you slide along a ledge), always allows
+  going down, and publishes `raycast_floor_z` and `raycast_step_blocked` on
+  each mover (D5). The camera's view height eases (`eye_floor` in the room's
+  raycast state: up 2 px/frame, down with 0.6 px/frame² gravity, snaps on the
+  first frame in a room -- a restarted room is a fresh state); the renderer
+  uses it, else snaps. New optional **Max Step** on Enable Raycast View
+  (room px, default 12). The wall-height constants and `clamp_wall_height`
+  moved into `heights.py` (re-exported by `renderer.py`, unchanged) because
+  the climbing rule needs them without pygame.
+  **Two decisions made here:** (1) a move longer than one cell in a frame is
+  a teleport (Jump to Position) and is never undone -- otherwise jumping a
+  player onto a platform would be refused; (2) `raycast_step_blocked`
+  exists because a refused move fires no event: without it a blocked
+  monster would push forever. An End Step "Test Variable
+  raycast_step_blocked = 1 → Reverse Horizontal" turns it round (tested).
+  `tests/test_raycast_climbing.py` (18 tests: climb 8, blocked by 16,
+  relative to where you stand, slide, walk off a ledge, teleport kept,
+  max_step from the camera, monsters too, solids/steps not movers, inactive
+  without a camera, eased rise, accelerating fall, renderer uses the eased
+  height, parameter, hooks registered; and three authored projects through
+  the real GameRunner with the keyboard: up a staircase onto a platform with
+  the view never rising more than 2 px a frame, stopped by a 16-px block, a
+  monster turning back). 8 of 8 mutations caught. Rooms without steps still
+  byte-identical over the 768-frame proof.
 - [ ] **S9 — Minimap shows raised cells** (shade by height; ordinary
   rectangle commands, so `draw_minimap` stays a macro action on every target).
 - [ ] **S10 — HTML5 port** (render path, action, movement). Structural tests +
