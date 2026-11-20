@@ -372,11 +372,25 @@ step-aware collision for solid walls, the top-down 2D view drawing heights.
   never entering the path, an authored project through the real GameRunner,
   the speed guard). Mutations: 8 of 9 caught; the survivor (draw risers on
   drops too) is equivalent -- a drop's front is always below the clip.
-- [ ] **S6 — Textured treads** (column-major floor cast, per-span height,
-  over the treads `layout_column` already returns; ceiling cast already
-  uses `eye_z` since S5; risers are textured since S5). Assert the texel
-  under a riser's base is at the riser's distance. Keep the S5 speed guard
-  green (the column-major cast REPLACES the row-major one in stairs rooms).
+- [x] **S6 — Textured treads.** `825a9dfb` (2026-11-20). The stairs path
+  is now three passes: lay out every column (`_layout_stairs_column`), cast
+  the whole floor column-major (`cast_stairs_floor`: each low-res pixel at
+  its own tread's height, texture = the cell's step top texture, else the
+  floor texture, else the flat floor colour; the row-major ground cast is
+  skipped in stairs rooms), then draw risers and walls at full resolution on
+  top (`_draw_stairs_column`) so their edges stay crisp. A low-res block that
+  straddles a tread edge takes the nearest tread at or below its sample row;
+  the riser/wall drawn over it covers the overhang, so no block is ever
+  unpainted (a mutation pre-filling the buffer magenta could not make the
+  no-gap test fail). No floor texture and no step top texture -> no cast at
+  all (flat treads as in S5). Rooms without steps still byte-identical over
+  the 768-frame proof. Speed (640×480, textured, staircase filling the view):
+  30.5 vs 20.5 ms (1.5×, unchanged from S5); full turn 27.7 vs 22.4 ms.
+  `tests/test_raycast_stairs_floor.py` (18 tests: the ground just below a
+  riser and the tread just above it both sampled at the riser's line, the
+  raised eye from the platform, per-cell top textures, top texture alone,
+  no gaps at res 1 and 4 over six poses, flat rooms skip the cast); 6 of 7
+  mutations caught, the survivor is the magenta pre-fill above.
 - [ ] **S7 — Billboards on steps.** Lift by their cell's floor; per-column clip
   profile occlusion. Tests: a pickup on a platform is drawn higher by the
   predicted amount; a billboard behind a riser loses exactly its lower rows.
