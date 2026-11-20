@@ -145,6 +145,7 @@ V dogodku Create predmeta igralca:
 - Brskalniški odjemalec (izvoz HTML5) se poveže na vrata, ki so za ena višja od
   gostiteljevih, npr. `45783`, če gostitelj uporablja privzeta — to se zgodi
   samodejno.
+- V brskalniku starejše dejanje »Nastavi omrežni način« v načinu odjemalca vstopi pri gostitelju kot »Pridruži se igri«; v načinu gostitelja, kakor tudi »Gostuj igro«, ne naredi ničesar (stran ne more sprejemati povezav).
 - Izguba gostitelja je obravnavana mehko: odjemalčeva lastna igra teče naprej;
   izginejo le duhovi drugih igralcev, sproži pa se **Connection Lost**, da
   lahko prikažete sporočilo.

@@ -152,6 +152,7 @@ No evento Create do objeto jogador:
 - Um cliente de navegador (exportação HTML5) se conecta à porta seguinte à do
   anfitrião, por exemplo `45783` se o anfitrião usar o padrão — isso acontece
   automaticamente.
+- Num navegador, a antiga ação «Definir modo de rede» em modo cliente junta-se ao anfitrião como «Entrar num jogo»; em modo anfitrião, tal como «Hospedar um jogo», não faz nada (uma página não pode aceitar ligações).
 - A perda do anfitrião é tratada com elegância: o jogo de um cliente continua;
   somente os fantasmas dos outros jogadores somem, e **Connection Lost** é
   disparado para você poder mostrar uma mensagem.

@@ -144,6 +144,7 @@ In the player object's Create event:
   the first time you host.
 - A browser (HTML5 export) client connects one port above the host's, e.g.
   `45783` if the host uses the default — this happens automatically.
+- In a browser, the older "Set Network Mode" action in client mode joins the host like "Join a Game"; in host mode, and "Host a Game", it does nothing (a page can't accept connections).
 - Host loss is graceful: a client's own gameplay continues; only other
   players' ghosts disappear, and `Connection Lost` fires so you can show a
   message.

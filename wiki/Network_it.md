@@ -152,6 +152,7 @@ Nell'evento Create dell'oggetto giocatore:
 - Un client browser (esportazione HTML5) si collega alla porta successiva a
   quella dell'host, ad esempio `45783` se l'host usa quella predefinita — avviene
   automaticamente.
+- In un browser, la vecchia azione «Imposta modalità di rete» in modalità client si unisce all'host come «Unisciti a una partita»; in modalità host, come «Ospita una partita», non fa nulla (una pagina non può accettare connessioni).
 - La perdita dell'host è gestita con grazia: il gioco di un client continua;
   scompaiono solo i fantasmi degli altri giocatori e scatta **Connection Lost**,
   così puoi mostrare un messaggio.

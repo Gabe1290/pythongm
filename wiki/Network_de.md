@@ -148,6 +148,7 @@ Im Create-Ereignis des Spielerobjekts:
 - Ein Browser-Client (HTML5-Export) verbindet sich mit dem Port eins über dem
   des Hosts, z. B. `45783`, wenn der Host den Standard nutzt — das geschieht
   automatisch.
+- In einem Browser tritt die ältere Aktion „Netzwerkmodus setzen“ im Client-Modus dem Host bei wie „Spiel beitreten“; im Host-Modus und bei „Spiel hosten“ tut sie nichts (eine Seite kann keine Verbindungen annehmen).
 - Der Verlust des Hosts verläuft sanft: Das eigene Spiel eines Clients läuft
   weiter; nur die Geister der anderen Spieler verschwinden, und **Connection
   Lost** wird ausgelöst, damit du eine Meldung zeigen kannst.

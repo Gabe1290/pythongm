@@ -158,6 +158,7 @@ Dans l'événement Création de l'objet joueur :
 - Un client navigateur (export HTML5) se connecte sur le port juste
   au-dessus de celui de l'hôte, par exemple `45783` si l'hôte utilise le
   port par défaut — cela se fait automatiquement.
+- Dans un navigateur, l'ancienne action « Définir le mode réseau » en mode client rejoint l'hôte comme « Rejoindre une partie » ; en mode hôte, comme « Héberger une partie », elle ne fait rien (une page ne peut pas accepter de connexions).
 - La perte de l'hôte est gérée en douceur : la partie du client continue ;
   seuls les fantômes des autres joueurs disparaissent, et `Connexion
   perdue` se déclenche pour que vous puissiez afficher un message.
