@@ -5577,7 +5577,11 @@ class {class_name}(GameObject):
                 params = "self"
             elif event_type == 'collision' or event_type.startswith('collision_with_'):
                 params = "self, other"
-            elif event_type in ['step', 'draw']:
+            elif event_type in ['step', 'draw', 'begin_step', 'end_step']:
+                # The scene calls on_begin_step(dt) / on_end_step(dt) like
+                # on_update(dt). Generated as (self) until 2026-11-20, every
+                # call raised TypeError, which update() swallowed -- abandoning
+                # the rest of that frame (a begin step: nearly all of it).
                 params = "self, dt"
             else:
                 params = "self"
