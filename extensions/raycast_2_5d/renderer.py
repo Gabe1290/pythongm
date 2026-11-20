@@ -655,7 +655,7 @@ def render_raycast_view(room, screen: pygame.Surface):
     ceil_tex_name = cfg.get('ceiling_texture', '')
     ceil_sprite = (getattr(room, '_all_sprites', {}) or {}).get(ceil_tex_name) if ceil_tex_name else None
     cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
-    if floor_sprite is not None:
+    if floor_sprite is not None and not stairs:   # stairs rooms: cast_stairs_floor
         cast_floor_plane(screen, floor_sprite.get_frame(0),
                                cam_cx, cam_cy, facing_screen_rad, fov_rad,
                                cast_res, ceiling=False, view_h=view_h,
@@ -694,6 +694,7 @@ def render_raycast_view(room, screen: pygame.Surface):
     plane_tan = math.tan(fov_rad / 2)
     col_wall_dist = [float('inf')] * num_columns  # for billboard occlusion, below
     sf = None
+    stairs_layouts = []
     if stairs:
         sprites = getattr(room, '_all_sprites', {}) or {}
         sf = {
@@ -712,8 +713,9 @@ def render_raycast_view(room, screen: pygame.Surface):
         ray_offset = math.atan(plane_tan * camera_x)
         ray_angle = facing_screen_rad + ray_offset
         if stairs:
-            col_wall_dist[col] = _draw_stairs_column(
-                screen, room, sf, col, ray_angle, math.cos(ray_offset))
+            lay = _layout_stairs_column(room, sf, ray_angle, math.cos(ray_offset))
+            stairs_layouts.append(lay)
+            col_wall_dist[col] = lay["wall_dist"]
             continue
         dist, side, hit, tex_u, wall_sprite = cast_ray(
             room, cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
@@ -769,6 +771,21 @@ def render_raycast_view(room, screen: pygame.Surface):
         else:
             color = tuple(int(c * shade) for c in wall_color)
             screen.fill(color, (x0, y0, strip_w, vis_h))
+
+    if stairs:
+        # Treads need a cast when the floor or any raised cell is textured.
+        top_frames = {}
+        for cell, (top_name, _side) in step_textures.items():
+            spr = sf["sprites"].get(top_name) if top_name else None
+            if spr is not None:
+                top_frames[cell] = spr.get_frame(0)
+        floor_frame = floor_sprite.get_frame(0) if floor_sprite is not None else None
+        floor_cast = floor_frame is not None or bool(top_frames)
+        if floor_cast:
+            cast_stairs_floor(screen, stairs_layouts, sf, floor_frame, top_frames,
+                              facing_screen_rad, fov_rad, cast_res)
+        for col, lay in enumerate(stairs_layouts):
+            _draw_stairs_column(screen, sf, col, lay, floor_cast)
 
     # Billboard sprites (Phase 6 of the plan doc, scoped down to a
     # single first cut): any visible, sprited, non-solid instance
@@ -870,25 +887,31 @@ def render_raycast_view(room, screen: pygame.Surface):
         screen.fill((0, 0, 0), (0, view_h, w, h - view_h))
 
 
-def _draw_stairs_column(screen, room, sf, col, ray_angle, cos_off):
-    """Draw one screen column of a room with steps (see layout_column).
-    Returns the wall's corrected distance (inf on a miss), which the
-    billboard pass uses for occlusion as before."""
+def _layout_stairs_column(room, sf, ray_angle, cos_off):
+    """One column of a room with steps: the ray walk and its layout."""
     cell_size = sf["cell_size"]
     crossings, hit = cast_ray_steps(room, sf["cam_x"], sf["cam_y"], ray_angle,
                                     cell_size, sf["max_cells"], sf["heights"])
-    lay = layout_column(crossings, hit, sf["floor_z"], sf["eye_z"], sf["wall_top_z"],
-                        cell_size, cos_off, sf["half_h"], sf["view_h"], sf["max_cells"])
+    return layout_column(crossings, hit, sf["floor_z"], sf["eye_z"], sf["wall_top_z"],
+                         cell_size, cos_off, sf["half_h"], sf["view_h"], sf["max_cells"])
+
+
+def _draw_stairs_column(screen, sf, col, lay, floor_cast):
+    """Draw one laid-out column: raised treads (flat, only when the floor is
+    not cast), then risers and the wall at full resolution -- over the
+    low-res floor, so their edges stay crisp."""
+    cell_size = sf["cell_size"]
     x0 = int(col * sf["col_width"])
     strip_w = max(1, int((col + 1) * sf["col_width"]) - x0)
     view_h = sf["view_h"]
-    # Raised treads: flat floor colour for now (S6 casts them textured).
-    # Ground-level floor is left to the floor fill / floor cast drawn before.
-    for y_top, y_bot, height, _d in lay["treads"]:
-        if height > 0:
-            r0, r1 = max(0, _row(y_top)), min(view_h, _row(y_bot))
-            if r1 > r0:
-                screen.fill(sf["floor_color"], (x0, r0, strip_w, r1 - r0))
+    if not floor_cast:
+        # Flat floor: raised treads in the floor colour (the ground is the
+        # floor fill already).
+        for y_top, y_bot, height, _d in lay["treads"]:
+            if height > 0:
+                r0, r1 = max(0, _row(y_top)), min(view_h, _row(y_bot))
+                if r1 > r0:
+                    screen.fill(sf["floor_color"], (x0, r0, strip_w, r1 - r0))
     # Risers: the step's side texture, else the wall texture, else flat.
     for y_top, y_bot, d, side, tex_u, cell, _lo, _hi in lay["risers"]:
         frame = None
@@ -912,7 +935,106 @@ def _draw_stairs_column(screen, room, sf, col, ray_angle, cos_off):
                        sf["eye_z"], cell_size, sf["half_h"], view_h,
                        _row(y_top), _row(y_bot),
                        wall_shade(side, d, sf["max_dist"]), sf["strip_cache"])
-    return lay["wall_dist"]
+
+
+def cast_stairs_floor(screen, layouts, sf, floor_frame, top_frames,
+                      facing_screen_rad, fov_rad, res):
+    """The floor of a room with steps, cast COLUMN-major (stairs plan S6).
+
+    Every low-res floor pixel belongs to one tread span of its column (from
+    layout_column) and is cast at THAT tread's height:
+        distance_cells = ((eye_z - h) / cell) * view_h / (y - horizon)
+    then textured like cast_floor_plane (one texture tile per grid cell).
+    The texture is the cell's step top texture (``top_frames``: cell ->
+    frame, only cells that have one), else ``floor_frame``, else the flat
+    floor colour. Each pixel is cast exactly once -- measured in the S2
+    spike as cheaper than casting the ground row-major and re-casting the
+    treads.
+
+    A low-res block can straddle a tread's edge: it takes the nearest
+    tread at or below its sample row (the farthest one above the last
+    span), and the risers and walls drawn afterwards at full resolution
+    cover whatever it overhangs -- so no block is ever left unpainted.
+    """
+    w = screen.get_width()
+    view_h = sf["view_h"]
+    half_h = view_h // 2                     # as cast_floor_plane
+    region_h = view_h - half_h
+    if region_h <= 0:
+        return
+    cell_size = sf["cell_size"]
+    eye_cells = sf["eye_z"] / cell_size
+    cam_cx = sf["cam_x"] / cell_size
+    cam_cy = sf["cam_y"] / cell_size
+    dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+    plane = math.tan(fov_rad / 2)
+    plane_x, plane_y = -dir_y * plane, dir_x * plane
+    rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+    rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+
+    sw = max(1, w // res)
+    sh = max(1, region_h // res)
+    small = pygame.Surface((sw, sh))
+    small.fill(sf["floor_color"])
+    put = small.set_at
+    floor = math.floor
+    flat = sf["floor_color"]
+    if floor_frame is not None:
+        f_get = floor_frame.get_at
+        f_tw, f_th = floor_frame.get_size()
+    ncol = len(layouts)
+    col_width = sf["col_width"]
+    for i in range(sw):
+        sx = i * res
+        c = int(sx / col_width)
+        if c >= ncol:
+            c = ncol - 1
+        spans = layouts[c]["treads"]
+        if not spans:
+            continue
+        t = sx / w
+        rdx = rdx0 + (rdx1 - rdx0) * t
+        rdy = rdy0 + (rdy1 - rdy0) * t
+        # spans run near -> far, i.e. bottom -> top of the screen.
+        k = 0
+        n = len(spans)
+        for j in range(sh - 1, -1, -1):
+            y = half_h + j * res
+            while k < n - 1 and y < spans[k][0]:
+                k += 1
+            height = spans[k][2]
+            dz = eye_cells - height / cell_size
+            if dz <= 0:
+                continue
+            p = j * res
+            if p <= 0:
+                p = 1
+            rowd = dz * view_h / p
+            fx = cam_cx + rowd * rdx
+            fy = cam_cy + rowd * rdy
+            frame = None
+            if top_frames and height > 0:
+                frame = top_frames.get((int(floor(fx)), int(floor(fy))))
+            if frame is not None:
+                tw, th = frame.get_size()
+                tx = int(tw * (fx - floor(fx)))
+                ty = int(th * (fy - floor(fy)))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                put((i, j), frame.get_at((tx, ty)))
+            elif floor_frame is not None:
+                tx = int(f_tw * (fx - floor(fx)))
+                ty = int(f_th * (fy - floor(fy)))
+                if tx >= f_tw:
+                    tx = f_tw - 1
+                if ty >= f_th:
+                    ty = f_th - 1
+                put((i, j), f_get((tx, ty)))
+            else:
+                put((i, j), flat)
+    screen.blit(pygame.transform.scale(small, (w, region_h)), (0, half_h))
 
 
 def blit_wall_tile(screen, frame, tex_x, x0, strip_w, y_top, full_h, y0, vis_h,

@@ -248,6 +248,8 @@ class TestRender:
         def boom(*a, **k):
             raise AssertionError("stairs path used in a room without steps")
         monkeypatch.setattr(renderer, "_draw_stairs_column", boom)
+        monkeypatch.setattr(renderer, "_layout_stairs_column", boom)
+        monkeypatch.setattr(renderer, "cast_stairs_floor", boom)
         room = _room(480, 480)
         for g in range(15):
             room.instances.append(_solid_instance("w", 14 * CELL, g * CELL))
