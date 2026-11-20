@@ -919,6 +919,11 @@ class ActionCodeGenerator:
                     oy = _num_code(params.get('offset_y', 0))
                     condition = (f"self.check_collision_at(self.x + ({ox}), "
                                  f"self.y - ({oy}), {target!r})")
+            elif condition_type == 'mouse_check':
+                # Which button is held / is the pointer over this instance (the scene
+                # tracks both; see _track_mouse and GameObject._mouse_check).
+                check = str(params.get('check', '') or '')
+                condition = f"self._mouse_check({check!r})"
             elif condition_type == 'variable_compare':
                 variable = str(params.get('variable', '') or '').strip()
                 operator = str(params.get('operator', '==') or '==').strip()

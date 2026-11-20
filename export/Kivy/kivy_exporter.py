@@ -3153,6 +3153,18 @@ class {class_name}(Widget):
             y = float(v0['view_y']) + (y - int(v0.get('port_y', 0)))
         return x, self.room_height - y
 
+    def _track_mouse(self, mx, my, button, down):
+        """Remember the pointer for the mouse_check condition: its last position
+        (room coordinates, y down) and which buttons are held. A touchscreen is the
+        left button (a touch has no `button`); scroll-wheel "buttons" are not held."""
+        self._mouse_pos = (mx, my)
+        if button in ('left', 'middle', 'right') and down is not None:
+            held = self.__dict__.setdefault('_mouse_buttons', set())
+            if down:
+                held.add(button)
+            else:
+                held.discard(button)
+
     def on_touch_down(self, touch):
         """Dispatch a touch/click as the GameMaker mouse press event.
 
@@ -3170,6 +3182,7 @@ class {class_name}(Widget):
             return False
         mx, my = self._touch_to_room(touch)
         button = getattr(touch, 'button', 'left')
+        self._track_mouse(mx, my, button, True)
         if self._extension_touch_down(touch, mx, my, button):
             return True
         if button == 'right':
@@ -3198,6 +3211,7 @@ class {class_name}(Widget):
             return False
         mx, my = self._touch_to_room(touch)
         button = getattr(touch, 'button', 'left')
+        self._track_mouse(mx, my, button, False)
         if self._extension_touch_up(touch, mx, my, button):
             return True
         if button == 'right':
@@ -3226,6 +3240,7 @@ class {class_name}(Widget):
         if _app is not None and _app.scene is not self:
             return False
         mx, my = self._touch_to_room(touch)
+        self._track_mouse(mx, my, None, None)
         return bool(self._extension_touch_move(touch, mx, my))
 '''
 
@@ -4520,6 +4535,32 @@ class GameObject(Widget):
         if code is None:
             return False
         return bool(self.scene.keys_pressed.get(code, False))
+
+    def _mouse_check(self, check):
+        """if_condition mouse_check, as the desktop runtime answers it: which
+        button is held, or whether the pointer is over this instance. "In region"
+        has no region parameters in the editor, so it is never true."""
+        scene = self.scene
+        if scene is None:
+            return False
+        held = getattr(scene, '_mouse_buttons', ())
+        if check == 'Left button pressed':
+            return 'left' in held
+        if check == 'Middle button pressed':
+            return 'middle' in held
+        if check == 'Right button pressed':
+            return 'right' in held
+        if check == 'Over object':
+            if not self.has_sprite:
+                return False                   # no sprite, no footprint to be over
+            pos = getattr(scene, '_mouse_pos', None)
+            if pos is None:
+                return False
+            width = float(self.image_width or self.grid_size)
+            height = float(self.image_height or self.grid_size)
+            top = scene.room_height - self.y - height      # the author's y: down from the top
+            return self.x <= pos[0] < self.x + width and top <= pos[1] < top + height
+        return False
 
     def jump_to_start(self):
         """Reset to the spawn position, mirroring execute_jump_to_start."""

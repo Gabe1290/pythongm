@@ -2079,8 +2079,16 @@ lines rather than matching their text.
   anchor); `collision_check` asks `check_collision_at` at the offset with the same y flip as
   `if_collision`, and translates desktop's `any` (= solid only) / `all` (= any overlap), which
   Kivy's helper names the other way round. Not run on a device.
-- **Open:** Kivy `if_condition` `mouse_check` still becomes `if True:` (the engine tracks no
-  mouse-button state; HTML5 has the same gap). `sync_instance` / `set_instance_owner` are
+- **Kivy `mouse_check` DONE 2026-11-20** (`tests/test_kivy_mouse_check.py`): the scene's
+  `_track_mouse` (called from `on_touch_down/up/move`) remembers the held buttons and the last
+  pointer position in room coordinates; `GameObject._mouse_check` answers the left/middle/right
+  options and "Over object" (the author's y-down box; false for a spriteless instance) as the
+  desktop does, and "In region" is never true (it has no region parameters). A touchscreen touch is
+  the left button and the pointer stays where the finger last was; there is no hover tracking, so
+  "Over object" with no finger down only reflects the last touch. Verified with real touch calls
+  under real Kivy; not on a device.
+- **Open:** HTML5 `if_condition` `mouse_check` still takes the else branch (it tracks no
+  mouse-button state; the Kivy implementation is the model). `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).
 
