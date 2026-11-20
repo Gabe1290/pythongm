@@ -19,6 +19,12 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         self._raycast_px_cache = {}
         # Visited grid cells, for draw_minimap's opt-in breadcrumb trail.
         self._raycast_trail = set()
+        # Stairs (docs/RAYCAST_STAIRS_PLAN.md, S11): the floor-height map,
+        # the climbing snapshot and the eased view height.
+        self._raycast_floor_heights = {}
+        self._raycast_step_prev = None
+        self._raycast_eye_floor = None
+        self._raycast_eye_vz = 0.0
 
     def _ext_overlay__raycast_2_5d(self):
         # Claim the frame when the raycast camera is enabled; the scene then
@@ -166,6 +172,12 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
     RAYCAST_EYE_FROM_TILE_TOP = (RAYCAST_TEXTURE_HEIGHT - RAYCAST_EYE_HEIGHT) / RAYCAST_TEXTURE_HEIGHT
     RAYCAST_MIN_WALL_HEIGHT = 1.0
     RAYCAST_MAX_WALL_HEIGHT = 10.0
+    # Stairs (heights.py / climbing.py): ceiling margin, default max step,
+    # view climb speed and fall gravity -- pinned against the desktop values.
+    RAYCAST_CEILING_MARGIN = 4.0
+    RAYCAST_DEFAULT_MAX_STEP = 12.0
+    RAYCAST_CLIMB_SPEED = 2.0
+    RAYCAST_FALL_GRAVITY = 0.6
 
     @classmethod
     def _clamp_wall_height(cls, value):
@@ -407,6 +419,11 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # 2026-10-06) so a solid instance created/destroyed at runtime shows
         # up immediately instead of only on room re-entry/cell_size change.
         self._build_raycast_walls(cell_size)
+        # Stairs (S11): the floor-height map, rebuilt every frame like the
+        # walls. Empty -> the single-hit path below, unchanged.
+        heights, step_textures = self._raycast_build_floor_heights(
+            cell_size, self._raycast_max_floor_height(cell_size, wall_h))
+        stairs = bool(heights)
 
         w = float(self.display_width)
         h = float(self.display_height)
@@ -443,6 +460,15 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         gm_x, gm_y = self._raycast_gm_xy(camera)
         cam_x = gm_x + float(getattr(camera, 'image_width', 0) or 0) / 2.0
         cam_y = gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0
+        # Eye height (room px): the floor under the camera (eased by the
+        # climbing hook) plus the eye height.
+        floor_z = 0.0
+        if stairs:
+            floor_z = self._raycast_eye_floor
+            if floor_z is None:
+                floor_z = heights.get((int(cam_x // cell_size), int(cam_y // cell_size)), 0.0)
+        eye_z = floor_z + self.RAYCAST_EYE_HEIGHT * cell_size
+        eye_cells = eye_z / cell_size
 
         wall_color = self._raycast_color(cfg.get('wall_color'), '993333')
         fov_deg = float(cfg.get('fov', 66))
@@ -484,7 +510,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         cast_res = max(1, int(cfg.get('floor_cast_res', 4)))
         cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
         floor_px = self._raycast_texture_pixels(cfg.get('floor_texture', ''))
-        if floor_px is not None:
+        if floor_px is not None and not stairs:    # stairs: _stairs_floor below
             self._render_floor_plane(group, floor_px, cast_res, facing_screen_rad,
                                      fov_rad, cam_cx, cam_cy, w, h, False, view_h)
         ceil_name = cfg.get('ceiling_texture', '')
@@ -495,7 +521,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 # above the eye.
                 self._render_floor_plane(group, ceil_px, cast_res, facing_screen_rad,
                                          fov_rad, cam_cx, cam_cy, w, h, True, view_h,
-                                         wall_h - self.RAYCAST_EYE_HEIGHT)
+                                         (wall_h - eye_cells) if stairs
+                                         else wall_h - self.RAYCAST_EYE_HEIGHT)
 
         # CAMERA-PLANE projection (not uniform-angle) — screen columns are
         # evenly spaced, so rays must be evenly spaced on the camera plane:
@@ -507,11 +534,23 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # Fisheye-corrected wall distance per screen column, for billboard
         # occlusion below (Infinity where a column saw no wall).
         col_wall_dist = [float('inf')] * num_columns
+        stairs_layouts = []
+        half_h = view_h / 2.0               # y-DOWN rows inside the view
 
         for col in range(num_columns):
             camera_x = 2.0 * (col + 0.5) / num_columns - 1.0
             ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
+            if stairs:
+                crossings, hit_s = self._cast_ray_steps(
+                    cam_x, cam_y, ray_angle, cell_size, render_distance_cells, heights)
+                lay = self._layout_column(crossings, hit_s, floor_z, eye_z,
+                                          wall_h * cell_size, cell_size,
+                                          math.cos(ray_offset), half_h, view_h,
+                                          render_distance_cells)
+                stairs_layouts.append(lay)
+                col_wall_dist[col] = lay['wall_dist']
+                continue
             dist, side, hit, tex_u, wall_sprite = self._cast_ray(
                 cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
             if not hit:
@@ -580,12 +619,35 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # distance and centered on the horizon like a wall strip, farthest-first
         # (painter's algorithm). Real per-column occlusion against col_wall_dist
         # hides a billboard behind a wall and clips one behind a corner.
+        if stairs:
+            # Floor cast (textured floor or a step top texture), then risers
+            # and walls at full resolution on top (renderer.py, S5/S6).
+            top_px = {}
+            for cell, (top_name, _side) in step_textures.items():
+                px_ = self._raycast_texture_pixels(top_name) if top_name else None
+                if px_ is not None:
+                    top_px[cell] = px_
+            floor_cast = floor_px is not None or bool(top_px)
+            sf = {'eye_z': eye_z, 'cell_size': cell_size, 'half_h': half_h,
+                  'view_h': view_h, 'h': h, 'w': w, 'col_width': col_width,
+                  'cam_x': cam_x, 'cam_y': cam_y, 'textured': textured,
+                  'wall_texture': wall_texture, 'wall_color': wall_color,
+                  'floor_color': floor_color, 'step_textures': step_textures,
+                  'max_dist': render_distance_cells * cell_size}
+            if floor_cast:
+                self._stairs_floor(group, stairs_layouts, sf, floor_px, top_px,
+                                   facing_screen_rad, fov_rad, cast_res)
+            for col, lay in enumerate(stairs_layouts):
+                self._draw_stairs_column(group, sf, col, lay, floor_cast)
+
         billboards = []
         for inst in self.instances:
             if inst is camera or not getattr(inst, 'visible', True):
                 continue
             if getattr(inst, 'solid', False):
                 continue
+            if getattr(inst, 'raycast_floor_height', None) is not None:
+                continue        # a step is floor, not a cutout
             iw = float(getattr(inst, 'image_width', 0) or 0)
             ih = float(getattr(inst, 'image_height', 0) or 0)
             if iw <= 0 or ih <= 0:
@@ -631,6 +693,12 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             x_center = col_center * col_width
             x_left = x_center - sprite_w / 2.0
             y_bot_b = mid - full_h_b / 2.0        # y-up: bottom of the sprite
+            if stairs:
+                # Stands on the floor of its own cell (renderer.py, S7):
+                # positive = lower on screen, i.e. DOWN in Kivy's y-up.
+                b_floor = heights.get((int(bx // cell_size), int(by // cell_size)), 0.0)
+                y_bot_b -= (eye_z - (b_floor + self.RAYCAST_EYE_HEIGHT * cell_size)) \\
+                    * view_h / max(corrected_b, 1e-4)
             by0 = max(view_bottom, y_bot_b)       # clamp to the view, not window
             by1 = min(h, y_bot_b + full_h_b)
             b_vis_h = by1 - by0
@@ -646,6 +714,16 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             for col in range(col_start, col_end + 1):
                 if corrected_b >= col_wall_dist[col]:
                     continue
+                c_by0, c_bv0 = by0, bv0
+                if stairs:
+                    # Steps nearer than it hide its lower rows (S7): rows at
+                    # or below the y-down limit -> Kivy y below h - limit.
+                    limit = self._clip_before(stairs_layouts[col]['occluders'],
+                                              corrected_b, view_h)
+                    c_by0 = max(by0, h - limit)
+                    if c_by0 >= by1:
+                        continue
+                    c_bv0 = (c_by0 - y_bot_b) / full_h_b
                 seg_x0 = max(x_left, col * col_width)
                 seg_x1 = min(x_left + sprite_w, (col + 1) * col_width)
                 if seg_x1 <= seg_x0:
@@ -658,10 +736,405 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 group.add(Color(1, 1, 1, 1))
                 # Float tex_coords select the visible vertical slice sub-texel
                 # exactly (get_region would snap to whole texels).
-                group.add(Rectangle(texture=region, pos=(seg_x0, by0),
-                                    size=(seg_x1 - seg_x0, b_vis_h),
-                                    tex_coords=(0.0, bv0, 1.0, bv0,
+                group.add(Rectangle(texture=region, pos=(seg_x0, c_by0),
+                                    size=(seg_x1 - seg_x0, by1 - c_by0),
+                                    tex_coords=(0.0, c_bv0, 1.0, c_bv0,
                                                 1.0, bv1, 0.0, bv1)))
+
+    # ------------------------------------------------------------------
+    # Stairs (docs/RAYCAST_STAIRS_PLAN.md, S11): ports of heights.py,
+    # renderer.py's stairs path and climbing.py. _cast_ray_steps and
+    # _layout_column are VERBATIM copies of the desktop functions (pinned by
+    # tests/test_raycast_export_parity.py); everything runs in GM y-down
+    # space and only the drawing flips (Kivy y = h - row).
+    # ------------------------------------------------------------------
+    @classmethod
+    def _raycast_max_floor_height(cls, cell_size, wall_h):
+        return max(0.0, (wall_h - cls.RAYCAST_EYE_HEIGHT) * cell_size - cls.RAYCAST_CEILING_MARGIN)
+
+    def _raycast_build_floor_heights(self, cell_size, max_height):
+        import math
+        heights = {}
+        textures = {}
+        for inst in self.instances:
+            hgt = getattr(inst, 'raycast_floor_height', None)
+            if hgt is None or getattr(inst, 'solid', False):
+                continue
+            try:
+                hgt = float(hgt)
+            except (TypeError, ValueError):
+                hgt = 0.0
+            if hgt != hgt:
+                hgt = 0.0
+            hgt = min(max(hgt, 0.0), max_height)
+            if hgt <= 0.0:
+                continue
+            gm_x, gm_y = self._raycast_gm_xy(inst)
+            bw = float(getattr(inst, 'image_width', 0) or 0)
+            bh = float(getattr(inst, 'image_height', 0) or 0)
+            gx0 = int(math.floor(gm_x / cell_size))
+            gy0 = int(math.floor(gm_y / cell_size))
+            gx1 = int(math.floor((gm_x + bw) / cell_size - 1e-9)) if bw > 0 else gx0
+            gy1 = int(math.floor((gm_y + bh) / cell_size - 1e-9)) if bh > 0 else gy0
+            tex = (getattr(inst, 'raycast_step_top_texture', '') or '',
+                   getattr(inst, 'raycast_step_side_texture', '') or '')
+            for gx in range(gx0, max(gx0, gx1) + 1):
+                for gy in range(gy0, max(gy0, gy1) + 1):
+                    if hgt > heights.get((gx, gy), 0.0):
+                        heights[(gx, gy)] = hgt
+                        textures[(gx, gy)] = tex
+        self._raycast_floor_heights = heights
+        return heights, textures
+
+    def _cast_ray_steps(self, px, py, angle_rad, cell_size, max_cells, heights):
+        import math
+        v_walls, h_walls = self._raycast_v_walls, self._raycast_h_walls
+        v_sprites = getattr(self, '_raycast_v_wall_sprites', {}) or {}
+        h_sprites = getattr(self, '_raycast_h_wall_sprites', {}) or {}
+        px_cell, py_cell = px / cell_size, py / cell_size
+        dx, dy = math.cos(angle_rad), math.sin(angle_rad)
+        map_x, map_y = int(px_cell), int(py_cell)
+
+        delta_x = abs(1 / dx) if dx != 0 else 1e30
+        delta_y = abs(1 / dy) if dy != 0 else 1e30
+        if dx < 0:
+            step_x = -1
+            side_x = (px_cell - map_x) * delta_x
+        else:
+            step_x = 1
+            side_x = (map_x + 1 - px_cell) * delta_x
+        if dy < 0:
+            step_y = -1
+            side_y = (py_cell - map_y) * delta_y
+        else:
+            step_y = 1
+            side_y = (map_y + 1 - py_cell) * delta_y
+
+        crossings = []
+        h_prev = heights.get((map_x, map_y), 0.0)
+        side = 0
+        dist_cells = float(max_cells)
+        for _ in range(max_cells):
+            if side_x < side_y:
+                side_x += delta_x
+                map_x += step_x
+                side = 0
+                line_x = map_x if step_x > 0 else map_x + 1
+                wall_key = (line_x, map_y)
+                hit = wall_key in v_walls
+            else:
+                side_y += delta_y
+                map_y += step_y
+                side = 1
+                line_y = map_y if step_y > 0 else map_y + 1
+                wall_key = (map_x, line_y)
+                hit = wall_key in h_walls
+            d_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
+            if side == 0:
+                wall_coord = py_cell + d_cells * dy
+                if dx > 0:
+                    wall_coord = -wall_coord
+            else:
+                wall_coord = px_cell + d_cells * dx
+                if dy < 0:
+                    wall_coord = -wall_coord
+            tex_u = wall_coord - math.floor(wall_coord)
+            if hit:
+                sprite = v_sprites.get(wall_key) if side == 0 else h_sprites.get(wall_key)
+                return crossings, (max(d_cells, 1e-4) * cell_size, side, True, tex_u, sprite)
+            h_next = heights.get((map_x, map_y), 0.0)
+            if h_next != h_prev:
+                crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y)))
+                h_prev = h_next
+        return crossings, (max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None)
+
+    @staticmethod
+    def _layout_column(crossings, hit, h0, eye_z, wall_top_z, cell_size, cos_off,
+                       half_h, view_h, max_cells):
+        def stairs_y(z, eye_z, d, half_h, view_h):
+            return half_h + (eye_z - z) * view_h / d
+
+        clip = float(view_h)
+        treads, risers, occluders = [], [], []
+        h_cur = h0
+        d_prev = 0.0
+        for dist_cells, h_next, side, tex_u, cell in crossings:
+            d = max(dist_cells * cell_size * cos_off, 1e-4)
+            y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+            if y_cur < clip:
+                treads.append((y_cur, clip, h_cur, d_prev))
+                clip = y_cur
+            if h_next > h_cur:
+                y_top = stairs_y(h_next, eye_z, d, half_h, view_h)
+                if y_top < clip:
+                    risers.append((y_top, clip, d, side, tex_u, cell, h_cur, h_next))
+                    clip = y_top
+            occluders.append((d, clip))
+            h_cur = h_next
+            d_prev = d
+            if clip <= 0:
+                return {"treads": treads, "risers": risers, "wall": None,
+                        "occluders": occluders, "wall_dist": float("inf")}
+        dist_px, side, is_hit, tex_u, sprite = hit
+        d = max(dist_px * cos_off, 1e-4)
+        if not is_hit:
+            d = max(max_cells * cell_size * cos_off, 1e-4)
+        y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+        if y_cur < clip:
+            treads.append((y_cur, clip, h_cur, d_prev))
+            clip = y_cur
+        wall = None
+        if is_hit:
+            y_top = stairs_y(wall_top_z, eye_z, d, half_h, view_h)
+            if y_top < clip:
+                wall = (y_top, clip, d, side, tex_u, sprite)
+            occluders.append((d, min(clip, y_top)))
+        return {"treads": treads, "risers": risers, "wall": wall,
+                "occluders": occluders, "wall_dist": d if is_hit else float("inf")}
+
+    @staticmethod
+    def _stairs_row(y):
+        import math
+        return int(math.floor(y + 0.5))
+
+    @classmethod
+    def _clip_before(cls, occluders, dist, view_h):
+        limit = float(view_h)
+        for d, clip in occluders:
+            if d >= dist:
+                break
+            limit = clip
+        return cls._stairs_row(limit)
+
+    def _stairs_wall_rows(self, group, tex, color, tex_u, x0, strip_w, d, eye_z,
+                          cell_size, half_h, view_h, h, r0, r1, shade):
+        # Rows [r0, r1) (y-down, inside the view) of a wall or a riser at
+        # corrected distance d; texture tiles anchored at height 0. Kivy
+        # y = h - row; textures are bottom-origin (v = 0 at the tile bottom).
+        import math
+        r0 = max(0, r0)
+        r1 = min(int(view_h), r1)
+        if r1 <= r0:
+            return
+        if tex is None:
+            group.add(Color(*[c * shade for c in color], 1))
+            group.add(Rectangle(pos=(x0, h - r1), size=(strip_w, r1 - r0)))
+            return
+        tw, th = tex.width, tex.height
+        tile_z = self.RAYCAST_TEXTURE_HEIGHT * cell_size
+        tile_h = view_h * tile_z / d
+        tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+        region = tex.get_region(tex_x, 0, 1, th)
+        z_bot = eye_z - (r1 - half_h) * d / view_h
+        z_top = eye_z - (r0 - half_h) * d / view_h
+        k0 = max(0, int(math.floor(z_bot / tile_z)))
+        k1 = max(k0, int(math.floor(z_top / tile_z)))
+        group.add(Color(shade, shade, shade, 1))
+        for k in range(k0, k1 + 1):
+            seg_top = half_h + (eye_z - (k + 1) * tile_z) * view_h / d
+            sy0 = max(r0, int(math.floor(seg_top)))
+            sy1 = min(r1, int(math.ceil(seg_top + tile_h)))
+            if sy1 <= sy0:
+                continue
+            v_low = 1.0 - (sy1 - seg_top) / tile_h
+            v_high = 1.0 - (sy0 - seg_top) / tile_h
+            group.add(Rectangle(texture=region, pos=(x0, h - sy1),
+                                size=(strip_w, sy1 - sy0),
+                                tex_coords=(0.0, v_low, 1.0, v_low,
+                                            1.0, v_high, 0.0, v_high)))
+
+    def _draw_stairs_column(self, group, sf, col, lay, floor_cast):
+        x0 = int(col * sf['col_width'])
+        strip_w = max(1, int((col + 1) * sf['col_width']) - x0)
+        view_h, h = sf['view_h'], sf['h']
+        row = self._stairs_row
+        if not floor_cast:
+            group.add(Color(*sf['floor_color'], 1))
+            for y_top, y_bot, height, _d in lay['treads']:
+                if height > 0:
+                    r0, r1 = max(0, row(y_top)), min(int(view_h), row(y_bot))
+                    if r1 > r0:
+                        group.add(Rectangle(pos=(x0, h - r1), size=(strip_w, r1 - r0)))
+        for y_top, y_bot, d, side, tex_u, cell, _lo, _hi in lay['risers']:
+            tex = None
+            if sf['textured']:
+                name = sf['step_textures'].get(cell, ('', ''))[1]
+                tex = self._raycast_texture(name) if name else None
+                if tex is None:
+                    tex = sf['wall_texture']
+            self._stairs_wall_rows(group, tex, sf['wall_color'], tex_u, x0, strip_w, d,
+                                   sf['eye_z'], sf['cell_size'], sf['half_h'], view_h, h,
+                                   row(y_top), row(y_bot),
+                                   self._wall_shade(side, d, sf['max_dist']))
+        wall = lay['wall']
+        if wall is not None:
+            y_top, y_bot, d, side, tex_u, wall_sprite = wall
+            tex = None
+            if sf['textured']:
+                tex = sf['wall_texture']
+                if tex is None:
+                    tex = self._raycast_texture(wall_sprite)
+            self._stairs_wall_rows(group, tex, sf['wall_color'], tex_u, x0, strip_w, d,
+                                   sf['eye_z'], sf['cell_size'], sf['half_h'], view_h, h,
+                                   row(y_top), row(y_bot),
+                                   self._wall_shade(side, d, sf['max_dist']))
+
+    def _stairs_floor_buffer(self, layouts, sf, floor_px, top_px,
+                             facing_screen_rad, fov_rad, res):
+        # Port of renderer.cast_stairs_floor into an RGBA buffer laid out
+        # like _floor_buffer's (row 0 = the horizon row). The *_px are
+        # (bytes, tw, th) with Kivy's bottom-up rows, flipped when sampled.
+        import math
+        w = float(sf['w'])
+        view_h = sf['view_h']
+        half_h = int(view_h // 2)
+        region_h = int(view_h) - half_h
+        sw = max(1, int(w) // res)
+        sh = max(1, region_h // res)
+        cell_size = sf['cell_size']
+        eye_cells = sf['eye_z'] / cell_size
+        cam_cx, cam_cy = sf['cam_x'] / cell_size, sf['cam_y'] / cell_size
+        dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+        plane = math.tan(fov_rad / 2)
+        plane_x, plane_y = -dir_y * plane, dir_x * plane
+        rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+        rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+        fc = sf['floor_color']
+        flat = bytes([int(fc[0] * 255), int(fc[1] * 255), int(fc[2] * 255), 255])
+        out = bytearray(flat * (sw * sh))
+        floor = math.floor
+        ncol = len(layouts)
+        for i in range(sw):
+            sx = i * res
+            c = int(sx / sf['col_width'])
+            if c >= ncol:
+                c = ncol - 1
+            spans = layouts[c]['treads']
+            if not spans:
+                continue
+            t = sx / w
+            rdx = rdx0 + (rdx1 - rdx0) * t
+            rdy = rdy0 + (rdy1 - rdy0) * t
+            k = 0
+            n = len(spans)
+            for j in range(sh - 1, -1, -1):
+                y = half_h + j * res
+                while k < n - 1 and y < spans[k][0]:
+                    k += 1
+                height = spans[k][2]
+                dz = eye_cells - height / cell_size
+                if dz <= 0:
+                    continue
+                p = j * res
+                if p <= 0:
+                    p = 1
+                rowd = dz * view_h / p
+                fx = cam_cx + rowd * rdx
+                fy = cam_cy + rowd * rdy
+                src = None
+                if top_px and height > 0:
+                    src = top_px.get((int(floor(fx)), int(floor(fy))))
+                if src is None:
+                    src = floor_px
+                if src is None:
+                    continue
+                pixels, tw, th = src
+                tx = int(tw * (fx - floor(fx)))
+                ty = int(th * (fy - floor(fy)))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                si = ((th - 1 - ty) * tw + tx) * 4
+                di = (j * sw + i) * 4
+                out[di] = pixels[si]
+                out[di + 1] = pixels[si + 1]
+                out[di + 2] = pixels[si + 2]
+        return bytes(out), sw, sh
+
+    def _stairs_floor(self, group, layouts, sf, floor_px, top_px,
+                      facing_screen_rad, fov_rad, res):
+        from kivy.graphics.texture import Texture
+        buf, sw, sh = self._stairs_floor_buffer(layouts, sf, floor_px, top_px,
+                                                facing_screen_rad, fov_rad, res)
+        tex = Texture.create(size=(sw, sh), colorfmt='rgba')
+        tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        view_h, h = sf['view_h'], sf['h']
+        group.add(Color(1, 1, 1, 1))
+        group.add(Rectangle(texture=tex, pos=(0, h - view_h), size=(sf['w'], view_h / 2.0),
+                            tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
+
+    def _ext_update__raycast_2_5d(self, dt):
+        # Climbing (climbing.py), after movement and collisions, before End
+        # Step. Kivy has no before-step hook, so moves are measured against
+        # the snapshot taken here last frame: every move since is checked.
+        cfg = getattr(self, 'raycast_camera', None)
+        if not cfg or not cfg.get('enabled'):
+            return
+        cell_size = int(cfg.get('cell_size', 32))
+        wall_h = self._clamp_wall_height(cfg.get('wall_height', self.RAYCAST_WALL_HEIGHT))
+        heights, _tex = self._raycast_build_floor_heights(
+            cell_size, self._raycast_max_floor_height(cell_size, wall_h))
+        try:
+            max_step = max(0.0, float(cfg.get('max_step', self.RAYCAST_DEFAULT_MAX_STEP)))
+        except (TypeError, ValueError):
+            max_step = self.RAYCAST_DEFAULT_MAX_STEP
+        room_h = float(self.room_height)
+
+        def floor_at(inst, x, y):
+            # The GM-space centre for a Kivy position (x, y): GM y is
+            # room_height - y - image_height (see _raycast_gm_xy).
+            iw = float(getattr(inst, 'image_width', 0) or 0)
+            ih = float(getattr(inst, 'image_height', 0) or 0)
+            cx = x + iw / 2.0
+            cy = room_h - y - ih + ih / 2.0
+            return heights.get((int(cx // cell_size), int(cy // cell_size)), 0.0)
+
+        dead = set(id(i) for i in (getattr(self, 'instances_to_destroy', None) or []))
+        prev = self._raycast_step_prev or {}
+        movers = [i for i in self.instances
+                  if id(i) not in dead and not getattr(i, 'solid', False)
+                  and getattr(i, 'raycast_floor_height', None) is None]
+        for inst in movers:
+            old = prev.get(id(inst))
+            blocked = 0
+            if old is not None and old[0] is inst:
+                ox, oy = old[1], old[2]
+                nx, ny = float(inst.x), float(inst.y)
+                moved = (nx, ny) != (ox, oy)
+                if moved and abs(nx - ox) <= cell_size and abs(ny - oy) <= cell_size:
+                    f_old = floor_at(inst, ox, oy)
+                    if floor_at(inst, nx, ny) - f_old > max_step:
+                        blocked = 1
+                        for tx, ty in ((nx, oy), (ox, ny), (ox, oy)):
+                            ok = floor_at(inst, tx, ty) - f_old <= max_step
+                            if (tx, ty) == (ox, oy) or ok:
+                                inst.x, inst.y = tx, ty
+                                break
+            inst.raycast_step_blocked = blocked
+            inst.raycast_floor_z = floor_at(inst, float(inst.x), float(inst.y))
+        self._raycast_step_prev = {id(i): (i, float(i.x), float(i.y)) for i in movers}
+
+        camera = self._find_raycast_camera(cfg)
+        if camera is None:
+            return
+        target = floor_at(camera, float(camera.x), float(camera.y))
+        camera.raycast_floor_z = target
+        cur = self._raycast_eye_floor
+        vz = self._raycast_eye_vz
+        if cur is None:
+            cur, vz = target, 0.0
+        elif cur < target:
+            cur, vz = min(target, cur + self.RAYCAST_CLIMB_SPEED), 0.0
+        elif cur > target:
+            vz += self.RAYCAST_FALL_GRAVITY
+            cur = max(target, cur - vz)
+            if cur == target:
+                vz = 0.0
+        else:
+            vz = 0.0
+        self._raycast_eye_floor = cur
+        self._raycast_eye_vz = vz
 '''
 
 
@@ -686,6 +1159,18 @@ def _cg_set_billboard_rotation(gen, params, event_type):
     from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
     frames = _num_code(params.get('frames', 8), 8)
     return f"self.billboard_rotation_frames = max(0, int({frames}))"
+
+def _cg_set_floor_height(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    # Make this instance a step (execute_set_floor_height_action); the scene's
+    # _raycast_build_floor_heights clamps.
+    raw = params.get('height', 8)
+    height = _num_code(raw, 8) if raw not in (None, '') else '8'
+    top = str(params.get('top_texture') or '')
+    side = str(params.get('side_texture') or '')
+    return (f"self.raycast_floor_height = float({height}); "
+            f"self.raycast_step_top_texture = {top!r}; "
+            f"self.raycast_step_side_texture = {side!r}")
 
 def _cg_enable_raycast_view(gen, params, event_type):
     from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
@@ -723,6 +1208,8 @@ def _cg_enable_raycast_view(gen, params, event_type):
         # Walls + ceiling height in cells (stairs plan S4); the scene clamps
         # it where it is used (_clamp_wall_height).
         'wall_height': _tofloat(params.get('wall_height'), 1.5),
+        # Highest climbable step, room px (stairs S8/S11).
+        'max_step': _tofloat(params.get('max_step'), 12),
     }
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera;
@@ -832,6 +1319,7 @@ def _cg_draw_minimap(gen, params, event_type):
 ACTION_CODEGEN = {
     'set_facing_angle': _cg_set_facing_angle,
     'set_billboard_rotation': _cg_set_billboard_rotation,
+    'set_floor_height': _cg_set_floor_height,
     'enable_raycast_view': _cg_enable_raycast_view,
     'draw_doom_hud': _cg_draw_doom_hud,
     'draw_minimap': _cg_draw_minimap,
@@ -874,6 +1362,32 @@ BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall
 
         def _px(wx, wy):
             return x + wx * scale, y + wy * scale
+
+        # Raised floor cells (stairs, hud.build_minimap_commands `raised`):
+        # filled squares under the walls, shaded panel -> wall colour by height.
+        raised = getattr(scene, '_raycast_floor_heights', None) or {}
+        if raised:
+            def _hex(c):
+                c = c.strip().lstrip('#') if isinstance(c, str) else ''
+                if len(c) == 3:
+                    c = ''.join(ch * 2 for ch in c)
+                try:
+                    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4)) if len(c) == 6 else None
+                except ValueError:
+                    return None
+            ca, cb = _hex(back_color), _hex(wall_color)
+            top = max(raised.values())
+            for (gx, gy) in sorted(raised):
+                t = 0.25 + 0.5 * (raised[(gx, gy)] / top if top > 0 else 1.0)
+                if ca is None or cb is None:
+                    colour = wall_color
+                else:
+                    colour = '#%02x%02x%02x' % tuple(
+                        int(round(a + (b - a) * t)) for a, b in zip(ca, cb))
+                x1, y1 = _px(gx * cs, gy * cs)
+                x2, y2 = _px((gx + 1) * cs, (gy + 1) * cs)
+                self._draw_queue.append(dict(type='rectangle', x1=x1, y1=y1, x2=x2,
+                                             y2=y2, color=colour, filled=True))
 
         # Wall sets are unordered; sort so every target emits the same picture
         # in the same order (the parity test diffs it).

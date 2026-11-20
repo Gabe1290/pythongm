@@ -55,7 +55,12 @@ try:
     image = scene.export_as_image()                      # renders the widget's whole canvas (incl. canvas.after)
     texture = image.texture
     w, h = texture.size
-    pixels = texture.pixels                              # RGBA, rows bottom-up
+    # RGBA, rows TOP-DOWN: unlike Fbo.pixels (bottom-up, which
+    # _real_kivy_render.py reads), export_as_image's texture comes back with
+    # row 0 at the top -- measured (a red band drawn at Kivy y 0..10 is the
+    # LAST buffer row here). This worker used the bottom-up formula until the
+    # raycast stairs tests (S11) sampled rows whose order matters.
+    pixels = texture.pixels
     result["window"] = [w, h]
     result["instances"] = len(scene.instances)
     group = getattr(scene, "_raycast_group", None)       # the first-person overlay, when a camera is enabled
@@ -66,7 +71,7 @@ try:
     for name, (x, y) in request.get("points", {}).items():
         x, y = int(x), int(y)
         if 0 <= x < w and 0 <= y < h:
-            i = ((h - 1 - y) * w + x) * 4
+            i = (y * w + x) * 4                          # y is y-down, like the rows
             out[name] = list(pixels[i:i + 4])
     result["points"] = out
 except Exception:

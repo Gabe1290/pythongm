@@ -319,7 +319,9 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     assert "full_h_b = view_h * ih / max(corrected_b, 1e-4)" in kx
     assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
     assert "ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH)" in ENGINE
-    assert "tex_coords=(0.0, bv0, 1.0, bv0," in kx
+    # Since stairs S11 the crop starts at the per-column clip (c_bv0, = bv0
+    # in a room without steps); still float tex_coords, never texel-snapped.
+    assert "tex_coords=(0.0, c_bv0, 1.0, c_bv0," in kx
 
 
 def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
