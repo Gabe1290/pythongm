@@ -61,6 +61,12 @@ try:
     scene.on_touch_down(touch(cx, cy, "scrollup"))      # a scroll tick is not a held button
     result["scroll"] = [check("Left button pressed"), check("Right button pressed"), check("Middle button pressed")]
     result["region"] = check("In region")
+    # Hover: the window's mouse position moves with no button down (a desktop build). Nothing is
+    # touched here, so the pointer can only have come from the scene's mouse_pos binding.
+    Window.mouse_pos = (cx * sx, cy * sy)
+    result["hover_first"] = [check("Over object"), other._mouse_check("Over object"), check("Left button pressed")]
+    Window.mouse_pos = (ox * sx, oy * sy)
+    result["hover_other"] = [check("Over object"), other._mouse_check("Over object")]
 except Exception:
     import traceback
     result["error"] = traceback.format_exc()[-1800:]

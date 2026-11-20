@@ -1635,6 +1635,7 @@ class GameApp(App):
                 try:
                     Window.unbind(on_keyboard=old_scene.on_keyboard)
                     Window.unbind(on_key_up=old_scene.on_keyboard_up)
+                    Window.unbind(mouse_pos=old_scene._on_mouse_pos)
                 except Exception:
                     pass
                 # A persistent room's live scene (instance positions,
@@ -1663,6 +1664,7 @@ class GameApp(App):
                 new_scene = self._room_cache[room_index]
                 Window.bind(on_keyboard=new_scene.on_keyboard)
                 Window.bind(on_key_up=new_scene.on_keyboard_up)
+                Window.bind(mouse_pos=new_scene._on_mouse_pos)
             else:
                 _log(f"_do_room_switch: creating {{room_class.__name__}}")
                 new_scene = room_class()
@@ -2325,9 +2327,11 @@ class {class_name}(Widget):
         if not self.views_enabled:
             self._draw_background()
 
-        # Bind keyboard events
+        # Bind keyboard events (and the hover pointer: mouse_check's "Over object"
+        # needs the pointer even when no button is down)
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_key_up=self.on_keyboard_up)
+        Window.bind(mouse_pos=self._on_mouse_pos)
 
         # Initialize room
         self.create_instances()
@@ -3152,6 +3156,20 @@ class {class_name}(Widget):
             x = float(v0['view_x']) + (x - int(v0.get('port_x', 0)))
             y = float(v0['view_y']) + (y - int(v0.get('port_y', 0)))
         return x, self.room_height - y
+
+    def _on_mouse_pos(self, window, pos):
+        """A mouse moved over the window with no button down (a desktop build; a touchscreen
+        has no hover): keep mouse_check's pointer current. Same window -> room conversion as
+        a touch."""
+        from main import get_game_app
+        _app = get_game_app()
+        if _app is not None and _app.scene is not self:
+            return
+        try:
+            mx, my = self._touch_to_room(__import__('types').SimpleNamespace(x=pos[0], y=pos[1]))
+        except Exception:
+            return
+        self._track_mouse(mx, my, None, None)
 
     def _track_mouse(self, mx, my, button, down):
         """Remember the pointer for the mouse_check condition: its last position

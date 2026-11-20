@@ -171,3 +171,40 @@ def test_a_real_scene_tracks_real_touch_calls(game_dir):
     assert data["down_right_elsewhere"] == [True, False, True, True]
     assert data["scroll"] == [False, False, False]
     assert data["region"] is False
+    # hover: the window's mouse position moves, nothing is touched or pressed
+    assert data["hover_first"] == [True, False, False]
+    assert data["hover_other"] == [False, True]
+
+
+# ---------------------------------------------------------------- hover (no button down)
+
+def test_the_scene_binds_and_releases_the_hover_pointer_with_its_keyboard_handlers(game_dir):
+    main = (game_dir / "main.py").read_text(encoding="utf-8")
+    assert "Window.unbind(mouse_pos=old_scene._on_mouse_pos)" in main        # leaving a room
+    assert "Window.bind(mouse_pos=new_scene._on_mouse_pos)" in main          # re-entering a persistent one
+    scene_file, _ = _scene_class(game_dir)
+    assert "Window.bind(mouse_pos=self._on_mouse_pos)" in scene_file.read_text(encoding="utf-8")
+
+
+def test_a_hover_moves_the_pointer_without_pressing_anything(classes, game_dir):
+    scene_file, scene_name = _scene_class(game_dir)
+    hover = _method(scene_file, scene_name, "_on_mouse_pos")
+    Scene, Inst = classes
+    ns = {"Scene": Scene}
+    exec("import sys, types\n_main = types.ModuleType('main'); _main.get_game_app = lambda: None\n"
+         "sys.modules['main'] = _main\n"
+         "def _touch_to_room(self, touch):\n    return touch.x, 480 - touch.y\n"
+         "Scene._touch_to_room = _touch_to_room\n"
+         "class H(Scene):\n" + _indent(hover) + "\n", ns)
+    scene = ns["H"]()
+    scene.room_height = 480
+    inst_scene, inst = _world(classes)
+    scene.room_height = 480
+    scene._on_mouse_pos(None, (116, 316))                    # window pos -> room (116, 164)
+    assert scene._mouse_pos == (116, 164)
+    assert not getattr(scene, "_mouse_buttons", set())       # a hover presses nothing
+    inst.scene = scene
+    assert inst._mouse_check("Over object") is True          # over the instance at Kivy (100, 300), 32 px
+    scene._on_mouse_pos(None, (400, 400))
+    assert inst._mouse_check("Over object") is False
+    sys.modules.pop("main", None)

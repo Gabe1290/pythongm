@@ -2084,9 +2084,11 @@ lines rather than matching their text.
   pointer position in room coordinates; `GameObject._mouse_check` answers the left/middle/right
   options and "Over object" (the author's y-down box; false for a spriteless instance) as the
   desktop does, and "In region" is never true (it has no region parameters). A touchscreen touch is
-  the left button and the pointer stays where the finger last was; there is no hover tracking, so
-  "Over object" with no finger down only reflects the last touch. Verified with real touch calls
-  under real Kivy; not on a device.
+  the left button and the pointer stays where the finger last was. **Hover tracking added the same
+  day:** the scene binds `Window.mouse_pos` (with its keyboard handlers, released on a room switch and
+  re-bound for a persistent room) so "Over object" follows a desktop mouse with no button down; a
+  touchscreen has no hover, so there it still reflects the last touch. Verified with real touch calls
+  and a real `Window.mouse_pos` change under real Kivy; not on a device.
 - **HTML5 `mouse_check` DONE 2026-11-20** (`tests/test_html5_mouse_check.py`): the engine keeps
   `game.mouseButtons` (DOM button 0/1/2 = left/middle/right, a touch is the left button, any release
   or a window blur ends the hold) beside the `game.pointer` it already tracked, and `if_condition`
