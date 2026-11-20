@@ -10771,6 +10771,10 @@ Voulez-vous quand même enregistrer ?</translation>
             <source>2.5 D — Level 4</source>
             <translation>2.5 D — Niveau 4</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 5</source>
+            <translation>2.5 D — Niveau 5</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>

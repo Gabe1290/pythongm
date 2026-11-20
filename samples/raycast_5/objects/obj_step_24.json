@@ -1,0 +1,24 @@
+{
+  "name": "obj_step_24",
+  "asset_type": "object",
+  "sprite": "spr_step_24",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_floor_height",
+          "parameters": {
+            "height": "24",
+            "top_texture": "",
+            "side_texture": ""
+          }
+        }
+      ]
+    }
+  }
+}

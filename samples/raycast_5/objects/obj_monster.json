@@ -1,0 +1,48 @@
+{
+  "name": "obj_monster",
+  "asset_type": "object",
+  "sprite": "spr_monster",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "speed": "2"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_wall"
+    },
+    "end_step": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "raycast_step_blocked",
+            "value": "1",
+            "scope": "instance",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        }
+      ]
+    }
+  }
+}

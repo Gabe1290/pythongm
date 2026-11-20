@@ -2874,6 +2874,10 @@ Uvozite ga v https://lab.open-roberta.org/</translation>
             <source>2.5 D — Level 4</source>
             <translation>2.5 D — Stopnja 4</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 5</source>
+            <translation>2.5 D — Stopnja 5</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>
