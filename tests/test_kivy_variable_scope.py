@@ -196,6 +196,12 @@ TEST_CASES = [
     ({"variable": "hp", "value": "20", "target": "object", "target_object": "obj_gem", "operation": "equal"}, False),
     ({"variable": "hp", "value": "0", "target": "object", "target_object": "obj_missing", "operation": "equal"}, False),
     ({"variable": "hp", "value": "5", "scope": "self", "operation": "equal"}, False),
+    # no partner / no instance: false whatever the operator (a default of 0 or NaN would satisfy == 0 / !=)
+    ({"variable": "hp", "value": "0", "scope": "other", "operation": "equal"}, False),
+    ({"variable": "hp", "value": "3", "scope": "other", "operation": "not_equal"}, False),
+    ({"variable": "hp", "value": "3", "target": "other", "operation": "not_equal"}, False),
+    ({"variable": "hp", "value": "3", "target": "object", "target_object": "obj_missing", "operation": "not_equal"}, False),
+    ({"variable": "hp", "value": "0", "target": "object", "target_object": "obj_missing", "operation": "less_equal"}, False),
 ]
 
 

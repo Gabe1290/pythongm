@@ -689,6 +689,44 @@ function gmBoolExpression(expr, inst, game) {
     return val === undefined ? false : !!val;
 }
 
+// Who a set_variable / test_variable applies to, as the desktop resolves it
+// (execute_set_variable_action / execute_test_variable_action): the `scope` parameter (self / other /
+// global) or GameMaker's "Applies to" (`target`: self / other / object + `target_object`, emitted by the
+// GMK importer); global scope wins, then `target`, then `scope`. A `global.` / `self.` / `other.` prefix in
+// the variable NAME (the action description's own syntax) names its scope explicitly. Returns
+// {name, holders}: the bare variable name and the objects that hold it (an empty list: nobody, e.g. `other`
+// with no collision partner or an object with no instance).
+function gmVariableHolders(inst, game, params, rawName) {
+    let name = String(rawName || '').trim();
+    const scope = String(params.scope || 'sel').toLowerCase();
+    let kind = 'self', objectName = '';
+    if (scope === 'global') {
+        kind = 'global';
+    } else if (params.target !== undefined) {
+        if (params.target === 'other') kind = 'other';
+        else if (params.target === 'object') { kind = 'object'; objectName = String(params.target_object || ''); }
+    } else if (scope === 'other') {
+        kind = 'other';
+    }
+    const prefixed = /^(global|self|other)\.(.+)$/.exec(name);
+    if (prefixed) {
+        kind = prefixed[1];
+        name = prefixed[2];
+    }
+    let holders;
+    if (kind === 'global') {
+        holders = [game.globalVariables];
+    } else if (kind === 'other') {
+        holders = inst._collision_other ? [inst._collision_other] : [];
+    } else if (kind === 'object') {
+        holders = (objectName && game.currentRoom)
+            ? game.currentRoom.instances.filter(i => i.name === objectName && !i.toDestroy) : [];
+    } else {
+        holders = [inst];
+    }
+    return { name: name, holders: holders };
+}
+
 function gmExpressionValue(expr, inst, game) {
     if (expr === undefined || expr === null || String(expr).trim() === '') return undefined;
     const js = String(expr)
@@ -1924,15 +1962,11 @@ class GameObject {
                 // named operations; numeric comparison when both parse.
                 const name = params.variable || params.variable_name || '';
                 if (!name) return false;
-                const scope = params.scope || 'sel';
-                let current;
-                if (scope === 'global') {
-                    current = game.globalVariables[name];
-                } else if (scope === 'other') {
-                    current = this._collision_other ? this._collision_other[name] : undefined;
-                } else {
-                    current = this[name];
-                }
+                // `other` with no collision partner, or an object with no instance: the question is
+                // false before anything is compared (desktop), whatever the operator.
+                const resolvedVar = gmVariableHolders(this, game, params, name);
+                if (!resolvedVar.holders.length) return false;
+                let current = resolvedVar.holders[0][resolvedVar.name];
                 if (current === undefined) current = 0;
                 let expected = params.value;
                 const cf = parseFloat(current), ef = parseFloat(expected);
@@ -2144,12 +2178,25 @@ class GameObject {
                 break;
 
             case 'move_towards':
-                const targetX = params.x || 0;
-                const targetY = params.y || 0;
-                const moveSpeed = params.speed || 4;
-                this.direction = Math.atan2(-(targetY - this.y), targetX - this.x) * 180 / Math.PI;
-                this.speed = moveSpeed;
+            case 'move_towards_point': {
+                // Head for (x, y) at `speed`: hspeed/vspeed point at the target right away (desktop's
+                // execute_move_towards_point_action). move_towards_point -- the REGISTERED action --
+                // had no case here at all, so it did nothing in a browser; the old `move_towards`
+                // took the raw text of each parameter, so an expression target was NaN.
+                const targetX = parseNumParam(params.x, this, 0);
+                const targetY = parseNumParam(params.y, this, 0);
+                const moveSpeed = parseNumParam(params.speed, this, 4);
+                const toX = targetX - this.x, toY = targetY - this.y;
+                const toDist = Math.sqrt(toX * toX + toY * toY);
+                if (toDist === 0) {
+                    this.hspeed = 0;
+                    this.vspeed = 0;
+                } else {
+                    this.hspeed = toX / toDist * moveSpeed;
+                    this.vspeed = toY / toDist * moveSpeed;
+                }
                 break;
+            }
 
             case 'set_gravity':
                 this.gravity_direction = params.direction || 270;
@@ -2323,10 +2370,12 @@ class GameObject {
                                 .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
                             jumpX = eval(xExpr);
                         } catch(e) {
-                            jumpX = parseFloat(xStr) || 0;
+                            // a bare name (`x + 5`, `hp`) is not a JS global: resolve it in the
+                            // instance's scope like every other numeric parameter
+                            jumpX = parseNumParam(xStr, this, 0);
                         }
                     } else {
-                        jumpX = parseFloat(xStr) || 0;
+                        jumpX = parseNumParam(xStr, this, 0);
                     }
                 }
 
@@ -2351,10 +2400,10 @@ class GameObject {
                                 .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
                             jumpY = eval(yExpr);
                         } catch(e) {
-                            jumpY = parseFloat(yStr) || 0;
+                            jumpY = parseNumParam(yStr, this, 0);
                         }
                     } else {
-                        jumpY = parseFloat(yStr) || 0;
+                        jumpY = parseNumParam(yStr, this, 0);
                     }
                 }
 
@@ -2957,15 +3006,17 @@ class GameObject {
                         if (typeof evaluated === 'number' && !isNaN(evaluated)) value = evaluated;
                     }
                 }
-                const scope = params.scope || 'sel';
-                const target = scope === 'global' ? game.globalVariables
-                    : (scope === 'other' ? this._collision_other : this);
-                if (!target) break;
-                if (params.relative) {
-                    const current = parseFloat(target[name]) || 0;
-                    value = current + (parseFloat(value) || 0);
+                // The value is worked out ONCE (against the caller); a relative one is then added
+                // to each holder's own current value.
+                const resolved = gmVariableHolders(this, game, params, name);
+                for (const holder of resolved.holders) {
+                    let newValue = value;
+                    if (params.relative) {
+                        const current = parseFloat(holder[resolved.name]) || 0;
+                        newValue = current + (parseFloat(value) || 0);
+                    }
+                    holder[resolved.name] = newValue;
                 }
-                target[name] = value;
                 break;
             }
 

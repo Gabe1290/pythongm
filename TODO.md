@@ -2138,6 +2138,24 @@ lines rather than matching their text.
   code; not on a device. Desktop's own `set_variable` does not strip a
   `self.` prefix (it sets an attribute literally named `self.y`); Kivy strips it, as the action's description
   promises.
+- **HTML5 y and scope audit DONE 2026-11-20** (`tests/test_html5_variable_scope.py`, 38 tests;
+  `tests/test_html5_y_in_actions.py`, 20; both run in the real engine in Chromium against the desktop handlers,
+  dev box only). The HTML5 engine keeps the author's space natively (y down from the top, vspeed positive down),
+  so there was no y CONVERSION to do -- the gaps were in who and what an action reads: **`set_variable` /
+  `test_variable` ignored GameMaker's "Applies to"** (`target`: self / other / object + `target_object`, emitted by
+  the GMK importer) and a `global.` / `self.` / `other.` prefix in the variable NAME (new `gmVariableHolders`,
+  shared; a relative value is added per holder); a test about `other` with no collision partner compared against
+  0 instead of being false (Kivy had the same: an operator-proof false now, also for an object with no instance);
+  **`move_towards_point`, the REGISTERED action, had no case in the engine at all** (only the legacy
+  `move_towards`, which took the raw parameter text) so it did nothing in a browser; `jump_to_position` did not
+  resolve a bare name (`x + 5`, `y`, `hp`). Verified equal to the desktop for `jump_to_position`,
+  `move_towards_point`, `create_instance` (absolute / relative / y reads) and `destroy_at_position`.
+- **Open, found by that audit (not fixed): HTML5 `execute_code` only syncs `x`, `y`, `visible`, the mouse, held keys
+  and score/lives/health between the page and Pyodide.** `self.hspeed = 4`, `self.vspeed = -8` or `self.hp = 9`
+  written in execute_code stay inside Python (they persist there between calls) and never reach the instance the
+  engine moves, tests and draws -- nor does Python see the page's hspeed or custom variables. Needs a two-way
+  sync of the motion attributes and the instance's own variables (a design question: which attributes, and
+  what a Python-only attribute means to a conditional).
 - **Open:** `sync_instance` / `set_instance_owner` are
   host-side and unsupported on both exports. The wiki `Network` pages were updated in nine
   languages (the eight non-fr ones have had no native-speaker read).

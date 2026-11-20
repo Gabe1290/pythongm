@@ -4598,7 +4598,7 @@ class GameObject(Widget):
 
     def _var_of(self, object_name, attr):
         """The author's value of `attr` on the first live instance of `object_name` (test_variable
-        with "Applies to" an object); NaN when there is none, which no comparison satisfies."""
+        with "Applies to" an object); None when there is none (the question is then false)."""
         for other in (self.scene.instances if self.scene else ()):
             if getattr(other, 'object_name', other.__class__.__name__) == object_name:
                 if attr == 'y':
@@ -4606,7 +4606,7 @@ class GameObject(Widget):
                 if attr == 'vspeed':
                     return -other.vspeed
                 return getattr(other, attr, 0)
-        return float('nan')
+        return None
 
     def _gm_view(self, *target):
         """`self` -- or the one argument, e.g. a collision's `other` -- as the author's Python

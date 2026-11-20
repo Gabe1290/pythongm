@@ -955,7 +955,20 @@ class ActionCodeGenerator:
             # `getattr(self, 'global.coins', 0)` and was silently always 0,
             # and the VALUE went through _literal, so comparing against
             # `coins + 1` compared against that text.
-            current = _variable_read_code(var_name, event_type, _applies_to(params))
+            applies = _applies_to(params)
+            name = str(var_name).strip()
+            if name.startswith('other.'):
+                applies = ('other', None)
+            elif name.startswith(('self.', 'global.')):
+                applies = ('self', None) if name.startswith('self.') else ('global', None)
+            if applies[0] == 'other' and 'collision' not in (event_type or ''):
+                self._open_guard("if False:")          # no collision partner: the question is false
+                return
+            current = _variable_read_code(var_name, event_type, applies)
+            if applies[0] == 'object':
+                # no such instance (None): false for EVERY operator, `!=` included
+                self._open_guard(f"if (lambda _v: _v is not None and _v {op} {_value_code(value)})({current}):")
+                return
             self._open_guard(f"if {current} {op} {_value_code(value)}:")
             return
 
