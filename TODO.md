@@ -883,7 +883,7 @@ Other:
 
 ## Translations / i18n
 
-### Dead translations: 202 per language in de / it / ru / sl / uk (found 2026-11-21)
+### ~~Dead translations: 202 per language in de / it / ru / sl / uk~~ (found and FIXED 2026-11-21)
 
 Real, human-written translations marked `type="vanished"` in the split
 catalogues, for strings the code STILL uses in the same class (Qt context).
@@ -917,7 +917,9 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   - [x] ThymioConfigDialog (8)
   - [x] ResizeCanvasDialog (8)
   - [x] MessageTranslationsDialog (3)
-  - [ ] Finally: make the guard cover EVERY context, so a new one cannot slip in.
+  - [x] Finally: the guard covers EVERY context the code uses, in all ten
+    shipped languages (21 tests); a planted vanished entry in es and in a
+    de split file both fail it. **Done 2026-11-21: 0 dead translations.**
 
 ### ~~Configure Action Blocks dialog: "Control"/"Game"/"Views" shown in English~~ (DONE 2026-10-18)
 

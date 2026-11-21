@@ -5,10 +5,11 @@ translation carrying that mark never reaches the app -- the string shows in
 English. Measured 2026-11-21 (TODO.md, Translations / i18n): 202 such strings
 in each of de / it / ru / sl / uk (Sprite Editor, the conditional-action
 editor, the Thymio windows...), plus 17 in the action configure dialog
-(fixed in 3b17da9d). They are revived one screen (Qt context) at a time;
-FIXED_CONTEXTS lists the screens done so far.
+(fixed in 3b17da9d). They were revived one screen (Qt context) per commit
+(REVIVED_CONTEXTS records which); the guard now covers EVERY context the
+code uses, in all ten shipped languages, so a new one cannot slip in.
 
-For each fixed context and each split-catalogue language, two checks:
+For every context and every shipped language, two checks:
 * no (context, string) the code still uses (a literal ``self.tr("...")`` in
   a class of that name) is left only as a vanished entry;
 * every used string with a live translation resolves to it through the real
@@ -31,8 +32,8 @@ from conftest import skip_without_pyside6  # noqa: E402
 
 pytestmark = skip_without_pyside6
 
-SPLIT_LANGS = ("de", "it", "ru", "sl", "uk")
-FIXED_CONTEXTS = (
+SHIPPED = ("de", "es", "fr", "it", "ja", "pt", "ru", "sl", "uk", "zh")
+REVIVED_CONTEXTS = (
     "MessageTranslationsDialog",
     "ResizeCanvasDialog",
     "ThymioConfigDialog",
@@ -73,10 +74,26 @@ def _code_pairs():
     return _PAIRS
 
 
+def _files(lang):
+    """The catalogues the app loads: the split set if present, else the single file."""
+    split = sorted((ROOT / "translations").glob(f"pygm2_{lang}_*.ts"))
+    return split or [ROOT / "translations" / f"pygm2_{lang}.ts"]
+
+
+def _all_contexts():
+    """Every Qt context the code uses that a shipped catalogue also has."""
+    in_code = {c for c, _ in _code_pairs()}
+    in_ts = set()
+    for lang in SHIPPED:
+        for ts in _files(lang):
+            in_ts |= {c.findtext("name") for c in ET.parse(ts).getroot().findall("context")}
+    return sorted(in_code & in_ts)
+
+
 def _entries(lang, context):
     """[(source, translation text, vanished?)] for one context, all files."""
     out = []
-    for ts in sorted((ROOT / "translations").glob(f"pygm2_{lang}_*.ts")):
+    for ts in _files(lang):
         for ctx in ET.parse(ts).getroot().findall("context"):
             if ctx.findtext("name") != context:
                 continue
@@ -88,20 +105,23 @@ def _entries(lang, context):
     return out
 
 
-def test_the_code_scan_finds_the_fixed_contexts():
-    contexts = {c for c, _ in _code_pairs()}
-    assert set(FIXED_CONTEXTS) <= contexts, set(FIXED_CONTEXTS) - contexts
+def test_the_code_scan_finds_the_revived_contexts():
+    contexts = set(_all_contexts())
+    assert set(REVIVED_CONTEXTS) <= contexts, set(REVIVED_CONTEXTS) - contexts
+    assert len(contexts) > 40
 
 
-@pytest.mark.parametrize("context", FIXED_CONTEXTS)
-@pytest.mark.parametrize("lang", SPLIT_LANGS)
-def test_no_used_string_is_left_vanished(lang, context):
-    used = {s for c, s in _code_pairs() if c == context}
-    entries = _entries(lang, context)
-    live = {src for src, text, vanished in entries if not vanished and text.strip()}
-    dead = sorted({src for src, text, vanished in entries
-                   if vanished and text.strip() and src in used and src not in live})
-    assert not dead, (lang, context, [d[:40] for d in dead])
+@pytest.mark.parametrize("lang", SHIPPED)
+def test_no_used_string_is_left_vanished(lang):
+    pairs = _code_pairs()
+    dead = []
+    for context in _all_contexts():
+        entries = _entries(lang, context)
+        live = {src for src, text, vanished in entries if not vanished and text.strip()}
+        dead += sorted({(context, src[:40]) for src, text, vanished in entries
+                        if vanished and text.strip() and (context, src) in pairs
+                        and src not in live})
+    assert not dead, (lang, dead[:10])
 
 
 @pytest.fixture(autouse=True)
@@ -116,7 +136,7 @@ def _back_to_english():
         pass
 
 
-@pytest.mark.parametrize("lang", SPLIT_LANGS)
+@pytest.mark.parametrize("lang", SHIPPED)
 def test_used_strings_resolve_in_the_running_app(lang):
     from PySide6.QtCore import QCoreApplication
     from PySide6.QtWidgets import QApplication
@@ -126,7 +146,7 @@ def test_used_strings_resolve_in_the_running_app(lang):
     get_language_manager().set_language(lang)
     pairs = _code_pairs()
     wrong = []
-    for context in FIXED_CONTEXTS:
+    for context in _all_contexts():
         texts = {}
         for src, text, vanished in _entries(lang, context):
             if not vanished and text.strip() and (context, src) in pairs:
