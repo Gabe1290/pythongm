@@ -275,7 +275,7 @@ Escolhe qual o bloco selecionado na barra de acesso rápido, com o qual «Coloca
 | `index` | Número | `0` | Índice do espaço na barra de acesso rápido, que dá a volta em ambas as pontas |
 | `relative` | Sim/Não | Não | Ligado = somar ao espaço atual, para percorrer com [ ] ou com a roda do rato; desligado = ir diretamente para ele; opcional |
 
-### Set Billboard Rotation
+### Definir rotação do sprite
 
 | Propriedade | Valor |
 |----------|-------|
@@ -283,11 +283,11 @@ Escolhe qual o bloco selecionado na barra de acesso rápido, com o qual «Coloca
 | **Ícone** | 🔄 |
 | **Categoria** | Vista 3D |
 
-Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmara anda à sua volta — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `frames` | Número | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+| `frames` | Número | `8` | Quantas vistas igualmente espaçadas a tira de imagens do sprite contém, a vista de frente primeiro (0 = desligado, usa-se a imagem animada normal) |
 
 ### Definir proteção de blocos
 

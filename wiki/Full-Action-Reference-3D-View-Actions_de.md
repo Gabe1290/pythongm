@@ -275,7 +275,7 @@ Wählt, welcher Block in der Schnellzugriffsleiste ausgewählt ist, damit „Blo
 | `index` | Zahl | `0` | Platznummer in der Schnellzugriffsleiste, umlaufend an beiden Enden |
 | `relative` | Ja/Nein | Nein | Ein = zur aktuellen Platznummer addieren, für ein Durchblättern mit [ ] oder dem Mausrad; aus = direkt dorthin springen; optional |
 
-### Set Billboard Rotation
+### Sprite-Rotation festlegen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -283,11 +283,11 @@ Wählt, welcher Block in der Schnellzugriffsleiste ausgewählt ist, damit „Blo
 | **Symbol** | 🔄 |
 | **Kategorie** | 3D-Ansicht |
 
-Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+Gibt dieser Instanz in der Raycast-Ansicht mehrere Bilder für verschiedene Blickwinkel, sodass sie wie ein echtes Objekt mit Seiten aussieht statt wie ein flacher Ausschnitt, wenn die Kamera um sie herumgeht — das Bild aus dem Sprite-Streifen wird nach dem Blickwinkel statt nach der Zeit gewählt
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `frames` | Zahl | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+| `frames` | Zahl | `8` | Wie viele gleichmäßig verteilte Ansichten der Bildstreifen des Sprites enthält, Vorderansicht zuerst (0 = aus, stattdessen das normale animierte Bild verwenden) |
 
 ### Blockschutz festlegen
 

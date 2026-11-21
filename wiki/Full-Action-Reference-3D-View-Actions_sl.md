@@ -275,7 +275,7 @@ Izbere, kateri blok je izbran v vrstici za hiter dostop in s katerim bo gradilo 
 | `index` | Število | `0` | Zaporedna številka mesta v vrstici za hiter dostop, ki se na obeh koncih ovije |
 | `relative` | Da/Ne | Ne | Vklopljeno = prišteje trenutnemu mestu, za listanje s [ ] ali kolescem miške; izklopljeno = skoči neposredno nanj; neobvezno |
 
-### Set Billboard Rotation
+### Nastavi vrtenje sprite-a
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -283,11 +283,11 @@ Izbere, kateri blok je izbran v vrstici za hiter dostop in s katerim bo gradilo 
 | **Ikona** | 🔄 |
 | **Kategorija** | Pogled 3D |
 
-Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time
+Temu primerku v pogledu raycast da več sličic za različne kote pogleda, da je videti kot pravi predmet s stranicami namesto ploske izrezanke, ko gre kamera okoli njega — sličica iz traku spritea se izbere po kotu pogleda namesto po času
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `frames` | Število | `8` | How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead) |
+| `frames` | Število | `8` | Koliko enakomerno razporejenih pogledov vsebuje trak sličic spritea, najprej pogled od spredaj (0 = izklopljeno, uporabi se običajna animirana sličica) |
 
 ### Nastavi zaščito blokov
 

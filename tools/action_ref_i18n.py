@@ -4837,3 +4837,38 @@ NOTES_SL.update({
     'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Višina sten in stropa v celicah mreže (1.5 = običajno; za stopnice in ploščadi jo povečajte na 3, da je nad njimi prostor)',
     'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Najvišja stopnica v slikovnih pikah sobe, na katero se lahko povzpne igralec (in vse, kar se premika); višja ovira kot zid',
 })
+
+
+# --- Set Billboard Rotation (raycast stairs plan, follow-up F1) -------------
+ACTIONS_FR.update({
+    'set_billboard_rotation': {'display': 'Définir la rotation du sprite', 'desc': "Donne à cette instance plusieurs images selon l'angle de vue dans la vue raycast, pour qu'elle ressemble à un vrai objet avec des côtés plutôt qu'à une découpe plate quand la caméra tourne autour — l'image de la bande du sprite est choisie selon l'angle de vue et non selon le temps"},
+})
+NOTES_FR.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": "Nombre de vues régulièrement espacées dans la bande d'images du sprite, vue de face en premier (0 = désactivé, l'image animée habituelle est utilisée)"})
+ACTIONS_DE.update({
+    'set_billboard_rotation': {'display': 'Sprite-Rotation festlegen', 'desc': 'Gibt dieser Instanz in der Raycast-Ansicht mehrere Bilder für verschiedene Blickwinkel, sodass sie wie ein echtes Objekt mit Seiten aussieht statt wie ein flacher Ausschnitt, wenn die Kamera um sie herumgeht — das Bild aus dem Sprite-Streifen wird nach dem Blickwinkel statt nach der Zeit gewählt'},
+})
+NOTES_DE.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Wie viele gleichmäßig verteilte Ansichten der Bildstreifen des Sprites enthält, Vorderansicht zuerst (0 = aus, stattdessen das normale animierte Bild verwenden)'})
+ACTIONS_UK.update({
+    'set_billboard_rotation': {'display': 'Задати обертання спрайту', 'desc': "Дає цьому екземпляру кілька кадрів для різних кутів огляду у вигляді raycast, щоб він виглядав як справжній об'єкт зі сторонами, а не як пласка вирізка, коли камера обходить його — кадр зі смуги спрайта вибирається за кутом огляду, а не за часом"},
+})
+NOTES_UK.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Скільки рівномірно розташованих видів містить смуга кадрів спрайта, спочатку вигляд спереду (0 = вимкнено, використовується звичайний анімований кадр)'})
+ACTIONS_RU.update({
+    'set_billboard_rotation': {'display': 'Задать вращение спрайта', 'desc': 'Даёт этому экземпляру несколько кадров для разных углов обзора в виде raycast, чтобы он выглядел как настоящий объект со сторонами, а не как плоская вырезка, когда камера обходит его — кадр из полосы спрайта выбирается по углу обзора, а не по времени'},
+})
+NOTES_RU.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Сколько равномерно расположенных видов содержит полоса кадров спрайта, сначала вид спереди (0 = выключено, используется обычный анимированный кадр)'})
+ACTIONS_IT.update({
+    'set_billboard_rotation': {'display': 'Imposta rotazione sprite', 'desc': "Dà a questa istanza più fotogrammi secondo l'angolo di vista nella vista raycast, così sembra un vero oggetto con dei lati invece di una sagoma piatta quando la camera ci gira intorno — il fotogramma della striscia dello sprite è scelto in base all'angolo di vista e non al tempo"},
+})
+NOTES_IT.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Quante viste equidistanti contiene la striscia di fotogrammi dello sprite, prima la vista frontale (0 = disattivato, si usa il normale fotogramma animato)'})
+ACTIONS_ES.update({
+    'set_billboard_rotation': {'display': 'Definir rotación del sprite', 'desc': 'Da a esta instancia varias imágenes según el ángulo de vista en la vista raycast, para que parezca un objeto real con lados en lugar de un recorte plano cuando la cámara la rodea — la imagen de la tira del sprite se elige según el ángulo de vista y no según el tiempo'},
+})
+NOTES_ES.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Cuántas vistas espaciadas por igual contiene la tira de imágenes del sprite, la vista frontal primero (0 = desactivado, se usa la imagen animada normal)'})
+ACTIONS_PT.update({
+    'set_billboard_rotation': {'display': 'Definir rotação do sprite', 'desc': 'Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmara anda à sua volta — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo'},
+})
+NOTES_PT.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Quantas vistas igualmente espaçadas a tira de imagens do sprite contém, a vista de frente primeiro (0 = desligado, usa-se a imagem animada normal)'})
+ACTIONS_SL.update({
+    'set_billboard_rotation': {'display': 'Nastavi vrtenje sprite-a', 'desc': 'Temu primerku v pogledu raycast da več sličic za različne kote pogleda, da je videti kot pravi predmet s stranicami namesto ploske izrezanke, ko gre kamera okoli njega — sličica iz traku spritea se izbere po kotu pogleda namesto po času'},
+})
+NOTES_SL.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Koliko enakomerno razporejenih pogledov vsebuje trak sličic spritea, najprej pogled od spredaj (0 = izklopljeno, uporabi se običajna animirana sličica)'})

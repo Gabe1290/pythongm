@@ -68,3 +68,18 @@ def test_french_keeps_its_accents():
     text = (ROOT / "translations" / "pygm2_fr.ts").read_text(encoding="utf-8")
     for word in ("Texture du côté", "surélevé", "À utiliser", "l'événement"):
         assert word in text, word
+
+
+def test_the_action_reference_translates_every_raycast_action():
+    """Follow-up F1: the generated wiki reference falls back to English for
+    any action missing from tools/action_ref_i18n.py -- set_billboard_rotation
+    did, from when it joined the reference (S13) until F1."""
+    import json
+    sys.path.insert(0, str(ROOT / "tools"))
+    import action_ref_i18n as ref
+    names = json.loads((ROOT / "extensions" / "raycast_2_5d" / "extension.json")
+                       .read_text(encoding="utf-8"))["provides_actions"]
+    for code in ("FR", "DE", "UK", "RU", "IT", "ES", "PT", "SL"):
+        table = getattr(ref, "ACTIONS_" + code)
+        missing = [n for n in names if not (table.get(n) or {}).get("desc")]
+        assert not missing, (code, missing)
