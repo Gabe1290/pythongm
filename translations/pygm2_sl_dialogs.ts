@@ -1555,39 +1555,39 @@ Do you want to save anyway?</source>
     <name>ThymioEventSelector</name>
     <message>
         <source>Select Thymio Event</source>
-        <translation type="vanished">Izberite dogodek Thymio</translation>
+        <translation>Izberite dogodek Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio event to respond to:</source>
-        <translation type="vanished">Izberite dogodek Thymio za odziv:</translation>
+        <translation>Izberite dogodek Thymio za odziv:</translation>
     </message>
     <message>
         <source>Click on the robot to filter events, or select from the list below.</source>
-        <translation type="vanished">Kliknite na robota za filtriranje dogodkov ali izberite s spodnjega seznama.</translation>
+        <translation>Kliknite na robota za filtriranje dogodkov ali izberite s spodnjega seznama.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Vse</translation>
+        <translation>Vse</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Iskanje:</translation>
+        <translation>Iskanje:</translation>
     </message>
     <message>
         <source>Type to filter events...</source>
-        <translation type="vanished">Tipkajte za filtriranje dogodkov...</translation>
+        <translation>Tipkajte za filtriranje dogodkov...</translation>
     </message>
     <message>
         <source>Select Event</source>
-        <translation type="vanished">Izberite dogodek</translation>
+        <translation>Izberite dogodek</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Ni izbire</translation>
+        <translation>Ni izbire</translation>
     </message>
     <message>
         <source>Please select a Thymio event first.</source>
-        <translation type="vanished">Najprej izberite dogodek Thymio.</translation>
+        <translation>Najprej izberite dogodek Thymio.</translation>
     </message>
 </context>
 <context>

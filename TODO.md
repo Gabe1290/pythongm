@@ -913,7 +913,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   - [x] ThymioEventsPanel (14)
   - [x] ThymioActionSelector (10)
   - [x] MultiActionEditor (9)
-  - [ ] ThymioEventSelector (9)
+  - [x] ThymioEventSelector (9)
   - [ ] ThymioConfigDialog (8)
   - [ ] ResizeCanvasDialog (8)
   - [ ] MessageTranslationsDialog (3)

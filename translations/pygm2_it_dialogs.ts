@@ -1555,39 +1555,39 @@ Vuoi salvare comunque?</translation>
     <name>ThymioEventSelector</name>
     <message>
         <source>Select Thymio Event</source>
-        <translation type="vanished">Seleziona un evento Thymio</translation>
+        <translation>Seleziona un evento Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio event to respond to:</source>
-        <translation type="vanished">Seleziona un evento Thymio a cui rispondere:</translation>
+        <translation>Seleziona un evento Thymio a cui rispondere:</translation>
     </message>
     <message>
         <source>Click on the robot to filter events, or select from the list below.</source>
-        <translation type="vanished">Clicca sul robot per filtrare gli eventi, o seleziona dall&apos;elenco qui sotto.</translation>
+        <translation>Clicca sul robot per filtrare gli eventi, o seleziona dall&apos;elenco qui sotto.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Tutto</translation>
+        <translation>Tutto</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Cerca:</translation>
+        <translation>Cerca:</translation>
     </message>
     <message>
         <source>Type to filter events...</source>
-        <translation type="vanished">Digita per filtrare gli eventi...</translation>
+        <translation>Digita per filtrare gli eventi...</translation>
     </message>
     <message>
         <source>Select Event</source>
-        <translation type="vanished">Seleziona evento</translation>
+        <translation>Seleziona evento</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Nessuna selezione</translation>
+        <translation>Nessuna selezione</translation>
     </message>
     <message>
         <source>Please select a Thymio event first.</source>
-        <translation type="vanished">Seleziona prima un evento Thymio.</translation>
+        <translation>Seleziona prima un evento Thymio.</translation>
     </message>
 </context>
 <context>

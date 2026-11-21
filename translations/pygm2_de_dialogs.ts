@@ -1555,39 +1555,39 @@ Möchten Sie trotzdem speichern?</translation>
     <name>ThymioEventSelector</name>
     <message>
         <source>Select Thymio Event</source>
-        <translation type="vanished">Thymio-Ereignis auswählen</translation>
+        <translation>Thymio-Ereignis auswählen</translation>
     </message>
     <message>
         <source>Select a Thymio event to respond to:</source>
-        <translation type="vanished">Wählen Sie ein Thymio-Ereignis, auf das reagiert werden soll:</translation>
+        <translation>Wählen Sie ein Thymio-Ereignis, auf das reagiert werden soll:</translation>
     </message>
     <message>
         <source>Click on the robot to filter events, or select from the list below.</source>
-        <translation type="vanished">Klicken Sie auf den Roboter, um Ereignisse zu filtern, oder wählen Sie aus der Liste unten.</translation>
+        <translation>Klicken Sie auf den Roboter, um Ereignisse zu filtern, oder wählen Sie aus der Liste unten.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Alle</translation>
+        <translation>Alle</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Suchen:</translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <source>Type to filter events...</source>
-        <translation type="vanished">Eingeben, um Ereignisse zu filtern...</translation>
+        <translation>Eingeben, um Ereignisse zu filtern...</translation>
     </message>
     <message>
         <source>Select Event</source>
-        <translation type="vanished">Ereignis auswählen</translation>
+        <translation>Ereignis auswählen</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Keine Auswahl</translation>
+        <translation>Keine Auswahl</translation>
     </message>
     <message>
         <source>Please select a Thymio event first.</source>
-        <translation type="vanished">Bitte wählen Sie zuerst ein Thymio-Ereignis aus.</translation>
+        <translation>Bitte wählen Sie zuerst ein Thymio-Ereignis aus.</translation>
     </message>
 </context>
 <context>

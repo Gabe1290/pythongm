@@ -1555,39 +1555,39 @@ Do you want to save anyway?</source>
     <name>ThymioEventSelector</name>
     <message>
         <source>Select Thymio Event</source>
-        <translation type="vanished">Вибір події Thymio</translation>
+        <translation>Вибір події Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio event to respond to:</source>
-        <translation type="vanished">Виберіть подію Thymio для обробки:</translation>
+        <translation>Виберіть подію Thymio для обробки:</translation>
     </message>
     <message>
         <source>Click on the robot to filter events, or select from the list below.</source>
-        <translation type="vanished">Натисніть на робота, щоб відфільтрувати події, або виберіть зі списку нижче.</translation>
+        <translation>Натисніть на робота, щоб відфільтрувати події, або виберіть зі списку нижче.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Усі</translation>
+        <translation>Усі</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Пошук:</translation>
+        <translation>Пошук:</translation>
     </message>
     <message>
         <source>Type to filter events...</source>
-        <translation type="vanished">Введіть для фільтрування подій...</translation>
+        <translation>Введіть для фільтрування подій...</translation>
     </message>
     <message>
         <source>Select Event</source>
-        <translation type="vanished">Вибрати подію</translation>
+        <translation>Вибрати подію</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Нічого не вибрано</translation>
+        <translation>Нічого не вибрано</translation>
     </message>
     <message>
         <source>Please select a Thymio event first.</source>
-        <translation type="vanished">Спочатку виберіть подію Thymio.</translation>
+        <translation>Спочатку виберіть подію Thymio.</translation>
     </message>
 </context>
 <context>

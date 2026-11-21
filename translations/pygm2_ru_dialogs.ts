@@ -1555,39 +1555,39 @@ Do you want to save anyway?</source>
     <name>ThymioEventSelector</name>
     <message>
         <source>Select Thymio Event</source>
-        <translation type="vanished">Выбор события Thymio</translation>
+        <translation>Выбор события Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio event to respond to:</source>
-        <translation type="vanished">Выберите событие Thymio для обработки:</translation>
+        <translation>Выберите событие Thymio для обработки:</translation>
     </message>
     <message>
         <source>Click on the robot to filter events, or select from the list below.</source>
-        <translation type="vanished">Нажмите на робота, чтобы отфильтровать события, или выберите из списка ниже.</translation>
+        <translation>Нажмите на робота, чтобы отфильтровать события, или выберите из списка ниже.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Все</translation>
+        <translation>Все</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Поиск:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <source>Type to filter events...</source>
-        <translation type="vanished">Введите для фильтрации событий...</translation>
+        <translation>Введите для фильтрации событий...</translation>
     </message>
     <message>
         <source>Select Event</source>
-        <translation type="vanished">Выбрать событие</translation>
+        <translation>Выбрать событие</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Ничего не выбрано</translation>
+        <translation>Ничего не выбрано</translation>
     </message>
     <message>
         <source>Please select a Thymio event first.</source>
-        <translation type="vanished">Сначала выберите событие Thymio.</translation>
+        <translation>Сначала выберите событие Thymio.</translation>
     </message>
 </context>
 <context>
