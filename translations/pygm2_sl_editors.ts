@@ -2058,35 +2058,35 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <name>ResizeCanvasDialog</name>
     <message>
         <source>Resize / Scale</source>
-        <translation type="vanished">Spremeni velikost / Povečaj</translation>
+        <translation>Spremeni velikost / Povečaj</translation>
     </message>
     <message>
         <source>Current size: {0} x {1}</source>
-        <translation type="vanished">Trenutna velikost: {0} x {1}</translation>
+        <translation>Trenutna velikost: {0} x {1}</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="vanished">Način</translation>
+        <translation>Način</translation>
     </message>
     <message>
         <source>Scale Image (stretch content to new size)</source>
-        <translation type="vanished">Povečaj sliko (raztegni vsebino na novo velikost)</translation>
+        <translation>Povečaj sliko (raztegni vsebino na novo velikost)</translation>
     </message>
     <message>
         <source>Resize Canvas (keep content, add/crop space)</source>
-        <translation type="vanished">Spremeni velikost platna (ohrani vsebino, dodaj/obreži prostor)</translation>
+        <translation>Spremeni velikost platna (ohrani vsebino, dodaj/obreži prostor)</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="vanished">Širina:</translation>
+        <translation>Širina:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="vanished">Višina:</translation>
+        <translation>Višina:</translation>
     </message>
     <message>
         <source>Anchor</source>
-        <translation type="vanished">Sidro</translation>
+        <translation>Sidro</translation>
     </message>
 </context>
 <context>

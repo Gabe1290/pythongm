@@ -2058,35 +2058,35 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <name>ResizeCanvasDialog</name>
     <message>
         <source>Resize / Scale</source>
-        <translation type="vanished">Ridimensiona / Scala</translation>
+        <translation>Ridimensiona / Scala</translation>
     </message>
     <message>
         <source>Current size: {0} x {1}</source>
-        <translation type="vanished">Dimensione attuale: {0} x {1}</translation>
+        <translation>Dimensione attuale: {0} x {1}</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="vanished">Modalità</translation>
+        <translation>Modalità</translation>
     </message>
     <message>
         <source>Scale Image (stretch content to new size)</source>
-        <translation type="vanished">Scala immagine (adatta il contenuto alla nuova dimensione)</translation>
+        <translation>Scala immagine (adatta il contenuto alla nuova dimensione)</translation>
     </message>
     <message>
         <source>Resize Canvas (keep content, add/crop space)</source>
-        <translation type="vanished">Ridimensiona tela (mantieni contenuto, aggiungi/ritaglia spazio)</translation>
+        <translation>Ridimensiona tela (mantieni contenuto, aggiungi/ritaglia spazio)</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="vanished">Larghezza:</translation>
+        <translation>Larghezza:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="vanished">Altezza:</translation>
+        <translation>Altezza:</translation>
     </message>
     <message>
         <source>Anchor</source>
-        <translation type="vanished">Ancoraggio</translation>
+        <translation>Ancoraggio</translation>
     </message>
 </context>
 <context>

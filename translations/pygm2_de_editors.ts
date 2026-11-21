@@ -2058,35 +2058,35 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
     <name>ResizeCanvasDialog</name>
     <message>
         <source>Resize / Scale</source>
-        <translation type="vanished">Größe ändern / Skalieren</translation>
+        <translation>Größe ändern / Skalieren</translation>
     </message>
     <message>
         <source>Current size: {0} x {1}</source>
-        <translation type="vanished">Aktuelle Größe: {0} x {1}</translation>
+        <translation>Aktuelle Größe: {0} x {1}</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="vanished">Modus</translation>
+        <translation>Modus</translation>
     </message>
     <message>
         <source>Scale Image (stretch content to new size)</source>
-        <translation type="vanished">Bild skalieren (Inhalt auf neue Größe strecken)</translation>
+        <translation>Bild skalieren (Inhalt auf neue Größe strecken)</translation>
     </message>
     <message>
         <source>Resize Canvas (keep content, add/crop space)</source>
-        <translation type="vanished">Leinwand ändern (Inhalt behalten, Platz hinzufügen/beschneiden)</translation>
+        <translation>Leinwand ändern (Inhalt behalten, Platz hinzufügen/beschneiden)</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="vanished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="vanished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <source>Anchor</source>
-        <translation type="vanished">Anker</translation>
+        <translation>Anker</translation>
     </message>
 </context>
 <context>

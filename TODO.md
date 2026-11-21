@@ -915,7 +915,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   - [x] MultiActionEditor (9)
   - [x] ThymioEventSelector (9)
   - [x] ThymioConfigDialog (8)
-  - [ ] ResizeCanvasDialog (8)
+  - [x] ResizeCanvasDialog (8)
   - [ ] MessageTranslationsDialog (3)
   - [ ] Finally: make the guard cover EVERY context, so a new one cannot slip in.
 

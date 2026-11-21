@@ -2058,35 +2058,35 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <name>ResizeCanvasDialog</name>
     <message>
         <source>Resize / Scale</source>
-        <translation type="vanished">Изменить размер / Масштабировать</translation>
+        <translation>Изменить размер / Масштабировать</translation>
     </message>
     <message>
         <source>Current size: {0} x {1}</source>
-        <translation type="vanished">Текущий размер: {0} x {1}</translation>
+        <translation>Текущий размер: {0} x {1}</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="vanished">Режим</translation>
+        <translation>Режим</translation>
     </message>
     <message>
         <source>Scale Image (stretch content to new size)</source>
-        <translation type="vanished">Масштабировать изображение (растянуть содержимое до нового размера)</translation>
+        <translation>Масштабировать изображение (растянуть содержимое до нового размера)</translation>
     </message>
     <message>
         <source>Resize Canvas (keep content, add/crop space)</source>
-        <translation type="vanished">Изменить размер холста (сохранить содержимое, добавить/обрезать пространство)</translation>
+        <translation>Изменить размер холста (сохранить содержимое, добавить/обрезать пространство)</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="vanished">Ширина:</translation>
+        <translation>Ширина:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="vanished">Высота:</translation>
+        <translation>Высота:</translation>
     </message>
     <message>
         <source>Anchor</source>
-        <translation type="vanished">Привязка</translation>
+        <translation>Привязка</translation>
     </message>
 </context>
 <context>
