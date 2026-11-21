@@ -566,167 +566,167 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
 
     <message>
         <source>Configure If Condition</source>
-        <translation type="vanished">Налаштувати умову If</translation>
+        <translation>Налаштувати умову If</translation>
     </message>
     <message>
         <source>Condition</source>
-        <translation type="vanished">Умова</translation>
+        <translation>Умова</translation>
     </message>
     <message>
         <source>Condition Type:</source>
-        <translation type="vanished">Тип умови:</translation>
+        <translation>Тип умови:</translation>
     </message>
     <message>
         <source>instance_count</source>
-        <translation type="vanished">instance_count</translation>
+        <translation>instance_count</translation>
     </message>
     <message>
         <source>variable_compare</source>
-        <translation type="vanished">variable_compare</translation>
+        <translation>variable_compare</translation>
     </message>
     <message>
         <source>position_check</source>
-        <translation type="vanished">position_check</translation>
+        <translation>position_check</translation>
     </message>
     <message>
         <source>collision_check</source>
-        <translation type="vanished">collision_check</translation>
+        <translation>collision_check</translation>
     </message>
     <message>
         <source>key_pressed</source>
-        <translation type="vanished">key_pressed</translation>
+        <translation>key_pressed</translation>
     </message>
     <message>
         <source>mouse_check</source>
-        <translation type="vanished">mouse_check</translation>
+        <translation>mouse_check</translation>
     </message>
     <message>
         <source>random_chance</source>
-        <translation type="vanished">random_chance</translation>
+        <translation>random_chance</translation>
     </message>
     <message>
         <source>expression</source>
-        <translation type="vanished">expression</translation>
+        <translation>expression</translation>
     </message>
     <message>
         <source>Then Do (if condition is TRUE)</source>
-        <translation type="vanished">Тоді виконати (якщо умова ІСТИННА)</translation>
+        <translation>Тоді виконати (якщо умова ІСТИННА)</translation>
     </message>
     <message>
         <source>+ Add Action</source>
-        <translation type="vanished">+ Додати дію</translation>
+        <translation>+ Додати дію</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Редагувати дію</translation>
+        <translation>Редагувати дію</translation>
     </message>
     <message>
         <source>- Remove</source>
-        <translation type="vanished">- Видалити</translation>
+        <translation>- Видалити</translation>
     </message>
     <message>
         <source>Else Do (if condition is FALSE)</source>
-        <translation type="vanished">Інакше виконати (якщо умова ХИБНА)</translation>
+        <translation>Інакше виконати (якщо умова ХИБНА)</translation>
     </message>
     <message>
         <source>Object:</source>
-        <translation type="vanished">Об&apos;єкт:</translation>
+        <translation>Об&apos;єкт:</translation>
     </message>
     <message>
         <source>Count is:</source>
-        <translation type="vanished">Кількість:</translation>
+        <translation>Кількість:</translation>
     </message>
     <message>
         <source>Variable:</source>
-        <translation type="vanished">Змінна:</translation>
+        <translation>Змінна:</translation>
     </message>
     <message>
         <source>health, score, x, y, etc.</source>
-        <translation type="vanished">health, score, x, y тощо</translation>
+        <translation>health, score, x, y тощо</translation>
     </message>
     <message>
         <source>Is:</source>
-        <translation type="vanished">Дорівнює:</translation>
+        <translation>Дорівнює:</translation>
     </message>
     <message>
         <source>Value:</source>
-        <translation type="vanished">Значення:</translation>
+        <translation>Значення:</translation>
     </message>
     <message>
         <source>Check if:</source>
-        <translation type="vanished">Перевірити:</translation>
+        <translation>Перевірити:</translation>
     </message>
     <message>
         <source>x position</source>
-        <translation type="vanished">позиція x</translation>
+        <translation>позиція x</translation>
     </message>
     <message>
         <source>y position</source>
-        <translation type="vanished">позиція y</translation>
+        <translation>позиція y</translation>
     </message>
     <message>
         <source>in region</source>
-        <translation type="vanished">у регіоні</translation>
+        <translation>у регіоні</translation>
     </message>
     <message>
         <source>distance to object</source>
-        <translation type="vanished">відстань до об&apos;єкта</translation>
+        <translation>відстань до об&apos;єкта</translation>
     </message>
     <message>
         <source>Colliding with:</source>
-        <translation type="vanished">Зіткнення з:</translation>
+        <translation>Зіткнення з:</translation>
     </message>
     <message>
         <source>At offset X:</source>
-        <translation type="vanished">Зі зміщенням X:</translation>
+        <translation>Зі зміщенням X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="vanished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Key:</source>
-        <translation type="vanished">Клавіша:</translation>
+        <translation>Клавіша:</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="vanished">Пробіл</translation>
+        <translation>Пробіл</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="vanished">Enter</translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation type="vanished">Escape</translation>
+        <translation>Escape</translation>
     </message>
     <message>
         <source>Left Arrow</source>
-        <translation type="vanished">Стрілка вліво</translation>
+        <translation>Стрілка вліво</translation>
     </message>
     <message>
         <source>Right Arrow</source>
-        <translation type="vanished">Стрілка вправо</translation>
+        <translation>Стрілка вправо</translation>
     </message>
     <message>
         <source>Up Arrow</source>
-        <translation type="vanished">Стрілка вгору</translation>
+        <translation>Стрілка вгору</translation>
     </message>
     <message>
         <source>Down Arrow</source>
-        <translation type="vanished">Стрілка вниз</translation>
+        <translation>Стрілка вниз</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="vanished">Shift</translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Control</source>
-        <translation type="vanished">Control</translation>
+        <translation>Control</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="vanished">Alt</translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <source>Pressed</source>
@@ -742,31 +742,31 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Mouse:</source>
-        <translation type="vanished">Миша:</translation>
+        <translation>Миша:</translation>
     </message>
     <message>
         <source>Left button pressed</source>
-        <translation type="vanished">Натиснуто ліву кнопку</translation>
+        <translation>Натиснуто ліву кнопку</translation>
     </message>
     <message>
         <source>Right button pressed</source>
-        <translation type="vanished">Натиснуто праву кнопку</translation>
+        <translation>Натиснуто праву кнопку</translation>
     </message>
     <message>
         <source>Middle button pressed</source>
-        <translation type="vanished">Натиснуто середню кнопку</translation>
+        <translation>Натиснуто середню кнопку</translation>
     </message>
     <message>
         <source>Over object</source>
-        <translation type="vanished">Над об&apos;єктом</translation>
+        <translation>Над об&apos;єктом</translation>
     </message>
     <message>
         <source>In region</source>
-        <translation type="vanished">У регіоні</translation>
+        <translation>У регіоні</translation>
     </message>
     <message>
         <source>Chance:</source>
-        <translation type="vanished">Ймовірність:</translation>
+        <translation>Ймовірність:</translation>
     </message>
     <message>
         <source>Custom GML Expression:</source>

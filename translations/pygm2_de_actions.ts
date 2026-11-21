@@ -566,167 +566,167 @@ Um etwas wie "vspeed &gt; 0 and y &lt; other.y" zu testen, setzen Sie den Beding
 
     <message>
         <source>Configure If Condition</source>
-        <translation type="vanished">Wenn-Bedingung konfigurieren</translation>
+        <translation>Wenn-Bedingung konfigurieren</translation>
     </message>
     <message>
         <source>Condition</source>
-        <translation type="vanished">Bedingung</translation>
+        <translation>Bedingung</translation>
     </message>
     <message>
         <source>Condition Type:</source>
-        <translation type="vanished">Bedingungstyp:</translation>
+        <translation>Bedingungstyp:</translation>
     </message>
     <message>
         <source>instance_count</source>
-        <translation type="vanished">instanz_anzahl</translation>
+        <translation>instanz_anzahl</translation>
     </message>
     <message>
         <source>variable_compare</source>
-        <translation type="vanished">variable_vergleichen</translation>
+        <translation>variable_vergleichen</translation>
     </message>
     <message>
         <source>position_check</source>
-        <translation type="vanished">positions_prüfung</translation>
+        <translation>positions_prüfung</translation>
     </message>
     <message>
         <source>collision_check</source>
-        <translation type="vanished">kollisions_prüfung</translation>
+        <translation>kollisions_prüfung</translation>
     </message>
     <message>
         <source>key_pressed</source>
-        <translation type="vanished">taste_gedrückt</translation>
+        <translation>taste_gedrückt</translation>
     </message>
     <message>
         <source>mouse_check</source>
-        <translation type="vanished">maus_prüfung</translation>
+        <translation>maus_prüfung</translation>
     </message>
     <message>
         <source>random_chance</source>
-        <translation type="vanished">zufalls_chance</translation>
+        <translation>zufalls_chance</translation>
     </message>
     <message>
         <source>expression</source>
-        <translation type="vanished">Ausdruck</translation>
+        <translation>Ausdruck</translation>
     </message>
     <message>
         <source>Then Do (if condition is TRUE)</source>
-        <translation type="vanished">Dann ausführen (wenn Bedingung WAHR ist)</translation>
+        <translation>Dann ausführen (wenn Bedingung WAHR ist)</translation>
     </message>
     <message>
         <source>+ Add Action</source>
-        <translation type="vanished">+ Aktion hinzufügen</translation>
+        <translation>+ Aktion hinzufügen</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Aktion bearbeiten</translation>
+        <translation>Aktion bearbeiten</translation>
     </message>
     <message>
         <source>- Remove</source>
-        <translation type="vanished">- Entfernen</translation>
+        <translation>- Entfernen</translation>
     </message>
     <message>
         <source>Else Do (if condition is FALSE)</source>
-        <translation type="vanished">Sonst ausführen (wenn Bedingung FALSCH ist)</translation>
+        <translation>Sonst ausführen (wenn Bedingung FALSCH ist)</translation>
     </message>
     <message>
         <source>Object:</source>
-        <translation type="vanished">Objekt:</translation>
+        <translation>Objekt:</translation>
     </message>
     <message>
         <source>Count is:</source>
-        <translation type="vanished">Anzahl ist:</translation>
+        <translation>Anzahl ist:</translation>
     </message>
     <message>
         <source>Variable:</source>
-        <translation type="vanished">Variable:</translation>
+        <translation>Variable:</translation>
     </message>
     <message>
         <source>health, score, x, y, etc.</source>
-        <translation type="vanished">Gesundheit, Punktzahl, x, y, usw.</translation>
+        <translation>Gesundheit, Punktzahl, x, y, usw.</translation>
     </message>
     <message>
         <source>Is:</source>
-        <translation type="vanished">Ist:</translation>
+        <translation>Ist:</translation>
     </message>
     <message>
         <source>Value:</source>
-        <translation type="vanished">Wert:</translation>
+        <translation>Wert:</translation>
     </message>
     <message>
         <source>Check if:</source>
-        <translation type="vanished">Prüfen ob:</translation>
+        <translation>Prüfen ob:</translation>
     </message>
     <message>
         <source>x position</source>
-        <translation type="vanished">x-Position</translation>
+        <translation>x-Position</translation>
     </message>
     <message>
         <source>y position</source>
-        <translation type="vanished">y-Position</translation>
+        <translation>y-Position</translation>
     </message>
     <message>
         <source>in region</source>
-        <translation type="vanished">in Region</translation>
+        <translation>in Region</translation>
     </message>
     <message>
         <source>distance to object</source>
-        <translation type="vanished">Entfernung zum Objekt</translation>
+        <translation>Entfernung zum Objekt</translation>
     </message>
     <message>
         <source>Colliding with:</source>
-        <translation type="vanished">Kollision mit:</translation>
+        <translation>Kollision mit:</translation>
     </message>
     <message>
         <source>At offset X:</source>
-        <translation type="vanished">Bei Versatz X:</translation>
+        <translation>Bei Versatz X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="vanished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Key:</source>
-        <translation type="vanished">Taste:</translation>
+        <translation>Taste:</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="vanished">Leertaste</translation>
+        <translation>Leertaste</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="vanished">Eingabe</translation>
+        <translation>Eingabe</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation type="vanished">Escape</translation>
+        <translation>Escape</translation>
     </message>
     <message>
         <source>Left Arrow</source>
-        <translation type="vanished">Pfeil nach links</translation>
+        <translation>Pfeil nach links</translation>
     </message>
     <message>
         <source>Right Arrow</source>
-        <translation type="vanished">Pfeil nach rechts</translation>
+        <translation>Pfeil nach rechts</translation>
     </message>
     <message>
         <source>Up Arrow</source>
-        <translation type="vanished">Pfeil nach oben</translation>
+        <translation>Pfeil nach oben</translation>
     </message>
     <message>
         <source>Down Arrow</source>
-        <translation type="vanished">Pfeil nach unten</translation>
+        <translation>Pfeil nach unten</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="vanished">Umschalt</translation>
+        <translation>Umschalt</translation>
     </message>
     <message>
         <source>Control</source>
-        <translation type="vanished">Steuerung</translation>
+        <translation>Steuerung</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="vanished">Alt</translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <source>Pressed</source>
@@ -742,31 +742,31 @@ Um etwas wie "vspeed &gt; 0 and y &lt; other.y" zu testen, setzen Sie den Beding
     </message>
     <message>
         <source>Mouse:</source>
-        <translation type="vanished">Maus:</translation>
+        <translation>Maus:</translation>
     </message>
     <message>
         <source>Left button pressed</source>
-        <translation type="vanished">Linke Taste gedrückt</translation>
+        <translation>Linke Taste gedrückt</translation>
     </message>
     <message>
         <source>Right button pressed</source>
-        <translation type="vanished">Rechte Taste gedrückt</translation>
+        <translation>Rechte Taste gedrückt</translation>
     </message>
     <message>
         <source>Middle button pressed</source>
-        <translation type="vanished">Mittlere Taste gedrückt</translation>
+        <translation>Mittlere Taste gedrückt</translation>
     </message>
     <message>
         <source>Over object</source>
-        <translation type="vanished">Über Objekt</translation>
+        <translation>Über Objekt</translation>
     </message>
     <message>
         <source>In region</source>
-        <translation type="vanished">In Region</translation>
+        <translation>In Region</translation>
     </message>
     <message>
         <source>Chance:</source>
-        <translation type="vanished">Wahrscheinlichkeit:</translation>
+        <translation>Wahrscheinlichkeit:</translation>
     </message>
     <message>
         <source>Custom GML Expression:</source>

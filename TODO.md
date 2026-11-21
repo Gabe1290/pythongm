@@ -908,7 +908,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   resolves through the real LanguageManager). Counts are per language
   (de/it/ru/sl/uk each):
   - [x] SpriteEditor (57)
-  - [ ] ConditionalActionEditor (48)
+  - [x] ConditionalActionEditor (48)
   - [ ] ThymioPlaygroundWindow (36)
   - [ ] ThymioEventsPanel (14)
   - [ ] ThymioActionSelector (10)

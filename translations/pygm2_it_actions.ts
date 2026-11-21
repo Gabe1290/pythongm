@@ -566,167 +566,167 @@ Per testare qualcosa come "vspeed &gt; 0 and y &lt; other.y", imposta il Tipo di
 
     <message>
         <source>Configure If Condition</source>
-        <translation type="vanished">Configura condizione Se</translation>
+        <translation>Configura condizione Se</translation>
     </message>
     <message>
         <source>Condition</source>
-        <translation type="vanished">Condizione</translation>
+        <translation>Condizione</translation>
     </message>
     <message>
         <source>Condition Type:</source>
-        <translation type="vanished">Tipo di condizione:</translation>
+        <translation>Tipo di condizione:</translation>
     </message>
     <message>
         <source>instance_count</source>
-        <translation type="vanished">conteggio_istanze</translation>
+        <translation>conteggio_istanze</translation>
     </message>
     <message>
         <source>variable_compare</source>
-        <translation type="vanished">confronto_variabile</translation>
+        <translation>confronto_variabile</translation>
     </message>
     <message>
         <source>position_check</source>
-        <translation type="vanished">verifica_posizione</translation>
+        <translation>verifica_posizione</translation>
     </message>
     <message>
         <source>collision_check</source>
-        <translation type="vanished">verifica_collisione</translation>
+        <translation>verifica_collisione</translation>
     </message>
     <message>
         <source>key_pressed</source>
-        <translation type="vanished">tasto_premuto</translation>
+        <translation>tasto_premuto</translation>
     </message>
     <message>
         <source>mouse_check</source>
-        <translation type="vanished">verifica_mouse</translation>
+        <translation>verifica_mouse</translation>
     </message>
     <message>
         <source>random_chance</source>
-        <translation type="vanished">probabilità_casuale</translation>
+        <translation>probabilità_casuale</translation>
     </message>
     <message>
         <source>expression</source>
-        <translation type="vanished">espressione</translation>
+        <translation>espressione</translation>
     </message>
     <message>
         <source>Then Do (if condition is TRUE)</source>
-        <translation type="vanished">Allora esegui (se la condizione è VERA)</translation>
+        <translation>Allora esegui (se la condizione è VERA)</translation>
     </message>
     <message>
         <source>+ Add Action</source>
-        <translation type="vanished">+ Aggiungi azione</translation>
+        <translation>+ Aggiungi azione</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Modifica azione</translation>
+        <translation>Modifica azione</translation>
     </message>
     <message>
         <source>- Remove</source>
-        <translation type="vanished">- Rimuovi</translation>
+        <translation>- Rimuovi</translation>
     </message>
     <message>
         <source>Else Do (if condition is FALSE)</source>
-        <translation type="vanished">Altrimenti esegui (se la condizione è FALSA)</translation>
+        <translation>Altrimenti esegui (se la condizione è FALSA)</translation>
     </message>
     <message>
         <source>Object:</source>
-        <translation type="vanished">Oggetto:</translation>
+        <translation>Oggetto:</translation>
     </message>
     <message>
         <source>Count is:</source>
-        <translation type="vanished">Il conteggio è:</translation>
+        <translation>Il conteggio è:</translation>
     </message>
     <message>
         <source>Variable:</source>
-        <translation type="vanished">Variabile:</translation>
+        <translation>Variabile:</translation>
     </message>
     <message>
         <source>health, score, x, y, etc.</source>
-        <translation type="vanished">salute, punteggio, x, y, ecc.</translation>
+        <translation>salute, punteggio, x, y, ecc.</translation>
     </message>
     <message>
         <source>Is:</source>
-        <translation type="vanished">È:</translation>
+        <translation>È:</translation>
     </message>
     <message>
         <source>Value:</source>
-        <translation type="vanished">Valore:</translation>
+        <translation>Valore:</translation>
     </message>
     <message>
         <source>Check if:</source>
-        <translation type="vanished">Verifica se:</translation>
+        <translation>Verifica se:</translation>
     </message>
     <message>
         <source>x position</source>
-        <translation type="vanished">posizione x</translation>
+        <translation>posizione x</translation>
     </message>
     <message>
         <source>y position</source>
-        <translation type="vanished">posizione y</translation>
+        <translation>posizione y</translation>
     </message>
     <message>
         <source>in region</source>
-        <translation type="vanished">nella regione</translation>
+        <translation>nella regione</translation>
     </message>
     <message>
         <source>distance to object</source>
-        <translation type="vanished">distanza dall&apos;oggetto</translation>
+        <translation>distanza dall&apos;oggetto</translation>
     </message>
     <message>
         <source>Colliding with:</source>
-        <translation type="vanished">In collisione con:</translation>
+        <translation>In collisione con:</translation>
     </message>
     <message>
         <source>At offset X:</source>
-        <translation type="vanished">All&apos;offset X:</translation>
+        <translation>All&apos;offset X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="vanished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Key:</source>
-        <translation type="vanished">Tasto:</translation>
+        <translation>Tasto:</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="vanished">Spazio</translation>
+        <translation>Spazio</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation type="vanished">Invio</translation>
+        <translation>Invio</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation type="vanished">Escape</translation>
+        <translation>Escape</translation>
     </message>
     <message>
         <source>Left Arrow</source>
-        <translation type="vanished">Freccia sinistra</translation>
+        <translation>Freccia sinistra</translation>
     </message>
     <message>
         <source>Right Arrow</source>
-        <translation type="vanished">Freccia destra</translation>
+        <translation>Freccia destra</translation>
     </message>
     <message>
         <source>Up Arrow</source>
-        <translation type="vanished">Freccia su</translation>
+        <translation>Freccia su</translation>
     </message>
     <message>
         <source>Down Arrow</source>
-        <translation type="vanished">Freccia giù</translation>
+        <translation>Freccia giù</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="vanished">Shift</translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Control</source>
-        <translation type="vanished">Controllo</translation>
+        <translation>Controllo</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="vanished">Alt</translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <source>Pressed</source>
@@ -742,31 +742,31 @@ Per testare qualcosa come "vspeed &gt; 0 and y &lt; other.y", imposta il Tipo di
     </message>
     <message>
         <source>Mouse:</source>
-        <translation type="vanished">Mouse:</translation>
+        <translation>Mouse:</translation>
     </message>
     <message>
         <source>Left button pressed</source>
-        <translation type="vanished">Pulsante sinistro premuto</translation>
+        <translation>Pulsante sinistro premuto</translation>
     </message>
     <message>
         <source>Right button pressed</source>
-        <translation type="vanished">Pulsante destro premuto</translation>
+        <translation>Pulsante destro premuto</translation>
     </message>
     <message>
         <source>Middle button pressed</source>
-        <translation type="vanished">Pulsante centrale premuto</translation>
+        <translation>Pulsante centrale premuto</translation>
     </message>
     <message>
         <source>Over object</source>
-        <translation type="vanished">Sopra oggetto</translation>
+        <translation>Sopra oggetto</translation>
     </message>
     <message>
         <source>In region</source>
-        <translation type="vanished">Nella regione</translation>
+        <translation>Nella regione</translation>
     </message>
     <message>
         <source>Chance:</source>
-        <translation type="vanished">Probabilità:</translation>
+        <translation>Probabilità:</translation>
     </message>
     <message>
         <source>Custom GML Expression:</source>
