@@ -4,9 +4,14 @@ docs/I18N_CATCHUP_2026-11-21.md: ten languages had fallen behind French
 (238 strings each in de/it/ru/sl/uk, 112-119 in es/ja/pt/zh, 10 in pl), so
 whole screens showed in English. ``scripts/i18n_catchup.py`` measures the gap
 (strings the code passes to tr()/translate() that French translates and a
-language does not) and applies translations. This guard pins each finished
-screen (CAUGHT_UP) to zero gap, and checks through the real LanguageManager
-that the new text is what the running app shows.
+language does not) and applies translations. Done 2026-11-21: the gap is
+zero in all ten languages, on every screen. This guard keeps it there, checks
+through the real LanguageManager that the running app shows each translation,
+and that no language shows FRENCH text instead of its own -- reviving vanished
+entries in the dead-translation fix had put ~60 French strings into ru and sl
+(the old vanished copies held French), plus 5 older ones in es.
+
+CAUGHT_UP records the 32 screens the catch-up filled (docs/I18N_CATCHUP_2026-11-21.md).
 """
 import importlib.util
 import os
@@ -80,10 +85,28 @@ def test_the_caught_up_screens_are_used_by_the_code():
 
 
 @pytest.mark.parametrize("lang", cu.LANGS)
-def test_no_caught_up_screen_lags_behind_french(lang):
+def test_no_language_lags_behind_french(lang):
+    """Every string the code uses that French translates, on any screen."""
     want, live = _state()
-    missing = sorted((c, s[:40]) for c, s in want if c in CAUGHT_UP and (c, s) not in live[lang])
+    missing = sorted((c, s[:40]) for c, s in want if (c, s) not in live[lang])
     assert not missing, (lang, missing[:10])
+
+
+# The same word in French and in that language (checked by hand, 2026-11-21).
+SAME_AS_FRENCH = {
+    ("de", "SpriteEditor", "Picker"),       # Pipette
+    ("it", "SpriteEditor", "Origin"),       # Origine
+    ("pt", "AssetTreeWidget", "Sounds"),    # Sons
+}
+
+
+@pytest.mark.parametrize("lang", cu.LANGS)
+def test_no_language_shows_french_instead_of_its_own(lang):
+    want, live = _state()
+    leaked = sorted((c, s[:30], v[:30]) for (c, s), v in live[lang].items()
+                    if (c, s) in want and want[(c, s)] == v and v.strip() != s.strip()
+                    and (lang, c, s) not in SAME_AS_FRENCH)
+    assert not leaked, (lang, leaked[:10])
 
 
 @pytest.fixture(autouse=True)
@@ -109,7 +132,7 @@ def test_the_running_app_shows_the_translation(lang):
     QApplication.instance() or QApplication([])
     get_language_manager().set_language(lang)
     wrong = [(c, s[:40]) for (c, s) in want
-             if c in CAUGHT_UP and (c, s) in live[lang]
+             if (c, s) in live[lang]
              and QCoreApplication.translate(c, s) == s != live[lang][(c, s)]]
     assert not wrong, (lang, wrong[:10])
 

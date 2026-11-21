@@ -619,11 +619,11 @@ Events: {4}</source>
     <name>MultiActionEditor</name>
     <message>
         <source>Configure Actions</source>
-        <translation>Configurer les actions</translation>
+        <translation>Настроить действия</translation>
     </message>
     <message>
         <source>Action Sequence</source>
-        <translation>Séquence d&apos;actions</translation>
+        <translation>Последовательность действий</translation>
     </message>
     <message>
         <source>Action</source>
@@ -631,27 +631,27 @@ Events: {4}</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation>Paramètres</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <source>➕ Add Action</source>
-        <translation>➕ Ajouter une action</translation>
+        <translation>➕ Добавить действие</translation>
     </message>
     <message>
         <source>✏️ Edit Action</source>
-        <translation>✏️ Modifier l&apos;action</translation>
+        <translation>✏️ Изменить действие</translation>
     </message>
     <message>
         <source>➖ Remove Action</source>
-        <translation>➖ Retirer l&apos;action</translation>
+        <translation>➖ Удалить действие</translation>
     </message>
     <message>
         <source>⬆️ Move Up</source>
-        <translation>⬆️ Déplacer vers le haut</translation>
+        <translation>⬆️ Вверх</translation>
     </message>
     <message>
         <source>⬇️ Move Down</source>
-        <translation>⬇️ Déplacer vers le bas</translation>
+        <translation>⬇️ Вниз</translation>
     </message>
 </context>
 <context>

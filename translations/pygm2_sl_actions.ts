@@ -20,59 +20,59 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         </message>
     <message>
         <source>Configure {0}</source>
-        <translation>Configurer {0}</translation>
+        <translation>Nastavi {0}</translation>
     </message>
     <message>
         <source>This action requires special configuration.</source>
-        <translation>Cette action nécessite une configuration spéciale.</translation>
+        <translation>To dejanje zahteva posebno nastavitev.</translation>
     </message>
     <message>
         <source>→ Next Room</source>
-        <translation>→ Salle suivante</translation>
+        <translation>→ Naslednja soba</translation>
     </message>
     <message>
         <source>← Previous Room</source>
-        <translation>← Salle précédente</translation>
+        <translation>← Prejšnja soba</translation>
     </message>
     <message>
         <source>↺ Restart Current Room</source>
-        <translation>↺ Redémarrer la salle actuelle</translation>
+        <translation>↺ Znova zaženi trenutno sobo</translation>
     </message>
     <message>
         <source>⚙️ Configure...</source>
-        <translation>⚙️ Configurer...</translation>
+        <translation>⚙️ Nastavi...</translation>
     </message>
     <message>
         <source>📋 Configure Actions...</source>
-        <translation>📋 Configurer les actions...</translation>
+        <translation>📋 Nastavi dejanja...</translation>
     </message>
     <message>
         <source>🎨 Choose Color...</source>
-        <translation>🎨 Choisir une couleur...</translation>
+        <translation>🎨 Izberi barvo...</translation>
     </message>
     <message>
         <source>(No sprites available)</source>
-        <translation>(Aucun sprite disponible)</translation>
+        <translation>(Ni razpoložljivih spritov)</translation>
     </message>
     <message>
         <source>(No sounds available)</source>
-        <translation>(Aucun son disponible)</translation>
+        <translation>(Ni razpoložljivih zvokov)</translation>
     </message>
     <message>
         <source>Enter code here...</source>
-        <translation>Entrez le code ici...</translation>
+        <translation>Tukaj vnesite kodo...</translation>
     </message>
     <message>
         <source>X: </source>
-        <translation>X : </translation>
+        <translation>X: </translation>
     </message>
     <message>
         <source>Y: </source>
-        <translation>Y : </translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <source>Choose Color</source>
-        <translation>Choisir une couleur</translation>
+        <translation>Izberi barvo</translation>
     </message>
     <message>
         <source>🎨 {0}</source>
@@ -566,7 +566,7 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
 
     <message>
         <source>Configure If Condition</source>
-        <translation>Configurer la condition Si</translation>
+        <translation>Nastavi pogoj If</translation>
     </message>
     <message>
         <source>Condition</source>
@@ -574,35 +574,35 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Condition Type:</source>
-        <translation>Type de condition :</translation>
+        <translation>Vrsta pogoja:</translation>
     </message>
     <message>
         <source>instance_count</source>
-        <translation>nombre_instances</translation>
+        <translation>instance_count</translation>
     </message>
     <message>
         <source>variable_compare</source>
-        <translation>comparaison_variable</translation>
+        <translation>variable_compare</translation>
     </message>
     <message>
         <source>position_check</source>
-        <translation>vérification_position</translation>
+        <translation>position_check</translation>
     </message>
     <message>
         <source>collision_check</source>
-        <translation>vérification_collision</translation>
+        <translation>collision_check</translation>
     </message>
     <message>
         <source>key_pressed</source>
-        <translation>touche_enfoncée</translation>
+        <translation>key_pressed</translation>
     </message>
     <message>
         <source>mouse_check</source>
-        <translation>vérification_souris</translation>
+        <translation>mouse_check</translation>
     </message>
     <message>
         <source>random_chance</source>
-        <translation>chance_aléatoire</translation>
+        <translation>random_chance</translation>
     </message>
     <message>
         <source>expression</source>
@@ -610,23 +610,23 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Then Do (if condition is TRUE)</source>
-        <translation>Alors faire (si la condition est VRAIE)</translation>
+        <translation>Nato izvedi (če je pogoj RESNIČEN)</translation>
     </message>
     <message>
         <source>+ Add Action</source>
-        <translation>+ Ajouter une action</translation>
+        <translation>+ Dodaj dejanje</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation>Modifier l&apos;action</translation>
+        <translation>Uredi dejanje</translation>
     </message>
     <message>
         <source>- Remove</source>
-        <translation>- Retirer</translation>
+        <translation>- Odstrani</translation>
     </message>
     <message>
         <source>Else Do (if condition is FALSE)</source>
-        <translation>Sinon faire (si la condition est FAUSSE)</translation>
+        <translation>Sicer izvedi (če je pogoj NERESNIČEN)</translation>
     </message>
     <message>
         <source>Object:</source>
@@ -634,51 +634,51 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Count is:</source>
-        <translation>Le nombre est :</translation>
+        <translation>Število je:</translation>
     </message>
     <message>
         <source>Variable:</source>
-        <translation>Variable :</translation>
+        <translation>Spremenljivka:</translation>
     </message>
     <message>
         <source>health, score, x, y, etc.</source>
-        <translation>santé, score, x, y, etc.</translation>
+        <translation>health, score, x, y itd.</translation>
     </message>
     <message>
         <source>Is:</source>
-        <translation>Est :</translation>
+        <translation>Je:</translation>
     </message>
     <message>
         <source>Value:</source>
-        <translation>Valeur :</translation>
+        <translation>Vrednost:</translation>
     </message>
     <message>
         <source>Check if:</source>
-        <translation>Vérifier si :</translation>
+        <translation>Preveri, ali:</translation>
     </message>
     <message>
         <source>x position</source>
-        <translation>position x</translation>
+        <translation>položaj x</translation>
     </message>
     <message>
         <source>y position</source>
-        <translation>position y</translation>
+        <translation>položaj y</translation>
     </message>
     <message>
         <source>in region</source>
-        <translation>dans la région</translation>
+        <translation>v območju</translation>
     </message>
     <message>
         <source>distance to object</source>
-        <translation>distance à l&apos;objet</translation>
+        <translation>razdalja do objekta</translation>
     </message>
     <message>
         <source>Colliding with:</source>
-        <translation>En collision avec :</translation>
+        <translation>V trku z:</translation>
     </message>
     <message>
         <source>At offset X:</source>
-        <translation>Au décalage X :</translation>
+        <translation>Z zamikom X:</translation>
     </message>
     <message>
         <source>Y:</source>
@@ -686,43 +686,43 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Key:</source>
-        <translation>Touche :</translation>
+        <translation>Tipka:</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation>Espace</translation>
+        <translation>Preslednica</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation>Entrée</translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation>Échap</translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Left Arrow</source>
-        <translation>Flèche gauche</translation>
+        <translation>Puščica levo</translation>
     </message>
     <message>
         <source>Right Arrow</source>
-        <translation>Flèche droite</translation>
+        <translation>Puščica desno</translation>
     </message>
     <message>
         <source>Up Arrow</source>
-        <translation>Flèche haut</translation>
+        <translation>Puščica gor</translation>
     </message>
     <message>
         <source>Down Arrow</source>
-        <translation>Flèche bas</translation>
+        <translation>Puščica dol</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation>Maj</translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Control</source>
-        <translation>Contrôle</translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Alt</source>
@@ -742,31 +742,31 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Mouse:</source>
-        <translation>Souris :</translation>
+        <translation>Miška:</translation>
     </message>
     <message>
         <source>Left button pressed</source>
-        <translation>Bouton gauche enfoncé</translation>
+        <translation>Pritisnjen levi gumb</translation>
     </message>
     <message>
         <source>Right button pressed</source>
-        <translation>Bouton droit enfoncé</translation>
+        <translation>Pritisnjen desni gumb</translation>
     </message>
     <message>
         <source>Middle button pressed</source>
-        <translation>Bouton central enfoncé</translation>
+        <translation>Pritisnjen srednji gumb</translation>
     </message>
     <message>
         <source>Over object</source>
-        <translation>Sur l&apos;objet</translation>
+        <translation>Nad objektom</translation>
     </message>
     <message>
         <source>In region</source>
-        <translation>Dans la région</translation>
+        <translation>V območju</translation>
     </message>
     <message>
         <source>Chance:</source>
-        <translation>Probabilité :</translation>
+        <translation>Verjetnost:</translation>
     </message>
     <message>
         <source>Custom GML Expression:</source>

@@ -20,59 +20,59 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         </message>
     <message>
         <source>Configure {0}</source>
-        <translation>Configurer {0}</translation>
+        <translation>Настроить {0}</translation>
     </message>
     <message>
         <source>This action requires special configuration.</source>
-        <translation>Cette action nécessite une configuration spéciale.</translation>
+        <translation>Это действие требует особой настройки.</translation>
     </message>
     <message>
         <source>→ Next Room</source>
-        <translation>→ Salle suivante</translation>
+        <translation>→ Следующая комната</translation>
     </message>
     <message>
         <source>← Previous Room</source>
-        <translation>← Salle précédente</translation>
+        <translation>← Предыдущая комната</translation>
     </message>
     <message>
         <source>↺ Restart Current Room</source>
-        <translation>↺ Redémarrer la salle actuelle</translation>
+        <translation>↺ Перезапустить текущую комнату</translation>
     </message>
     <message>
         <source>⚙️ Configure...</source>
-        <translation>⚙️ Configurer...</translation>
+        <translation>⚙️ Настроить...</translation>
     </message>
     <message>
         <source>📋 Configure Actions...</source>
-        <translation>📋 Configurer les actions...</translation>
+        <translation>📋 Настроить действия...</translation>
     </message>
     <message>
         <source>🎨 Choose Color...</source>
-        <translation>🎨 Choisir une couleur...</translation>
+        <translation>🎨 Выбрать цвет...</translation>
     </message>
     <message>
         <source>(No sprites available)</source>
-        <translation>(Aucun sprite disponible)</translation>
+        <translation>(Нет доступных спрайтов)</translation>
     </message>
     <message>
         <source>(No sounds available)</source>
-        <translation>(Aucun son disponible)</translation>
+        <translation>(Нет доступных звуков)</translation>
     </message>
     <message>
         <source>Enter code here...</source>
-        <translation>Entrez le code ici...</translation>
+        <translation>Введите код здесь...</translation>
     </message>
     <message>
         <source>X: </source>
-        <translation>X : </translation>
+        <translation>X: </translation>
     </message>
     <message>
         <source>Y: </source>
-        <translation>Y : </translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <source>Choose Color</source>
-        <translation>Choisir une couleur</translation>
+        <translation>Выбрать цвет</translation>
     </message>
     <message>
         <source>🎨 {0}</source>
@@ -566,7 +566,7 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
 
     <message>
         <source>Configure If Condition</source>
-        <translation>Configurer la condition Si</translation>
+        <translation>Настроить условие If</translation>
     </message>
     <message>
         <source>Condition</source>
@@ -574,35 +574,35 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Condition Type:</source>
-        <translation>Type de condition :</translation>
+        <translation>Тип условия:</translation>
     </message>
     <message>
         <source>instance_count</source>
-        <translation>nombre_instances</translation>
+        <translation>instance_count</translation>
     </message>
     <message>
         <source>variable_compare</source>
-        <translation>comparaison_variable</translation>
+        <translation>variable_compare</translation>
     </message>
     <message>
         <source>position_check</source>
-        <translation>vérification_position</translation>
+        <translation>position_check</translation>
     </message>
     <message>
         <source>collision_check</source>
-        <translation>vérification_collision</translation>
+        <translation>collision_check</translation>
     </message>
     <message>
         <source>key_pressed</source>
-        <translation>touche_enfoncée</translation>
+        <translation>key_pressed</translation>
     </message>
     <message>
         <source>mouse_check</source>
-        <translation>vérification_souris</translation>
+        <translation>mouse_check</translation>
     </message>
     <message>
         <source>random_chance</source>
-        <translation>chance_aléatoire</translation>
+        <translation>random_chance</translation>
     </message>
     <message>
         <source>expression</source>
@@ -610,119 +610,119 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Then Do (if condition is TRUE)</source>
-        <translation>Alors faire (si la condition est VRAIE)</translation>
+        <translation>Тогда выполнить (если условие ИСТИННО)</translation>
     </message>
     <message>
         <source>+ Add Action</source>
-        <translation>+ Ajouter une action</translation>
+        <translation>+ Добавить действие</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation>Modifier l&apos;action</translation>
+        <translation>Изменить действие</translation>
     </message>
     <message>
         <source>- Remove</source>
-        <translation>- Retirer</translation>
+        <translation>- Удалить</translation>
     </message>
     <message>
         <source>Else Do (if condition is FALSE)</source>
-        <translation>Sinon faire (si la condition est FAUSSE)</translation>
+        <translation>Иначе выполнить (если условие ЛОЖНО)</translation>
     </message>
     <message>
         <source>Object:</source>
-        <translation>Objet :</translation>
+        <translation>Объект:</translation>
     </message>
     <message>
         <source>Count is:</source>
-        <translation>Le nombre est :</translation>
+        <translation>Количество:</translation>
     </message>
     <message>
         <source>Variable:</source>
-        <translation>Variable :</translation>
+        <translation>Переменная:</translation>
     </message>
     <message>
         <source>health, score, x, y, etc.</source>
-        <translation>santé, score, x, y, etc.</translation>
+        <translation>health, score, x, y и т. д.</translation>
     </message>
     <message>
         <source>Is:</source>
-        <translation>Est :</translation>
+        <translation>Равно:</translation>
     </message>
     <message>
         <source>Value:</source>
-        <translation>Valeur :</translation>
+        <translation>Значение:</translation>
     </message>
     <message>
         <source>Check if:</source>
-        <translation>Vérifier si :</translation>
+        <translation>Проверить:</translation>
     </message>
     <message>
         <source>x position</source>
-        <translation>position x</translation>
+        <translation>позиция x</translation>
     </message>
     <message>
         <source>y position</source>
-        <translation>position y</translation>
+        <translation>позиция y</translation>
     </message>
     <message>
         <source>in region</source>
-        <translation>dans la région</translation>
+        <translation>в области</translation>
     </message>
     <message>
         <source>distance to object</source>
-        <translation>distance à l&apos;objet</translation>
+        <translation>расстояние до объекта</translation>
     </message>
     <message>
         <source>Colliding with:</source>
-        <translation>En collision avec :</translation>
+        <translation>Столкновение с:</translation>
     </message>
     <message>
         <source>At offset X:</source>
-        <translation>Au décalage X :</translation>
+        <translation>Со смещением X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation>Y :</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Key:</source>
-        <translation>Touche :</translation>
+        <translation>Клавиша:</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation>Espace</translation>
+        <translation>Пробел</translation>
     </message>
     <message>
         <source>Enter</source>
-        <translation>Entrée</translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation>Échap</translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <source>Left Arrow</source>
-        <translation>Flèche gauche</translation>
+        <translation>Стрелка влево</translation>
     </message>
     <message>
         <source>Right Arrow</source>
-        <translation>Flèche droite</translation>
+        <translation>Стрелка вправо</translation>
     </message>
     <message>
         <source>Up Arrow</source>
-        <translation>Flèche haut</translation>
+        <translation>Стрелка вверх</translation>
     </message>
     <message>
         <source>Down Arrow</source>
-        <translation>Flèche bas</translation>
+        <translation>Стрелка вниз</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation>Maj</translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Control</source>
-        <translation>Contrôle</translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Alt</source>
@@ -742,31 +742,31 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
     </message>
     <message>
         <source>Mouse:</source>
-        <translation>Souris :</translation>
+        <translation>Мышь:</translation>
     </message>
     <message>
         <source>Left button pressed</source>
-        <translation>Bouton gauche enfoncé</translation>
+        <translation>Нажата левая кнопка</translation>
     </message>
     <message>
         <source>Right button pressed</source>
-        <translation>Bouton droit enfoncé</translation>
+        <translation>Нажата правая кнопка</translation>
     </message>
     <message>
         <source>Middle button pressed</source>
-        <translation>Bouton central enfoncé</translation>
+        <translation>Нажата средняя кнопка</translation>
     </message>
     <message>
         <source>Over object</source>
-        <translation>Sur l&apos;objet</translation>
+        <translation>Над объектом</translation>
     </message>
     <message>
         <source>In region</source>
-        <translation>Dans la région</translation>
+        <translation>В области</translation>
     </message>
     <message>
         <source>Chance:</source>
-        <translation>Probabilité :</translation>
+        <translation>Вероятность:</translation>
     </message>
     <message>
         <source>Custom GML Expression:</source>

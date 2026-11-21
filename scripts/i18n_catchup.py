@@ -7,6 +7,8 @@ translations for them to the right catalogue.
     python3 scripts/i18n_catchup.py worklist OUT.json  # every missing string,
                                                        # with the French as a hint
     python3 scripts/i18n_catchup.py apply BATCH.json   # add translations
+    python3 scripts/i18n_catchup.py apply BATCH.json --replace
+                                       # ...and overwrite existing live ones
 
 A batch file is ``{context: {source: {lang: translation}}}``. The source is the
 plain text the code passes to tr() (NOT entity-escaped); translations are plain
@@ -191,7 +193,27 @@ def _insert(ts, ctx, src, text, src_file):
     return "new context"
 
 
-def apply(path):
+def _replace(lang, ctx, src, text):
+    """Rewrite the live translation of (ctx, src) in whichever file holds it."""
+    esc_src = escape(src, {chr(34): "&quot;", chr(39): "&apos;"})
+    for ts in files_of(lang):
+        content = ts.read_text(encoding="utf-8")
+        for cm in re.finditer(r"<context>\s*<name>(.*?)</name>(.*?)</context>", content, re.S):
+            if cm.group(1) != escape(ctx):
+                continue
+            for mm in re.finditer(r"<message>(?:(?!</message>).)*</message>", cm.group(2), re.S):
+                m = mm.group(0)
+                if f"<source>{esc_src}</source>" not in m or 'type="vanished"' in m:
+                    continue
+                new = re.sub(r"<translation[^>]*?(/>|>.*?</translation>)",
+                             lambda _: f"<translation>{escape(text)}</translation>", m, count=1, flags=re.S)
+                start = cm.start(2) + mm.start()
+                ts.write_text(content[:start] + new + content[start + len(m):], encoding="utf-8")
+                return True
+    return False
+
+
+def apply(path, replace=False):
     batch = json.loads(Path(path).read_text(encoding="utf-8"))
     used = code_usage()
     done, problems = {}, []
@@ -202,7 +224,14 @@ def apply(path):
                 problems.append(f"not used by the code: {ctx} / {src[:50]!r}")
                 continue
             for lang, text in per_lang.items():
-                if lang not in LANGS or (ctx, src) in have[lang]:
+                if lang not in LANGS:
+                    continue
+                if (ctx, src) in have[lang]:
+                    if replace and have[lang][(ctx, src)] != text:
+                        if _replace(lang, ctx, src, text):
+                            done[lang] = done.get(lang, 0) + 1
+                        else:
+                            problems.append(f"could not replace: {lang} {ctx} / {src[:40]!r}")
                     continue
                 if not text.strip():
                     problems.append(f"empty: {lang} {ctx} / {src[:40]!r}")
@@ -226,6 +255,6 @@ if __name__ == "__main__":
     elif cmd == "worklist":
         worklist(sys.argv[2])
     elif cmd == "apply":
-        sys.exit(0 if apply(sys.argv[2]) else 1)
+        sys.exit(0 if apply(sys.argv[2], replace="--replace" in sys.argv) else 1)
     else:
         sys.exit(__doc__)

@@ -2761,3 +2761,12 @@ in exports using those events), and `tests/_real_kivy_game.py` reading
   is flaky here (real WebSocket close; fails ~1 in 5, also before these changes).
   (4) `export_as_image().texture.pixels` is TOP-down; `Fbo.pixels` is bottom-up.
 - **Needs human eyes:** how climbing feels; stairs in a real browser and on a phone.
+
+**2026-11-21 — Dead translations revived; every language caught up to French.**
+`tests/test_dead_translations.py` (no used string left only as a vanished entry, any
+context, all ten languages) and `tests/test_i18n_catchup.py` (no gap to French; no
+language shows French text). Tool: `scripts/i18n_catchup.py {report|worklist|apply
+[--replace]}`; plan/outcome `docs/I18N_CATCHUP_2026-11-21.md`. **Landmine:** a vanished
+`.ts` entry's text is not necessarily in that file's language -- ru/sl held FRENCH
+copies, and reviving them put ~60 French strings on screen; always check revived text
+against the language. Nothing here has had a native-speaker read.

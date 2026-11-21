@@ -506,7 +506,7 @@ Premaknjeni bodo v koš projekta in jih bo mogoče pozneje obnoviti.</translatio
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="50"/>
         <source> seconds</source>
-        <translation> secondes</translation>
+        <translation> sekund</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="53"/>

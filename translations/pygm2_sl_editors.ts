@@ -103,7 +103,7 @@
         <location filename="../editors/base_editor.py" line="126"/>
         <location filename="../editors/base_editor.py" line="158"/>
         <source>🔄 Auto-save: ON</source>
-        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+        <translation>🔄 Samodejno shranjevanje: VKLOP</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="129"/>
@@ -155,7 +155,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="161"/>
         <source>⏸️ Auto-save: OFF</source>
-        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+        <translation>⏸️ Samodejno shranjevanje: IZKLOP</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="162"/>
@@ -619,11 +619,11 @@ Dogodki: {4}</translation>
     <name>MultiActionEditor</name>
     <message>
         <source>Configure Actions</source>
-        <translation>Configurer les actions</translation>
+        <translation>Nastavi dejanja</translation>
     </message>
     <message>
         <source>Action Sequence</source>
-        <translation>Séquence d&apos;actions</translation>
+        <translation>Zaporedje dejanj</translation>
     </message>
     <message>
         <source>Action</source>
@@ -631,27 +631,27 @@ Dogodki: {4}</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation>Paramètres</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <source>➕ Add Action</source>
-        <translation>➕ Ajouter une action</translation>
+        <translation>➕ Dodaj dejanje</translation>
     </message>
     <message>
         <source>✏️ Edit Action</source>
-        <translation>✏️ Modifier l&apos;action</translation>
+        <translation>✏️ Uredi dejanje</translation>
     </message>
     <message>
         <source>➖ Remove Action</source>
-        <translation>➖ Retirer l&apos;action</translation>
+        <translation>➖ Odstrani dejanje</translation>
     </message>
     <message>
         <source>⬆️ Move Up</source>
-        <translation>⬆️ Déplacer vers le haut</translation>
+        <translation>⬆️ Premakni gor</translation>
     </message>
     <message>
         <source>⬇️ Move Down</source>
-        <translation>⬇️ Déplacer vers le bas</translation>
+        <translation>⬇️ Premakni dol</translation>
     </message>
 </context>
 <context>

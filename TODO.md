@@ -975,7 +975,18 @@ one is about the Configure Action Blocks dialog only
 _block_config_dialog_base.py`) -- two separate i18n tables for two
 separate UI surfaces.
 
-### pt/ja/zh (and es/pt/`de`-split) have drifted behind `fr` by 11 contexts / hundreds of messages
+### ~~pt/ja/zh (and es/pt/`de`-split) have drifted behind `fr` by 11 contexts / hundreds of messages~~ (DONE 2026-11-21)
+
+**Closed by `docs/I18N_CATCHUP_2026-11-21.md`.** Re-measured against what the code
+really uses (French also holds stale entries, so the counts below overstated it): 238
+strings each in de/it/ru/sl/uk, 112-119 in es/ja/pt/zh, 10 in pl, ~270 distinct sources
+on 32 screens. All translated (`scripts/i18n_catchup.py report` shows 0 missing in every
+language); `tests/test_i18n_catchup.py` keeps it at zero and also fails if a language
+shows French text instead of its own -- which had happened: reviving vanished entries in
+the dead-translation fix above put ~60 FRENCH strings into ru and sl (those old vanished
+copies held French), plus 5 older ones in es; all replaced. **No native speaker has read
+any of the new text.** Original note:
+
 
 Found 2026-10-07 while planning the Polish translation (`docs/POLISH_I18N_PLAN.md`):
 `pygm2_pt.ts`/`_ja.ts`/`_zh.ts` were completed 2026-08-09/10 at 1488 active

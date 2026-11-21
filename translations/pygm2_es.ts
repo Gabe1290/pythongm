@@ -162,12 +162,12 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
     <message>
         <location filename="../events/action_editor.py" line="304"/>
         <source>X: </source>
-        <translation>X : </translation>
+        <translation>X: </translation>
     </message>
     <message>
         <location filename="../events/action_editor.py" line="309"/>
         <source>Y: </source>
-        <translation>Y : </translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <location filename="../events/action_editor.py" line="399"/>
@@ -1317,7 +1317,7 @@ Se moverán a la papelera del proyecto y podrán restaurarse más tarde.</transl
         <location filename="../editors/base_editor.py" line="126"/>
         <location filename="../editors/base_editor.py" line="158"/>
         <source>🔄 Auto-save: ON</source>
-        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+        <translation>🔄 Guardado automático: ACTIVADO</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="129"/>
@@ -1354,7 +1354,7 @@ Se moverán a la papelera del proyecto y podrán restaurarse más tarde.</transl
     <message>
         <location filename="../editors/base_editor.py" line="161"/>
         <source>⏸️ Auto-save: OFF</source>
-        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+        <translation>⏸️ Guardado automático: DESACTIVADO</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="162"/>
@@ -2109,7 +2109,7 @@ Ejemplo: x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="61"/>
         <source>Visual Block Programming (Detached)</source>
-        <translation>Programmation visuelle par blocs (Détaché)</translation>
+        <translation>Programación visual por bloques (separada)</translation>
     </message>
 </context>
 <context>
