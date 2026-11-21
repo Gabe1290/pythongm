@@ -916,7 +916,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   - [x] ThymioEventSelector (9)
   - [x] ThymioConfigDialog (8)
   - [x] ResizeCanvasDialog (8)
-  - [ ] MessageTranslationsDialog (3)
+  - [x] MessageTranslationsDialog (3)
   - [ ] Finally: make the guard cover EVERY context, so a new one cannot slip in.
 
 ### ~~Configure Action Blocks dialog: "Control"/"Game"/"Views" shown in English~~ (DONE 2026-10-18)

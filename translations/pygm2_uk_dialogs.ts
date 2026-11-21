@@ -1018,15 +1018,15 @@ Would you like to open the export directory?</source>
     <name>MessageTranslationsDialog</name>
     <message>
         <source>Message Translations</source>
-        <translation type="vanished">Переклади повідомлень</translation>
+        <translation>Переклади повідомлень</translation>
     </message>
     <message>
         <source>Default message (English):</source>
-        <translation type="vanished">Повідомлення за замовчуванням (англійська):</translation>
+        <translation>Повідомлення за замовчуванням (англійська):</translation>
     </message>
     <message>
         <source>Translation for {0}</source>
-        <translation type="vanished">Переклад для {0}</translation>
+        <translation>Переклад для {0}</translation>
     </message>
 </context>
 <context>

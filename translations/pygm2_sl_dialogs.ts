@@ -1018,15 +1018,15 @@ Ali želite odpreti mapo izvoza?</translation>
     <name>MessageTranslationsDialog</name>
     <message>
         <source>Message Translations</source>
-        <translation type="vanished">Prevodi sporočil</translation>
+        <translation>Prevodi sporočil</translation>
     </message>
     <message>
         <source>Default message (English):</source>
-        <translation type="vanished">Privzeto sporočilo (angleščina):</translation>
+        <translation>Privzeto sporočilo (angleščina):</translation>
     </message>
     <message>
         <source>Translation for {0}</source>
-        <translation type="vanished">Prevod za {0}</translation>
+        <translation>Prevod za {0}</translation>
     </message>
 </context>
 <context>

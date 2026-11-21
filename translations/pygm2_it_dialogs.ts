@@ -1018,15 +1018,15 @@ Vuoi aprire la directory di esportazione?</translation>
     <name>MessageTranslationsDialog</name>
     <message>
         <source>Message Translations</source>
-        <translation type="vanished">Traduzioni dei messaggi</translation>
+        <translation>Traduzioni dei messaggi</translation>
     </message>
     <message>
         <source>Default message (English):</source>
-        <translation type="vanished">Messaggio predefinito (inglese):</translation>
+        <translation>Messaggio predefinito (inglese):</translation>
     </message>
     <message>
         <source>Translation for {0}</source>
-        <translation type="vanished">Traduzione per {0}</translation>
+        <translation>Traduzione per {0}</translation>
     </message>
 </context>
 <context>
