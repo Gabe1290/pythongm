@@ -2270,6 +2270,38 @@ Deseja salvar mesmo assim?</translation>
         <source>Relative</source>
         <translation>Relativo</translation>
     </message>
+    <message>
+        <source>Applies to</source>
+        <translation>Aplica-se a</translation>
+    </message>
+    <message>
+        <source>Self</source>
+        <translation>Si mesmo</translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation>Outro</translation>
+    </message>
+    <message>
+        <source>Object:</source>
+        <translation>Objeto:</translation>
+    </message>
+    <message>
+        <source>Use Python operators</source>
+        <translation>Use os operadores do Python</translation>
+    </message>
+    <message>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+        <translation>Esta expressão usa operadores no estilo C que o Python não entende:
+
+    {fixes}
+
+Use os operadores do Python (and / or / not), por exemplo "vspeed &gt; 0 and y &lt; other.y".</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

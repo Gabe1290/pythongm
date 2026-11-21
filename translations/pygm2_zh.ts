@@ -2335,6 +2335,38 @@ Do you want to save anyway?</source>
         <source>Relative</source>
         <translation>相对</translation>
     </message>
+    <message>
+        <source>Applies to</source>
+        <translation>应用于</translation>
+    </message>
+    <message>
+        <source>Self</source>
+        <translation>自身</translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation>另一方</translation>
+    </message>
+    <message>
+        <source>Object:</source>
+        <translation>对象:</translation>
+    </message>
+    <message>
+        <source>Use Python operators</source>
+        <translation>使用 Python 运算符</translation>
+    </message>
+    <message>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+        <translation>此表达式使用了 Python 无法理解的 C 风格运算符：
+
+    {fixes}
+
+请改用 Python 运算符（and / or / not），例如 "vspeed &gt; 0 and y &lt; other.y"。</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

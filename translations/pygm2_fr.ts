@@ -932,6 +932,10 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
             <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
             <translation>Donne à cette instance plusieurs images selon l'angle de vue dans la vue raycast, pour qu'elle ressemble à un vrai objet avec des côtés plutôt qu'à une découpe plate quand la caméra tourne autour — l'image de la bande du sprite est choisie selon l'angle de vue et non selon le temps</translation>
         </message>
+        <message>
+            <source>Object:</source>
+            <translation>Objet :</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

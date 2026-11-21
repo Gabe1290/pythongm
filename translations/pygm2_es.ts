@@ -593,6 +593,22 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
             <source>Relative</source>
             <translation>Relativo</translation>
         </message>
+        <message>
+            <source>Applies to</source>
+            <translation>Se aplica a</translation>
+        </message>
+        <message>
+            <source>Self</source>
+            <translation>Sí mismo</translation>
+        </message>
+        <message>
+            <source>Other</source>
+            <translation>Otro</translation>
+        </message>
+        <message>
+            <source>Object:</source>
+            <translation>Objeto:</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

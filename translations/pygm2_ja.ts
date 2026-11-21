@@ -2511,6 +2511,38 @@ Do you want to save anyway?</source>
         <source>Relative</source>
         <translation>相対</translation>
     </message>
+    <message>
+        <source>Applies to</source>
+        <translation>適用先</translation>
+    </message>
+    <message>
+        <source>Self</source>
+        <translation>自分</translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation>相手</translation>
+    </message>
+    <message>
+        <source>Object:</source>
+        <translation>オブジェクト:</translation>
+    </message>
+    <message>
+        <source>Use Python operators</source>
+        <translation>Python の演算子を使う</translation>
+    </message>
+    <message>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+        <translation>この式には Python が理解できない C 言語風の演算子が使われています:
+
+    {fixes}
+
+代わりに Python の演算子（and / or / not）を使ってください。例: "vspeed &gt; 0 and y &lt; other.y"。</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

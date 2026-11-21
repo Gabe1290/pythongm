@@ -20,71 +20,71 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         </message>
     <message>
         <source>Configure {0}</source>
-        <translation type="vanished">Configurer {0}</translation>
+        <translation>Configurer {0}</translation>
     </message>
     <message>
         <source>This action requires special configuration.</source>
-        <translation type="vanished">Cette action nécessite une configuration spéciale.</translation>
+        <translation>Cette action nécessite une configuration spéciale.</translation>
     </message>
     <message>
         <source>→ Next Room</source>
-        <translation type="vanished">→ Salle suivante</translation>
+        <translation>→ Salle suivante</translation>
     </message>
     <message>
         <source>← Previous Room</source>
-        <translation type="vanished">← Salle précédente</translation>
+        <translation>← Salle précédente</translation>
     </message>
     <message>
         <source>↺ Restart Current Room</source>
-        <translation type="vanished">↺ Redémarrer la salle actuelle</translation>
+        <translation>↺ Redémarrer la salle actuelle</translation>
     </message>
     <message>
         <source>⚙️ Configure...</source>
-        <translation type="vanished">⚙️ Configurer...</translation>
+        <translation>⚙️ Configurer...</translation>
     </message>
     <message>
         <source>📋 Configure Actions...</source>
-        <translation type="vanished">📋 Configurer les actions...</translation>
+        <translation>📋 Configurer les actions...</translation>
     </message>
     <message>
         <source>🎨 Choose Color...</source>
-        <translation type="vanished">🎨 Choisir une couleur...</translation>
+        <translation>🎨 Choisir une couleur...</translation>
     </message>
     <message>
         <source>(No sprites available)</source>
-        <translation type="vanished">(Aucun sprite disponible)</translation>
+        <translation>(Aucun sprite disponible)</translation>
     </message>
     <message>
         <source>(No sounds available)</source>
-        <translation type="vanished">(Aucun son disponible)</translation>
+        <translation>(Aucun son disponible)</translation>
     </message>
     <message>
         <source>Enter code here...</source>
-        <translation type="vanished">Entrez le code ici...</translation>
+        <translation>Entrez le code ici...</translation>
     </message>
     <message>
         <source>X: </source>
-        <translation type="vanished">X : </translation>
+        <translation>X : </translation>
     </message>
     <message>
         <source>Y: </source>
-        <translation type="vanished">Y : </translation>
+        <translation>Y : </translation>
     </message>
     <message>
         <source>Choose Color</source>
-        <translation type="vanished">Choisir une couleur</translation>
+        <translation>Choisir une couleur</translation>
     </message>
     <message>
         <source>🎨 {0}</source>
-        <translation type="vanished">🎨 {0}</translation>
+        <translation>🎨 {0}</translation>
     </message>
     <message>
         <source>Translations...</source>
-        <translation type="vanished">Prevodi...</translation>
+        <translation>Prevodi...</translation>
     </message>
     <message>
         <source>Add translations for different languages</source>
-        <translation type="vanished">Dodaj prevode za različne jezike</translation>
+        <translation>Dodaj prevode za različne jezike</translation>
     </message>
     <message>
         <source>Apply Gravity</source>
@@ -489,6 +489,26 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <message>
             <source>Relative</source>
             <translation>Relativno</translation>
+        </message>
+        <message>
+            <source>Applies to</source>
+            <translation>Velja za</translation>
+        </message>
+        <message>
+            <source>Self</source>
+            <translation>Sam</translation>
+        </message>
+        <message>
+            <source>Other</source>
+            <translation>Drugi</translation>
+        </message>
+        <message>
+            <source>Object:</source>
+            <translation>Objekt:</translation>
+        </message>
+        <message>
+            <source>Number or expression</source>
+            <translation>Število ali izraz</translation>
         </message>
 </context>
 <context>

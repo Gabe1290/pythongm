@@ -20,71 +20,71 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         </message>
     <message>
         <source>Configure {0}</source>
-        <translation type="vanished">Configurer {0}</translation>
+        <translation>Configurer {0}</translation>
     </message>
     <message>
         <source>This action requires special configuration.</source>
-        <translation type="vanished">Cette action nécessite une configuration spéciale.</translation>
+        <translation>Cette action nécessite une configuration spéciale.</translation>
     </message>
     <message>
         <source>→ Next Room</source>
-        <translation type="vanished">→ Salle suivante</translation>
+        <translation>→ Salle suivante</translation>
     </message>
     <message>
         <source>← Previous Room</source>
-        <translation type="vanished">← Salle précédente</translation>
+        <translation>← Salle précédente</translation>
     </message>
     <message>
         <source>↺ Restart Current Room</source>
-        <translation type="vanished">↺ Redémarrer la salle actuelle</translation>
+        <translation>↺ Redémarrer la salle actuelle</translation>
     </message>
     <message>
         <source>⚙️ Configure...</source>
-        <translation type="vanished">⚙️ Configurer...</translation>
+        <translation>⚙️ Configurer...</translation>
     </message>
     <message>
         <source>📋 Configure Actions...</source>
-        <translation type="vanished">📋 Configurer les actions...</translation>
+        <translation>📋 Configurer les actions...</translation>
     </message>
     <message>
         <source>🎨 Choose Color...</source>
-        <translation type="vanished">🎨 Choisir une couleur...</translation>
+        <translation>🎨 Choisir une couleur...</translation>
     </message>
     <message>
         <source>(No sprites available)</source>
-        <translation type="vanished">(Aucun sprite disponible)</translation>
+        <translation>(Aucun sprite disponible)</translation>
     </message>
     <message>
         <source>(No sounds available)</source>
-        <translation type="vanished">(Aucun son disponible)</translation>
+        <translation>(Aucun son disponible)</translation>
     </message>
     <message>
         <source>Enter code here...</source>
-        <translation type="vanished">Entrez le code ici...</translation>
+        <translation>Entrez le code ici...</translation>
     </message>
     <message>
         <source>X: </source>
-        <translation type="vanished">X : </translation>
+        <translation>X : </translation>
     </message>
     <message>
         <source>Y: </source>
-        <translation type="vanished">Y : </translation>
+        <translation>Y : </translation>
     </message>
     <message>
         <source>Choose Color</source>
-        <translation type="vanished">Choisir une couleur</translation>
+        <translation>Choisir une couleur</translation>
     </message>
     <message>
         <source>🎨 {0}</source>
-        <translation type="vanished">🎨 {0}</translation>
+        <translation>🎨 {0}</translation>
     </message>
     <message>
         <source>Translations...</source>
-        <translation type="vanished">Переводы...</translation>
+        <translation>Переводы...</translation>
     </message>
     <message>
         <source>Add translations for different languages</source>
-        <translation type="vanished">Добавить переводы для разных языков</translation>
+        <translation>Добавить переводы для разных языков</translation>
     </message>
     <message>
         <source>Apply Gravity</source>
@@ -489,6 +489,26 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <message>
             <source>Relative</source>
             <translation>Относительно</translation>
+        </message>
+        <message>
+            <source>Applies to</source>
+            <translation>Применяется к</translation>
+        </message>
+        <message>
+            <source>Self</source>
+            <translation>Сам</translation>
+        </message>
+        <message>
+            <source>Other</source>
+            <translation>Другой</translation>
+        </message>
+        <message>
+            <source>Object:</source>
+            <translation>Объект:</translation>
+        </message>
+        <message>
+            <source>Number or expression</source>
+            <translation>Число или выражение</translation>
         </message>
 </context>
 <context>
