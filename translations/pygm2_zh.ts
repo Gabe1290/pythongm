@@ -361,6 +361,21 @@
         <source>Pick Color</source>
         <translation>选取颜色</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Applies to</source>
+        <translation>应用于</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Other</source>
+        <translation>另一方</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Self</source>
+        <translation>自身</translation>
+    </message>
 </context>
 <context>
     <name>KeySelectorDialog</name>
@@ -1267,6 +1282,16 @@ Do you want to save anyway?</source>
         <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
         <source>Solid objects block movement</source>
         <translation>实体对象会阻挡移动</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>一旦被销毁，重新开始房间时此对象不会再出现（完全重新开始游戏时会重置）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>保持销毁</translation>
     </message>
 </context>
 <context>
@@ -3546,6 +3571,16 @@ Error: {0}</source>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>在一个小测试房间中单独运行此对象</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ 试玩对象</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -4328,6 +4363,55 @@ Some changes may require restarting the IDE to take effect.</source>
 Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
         <translation>输入任何计算结果为真/假的 GML 表达式
 示例：x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>A single variable name (e.g. vspeed). For a formula like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot;.</source>
+        <translation>单个变量名（例如 vspeed）。如果是 "vspeed &gt; 0 and y &lt; other.y" 这样的公式，请把条件类型设为 "expression"。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Custom Python Expression:</source>
+        <translation>自定义 Python 表达式：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+        <translation>输入任意结果为 true/false 的 Python 表达式
+示例：x &gt; 100 and y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>That looks like an expression</source>
+        <translation>这看起来像一个表达式</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>The Variable field expects a single variable name (e.g. &quot;vspeed&quot;), not a whole expression.
+
+To test something like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot; and type it in the expression box.</source>
+        <translation>“变量”字段只需要一个变量名（例如 "vspeed"），而不是整个表达式。
+
+要测试 "vspeed &gt; 0 and y &lt; other.y" 这样的条件，请把条件类型设为 "expression"，并在表达式框中输入。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. &quot;x &gt; 100 and y &lt; 200&quot;.</source>
+        <translation>此表达式使用了 Python 无法理解的 C 风格运算符：
+
+    {fixes}
+
+请改用 Python 运算符（and / or / not），例如 "x &gt; 100 and y &lt; 200"。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Use Python operators</source>
+        <translation>请使用 Python 运算符</translation>
     </message>
 </context>
 <context>
@@ -5174,6 +5258,36 @@ Use File → New Project or File → Open Project to begin.</source>
         <source>Enter name for new {0}:</source>
         <translation>为新建的 {0} 输入名称：</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … 以及另外 {0} 个</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>删除这 {0} 个资源？
+
+{1}
+
+它们会被移到项目的回收站，之后可以恢复。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>删除 {0} 个资源</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ 删除所选的 {0} 项</translation>
+    </message>
 </context>
 <context>
     <name>EnhancedPropertiesPanel</name>
@@ -5535,6 +5649,16 @@ Events: {4}</source>
         <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
         <source>Solid</source>
         <translation>固体</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>否</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>是</translation>
     </message>
 </context>
 <context>
@@ -8693,6 +8817,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 请在 https://lab.open-roberta.org/ 中导入</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>筛选资源…</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
@@ -9024,6 +9153,103 @@ Import it in https://lab.open-roberta.org/</source>
         <location filename="../dialogs/find_replace_dialog.py" line="0"/>
         <source>Whole words</source>
         <translation>全字匹配</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>（无法加载图像）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>（未找到图像）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>（无文件）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>（未知）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>水平平铺</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>垂直平铺</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>（无文件）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>循环</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>音量：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ 停止</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ 播放</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>粗体</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>字体系列：</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>斜体</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>敏捷的棕色狐狸跳过了懒狗</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>前</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>地面</translation>
     </message>
 </context>
 </TS>

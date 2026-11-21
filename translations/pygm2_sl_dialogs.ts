@@ -445,6 +445,36 @@ Uporabite Datoteka → Nov projekt ali Datoteka → Odpri projekt za začetek.</
         <source>Enter name for new {0}:</source>
         <translation>Vnesite ime za nov {0}:</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … in še {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>Izbrisati te vire ({0})?
+
+{1}
+
+Premaknjeni bodo v koš projekta in jih bo mogoče pozneje obnoviti.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>Izbriši vire ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ Izbriši izbrane ({0})</translation>
+    </message>
 </context>
 <context>
     <name>AutoSaveSettingsDialog</name>

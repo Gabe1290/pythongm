@@ -158,6 +158,16 @@
         <source>Show generated code in Code Editor tab</source>
         <translation type="vanished">Prikaži ustvarjeno kodo v zavihku Urejevalnik kode</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Ko je uničen, ta objekt ostane odstranjen ob ponovnem zagonu sobe (ponastavi se ob popolnem ponovnem zagonu igre)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>Ostane uničen</translation>
+    </message>
 </context>
 <context>
     <name>ThymioPlaygroundWindow</name>
@@ -989,6 +999,19 @@
         <location filename="../extensions/thymio/playground_runner.py" line="0"/>
         <source>Running: {} robots, {} walls</source>
         <translation>Teče: robotov – {}, zidov – {}</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>SPREDAJ</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>TLA</translation>
     </message>
 </context>
 </TS>

@@ -47,6 +47,18 @@ CAUGHT_UP = (
     "ForegroundBackgroundSwatch",
     "ColorPaletteWidget",
     "ColorSwatch",
+    "ConditionalActionEditor",
+    "ActionConfigDialog",
+    "BackgroundEditor",
+    "SoundEditor",
+    "AssetTreeWidget",
+    "FontEditor",
+    "GM80ActionDialog",
+    "EnhancedPropertiesPanel",
+    "ObjectEditor",
+    "ObjectPropertiesPanel",
+    "ThymioDiagramWidget",
+    "PyGameMakerIDE",
 )
 
 _CACHE = {}

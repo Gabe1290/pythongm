@@ -548,6 +548,16 @@ Ereignisse: {4}</translation>
         <source>Configure...</source>
         <translation>Konfigurieren...</translation>
     </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
 </context>
 <context>
     <name>InstanceProperties</name>
@@ -1032,6 +1042,16 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
         <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>Dieses Objekt allein in einem kleinen Testraum ausführen</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ Objekt testen</translation>
     </message>
 </context>
 <context>
@@ -3176,6 +3196,90 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
         <source>Choose Color</source>
         <translation>Farbe wählen</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>(Bild konnte nicht geladen werden)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>(Bild nicht gefunden)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(keine Datei)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>(unbekannt)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>Waagerecht kacheln</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>Senkrecht kacheln</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(keine Datei)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>Schleife</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>Lautstärke:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ Stopp</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ Abspielen</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>Fett</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>Schriftfamilie:</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>Kursiv</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich</translation>
     </message>
 </context>
 </TS>

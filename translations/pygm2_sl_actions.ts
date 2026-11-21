@@ -939,6 +939,21 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
         <source>Else Actions</source>
         <translation type="vanished">Sicer akcije</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Applies to</source>
+        <translation>Velja za</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Other</source>
+        <translation>Drugi</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Self</source>
+        <translation>Sam</translation>
+    </message>
 </context>
 <context>
     <name>GM80EventsPanel</name>

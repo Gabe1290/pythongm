@@ -767,6 +767,21 @@ Deseja salvar mesmo assim?</translation>
         <source>Pick Color</source>
         <translation>Escolher Cor</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Applies to</source>
+        <translation>Aplica-se a</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Other</source>
+        <translation>Outro</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Self</source>
+        <translation>Si mesmo</translation>
+    </message>
 </context>
 <context>
     <name>KeySelectorDialog</name>
@@ -1817,6 +1832,16 @@ Deseja salvar mesmo assim?</translation>
         <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
         <source>Solid objects block movement</source>
         <translation>Objetos sólidos bloqueiam movimento</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Depois de destruído, este objeto não volta quando a sala é reiniciada (é redefinido ao reiniciar o jogo por completo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>Permanece destruído</translation>
     </message>
 </context>
 <context>
@@ -3546,6 +3571,16 @@ Erro: {0}</translation>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>Executar este objeto sozinho em uma pequena sala de teste</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ Testar objeto</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -4328,6 +4363,55 @@ Algumas alterações podem exigir reiniciar o IDE para terem efeito.</translatio
 Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
         <translation>Digite qualquer expressão GML que resulte em verdadeiro/falso
 Exemplo: x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>A single variable name (e.g. vspeed). For a formula like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot;.</source>
+        <translation>Um único nome de variável (ex.: vspeed). Para uma fórmula como "vspeed &gt; 0 and y &lt; other.y", defina o Tipo de condição como "expression".</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Custom Python Expression:</source>
+        <translation>Expressão Python personalizada:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+        <translation>Digite qualquer expressão Python que resulte em verdadeiro/falso
+Exemplo: x &gt; 100 and y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>That looks like an expression</source>
+        <translation>Isso parece uma expressão</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>The Variable field expects a single variable name (e.g. &quot;vspeed&quot;), not a whole expression.
+
+To test something like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot; and type it in the expression box.</source>
+        <translation>O campo Variável espera um único nome de variável (ex.: "vspeed"), não uma expressão inteira.
+
+Para testar algo como "vspeed &gt; 0 and y &lt; other.y", defina o Tipo de condição como "expression" e digite-o na caixa de expressão.</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. &quot;x &gt; 100 and y &lt; 200&quot;.</source>
+        <translation>Esta expressão usa operadores no estilo C que o Python não entende:
+
+    {fixes}
+
+Use os operadores do Python (and / or / not), por exemplo "x &gt; 100 and y &lt; 200".</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Use Python operators</source>
+        <translation>Use operadores do Python</translation>
     </message>
 </context>
 <context>
@@ -5174,6 +5258,36 @@ Use Arquivo → Novo Projeto ou Arquivo → Abrir Projeto para começar.</transl
         <source>Enter name for new {0}:</source>
         <translation>Digite o nome para o(a) novo(a) {0}:</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … e mais {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>Excluir estes {0} recurso(s)?
+
+{1}
+
+Eles serão movidos para a lixeira do projeto e poderão ser restaurados depois.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>Excluir {0} recursos</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ Excluir os {0} selecionados</translation>
+    </message>
 </context>
 <context>
     <name>EnhancedPropertiesPanel</name>
@@ -5535,6 +5649,16 @@ Eventos: {4}</translation>
         <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
         <source>Solid</source>
         <translation>Sólido</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>Não</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>Sim</translation>
     </message>
 </context>
 <context>
@@ -8693,6 +8817,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 Importe-o em https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>Filtrar recursos…</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
@@ -9024,6 +9153,103 @@ Importe-o em https://lab.open-roberta.org/</translation>
         <location filename="../dialogs/find_replace_dialog.py" line="0"/>
         <source>Whole words</source>
         <translation>Palavras inteiras</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>(não foi possível carregar a imagem)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>(imagem não encontrada)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(nenhum arquivo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>(desconhecido)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>Repetir horizontalmente</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>Repetir verticalmente</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(nenhum arquivo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>Repetir</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>Volume:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ Parar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ Reproduzir</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>Negrito</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>Família da fonte:</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>Itálico</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>Um pequeno jabuti xereta viu dez cegonhas felizes</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>FRENTE</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>CHÃO</translation>
     </message>
 </context>
 </TS>

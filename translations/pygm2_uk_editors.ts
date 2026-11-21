@@ -548,6 +548,16 @@ Events: {4}</source>
         <source>Configure...</source>
         <translation>Налаштувати...</translation>
     </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>Ні</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>Так</translation>
+    </message>
 </context>
 <context>
     <name>InstanceProperties</name>
@@ -1032,6 +1042,16 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>Запустити цей об'єкт окремо в маленькій тестовій кімнаті</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ Перевірити об'єкт</translation>
     </message>
 </context>
 <context>
@@ -3176,6 +3196,90 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
         <source>Choose Color</source>
         <translation>Вибрати колір</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>(не вдалося завантажити зображення)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>(зображення не знайдено)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(немає файлу)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>(невідомо)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>Повторювати по горизонталі</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>Повторювати по вертикалі</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(немає файлу)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>Повтор</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>Гучність:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ Стоп</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ Відтворити</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>Жирний</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>Родина шрифтів:</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>Курсив</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів</translation>
     </message>
 </context>
 </TS>

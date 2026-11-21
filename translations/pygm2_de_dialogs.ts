@@ -445,6 +445,36 @@ Verwenden Sie Datei → Neues Projekt oder Datei → Projekt öffnen, um zu begi
         <source>Enter name for new {0}:</source>
         <translation>Name für neues {0} eingeben:</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … und {0} weitere</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>Diese {0} Asset(s) löschen?
+
+{1}
+
+Sie werden in den Papierkorb des Projekts verschoben und können später wiederhergestellt werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>{0} Assets löschen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ {0} ausgewählte löschen</translation>
+    </message>
 </context>
 <context>
     <name>AutoSaveSettingsDialog</name>

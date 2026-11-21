@@ -361,6 +361,21 @@
         <source>Pick Color</source>
         <translation>色を選択</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Applies to</source>
+        <translation>適用先</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Other</source>
+        <translation>相手</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Self</source>
+        <translation>自分</translation>
+    </message>
 </context>
 <context>
     <name>KeySelectorDialog</name>
@@ -1267,6 +1282,16 @@ Do you want to save anyway?</source>
         <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
         <source>Solid objects block movement</source>
         <translation>ソリッドオブジェクトは移動を妨げます</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>一度破壊されると、ルームを再開してもこのオブジェクトは戻りません（ゲームを最初からやり直すとリセットされます）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>破壊されたまま</translation>
     </message>
 </context>
 <context>
@@ -3546,6 +3571,16 @@ Error: {0}</source>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>このオブジェクトだけを小さなテスト用ルームで実行</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ オブジェクトを試す</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -4328,6 +4363,55 @@ Some changes may require restarting the IDE to take effect.</source>
 Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
         <translation>true/falseを返す任意のGML式を入力してください
 例：x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>A single variable name (e.g. vspeed). For a formula like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot;.</source>
+        <translation>変数名を 1 つだけ入力します（例: vspeed）。"vspeed &gt; 0 and y &lt; other.y" のような式の場合は、条件の種類を「expression」にしてください。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Custom Python Expression:</source>
+        <translation>カスタム Python 式：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+        <translation>true/false になる Python 式を入力してください
+例: x &gt; 100 and y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>That looks like an expression</source>
+        <translation>式のようです</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>The Variable field expects a single variable name (e.g. &quot;vspeed&quot;), not a whole expression.
+
+To test something like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot; and type it in the expression box.</source>
+        <translation>「変数」欄には式全体ではなく、変数名を 1 つだけ入力します（例: "vspeed"）。
+
+"vspeed &gt; 0 and y &lt; other.y" のような条件を調べるには、条件の種類を「expression」にして、式の欄に入力してください。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. &quot;x &gt; 100 and y &lt; 200&quot;.</source>
+        <translation>この式には Python が理解できない C 言語風の演算子が使われています:
+
+    {fixes}
+
+代わりに Python の演算子（and / or / not）を使ってください。例: "x &gt; 100 and y &lt; 200"。</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Use Python operators</source>
+        <translation>Python の演算子を使用してください</translation>
     </message>
 </context>
 <context>
@@ -5174,6 +5258,36 @@ Use File → New Project or File → Open Project to begin.</source>
         <source>Enter name for new {0}:</source>
         <translation>新しい{0}の名前を入力：</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … ほか {0} 件</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>これらのアセット {0} 件を削除しますか？
+
+{1}
+
+プロジェクトのごみ箱へ移動され、後で復元できます。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>{0} 件のアセットを削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ 選択した {0} 件を削除</translation>
+    </message>
 </context>
 <context>
     <name>EnhancedPropertiesPanel</name>
@@ -5535,6 +5649,16 @@ Events: {4}</source>
         <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
         <source>Solid</source>
         <translation>ソリッド</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>いいえ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>はい</translation>
     </message>
 </context>
 <context>
@@ -8693,6 +8817,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 https://lab.open-roberta.org/ でインポートしてください</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>アセットを絞り込む…</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
@@ -9024,6 +9153,103 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <location filename="../dialogs/find_replace_dialog.py" line="0"/>
         <source>Whole words</source>
         <translation>単語単位</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>（画像を読み込めませんでした）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>（画像が見つかりません）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>（ファイルなし）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>（不明）</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>横に並べる</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>縦に並べる</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>（ファイルなし）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>ループ</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>音量：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ 停止</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ 再生</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>太字</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>フォントファミリー：</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>斜体</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>いろはにほへと ちりぬるを</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>前</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>床</translation>
     </message>
 </context>
 </TS>

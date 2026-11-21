@@ -3589,6 +3589,29 @@ Błąd: {0}</translation>
         <source>Other</source>
         <translation>Inny</translation>
     </message>
+    <message>
+        <location filename="../events/action_editor.py" line="0"/>
+        <source>Object:</source>
+        <translation>Obiekt:</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="0"/>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. &quot;vspeed &gt; 0 and y &lt; other.y&quot;.</source>
+        <translation>To wyrażenie używa operatorów w stylu C, których Python nie rozumie:
+
+    {fixes}
+
+Użyj zamiast nich operatorów Pythona (and / or / not), np. "vspeed &gt; 0 and y &lt; other.y".</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="0"/>
+        <source>Use Python operators</source>
+        <translation>Użyj operatorów Pythona</translation>
+    </message>
 </context>
 <context>
     <name>PlaygroundEditor</name>
@@ -4371,6 +4394,55 @@ Niektóre zmiany mogą wymagać ponownego uruchomienia IDE, aby zaczęły obowi�
 Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
         <translation>Wprowadź dowolne wyrażenie GML, które daje wartość prawda/fałsz
 Przykład: x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>A single variable name (e.g. vspeed). For a formula like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot;.</source>
+        <translation>Pojedyncza nazwa zmiennej (np. vspeed). Dla wzoru takiego jak "vspeed &gt; 0 and y &lt; other.y" ustaw Typ warunku na "expression".</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Custom Python Expression:</source>
+        <translation>Własne wyrażenie Pythona:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+        <translation>Wpisz dowolne wyrażenie Pythona, które daje prawdę/fałsz
+Przykład: x &gt; 100 and y &lt; 200</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>That looks like an expression</source>
+        <translation>To wygląda na wyrażenie</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>The Variable field expects a single variable name (e.g. &quot;vspeed&quot;), not a whole expression.
+
+To test something like &quot;vspeed &gt; 0 and y &lt; other.y&quot;, set Condition Type to &quot;expression&quot; and type it in the expression box.</source>
+        <translation>Pole Zmienna oczekuje pojedynczej nazwy zmiennej (np. "vspeed"), a nie całego wyrażenia.
+
+Aby sprawdzić coś takiego jak "vspeed &gt; 0 and y &lt; other.y", ustaw Typ warunku na "expression" i wpisz to w polu wyrażenia.</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. &quot;x &gt; 100 and y &lt; 200&quot;.</source>
+        <translation>To wyrażenie używa operatorów w stylu C, których Python nie rozumie:
+
+    {fixes}
+
+Użyj zamiast nich operatorów Pythona (and / or / not), np. "x &gt; 100 and y &lt; 200".</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
+        <source>Use Python operators</source>
+        <translation>Użyj operatorów Pythona</translation>
     </message>
 </context>
 <context>

@@ -1062,6 +1062,36 @@ Use Archivo → Nuevo proyecto o Archivo → Abrir proyecto para empezar.</trans
         <source>Enter name for new {0}:</source>
         <translation>Introduzca el nombre para el nuevo {0}:</translation>
     </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … y {0} más</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>¿Eliminar estos {0} recurso(s)?
+
+{1}
+
+Se moverán a la papelera del proyecto y podrán restaurarse más tarde.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>Delete {0} Assets</source>
+        <translation>Eliminar {0} recursos</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="0"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ Eliminar los {0} seleccionados</translation>
+    </message>
 </context>
 <context>
     <name>AutoSaveSettingsDialog</name>
@@ -2496,6 +2526,16 @@ Eventos: {4}</translation>
         <source>Solid</source>
         <translation>Sólido</translation>
     </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="0"/>
+        <source>Yes</source>
+        <translation>Sí</translation>
+    </message>
 </context>
 <context>
     <name>EventActionWidget</name>
@@ -2884,6 +2924,21 @@ Would you like to open the export directory?</source>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="217"/>
         <source>Pick Color</source>
         <translation>Elegir color</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Applies to</source>
+        <translation>Se aplica a</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Other</source>
+        <translation>Otro</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="0"/>
+        <source>Self</source>
+        <translation>Sí mismo</translation>
     </message>
 </context>
 <context>
@@ -3758,6 +3813,16 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
         <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>Ejecutar este objeto solo en una pequeña sala de prueba</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="0"/>
+        <source>▶ Play Object</source>
+        <translation>▶ Probar objeto</translation>
     </message>
 </context>
 <context>
@@ -4864,6 +4929,16 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <source>Show generated code in Code Editor tab</source>
         <translation type="vanished">Mostrar código generado en la pestaña del Editor de código</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Una vez destruido, este objeto no vuelve a aparecer al reiniciar la sala (se restablece al reiniciar el juego por completo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>Permanece destruido</translation>
     </message>
 </context>
 <context>
@@ -8212,6 +8287,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 Impórtalo en https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>Filtrar recursos…</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>
@@ -10684,6 +10764,103 @@ Do you want to save anyway?</source>
         <location filename="../dialogs/find_replace_dialog.py" line="0"/>
         <source>Whole words</source>
         <translation>Palabras completas</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(could not load image)</source>
+        <translation>(no se pudo cargar la imagen)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(image not found)</source>
+        <translation>(imagen no encontrada)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(sin archivo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>(unknown)</source>
+        <translation>(desconocido)</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile horizontally</source>
+        <translation>Repetir horizontalmente</translation>
+    </message>
+    <message>
+        <location filename="../editors/background_editor.py" line="0"/>
+        <source>Tile vertically</source>
+        <translation>Repetir verticalmente</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>(no file)</source>
+        <translation>(sin archivo)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Loop</source>
+        <translation>Bucle</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>Volume:</source>
+        <translation>Volumen:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>■ Stop</source>
+        <translation>■ Detener</translation>
+    </message>
+    <message>
+        <location filename="../editors/sound_editor.py" line="0"/>
+        <source>▶ Play</source>
+        <translation>▶ Reproducir</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Bold</source>
+        <translation>Negrita</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Font family:</source>
+        <translation>Familia de fuente:</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>Italic</source>
+        <translation>Cursiva</translation>
+    </message>
+    <message>
+        <location filename="../editors/font_editor.py" line="0"/>
+        <source>The quick brown fox</source>
+        <translation>El veloz murciélago hindú comía feliz cardillo y kiwi</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>FRENTE</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>SUELO</translation>
     </message>
 </context>
 </TS>

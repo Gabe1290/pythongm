@@ -95,7 +95,8 @@ def gaps():
     used = code_usage()
     fr = live("fr")
     want = {k: v for k, v in fr.items() if k in used}
-    return used, want, {lang: sorted(k for k in want if k not in live(lang)) for lang in LANGS}
+    have = {lang: live(lang) for lang in LANGS}
+    return used, want, {lang: sorted(k for k in want if k not in have[lang]) for lang in LANGS}
 
 
 def report():

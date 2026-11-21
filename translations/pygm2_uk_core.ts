@@ -2726,6 +2726,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 Імпортуйте його в https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>Фільтр ресурсів…</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

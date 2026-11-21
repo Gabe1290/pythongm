@@ -158,6 +158,16 @@
         <source>Show generated code in Code Editor tab</source>
         <translation type="vanished">Generierten Code im Code-Editor-Tab anzeigen</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Einmal zerstört, bleibt dieses Objekt beim Neustart des Raums verschwunden (wird bei einem vollständigen Spielneustart zurückgesetzt)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="0"/>
+        <source>Stay destroyed</source>
+        <translation>Zerstört bleiben</translation>
+    </message>
 </context>
 <context>
     <name>ThymioPlaygroundWindow</name>
@@ -989,6 +999,19 @@
         <location filename="../extensions/thymio/playground_runner.py" line="0"/>
         <source>Running: {} robots, {} walls</source>
         <translation>Läuft: {} Roboter, {} Wände</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioDiagramWidget</name>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>FRONT</source>
+        <translation>VORNE</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
+        <source>GND</source>
+        <translation>BODEN</translation>
     </message>
 </context>
 </TS>

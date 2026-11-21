@@ -2862,6 +2862,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 Uvozite ga v https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>Filtriraj vire…</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

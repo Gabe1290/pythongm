@@ -2862,6 +2862,11 @@ Import it in https://lab.open-roberta.org/</source>
 
 Importieren Sie die Datei in https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="0"/>
+        <source>Filter assets…</source>
+        <translation>Assets filtern…</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>
