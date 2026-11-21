@@ -2426,6 +2426,46 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <source>Duplicated {0} instance(s)</source>
         <translation>{0} istanza/e duplicata/e</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Modifica i voxel Block World di questa stanza</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Apri un'altra tavolozza piastrelle (fino a {0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Salva prima questa stanza, così i suoi blocchi hanno un nome con cui essere salvati.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>Selezionato {0} in ({1}, {2}) -- {3} oggetti sovrapposti qui, clicca di nuovo per scorrerli ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>Tavolozza piastrelle {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Limite di tavolozze piastrelle raggiunto ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Modifica blocchi</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -2815,6 +2855,102 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
         <translation>La programmazione visuale è ora gestita tramite il pannello Eventi</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>(none)</source>
+        <translation>(nessuno)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Clear Tile</source>
+        <translation>Cancella piastrella</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Layer:</source>
+        <translation>Livello:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile Palette</source>
+        <translation>Tavolozza piastrelle</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile W:</source>
+        <translation>Piastrella L:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tileset:</source>
+        <translation>Set di piastrelle:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>Offset H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>Spaziatura H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Spazio orizzontale tra le piastrelle, in pixel (1 per i fogli con linee di griglia da 1 px)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Distanza dal bordo sinistro alla prima colonna di piastrelle, in pixel</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>Griglia del foglio di piastrelle</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Distanza dal bordo superiore alla prima riga di piastrelle, in pixel</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>Usa come set di piastrelle</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>Offset V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>Spaziatura V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Spazio verticale tra le piastrelle, in pixel</translation>
+    </message>
+</context>
+<context>
+    <name>TileGridWidget</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>No tileset</source>
+        <translation>Nessun set di piastrelle</translation>
     </message>
 </context>
 </TS>

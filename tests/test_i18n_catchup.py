@@ -31,6 +31,9 @@ CAUGHT_UP = (
     "OrphanedFilesDialog",
     "TrashDialog",
     "UnusedAssetsDialog",
+    "TilePaletteDialog",
+    "TileGridWidget",
+    "RoomEditor",
 )
 
 _CACHE = {}

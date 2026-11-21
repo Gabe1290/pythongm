@@ -580,6 +580,56 @@ Do you want to save anyway?</source>
         <source>(none)</source>
         <translation>（无）</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>水平偏移：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>水平间距：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>图块之间的水平间隙（像素）。对于带 1 像素网格线的图块表，请设为 1</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>第一列图块之前距左边缘的偏移（像素）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>图块表网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>第一行图块之前距上边缘的偏移（像素）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>用作图块集</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>垂直偏移：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>垂直间距：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>图块之间的垂直间隙（像素）</translation>
+    </message>
 </context>
 <context>
     <name>BlocklyWidget</name>
@@ -5823,6 +5873,46 @@ Events: {4}</source>
         <location filename="../editors/room_editor/__init__.py" line="667"/>
         <source>Duplicated {0} instance(s)</source>
         <translation>已复制 {0} 个实例的副本</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>方块世界</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>编辑此房间的方块世界体素</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>打开另一个图块面板（最多 {0} 个）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>请先保存此房间，这样它的方块才有可用于保存的名称。</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>已选择位于 ({1}, {2}) 的 {0} -- 此处叠放了 {3} 个对象，再次单击可循环切换 ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>图块面板 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>已达到图块面板数量上限（{0}）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 方块编辑</translation>
     </message>
 </context>
 <context>

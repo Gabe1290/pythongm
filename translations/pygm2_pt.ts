@@ -1421,6 +1421,56 @@ Deseja salvar mesmo assim?</translation>
         <source>(none)</source>
         <translation>(nenhum)</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>Deslocamento H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>Espaçamento H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Espaço horizontal entre os blocos, em pixels (1 para folhas com linhas de grade de 1 px)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Deslocamento da borda esquerda até a primeira coluna de blocos, em pixels</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>Grade da folha de blocos</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Deslocamento da borda superior até a primeira linha de blocos, em pixels</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>Usar como conjunto de blocos</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>Deslocamento V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>Espaçamento V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Espaço vertical entre os blocos, em pixels</translation>
+    </message>
 </context>
 <context>
     <name>AutoSaveSettingsDialog</name>
@@ -5823,6 +5873,46 @@ Eventos: {4}</translation>
         <location filename="../editors/room_editor/__init__.py" line="667"/>
         <source>Duplicated {0} instance(s)</source>
         <translation>{0} instância(s) duplicada(s)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Editar os voxels do Block World desta sala</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Abrir outra paleta de blocos (até {0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Salve esta sala primeiro, para que seus blocos tenham um nome sob o qual serem salvos.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>{0} selecionado em ({1}, {2}) -- {3} objetos empilhados aqui, clique novamente para alternar ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>Paleta de Blocos {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Limite de paletas de blocos atingido ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Editar blocos</translation>
     </message>
 </context>
 <context>

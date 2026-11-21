@@ -2426,6 +2426,46 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Duplicated {0} instance(s)</source>
         <translation>Продублировано экземпляров: {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Редактировать воксели Block World этой комнаты</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Открыть ещё одну палитру плиток (до {0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Сначала сохраните эту комнату, чтобы её блоки было под каким именем сохранить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>Выбран {0} в ({1}, {2}) -- здесь сложено объектов: {3}, щёлкните ещё раз для перебора ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>Палитра плиток {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Достигнут предел палитр плиток ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Правка блоков</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -2815,6 +2855,102 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
         <translation>Визуальное программирование теперь управляется через панель Событий</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>(none)</source>
+        <translation>(нет)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Clear Tile</source>
+        <translation>Очистить плитку</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Layer:</source>
+        <translation>Слой:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile Palette</source>
+        <translation>Палитра плиток</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile W:</source>
+        <translation>Плитка Ш:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tileset:</source>
+        <translation>Набор плиток:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>Смещение по Г:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>Интервал по Г:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Горизонтальный промежуток между плитками в пикселях (1 для листов с линиями сетки в 1 px)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Отступ от левого края до первого столбца плиток, в пикселях</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>Сетка листа плиток</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Отступ от верхнего края до первой строки плиток, в пикселях</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>Использовать как набор плиток</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>Смещение по В:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>Интервал по В:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Вертикальный промежуток между плитками, в пикселях</translation>
+    </message>
+</context>
+<context>
+    <name>TileGridWidget</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>No tileset</source>
+        <translation>Нет набора плиток</translation>
     </message>
 </context>
 </TS>

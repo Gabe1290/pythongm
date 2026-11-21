@@ -2426,6 +2426,46 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <source>Duplicated {0} instance(s)</source>
         <translation>{0} Instanz(en) dupliziert</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Die Block-World-Voxel dieses Raums bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Eine weitere Kachelpalette öffnen (bis zu {0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Speichern Sie diesen Raum zuerst, damit seine Blöcke unter einem Namen gespeichert werden können.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>{0} bei ({1}, {2}) ausgewählt -- hier liegen {3} Objekte übereinander, erneut klicken zum Durchschalten ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>Kachelpalette {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Höchstzahl an Kachelpaletten erreicht ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Blöcke bearbeiten</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -2815,6 +2855,102 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
         <translation>Visuelle Programmierung wird jetzt über das Ereignis-Panel verwaltet</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>(none)</source>
+        <translation>(keine)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Clear Tile</source>
+        <translation>Kachel löschen</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Layer:</source>
+        <translation>Ebene:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile Palette</source>
+        <translation>Kachelpalette</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile W:</source>
+        <translation>Kachel B:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tileset:</source>
+        <translation>Kachelsatz:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>H-Versatz:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>H-Abstand:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Waagerechter Abstand zwischen den Kacheln in Pixeln (1 bei Blättern mit 1-px-Gitterlinien)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Versatz vom linken Rand bis zur ersten Kachelspalte, in Pixeln</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>Kachelblatt-Raster</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Versatz vom oberen Rand bis zur ersten Kachelzeile, in Pixeln</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>Als Kachelsatz verwenden</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>V-Versatz:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>V-Abstand:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Senkrechter Abstand zwischen den Kacheln, in Pixeln</translation>
+    </message>
+</context>
+<context>
+    <name>TileGridWidget</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>No tileset</source>
+        <translation>Kein Kachelsatz</translation>
     </message>
 </context>
 </TS>

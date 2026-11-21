@@ -2426,6 +2426,46 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <source>Duplicated {0} instance(s)</source>
         <translation>Podvojenih {0} instanc</translation>
     </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Uredi voksle Block World te sobe</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Odpri še eno paleto ploščic (največ {0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Najprej shranite to sobo, da bodo imeli njeni bloki ime, pod katerim se shranijo.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>Izbran {0} na ({1}, {2}) -- tu je zloženih {3} objektov, kliknite znova za kroženje ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile Palette {0}</source>
+        <translation>Paleta ploščic {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Doseženo največje število palet ploščic ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="0"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Urejanje blokov</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -2815,6 +2855,102 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
         <translation>Vizualno programiranje se zdaj upravlja preko plošče Dogodki</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>(none)</source>
+        <translation>(brez)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Clear Tile</source>
+        <translation>Počisti ploščico</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Close</source>
+        <translation>Zapri</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Layer:</source>
+        <translation>Plast:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile Palette</source>
+        <translation>Paleta ploščic</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tile W:</source>
+        <translation>Ploščica Š:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tileset:</source>
+        <translation>Nabor ploščic:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H offset:</source>
+        <translation>Zamik H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>H sep:</source>
+        <translation>Razmik H:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Vodoravni razmik med ploščicami v slikovnih pikah (1 za liste z 1-px mrežnimi črtami)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Zamik od levega roba do prvega stolpca ploščic, v slikovnih pikah</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Tilesheet grid</source>
+        <translation>Mreža lista ploščic</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Zamik od zgornjega roba do prve vrstice ploščic, v slikovnih pikah</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Use as tileset</source>
+        <translation>Uporabi kot nabor ploščic</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V offset:</source>
+        <translation>Zamik V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>V sep:</source>
+        <translation>Razmik V:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Navpični razmik med ploščicami, v slikovnih pikah</translation>
+    </message>
+</context>
+<context>
+    <name>TileGridWidget</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="0"/>
+        <source>No tileset</source>
+        <translation>Ni nabora ploščic</translation>
     </message>
 </context>
 </TS>
