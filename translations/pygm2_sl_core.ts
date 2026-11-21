@@ -2473,7 +2473,7 @@ Preverite konzolo za podrobnosti o napaki.</translation>
         <location filename="../core/ide_exporters.py" line="63"/>
         <location filename="../core/ide_exporters.py" line="128"/>
         <source>Export Successful</source>
-        <translation>Export réussi</translation>
+        <translation>Izvoz uspešen</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="64"/>
@@ -3115,6 +3115,143 @@ Napaka:
         <location filename="../core/ide/_test_game.py" line="0"/>
         <source>Please open or create a project first before testing an object.</source>
         <translation>Preden preizkusite objekt, odprite ali ustvarite projekt.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again.</source>
+        <translation>Upravitelja naprav Thymio ni mogoče doseči. Zaženite Thymio Suite (ali thymio-device-manager) in poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Exporting Kivy project...</source>
+        <translation>Izvažanje projekta Kivy...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy export complete</source>
+        <translation>Izvoz Kivy končan</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy project exported to:
+{0}</source>
+        <translation>Projekt Kivy izvožen v:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Looking for a Thymio robot...</source>
+        <translation>Iskanje robota Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio objects found in this project. Add one (name it starting with &quot;thymio&quot;) and try again.</source>
+        <translation>V tem projektu ni objektov Thymio. Dodajte enega (ime naj se začne s »thymio«) in poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on.</source>
+        <translation>Robota Thymio ni mogoče najti. Preverite kabel USB (ali brezžični ključek) in ali je robot vklopljen.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Object to send:</source>
+        <translation>Objekt za pošiljanje:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Offline Python Runtime?</source>
+        <translation>Izvajalno okolje Python brez povezave?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Robot:</source>
+        <translation>Robot:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>Send to &amp;Thymio robot...</source>
+        <translation>Pošlji robotu &amp;Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Send to Thymio</source>
+        <translation>Pošlji v Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Sending {0} to {1}...</source>
+        <translation>Pošiljanje {0} v {1}...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Talking to the robot needs the &apos;tdmclient&apos; package. Install it with:
+
+pip install --user tdmclient
+
+and try again.</source>
+        <translation>Za komunikacijo z robotom je potreben paket »tdmclient«. Namestite ga z:
+
+pip install --user tdmclient
+
+in poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot did not accept the program ({0}):
+
+{1}</source>
+        <translation>Robot ni sprejel programa ({0}):
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot is in use by another program (for example Aseba Studio). Close it there and try again.</source>
+        <translation>Robota uporablja drug program (na primer Aseba Studio). Tam ga zaprite in poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>This game uses Python code (execute_code), which normally loads its runtime from the internet the first time the exported game is opened.
+
+Bundle it into the .html file instead, so the game works with no internet at all (e.g. locked-down school networks)?
+
+Adds about 15-20 MB to the exported file. Needs internet once now, to download and cache it (cached afterwards for future exports).</source>
+        <translation>Ta igra uporablja kodo Python (execute_code), katere izvajalno okolje se običajno prenese z interneta ob prvem odprtju izvožene igre.
+
+Ga raje vključim v datoteko .html, da bo igra delovala povsem brez interneta (npr. v zaklenjenih šolskih omrežjih)?
+
+Izvoženi datoteki doda približno 15-20 MB. Zdaj je enkrat potreben internet za prenos in predpomnjenje (za prihodnje izvoze ostane v predpomnilniku).</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send failed</source>
+        <translation>Pošiljanje v Thymio ni uspelo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no device manager</source>
+        <translation>Pošiljanje v Thymio: ni upravitelja naprav</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no robot found</source>
+        <translation>Pošiljanje v Thymio: ni robota</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Would you like to open the export directory?</source>
+        <translation>Želite odpreti mapo izvoza?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is now running on {1}.</source>
+        <translation>{0} zdaj teče na {1}.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>Projekta ni bilo mogoče izvoziti. Preverite napake v konzoli.</translation>
     </message>
 </context>
 <context>

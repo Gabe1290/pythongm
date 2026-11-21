@@ -4967,6 +4967,16 @@ Haga clic derecho en {1} y añada la acción allí.</translation>
         <source>Arrow</source>
         <translation>Flecha</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>Añadir alarma</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>Añadir tecla…</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -8674,6 +8684,143 @@ Error:
         <location filename="../core/ide/_test_game.py" line="0"/>
         <source>Please open or create a project first before testing an object.</source>
         <translation>Abra o cree primero un proyecto antes de probar un objeto.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again.</source>
+        <translation>No se pudo contactar con el gestor de dispositivos de Thymio. Inicie Thymio Suite (o thymio-device-manager) y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Exporting Kivy project...</source>
+        <translation>Exportando el proyecto Kivy...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy export complete</source>
+        <translation>Exportación de Kivy completada</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy project exported to:
+{0}</source>
+        <translation>Proyecto Kivy exportado a:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Looking for a Thymio robot...</source>
+        <translation>Buscando un robot Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio objects found in this project. Add one (name it starting with &quot;thymio&quot;) and try again.</source>
+        <translation>No hay objetos Thymio en este proyecto. Añada uno (con un nombre que empiece por «thymio») y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on.</source>
+        <translation>No se encontró ningún robot Thymio. Compruebe el cable USB (o el adaptador inalámbrico) y que el robot esté encendido.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Object to send:</source>
+        <translation>Objeto a enviar:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Offline Python Runtime?</source>
+        <translation>¿Entorno de Python sin conexión?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Robot:</source>
+        <translation>Robot:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>Send to &amp;Thymio robot...</source>
+        <translation>Enviar al robot &amp;Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Send to Thymio</source>
+        <translation>Enviar a Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Sending {0} to {1}...</source>
+        <translation>Enviando {0} a {1}...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Talking to the robot needs the &apos;tdmclient&apos; package. Install it with:
+
+pip install --user tdmclient
+
+and try again.</source>
+        <translation>Para comunicarse con el robot se necesita el paquete «tdmclient». Instálelo con:
+
+pip install --user tdmclient
+
+y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot did not accept the program ({0}):
+
+{1}</source>
+        <translation>El robot no aceptó el programa ({0}):
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot is in use by another program (for example Aseba Studio). Close it there and try again.</source>
+        <translation>El robot está en uso por otro programa (por ejemplo Aseba Studio). Ciérrelo allí y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>This game uses Python code (execute_code), which normally loads its runtime from the internet the first time the exported game is opened.
+
+Bundle it into the .html file instead, so the game works with no internet at all (e.g. locked-down school networks)?
+
+Adds about 15-20 MB to the exported file. Needs internet once now, to download and cache it (cached afterwards for future exports).</source>
+        <translation>Este juego usa código Python (execute_code), cuyo entorno normalmente se descarga de Internet la primera vez que se abre el juego exportado.
+
+¿Incluirlo en el archivo .html para que el juego funcione sin ninguna conexión (por ejemplo, en redes escolares bloqueadas)?
+
+Añade unos 15-20 MB al archivo exportado. Ahora se necesita Internet una vez para descargarlo y guardarlo en caché (queda en caché para futuras exportaciones).</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send failed</source>
+        <translation>Error al enviar a Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no device manager</source>
+        <translation>Envío a Thymio: no hay gestor de dispositivos</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no robot found</source>
+        <translation>Envío a Thymio: no se encontró ningún robot</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Would you like to open the export directory?</source>
+        <translation>¿Desea abrir la carpeta de exportación?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is now running on {1}.</source>
+        <translation>{0} se está ejecutando en {1}.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>No se pudo exportar el proyecto. Revise los errores en la consola.</translation>
     </message>
 </context>
 <context>

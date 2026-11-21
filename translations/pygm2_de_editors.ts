@@ -2184,6 +2184,16 @@ Klicken Sie stattdessen mit der rechten Maustaste auf {1} und fügen Sie die Akt
         <source>Arrow</source>
         <translation>Pfeil</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>Alarm hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>Taste hinzufügen…</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

@@ -883,7 +883,15 @@ Other:
 
 ## Translations / i18n
 
-### `ide.tr()` / `self.ide.tr()` / `panel.tr()` strings: ~27-38 per language untranslated (found 2026-11-21)
+### ~~`ide.tr()` / `self.ide.tr()` / `panel.tr()` strings: ~27-38 per language untranslated~~ (found and FIXED 2026-11-21)
+
+**Fixed.** `scripts/i18n_catchup.py` has a `RECEIVERS` table (ide / self.ide ->
+PyGameMakerIDE, panel -> ObjectEventsPanel); the scan files those calls there and no longer
+under the class that merely contains them, and `test_every_tr_receiver_is_known` fails on a
+new, unlisted receiver. 25 strings translated in de/es/it/ja/pt/ru/sl/uk/zh (Send to Thymio,
+Kivy export, two context-menu items), 36 in Polish (the micro:bit export dialogs), 1 in
+French. Also replaced French "Export réussi" still shown in ru/sl. Original note:
+
 
 175 calls translate through ANOTHER object's `tr()` -- `ide.tr(...)` in extension menu
 functions (Thymio, micro:bit), `self.ide.tr(...)` in `core/ide_exporters.py`, `panel.tr(...)`
@@ -1120,8 +1128,8 @@ existed. Regenerated; 0 untranslated strings reported now.
 ### Thymio — send straight to the robot (2026-11-02)
 `File -> Send to Thymio robot...` (extensions/thymio/export/device.py) **works against a real Thymio II**: all six
 `thymio_hw_test` programs were sent and ran correctly (developer, 2026-11-02). Still open: the interface text is translated
-in **French and Polish only** (the other nine languages fall back to English; 16 strings in the `PyGameMakerIDE` context,
-see `tests/test_thymio_device_link.py::SEND_STRINGS`); the exported source still carries the "Upload this code using Aseba
+in all eleven languages since 2026-11-21 (it had been French and Polish only: those calls go through `ide.tr()`, which the
+i18n scan did not see); the exported source still carries the "Upload this code using Aseba
 Studio" header comment; there is no "stop the robot" action; nobody has clicked the menu item by hand (the flow is tested
 with dialogs stubbed, and the device layer against the robot); not tried: the wireless dongle, a second robot at once,
 Linux / macOS, and loading an exported `.aesl` in Aseba Studio by hand.

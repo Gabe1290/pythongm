@@ -2775,3 +2775,6 @@ against the language. Nothing here has had a native-speaker read. **Second landm
 ~150 strings showed English even in French. `code_usage()` now maps each mixin string to
 its runtime classes and `propagate` copies translations there -- when adding a mixin
 string, translate it under the concrete contexts (run `propagate`).
+Third: `tr()` called on ANOTHER object (`ide.tr`, `self.ide.tr`, `panel.tr`) runs under
+that object's class; the scan maps receivers via `RECEIVERS` in `scripts/i18n_catchup.py`, and a
+new receiver fails `test_every_tr_receiver_is_known` until it is listed.

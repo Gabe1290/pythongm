@@ -5191,6 +5191,16 @@ Right-click on {1} and add the action there instead.</source>
         <source>Arrow</source>
         <translation>矢印</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>アラームを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>キーを追加…</translation>
+    </message>
 </context>
 <context>
     <name>AssetTreeWidget</name>
@@ -9428,6 +9438,143 @@ Error:
         <location filename="../core/ide/_test_game.py" line="0"/>
         <source>Please open or create a project first before testing an object.</source>
         <translation>オブジェクトを試す前に、プロジェクトを開くか作成してください。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again.</source>
+        <translation>Thymio デバイスマネージャーに接続できません。Thymio Suite（または thymio-device-manager）を起動して、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Exporting Kivy project...</source>
+        <translation>Kivy プロジェクトをエクスポート中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy export complete</source>
+        <translation>Kivy のエクスポートが完了しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Kivy project exported to:
+{0}</source>
+        <translation>Kivy プロジェクトをエクスポートしました:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Looking for a Thymio robot...</source>
+        <translation>Thymio ロボットを探しています...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio objects found in this project. Add one (name it starting with &quot;thymio&quot;) and try again.</source>
+        <translation>このプロジェクトには Thymio オブジェクトがありません。名前が「thymio」で始まるオブジェクトを追加して、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on.</source>
+        <translation>Thymio ロボットが見つかりません。USB ケーブル（またはワイヤレスドングル）と、ロボットの電源が入っていることを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Object to send:</source>
+        <translation>送信するオブジェクト:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Offline Python Runtime?</source>
+        <translation>オフライン用の Python ランタイム?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Robot:</source>
+        <translation>ロボット:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>Send to &amp;Thymio robot...</source>
+        <translation>Thymio ロボットへ送信(&amp;T)...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Send to Thymio</source>
+        <translation>Thymio へ送信</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Sending {0} to {1}...</source>
+        <translation>{0} を {1} へ送信中...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Talking to the robot needs the &apos;tdmclient&apos; package. Install it with:
+
+pip install --user tdmclient
+
+and try again.</source>
+        <translation>ロボットとの通信には「tdmclient」パッケージが必要です。次のコマンドでインストールしてください:
+
+pip install --user tdmclient
+
+その後、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot did not accept the program ({0}):
+
+{1}</source>
+        <translation>ロボットがプログラムを受け付けませんでした ({0}):
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>The robot is in use by another program (for example Aseba Studio). Close it there and try again.</source>
+        <translation>ロボットは別のプログラム（例: Aseba Studio）で使用中です。そちらで閉じてから、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>This game uses Python code (execute_code), which normally loads its runtime from the internet the first time the exported game is opened.
+
+Bundle it into the .html file instead, so the game works with no internet at all (e.g. locked-down school networks)?
+
+Adds about 15-20 MB to the exported file. Needs internet once now, to download and cache it (cached afterwards for future exports).</source>
+        <translation>このゲームは Python コード（execute_code）を使っています。通常、その実行環境はエクスポートしたゲームを初めて開いたときにインターネットから読み込まれます。
+
+代わりに .html ファイルに同梱して、インターネットがまったくなくても（例: 制限された学校のネットワーク）動くようにしますか？
+
+エクスポートしたファイルが約 15〜20 MB 大きくなります。今回だけダウンロードとキャッシュのためにインターネットが必要です（以後のエクスポートではキャッシュを使います）。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send failed</source>
+        <translation>Thymio への送信に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no device manager</source>
+        <translation>Thymio への送信: デバイスマネージャーがありません</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio send: no robot found</source>
+        <translation>Thymio への送信: ロボットが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Would you like to open the export directory?</source>
+        <translation>エクスポート先のフォルダーを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is now running on {1}.</source>
+        <translation>{0} は {1} で実行中です。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>プロジェクトをエクスポートできませんでした。コンソールでエラーを確認してください。</translation>
     </message>
 </context>
 <context>

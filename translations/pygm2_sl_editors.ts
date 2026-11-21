@@ -2184,6 +2184,16 @@ Namesto tega desno kliknite {1} in dejanje dodajte tam.</translation>
         <source>Arrow</source>
         <translation>Puščica</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>Dodaj alarm</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>Dodaj tipko…</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

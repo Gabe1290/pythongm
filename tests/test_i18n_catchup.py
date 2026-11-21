@@ -100,6 +100,9 @@ SAME_AS_FRENCH = {
     ("es", "PyGameMakerIDE", "Main"),       # Principal
     ("pt", "PyGameMakerIDE", "Main"),       # Principal
     ("pt", "ObjectEventsPanel", "Alarm"),   # Alarme
+    ("pl", "PyGameMakerIDE", "Open Roberta XML (*.xml)"),   # XML Open Roberta
+    ("pt", "PyGameMakerIDE", "Open Roberta XML (*.xml)"),   # XML Open Roberta
+    ("pt", "PyGameMakerIDE", "V1 or V2"),                   # V1 ou V2
 }
 
 
@@ -226,3 +229,20 @@ def test_no_string_has_two_live_entries_in_one_file(ts):
                 seen[(ctx.findtext("name"), m.findtext("source"))] += 1
     dupes = [k for k, n in seen.items() if n > 1]
     assert not dupes, dupes[:5]
+
+
+def test_every_tr_receiver_is_known():
+    """tr() on another object (ide.tr, self.ide.tr, panel.tr) runs under that
+    object's class; the scan must know it, or its strings go unchecked -- the
+    Send to Thymio dialogs and the micro:bit export dialogs went untranslated
+    that way until 2026-11-21. Add a new receiver to cu.RECEIVERS."""
+    assert cu._scan()[3] == {}, cu._scan()[3]
+
+
+def test_receiver_strings_are_filed_under_the_receiver_class():
+    used = cu.code_usage()
+    assert ("PyGameMakerIDE", "Send to &Thymio robot...") in used      # ide.tr in extensions/thymio
+    assert ("PyGameMakerIDE", "Kivy export complete") in used          # self.ide.tr in core/ide_exporters.py
+    assert ("ObjectEventsPanel", "Add Alarm") in used                  # panel.tr in the context menu
+    # ...and no longer under the class that merely contains the call
+    assert not any(c == "IDEExporters" for c, _ in used), "self.ide.tr filed under its container"

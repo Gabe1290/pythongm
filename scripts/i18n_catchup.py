@@ -64,11 +64,27 @@ def _module_file(module, rel_from, level=0):
     return None
 
 
+# tr() called on ANOTHER object runs under that object's class. Every receiver the
+# code uses must be listed here (tests/test_i18n_catchup.py fails on a new one).
+RECEIVERS = {
+    "ide": "PyGameMakerIDE",         # extension menu callbacks get the IDE window
+    "self.ide": "PyGameMakerIDE",    # core/ide_exporters.py
+    "panel": "ObjectEventsPanel",    # object-editor context menu, Thymio panel menus
+}
+
+
+def _is_tr(c):
+    return (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+            and c.func.attr == "tr" and c.args
+            and isinstance(c.args[0], ast.Constant) and isinstance(c.args[0].value, str))
+
+
 @functools.lru_cache(maxsize=None)
 def _scan():
-    """Parse the code once: classes {(file, name): (bases, tr strings)}, the
-    import table per file, and the QCoreApplication.translate() pairs."""
-    classes, imports, translate = {}, {}, {}
+    """Parse the code once: classes {(file, name): (bases, self.tr strings)},
+    the import table per file, the fixed-context pairs (QCoreApplication.translate
+    and tr() on a RECEIVERS object), and {receiver: file} for unknown receivers."""
+    classes, imports, translate, unknown = {}, {}, {}, {}
     for f in sorted(ROOT.rglob("*.py")):
         rel = f.relative_to(ROOT)
         if any(p in rel.parts for p in SKIP):
@@ -88,19 +104,23 @@ def _scan():
             bases = [b.id if isinstance(b, ast.Name) else getattr(b, "attr", None) for b in cls.bases]
             strings = []
             for c in ast.walk(cls):
-                if (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
-                        and c.func.attr == "tr" and c.args
-                        and isinstance(c.args[0], ast.Constant)
-                        and isinstance(c.args[0].value, str)):
+                if _is_tr(c) and isinstance(c.func.value, ast.Name) and c.func.value.id == "self":
                     strings.append(c.args[0].value)
             classes[(rel, cls.name)] = ([b for b in bases if b], strings)
+        for c in ast.walk(tree):
+            if _is_tr(c) and ast.unparse(c.func.value) != "self":
+                recv = ast.unparse(c.func.value)
+                if recv in RECEIVERS:
+                    translate.setdefault((RECEIVERS[recv], c.args[0].value), rel)
+                else:
+                    unknown.setdefault(recv, rel)
         for c in ast.walk(tree):
             if (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
                     and c.func.attr == "translate" and len(c.args) >= 2
                     and all(isinstance(a, ast.Constant) and isinstance(a.value, str)
                             for a in c.args[:2])):
                 translate.setdefault((c.args[0].value, c.args[1].value), rel)
-    return classes, imports, translate
+    return classes, imports, translate, unknown
 
 
 @functools.lru_cache(maxsize=None)
@@ -114,7 +134,7 @@ def runtime_contexts():
     the subclass file's ``from ... import``, else to the only class with that
     name (two unrelated ``InputMixin`` classes exist, so names alone are not enough).
     """
-    classes, imports, _ = _scan()
+    classes, imports, _, _ = _scan()
     by_name = {}
     for key in classes:
         by_name.setdefault(key[1], []).append(key)
@@ -155,7 +175,7 @@ def runtime_contexts():
 def code_usage():
     """{(context, source): relative file of first use}, with each tr() string
     filed under every runtime context it really runs in (see runtime_contexts)."""
-    classes, _, translate = _scan()
+    classes, _, translate, _ = _scan()
     contexts = runtime_contexts()
     out = {}
     for key in sorted(classes):
@@ -347,7 +367,7 @@ def apply(path, replace=False):
 def inherited_pairs():
     """{(runtime context, source): defining class} for every tr() string that
     runs under a class OTHER than the one whose code contains it."""
-    classes, _, _ = _scan()
+    classes, _, _, _ = _scan()
     contexts = runtime_contexts()
     out = {}
     for key, (_, strings) in classes.items():

@@ -2184,6 +2184,16 @@ Right-click on {1} and add the action there instead.</source>
         <source>Arrow</source>
         <translation>Стрелка</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>Добавить будильник</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>Добавить клавишу…</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

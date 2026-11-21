@@ -2184,6 +2184,16 @@ Fai invece clic destro su {1} e aggiungi lì l'azione.</translation>
         <source>Arrow</source>
         <translation>Freccia</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Alarm</source>
+        <translation>Aggiungi allarme</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_context_menu.py" line="0"/>
+        <source>Add Key…</source>
+        <translation>Aggiungi tasto…</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

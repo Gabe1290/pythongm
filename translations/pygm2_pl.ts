@@ -9485,6 +9485,220 @@ Zaimportuj go w https://lab.open-roberta.org/</translation>
         <source>You have unsaved changes. Do you want to save before closing the project?</source>
         <translation>Masz niezapisane zmiany. Czy zapisać je przed zamknięciem projektu?</translation>
     </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="0"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>Nie udało się wyeksportować projektu. Sprawdź błędy w konsoli.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>
+
+Not exported (unsupported or needs a V2 board):
+</source>
+        <translation>
+
+Nie wyeksportowano (nieobsługiwane lub wymaga płytki V2):
+</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Also build a .hex file you can drag onto the MICROBIT USB drive of a micro:bit ({0})? This works even on a brand-new board that has never run MicroPython.</source>
+        <translation>Utworzyć też plik .hex, który można przeciągnąć na dysk USB MICROBIT płytki micro:bit ({0})? Działa to nawet na nowej płytce, na której nigdy nie działał MicroPython.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Both (one .hex for V1 and V2 boards)</source>
+        <translation>Obie (jeden plik .hex dla płytek V1 i V2)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Build a ready-to-flash .hex?</source>
+        <translation>Utworzyć gotowy do wgrania plik .hex?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Building .hex...</source>
+        <translation>Tworzenie pliku .hex...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Built</source>
+        <translation>Utworzono</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Built .hex</source>
+        <translation>Utworzono plik .hex</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copied</source>
+        <translation>Skopiowano</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copied to micro:bit</source>
+        <translation>Skopiowano na micro:bit</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copy Failed</source>
+        <translation>Kopiowanie nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copy main.py to a connected micro:bit now?
+
+The board must already be plugged in via USB and running MicroPython.</source>
+        <translation>Skopiować teraz main.py na podłączoną płytkę micro:bit?
+
+Płytka musi być już podłączona przez USB i mieć uruchomiony MicroPython.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copy to micro:bit?</source>
+        <translation>Skopiować na micro:bit?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Copying to micro:bit...</source>
+        <translation>Kopiowanie na micro:bit...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Couldn&apos;t build the .hex file:
+
+{0}</source>
+        <translation>Nie udało się utworzyć pliku .hex:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Couldn&apos;t copy to the micro:bit:
+
+{0}</source>
+        <translation>Nie udało się skopiować na micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/__init__.py" line="0"/>
+        <source>Export &amp;micro:bit (MicroPython) code...</source>
+        <translation>Eksportuj kod &amp;micro:bit (MicroPython)...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Exporting micro:bit code...</source>
+        <translation>Eksportowanie kodu micro:bit...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Failed to export micro:bit code:
+
+{0}</source>
+        <translation>Nie udało się wyeksportować kodu micro:bit:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>No micro:bit objects found in this project, so no MicroPython code was generated. Add a micro:bit object (name it starting with &quot;microbit&quot;, or set is_microbit) and try again.</source>
+        <translation>W tym projekcie nie ma obiektów micro:bit, więc nie wygenerowano kodu MicroPython. Dodaj obiekt micro:bit (nazwa zaczynająca się od „microbit” albo ustaw is_microbit) i spróbuj ponownie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>V1 (original, 2016-2020)</source>
+        <translation>V1 (oryginalna, 2016-2020)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>V1 or V2</source>
+        <translation>V1 czy V2</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>V2 (2020 or later)</source>
+        <translation>V2 (2020 lub nowsza)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Which micro:bit do you have?</source>
+        <translation>Którą płytkę micro:bit masz?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>Written to:
+{0}
+
+Drag this file onto the micro:bit&apos;s MICROBIT USB drive to flash it.</source>
+        <translation>Zapisano w:
+{0}
+
+Przeciągnij ten plik na dysk USB MICROBIT płytki micro:bit, aby ją zaprogramować.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>main.py copied to the micro:bit. It will run automatically.</source>
+        <translation>Skopiowano main.py na micro:bit. Uruchomi się automatycznie.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>main.py written for {0} micro:bit object(s) to:
+{1}{2}
+
+Would you like to open the output folder?</source>
+        <translation>Zapisano main.py dla obiektów micro:bit ({0}) w:
+{1}{2}
+
+Czy otworzyć folder wyjściowy?</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit Export</source>
+        <translation>Eksport micro:bit</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit Export Complete</source>
+        <translation>Eksport micro:bit zakończony</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit Export Failed</source>
+        <translation>Eksport micro:bit nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit Version</source>
+        <translation>Wersja micro:bit</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit copy failed</source>
+        <translation>Kopiowanie na micro:bit nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit export complete</source>
+        <translation>Eksport micro:bit zakończony</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit export failed</source>
+        <translation>Eksport micro:bit nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit export: nothing to export</source>
+        <translation>Eksport micro:bit: nic do wyeksportowania</translation>
+    </message>
+    <message>
+        <location filename="../extensions/microbit/export/__init__.py" line="0"/>
+        <source>micro:bit hex build failed</source>
+        <translation>Tworzenie pliku .hex micro:bit nie powiodło się</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>
