@@ -33,6 +33,7 @@ pytestmark = skip_without_pyside6
 
 SPLIT_LANGS = ("de", "it", "ru", "sl", "uk")
 FIXED_CONTEXTS = (
+    "ThymioConfigDialog",
     "ThymioEventSelector",
     "MultiActionEditor",
     "ThymioActionSelector",

@@ -1466,7 +1466,7 @@ Would you like to open the export directory?</source>
     <name>ThymioConfigDialog</name>
     <message>
         <source>Configure Thymio Events &amp; Actions</source>
-        <translation type="vanished">Настройка событий и действий Thymio</translation>
+        <translation>Настройка событий и действий Thymio</translation>
     </message>
     <message>
         <source>Preset:</source>
@@ -1474,23 +1474,23 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>Thymio Full (All Thymio Blocks)</source>
-        <translation type="vanished">Thymio полный (все блоки Thymio)</translation>
+        <translation>Thymio полный (все блоки Thymio)</translation>
     </message>
     <message>
         <source>Thymio Basic (Buttons + Motors)</source>
-        <translation type="vanished">Thymio базовый (кнопки + моторы)</translation>
+        <translation>Thymio базовый (кнопки + моторы)</translation>
     </message>
     <message>
         <source>Thymio Sensors</source>
-        <translation type="vanished">Сенсоры Thymio</translation>
+        <translation>Сенсоры Thymio</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Пользовательский</translation>
+        <translation>Пользовательский</translation>
     </message>
     <message>
         <source>Select Thymio blocks to enable:</source>
-        <translation type="vanished">Выберите блоки Thymio для включения:</translation>
+        <translation>Выберите блоки Thymio для включения:</translation>
     </message>
     <message>
         <source>Block</source>
@@ -1536,7 +1536,7 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>{0} Thymio blocks, {1} categories</source>
-        <translation type="vanished">{0} блоков Thymio, {1} категорий</translation>
+        <translation>{0} блоков Thymio, {1} категорий</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
@@ -1546,7 +1546,7 @@ Would you like to open the export directory?</source>
         <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
-        <translation type="vanished">У некоторых включённых блоков Thymio отсутствуют зависимости. Блоки могут работать некорректно.
+        <translation>У некоторых включённых блоков Thymio отсутствуют зависимости. Блоки могут работать некорректно.
 
 Всё равно сохранить?</translation>
     </message>

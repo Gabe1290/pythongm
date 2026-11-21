@@ -1466,7 +1466,7 @@ Ali želite odpreti mapo izvoza?</translation>
     <name>ThymioConfigDialog</name>
     <message>
         <source>Configure Thymio Events &amp; Actions</source>
-        <translation type="vanished">Nastavi dogodke in dejanja Thymio</translation>
+        <translation>Nastavi dogodke in dejanja Thymio</translation>
     </message>
     <message>
         <source>Preset:</source>
@@ -1474,23 +1474,23 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>Thymio Full (All Thymio Blocks)</source>
-        <translation type="vanished">Thymio polno (vsi bloki Thymio)</translation>
+        <translation>Thymio polno (vsi bloki Thymio)</translation>
     </message>
     <message>
         <source>Thymio Basic (Buttons + Motors)</source>
-        <translation type="vanished">Thymio osnovno (gumbi + motorji)</translation>
+        <translation>Thymio osnovno (gumbi + motorji)</translation>
     </message>
     <message>
         <source>Thymio Sensors</source>
-        <translation type="vanished">Senzorji Thymio</translation>
+        <translation>Senzorji Thymio</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Po meri</translation>
+        <translation>Po meri</translation>
     </message>
     <message>
         <source>Select Thymio blocks to enable:</source>
-        <translation type="vanished">Izberite bloke Thymio za omogočanje:</translation>
+        <translation>Izberite bloke Thymio za omogočanje:</translation>
     </message>
     <message>
         <source>Block</source>
@@ -1536,7 +1536,7 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>{0} Thymio blocks, {1} categories</source>
-        <translation type="vanished">{0} blokov Thymio, {1} kategorij</translation>
+        <translation>{0} blokov Thymio, {1} kategorij</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
@@ -1546,7 +1546,7 @@ Ali želite odpreti mapo izvoza?</translation>
         <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
-        <translation type="vanished">Nekaterim omogočenim blokom Thymio manjkajo odvisnosti. Bloki morda ne bodo delovali pravilno.
+        <translation>Nekaterim omogočenim blokom Thymio manjkajo odvisnosti. Bloki morda ne bodo delovali pravilno.
 
 Želite vseeno shraniti?</translation>
     </message>
