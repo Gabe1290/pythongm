@@ -563,6 +563,25 @@ noticed on the way: translate the other raycast parameter labels; the
 `set_billboard_rotation` action-reference strings; the `maze_4` real-Kivy
 worker run that does not finish within 240 s.
 
+
+### Follow-ups (started 2026-11-21, one commit each)
+
+- [ ] **F1 — Set Billboard Rotation in the localized action reference.** Its
+  name, description and parameter note in `tools/action_ref_i18n.py` for the
+  eight translated languages; regenerate (it fell back to English since it
+  joined the reference in S13).
+- [ ] **F2 — The raycast configure-dialog text in ten languages.** The 46
+  strings of the five older raycast actions (41 parameter labels + 5
+  descriptions: Enable Raycast View, Set Facing Angle, Draw Minimap, Draw DOOM
+  HUD, Set Billboard Rotation) in the `ActionConfigDialog` context, like S13
+  did for the stairs strings. Block World's "3D View" actions are a separate
+  extension and stay out of scope. Note: labels are shared by name, so a
+  generic one (Angle, Width, Size…) also translates wherever another action
+  uses it.
+- [ ] **F3 — Why `maze_4` does not finish under the real-Kivy worker.** Find
+  the cause (a hang? a modal? just slow?) before deciding whether anything
+  needs fixing.
+
 Optional, only on request: a tutorial lesson 15 following
 `docs/RAYCAST_TUTORIALS_PLAN.md`'s format, and the teacher-resource handouts.
 
