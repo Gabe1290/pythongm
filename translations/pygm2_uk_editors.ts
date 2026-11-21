@@ -609,39 +609,39 @@ Events: {4}</source>
     <name>MultiActionEditor</name>
     <message>
         <source>Configure Actions</source>
-        <translation type="vanished">Налаштувати дії</translation>
+        <translation>Налаштувати дії</translation>
     </message>
     <message>
         <source>Action Sequence</source>
-        <translation type="vanished">Послідовність дій</translation>
+        <translation>Послідовність дій</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="vanished">Дія</translation>
+        <translation>Дія</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="vanished">Параметри</translation>
+        <translation>Параметри</translation>
     </message>
     <message>
         <source>➕ Add Action</source>
-        <translation type="vanished">➕ Додати дію</translation>
+        <translation>➕ Додати дію</translation>
     </message>
     <message>
         <source>✏️ Edit Action</source>
-        <translation type="vanished">✏️ Редагувати дію</translation>
+        <translation>✏️ Редагувати дію</translation>
     </message>
     <message>
         <source>➖ Remove Action</source>
-        <translation type="vanished">➖ Видалити дію</translation>
+        <translation>➖ Видалити дію</translation>
     </message>
     <message>
         <source>⬆️ Move Up</source>
-        <translation type="vanished">⬆️ Вгору</translation>
+        <translation>⬆️ Вгору</translation>
     </message>
     <message>
         <source>⬇️ Move Down</source>
-        <translation type="vanished">⬇️ Вниз</translation>
+        <translation>⬇️ Вниз</translation>
     </message>
 </context>
 <context>

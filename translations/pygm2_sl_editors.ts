@@ -609,39 +609,39 @@ Dogodki: {4}</translation>
     <name>MultiActionEditor</name>
     <message>
         <source>Configure Actions</source>
-        <translation type="vanished">Configurer les actions</translation>
+        <translation>Configurer les actions</translation>
     </message>
     <message>
         <source>Action Sequence</source>
-        <translation type="vanished">Séquence d&apos;actions</translation>
+        <translation>Séquence d&apos;actions</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="vanished">Action</translation>
+        <translation>Action</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="vanished">Paramètres</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <source>➕ Add Action</source>
-        <translation type="vanished">➕ Ajouter une action</translation>
+        <translation>➕ Ajouter une action</translation>
     </message>
     <message>
         <source>✏️ Edit Action</source>
-        <translation type="vanished">✏️ Modifier l&apos;action</translation>
+        <translation>✏️ Modifier l&apos;action</translation>
     </message>
     <message>
         <source>➖ Remove Action</source>
-        <translation type="vanished">➖ Retirer l&apos;action</translation>
+        <translation>➖ Retirer l&apos;action</translation>
     </message>
     <message>
         <source>⬆️ Move Up</source>
-        <translation type="vanished">⬆️ Déplacer vers le haut</translation>
+        <translation>⬆️ Déplacer vers le haut</translation>
     </message>
     <message>
         <source>⬇️ Move Down</source>
-        <translation type="vanished">⬇️ Déplacer vers le bas</translation>
+        <translation>⬇️ Déplacer vers le bas</translation>
     </message>
 </context>
 <context>

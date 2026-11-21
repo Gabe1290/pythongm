@@ -609,39 +609,39 @@ Ereignisse: {4}</translation>
     <name>MultiActionEditor</name>
     <message>
         <source>Configure Actions</source>
-        <translation type="vanished">Aktionen konfigurieren</translation>
+        <translation>Aktionen konfigurieren</translation>
     </message>
     <message>
         <source>Action Sequence</source>
-        <translation type="vanished">Aktionssequenz</translation>
+        <translation>Aktionssequenz</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="vanished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="vanished">Parameter</translation>
+        <translation>Parameter</translation>
     </message>
     <message>
         <source>➕ Add Action</source>
-        <translation type="vanished">➕ Aktion hinzufügen</translation>
+        <translation>➕ Aktion hinzufügen</translation>
     </message>
     <message>
         <source>✏️ Edit Action</source>
-        <translation type="vanished">✏️ Aktion bearbeiten</translation>
+        <translation>✏️ Aktion bearbeiten</translation>
     </message>
     <message>
         <source>➖ Remove Action</source>
-        <translation type="vanished">➖ Aktion entfernen</translation>
+        <translation>➖ Aktion entfernen</translation>
     </message>
     <message>
         <source>⬆️ Move Up</source>
-        <translation type="vanished">⬆️ Nach oben verschieben</translation>
+        <translation>⬆️ Nach oben verschieben</translation>
     </message>
     <message>
         <source>⬇️ Move Down</source>
-        <translation type="vanished">⬇️ Nach unten verschieben</translation>
+        <translation>⬇️ Nach unten verschieben</translation>
     </message>
 </context>
 <context>
