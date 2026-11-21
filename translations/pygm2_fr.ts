@@ -78,10 +78,12 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 </context>
 <context>
     <name>ActionConfigDialog</name>        <message>
+        <location filename="../events/action_editor.py" line="0"/>
             <source>Use Python operators</source>
             <translation>Utilisez les opérateurs Python</translation>
         </message>
         <message>
+        <location filename="../events/action_editor.py" line="0"/>
             <source>This expression uses C-style operators that Python does not understand:
 
     {fixes}
@@ -933,6 +935,7 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
             <translation>Donne à cette instance plusieurs images selon l'angle de vue dans la vue raycast, pour qu'elle ressemble à un vrai objet avec des côtés plutôt qu'à une découpe plate quand la caméra tourne autour — l'image de la bande du sprite est choisie selon l'angle de vue et non selon le temps</translation>
         </message>
         <message>
+        <location filename="../events/action_editor.py" line="0"/>
             <source>Object:</source>
             <translation>Objet :</translation>
         </message>
@@ -2078,20 +2081,24 @@ Voulez-vous enregistrer quand même ?</translation>
 <context>
     <name>ConditionalActionEditor</name>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>Custom Python Expression:</source>
             <translation>Expression Python personnalisée :</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>Enter any Python expression that evaluates to true/false
 Example: x &gt; 100 and y &lt; 200</source>
             <translation>Entrez une expression Python qui s'évalue à vrai/faux
 Exemple : x &gt; 100 and y &lt; 200</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>Use Python operators</source>
             <translation>Utilisez les opérateurs Python</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>This expression uses C-style operators that Python does not understand:
 
     {fixes}
@@ -2104,10 +2111,12 @@ Please use the Python operators instead (and / or / not), e.g. "x &gt; 100 and y
 Utilisez plutôt les opérateurs Python (and / or / not), par exemple "x &gt; 100 and y &lt; 200".</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>That looks like an expression</source>
             <translation>Cela ressemble à une expression</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>The Variable field expects a single variable name (e.g. "vspeed"), not a whole expression.
 
 To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression" and type it in the expression box.</source>
@@ -2116,6 +2125,7 @@ To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to
 Pour tester quelque chose comme "vspeed &gt; 0 and y &lt; other.y", réglez le Type de condition sur "expression" et saisissez-le dans la zone d'expression.</translation>
         </message>
         <message>
+        <location filename="../events/conditional_editor.py" line="0"/>
             <source>A single variable name (e.g. vspeed). For a formula like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression".</source>
             <translation>Un seul nom de variable (par exemple vspeed). Pour une formule comme "vspeed &gt; 0 and y &lt; other.y", réglez le Type de condition sur "expression".</translation>
         </message>
