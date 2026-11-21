@@ -570,7 +570,7 @@ worker run that does not finish within 240 s.
   name, description and parameter note in `tools/action_ref_i18n.py` for the
   eight translated languages; regenerate (it fell back to English since it
   joined the reference in S13).
-- [ ] **F2 — The raycast configure-dialog text in ten languages.** The 46
+- [x] **F2 — The raycast configure-dialog text in ten languages.** `62f42c6d`. The 46
   strings of the five older raycast actions (41 parameter labels + 5
   descriptions: Enable Raycast View, Set Facing Angle, Draw Minimap, Draw DOOM
   HUD, Set Billboard Rotation) in the `ActionConfigDialog` context, like S13
@@ -578,6 +578,16 @@ worker run that does not finish within 240 s.
   extension and stay out of scope. Note: labels are shared by name, so a
   generic one (Angle, Width, Size…) also translates wherever another action
   uses it.
+  Done: the 46 strings plus "Relative" (untranslated outside French; also
+  used by many core actions), all ten languages; the four reused
+  descriptions are the reviewed action-reference ones (ja/zh new). Checked
+  by rendering the real dialogs offscreen in fr/ja/de: no clipping. The
+  raycast Portuguese is Brazilian (like the UI catalogue); S13/F1 strings
+  that used European forms (num, grelha, píxeis, câmara) were aligned --
+  the Block World Portuguese in the action reference is European and was
+  left alone. Found while checking: the dialog's OWN strings (17, e.g.
+  "Configure {0}", "Choose Color…") are dead in de/it/ru/sl/uk -- marked
+  `type="vanished"` -- fixed separately right after.
 - [ ] **F3 — Why `maze_4` does not finish under the real-Kivy worker.** Find
   the cause (a hang? a modal? just slow?) before deciding whether anything
   needs fixing.
