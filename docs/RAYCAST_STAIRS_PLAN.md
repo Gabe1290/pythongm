@@ -588,9 +588,22 @@ worker run that does not finish within 240 s.
   left alone. Found while checking: the dialog's OWN strings (17, e.g.
   "Configure {0}", "Choose Color…") are dead in de/it/ru/sl/uk -- marked
   `type="vanished"` -- fixed separately right after.
-- [ ] **F3 — Why `maze_4` does not finish under the real-Kivy worker.** Find
+- [x] **F3 — Why `maze_4` does not finish under the real-Kivy worker.** `5a770fdd`. Find
   the cause (a hang? a modal? just slow?) before deciding whether anything
   needs fixing.
+  Cause: not the game, not the export. maze_4 plays music in its first frame,
+  and on this machine SDL2 audio through PulseAudio blocks forever once a Kivy
+  window exists (a stack dump stopped in `kivy.core.audio.SoundLoader.load`;
+  the same file loads in 0.6 s with the `dummy` or `alsa` driver). Under
+  pytest the worker inherits conftest's `SDL_AUDIODRIVER=dummy`; run by hand
+  it did not. `tests/_real_kivy_game.py` now sets the dummy driver itself.
+  New `test_maze_4_runs_60_frames_without_a_frame_error` builds **room20**
+  (six End Step monsters; the first room is a title screen) under real Kivy:
+  it fails with the original "on_end_step() takes 1 positional argument but 2
+  were given" when `016f5424` is undone -- the real-sample proof of that fix.
+  Also found during F2 and fixed separately (`3b17da9d`): the configure
+  dialog's own strings were dead in five languages; the same trap affects
+  202 more strings per language, logged in `TODO.md` (Translations / i18n).
 
 Optional, only on request: a tutorial lesson 15 following
 `docs/RAYCAST_TUTORIALS_PLAN.md`'s format, and the teacher-resource handouts.
