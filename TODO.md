@@ -883,6 +883,24 @@ Other:
 
 ## Translations / i18n
 
+### Mixin / base-class strings never translate at runtime, in ANY language (found 2026-11-21)
+
+Qt's `self.tr()` takes its context from the CONCRETE runtime class, so a string in a mixin
+or shared base class is looked up as e.g. `SpriteEditor` or `PyGameMakerIDE`, never under the
+mixin's own name. Catalogues file many of them under the mixin/base name
+(`FloatableEditorMixin`, `BaseEditor`, `BaseBlockConfigDialog`, the `core/ide/_*.py` mixins,
+the Thymio playground mixins...), so they are dead. Measured: ~483 (concrete class, string)
+pairs; untranslated at runtime **146 in fr**, 150 pl, 196 es/ja, 224 de (largest:
+PyGameMakerIDE 52 -- Assets > Create Sprite, "Name Already Used" -- ThymioPlaygroundWindow
+28, each editor's shared toolbar 15-16 x 6 editors, BlocklyConfigDialog/ThymioConfigDialog
+10). Verified live: `translate("SpriteEditor", "🪟 Float")` is English in German while the
+`FloatableEditorMixin` copy says "🪟 Abdocken". **The 2026-11-21 catch-up (U6) and both
+guards (`test_dead_translations.py`, `test_i18n_catchup.py`) share this blind spot**: their
+code scan files a mixin's strings under the mixin name. Fix: teach `code_usage()` to map
+each mixin/base `tr()` to its concrete subclasses, copy existing translations to those
+contexts, translate the rest, and let both guards check the concrete contexts.
+(`GameRunner`'s InputMixin strings: check first whether that path uses Qt at all.)
+
 ### ~~Dead translations: 202 per language in de / it / ru / sl / uk~~ (found and FIXED 2026-11-21)
 
 Real, human-written translations marked `type="vanished"` in the split
