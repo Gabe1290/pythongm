@@ -15,7 +15,8 @@ all 7 languages). A separate, milder gap remains -- 32 blocks scattered
 inside categories that already HAD a translated label (Events/Movement/
 Drawing/Score-Lives-Health/Instance/Room) -- logged in TODO.md as a
 follow-up, not fixed here (see that entry for the exact list and why it's a
-smaller, less jarring gap than this one was).
+smaller, less jarring gap than this one was). Closed 2026-11-21: see
+test_blockly_config_dialog_all_blocks_i18n.py, which now covers every block.
 """
 import pytest
 

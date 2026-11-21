@@ -547,6 +547,174 @@ BLOCK_TRANSLATIONS = {
 }
 
 
+# The 32 blocks the Configure Blocks dialog still showed in English inside
+# translated categories (TODO.md, closed 2026-11-21). Order: de, es, fr, it, ru, sl, uk.
+_BLOCK_LANGS = ("de", "es", "fr", "it", "ru", "sl", "uk")
+_MORE_BLOCKS = {
+    "event_other": (
+        ("Weitere Ereignisse", "Otros eventos", "Autres événements", "Altri eventi", "Другие события", "Drugi dogodki", "Інші події"),
+        ("Keine Leben mehr, keine Gesundheit mehr, Raum-Ereignisse", "Sin vidas, sin salud, eventos de sala", "Plus de vies, plus de santé, événements de salle",
+         "Vite esaurite, salute esaurita, eventi della stanza", "Нет жизней, нет здоровья, события комнаты", "Ni več življenj, ni več zdravja, dogodki sobe",
+         "Немає життів, немає здоров'я, події кімнати")),
+    "move_free": (
+        ("Frei bewegen", "Mover libremente", "Déplacement libre", "Movimento libero", "Свободное движение", "Prosto gibanje", "Вільний рух"),
+        ("In beliebigem Richtungswinkel und Tempo bewegen", "Moverse con cualquier ángulo de dirección y velocidad", "Se déplacer selon un angle de direction et une vitesse quelconques",
+         "Muoversi con un angolo di direzione e una velocità qualsiasi", "Двигаться под любым углом направления и с любой скоростью",
+         "Premikanje pod poljubnim kotom smeri in hitrostjo", "Рухатися під будь-яким кутом напрямку та з будь-якою швидкістю")),
+    "set_speed": (
+        ("Geschwindigkeit setzen", "Establecer velocidad", "Définir la vitesse", "Imposta velocità", "Задать скорость", "Nastavi hitrost", "Встановити швидкість"),
+        ("Betrag der Geschwindigkeit setzen (Richtung bleibt)", "Establecer la magnitud de la velocidad (mantiene la dirección)", "Définir la valeur de la vitesse (garde la direction)",
+         "Imposta l'intensità della velocità (mantiene la direzione)", "Задать величину скорости (направление сохраняется)",
+         "Nastavi velikost hitrosti (smer ostane)", "Встановити величину швидкості (напрямок зберігається)")),
+    "set_direction": (
+        ("Richtung setzen", "Establecer dirección", "Définir la direction", "Imposta direzione", "Задать направление", "Nastavi smer", "Встановити напрямок"),
+        ("Richtungswinkel setzen (Geschwindigkeit bleibt)", "Establecer el ángulo de dirección (mantiene la velocidad)", "Définir l'angle de direction (garde la vitesse)",
+         "Imposta l'angolo di direzione (mantiene la velocità)", "Задать угол направления (скорость сохраняется)", "Nastavi kot smeri (hitrost ostane)",
+         "Встановити кут напрямку (швидкість зберігається)")),
+    "grid_move": (
+        ("Im Raster bewegen", "Mover en cuadrícula", "Déplacement sur la grille", "Movimento a griglia", "Движение по сетке", "Premik po mreži", "Рух по сітці"),
+        ("Eine Rastereinheit in eine Richtung bewegen", "Moverse una unidad de cuadrícula en una dirección", "Se déplacer d'une case de la grille dans une direction",
+         "Muoversi di una casella della griglia in una direzione", "Сдвинуться на одну клетку сетки в заданном направлении", "Premik za eno polje mreže v izbrani smeri",
+         "Зсунутися на одну клітинку сітки в заданому напрямку")),
+    "bounce": (
+        ("Abprallen", "Rebotar", "Rebondir", "Rimbalza", "Отскочить", "Odbij se", "Відскочити"),
+        ("An festen Objekten abprallen", "Rebotar contra objetos sólidos", "Rebondir sur les objets solides", "Rimbalza sugli oggetti solidi",
+         "Отскакивать от твёрдых объектов", "Odbij se od trdnih objektov", "Відскакувати від твердих об'єктів")),
+    "wrap_around_room": (
+        ("Um den Raum herumführen", "Dar la vuelta a la sala", "Traverser les bords de la salle", "Attraversa i bordi della stanza", "Переход через край комнаты",
+         "Prehod čez rob sobe", "Перехід через край кімнати"),
+        ("Auf der gegenüberliegenden Seite wieder erscheinen", "Aparecer por el lado opuesto", "Réapparaître du côté opposé", "Riapparire dal lato opposto",
+         "Появиться с противоположной стороны", "Pojavi se na nasprotni strani", "З'явитися з протилежного боку")),
+    "move_to_contact": (
+        ("Bis zum Kontakt bewegen", "Mover hasta el contacto", "Avancer jusqu'au contact", "Muovi fino al contatto", "Двигаться до касания", "Premakni do stika", "Рухатися до дотику"),
+        ("Bewegen, bis eine Berührung stattfindet", "Moverse hasta tocar algo", "Avancer jusqu'à toucher quelque chose", "Muoversi finché non tocca qualcosa",
+         "Двигаться, пока не коснётся препятствия", "Premikaj se, dokler se česa ne dotakne", "Рухатися, доки не торкнеться перешкоди")),
+    "test_alignment": (
+        ("Rasterausrichtung prüfen", "Comprobar alineación con la cuadrícula", "Tester l'alignement sur la grille", "Verifica allineamento alla griglia",
+         "Проверить выравнивание по сетке", "Preveri poravnavo z mrežo", "Перевірити вирівнювання за сіткою"),
+        ("Bedingung: wahr, wenn die Instanz am Raster ausgerichtet ist", "Condición: verdadera si la instancia está alineada con la cuadrícula",
+         "Condition : vraie si l'instance est alignée sur la grille", "Condizione: vera se l'istanza è allineata alla griglia",
+         "Условие: истинно, если экземпляр выровнен по сетке", "Pogoj: resničen, če je primerek poravnan z mrežo", "Умова: істинна, якщо екземпляр вирівняно за сіткою")),
+    "execute_code": (
+        ("Code ausführen", "Ejecutar código", "Exécuter du code", "Esegui codice", "Выполнить код", "Izvedi kodo", "Виконати код"),
+        ("Eigenen Python-Code ausführen", "Ejecutar código Python propio", "Exécuter du code Python personnalisé", "Esegui codice Python personalizzato",
+         "Выполнить собственный код на Python", "Izvedi lastno kodo Python", "Виконати власний код Python")),
+    "draw_arrow": (
+        ("Pfeil zeichnen", "Dibujar flecha", "Dessiner une flèche", "Disegna freccia", "Нарисовать стрелку", "Nariši puščico", "Намалювати стрілку"),
+        ("Einen Pfeil von einem Punkt zu einem anderen zeichnen", "Dibujar una flecha de un punto a otro", "Dessiner une flèche d'un point à un autre",
+         "Disegna una freccia da un punto a un altro", "Нарисовать стрелку от одной точки к другой", "Nariši puščico od ene točke do druge",
+         "Намалювати стрілку від однієї точки до іншої")),
+    "draw_background": (
+        ("Hintergrund zeichnen", "Dibujar fondo", "Dessiner un arrière-plan", "Disegna sfondo", "Нарисовать фон", "Nariši ozadje", "Намалювати тло"),
+        ("Ein Hintergrundbild zeichnen, wahlweise über den Bildschirm gekachelt", "Dibujar una imagen de fondo, opcionalmente repetida en toda la pantalla",
+         "Dessiner une image d'arrière-plan, éventuellement répétée sur tout l'écran", "Disegna un'immagine di sfondo, eventualmente ripetuta su tutto lo schermo",
+         "Нарисовать фоновое изображение, при желании повторяя его по всему экрану", "Nariši sliko ozadja, po želji ponovljeno čez ves zaslon",
+         "Намалювати зображення тла, за бажанням повторюючи його по всьому екрану")),
+    "draw_ellipse": (
+        ("Ellipse zeichnen", "Dibujar elipse", "Dessiner une ellipse", "Disegna ellisse", "Нарисовать эллипс", "Nariši elipso", "Намалювати еліпс"),
+        ("Eine gefüllte oder umrandete Ellipse in einem Rahmen zeichnen", "Dibujar una elipse rellena o con contorno dentro de un rectángulo",
+         "Dessiner une ellipse pleine ou en contour dans un rectangle", "Disegna un'ellisse piena o solo contorno all'interno di un rettangolo",
+         "Нарисовать заполненный или контурный эллипс внутри прямоугольника", "Nariši polno ali obrobljeno elipso znotraj pravokotnika",
+         "Намалювати заповнений або контурний еліпс усередині прямокутника")),
+    "draw_line": (
+        ("Linie zeichnen", "Dibujar línea", "Dessiner une ligne", "Disegna linea", "Нарисовать линию", "Nariši črto", "Намалювати лінію"),
+        ("Eine Linie zwischen zwei Punkten zeichnen", "Dibujar una línea entre dos puntos", "Dessiner une ligne entre deux points", "Disegna una linea tra due punti",
+         "Нарисовать линию между двумя точками", "Nariši črto med dvema točkama", "Намалювати лінію між двома точками")),
+    "draw_scaled_text": (
+        ("Skalierten Text zeichnen", "Dibujar texto escalado", "Dessiner du texte mis à l'échelle", "Disegna testo in scala", "Нарисовать масштабированный текст",
+         "Nariši povečano besedilo", "Намалювати масштабований текст"),
+        ("Text in beliebiger Größe zeichnen", "Dibujar texto a cualquier escala", "Dessiner du texte à n'importe quelle échelle", "Disegna testo a qualsiasi scala",
+         "Нарисовать текст в любом масштабе", "Nariši besedilo v poljubnem merilu", "Намалювати текст у будь-якому масштабі")),
+    "draw_sprite": (
+        ("Sprite zeichnen", "Dibujar sprite", "Dessiner un sprite", "Disegna sprite", "Нарисовать спрайт", "Nariši sprite", "Намалювати спрайт"),
+        ("Ein Sprite-Bild an einer Position zeichnen", "Dibujar un fotograma de sprite en una posición", "Dessiner une image d'un sprite à une position",
+         "Disegna un fotogramma di uno sprite in una posizione", "Нарисовать кадр спрайта в заданной позиции", "Nariši sličico spritea na izbranem mestu",
+         "Намалювати кадр спрайта в заданій позиції")),
+    "fill_color": (
+        ("Bildschirm mit Farbe füllen", "Rellenar pantalla con color", "Remplir l'écran d'une couleur", "Riempi lo schermo di colore", "Залить экран цветом",
+         "Zapolni zaslon z barvo", "Залити екран кольором"),
+        ("Den ganzen Sichtbereich mit einer Farbe füllen", "Rellenar toda la vista con un color sólido", "Remplir toute la vue d'une couleur unie",
+         "Riempi l'intera vista con un colore pieno", "Залить всю видимую область сплошным цветом", "Zapolni celoten vidni del z enobarvno barvo",
+         "Залити всю видиму область суцільним кольором")),
+    "set_color": (
+        ("Farbe setzen", "Establecer color", "Définir la couleur", "Imposta colore", "Задать цвет", "Nastavi barvo", "Встановити колір"),
+        ("Zeichenfarbe und Deckkraft für die folgenden Zeichnungen setzen", "Establecer el color y la opacidad de dibujo para los siguientes dibujos",
+         "Définir la couleur et l'opacité des dessins suivants", "Imposta colore e opacità per i disegni successivi",
+         "Задать цвет и прозрачность для следующих рисунков", "Nastavi barvo in prosojnost za naslednja risanja", "Встановити колір і прозорість для наступних малюнків")),
+    "set_draw_color": (
+        ("Zeichenfarbe setzen", "Establecer color de dibujo", "Définir la couleur de dessin", "Imposta colore di disegno", "Задать цвет рисования",
+         "Nastavi barvo risanja", "Встановити колір малювання"),
+        ("Die Farbe für die folgenden Zeichenaktionen setzen", "Establecer el color de las siguientes acciones de dibujo",
+         "Définir la couleur utilisée par les actions de dessin suivantes", "Imposta il colore usato dalle azioni di disegno successive",
+         "Задать цвет для следующих действий рисования", "Nastavi barvo za naslednja dejanja risanja", "Встановити колір для наступних дій малювання")),
+    "set_draw_font": (
+        ("Schriftart setzen", "Establecer fuente de dibujo", "Définir la police de dessin", "Imposta carattere di disegno", "Задать шрифт рисования",
+         "Nastavi pisavo risanja", "Встановити шрифт малювання"),
+        ("Schriftart und Ausrichtung für den folgenden Text setzen", "Establecer la fuente y la alineación para el texto siguiente",
+         "Définir la police et l'alignement du texte dessiné ensuite", "Imposta carattere e allineamento per il testo successivo",
+         "Задать шрифт и выравнивание для следующего текста", "Nastavi pisavo in poravnavo za naslednje besedilo", "Встановити шрифт і вирівнювання для наступного тексту")),
+    "test_health": (
+        ("Gesundheit prüfen", "Comprobar salud", "Tester la santé", "Verifica salute", "Проверить здоровье", "Preveri zdravje", "Перевірити здоров'я"),
+        ("Bedingung: aktuelle Gesundheit mit einem Wert vergleichen", "Condición: comparar la salud actual con un valor", "Condition : comparer la santé actuelle à une valeur",
+         "Condizione: confronta la salute attuale con un valore", "Условие: сравнить текущее здоровье со значением", "Pogoj: primerjaj trenutno zdravje z vrednostjo",
+         "Умова: порівняти поточне здоров'я зі значенням")),
+    "test_score": (
+        ("Punktzahl prüfen", "Comprobar puntuación", "Tester le score", "Verifica punteggio", "Проверить счёт", "Preveri točke", "Перевірити рахунок"),
+        ("Bedingung: Punktzahl mit einem Wert vergleichen", "Condición: comparar la puntuación con un valor", "Condition : comparer le score à une valeur",
+         "Condizione: confronta il punteggio con un valore", "Условие: сравнить счёт со значением", "Pogoj: primerjaj točke z vrednostjo", "Умова: порівняти рахунок зі значенням")),
+    "test_lives": (
+        ("Leben prüfen", "Comprobar vidas", "Tester les vies", "Verifica vite", "Проверить жизни", "Preveri življenja", "Перевірити життя"),
+        ("Bedingung: Anzahl der Leben mit einem Wert vergleichen", "Condición: comparar el número de vidas con un valor", "Condition : comparer le nombre de vies à une valeur",
+         "Condizione: confronta il numero di vite con un valore", "Условие: сравнить число жизней со значением", "Pogoj: primerjaj število življenj z vrednostjo",
+         "Умова: порівняти кількість життів зі значенням")),
+    "show_highscore": (
+        ("Bestenliste anzeigen", "Mostrar puntuaciones altas", "Afficher les meilleurs scores", "Mostra punteggi migliori", "Показать рекорды", "Prikaži najboljše rezultate",
+         "Показати рекорди"),
+        ("Die Bestenliste anzeigen", "Mostrar la tabla de puntuaciones altas", "Afficher le tableau des meilleurs scores", "Mostra la tabella dei punteggi migliori",
+         "Показать таблицу рекордов", "Prikaži lestvico najboljših rezultatov", "Показати таблицю рекордів")),
+    "clear_highscore": (
+        ("Bestenliste löschen", "Borrar puntuaciones altas", "Effacer les meilleurs scores", "Cancella punteggi migliori", "Очистить рекорды", "Počisti najboljše rezultate",
+         "Очистити рекорди"),
+        ("Die Bestenliste zurücksetzen", "Reiniciar la tabla de puntuaciones altas", "Réinitialiser le tableau des meilleurs scores", "Azzera la tabella dei punteggi migliori",
+         "Сбросить таблицу рекордов", "Ponastavi lestvico najboljših rezultatov", "Скинути таблицю рекордів")),
+    "instance_destroy_object": (
+        ("Alle eines Objekts zerstören", "Destruir todas las de un objeto", "Détruire toutes les instances d'un objet", "Distruggi tutte le istanze di un oggetto",
+         "Уничтожить все экземпляры объекта", "Uniči vse primerke objekta", "Знищити всі екземпляри об'єкта"),
+        ("Jede Instanz eines Objekts zerstören", "Destruir cada instancia de un objeto", "Détruire chaque instance d'un objet", "Distruggi ogni istanza di un oggetto",
+         "Уничтожить каждый экземпляр объекта", "Uniči vsak primerek objekta", "Знищити кожен екземпляр об'єкта")),
+    "instance_change": (
+        ("Instanz ändern", "Cambiar instancia", "Changer d'instance", "Cambia istanza", "Сменить экземпляр", "Spremeni primerek", "Змінити екземпляр"),
+        ("In einen anderen Objekttyp verwandeln", "Transformarse en otro tipo de objeto", "Se transformer en un autre type d'objet", "Trasformarsi in un altro tipo di oggetto",
+         "Превратиться в объект другого типа", "Preobrazi se v drugo vrsto objekta", "Перетворитися на об'єкт іншого типу")),
+    "if_can_push": (
+        ("Wenn schieben möglich", "Si se puede empujar", "Si on peut pousser", "Se si può spingere", "Если можно толкнуть", "Če je mogoče potisniti", "Якщо можна штовхнути"),
+        ("Schiebeprüfung wie bei Sokoban", "Comprobación de empuje al estilo Sokoban", "Vérification de poussée à la manière de Sokoban",
+         "Controllo di spinta in stile Sokoban", "Проверка толкания в стиле Сокобана", "Preverjanje potiska kot v igri Sokoban", "Перевірка штовхання в стилі Сокобана")),
+    "room_goto_previous": (
+        ("Vorheriger Raum", "Sala anterior", "Salle précédente", "Stanza precedente", "Предыдущая комната", "Prejšnja soba", "Попередня кімната"),
+        ("Zum vorherigen Raum gehen", "Ir a la sala anterior", "Aller à la salle précédente", "Vai alla stanza precedente", "Перейти в предыдущую комнату",
+         "Pojdi v prejšnjo sobo", "Перейти до попередньої кімнати")),
+    "room_if_next_exists": (
+        ("Wenn nächster Raum existiert", "Si existe la siguiente sala", "Si la salle suivante existe", "Se esiste la stanza successiva", "Если есть следующая комната",
+         "Če obstaja naslednja soba", "Якщо є наступна кімната"),
+        ("Prüfen, ob ein nächster Raum existiert", "Comprobar si existe la siguiente sala", "Vérifier si la salle suivante existe", "Verifica se esiste la stanza successiva",
+         "Проверить, есть ли следующая комната", "Preveri, ali obstaja naslednja soba", "Перевірити, чи є наступна кімната")),
+    "room_if_previous_exists": (
+        ("Wenn vorheriger Raum existiert", "Si existe la sala anterior", "Si la salle précédente existe", "Se esiste la stanza precedente", "Если есть предыдущая комната",
+         "Če obstaja prejšnja soba", "Якщо є попередня кімната"),
+        ("Prüfen, ob ein vorheriger Raum existiert", "Comprobar si existe la sala anterior", "Vérifier si la salle précédente existe", "Verifica se esiste la stanza precedente",
+         "Проверить, есть ли предыдущая комната", "Preveri, ali obstaja prejšnja soba", "Перевірити, чи є попередня кімната")),
+    "game_end": (
+        ("Spiel beenden", "Terminar juego", "Terminer le jeu", "Termina il gioco", "Завершить игру", "Končaj igro", "Завершити гру"),
+        ("Das Spiel schließen", "Cerrar el juego", "Fermer le jeu", "Chiudi il gioco", "Закрыть игру", "Zapri igro", "Закрити гру")),
+}
+for _type, (_names, _descs) in _MORE_BLOCKS.items():
+    BLOCK_TRANSLATIONS.setdefault(_type, {
+        "name": dict(zip(_BLOCK_LANGS, _names)),
+        "description": dict(zip(_BLOCK_LANGS, _descs)),
+    })
+
+
 def get_translated_category(category: str, language: str = "en") -> str:
     """Get translated category name"""
     if language == "en" or language not in CATEGORY_TRANSLATIONS:

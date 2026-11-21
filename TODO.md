@@ -994,7 +994,14 @@ live `BlocklyConfigDialog` driven with French active); the old
 `tests/test_blockly_category_mismatch_fix.py` was rewritten to assert the
 opposite, with a note explaining the reversal.
 
-**Narrower, milder gap still open, NOT fixed here:** 32 more blocks lack a
+**~~Narrower, milder gap still open~~ — FIXED 2026-11-21:** all 32 blocks below now have a
+name and description in de/es/fr/it/ru/sl/uk (`config/blockly_translations.py`
+`_MORE_BLOCKS`); `tests/test_blockly_config_dialog_all_blocks_i18n.py` keeps EVERY
+registered block translated, also through the real dialog. **Still open, found the same
+day: pl, pt, ja and zh have no entry at all in `CATEGORY_TRANSLATIONS` /
+`BLOCK_TRANSLATIONS`, so for them the whole Configure Blocks dialog (13 categories, 131
+blocks) is English** -- the Blockly workspace itself (`blockly_i18n.js`) is a separate table.
+Original note: 32 more blocks lack a
 translation, but inside categories whose own label IS already translated
 (so the dialog mostly reads correctly, just a handful of individual block
 names/descriptions inside it fall back to English) --
