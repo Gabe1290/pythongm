@@ -883,6 +883,19 @@ Other:
 
 ## Translations / i18n
 
+### `ide.tr()` / `self.ide.tr()` / `panel.tr()` strings: ~27-38 per language untranslated (found 2026-11-21)
+
+175 calls translate through ANOTHER object's `tr()` -- `ide.tr(...)` in extension menu
+functions (Thymio, micro:bit), `self.ide.tr(...)` in `core/ide_exporters.py`, `panel.tr(...)`
+in the object-editor context menu and Thymio panel menus -- so they run under
+`PyGameMakerIDE` / `ObjectEventsPanel`. `scripts/i18n_catchup.py`'s scan only counts
+`self.tr` (and files a nested receiver under the enclosing class), so neither the catch-up
+nor the guards see them. Measured at runtime (147 distinct strings): untranslated fr 2,
+de/it/ja/pt/ru/sl/uk/zh 27-28, es 29, **pl 38** (35 of them the micro:bit export dialogs).
+Largest: `extensions/thymio` 18 (the "Send to Thymio robot" dialogs: fr + pl only), 
+`core/ide_exporters.py` 7-8. Fix: teach the scan these receivers (ide / self.ide ->
+PyGameMakerIDE, panel -> ObjectEventsPanel), translate the gap, and let both guards check it.
+
 ### ~~Mixin / base-class strings never translate at runtime, in ANY language~~ (found and FIXED 2026-11-21)
 
 **Fixed.** `scripts/i18n_catchup.py` now files each mixin/base-class `tr()` string under
