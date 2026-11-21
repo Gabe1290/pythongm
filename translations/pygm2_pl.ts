@@ -2296,7 +2296,7 @@ Czy mimo to zapisać?</translation>
     <message>
         <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="694"/>
         <source>Empty</source>
-        <translation>Puste</translation>
+        <translation>Opróżnij</translation>
     </message>
     <message>
         <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="734"/>

@@ -28,6 +28,9 @@ _spec.loader.exec_module(cu)
 
 CAUGHT_UP = (
     "PlaygroundEditor",
+    "OrphanedFilesDialog",
+    "TrashDialog",
+    "UnusedAssetsDialog",
 )
 
 _CACHE = {}
@@ -96,3 +99,16 @@ def test_the_tool_flags_a_lost_placeholder(tmp_path, monkeypatch, capsys):
     batch.write_text(json.dumps({"Ctx": {"Saved {0}": {"es": "Guardado"}}}), encoding="utf-8")
     assert cu.apply(batch) is False
     assert "placeholder {0} lost" in capsys.readouterr().out
+
+
+@skip_without_pyside6
+@pytest.mark.parametrize("lang, verb", [("fr", "Vider"), ("pl", "Opróżnij")])
+def test_the_empty_trash_button_is_a_verb(lang, verb):
+    """OrphanedFilesDialog's "Empty" button empties the trash; French and
+    Polish had the adjective ("Vide", "Puste")."""
+    from PySide6.QtCore import QCoreApplication
+    from PySide6.QtWidgets import QApplication
+    from core.language_manager import get_language_manager
+    QApplication.instance() or QApplication([])
+    get_language_manager().set_language(lang)
+    assert QCoreApplication.translate("OrphanedFilesDialog", "Empty") == verb

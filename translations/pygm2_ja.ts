@@ -8604,4 +8604,188 @@ Import it in https://lab.open-roberta.org/</source>
 https://lab.open-roberta.org/ でインポートしてください</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>完全に削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>ごみ箱を空にする</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>「{0}」を完全に削除しますか？元に戻すことはできません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>復元</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>復元に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>選択項目をごみ箱へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>ごみ箱へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>「{0}」を復元できませんでした。その場所には既にファイルがあります。先に移動または削除してから、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty</source>
+        <translation>空にする</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Found on disk:</source>
+        <translation>ディスク上で見つかったファイル:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>孤立したファイル {0} 件をごみ箱へ移動しますか？</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No orphaned files found.</source>
+        <translation>孤立したファイルは見つかりませんでした。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Orphaned Files</source>
+        <translation>孤立したファイル</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>ごみ箱にある孤立したファイルをすべて完全に削除しますか？元に戻すことはできません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>sprites/sounds/backgrounds/fonts/thumbnails 内にあり、このプロジェクトのどこからも参照されていないファイルです。通常は削除したアセットの残りや、手動でコピーしたファイルです。ごみ箱内のファイルは、完全に削除するまで下で復元できます。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trashed:</source>
+        <translation>ごみ箱内:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  削除日時 {1}</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>完全に削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>ごみ箱を空にする</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>「{0}」を完全に削除しますか？元に戻すことはできません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>復元</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>復元に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>「{0}」を復元できませんでした。同じ名前のアセットが既にあります。先に名前を変更するか削除してから、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>削除したアセットは、完全に削除するまでここに残ります。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>削除により次の参照が解除されました: {0}。復元するとファイルは戻りますが、その参照は自動的には再設定されません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>ごみ箱の中身をすべて完全に削除しますか？元に戻すことはできません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trash</source>
+        <translation>ごみ箱</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  削除日時 {2}</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>選択項目をごみ箱へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>ごみ箱へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>どのオブジェクト、ルーム、アクションからも参照されていないアセットです。削除した項目はごみ箱に入り、完全には削除されません。execute_code/execute_script 内の参照は検出できないため、ここに誤って表示される場合があります。ルームは「未使用」ではなく「明示的な移動先になっていない」として表示されます。開始ルームは名前で参照されないことが多いため、それだけで安全に削除できるとは限りません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>未使用のアセット {0} 件をごみ箱へ移動しますか？</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No unused assets found.</source>
+        <translation>未使用のアセットは見つかりませんでした。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>ルーム — 明示的な移動先になっていない ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Unused Assets</source>
+        <translation>未使用のアセット</translation>
+    </message>
+</context>
 </TS>

@@ -1642,4 +1642,188 @@ Do you want to save anyway?</source>
         <translation>Учебники недоступны</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Удалить навсегда</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Очистить корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Удалить «{0}» навсегда? Это действие нельзя отменить.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Восстановить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Не удалось восстановить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Переместить выбранное в корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Переместить в корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>Не удалось восстановить «{0}»: там уже есть файл. Сначала переместите или удалите его, затем повторите попытку.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty</source>
+        <translation>Очистить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Found on disk:</source>
+        <translation>Найдено на диске:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>Переместить осиротевшие файлы ({0}) в корзину?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No orphaned files found.</source>
+        <translation>Осиротевших файлов не найдено.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Orphaned Files</source>
+        <translation>Осиротевшие файлы</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>Удалить навсегда все осиротевшие файлы в корзине? Это действие нельзя отменить.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Файлы в sprites/sounds/backgrounds/fonts/thumbnails, на которые ничто в проекте не ссылается: обычно это остатки удалённого ресурса или файлы, скопированные вручную. Файлы в корзине можно восстановить ниже, пока они не удалены навсегда.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trashed:</source>
+        <translation>В корзине:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  удалено {1}</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Удалить навсегда</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Очистить корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Удалить «{0}» навсегда? Это действие нельзя отменить.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Восстановить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Не удалось восстановить</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>Не удалось восстановить «{0}»: ресурс с таким именем уже существует. Сначала переименуйте или удалите его, затем повторите попытку.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Удалённые ресурсы хранятся здесь, пока вы не удалите их навсегда.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>При удалении была очищена ссылка в: {0}. Восстановление вернёт файл, но не восстановит эту ссылку автоматически.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>Удалить навсегда всё содержимое корзины? Это действие нельзя отменить.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trash</source>
+        <translation>Корзина</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  удалено {2}</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Переместить выбранное в корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Переместить в корзину</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>Ресурсы, на которые не ссылается ни один объект, комната или действие. Удалённые элементы попадают в корзину и не удаляются навсегда. Ссылки внутри execute_code/execute_script не обнаруживаются и могут давать здесь ложные срабатывания. Комнаты перечислены как «явно не используемые для перехода», а не как неиспользуемые: на начальную комнату часто нигде не ссылаются по имени, поэтому одно это не значит, что её безопасно удалить.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>Переместить неиспользуемые ресурсы ({0}) в корзину?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No unused assets found.</source>
+        <translation>Неиспользуемых ресурсов не найдено.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>Комнаты — явно не используемые для перехода ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Unused Assets</source>
+        <translation>Неиспользуемые ресурсы</translation>
+    </message>
+</context>
 </TS>

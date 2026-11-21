@@ -1642,4 +1642,188 @@ Möchten Sie trotzdem speichern?</translation>
         <translation>Keine Tutorials verfügbar</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Endgültig löschen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Papierkorb leeren</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>„{0}“ endgültig löschen? Dies kann nicht rückgängig gemacht werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Wiederherstellen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Wiederherstellung fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Auswahl in den Papierkorb verschieben</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>In den Papierkorb verschieben</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>„{0}“ konnte nicht wiederhergestellt werden – dort existiert bereits eine Datei. Verschieben oder entfernen Sie sie zuerst und versuchen Sie es dann erneut.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty</source>
+        <translation>Leeren</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Found on disk:</source>
+        <translation>Auf der Festplatte gefunden:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>{0} verwaiste Datei(en) in den Papierkorb verschieben?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No orphaned files found.</source>
+        <translation>Keine verwaisten Dateien gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Orphaned Files</source>
+        <translation>Verwaiste Dateien</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>Alle verwaisten Dateien im Papierkorb endgültig löschen? Dies kann nicht rückgängig gemacht werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Dateien in sprites/sounds/backgrounds/fonts/thumbnails, auf die in diesem Projekt nichts verweist – meist Überreste eines gelöschten Assets oder von Hand hineinkopierte Dateien. Dateien im Papierkorb lassen sich unten wiederherstellen, bis sie endgültig entfernt werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trashed:</source>
+        <translation>Im Papierkorb:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  gelöscht am {1}</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Endgültig löschen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Papierkorb leeren</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>„{0}“ endgültig löschen? Dies kann nicht rückgängig gemacht werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Wiederherstellen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Wiederherstellung fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>„{0}“ konnte nicht wiederhergestellt werden – es gibt bereits ein Asset mit diesem Namen. Benennen Sie es zuerst um oder entfernen Sie es und versuchen Sie es dann erneut.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Gelöschte Assets bleiben hier, bis Sie sie endgültig entfernen.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>Beim Löschen wurde ein Verweis entfernt in: {0}. Das Wiederherstellen bringt die Datei zurück, stellt diesen Verweis aber nicht automatisch wieder her.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>Alles im Papierkorb endgültig löschen? Dies kann nicht rückgängig gemacht werden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trash</source>
+        <translation>Papierkorb</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  gelöscht am {2}</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Auswahl in den Papierkorb verschieben</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>In den Papierkorb verschieben</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>Assets, auf die kein Objekt, kein Raum und keine Aktion verweist. Gelöschte Einträge kommen in den Papierkorb und werden nicht endgültig entfernt. Verweise innerhalb von execute_code/execute_script werden nicht erkannt und können hier zu Fehlmeldungen führen. Räume werden als „nicht ausdrücklich angesteuert“ statt als unbenutzt aufgeführt – ein Startraum wird oft nirgends beim Namen genannt, das allein heißt also nicht, dass er gefahrlos gelöscht werden kann.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>{0} unbenutzte(s) Asset(s) in den Papierkorb verschieben?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No unused assets found.</source>
+        <translation>Keine unbenutzten Assets gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>Räume – nicht ausdrücklich angesteuert ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Unused Assets</source>
+        <translation>Unbenutzte Assets</translation>
+    </message>
+</context>
 </TS>

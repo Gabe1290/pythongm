@@ -1642,4 +1642,188 @@ Do you want to save anyway?</source>
         <translation>Ni razpoložljivih vadnic</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Trajno izbriši</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Izprazni koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Trajno izbrisati »{0}«? Tega ni mogoče razveljaviti.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Obnovi</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Obnova ni uspela</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Premakni izbrano v koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Premakni v koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>»{0}« ni bilo mogoče obnoviti – tam že obstaja datoteka. Najprej jo premaknite ali odstranite, nato poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty</source>
+        <translation>Izprazni</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Found on disk:</source>
+        <translation>Najdeno na disku:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>Premakni osirotele datoteke ({0}) v koš?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No orphaned files found.</source>
+        <translation>Ni osirotelih datotek.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Orphaned Files</source>
+        <translation>Osirotele datoteke</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>Trajno izbrisati vse osirotele datoteke v košu? Tega ni mogoče razveljaviti.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Datoteke v sprites/sounds/backgrounds/fonts/thumbnails, na katere se nič v tem projektu ne sklicuje – običajno ostanki izbrisanega vira ali ročno skopirane datoteke. Datoteke v košu lahko spodaj obnovite, dokler niso trajno odstranjene.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trashed:</source>
+        <translation>V košu:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  izbrisano {1}</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Trajno izbriši</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Izprazni koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Trajno izbrisati »{0}«? Tega ni mogoče razveljaviti.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Obnovi</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Obnova ni uspela</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>»{0}« ni bilo mogoče obnoviti – vir s tem imenom že obstaja. Najprej ga preimenujte ali odstranite, nato poskusite znova.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Izbrisani viri ostanejo tukaj, dokler jih trajno ne odstranite.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>Z brisanjem je bil počiščen sklic v: {0}. Obnova vrne datoteko, sklica pa ne poveže samodejno.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>Trajno izbrisati vse v košu? Tega ni mogoče razveljaviti.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trash</source>
+        <translation>Koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  izbrisano {2}</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Premakni izbrano v koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Premakni v koš</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>Viri, na katere se ne sklicuje noben objekt, soba ali dejanje. Izbrisani elementi gredo v koš in niso trajno odstranjeni. Sklicev znotraj execute_code/execute_script ni mogoče zaznati, zato so tu lahko lažni zadetki. Sobe so navedene kot »ni izrecnega prehoda vanje« in ne kot neuporabljene – na začetno sobo se pogosto nikjer ne sklicuje z imenom, zato to samo po sebi ne pomeni, da jo je varno izbrisati.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>Premakni neuporabljene vire ({0}) v koš?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No unused assets found.</source>
+        <translation>Ni neuporabljenih virov.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>Sobe — ni izrecnega prehoda vanje ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Unused Assets</source>
+        <translation>Neuporabljeni viri</translation>
+    </message>
+</context>
 </TS>

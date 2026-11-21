@@ -10264,4 +10264,188 @@ Do you want to save anyway?</source>
         <translation>_No se incluye documentación para **{0}**._</translation>
     </message>
 </context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Eliminar definitivamente</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Vaciar la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>¿Eliminar «{0}» definitivamente? No se puede deshacer.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Restaurar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Error al restaurar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Mover la selección a la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Mover a la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>No se pudo restaurar «{0}»: ya existe un archivo en ese lugar. Muévalo o elimínelo primero y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty</source>
+        <translation>Vaciar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Found on disk:</source>
+        <translation>Encontrados en el disco:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>¿Mover {0} archivo(s) huérfano(s) a la papelera?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No orphaned files found.</source>
+        <translation>No se encontraron archivos huérfanos.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Orphaned Files</source>
+        <translation>Archivos huérfanos</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>¿Eliminar definitivamente todos los archivos huérfanos de la papelera? No se puede deshacer.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Archivos en sprites/sounds/backgrounds/fonts/thumbnails a los que nada del proyecto hace referencia: normalmente restos de un recurso eliminado o archivos copiados a mano. Los archivos de la papelera se pueden restaurar abajo hasta que se eliminen definitivamente.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trashed:</source>
+        <translation>En la papelera:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  eliminado el {1}</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Delete Permanently</source>
+        <translation>Eliminar definitivamente</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Empty Trash</source>
+        <translation>Vaciar la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>¿Eliminar «{0}» definitivamente? No se puede deshacer.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore</source>
+        <translation>Restaurar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Restore Failed</source>
+        <translation>Error al restaurar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>No se pudo restaurar «{0}»: ya existe un recurso con ese nombre. Cámbiele el nombre o elimínelo primero y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Los recursos eliminados permanecen aquí hasta que los elimine definitivamente.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>Al eliminarlo se borró una referencia en: {0}. Restaurarlo recupera el archivo, pero no vuelve a enlazar esa referencia automáticamente.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>¿Eliminar definitivamente todo el contenido de la papelera? No se puede deshacer.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Trash</source>
+        <translation>Papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  eliminado el {2}</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move Selected to Trash</source>
+        <translation>Mover la selección a la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move to Trash</source>
+        <translation>Mover a la papelera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>Recursos a los que no hace referencia ningún objeto, sala ni acción. Los elementos eliminados van a la papelera; no se borran definitivamente. Las referencias dentro de execute_code/execute_script no se pueden detectar y aquí pueden dar falsos positivos. Las salas se muestran como «sin navegación explícita» en lugar de sin usar: a menudo nadie menciona por su nombre la sala inicial, así que eso por sí solo no significa que se pueda eliminar sin riesgo.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>¿Mover {0} recurso(s) sin usar a la papelera?</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>No unused assets found.</source>
+        <translation>No se encontraron recursos sin usar.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>Salas — sin navegación explícita ({0})</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="0"/>
+        <source>Unused Assets</source>
+        <translation>Recursos sin usar</translation>
+    </message>
+</context>
 </TS>
