@@ -1826,4 +1826,67 @@ Vuoi salvare comunque?</translation>
         <translation>Risorse inutilizzate</translation>
     </message>
 </context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>%d replacement(s) made</source>
+        <translation>%d sostituzione/i effettuata/e</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Case sensitive</source>
+        <translation>Maiuscole/minuscole</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find</source>
+        <translation>Trova</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Next</source>
+        <translation>Trova successivo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Previous</source>
+        <translation>Trova precedente</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find and Replace</source>
+        <translation>Trova e sostituisci</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find:</source>
+        <translation>Trova:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Phrase not found</source>
+        <translation>Testo non trovato</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace</source>
+        <translation>Sostituisci</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace All</source>
+        <translation>Sostituisci tutto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace:</source>
+        <translation>Sostituisci con:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Whole words</source>
+        <translation>Parole intere</translation>
+    </message>
+</context>
 </TS>

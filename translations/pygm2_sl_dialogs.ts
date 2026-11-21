@@ -1826,4 +1826,67 @@ Do you want to save anyway?</source>
         <translation>Neuporabljeni viri</translation>
     </message>
 </context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>%d replacement(s) made</source>
+        <translation>Število zamenjav: %d</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Case sensitive</source>
+        <translation>Razlikuj velike in male črke</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find</source>
+        <translation>Najdi</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Next</source>
+        <translation>Najdi naslednje</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Previous</source>
+        <translation>Najdi prejšnje</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find and Replace</source>
+        <translation>Najdi in zamenjaj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find:</source>
+        <translation>Najdi:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Phrase not found</source>
+        <translation>Besedila ni mogoče najti</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace</source>
+        <translation>Zamenjaj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace All</source>
+        <translation>Zamenjaj vse</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace:</source>
+        <translation>Zamenjaj z:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Whole words</source>
+        <translation>Cele besede</translation>
+    </message>
+</context>
 </TS>

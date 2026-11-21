@@ -8878,4 +8878,152 @@ Import it in https://lab.open-roberta.org/</source>
         <translation>未使用的资源</translation>
     </message>
 </context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World</source>
+        <translation>方块世界</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World Editor</source>
+        <translation>方块世界编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Blocks</source>
+        <translation>方块</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Clear World</source>
+        <translation>清空世界</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ 清空世界</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>无法加载此房间已保存的方块（{0}）；将从空白开始。</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>保存方块失败：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room</source>
+        <translation>移除此房间中的所有方块</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>移除此房间中的所有方块？此操作可以撤销。</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>保存方块 (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>关闭前是否保存对此房间方块的更改？</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Saved to {0}</source>
+        <translation>已保存到 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>There are no blocks to clear.</source>
+        <translation>没有可清除的方块。</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>此房间没有可保存到的项目或名称。</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD 飞行 | 中键拖动查看 | 滚轮俯仰 | 空格/Shift 层上移/下移 | 左键放置 | 右键 / Delete 破坏 | Ctrl+Z / Ctrl+Y 撤销/重做 | Ctrl+S 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>格子 {0}   层 {1}   角度 {2:.0f}   俯仰 {3:+.0f}   方块 {4}   撤销 {5}</translation>
+    </message>
+</context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>%d replacement(s) made</source>
+        <translation>已替换 %d 处</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Case sensitive</source>
+        <translation>区分大小写</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find</source>
+        <translation>查找</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Next</source>
+        <translation>查找下一个</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Previous</source>
+        <translation>查找上一个</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find and Replace</source>
+        <translation>查找和替换</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find:</source>
+        <translation>查找：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Phrase not found</source>
+        <translation>未找到该文本</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace</source>
+        <translation>替换</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace All</source>
+        <translation>全部替换</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace:</source>
+        <translation>替换为：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Whole words</source>
+        <translation>全字匹配</translation>
+    </message>
+</context>
 </TS>

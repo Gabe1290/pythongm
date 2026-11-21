@@ -2953,4 +2953,89 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <translation>Немає набору плиток</translation>
     </message>
 </context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World Editor</source>
+        <translation>Редактор Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Blocks</source>
+        <translation>Блоки</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Clear World</source>
+        <translation>Очистити світ</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ Очистити світ</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>Не вдалося завантажити збережені блоки цієї кімнати ({0}); починаємо з порожнього світу.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>Не вдалося зберегти блоки:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room</source>
+        <translation>Видалити всі блоки цієї кімнати</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>Видалити всі блоки цієї кімнати? Цю дію можна скасувати.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>Зберегти блоки (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>Зберегти зміни блоків цієї кімнати перед закриттям?</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Saved to {0}</source>
+        <translation>Збережено до {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>There are no blocks to clear.</source>
+        <translation>Немає блоків для очищення.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>Ця кімната не має проєкту або назви для збереження.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD — політ | перетягування середньою кнопкою — огляд | коліщатко — нахил | Пробіл/Shift — шар вище/нижче | лівий клік — поставити | правий клік / Delete — зламати | Ctrl+Z / Ctrl+Y — скасувати/повторити | Ctrl+S — зберегти</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>клітинка {0}   шар {1}   кут {2:.0f}   нахил {3:+.0f}   блок {4}   скасування {5}</translation>
+    </message>
+</context>
 </TS>

@@ -34,6 +34,8 @@ CAUGHT_UP = (
     "TilePaletteDialog",
     "TileGridWidget",
     "RoomEditor",
+    "BlockWorldEditorWindow",
+    "FindReplaceDialog",
 )
 
 _CACHE = {}

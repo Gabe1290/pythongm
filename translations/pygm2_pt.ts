@@ -8878,4 +8878,152 @@ Importe-o em https://lab.open-roberta.org/</translation>
         <translation>Recursos não utilizados</translation>
     </message>
 </context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World Editor</source>
+        <translation>Editor do Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Blocks</source>
+        <translation>Blocos</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Clear World</source>
+        <translation>Limpar o mundo</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ Limpar o mundo</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>Não foi possível carregar os blocos salvos desta sala ({0}); começando vazia.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>Falha ao salvar os blocos:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room</source>
+        <translation>Remover todos os blocos desta sala</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>Remover todos os blocos desta sala? Isso pode ser desfeito.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>Salvar blocos (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>Salvar as alterações nos blocos desta sala antes de fechar?</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Saved to {0}</source>
+        <translation>Salvo em {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>There are no blocks to clear.</source>
+        <translation>Não há blocos para limpar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>Esta sala não tem projeto ou nome para salvar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD voar | arrastar com o botão do meio para olhar | roda para inclinar | Espaço/Shift camada acima/abaixo | clique esquerdo colocar | clique direito / Delete quebrar | Ctrl+Z / Ctrl+Y desfazer/refazer | Ctrl+S salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>célula {0}   camada {1}   ângulo {2:.0f}   inclinação {3:+.0f}   bloco {4}   desfazer {5}</translation>
+    </message>
+</context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>%d replacement(s) made</source>
+        <translation>%d substituição(ões) feita(s)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Case sensitive</source>
+        <translation>Diferenciar maiúsculas e minúsculas</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find</source>
+        <translation>Localizar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Next</source>
+        <translation>Localizar próxima</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find Previous</source>
+        <translation>Localizar anterior</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find and Replace</source>
+        <translation>Localizar e substituir</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Find:</source>
+        <translation>Localizar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Phrase not found</source>
+        <translation>Texto não encontrado</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace</source>
+        <translation>Substituir</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace All</source>
+        <translation>Substituir tudo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Replace:</source>
+        <translation>Substituir por:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/find_replace_dialog.py" line="0"/>
+        <source>Whole words</source>
+        <translation>Palavras inteiras</translation>
+    </message>
+</context>
 </TS>

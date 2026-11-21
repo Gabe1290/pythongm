@@ -2953,4 +2953,89 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <translation>Ni nabora ploščic</translation>
     </message>
 </context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World</source>
+        <translation>Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Block World Editor</source>
+        <translation>Urejevalnik Block World</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Blocks</source>
+        <translation>Bloki</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Clear World</source>
+        <translation>Počisti svet</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ Počisti svet</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>Shranjenih blokov te sobe ni bilo mogoče naložiti ({0}); začenjam prazno.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>Blokov ni bilo mogoče shraniti:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room</source>
+        <translation>Odstrani vse bloke v tej sobi</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>Odstraniti vse bloke v tej sobi? To je mogoče razveljaviti.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>Shrani bloke (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>Shraniti spremembe blokov te sobe pred zapiranjem?</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>Saved to {0}</source>
+        <translation>Shranjeno v {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>There are no blocks to clear.</source>
+        <translation>Ni blokov za odstranitev.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>Ta soba nima projekta ali imena za shranjevanje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD letenje | vlečenje s srednjim gumbom za pogled | kolesce za nagib | Preslednica/Shift plast gor/dol | levi klik postavi | desni klik / Delete podre | Ctrl+Z / Ctrl+Y razveljavi/uveljavi | Ctrl+S shrani</translation>
+    </message>
+    <message>
+        <location filename="../editors/block_world_editor/window.py" line="0"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>celica {0}   plast {1}   kot {2:.0f}   nagib {3:+.0f}   blok {4}   razveljavitve {5}</translation>
+    </message>
+</context>
 </TS>

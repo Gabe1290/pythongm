@@ -206,7 +206,7 @@ def apply(path):
                 if not text.strip():
                     problems.append(f"empty: {lang} {ctx} / {src[:40]!r}")
                     continue
-                for ph in set(re.findall(r"\{\d*\}|%\d|%s|%d", src)):
+                for ph in set(re.findall(r"\{\d*(?::[^}]*)?\}|%\d|%s|%d", src)):
                     if ph not in text:
                         problems.append(f"placeholder {ph} lost: {lang} {ctx} / {src[:40]!r}")
                 ts = _group_for(lang, ctx, used[(ctx, src)])
