@@ -883,6 +883,28 @@ Other:
 
 ## Translations / i18n
 
+### Dead translations: 202 per language in de / it / ru / sl / uk (found 2026-11-21)
+
+Real, human-written translations marked `type="vanished"` in the split
+catalogues, for strings the code STILL uses in the same class (Qt context).
+`lrelease` drops vanished entries, so they never reach the app: those parts of
+the UI are English in German, Italian, Russian, Slovenian and Ukrainian.
+Measured precisely -- (class, string) pairs from every `self.tr("...")` in the
+code, vanished entries with non-empty text, and no live copy of the same
+(context, string) in any of that language's files: **202 each** (uk 202,
+de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
+48, `ThymioPlaygroundWindow` 36, `ThymioEventsPanel` 14, `ThymioActionSelector`
+10, `MultiActionEditor` 9. es / fr / pt / ja / zh: 0.
+- Same trap as the 2026-08 notes in `CLAUDE.md` (Play Sound, the Thymio
+  playground f-strings). The fix is mechanical: remove `type="vanished"` IN
+  PLACE (a second, live copy of the same source in one context does not
+  resolve), only where the translation is non-empty, then recompile.
+- Done for one dialog already: `ActionConfigDialog` (17 per language,
+  `3b17da9d`), with a test that resolves every string of that class through
+  the real LanguageManager -- the pattern to copy per context.
+- Not done: the other 202 per language. One context per commit, each with
+  its resolution test, is the safe pace.
+
 ### ~~Configure Action Blocks dialog: "Control"/"Game"/"Views" shown in English~~ (DONE 2026-10-18)
 
 User report: "the Configure Action Blocks dialog still shows some labels

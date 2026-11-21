@@ -49,6 +49,7 @@ def _run(worker, game, request):
     data = json.loads(res.read_text(encoding="utf-8"))
     if data.get("fatal"):
         pytest.skip(f"real Kivy cannot render here: {data['fatal']}")
+    data["_stdout"] = proc.stdout             # the scene prints "[ERROR] update: ..." there
     return data
 
 
@@ -113,3 +114,26 @@ def test_a_sprite_draw_command_crops_one_frame_of_a_strip():
     got = data["scenes"]["s"]
     assert got["f0"] != got["f3"]                                # different frames of the strip
     assert got["right_of_f0"][:3] == [250, 0, 250] or got["right_of_f0"] == got["right_of_f3"]
+
+
+def test_maze_4_runs_60_frames_without_a_frame_error():
+    """maze_4's monsters have End Step events. Until 016f5424 the generated
+    handlers lacked the dt the scene passes, so every call raised TypeError
+    and update() abandoned the rest of the frame -- printed as
+    "[ERROR] update: ...", never raised. The game also plays music in its first
+    frame, which is why this worker sets a dummy audio driver."""
+    pytest.importorskip("kivy")
+    game, project = _export("maze_4")
+    # Not the first room (a title screen with no monster): room20 holds six
+    # monsters whose End Step events must run.
+    room = "room20"
+    assert sum(1 for i in project["assets"]["rooms"][room]["instances"]
+               if "end_step" in (project["assets"]["objects"][i["object_name"]].get("events") or {})) >= 3
+    text = (game / "scenes" / f"{room}.py").read_text(encoding="utf-8")
+    cls = next(line.split("class ")[1].split("(")[0] for line in text.splitlines()
+               if line.startswith("class ") and "(Widget)" in line)
+    data = _run(GAME_WORKER, game, {"module": f"scenes.{room}", "class": cls, "frames": 60,
+                                    "width": 640, "height": 480})
+    assert data["error"] is None, data["error"]
+    errors = [l for l in data["_stdout"].splitlines() if "[ERROR] update" in l]
+    assert not errors, errors[:3]

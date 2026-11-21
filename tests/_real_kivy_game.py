@@ -21,6 +21,12 @@ game_dir, request_path, result_path = sys.argv[1:4]
 os.chdir(game_dir)
 sys.path.insert(0, game_dir)
 os.environ["KIVY_NO_ARGS"] = "1"
+# This worker checks pictures, not sound. With a Kivy window open, SDL2 audio
+# through PulseAudio can block forever on some machines (a game that plays
+# music in its first frame -- maze_4 -- then never finishes; found in raycast
+# stairs follow-up F3). Under pytest, conftest's SDL_AUDIODRIVER=dummy is
+# inherited; set it here too so a hand-run worker behaves the same.
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 request = json.load(open(request_path, encoding="utf-8"))
 
 result = {"kivy": None, "error": None}
