@@ -566,7 +566,7 @@ worker run that does not finish within 240 s.
 
 ### Follow-ups (started 2026-11-21, one commit each)
 
-- [ ] **F1 — Set Billboard Rotation in the localized action reference.** Its
+- [x] **F1 — Set Billboard Rotation in the localized action reference.** `c547ae45`. Its
   name, description and parameter note in `tools/action_ref_i18n.py` for the
   eight translated languages; regenerate (it fell back to English since it
   joined the reference in S13).
