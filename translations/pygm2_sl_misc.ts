@@ -553,4 +553,235 @@
         <translation>Stran {0} od {1}</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Block: </source>
+        <translation> Blok: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Thickness: </source>
+        <translation> Debelina: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>(none)</source>
+        <translation>(brez)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Arena Settings</source>
+        <translation>Nastavitve arene</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Igrišče Aseba (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Background:</source>
+        <translation>Ozadje:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Block size for block-paint mode</source>
+        <translation>Velikost bloka v načinu risanja z bloki</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Browse...</source>
+        <translation>Prebrskaj...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Clear</source>
+        <translation>Počisti</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Color for painted blocks</source>
+        <translation>Barva narisanih blokov</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>Nastavi mere in ozadje arene</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>Teksture ni bilo mogoče kopirati:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>Privzeta debelina zidu pri risanju z vlečenjem</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>Napaka pri izvozu igrišča:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>Napaka pri zagonu simulatorja:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export .playground</source>
+        <translation>Izvozi .playground</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Failed</source>
+        <translation>Izvoz ni uspel</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Playground</source>
+        <translation>Izvozi igrišče</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Successful</source>
+        <translation>Izvoz uspešen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Izvozi kot datoteko Aseba .playground</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid</source>
+        <translation>Mreža</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid size:</source>
+        <translation>Velikost mreže:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Ground texture:</source>
+        <translation>Tekstura tal:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Height:</source>
+        <translation>Višina:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>Slike (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Odpri ta urejevalnik v svojem oknu</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground Editor</source>
+        <translation>Urejevalnik igrišča</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>Igrišče izvoženo v:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo</source>
+        <translation>Uveljavi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Uveljavi (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Run Failed</source>
+        <translation>Zagon ni uspel</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save</source>
+        <translation>Shrani</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>Shrani igrišče (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Select Ground Texture</source>
+        <translation>Izberi teksturo tal</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>Simuliraj igrišče s povezano kodo robota</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap</source>
+        <translation>Pripni</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap to grid</source>
+        <translation>Pripni na mrežo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Texture Error</source>
+        <translation>Napaka teksture</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Toggle grid display</source>
+        <translation>Prikaži/skrij mrežo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo</source>
+        <translation>Razveljavi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Razveljavi (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Width:</source>
+        <translation>Širina:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>▶ Run</source>
+        <translation>▶ Zaženi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odpni</translation>
+    </message>
+</context>
 </TS>

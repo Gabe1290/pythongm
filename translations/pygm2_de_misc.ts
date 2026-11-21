@@ -553,4 +553,235 @@
         <translation>Seite {0} von {1}</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Block: </source>
+        <translation> Block: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Thickness: </source>
+        <translation> Dicke: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>(none)</source>
+        <translation>(keine)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Arena Settings</source>
+        <translation>Arena-Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Aseba-Spielfeld (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Background:</source>
+        <translation>Hintergrund:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Block size for block-paint mode</source>
+        <translation>Blockgröße im Blockmalmodus</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Browse...</source>
+        <translation>Durchsuchen...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Clear</source>
+        <translation>Leeren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Color for painted blocks</source>
+        <translation>Farbe der gemalten Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>Größe und Hintergrund der Arena festlegen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>Die Textur konnte nicht kopiert werden:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>Standard-Wanddicke beim Zeichnen durch Ziehen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>Fehler beim Exportieren des Spielfelds:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>Fehler beim Starten des Simulators:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export .playground</source>
+        <translation>.playground exportieren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Failed</source>
+        <translation>Export fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Playground</source>
+        <translation>Spielfeld exportieren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Successful</source>
+        <translation>Export erfolgreich</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Als Aseba-.playground-Datei exportieren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid</source>
+        <translation>Raster</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid size:</source>
+        <translation>Rastergröße:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Ground texture:</source>
+        <translation>Bodentextur:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Height:</source>
+        <translation>Höhe:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>Bilder (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Diesen Editor in einem eigenen Fenster öffnen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground Editor</source>
+        <translation>Spielfeld-Editor</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>Spielfeld exportiert nach:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo</source>
+        <translation>Wiederholen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Wiederholen (Strg+Y)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Run Failed</source>
+        <translation>Start fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>Spielfeld speichern (Strg+S)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Select Ground Texture</source>
+        <translation>Bodentextur auswählen</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>Das Spielfeld mit dem verknüpften Robotercode simulieren</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap</source>
+        <translation>Einrasten</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap to grid</source>
+        <translation>Am Raster einrasten</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Texture Error</source>
+        <translation>Texturfehler</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Toggle grid display</source>
+        <translation>Raster ein-/ausblenden</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo</source>
+        <translation>Rückgängig</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Rückgängig (Strg+Z)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Width:</source>
+        <translation>Breite:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>▶ Run</source>
+        <translation>▶ Starten</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Abdocken</translation>
+    </message>
+</context>
 </TS>

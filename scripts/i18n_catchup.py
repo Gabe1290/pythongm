@@ -124,7 +124,10 @@ def worklist(path):
 # ---------------------------------------------------------------- applying
 
 def _group_for(lang, ctx, src_file, cache={}):
-    for ts in files_of(lang):
+    files = files_of(lang)
+    if len(files) == 1 and not files[0].stem.endswith(GROUPS):
+        return files[0]                     # a single-file language
+    for ts in files:
         names = {c.findtext("name") for c in ET.parse(ts).getroot().findall("context")}
         if ctx in names:
             return ts

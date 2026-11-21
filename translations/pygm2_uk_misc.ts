@@ -553,4 +553,235 @@
         <translation>Сторінка {0} з {1}</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Block: </source>
+        <translation> Блок: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source> Thickness: </source>
+        <translation> Товщина: </translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>(none)</source>
+        <translation>(немає)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Arena Settings</source>
+        <translation>Налаштування арени</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Майданчик Aseba (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Background:</source>
+        <translation>Тло:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Block size for block-paint mode</source>
+        <translation>Розмір блоку в режимі малювання блоками</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Browse...</source>
+        <translation>Огляд...</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Clear</source>
+        <translation>Очистити</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Color for painted blocks</source>
+        <translation>Колір намальованих блоків</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>Налаштувати розміри й тло арени</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>Не вдалося скопіювати текстуру:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>Типова товщина стіни під час малювання перетягуванням</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>Помилка під час експорту майданчика:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>Помилка запуску симулятора:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export .playground</source>
+        <translation>Експорт .playground</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Failed</source>
+        <translation>Помилка експорту</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Playground</source>
+        <translation>Експорт майданчика</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export Successful</source>
+        <translation>Експорт успішний</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Експортувати як файл Aseba .playground</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid</source>
+        <translation>Сітка</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Grid size:</source>
+        <translation>Розмір сітки:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Ground texture:</source>
+        <translation>Текстура підлоги:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Height:</source>
+        <translation>Висота:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>Зображення (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Відкрити цей редактор в окремому вікні</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground Editor</source>
+        <translation>Редактор майданчика</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>Майданчик експортовано до:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo</source>
+        <translation>Повторити</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Повторити (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Run Failed</source>
+        <translation>Не вдалося запустити</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save</source>
+        <translation>Зберегти</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>Зберегти майданчик (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Select Ground Texture</source>
+        <translation>Вибір текстури підлоги</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>Змоделювати майданчик із пов'язаним кодом робота</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap</source>
+        <translation>Прив'язка</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Snap to grid</source>
+        <translation>Прив'язка до сітки</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Texture Error</source>
+        <translation>Помилка текстури</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Toggle grid display</source>
+        <translation>Показати/сховати сітку</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo</source>
+        <translation>Скасувати</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Скасувати (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>Width:</source>
+        <translation>Ширина:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>▶ Run</source>
+        <translation>▶ Запуск</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Відкріпити</translation>
+    </message>
+</context>
 </TS>
