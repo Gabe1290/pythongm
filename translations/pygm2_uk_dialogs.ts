@@ -1889,4 +1889,59 @@ Do you want to save anyway?</source>
         <translation>Цілі слова</translation>
     </message>
 </context>
+<context>
+    <name>BaseBlockConfigDialog</name>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>Блок</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>Опис</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>Відсутні залежності</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>Набір:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>Потребує: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>Вибрати все</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>Зняти вибір</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[Не реалізовано] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>Блоків: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ Увага: у деяких блоків відсутні залежності:
+{0}</translation>
+    </message>
+</context>
 </TS>

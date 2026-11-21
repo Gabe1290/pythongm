@@ -2697,6 +2697,51 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <source>Failed to save sprite: {0}</source>
         <translation>Sprite ni bilo mogoče shraniti: {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
+        <translation>Omogoči trk na ravni slikovnih pik za ta sprite. Samo statično: zasukani ali povečani primerki uporabijo trk AABB.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export Error</source>
+        <translation>Napaka pri izvozu</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export PNG…</source>
+        <translation>Izvozi PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export as PNG</source>
+        <translation>Izvozi kot PNG</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export as PNG…</source>
+        <translation>Izvozi kot PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Exported: {0}</source>
+        <translation>Izvoženo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Failed to export PNG.</source>
+        <translation>Izvoz PNG ni uspel.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>PNG Images (*.png)</source>
+        <translation>Slike PNG (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Precise Collision</source>
+        <translation>Natančen trk</translation>
+    </message>
 </context>
 <context>
     <name>ThymioEventsPanel</name>
@@ -3036,6 +3081,101 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <location filename="../editors/block_world_editor/window.py" line="0"/>
         <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
         <translation>celica {0}   plast {1}   kot {2:.0f}   nagib {3:+.0f}   blok {4}   razveljavitve {5}</translation>
+    </message>
+</context>
+<context>
+    <name>FrameTimeline</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Add frame</source>
+        <translation>Dodaj sličico</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>D</source>
+        <translation>P</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Delete frame</source>
+        <translation>Izbriši sličico</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Duplicate frame</source>
+        <translation>Podvoji sličico</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Play</source>
+        <translation>Predvajaj</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Stop</source>
+        <translation>Ustavi</translation>
+    </message>
+</context>
+<context>
+    <name>FloatableEditorMixin</name>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Odpri ta urejevalnik v svojem oknu</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Vrni ta urejevalnik v vrstico zavihkov IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Pripni</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odpni</translation>
+    </message>
+</context>
+<context>
+    <name>ForegroundBackgroundSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Background Color</source>
+        <translation>Barva ozadja</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Foreground Color</source>
+        <translation>Barva ospredja</translation>
+    </message>
+</context>
+<context>
+    <name>ColorPaletteWidget</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Swap foreground/background</source>
+        <translation>Zamenjaj ospredje/ozadje</translation>
+    </message>
+</context>
+<context>
+    <name>ColorSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Choose Color</source>
+        <translation>Izberi barvo</translation>
     </message>
 </context>
 </TS>

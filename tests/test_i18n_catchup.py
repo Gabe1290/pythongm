@@ -40,6 +40,13 @@ CAUGHT_UP = (
     "PlaygroundColorManager",
     "PlaygroundToolPalette",
     "PlaygroundRunnerWindow",
+    "BaseBlockConfigDialog",
+    "SpriteEditor",
+    "FrameTimeline",
+    "FloatableEditorMixin",
+    "ForegroundBackgroundSwatch",
+    "ColorPaletteWidget",
+    "ColorSwatch",
 )
 
 _CACHE = {}

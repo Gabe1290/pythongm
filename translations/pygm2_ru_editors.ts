@@ -2697,6 +2697,51 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Failed to save sprite: {0}</source>
         <translation>Не удалось сохранить спрайт: {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
+        <translation>Включить попиксельное столкновение для этого спрайта. Только статично: повёрнутые или масштабированные экземпляры используют столкновение AABB.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export Error</source>
+        <translation>Ошибка экспорта</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export PNG…</source>
+        <translation>Экспорт PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export as PNG</source>
+        <translation>Экспортировать в PNG</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Export as PNG…</source>
+        <translation>Экспортировать в PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Exported: {0}</source>
+        <translation>Экспортировано: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Failed to export PNG.</source>
+        <translation>Не удалось экспортировать PNG.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>PNG Images (*.png)</source>
+        <translation>Изображения PNG (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
+        <source>Precise Collision</source>
+        <translation>Точное столкновение</translation>
+    </message>
 </context>
 <context>
     <name>ThymioEventsPanel</name>
@@ -3036,6 +3081,101 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/block_world_editor/window.py" line="0"/>
         <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
         <translation>клетка {0}   слой {1}   угол {2:.0f}   наклон {3:+.0f}   блок {4}   отмена {5}</translation>
+    </message>
+</context>
+<context>
+    <name>FrameTimeline</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Add frame</source>
+        <translation>Добавить кадр</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>D</source>
+        <translation>Д</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Delete frame</source>
+        <translation>Удалить кадр</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Duplicate frame</source>
+        <translation>Дублировать кадр</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Play</source>
+        <translation>Воспроизвести</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="0"/>
+        <source>Stop</source>
+        <translation>Стоп</translation>
+    </message>
+</context>
+<context>
+    <name>FloatableEditorMixin</name>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Открепить</translation>
+    </message>
+</context>
+<context>
+    <name>ForegroundBackgroundSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Background Color</source>
+        <translation>Цвет фона</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Foreground Color</source>
+        <translation>Основной цвет</translation>
+    </message>
+</context>
+<context>
+    <name>ColorPaletteWidget</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Swap foreground/background</source>
+        <translation>Поменять основной и фоновый цвета</translation>
+    </message>
+</context>
+<context>
+    <name>ColorSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="0"/>
+        <source>Choose Color</source>
+        <translation>Выбрать цвет</translation>
     </message>
 </context>
 </TS>
