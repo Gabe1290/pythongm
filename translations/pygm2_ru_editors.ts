@@ -162,6 +162,16 @@
         <source>Auto-save is disabled. Click to enable.</source>
         <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
 </context>
 <context>
     <name>EnhancedPropertiesPanel</name>
@@ -1053,6 +1063,81 @@ The code will execute when the event triggers during gameplay.</source>
         <source>▶ Play Object</source>
         <translation>▶ Проверить объект</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
+    </message>
 </context>
 <context>
     <name>ObjectEventsPanel</name>    <message>
@@ -1118,7 +1203,7 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="195"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="411"/>
         <source>Event Exists</source>
-        <translation>L&apos;événement existe</translation>
+        <translation>Событие уже есть</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
@@ -1454,7 +1539,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     </message>
     <message>
         <source>Alarm</source>
-        <translation type="vanished">Будильник</translation>
+        <translation>Будильник</translation>
     </message>
     <message>
         <source>Room Start</source>
@@ -2060,6 +2145,45 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Send a Network Message (File Exchange)</source>
         <translation>Отправить сетевое сообщение (обмен файлами)</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>
+        <source>Cannot add actions directly to &apos;{0}&apos;.
+
+Right-click on {1} and add the action there instead.</source>
+        <translation>Нельзя добавлять действия прямо в «{0}».
+
+Щёлкните правой кнопкой по {1} и добавьте действие там.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy Action</source>
+        <translation>Копировать действие</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy {0} Actions</source>
+        <translation>Копировать действия ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste Action</source>
+        <translation>Вставить действие</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste {0} Actions</source>
+        <translation>Вставить действия ({0})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_render.py" line="0"/>
+        <source>(empty comment)</source>
+        <translation>(пустой комментарий)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Arrow</source>
+        <translation>Стрелка</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -2486,6 +2610,16 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>🧱 Block Edit</source>
         <translation>🧱 Правка блоков</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -2761,6 +2895,86 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="0"/>
         <source>Precise Collision</source>
         <translation>Точное столкновение</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Сохранить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
     </message>
 </context>
 <context>
@@ -3230,6 +3444,86 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Tile vertically</source>
         <translation>Повторять по вертикали</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Сохранить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
+    </message>
 </context>
 <context>
     <name>SoundEditor</name>
@@ -3258,6 +3552,86 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>▶ Play</source>
         <translation>▶ Воспроизвести</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Сохранить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
+    </message>
 </context>
 <context>
     <name>FontEditor</name>
@@ -3280,6 +3654,169 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/font_editor.py" line="0"/>
         <source>The quick brown fox</source>
         <translation>Съешь же ещё этих мягких французских булок, да выпей чаю</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Сохранить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Автосохранено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Загружено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Открыть этот редактор в отдельном окне</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Вернуть этот редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Отменить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Отменить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Повторить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Повторить {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Автосохранение: ВЫКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Сохранить</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закрепить</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Автосохранение: ВКЛ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Отсоединить</translation>
     </message>
 </context>
 </TS>

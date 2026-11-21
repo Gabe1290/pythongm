@@ -317,7 +317,7 @@
     </message>
     <message>
         <source>View reset to default</source>
-        <translation type="vanished">Ansicht auf Standard zurückgesetzt</translation>
+        <translation>Ansicht auf Standard zurückgesetzt</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="830"/>
@@ -333,51 +333,51 @@
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
-        <translation type="vanished">Warnung: Hindernis sehr nah!</translation>
+        <translation>Achtung: Hindernis sehr nah!</translation>
     </message>
     <message>
         <source>Obstacle detected ahead</source>
-        <translation type="vanished">Hindernis voraus erkannt</translation>
+        <translation>Hindernis voraus erkannt</translation>
     </message>
     <message>
         <source>Moving forward</source>
-        <translation type="vanished">Vorwärtsbewegung</translation>
+        <translation>Fährt vorwärts</translation>
     </message>
     <message>
         <source>Moving backward</source>
-        <translation type="vanished">Rückwärtsbewegung</translation>
+        <translation>Fährt rückwärts</translation>
     </message>
     <message>
         <source>Turning left</source>
-        <translation type="vanished">Linksdrehung</translation>
+        <translation>Dreht nach links</translation>
     </message>
     <message>
         <source>Turning right</source>
-        <translation type="vanished">Rechtsdrehung</translation>
+        <translation>Dreht nach rechts</translation>
     </message>
     <message>
         <source>Stopped</source>
-        <translation type="vanished">Angehalten</translation>
+        <translation>Angehalten</translation>
     </message>
     <message>
         <source>Selection cleared</source>
-        <translation type="vanished">Auswahl aufgehoben</translation>
+        <translation>Auswahl aufgehoben</translation>
     </message>
     <message>
         <source>Robot reset to center</source>
-        <translation type="vanished">Roboter in die Mitte zurückgesetzt</translation>
+        <translation>Roboter in die Mitte zurückgesetzt</translation>
     </message>
     <message>
         <source>World reset to default</source>
-        <translation type="vanished">Welt auf Standard zurückgesetzt</translation>
+        <translation>Welt auf Standard zurückgesetzt</translation>
     </message>
     <message>
         <source>Interior obstacles cleared</source>
-        <translation type="vanished">Innere Hindernisse gelöscht</translation>
+        <translation>Innere Hindernisse entfernt</translation>
     </message>
     <message>
         <source>No interior obstacles to clear</source>
-        <translation type="vanished">Keine inneren Hindernisse zum Löschen</translation>
+        <translation>Keine inneren Hindernisse zu entfernen</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1009"/>
@@ -406,63 +406,63 @@
     </message>
     <message>
         <source>Obstacle added</source>
-        <translation type="vanished">Hindernis hinzugefügt</translation>
+        <translation>Hindernis hinzugefügt</translation>
     </message>
     <message>
         <source>Line segment added</source>
-        <translation type="vanished">Liniensegment hinzugefügt</translation>
+        <translation>Liniensegment hinzugefügt</translation>
     </message>
     <message>
         <source>Element too small - drag to create larger area</source>
-        <translation type="vanished">Element zu klein - ziehen, um einen größeren Bereich zu erstellen</translation>
+        <translation>Element zu klein - ziehen, um eine größere Fläche zu erstellen</translation>
     </message>
     <message>
         <source>Obstacle selected - press Delete to remove</source>
-        <translation type="vanished">Hindernis ausgewählt - Entf drücken zum Entfernen</translation>
+        <translation>Hindernis ausgewählt - Entf drücken zum Entfernen</translation>
     </message>
     <message>
         <source>Line segment selected - press Delete to remove</source>
-        <translation type="vanished">Liniensegment ausgewählt - Entf drücken zum Entfernen</translation>
+        <translation>Liniensegment ausgewählt - Entf drücken zum Entfernen</translation>
     </message>
     <message>
         <source>No element selected</source>
-        <translation type="vanished">Kein Element ausgewählt</translation>
+        <translation>Kein Element ausgewählt</translation>
     </message>
     <message>
         <source>Nothing to undo</source>
-        <translation type="vanished">Nichts rückgängig zu machen</translation>
+        <translation>Nichts rückgängig zu machen</translation>
     </message>
     <message>
         <source>Undid obstacle addition</source>
-        <translation type="vanished">Hindernishinzufügung rückgängig gemacht</translation>
+        <translation>Hinzufügen des Hindernisses rückgängig gemacht</translation>
     </message>
     <message>
         <source>Undid line addition</source>
-        <translation type="vanished">Linienhinzufügung rückgängig gemacht</translation>
+        <translation>Hinzufügen der Linie rückgängig gemacht</translation>
     </message>
     <message>
         <source>Undid obstacle deletion</source>
-        <translation type="vanished">Hindernisentfernung rückgängig gemacht</translation>
+        <translation>Löschen des Hindernisses rückgängig gemacht</translation>
     </message>
     <message>
         <source>Undid line deletion</source>
-        <translation type="vanished">Linienentfernung rückgängig gemacht</translation>
+        <translation>Löschen der Linie rückgängig gemacht</translation>
     </message>
     <message>
         <source>Obstacle deleted</source>
-        <translation type="vanished">Hindernis gelöscht</translation>
+        <translation>Hindernis gelöscht</translation>
     </message>
     <message>
         <source>Line segment deleted</source>
-        <translation type="vanished">Liniensegment gelöscht</translation>
+        <translation>Liniensegment gelöscht</translation>
     </message>
     <message>
         <source>All line segments cleared</source>
-        <translation type="vanished">Alle Liniensegmente gelöscht</translation>
+        <translation>Alle Liniensegmente entfernt</translation>
     </message>
     <message>
         <source>No line segments to clear</source>
-        <translation type="vanished">Keine Liniensegmente zum Löschen</translation>
+        <translation>Keine Liniensegmente zu entfernen</translation>
     </message>
 
     <message>
@@ -792,6 +792,16 @@
         <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
         <source>🪟 Float</source>
         <translation>🪟 Abdocken</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Diesen Editor in die Registerleiste der IDE zurückholen</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Andocken</translation>
     </message>
 </context>
 <context>

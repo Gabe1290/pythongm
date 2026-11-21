@@ -551,11 +551,11 @@ Alcune modifiche potrebbero richiedere il riavvio dell&apos;IDE per avere effett
     </message>
     <message>
         <source>&amp;Find...</source>
-        <translation type="vanished">&amp;Trova...</translation>
+        <translation>&amp;Trova...</translation>
     </message>
     <message>
         <source>Find and &amp;Replace...</source>
-        <translation type="vanished">Trova e &amp;Sostituisci...</translation>
+        <translation>Trova e &amp;sostituisci...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="230"/>
@@ -608,11 +608,11 @@ Alcune modifiche potrebbero richiedere il riavvio dell&apos;IDE per avere effett
     </message>
     <message>
         <source>&amp;Build Game...</source>
-        <translation type="vanished">&amp;Compila gioco...</translation>
+        <translation>&amp;Compila il gioco...</translation>
     </message>
     <message>
         <source>Build and &amp;Run</source>
-        <translation type="vanished">Compila ed &amp;esegui</translation>
+        <translation>Compila ed &amp;esegui</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="268"/>
@@ -1523,7 +1523,7 @@ Le modifiche si applicano immediatamente agli editor attualmente aperti.</transl
     </message>
     <message>
         <source>Clean Project</source>
-        <translation type="vanished">Pulisci progetto</translation>
+        <translation>Pulisci progetto</translation>
     </message>
     <message>
         <source>Project cleanup is not yet implemented.
@@ -2866,6 +2866,255 @@ Importalo in https://lab.open-roberta.org/</translation>
         <location filename="../core/ide_window.py" line="0"/>
         <source>Filter assets…</source>
         <translation>Filtra risorse…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>Esiste già uno sprite chiamato «{0}». Scegli un altro nome.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>Nome non valido</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>Nome già in uso</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>{0} risorse inutilizzate spostate nel cestino</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>Niente da pulire: nessun file temporaneo residuo trovato.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Please open a project first.</source>
+        <translation>Apri prima un progetto.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>Rimossi {0} file temporanei residui</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>Rimossi {0} file temporanei residui:
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Restored: {0}</source>
+        <translation>Ripristinato: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>La ricerca nel progetto richiede un progetto aperto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find is only available in the code editor</source>
+        <translation>La ricerca è disponibile solo nell'editor del codice</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>Impossibile aprire l'editor di sfondo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>Impossibile aprire l'editor di carattere: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>Impossibile aprire l'editor di script: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>Impossibile aprire l'editor di suono: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened background: {0}</source>
+        <translation>Sfondo aperto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened font: {0}</source>
+        <translation>Carattere aperto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened script: {0}</source>
+        <translation>Script aperto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened sound: {0}</source>
+        <translation>Suono aperto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>Attenzione: il blocco personalizzato «{0}» è in conflitto con uno già definito in «{1}»: rinominane uno per evitare risultati confusi.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Build Complete</source>
+        <translation>Compilazione completata</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Building Game</source>
+        <translation>Compilazione del gioco</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>Opzioni di esportazione</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Assets</source>
+        <translation>Includi risorse</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Debug Info</source>
+        <translation>Includi informazioni di debug</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Optimize for Release</source>
+        <translation>Ottimizza per la pubblicazione</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Preparing build...</source>
+        <translation>Preparazione della compilazione...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>&amp;Chiudi progetto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>&amp;Ripristina risorse eliminate...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Clean &amp;Project</source>
+        <translation>&amp;Pulisci progetto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Create S&amp;prite...</source>
+        <translation>Crea s&amp;prite...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>Esporta come HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>Trova file &amp;orfani...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>Trova risorse &amp;inutilizzate...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>Trova nel &amp;progetto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>Nessun progetto aperto.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>Nota: {n} azioni non sono supportate da questa destinazione di esportazione e sono state saltate; il gioco esportato non le eseguirà:
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project Too New</source>
+        <translation>Progetto troppo recente</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>Progetto chiuso.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>Questo progetto è stato creato con una versione più recente di PyGameMaker (formato {0}.{1}). Aggiorna PyGameMaker per aprirlo.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>Ci sono modifiche non salvate. Vuoi salvare prima di chiudere il progetto?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Could not open sample</source>
+        <translation>Impossibile aprire l'esempio</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>Impossibile copiare l'esempio incluso in:
+{0}
+
+Errore:
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Sample copied to: {0}</source>
+        <translation>Esempio copiato in: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>Impossibile preparare la prova dell'oggetto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Play Object: {0}</source>
+        <translation>Prova oggetto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>Apri o crea prima un progetto per provare un oggetto.</translation>
     </message>
 </context>
 <context>

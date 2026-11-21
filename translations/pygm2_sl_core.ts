@@ -551,11 +551,11 @@ Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</tran
     </message>
     <message>
         <source>&amp;Find...</source>
-        <translation type="vanished">&amp;Najdi...</translation>
+        <translation>&amp;Najdi...</translation>
     </message>
     <message>
         <source>Find and &amp;Replace...</source>
-        <translation type="vanished">Najdi in &amp;zamenjaj...</translation>
+        <translation>Najdi in &amp;zamenjaj...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="230"/>
@@ -608,11 +608,11 @@ Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</tran
     </message>
     <message>
         <source>&amp;Build Game...</source>
-        <translation type="vanished">&amp;Compiler le jeu...</translation>
+        <translation>&amp;Zgradi igro...</translation>
     </message>
     <message>
         <source>Build and &amp;Run</source>
-        <translation type="vanished">Compiler et &amp;exécuter</translation>
+        <translation>Zgradi in &amp;zaženi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="268"/>
@@ -1523,7 +1523,7 @@ Spremembe se takoj uporabijo za trenutno odprte urejevalnike.</translation>
     </message>
     <message>
         <source>Clean Project</source>
-        <translation type="vanished">Počisti projekt</translation>
+        <translation>Počisti projekt</translation>
     </message>
     <message>
         <source>Project cleanup is not yet implemented.
@@ -2866,6 +2866,255 @@ Uvozite ga v https://lab.open-roberta.org/</translation>
         <location filename="../core/ide_window.py" line="0"/>
         <source>Filter assets…</source>
         <translation>Filtriraj vire…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>Sprite z imenom »{0}« že obstaja. Izberite drugo ime.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>Neveljavno ime</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>Ime je že zasedeno</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>Neuporabljeni viri ({0}) premaknjeni v koš</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>Ničesar ni treba počistiti – ni ostankov začasnih datotek.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Please open a project first.</source>
+        <translation>Najprej odprite projekt.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>Odstranjenih ostankov začasnih datotek: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>Odstranjenih ostankov začasnih datotek: {0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Restored: {0}</source>
+        <translation>Obnovljeno: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>Iskanje v projektu zahteva odprt projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find is only available in the code editor</source>
+        <translation>Iskanje je na voljo samo v urejevalniku kode</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>Urejevalnika ozadja ni bilo mogoče odpreti: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>Urejevalnika pisave ni bilo mogoče odpreti: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>Urejevalnika skripte ni bilo mogoče odpreti: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>Urejevalnika zvoka ni bilo mogoče odpreti: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened background: {0}</source>
+        <translation>Odprto ozadje: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened font: {0}</source>
+        <translation>Odprta pisava: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened script: {0}</source>
+        <translation>Odprta skripta: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened sound: {0}</source>
+        <translation>Odprt zvok: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>Opozorilo: blok po meri »{0}« je v sporu z blokom, ki je že določen v »{1}« – preimenujte enega od njiju, da se izognete zmedenim rezultatom.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Build Complete</source>
+        <translation>Gradnja končana</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Building Game</source>
+        <translation>Gradnja igre</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>Možnosti izvoza</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Assets</source>
+        <translation>Vključi vire</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Debug Info</source>
+        <translation>Vključi podatke za razhroščevanje</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Optimize for Release</source>
+        <translation>Optimiziraj za izdajo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Preparing build...</source>
+        <translation>Pripravljanje gradnje...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>&amp;Zapri projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>&amp;Obnovi izbrisane vire...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Clean &amp;Project</source>
+        <translation>Počisti &amp;projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Create S&amp;prite...</source>
+        <translation>Ustvari s&amp;prite...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>Izvozi kot HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>Najdi &amp;osirotele datoteke...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>Najdi &amp;neuporabljene vire...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>Najdi v &amp;projektu...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>Noben projekt ni odprt.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>Opomba: dejanj ({n}) ta cilj izvoza ne podpira in so bila preskočena – izvožena igra jih ne bo izvajala:
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project Too New</source>
+        <translation>Projekt je preveč nov</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>Projekt je zaprt.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>Ta projekt je bil ustvarjen z novejšo različico PyGameMaker (oblika {0}.{1}). Za odpiranje posodobite PyGameMaker.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>Imate neshranjene spremembe. Jih želite shraniti pred zapiranjem projekta?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Could not open sample</source>
+        <translation>Primera ni bilo mogoče odpreti</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>Priloženega primera ni bilo mogoče kopirati v:
+{0}
+
+Napaka:
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Sample copied to: {0}</source>
+        <translation>Primer kopiran v: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>Preizkusa objekta ni bilo mogoče pripraviti: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Play Object: {0}</source>
+        <translation>Preizkus objekta: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>Preden preizkusite objekt, odprite ali ustvarite projekt.</translation>
     </message>
 </context>
 <context>

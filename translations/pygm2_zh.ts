@@ -552,6 +552,58 @@ Do you want to save anyway?</source>
 
 是否仍要保存？</translation>
     </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>描述</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>缺少依赖项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>预设：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>需要：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>全不选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未实现] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>{0} 个积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：部分积木缺少依赖项：
+{0}</translation>
+    </message>
 </context>
 <context>
     <name>TilePaletteDialog</name>
@@ -1515,6 +1567,16 @@ Do you want to save anyway?</source>
         <source>Auto-saved: {0}</source>
         <translation>已自动保存：{0}</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
 </context>
 <context>
     <name>BuildProjectDialog</name>
@@ -1749,6 +1811,58 @@ Do you want to save anyway?</source>
         <translation>部分已启用的积木缺少依赖项，可能无法正常工作。
 
 是否仍要保存？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>描述</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>缺少依赖项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>预设：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>需要：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>全不选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未实现] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>{0} 个积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：部分积木缺少依赖项：
+{0}</translation>
     </message>
 </context>
 <context>
@@ -3581,6 +3695,81 @@ Error: {0}</source>
         <source>▶ Play Object</source>
         <translation>▶ 试玩对象</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -4088,6 +4277,16 @@ Some changes may require restarting the IDE to take effect.</source>
 {}</source>
         <translation>导出实验场时出错：
 {}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
     </message>
 </context>
 <context>
@@ -4947,6 +5146,50 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Send a Network Message (File Exchange)</source>
         <translation>发送网络消息 (文件交换)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>
+        <source>Cannot add actions directly to &apos;{0}&apos;.
+
+Right-click on {1} and add the action there instead.</source>
+        <translation>无法直接向“{0}”添加动作。
+
+请改为右键单击 {1}，在那里添加动作。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy Action</source>
+        <translation>复制动作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy {0} Actions</source>
+        <translation>复制 {0} 个动作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste Action</source>
+        <translation>粘贴动作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste {0} Actions</source>
+        <translation>粘贴 {0} 个动作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_render.py" line="0"/>
+        <source>(empty comment)</source>
+        <translation>（空注释）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Alarm</source>
+        <translation>闹钟</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Arrow</source>
+        <translation>箭头</translation>
     </message>
 </context>
 <context>
@@ -6038,6 +6281,16 @@ Events: {4}</source>
         <source>🧱 Block Edit</source>
         <translation>🧱 方块编辑</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -6370,6 +6623,86 @@ Events: {4}</source>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1075"/>
         <source>Failed to save sprite: {0}</source>
         <translation>保存精灵失败：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
     </message>
 </context>
 <context>
@@ -8822,6 +9155,280 @@ Import it in https://lab.open-roberta.org/</source>
         <source>Filter assets…</source>
         <translation>筛选资源…</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>已存在名为“{0}”的精灵。请选择其他名称。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>名称无效</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>名称已被使用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Clean Project</source>
+        <translation>清理项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>已将 {0} 个未使用的资源移到回收站</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>无需清理——未发现残留的临时文件。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Please open a project first.</source>
+        <translation>请先打开一个项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>已删除 {0} 个残留的临时文件</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>已删除 {0} 个残留的临时文件：
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Restored: {0}</source>
+        <translation>已恢复：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>在项目中查找需要先打开项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find is only available in the code editor</source>
+        <translation>查找仅在代码编辑器中可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>无法打开背景编辑器：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>无法打开字体编辑器：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>无法打开脚本编辑器：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>无法打开声音编辑器：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened background: {0}</source>
+        <translation>已打开背景：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened font: {0}</source>
+        <translation>已打开字体：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened script: {0}</source>
+        <translation>已打开脚本：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened sound: {0}</source>
+        <translation>已打开声音：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>警告：自定义块“{0}”与“{1}”中已定义的块冲突——请重命名其中一个，以免结果混乱。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Build Complete</source>
+        <translation>构建完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Building Game</source>
+        <translation>正在构建游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>导出选项</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Assets</source>
+        <translation>包含资源</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Debug Info</source>
+        <translation>包含调试信息</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Optimize for Release</source>
+        <translation>为发布进行优化</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Preparing build...</source>
+        <translation>正在准备构建...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Build Game...</source>
+        <translation>构建游戏(&amp;B)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>关闭项目(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Find...</source>
+        <translation>查找(&amp;F)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>恢复已删除的资源(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Build and &amp;Run</source>
+        <translation>构建并运行(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Clean &amp;Project</source>
+        <translation>清理项目(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Create S&amp;prite...</source>
+        <translation>创建精灵(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>导出为 HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>查找孤立文件(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>查找未使用的资源(&amp;U)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find and &amp;Replace...</source>
+        <translation>查找和替换(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>在项目中查找(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>没有打开的项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>注意：有 {n} 个动作不受此导出目标支持，已被跳过——导出的游戏不会执行它们：
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project Too New</source>
+        <translation>项目版本过新</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>项目已关闭。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>此项目由更新版本的 PyGameMaker 创建（格式 {0}.{1}）。请更新 PyGameMaker 后再打开。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>有未保存的更改。关闭项目前是否保存？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Could not open sample</source>
+        <translation>无法打开示例</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>无法将内置示例复制到：
+{0}
+
+错误：
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Sample copied to: {0}</source>
+        <translation>示例已复制到：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>无法准备对象测试：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Play Object: {0}</source>
+        <translation>试玩对象：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>测试对象前，请先打开或创建一个项目。</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
@@ -9187,6 +9794,86 @@ Import it in https://lab.open-roberta.org/</source>
         <source>Tile vertically</source>
         <translation>垂直平铺</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
 </context>
 <context>
     <name>SoundEditor</name>
@@ -9215,6 +9902,86 @@ Import it in https://lab.open-roberta.org/</source>
         <source>▶ Play</source>
         <translation>▶ 播放</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
 </context>
 <context>
     <name>FontEditor</name>
@@ -9238,6 +10005,86 @@ Import it in https://lab.open-roberta.org/</source>
         <source>The quick brown fox</source>
         <translation>敏捷的棕色狐狸跳过了懒狗</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>
@@ -9250,6 +10097,89 @@ Import it in https://lab.open-roberta.org/</source>
         <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
         <source>GND</source>
         <translation>地面</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>将此编辑器返回到 IDE 的标签栏</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 附加</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
     </message>
 </context>
 </TS>

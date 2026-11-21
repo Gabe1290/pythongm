@@ -505,11 +505,11 @@ Some changes may require restarting the IDE to take effect.</source>
     </message>
     <message>
         <source>&amp;Find...</source>
-        <translation type="vanished">&amp;Знайти...</translation>
+        <translation>&amp;Знайти...</translation>
     </message>
     <message>
         <source>Find and &amp;Replace...</source>
-        <translation type="vanished">Знайти та &amp;замінити...</translation>
+        <translation>Знайти й &amp;замінити...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="229"/>
@@ -578,11 +578,11 @@ Some changes may require restarting the IDE to take effect.</source>
     </message>
     <message>
         <source>&amp;Build Game...</source>
-        <translation type="vanished">&amp;Зібрати гру...</translation>
+        <translation>&amp;Зібрати гру...</translation>
     </message>
     <message>
         <source>Build and &amp;Run</source>
-        <translation type="vanished">Зібрати та &amp;запустити</translation>
+        <translation>Зібрати й &amp;запустити</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="268"/>
@@ -1599,7 +1599,7 @@ Changes apply immediately to currently open editors.</source>
     </message>
     <message>
         <source>Clean Project</source>
-        <translation type="vanished">Очистити проект</translation>
+        <translation>Очищення проєкту</translation>
     </message>
     <message>
         <source>Project cleanup is not yet implemented.
@@ -2730,6 +2730,255 @@ Import it in https://lab.open-roberta.org/</source>
         <location filename="../core/ide_window.py" line="0"/>
         <source>Filter assets…</source>
         <translation>Фільтр ресурсів…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>Спрайт із назвою «{0}» уже існує. Виберіть іншу назву.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>Неприпустима назва</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>Назва вже використовується</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>Невикористані ресурси ({0}) переміщено до кошика</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>Нічого очищати — залишків тимчасових файлів не знайдено.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Please open a project first.</source>
+        <translation>Спершу відкрийте проєкт.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>Видалено залишків тимчасових файлів: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>Видалено залишків тимчасових файлів: {0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Restored: {0}</source>
+        <translation>Відновлено: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>Для пошуку в проєкті потрібен відкритий проєкт</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find is only available in the code editor</source>
+        <translation>Пошук доступний лише в редакторі коду</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>Не вдалося відкрити редактор тла: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>Не вдалося відкрити редактор шрифту: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>Не вдалося відкрити редактор скрипту: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>Не вдалося відкрити редактор звуку: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened background: {0}</source>
+        <translation>Відкрито тло: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened font: {0}</source>
+        <translation>Відкрито шрифт: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened script: {0}</source>
+        <translation>Відкрито скрипт: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened sound: {0}</source>
+        <translation>Відкрито звук: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>Увага: користувацький блок «{0}» конфліктує з блоком, уже визначеним у «{1}», — перейменуйте один із них, щоб уникнути плутанини.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Build Complete</source>
+        <translation>Збирання завершено</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Building Game</source>
+        <translation>Збирання гри</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>Параметри експорту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Assets</source>
+        <translation>Включити ресурси</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Debug Info</source>
+        <translation>Включити налагоджувальну інформацію</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Optimize for Release</source>
+        <translation>Оптимізувати для випуску</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Preparing build...</source>
+        <translation>Підготовка збирання...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>&amp;Закрити проєкт</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>&amp;Відновити видалені ресурси...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Clean &amp;Project</source>
+        <translation>Очистити &amp;проєкт</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Create S&amp;prite...</source>
+        <translation>Створити с&amp;прайт...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>Експорт у HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>Знайти &amp;неприв'язані файли...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>Знайти &amp;невикористані ресурси...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>Знайти в &amp;проєкті...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>Немає відкритого проєкту.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>Примітка: дії ({n}) не підтримуються цією ціллю експорту й були пропущені — експортована гра не виконуватиме їх:
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project Too New</source>
+        <translation>Проєкт занадто новий</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>Проєкт закрито.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>Цей проєкт створено в новішій версії PyGameMaker (формат {0}.{1}). Оновіть PyGameMaker, щоб відкрити його.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>Є незбережені зміни. Зберегти їх перед закриттям проєкту?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Could not open sample</source>
+        <translation>Не вдалося відкрити приклад</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>Не вдалося скопіювати вбудований приклад до:
+{0}
+
+Помилка:
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Sample copied to: {0}</source>
+        <translation>Приклад скопійовано до: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>Не вдалося підготувати перевірку об'єкта: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Play Object: {0}</source>
+        <translation>Перевірка об'єкта: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>Перш ніж перевіряти об'єкт, відкрийте або створіть проєкт.</translation>
     </message>
 </context>
 <context>

@@ -317,7 +317,7 @@
     </message>
     <message>
         <source>View reset to default</source>
-        <translation type="vanished">Вигляд скинуто за замовчуванням</translation>
+        <translation>Вигляд скинуто до типового</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="830"/>
@@ -333,51 +333,51 @@
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
-        <translation type="vanished">Попередження: перешкода дуже близько!</translation>
+        <translation>Увага: перешкода зовсім близько!</translation>
     </message>
     <message>
         <source>Obstacle detected ahead</source>
-        <translation type="vanished">Попереду виявлено перешкоду</translation>
+        <translation>Попереду виявлено перешкоду</translation>
     </message>
     <message>
         <source>Moving forward</source>
-        <translation type="vanished">Рух уперед</translation>
+        <translation>Рух уперед</translation>
     </message>
     <message>
         <source>Moving backward</source>
-        <translation type="vanished">Рух назад</translation>
+        <translation>Рух назад</translation>
     </message>
     <message>
         <source>Turning left</source>
-        <translation type="vanished">Поворот ліворуч</translation>
+        <translation>Поворот ліворуч</translation>
     </message>
     <message>
         <source>Turning right</source>
-        <translation type="vanished">Поворот праворуч</translation>
+        <translation>Поворот праворуч</translation>
     </message>
     <message>
         <source>Stopped</source>
-        <translation type="vanished">Зупинено</translation>
+        <translation>Зупинено</translation>
     </message>
     <message>
         <source>Selection cleared</source>
-        <translation type="vanished">Вибір знято</translation>
+        <translation>Вибір знято</translation>
     </message>
     <message>
         <source>Robot reset to center</source>
-        <translation type="vanished">Робота скинуто в центр</translation>
+        <translation>Робота повернуто в центр</translation>
     </message>
     <message>
         <source>World reset to default</source>
-        <translation type="vanished">Світ скинуто за замовчуванням</translation>
+        <translation>Світ скинуто до типового</translation>
     </message>
     <message>
         <source>Interior obstacles cleared</source>
-        <translation type="vanished">Внутрішні перешкоди видалено</translation>
+        <translation>Внутрішні перешкоди видалено</translation>
     </message>
     <message>
         <source>No interior obstacles to clear</source>
-        <translation type="vanished">Немає внутрішніх перешкод для видалення</translation>
+        <translation>Немає внутрішніх перешкод для видалення</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1009"/>
@@ -406,63 +406,63 @@
     </message>
     <message>
         <source>Obstacle added</source>
-        <translation type="vanished">Перешкоду додано</translation>
+        <translation>Перешкоду додано</translation>
     </message>
     <message>
         <source>Line segment added</source>
-        <translation type="vanished">Лінійний сегмент додано</translation>
+        <translation>Відрізок додано</translation>
     </message>
     <message>
         <source>Element too small - drag to create larger area</source>
-        <translation type="vanished">Елемент занадто малий — перетягніть для створення більшої області</translation>
+        <translation>Елемент замалий - перетягніть, щоб створити більшу область</translation>
     </message>
     <message>
         <source>Obstacle selected - press Delete to remove</source>
-        <translation type="vanished">Перешкоду вибрано — натисніть Delete для видалення</translation>
+        <translation>Перешкоду вибрано - натисніть Delete, щоб видалити</translation>
     </message>
     <message>
         <source>Line segment selected - press Delete to remove</source>
-        <translation type="vanished">Лінійний сегмент вибрано — натисніть Delete для видалення</translation>
+        <translation>Відрізок вибрано - натисніть Delete, щоб видалити</translation>
     </message>
     <message>
         <source>No element selected</source>
-        <translation type="vanished">Елемент не вибрано</translation>
+        <translation>Елемент не вибрано</translation>
     </message>
     <message>
         <source>Nothing to undo</source>
-        <translation type="vanished">Нічого скасовувати</translation>
+        <translation>Нічого скасовувати</translation>
     </message>
     <message>
         <source>Undid obstacle addition</source>
-        <translation type="vanished">Додавання перешкоди скасовано</translation>
+        <translation>Додавання перешкоди скасовано</translation>
     </message>
     <message>
         <source>Undid line addition</source>
-        <translation type="vanished">Додавання лінії скасовано</translation>
+        <translation>Додавання відрізка скасовано</translation>
     </message>
     <message>
         <source>Undid obstacle deletion</source>
-        <translation type="vanished">Видалення перешкоди скасовано</translation>
+        <translation>Видалення перешкоди скасовано</translation>
     </message>
     <message>
         <source>Undid line deletion</source>
-        <translation type="vanished">Видалення лінії скасовано</translation>
+        <translation>Видалення відрізка скасовано</translation>
     </message>
     <message>
         <source>Obstacle deleted</source>
-        <translation type="vanished">Перешкоду видалено</translation>
+        <translation>Перешкоду видалено</translation>
     </message>
     <message>
         <source>Line segment deleted</source>
-        <translation type="vanished">Лінійний сегмент видалено</translation>
+        <translation>Відрізок видалено</translation>
     </message>
     <message>
         <source>All line segments cleared</source>
-        <translation type="vanished">Усі лінійні сегменти видалено</translation>
+        <translation>Усі відрізки видалено</translation>
     </message>
     <message>
         <source>No line segments to clear</source>
-        <translation type="vanished">Немає лінійних сегментів для видалення</translation>
+        <translation>Немає відрізків для видалення</translation>
     </message>
 
     <message>
@@ -792,6 +792,16 @@
         <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
         <source>🪟 Float</source>
         <translation>🪟 Відкріпити</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Повернути цей редактор на панель вкладок IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Закріпити</translation>
     </message>
 </context>
 <context>

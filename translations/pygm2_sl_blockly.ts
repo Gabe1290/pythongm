@@ -14,7 +14,7 @@
     </message>
     <message>
         <source>Preset:</source>
-        <translation type="vanished">Préréglage :</translation>
+        <translation>Prednastavitev:</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
@@ -93,19 +93,19 @@
     </message>
     <message>
         <source>Block</source>
-        <translation type="vanished">Bloc</translation>
+        <translation>Blok</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="vanished">Description</translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Tout sélectionner</translation>
+        <translation>Izberi vse</translation>
     </message>
     <message>
         <source>Select None</source>
-        <translation type="vanished">Ne rien sélectionner</translation>
+        <translation>Ne izberi ničesar</translation>
     </message>
     <message>
         <source>Save</source>
@@ -117,20 +117,20 @@
     </message>
     <message>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} blocs</translation>
+        <translation>Blokov: {0}</translation>
     </message>
     <message>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Ni implementirano] {0}</translation>
+        <translation>[Ni izvedeno] {0}</translation>
     </message>
     <message>
         <source>Requires: {0}</source>
-        <translation type="vanished">Nécessite : {0}</translation>
+        <translation>Zahteva: {0}</translation>
     </message>
     <message>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Attention : Certains blocs ont des dépendances manquantes :
+        <translation>⚠️ Opozorilo: nekaterim blokom manjkajo odvisnosti:
 {0}</translation>
     </message>
     <message>
@@ -140,7 +140,7 @@
     </message>
     <message>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Dépendances manquantes</translation>
+        <translation>Manjkajoče odvisnosti</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="128"/>

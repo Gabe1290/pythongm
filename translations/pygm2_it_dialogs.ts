@@ -1500,7 +1500,7 @@ Vuoi aprire la directory di esportazione?</translation>
     </message>
     <message>
         <source>Preset:</source>
-        <translation type="vanished">Predefinito:</translation>
+        <translation>Preimpostazione:</translation>
     </message>
     <message>
         <source>Thymio Full (All Thymio Blocks)</source>
@@ -1524,19 +1524,19 @@ Vuoi aprire la directory di esportazione?</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation type="vanished">Blocco</translation>
+        <translation>Blocco</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="vanished">Descrizione</translation>
+        <translation>Descrizione</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Seleziona tutto</translation>
+        <translation>Seleziona tutto</translation>
     </message>
     <message>
         <source>Select None</source>
-        <translation type="vanished">Deseleziona tutto</translation>
+        <translation>Deseleziona tutto</translation>
     </message>
     <message>
         <source>Save</source>
@@ -1548,20 +1548,20 @@ Vuoi aprire la directory di esportazione?</translation>
     </message>
     <message>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} blocchi</translation>
+        <translation>{0} blocchi</translation>
     </message>
     <message>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Non implementato] {0}</translation>
+        <translation>[Non implementato] {0}</translation>
     </message>
     <message>
         <source>Requires: {0}</source>
-        <translation type="vanished">Richiede: {0}</translation>
+        <translation>Richiede: {0}</translation>
     </message>
     <message>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Attenzione: Alcuni blocchi hanno dipendenze mancanti:
+        <translation>⚠️ Attenzione: ad alcuni blocchi mancano delle dipendenze:
 {0}</translation>
     </message>
     <message>
@@ -1570,7 +1570,7 @@ Vuoi aprire la directory di esportazione?</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Dipendenze mancanti</translation>
+        <translation>Dipendenze mancanti</translation>
     </message>
     <message>
         <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.

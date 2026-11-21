@@ -156,6 +156,86 @@
         <source>The quick brown fox</source>
         <translation>Pchnąć w tę łódź jeża lub osiem skrzyń fig</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
+    </message>
 </context>
 <context>
     <name>BlocklyVisualProgrammingTab</name>
@@ -212,6 +292,86 @@
         <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="142"/>
         <source>(no file)</source>
         <translation>(brak pliku)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
     </message>
 </context>
 <context>
@@ -278,6 +438,86 @@
         <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="129"/>
         <source>(unknown)</source>
         <translation>(nieznane)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
     </message>
 </context>
 <context>
@@ -638,6 +878,58 @@ Do you want to save anyway?</source>
         <translation>Niektórym włączonym blokom Thymio brakuje wymaganych zależności. Bloki mogą nie działać poprawnie.
 
 Czy mimo to zapisać?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>Blok</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>Opis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>Brakujące zależności</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>Ustawienie wstępne:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>Wymaga: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>Zaznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>Odznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[Niezaimplementowane] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>{0} bloków</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ Uwaga: niektórym blokom brakuje zależności:
+{0}</translation>
     </message>
 </context>
 <context>
@@ -1606,6 +1898,16 @@ Czy mimo to zapisać?</translation>
         <source>Auto-saved: {0}</source>
         <translation>Zapisano automatycznie: {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPropertiesPanel</name>
@@ -1999,6 +2301,58 @@ Do you want to save anyway?</source>
         <translation>Niektórym włączonym blokom brakuje wymaganych zależności. Bloki mogą nie działać poprawnie.
 
 Czy mimo to zapisać?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>Blok</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>Opis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>Brakujące zależności</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>Ustawienie wstępne:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>Wymaga: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>Zaznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>Odznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[Niezaimplementowane] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>{0} bloków</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ Uwaga: niektórym blokom brakuje zależności:
+{0}</translation>
     </message>
 </context>
 <context>
@@ -3324,6 +3678,81 @@ Błąd: {0}</translation>
         <source>Run this object alone in a small test room</source>
         <translation>Uruchom ten obiekt samodzielnie w małej sali testowej</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>
@@ -3845,6 +4274,16 @@ Użyj zamiast nich operatorów Pythona (and / or / not), np. "vspeed &gt; 0 and 
 {}</source>
         <translation>Błąd podczas eksportowania placu zabaw:
 {}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
     </message>
 </context>
 <context>
@@ -5493,6 +5932,86 @@ Zostaną przeniesione do kosza projektu i będzie je można później przywróci
         <source>Failed to save sprite: {0}</source>
         <translation>Nie udało się zapisać sprite'a: {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
+    </message>
 </context>
 <context>
     <name>ObjectEventsPanel</name>
@@ -5881,6 +6400,16 @@ Kliknij prawym przyciskiem na {1} i dodaj tam akcję.</translation>
         <source>(empty comment)</source>
         <translation>(pusty komentarz)</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Alarm</source>
+        <translation>Alarm</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Arrow</source>
+        <translation>Strzałka</translation>
+    </message>
 </context>
 <context>
     <name>RoomEditor</name>
@@ -6258,6 +6787,16 @@ Kliknij prawym przyciskiem na {1} i dodaj tam akcję.</translation>
         <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="674"/>
         <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
         <translation>Wybrano {0} na ({1}, {2}) -- {3} obiektów nałożonych tutaj, kliknij ponownie, aby przełączać ({4}/{5})</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
     </message>
 </context>
 <context>
@@ -8886,6 +9425,66 @@ Import it in https://lab.open-roberta.org/</source>
 
 Zaimportuj go w https://lab.open-roberta.org/</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>Sprite o nazwie „{0}” już istnieje. Wybierz inną nazwę.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>Nieprawidłowa nazwa</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>Nazwa jest już używana</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>Wyszukiwanie w projekcie wymaga otwartego projektu</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>Uwaga: własny blok „{0}” koliduje z blokiem już zdefiniowanym w „{1}” — zmień nazwę jednego z nich, aby uniknąć mylących wyników.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>Opcje eksportu</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>&amp;Zamknij projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>Eksportuj jako HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>Znajdź w &amp;projekcie...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>Żaden projekt nie jest otwarty.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>Projekt zamknięty.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>Masz niezapisane zmiany. Czy zapisać je przed zamknięciem projektu?</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>
@@ -9038,6 +9637,89 @@ Zaimportuj go w https://lab.open-roberta.org/</translation>
         <location filename="../extensions/thymio/diagram_widget.py"/>
         <source>Robot Body (Tap/Shock sensor)</source>
         <translation>Korpus robota (czujnik dotyku/wstrząsu)</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Przywróć ten edytor do paska kart IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Dołącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
     </message>
 </context>
 </TS>

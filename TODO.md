@@ -883,7 +883,18 @@ Other:
 
 ## Translations / i18n
 
-### Mixin / base-class strings never translate at runtime, in ANY language (found 2026-11-21)
+### ~~Mixin / base-class strings never translate at runtime, in ANY language~~ (found and FIXED 2026-11-21)
+
+**Fixed.** `scripts/i18n_catchup.py` now files each mixin/base-class `tr()` string under
+every concrete class that runs it (`runtime_contexts()`, resolving bases through imports --
+two unrelated `InputMixin` classes exist); `propagate` copied the 121 translations that
+existed under the mixin names, and 88 strings with no translation anywhere were written
+(10 of them in French too). Every inherited string now resolves in all 11 languages;
+`tests/test_i18n_catchup.py::test_every_inherited_string_shows_translated` fails on the old
+catalogues with 129 (fr) to 209 (it/ru/uk) untranslated, 0 now. Both guards use the same
+scan. Also found: a duplicate live "Build Failed" in French (removed; new guard), and
+French "Event Exists" in ru/sl (replaced). Original note:
+
 
 Qt's `self.tr()` takes its context from the CONCRETE runtime class, so a string in a mixin
 or shared base class is looked up as e.g. `SpriteEditor` or `PyGameMakerIDE`, never under the

@@ -38,6 +38,7 @@ _COGNATE_SOURCES = {
     "X:", "Y:",
     "15s", "30s", "1m", "2m", "5m",
     "Robot", "Port:",
+    "Alarm",  # Polish "alarm" (ObjectEventsPanel, inherited from EventCrudMixin)
     "Web", "Web (HTML5)",
     "🧩 Blockly", "🤖 Thymio", "Thymio",
     "🎮  {0}", "🎨 {0}",
@@ -93,7 +94,7 @@ def test_every_message_has_a_real_non_empty_translation():
                 f"[{context}] {source!r}: translation equals the English source"
             )
         checked += 1
-    assert checked == 1636, checked  # +10 ActionConfigDialog / ConditionalActionEditor expression-help strings (catch-up to fr, 2026-11-21), +5 Open Roberta export dialog strings (2026-11-19), +30 ThymioDiagramWidget (2026-11-06, closing the fr-reference context gap), +3 Thymio activity-sheet sample names (2026-11-03), +16 'Send to Thymio robot' (File menu) dialogs and status lines (2026-11-02), +1 Thymio hardware-test sample name (2026-11-02), +1 Preferences extension UI toggle checkbox (2026-11-02), +1 Create Sprite menu entry (2026-10-16), +2 Save As "Replace Project?" dialog, +1 HTML5 export crash dialog, +4 folder-based Open Project (2026-10-07)
+    assert checked == 1771, checked  # +135 mixin/base-class strings filed under the concrete classes that run them (121 copied + 14 new, 2026-11-21), +10 ActionConfigDialog / ConditionalActionEditor expression-help strings (catch-up to fr, 2026-11-21), +5 Open Roberta export dialog strings (2026-11-19), +30 ThymioDiagramWidget (2026-11-06, closing the fr-reference context gap), +3 Thymio activity-sheet sample names (2026-11-03), +16 'Send to Thymio robot' (File menu) dialogs and status lines (2026-11-02), +1 Thymio hardware-test sample name (2026-11-02), +1 Preferences extension UI toggle checkbox (2026-11-02), +1 Create Sprite menu entry (2026-10-16), +2 Save As "Replace Project?" dialog, +1 HTML5 export crash dialog, +4 folder-based Open Project (2026-10-07)
 
 
 def test_diacritics_survive():

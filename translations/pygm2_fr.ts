@@ -1706,6 +1706,16 @@ Elles seront déplacées vers la corbeille du projet et pourront être restauré
         <source>Auto-saved: {0}</source>
         <translation>Enregistré automatiquement : {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
 </context>
 <context>
     <name>BlocklyConfigDialog</name>
@@ -1719,8 +1729,9 @@ Elles seront déplacées vers la corbeille du projet et pourront être restauré
         <translation>Configurer les événements et actions</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Preset:</source>
-        <translation type="vanished">Préréglage :</translation>
+        <translation>Préréglage :</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
@@ -1798,20 +1809,24 @@ Elles seront déplacées vers la corbeille du projet et pourront être restauré
         <translation>Sélectionner les blocs à activer :</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Block</source>
-        <translation type="vanished">Bloc</translation>
+        <translation>Bloc</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Description</source>
-        <translation type="vanished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Select All</source>
-        <translation type="vanished">Tout sélectionner</translation>
+        <translation>Tout sélectionner</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Select None</source>
-        <translation type="vanished">Ne rien sélectionner</translation>
+        <translation>Ne rien sélectionner</translation>
     </message>
     <message>
         <source>Save</source>
@@ -1822,21 +1837,25 @@ Elles seront déplacées vers la corbeille du projet et pourront être restauré
         <translation type="vanished">Annuler</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} blocs</translation>
+        <translation>{0} blocs</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Non implémenté] {0}</translation>
+        <translation>[Non implémenté] {0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Requires: {0}</source>
-        <translation type="vanished">Nécessite : {0}</translation>
+        <translation>Nécessite : {0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Attention : Certains blocs ont des dépendances manquantes :
+        <translation>⚠️ Attention : Certains blocs ont des dépendances manquantes :
 {0}</translation>
     </message>
     <message>
@@ -1845,8 +1864,9 @@ Elles seront déplacées vers la corbeille du projet et pourront être restauré
         <translation>{0} blocs, {1} catégories</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Dépendances manquantes</translation>
+        <translation>Dépendances manquantes</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="128"/>
@@ -4165,6 +4185,81 @@ Le code s&apos;exécutera lorsque l&apos;événement se déclenchera pendant le 
         <source>Run this object alone in a small test room</source>
         <translation>Exécuter cet objet seul dans une petite salle de test</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
+    </message>
 </context>
 <context>
     <name>ObjectEventsPanel</name>    <message>
@@ -5120,6 +5215,16 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <source>Send a Network Message (File Exchange)</source>
         <translation>Envoyer un message réseau (échange de fichiers)</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Alarm</source>
+        <translation>Alarme</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Arrow</source>
+        <translation>Flèche</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -5552,6 +5657,16 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
 {}</source>
         <translation>Erreur lors de l&apos;export du terrain :
 {}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
     </message>
 </context>
 <context>
@@ -6121,18 +6236,22 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <translation>Enregistrer le projet &amp;sous...</translation>
     </message>
     <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
         <source>&amp;Close Project</source>
         <translation>&amp;Fermer le projet</translation>
     </message>
     <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
         <source>You have unsaved changes. Do you want to save before closing the project?</source>
         <translation>Vous avez des modifications non enregistrées. Voulez-vous les enregistrer avant de fermer le projet ?</translation>
     </message>
     <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
         <source>No project is open.</source>
         <translation>Aucun projet n'est ouvert.</translation>
     </message>
     <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
         <source>Project closed.</source>
         <translation>Projet fermé.</translation>
     </message>
@@ -8809,10 +8928,6 @@ La carte doit déjà être branchée en USB et exécuter MicroPython.</translati
         <translation>Création du fichier .hex en cours...</translation>
     </message>
     <message>
-        <source>Build Failed</source>
-        <translation>Échec de la création</translation>
-    </message>
-    <message>
         <source>Couldn't build the .hex file:
 
 {0}</source>
@@ -8968,6 +9083,46 @@ Import it in https://lab.open-roberta.org/</source>
 {0}
 
 Importez-le dans https://lab.open-roberta.org/</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>Un sprite nommé « {0} » existe déjà. Veuillez choisir un autre nom.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>Nom invalide</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>Nom déjà utilisé</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>La recherche dans le projet nécessite un projet ouvert</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>Attention : le bloc personnalisé « {0} » entre en conflit avec un bloc déjà défini dans « {1} » — renommez l'un des deux pour éviter des résultats déroutants.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>Options d'export</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>Exporter en HTML5…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>Rechercher dans le &amp;projet...</translation>
     </message>
 </context>
 <context>
@@ -9390,6 +9545,16 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
         <translation>{0} sélectionné à ({1}, {2}) -- {3} objets empilés ici, cliquez à nouveau pour parcourir ({4}/{5})</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -9723,6 +9888,86 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <source>Failed to save sprite: {0}</source>
         <translation>Échec de l&apos;enregistrement du sprite : {0}</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
+    </message>
 </context>
 <context>
     <name>SpriteStripDialog</name>
@@ -9902,8 +10147,9 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <translation>Configurer les événements et actions Thymio</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Preset:</source>
-        <translation type="vanished">Préréglage :</translation>
+        <translation>Préréglage :</translation>
     </message>
     <message>
         <location filename="../dialogs/thymio_config_dialog.py" line="52"/>
@@ -9935,20 +10181,24 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <translation>Sélectionnez les blocs Thymio à activer :</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Block</source>
-        <translation type="vanished">Bloc</translation>
+        <translation>Bloc</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Description</source>
-        <translation type="vanished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Select All</source>
-        <translation type="vanished">Tout sélectionner</translation>
+        <translation>Tout sélectionner</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Select None</source>
-        <translation type="vanished">Tout désélectionner</translation>
+        <translation>Ne rien sélectionner</translation>
     </message>
     <message>
         <source>Save</source>
@@ -9959,21 +10209,25 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <translation type="vanished">Annuler</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} blocs</translation>
+        <translation>{0} blocs</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Non implémenté] {0}</translation>
+        <translation>[Non implémenté] {0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Requires: {0}</source>
-        <translation type="vanished">Nécessite : {0}</translation>
+        <translation>Nécessite : {0}</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Attention : Certains blocs ont des dépendances manquantes :
+        <translation>⚠️ Attention : Certains blocs ont des dépendances manquantes :
 {0}</translation>
     </message>
     <message>
@@ -9982,8 +10236,9 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <translation>{0} blocs Thymio, {1} catégories</translation>
     </message>
     <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Dépendances manquantes</translation>
+        <translation>Dépendances manquantes</translation>
     </message>
     <message>
         <location filename="../dialogs/thymio_config_dialog.py" line="168"/>
@@ -11652,6 +11907,86 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>(unknown)</source>
         <translation>(inconnu)</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
+    </message>
 </context>
 <context>
     <name>SoundEditor</name>
@@ -11681,6 +12016,86 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>(no file)</source>
         <translation>(aucun fichier)</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
+    </message>
 </context>
 <context>
     <name>FontEditor</name>
@@ -11703,6 +12118,169 @@ Voulez-vous quand même enregistrer ?</translation>
         <location filename="../../../../../home/edu-thulleng/pythongm/editors/font_editor.py" line="90"/>
         <source>The quick brown fox</source>
         <translation>Portez ce vieux whisky au juge blond qui fume</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Enregistré automatiquement : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ Annuler</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Annuler {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Rétablir {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Détacher</translation>
     </message>
 </context>
 </TS>

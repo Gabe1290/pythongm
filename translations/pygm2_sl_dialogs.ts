@@ -1500,7 +1500,7 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>Preset:</source>
-        <translation type="vanished">Prednastavitev:</translation>
+        <translation>Prednastavitev:</translation>
     </message>
     <message>
         <source>Thymio Full (All Thymio Blocks)</source>
@@ -1524,19 +1524,19 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation type="vanished">Blok</translation>
+        <translation>Blok</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="vanished">Opis</translation>
+        <translation>Opis</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Izberi vse</translation>
+        <translation>Izberi vse</translation>
     </message>
     <message>
         <source>Select None</source>
-        <translation type="vanished">Počisti izbor</translation>
+        <translation>Ne izberi ničesar</translation>
     </message>
     <message>
         <source>Save</source>
@@ -1548,20 +1548,20 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} blokov</translation>
+        <translation>Blokov: {0}</translation>
     </message>
     <message>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Ni implementirano] {0}</translation>
+        <translation>[Ni izvedeno] {0}</translation>
     </message>
     <message>
         <source>Requires: {0}</source>
-        <translation type="vanished">Zahteva: {0}</translation>
+        <translation>Zahteva: {0}</translation>
     </message>
     <message>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Opozorilo: nekaterim blokom manjkajo odvisnosti:
+        <translation>⚠️ Opozorilo: nekaterim blokom manjkajo odvisnosti:
 {0}</translation>
     </message>
     <message>
@@ -1570,7 +1570,7 @@ Ali želite odpreti mapo izvoza?</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Manjkajoče odvisnosti</translation>
+        <translation>Manjkajoče odvisnosti</translation>
     </message>
     <message>
         <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.

@@ -317,7 +317,7 @@
     </message>
     <message>
         <source>View reset to default</source>
-        <translation type="vanished">Pogled ponastavljen na privzeto</translation>
+        <translation>Pogled ponastavljen na privzeto</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="830"/>
@@ -333,51 +333,51 @@
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
-        <translation type="vanished">Opozorilo: ovira zelo blizu!</translation>
+        <translation>Opozorilo: ovira je zelo blizu!</translation>
     </message>
     <message>
         <source>Obstacle detected ahead</source>
-        <translation type="vanished">Zaznana ovira spredaj</translation>
+        <translation>Spredaj zaznana ovira</translation>
     </message>
     <message>
         <source>Moving forward</source>
-        <translation type="vanished">Premikanje naprej</translation>
+        <translation>Vožnja naprej</translation>
     </message>
     <message>
         <source>Moving backward</source>
-        <translation type="vanished">Premikanje nazaj</translation>
+        <translation>Vožnja nazaj</translation>
     </message>
     <message>
         <source>Turning left</source>
-        <translation type="vanished">Obračanje levo</translation>
+        <translation>Zavijanje levo</translation>
     </message>
     <message>
         <source>Turning right</source>
-        <translation type="vanished">Obračanje desno</translation>
+        <translation>Zavijanje desno</translation>
     </message>
     <message>
         <source>Stopped</source>
-        <translation type="vanished">Ustavljeno</translation>
+        <translation>Ustavljen</translation>
     </message>
     <message>
         <source>Selection cleared</source>
-        <translation type="vanished">Izbira počiščena</translation>
+        <translation>Izbira počiščena</translation>
     </message>
     <message>
         <source>Robot reset to center</source>
-        <translation type="vanished">Robot ponastavljen na sredino</translation>
+        <translation>Robot postavljen nazaj na sredino</translation>
     </message>
     <message>
         <source>World reset to default</source>
-        <translation type="vanished">Svet ponastavljen na privzeto</translation>
+        <translation>Svet ponastavljen na privzeto</translation>
     </message>
     <message>
         <source>Interior obstacles cleared</source>
-        <translation type="vanished">Notranje ovire odstranjene</translation>
+        <translation>Notranje ovire počiščene</translation>
     </message>
     <message>
         <source>No interior obstacles to clear</source>
-        <translation type="vanished">Ni notranjih ovir za odstranitev</translation>
+        <translation>Ni notranjih ovir za odstranitev</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1009"/>
@@ -406,63 +406,63 @@
     </message>
     <message>
         <source>Obstacle added</source>
-        <translation type="vanished">Ovira dodana</translation>
+        <translation>Ovira dodana</translation>
     </message>
     <message>
         <source>Line segment added</source>
-        <translation type="vanished">Črtni segment dodan</translation>
+        <translation>Odsek črte dodan</translation>
     </message>
     <message>
         <source>Element too small - drag to create larger area</source>
-        <translation type="vanished">Element premajhen — povlecite za večje območje</translation>
+        <translation>Element je premajhen - povlecite za večje območje</translation>
     </message>
     <message>
         <source>Obstacle selected - press Delete to remove</source>
-        <translation type="vanished">Ovira izbrana — pritisnite Delete za odstranitev</translation>
+        <translation>Ovira izbrana - pritisnite Delete za odstranitev</translation>
     </message>
     <message>
         <source>Line segment selected - press Delete to remove</source>
-        <translation type="vanished">Črtni segment izbran — pritisnite Delete za odstranitev</translation>
+        <translation>Odsek črte izbran - pritisnite Delete za odstranitev</translation>
     </message>
     <message>
         <source>No element selected</source>
-        <translation type="vanished">Noben element ni izbran</translation>
+        <translation>Noben element ni izbran</translation>
     </message>
     <message>
         <source>Nothing to undo</source>
-        <translation type="vanished">Ni česa razveljaviti</translation>
+        <translation>Ničesar ni mogoče razveljaviti</translation>
     </message>
     <message>
         <source>Undid obstacle addition</source>
-        <translation type="vanished">Dodajanje ovire razveljavljeno</translation>
+        <translation>Dodajanje ovire razveljavljeno</translation>
     </message>
     <message>
         <source>Undid line addition</source>
-        <translation type="vanished">Dodajanje črte razveljavljeno</translation>
+        <translation>Dodajanje črte razveljavljeno</translation>
     </message>
     <message>
         <source>Undid obstacle deletion</source>
-        <translation type="vanished">Odstranitev ovire razveljavljena</translation>
+        <translation>Brisanje ovire razveljavljeno</translation>
     </message>
     <message>
         <source>Undid line deletion</source>
-        <translation type="vanished">Odstranitev črte razveljavljena</translation>
+        <translation>Brisanje črte razveljavljeno</translation>
     </message>
     <message>
         <source>Obstacle deleted</source>
-        <translation type="vanished">Ovira odstranjena</translation>
+        <translation>Ovira izbrisana</translation>
     </message>
     <message>
         <source>Line segment deleted</source>
-        <translation type="vanished">Črtni segment odstranjen</translation>
+        <translation>Odsek črte izbrisan</translation>
     </message>
     <message>
         <source>All line segments cleared</source>
-        <translation type="vanished">Vsi črtni segmenti odstranjeni</translation>
+        <translation>Vsi odseki črt počiščeni</translation>
     </message>
     <message>
         <source>No line segments to clear</source>
-        <translation type="vanished">Ni črtnih segmentov za odstranitev</translation>
+        <translation>Ni odsekov črt za odstranitev</translation>
     </message>
 
     <message>
@@ -792,6 +792,16 @@
         <location filename="../extensions/thymio/editor/__init__.py" line="0"/>
         <source>🪟 Float</source>
         <translation>🪟 Odpni</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Vrni ta urejevalnik v vrstico zavihkov IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 Pripni</translation>
     </message>
 </context>
 <context>

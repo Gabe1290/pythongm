@@ -51,26 +51,17 @@ _PAIRS = None
 
 
 def _code_pairs():
-    """(class name, literal string) for every self.tr("...") in the code."""
+    """(runtime context, literal string) for every tr() the code makes. A tr()
+    in a mixin or shared base class runs under each CONCRETE class that inherits
+    it (Qt takes the context from the runtime class), so it counts there --
+    scripts/i18n_catchup.py's code_usage() does that mapping."""
     global _PAIRS
     if _PAIRS is None:
-        pairs = set()
-        for f in ROOT.rglob("*.py"):
-            rel = f.relative_to(ROOT).parts
-            if any(p in rel for p in ("venv", "tests", ".git", "build", "dist")):
-                continue
-            try:
-                tree = ast.parse(f.read_text(encoding="utf-8"))
-            except Exception:
-                continue
-            for cls in [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]:
-                for c in ast.walk(cls):
-                    if (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
-                            and c.func.attr == "tr" and c.args
-                            and isinstance(c.args[0], ast.Constant)
-                            and isinstance(c.args[0].value, str)):
-                        pairs.add((cls.name, c.args[0].value))
-        _PAIRS = pairs
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("i18n_catchup", ROOT / "scripts" / "i18n_catchup.py")
+        cu = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cu)
+        _PAIRS = set(cu.code_usage())
     return _PAIRS
 
 

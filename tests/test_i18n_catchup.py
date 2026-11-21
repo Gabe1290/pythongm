@@ -97,6 +97,9 @@ SAME_AS_FRENCH = {
     ("de", "SpriteEditor", "Picker"),       # Pipette
     ("it", "SpriteEditor", "Origin"),       # Origine
     ("pt", "AssetTreeWidget", "Sounds"),    # Sons
+    ("es", "PyGameMakerIDE", "Main"),       # Principal
+    ("pt", "PyGameMakerIDE", "Main"),       # Principal
+    ("pt", "ObjectEventsPanel", "Alarm"),   # Alarme
 }
 
 
@@ -140,9 +143,10 @@ def test_the_running_app_shows_the_translation(lang):
 def test_the_tool_flags_a_lost_placeholder(tmp_path, monkeypatch, capsys):
     """apply() refuses to pass silently when {0}-style placeholders vanish."""
     import json
-    target = tmp_path / "pygm2_es.ts"
-    target.write_text('<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE TS>\n'
-                      '<TS version="2.1" language="es">\n</TS>\n', encoding="utf-8")
+    for lang in ("es", "fr"):
+        (tmp_path / f"pygm2_{lang}.ts").write_text(
+            '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE TS>\n'
+            f'<TS version="2.1" language="{lang}">\n</TS>\n', encoding="utf-8")
     monkeypatch.setattr(cu, "TRANS", tmp_path)
     monkeypatch.setattr(cu, "LANGS", ("es",))
     monkeypatch.setattr(cu, "code_usage", lambda: {("Ctx", "Saved {0}"): "x.py"})
@@ -163,3 +167,62 @@ def test_the_empty_trash_button_is_a_verb(lang, verb):
     QApplication.instance() or QApplication([])
     get_language_manager().set_language(lang)
     assert QCoreApplication.translate("OrphanedFilesDialog", "Empty") == verb
+
+
+def test_mixin_strings_are_filed_under_the_classes_that_run_them():
+    """Qt's tr() takes its context from the concrete runtime class. A string in
+    FloatableEditorMixin runs as SpriteEditor, RoomEditor...; the two unrelated
+    InputMixin classes must not be confused (only the Thymio one has strings)."""
+    rc = cu.runtime_contexts()
+    floatable = rc[("editors/_floatable_editor.py", "FloatableEditorMixin")]
+    assert {"SpriteEditor", "RoomEditor", "PlaygroundEditor", "ObjectEditor"} <= floatable
+    assert "PyGameMakerIDE" in rc[("core/ide/_assets.py", "AssetsMixin")]
+    assert "ThymioPlaygroundWindow" in rc[("extensions/thymio/editor/_input.py", "InputMixin")]
+    assert "ThymioPlaygroundWindow" not in rc[("runtime/input_handler.py", "InputMixin")]
+    assert ("SpriteEditor", "🪟 Float") in cu.code_usage()
+
+
+@skip_without_pyside6
+@pytest.mark.parametrize("lang", ("fr",) + cu.LANGS)
+def test_every_inherited_string_shows_translated(lang):
+    """Every mixin/base-class string, under every class that really runs it,
+    resolves to a translation in the running app -- in French too. Before
+    2026-11-21 ~150 of them (the editors' shared toolbar, Assets > Create
+    Sprite, the Thymio playground status line...) showed English in French."""
+    from PySide6.QtCore import QCoreApplication
+    from PySide6.QtWidgets import QApplication
+    from core.language_manager import get_language_manager
+
+    QApplication.instance() or QApplication([])
+    get_language_manager().set_language(lang)
+    untranslated = sorted((ctx, src[:40]) for (ctx, src) in cu.inherited_pairs()
+                          if src.strip(" .:+-") and QCoreApplication.translate(ctx, src) == src
+                          and (lang, src) not in SAME_IN_LANGUAGE)
+    assert not untranslated, (lang, len(untranslated), untranslated[:10])
+
+
+# Inherited strings whose translation is legitimately the English text
+# (checked by hand, 2026-11-21).
+SAME_IN_LANGUAGE = {
+    ("fr", "&Documentation"), ("fr", "Description"), ("fr", "Documentation"),
+    ("fr", "Obstacle"), ("fr", "Simulation {0}"), ("fr", "{0} actions"),
+    ("de", "&Tutorials"), ("de", "Tutorials"), ("de", "Alarm"), ("de", "Block"),
+    ("de", "Simulation {0}"), ("es", "Error"), ("it", "&File"),
+    ("pl", "Alarm"), ("sl", "Alarm"),
+} | {(lang, "Zoom: {0}%") for lang in ("de", "es", "it", "pl", "pt")}
+
+
+@pytest.mark.parametrize("ts", sorted((ROOT / "translations").glob("pygm2_*.ts")), ids=lambda p: p.name)
+def test_no_string_has_two_live_entries_in_one_file(ts):
+    """Two live copies of one source in a context don't resolve reliably; French
+    had one ("Build Failed" with two different translations)."""
+    import collections
+    import xml.etree.ElementTree as ET
+    seen = collections.Counter()
+    for ctx in ET.parse(ts).getroot().findall("context"):
+        for m in ctx.findall("message"):
+            t = m.find("translation")
+            if t is not None and t.get("type") not in ("vanished", "obsolete"):
+                seen[(ctx.findtext("name"), m.findtext("source"))] += 1
+    dupes = [k for k, n in seen.items() if n > 1]
+    assert not dupes, dupes[:5]

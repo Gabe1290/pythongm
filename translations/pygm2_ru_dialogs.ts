@@ -1500,7 +1500,7 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>Preset:</source>
-        <translation type="vanished">Набор:</translation>
+        <translation>Набор:</translation>
     </message>
     <message>
         <source>Thymio Full (All Thymio Blocks)</source>
@@ -1524,19 +1524,19 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>Block</source>
-        <translation type="vanished">Блок</translation>
+        <translation>Блок</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="vanished">Описание</translation>
+        <translation>Описание</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Выбрать все</translation>
+        <translation>Выбрать все</translation>
     </message>
     <message>
         <source>Select None</source>
-        <translation type="vanished">Снять все</translation>
+        <translation>Снять выбор</translation>
     </message>
     <message>
         <source>Save</source>
@@ -1548,20 +1548,20 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} блоков</translation>
+        <translation>Блоков: {0}</translation>
     </message>
     <message>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Не реализовано] {0}</translation>
+        <translation>[Не реализовано] {0}</translation>
     </message>
     <message>
         <source>Requires: {0}</source>
-        <translation type="vanished">Требуется: {0}</translation>
+        <translation>Требует: {0}</translation>
     </message>
     <message>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Предупреждение: у некоторых блоков отсутствуют зависимости:
+        <translation>⚠️ Внимание: у некоторых блоков отсутствуют зависимости:
 {0}</translation>
     </message>
     <message>
@@ -1570,7 +1570,7 @@ Would you like to open the export directory?</source>
     </message>
     <message>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Отсутствующие зависимости</translation>
+        <translation>Отсутствующие зависимости</translation>
     </message>
     <message>
         <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.

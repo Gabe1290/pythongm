@@ -552,6 +552,58 @@ Do you want to save anyway?</source>
 
 それでも保存しますか？</translation>
     </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>ブロック</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>説明</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>依存関係の不足</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>プリセット：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>必要条件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>選択解除</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未実装] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>ブロック {0} 個</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：一部のブロックに依存関係が不足しています：
+{0}</translation>
+    </message>
 </context>
 <context>
     <name>TilePaletteDialog</name>
@@ -1515,6 +1567,16 @@ Do you want to save anyway?</source>
         <source>Auto-saved: {0}</source>
         <translation>自動保存済み：{0}</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
 </context>
 <context>
     <name>BuildProjectDialog</name>
@@ -1749,6 +1811,58 @@ Do you want to save anyway?</source>
         <translation>有効になっている一部のブロックに依存関係が不足しています。ブロックが正しく動作しない可能性があります。
 
 それでも保存しますか？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Block</source>
+        <translation>ブロック</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Description</source>
+        <translation>説明</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Missing Dependencies</source>
+        <translation>依存関係の不足</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Preset:</source>
+        <translation>プリセット：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Requires: {0}</source>
+        <translation>必要条件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>Select None</source>
+        <translation>選択解除</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未実装] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>{0} blocks</source>
+        <translation>ブロック {0} 個</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="0"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：一部のブロックに依存関係が不足しています：
+{0}</translation>
     </message>
 </context>
 <context>
@@ -3581,6 +3695,81 @@ Error: {0}</source>
         <source>▶ Play Object</source>
         <translation>▶ オブジェクトを試す</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
@@ -4088,6 +4277,16 @@ Some changes may require restarting the IDE to take effect.</source>
 {}</source>
         <translation>プレイグラウンドのエクスポートエラー：
 {}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
     </message>
 </context>
 <context>
@@ -4947,6 +5146,50 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Send a Network Message (File Exchange)</source>
         <translation>ネットワークメッセージを送る (ファイル交換)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>
+        <source>Cannot add actions directly to &apos;{0}&apos;.
+
+Right-click on {1} and add the action there instead.</source>
+        <translation>「{0}」に直接アクションを追加することはできません。
+
+代わりに {1} を右クリックして、そこにアクションを追加してください。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy Action</source>
+        <translation>アクションをコピー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Copy {0} Actions</source>
+        <translation>{0} 個のアクションをコピー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste Action</source>
+        <translation>アクションを貼り付け</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_clipboard.py" line="0"/>
+        <source>Paste {0} Actions</source>
+        <translation>{0} 個のアクションを貼り付け</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_render.py" line="0"/>
+        <source>(empty comment)</source>
+        <translation>（空のコメント）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Alarm</source>
+        <translation>アラーム</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>
+        <source>Arrow</source>
+        <translation>矢印</translation>
     </message>
 </context>
 <context>
@@ -6038,6 +6281,16 @@ Events: {4}</source>
         <source>🧱 Block Edit</source>
         <translation>🧱 ブロック編集</translation>
     </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
 </context>
 <context>
     <name>SpriteEditor</name>
@@ -6370,6 +6623,86 @@ Events: {4}</source>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1075"/>
         <source>Failed to save sprite: {0}</source>
         <translation>スプライトの保存に失敗しました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
     </message>
 </context>
 <context>
@@ -8822,6 +9155,280 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <source>Filter assets…</source>
         <translation>アセットを絞り込む…</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>A sprite called &apos;{0}&apos; already exists. Please choose another name.</source>
+        <translation>「{0}」という名前のスプライトは既にあります。別の名前を選んでください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Invalid Name</source>
+        <translation>無効な名前</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_assets.py" line="0"/>
+        <source>Name Already Used</source>
+        <translation>名前は既に使われています</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Clean Project</source>
+        <translation>プロジェクトのクリーンアップ</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>未使用のアセット {0} 件をごみ箱へ移動しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>クリーンアップするものはありません。残っている一時ファイルは見つかりませんでした。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Please open a project first.</source>
+        <translation>先にプロジェクトを開いてください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>残っていた一時ファイルを {0} 件削除しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>残っていた一時ファイルを {0} 件削除しました:
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_dialogs.py" line="0"/>
+        <source>Restored: {0}</source>
+        <translation>復元しました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find in Project needs an open project</source>
+        <translation>プロジェクト内検索にはプロジェクトを開いている必要があります</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_edit_actions.py" line="0"/>
+        <source>Find is only available in the code editor</source>
+        <translation>検索はコードエディターでのみ使用できます</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>背景エディターを開けませんでした: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>フォントエディターを開けませんでした: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>スクリプトエディターを開けませんでした: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>サウンドエディターを開けませんでした: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened background: {0}</source>
+        <translation>背景を開きました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened font: {0}</source>
+        <translation>フォントを開きました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened script: {0}</source>
+        <translation>スクリプトを開きました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Opened sound: {0}</source>
+        <translation>サウンドを開きました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_editor_lifecycle.py" line="0"/>
+        <source>Warning: custom block &quot;{0}&quot; conflicts with one already defined in &quot;{1}&quot; — rename one of them to avoid confusing results.</source>
+        <translation>警告: カスタムブロック「{0}」は「{1}」で既に定義されているブロックと競合しています。混乱を避けるため、どちらかの名前を変更してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Build Complete</source>
+        <translation>ビルド完了</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Building Game</source>
+        <translation>ゲームをビルド中</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Export Options</source>
+        <translation>エクスポートオプション</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Assets</source>
+        <translation>アセットを含める</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Include Debug Info</source>
+        <translation>デバッグ情報を含める</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Optimize for Release</source>
+        <translation>リリース向けに最適化</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_export.py" line="0"/>
+        <source>Preparing build...</source>
+        <translation>ビルドを準備中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Build Game...</source>
+        <translation>ゲームをビルド(&amp;B)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Close Project</source>
+        <translation>プロジェクトを閉じる(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Find...</source>
+        <translation>検索(&amp;F)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>削除したアセットを復元(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Build and &amp;Run</source>
+        <translation>ビルドして実行(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Clean &amp;Project</source>
+        <translation>プロジェクトのクリーンアップ(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Create S&amp;prite...</source>
+        <translation>スプライトを作成(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Export as HTML5…</source>
+        <translation>HTML5 としてエクスポート…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>孤立したファイルを検索(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>未使用のアセットを検索(&amp;U)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find and &amp;Replace...</source>
+        <translation>検索と置換(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_menu_builder.py" line="0"/>
+        <source>Find in &amp;Project...</source>
+        <translation>プロジェクト内を検索(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>No project is open.</source>
+        <translation>プロジェクトが開かれていません。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>注意: {n} 個のアクションはこのエクスポート先に対応していないためスキップされました。エクスポートしたゲームでは実行されません:
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project Too New</source>
+        <translation>プロジェクトが新しすぎます</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>Project closed.</source>
+        <translation>プロジェクトを閉じました。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>このプロジェクトは新しいバージョンの PyGameMaker（形式 {0}.{1}）で作成されています。開くには PyGameMaker を更新してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="0"/>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>保存されていない変更があります。プロジェクトを閉じる前に保存しますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Could not open sample</source>
+        <translation>サンプルを開けませんでした</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>付属のサンプルをコピーできませんでした:
+{0}
+
+エラー:
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_samples.py" line="0"/>
+        <source>Sample copied to: {0}</source>
+        <translation>サンプルをコピーしました: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>オブジェクトのテストを準備できませんでした: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Play Object: {0}</source>
+        <translation>オブジェクトを試す: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_test_game.py" line="0"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>オブジェクトを試す前に、プロジェクトを開くか作成してください。</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
@@ -9187,6 +9794,86 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <source>Tile vertically</source>
         <translation>縦に並べる</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
 </context>
 <context>
     <name>SoundEditor</name>
@@ -9215,6 +9902,86 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <source>▶ Play</source>
         <translation>▶ 再生</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
 </context>
 <context>
     <name>FontEditor</name>
@@ -9238,6 +10005,86 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <source>The quick brown fox</source>
         <translation>いろはにほへと ちりぬるを</translation>
     </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>
@@ -9250,6 +10097,89 @@ https://lab.open-roberta.org/ でインポートしてください</translation>
         <location filename="../extensions/thymio/diagram_widget.py" line="0"/>
         <source>GND</source>
         <translation>床</translation>
+    </message>
+</context>
+<context>
+    <name>ScriptEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>このエディタをIDEのタブに戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>📥 Attach</source>
+        <translation>📥 接続</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="0"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="0"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
     </message>
 </context>
 </TS>

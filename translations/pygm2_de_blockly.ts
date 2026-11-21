@@ -14,7 +14,7 @@
     </message>
     <message>
         <source>Preset:</source>
-        <translation type="vanished">Voreinstellung:</translation>
+        <translation>Voreinstellung:</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
@@ -93,19 +93,19 @@
     </message>
     <message>
         <source>Block</source>
-        <translation type="vanished">Block</translation>
+        <translation>Block</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="vanished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Alle auswählen</translation>
+        <translation>Alle auswählen</translation>
     </message>
     <message>
         <source>Select None</source>
-        <translation type="vanished">Keine auswählen</translation>
+        <translation>Keine auswählen</translation>
     </message>
     <message>
         <source>Save</source>
@@ -117,20 +117,20 @@
     </message>
     <message>
         <source>{0} blocks</source>
-        <translation type="vanished">{0} Blöcke</translation>
+        <translation>{0} Blöcke</translation>
     </message>
     <message>
         <source>[Not implemented] {0}</source>
-        <translation type="vanished">[Nicht implementiert] {0}</translation>
+        <translation>[Nicht umgesetzt] {0}</translation>
     </message>
     <message>
         <source>Requires: {0}</source>
-        <translation type="vanished">Erfordert: {0}</translation>
+        <translation>Benötigt: {0}</translation>
     </message>
     <message>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="vanished">⚠️ Warnung: Einige Blöcke haben fehlende Abhängigkeiten:
+        <translation>⚠️ Achtung: Einigen Blöcken fehlen Abhängigkeiten:
 {0}</translation>
     </message>
     <message>
@@ -140,7 +140,7 @@
     </message>
     <message>
         <source>Missing Dependencies</source>
-        <translation type="vanished">Fehlende Abhängigkeiten</translation>
+        <translation>Fehlende Abhängigkeiten</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="128"/>

@@ -2769,4 +2769,9 @@ language shows French text). Tool: `scripts/i18n_catchup.py {report|worklist|app
 [--replace]}`; plan/outcome `docs/I18N_CATCHUP_2026-11-21.md`. **Landmine:** a vanished
 `.ts` entry's text is not necessarily in that file's language -- ru/sl held FRENCH
 copies, and reviving them put ~60 French strings on screen; always check revived text
-against the language. Nothing here has had a native-speaker read.
+against the language. Nothing here has had a native-speaker read. **Second landmine (fixed the same day):**
+`tr()` in a mixin or shared base class runs under the CONCRETE class's context
+(`SpriteEditor`, `PyGameMakerIDE`), so a translation filed under the mixin's name is dead;
+~150 strings showed English even in French. `code_usage()` now maps each mixin string to
+its runtime classes and `propagate` copies translations there -- when adding a mixin
+string, translate it under the concrete contexts (run `propagate`).
