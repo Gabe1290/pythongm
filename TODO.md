@@ -902,8 +902,22 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
 - Done for one dialog already: `ActionConfigDialog` (17 per language,
   `3b17da9d`), with a test that resolves every string of that class through
   the real LanguageManager -- the pattern to copy per context.
-- Not done: the other 202 per language. One context per commit, each with
-  its resolution test, is the safe pace.
+- **Being fixed (2026-11-21), one context per commit.** Shared guard:
+  `tests/test_dead_translations.py` (`FIXED_CONTEXTS` grows with each commit;
+  per language it checks nothing used is left vanished and every used string
+  resolves through the real LanguageManager). Counts are per language
+  (de/it/ru/sl/uk each):
+  - [ ] SpriteEditor (57)
+  - [ ] ConditionalActionEditor (48)
+  - [ ] ThymioPlaygroundWindow (36)
+  - [ ] ThymioEventsPanel (14)
+  - [ ] ThymioActionSelector (10)
+  - [ ] MultiActionEditor (9)
+  - [ ] ThymioEventSelector (9)
+  - [ ] ThymioConfigDialog (8)
+  - [ ] ResizeCanvasDialog (8)
+  - [ ] MessageTranslationsDialog (3)
+  - [ ] Finally: make the guard cover EVERY context, so a new one cannot slip in.
 
 ### ~~Configure Action Blocks dialog: "Control"/"Game"/"Views" shown in English~~ (DONE 2026-10-18)
 
