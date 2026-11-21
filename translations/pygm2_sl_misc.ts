@@ -784,4 +784,211 @@
         <translation>🪟 Odpni</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Angle:</source>
+        <translation>Kot:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Code:</source>
+        <translation>Koda:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Color:</source>
+        <translation>Barva:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Delete</source>
+        <translation>Izbriši</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Height:</source>
+        <translation>Višina:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Name:</source>
+        <translation>Ime:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>No Selection</source>
+        <translation>Ni izbire</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Port:</source>
+        <translation>Vrata:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Pushable</source>
+        <translation>Premakljiv</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Robot Properties</source>
+        <translation>Lastnosti robota</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Type:</source>
+        <translation>Vrsta:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Wall</source>
+        <translation>Zid</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Wall Properties</source>
+        <translation>Lastnosti zidu</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>Koda katerega objekta Thymio se izvaja med simulacijo</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>Barva z imenom »{}« že obstaja.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Add Color</source>
+        <translation>Dodaj barvo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Add color</source>
+        <translation>Dodaj barvo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Choose Color</source>
+        <translation>Izberi barvo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Color name:</source>
+        <translation>Ime barve:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Colors</source>
+        <translation>Barve</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Duplicate</source>
+        <translation>Podvoji</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Edit Color</source>
+        <translation>Uredi barvo</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Remove color</source>
+        <translation>Odstrani barvo</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Block</source>
+        <translation>Blok</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Click to place robots</source>
+        <translation>Kliknite za postavitev robotov</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Click to place walls</source>
+        <translation>Kliknite za postavitev zidov</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>Riši kockaste bloke na mrežo (kot v Minecraftu)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Select</source>
+        <translation>Izbira</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Select and move elements</source>
+        <translation>Izberi in premikaj elemente</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Tools</source>
+        <translation>Orodja</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Wall</source>
+        <translation>Zid</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundRunnerWindow</name>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Arrow keys / Space = all robots; click a robot&apos;s button = that robot only. The linked object&apos;s code runs automatically.</source>
+        <translation>Puščice / preslednica = vsi roboti; klik na gumb robota = samo ta robot. Koda povezanega objekta se izvaja samodejno.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Pause</source>
+        <translation>Premor</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Playground - Running</source>
+        <translation>Igrišče - teče</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Reset</source>
+        <translation>Ponastavi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Resume</source>
+        <translation>Nadaljuj</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Running: {} robots, {} walls</source>
+        <translation>Teče: robotov – {}, zidov – {}</translation>
+    </message>
+</context>
 </TS>

@@ -784,4 +784,211 @@
         <translation>🪟 Stacca</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Angle:</source>
+        <translation>Angolo:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Code:</source>
+        <translation>Codice:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Color:</source>
+        <translation>Colore:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Delete</source>
+        <translation>Elimina</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Height:</source>
+        <translation>Altezza:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>No Selection</source>
+        <translation>Nessuna selezione</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Port:</source>
+        <translation>Porta:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Pushable</source>
+        <translation>Spingibile</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Robot Properties</source>
+        <translation>Proprietà del robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Type:</source>
+        <translation>Tipo:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Wall</source>
+        <translation>Muro</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Wall Properties</source>
+        <translation>Proprietà del muro</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_properties.py" line="0"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>Il codice di quale oggetto Thymio eseguire durante la simulazione</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>Esiste già un colore chiamato «{}».</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Add Color</source>
+        <translation>Aggiungi colore</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Add color</source>
+        <translation>Aggiungi colore</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Choose Color</source>
+        <translation>Scegli colore</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Color name:</source>
+        <translation>Nome del colore:</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Colors</source>
+        <translation>Colori</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Duplicate</source>
+        <translation>Duplica</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Edit Color</source>
+        <translation>Modifica colore</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/color_manager.py" line="0"/>
+        <source>Remove color</source>
+        <translation>Rimuovi colore</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Block</source>
+        <translation>Blocco</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Click to place robots</source>
+        <translation>Clicca per posizionare i robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Click to place walls</source>
+        <translation>Clicca per posizionare i muri</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>Dipingi blocchi cubici su una griglia (stile Minecraft)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Robot</source>
+        <translation>Robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Select</source>
+        <translation>Seleziona</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Select and move elements</source>
+        <translation>Seleziona e sposta gli elementi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Tools</source>
+        <translation>Strumenti</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/editor/playground_tool_palette.py" line="0"/>
+        <source>Wall</source>
+        <translation>Muro</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundRunnerWindow</name>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Arrow keys / Space = all robots; click a robot&apos;s button = that robot only. The linked object&apos;s code runs automatically.</source>
+        <translation>Frecce / Spazio = tutti i robot; clic sul pulsante di un robot = solo quel robot. Il codice dell'oggetto collegato viene eseguito automaticamente.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Pause</source>
+        <translation>Pausa</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Playground - Running</source>
+        <translation>Campo di gioco - in esecuzione</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Reset</source>
+        <translation>Reimposta</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Resume</source>
+        <translation>Riprendi</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/playground_runner.py" line="0"/>
+        <source>Running: {} robots, {} walls</source>
+        <translation>In esecuzione: {} robot, {} muri</translation>
+    </message>
+</context>
 </TS>

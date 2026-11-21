@@ -36,6 +36,10 @@ CAUGHT_UP = (
     "RoomEditor",
     "BlockWorldEditorWindow",
     "FindReplaceDialog",
+    "PlaygroundElementProperties",
+    "PlaygroundColorManager",
+    "PlaygroundToolPalette",
+    "PlaygroundRunnerWindow",
 )
 
 _CACHE = {}
