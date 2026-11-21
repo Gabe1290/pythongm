@@ -2431,231 +2431,231 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <name>SpriteEditor</name>
     <message>
         <source>Pencil</source>
-        <translation type="vanished">Карандаш</translation>
+        <translation>Карандаш</translation>
     </message>
     <message>
         <source>Draw pixels (P)</source>
-        <translation type="vanished">Рисовать пиксели (P)</translation>
+        <translation>Рисовать пиксели (P)</translation>
     </message>
     <message>
         <source>Eraser</source>
-        <translation type="vanished">Ластик</translation>
+        <translation>Ластик</translation>
     </message>
     <message>
         <source>Erase pixels (E)</source>
-        <translation type="vanished">Стереть пиксели (E)</translation>
+        <translation>Стереть пиксели (E)</translation>
     </message>
     <message>
         <source>Picker</source>
-        <translation type="vanished">Пипетка</translation>
+        <translation>Пипетка</translation>
     </message>
     <message>
         <source>Pick color from canvas (I)</source>
-        <translation type="vanished">Выбрать цвет с холста (I)</translation>
+        <translation>Выбрать цвет с холста (I)</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="vanished">Заливка</translation>
+        <translation>Заливка</translation>
     </message>
     <message>
         <source>Flood fill area (G)</source>
-        <translation type="vanished">Заливка области (G)</translation>
+        <translation>Заливка области (G)</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Линия</translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <source>Draw line (L)</source>
-        <translation type="vanished">Нарисовать линию (L)</translation>
+        <translation>Нарисовать линию (L)</translation>
     </message>
     <message>
         <source>Rect</source>
-        <translation type="vanished">Прям</translation>
+        <translation>Прям</translation>
     </message>
     <message>
         <source>Draw rectangle (R)</source>
-        <translation type="vanished">Нарисовать прямоугольник (R)</translation>
+        <translation>Нарисовать прямоугольник (R)</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation type="vanished">Эллипс</translation>
+        <translation>Эллипс</translation>
     </message>
     <message>
         <source>Draw ellipse (O)</source>
-        <translation type="vanished">Нарисовать эллипс (O)</translation>
+        <translation>Нарисовать эллипс (O)</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Выделение</translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <source>Rectangle selection (S)</source>
-        <translation type="vanished">Прямоугольное выделение (S)</translation>
+        <translation>Прямоугольное выделение (S)</translation>
     </message>
     <message>
         <source>Select tool from list</source>
-        <translation type="vanished">Выбрать инструмент из списка</translation>
+        <translation>Выбрать инструмент из списка</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="vanished">Размер:</translation>
+        <translation>Размер:</translation>
     </message>
     <message>
         <source>Brush / line width in pixels</source>
-        <translation type="vanished">Ширина кисти / линии в пикселях</translation>
+        <translation>Ширина кисти / линии в пикселях</translation>
     </message>
     <message>
         <source>Origin</source>
-        <translation type="vanished">Начало</translation>
+        <translation>Начало</translation>
     </message>
     <message>
         <source>Origin preset</source>
-        <translation type="vanished">Предустановка начала</translation>
+        <translation>Предустановка начала</translation>
     </message>
     <message>
         <source>Top-Left</source>
-        <translation type="vanished">Верх-Лево</translation>
+        <translation>Верх-Лево</translation>
     </message>
     <message>
         <source>Top-Center</source>
-        <translation type="vanished">Верх-Центр</translation>
+        <translation>Верх-Центр</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="vanished">Центр</translation>
+        <translation>Центр</translation>
     </message>
     <message>
         <source>Center-Bottom</source>
-        <translation type="vanished">Центр-Низ</translation>
+        <translation>Центр-Низ</translation>
     </message>
     <message>
         <source>Bottom-Left</source>
-        <translation type="vanished">Низ-Лево</translation>
+        <translation>Низ-Лево</translation>
     </message>
     <message>
         <source>Bottom-Right</source>
-        <translation type="vanished">Низ-Право</translation>
+        <translation>Низ-Право</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Пользовательский</translation>
+        <translation>Пользовательский</translation>
     </message>
     <message>
         <source>Origin X coordinate</source>
-        <translation type="vanished">Координата X начала</translation>
+        <translation>Координата X начала</translation>
     </message>
     <message>
         <source>Origin Y coordinate</source>
-        <translation type="vanished">Координата Y начала</translation>
+        <translation>Координата Y начала</translation>
     </message>
     <message>
         <source>Filled</source>
-        <translation type="vanished">Заполненный</translation>
+        <translation>Заполненный</translation>
     </message>
     <message>
         <source>Toggle filled shapes</source>
-        <translation type="vanished">Включить/выключить заполненные фигуры</translation>
+        <translation>Включить/выключить заполненные фигуры</translation>
     </message>
     <message>
         <source>Mirror H</source>
-        <translation type="vanished">Зеркало Г</translation>
+        <translation>Зеркало Г</translation>
     </message>
     <message>
         <source>Mirror V</source>
-        <translation type="vanished">Зеркало В</translation>
+        <translation>Зеркало В</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="vanished">Сетка</translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <source>Toggle pixel grid</source>
-        <translation type="vanished">Показать/скрыть пиксельную сетку</translation>
+        <translation>Показать/скрыть пиксельную сетку</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="vanished">Уменьшить</translation>
+        <translation>Уменьшить</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="vanished">Увеличить</translation>
+        <translation>Увеличить</translation>
     </message>
     <message>
         <source>Resize</source>
-        <translation type="vanished">Изменить размер</translation>
+        <translation>Изменить размер</translation>
     </message>
     <message>
         <source>Draw</source>
-        <translation type="vanished">Рисовать</translation>
+        <translation>Рисовать</translation>
     </message>
     <message>
         <source>Scale to {0}x{1}</source>
-        <translation type="vanished">Масштабировать до {0}x{1}</translation>
+        <translation>Масштабировать до {0}x{1}</translation>
     </message>
     <message>
         <source>Resize Canvas to {0}x{1}</source>
-        <translation type="vanished">Изменить размер холста до {0}x{1}</translation>
+        <translation>Изменить размер холста до {0}x{1}</translation>
     </message>
     <message>
         <source>Tool: {0}</source>
-        <translation type="vanished">Инструмент: {0}</translation>
+        <translation>Инструмент: {0}</translation>
     </message>
     <message>
         <source>Copied selection</source>
-        <translation type="vanished">Выделение скопировано</translation>
+        <translation>Выделение скопировано</translation>
     </message>
     <message>
         <source>Cut selection</source>
-        <translation type="vanished">Выделение вырезано</translation>
+        <translation>Выделение вырезано</translation>
     </message>
     <message>
         <source>Pasted from clipboard</source>
-        <translation type="vanished">Вставлено из буфера обмена</translation>
+        <translation>Вставлено из буфера обмена</translation>
     </message>
     <message>
         <source>Copy	Ctrl+C</source>
-        <translation type="vanished">Копировать	Ctrl+C</translation>
+        <translation>Копировать	Ctrl+C</translation>
     </message>
     <message>
         <source>Cut	Ctrl+X</source>
-        <translation type="vanished">Вырезать	Ctrl+X</translation>
+        <translation>Вырезать	Ctrl+X</translation>
     </message>
     <message>
         <source>Paste	Ctrl+V</source>
-        <translation type="vanished">Вставить	Ctrl+V</translation>
+        <translation>Вставить	Ctrl+V</translation>
     </message>
     <message>
         <source>Delete	Del</source>
-        <translation type="vanished">Удалить	Del</translation>
+        <translation>Удалить	Del</translation>
     </message>
     <message>
         <source>Deselect	Esc</source>
-        <translation type="vanished">Снять выделение	Esc</translation>
+        <translation>Снять выделение	Esc</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Выделить всё</translation>
+        <translation>Выделить всё</translation>
     </message>
     <message>
         <source>No frames in sprite</source>
-        <translation type="vanished">Нет кадров в спрайте</translation>
+        <translation>Нет кадров в спрайте</translation>
     </message>
     <message>
         <source>Validation Error</source>
-        <translation type="vanished">Ошибка проверки</translation>
+        <translation>Ошибка проверки</translation>
     </message>
     <message>
         <source>Saved: {0}</source>
-        <translation type="vanished">Сохранено: {0}</translation>
+        <translation>Сохранено: {0}</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="vanished">Ошибка сохранения</translation>
+        <translation>Ошибка сохранения</translation>
     </message>
     <message>
         <source>Failed to save sprite: {0}</source>
-        <translation type="vanished">Не удалось сохранить спрайт: {0}</translation>
+        <translation>Не удалось сохранить спрайт: {0}</translation>
     </message>
 </context>
 <context>

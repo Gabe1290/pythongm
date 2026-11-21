@@ -907,7 +907,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   per language it checks nothing used is left vanished and every used string
   resolves through the real LanguageManager). Counts are per language
   (de/it/ru/sl/uk each):
-  - [ ] SpriteEditor (57)
+  - [x] SpriteEditor (57)
   - [ ] ConditionalActionEditor (48)
   - [ ] ThymioPlaygroundWindow (36)
   - [ ] ThymioEventsPanel (14)

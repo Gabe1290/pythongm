@@ -2431,231 +2431,231 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <name>SpriteEditor</name>
     <message>
         <source>Pencil</source>
-        <translation type="vanished">Svinčnik</translation>
+        <translation>Svinčnik</translation>
     </message>
     <message>
         <source>Draw pixels (P)</source>
-        <translation type="vanished">Riši pike (P)</translation>
+        <translation>Riši pike (P)</translation>
     </message>
     <message>
         <source>Eraser</source>
-        <translation type="vanished">Radirka</translation>
+        <translation>Radirka</translation>
     </message>
     <message>
         <source>Erase pixels (E)</source>
-        <translation type="vanished">Zbriši pike (E)</translation>
+        <translation>Zbriši pike (E)</translation>
     </message>
     <message>
         <source>Picker</source>
-        <translation type="vanished">Kapalka</translation>
+        <translation>Kapalka</translation>
     </message>
     <message>
         <source>Pick color from canvas (I)</source>
-        <translation type="vanished">Izberi barvo s platna (I)</translation>
+        <translation>Izberi barvo s platna (I)</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="vanished">Polni</translation>
+        <translation>Polni</translation>
     </message>
     <message>
         <source>Flood fill area (G)</source>
-        <translation type="vanished">Polnjenje območja (G)</translation>
+        <translation>Polnjenje območja (G)</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Črta</translation>
+        <translation>Črta</translation>
     </message>
     <message>
         <source>Draw line (L)</source>
-        <translation type="vanished">Nariši črto (L)</translation>
+        <translation>Nariši črto (L)</translation>
     </message>
     <message>
         <source>Rect</source>
-        <translation type="vanished">Prav</translation>
+        <translation>Prav</translation>
     </message>
     <message>
         <source>Draw rectangle (R)</source>
-        <translation type="vanished">Nariši pravokotnik (R)</translation>
+        <translation>Nariši pravokotnik (R)</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation type="vanished">Elipsa</translation>
+        <translation>Elipsa</translation>
     </message>
     <message>
         <source>Draw ellipse (O)</source>
-        <translation type="vanished">Nariši elipso (O)</translation>
+        <translation>Nariši elipso (O)</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Izbira</translation>
+        <translation>Izbira</translation>
     </message>
     <message>
         <source>Rectangle selection (S)</source>
-        <translation type="vanished">Pravokotna izbira (S)</translation>
+        <translation>Pravokotna izbira (S)</translation>
     </message>
     <message>
         <source>Select tool from list</source>
-        <translation type="vanished">Izberi orodje s seznama</translation>
+        <translation>Izberi orodje s seznama</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="vanished">Velikost:</translation>
+        <translation>Velikost:</translation>
     </message>
     <message>
         <source>Brush / line width in pixels</source>
-        <translation type="vanished">Širina čopiča / črte v pikslih</translation>
+        <translation>Širina čopiča / črte v pikslih</translation>
     </message>
     <message>
         <source>Origin</source>
-        <translation type="vanished">Izhodišče</translation>
+        <translation>Izhodišče</translation>
     </message>
     <message>
         <source>Origin preset</source>
-        <translation type="vanished">Prednastavitev izhodišča</translation>
+        <translation>Prednastavitev izhodišča</translation>
     </message>
     <message>
         <source>Top-Left</source>
-        <translation type="vanished">Zgoraj-Levo</translation>
+        <translation>Zgoraj-Levo</translation>
     </message>
     <message>
         <source>Top-Center</source>
-        <translation type="vanished">Zgoraj-Sredina</translation>
+        <translation>Zgoraj-Sredina</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="vanished">Sredina</translation>
+        <translation>Sredina</translation>
     </message>
     <message>
         <source>Center-Bottom</source>
-        <translation type="vanished">Sredina-Spodaj</translation>
+        <translation>Sredina-Spodaj</translation>
     </message>
     <message>
         <source>Bottom-Left</source>
-        <translation type="vanished">Spodaj-Levo</translation>
+        <translation>Spodaj-Levo</translation>
     </message>
     <message>
         <source>Bottom-Right</source>
-        <translation type="vanished">Spodaj-Desno</translation>
+        <translation>Spodaj-Desno</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Po meri</translation>
+        <translation>Po meri</translation>
     </message>
     <message>
         <source>Origin X coordinate</source>
-        <translation type="vanished">Koordinata X izhodišča</translation>
+        <translation>Koordinata X izhodišča</translation>
     </message>
     <message>
         <source>Origin Y coordinate</source>
-        <translation type="vanished">Koordinata Y izhodišča</translation>
+        <translation>Koordinata Y izhodišča</translation>
     </message>
     <message>
         <source>Filled</source>
-        <translation type="vanished">Zapolnjeno</translation>
+        <translation>Zapolnjeno</translation>
     </message>
     <message>
         <source>Toggle filled shapes</source>
-        <translation type="vanished">Vklopi/izklopi zapolnjene oblike</translation>
+        <translation>Vklopi/izklopi zapolnjene oblike</translation>
     </message>
     <message>
         <source>Mirror H</source>
-        <translation type="vanished">Zrcali V</translation>
+        <translation>Zrcali V</translation>
     </message>
     <message>
         <source>Mirror V</source>
-        <translation type="vanished">Zrcali N</translation>
+        <translation>Zrcali N</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="vanished">Mreža</translation>
+        <translation>Mreža</translation>
     </message>
     <message>
         <source>Toggle pixel grid</source>
-        <translation type="vanished">Prikaži/skrij pikselsko mrežo</translation>
+        <translation>Prikaži/skrij pikselsko mrežo</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="vanished">Pomanjšaj</translation>
+        <translation>Pomanjšaj</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="vanished">Povečaj</translation>
+        <translation>Povečaj</translation>
     </message>
     <message>
         <source>Resize</source>
-        <translation type="vanished">Spremeni velikost</translation>
+        <translation>Spremeni velikost</translation>
     </message>
     <message>
         <source>Draw</source>
-        <translation type="vanished">Riši</translation>
+        <translation>Riši</translation>
     </message>
     <message>
         <source>Scale to {0}x{1}</source>
-        <translation type="vanished">Povečaj na {0}x{1}</translation>
+        <translation>Povečaj na {0}x{1}</translation>
     </message>
     <message>
         <source>Resize Canvas to {0}x{1}</source>
-        <translation type="vanished">Spremeni velikost platna na {0}x{1}</translation>
+        <translation>Spremeni velikost platna na {0}x{1}</translation>
     </message>
     <message>
         <source>Tool: {0}</source>
-        <translation type="vanished">Orodje: {0}</translation>
+        <translation>Orodje: {0}</translation>
     </message>
     <message>
         <source>Copied selection</source>
-        <translation type="vanished">Izbor kopiran</translation>
+        <translation>Izbor kopiran</translation>
     </message>
     <message>
         <source>Cut selection</source>
-        <translation type="vanished">Izbor izrezan</translation>
+        <translation>Izbor izrezan</translation>
     </message>
     <message>
         <source>Pasted from clipboard</source>
-        <translation type="vanished">Prilepljeno iz odložišča</translation>
+        <translation>Prilepljeno iz odložišča</translation>
     </message>
     <message>
         <source>Copy	Ctrl+C</source>
-        <translation type="vanished">Kopiraj	Ctrl+C</translation>
+        <translation>Kopiraj	Ctrl+C</translation>
     </message>
     <message>
         <source>Cut	Ctrl+X</source>
-        <translation type="vanished">Izreži	Ctrl+X</translation>
+        <translation>Izreži	Ctrl+X</translation>
     </message>
     <message>
         <source>Paste	Ctrl+V</source>
-        <translation type="vanished">Prilepi	Ctrl+V</translation>
+        <translation>Prilepi	Ctrl+V</translation>
     </message>
     <message>
         <source>Delete	Del</source>
-        <translation type="vanished">Izbriši	Del</translation>
+        <translation>Izbriši	Del</translation>
     </message>
     <message>
         <source>Deselect	Esc</source>
-        <translation type="vanished">Prekliči izbor	Esc</translation>
+        <translation>Prekliči izbor	Esc</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Izberi vse</translation>
+        <translation>Izberi vse</translation>
     </message>
     <message>
         <source>No frames in sprite</source>
-        <translation type="vanished">Ni sličic v sprite-u</translation>
+        <translation>Ni sličic v sprite-u</translation>
     </message>
     <message>
         <source>Validation Error</source>
-        <translation type="vanished">Napaka pri preverjanju</translation>
+        <translation>Napaka pri preverjanju</translation>
     </message>
     <message>
         <source>Saved: {0}</source>
-        <translation type="vanished">Shranjeno: {0}</translation>
+        <translation>Shranjeno: {0}</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="vanished">Napaka pri shranjevanju</translation>
+        <translation>Napaka pri shranjevanju</translation>
     </message>
     <message>
         <source>Failed to save sprite: {0}</source>
-        <translation type="vanished">Sprite ni bilo mogoče shraniti: {0}</translation>
+        <translation>Sprite ni bilo mogoče shraniti: {0}</translation>
     </message>
 </context>
 <context>

@@ -2431,231 +2431,231 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <name>SpriteEditor</name>
     <message>
         <source>Pencil</source>
-        <translation type="vanished">Олівець</translation>
+        <translation>Олівець</translation>
     </message>
     <message>
         <source>Draw pixels (P)</source>
-        <translation type="vanished">Малювати пікселі (P)</translation>
+        <translation>Малювати пікселі (P)</translation>
     </message>
     <message>
         <source>Eraser</source>
-        <translation type="vanished">Гумка</translation>
+        <translation>Гумка</translation>
     </message>
     <message>
         <source>Erase pixels (E)</source>
-        <translation type="vanished">Стерти пікселі (E)</translation>
+        <translation>Стерти пікселі (E)</translation>
     </message>
     <message>
         <source>Picker</source>
-        <translation type="vanished">Піпетка</translation>
+        <translation>Піпетка</translation>
     </message>
     <message>
         <source>Pick color from canvas (I)</source>
-        <translation type="vanished">Вибрати колір з полотна (I)</translation>
+        <translation>Вибрати колір з полотна (I)</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="vanished">Заливка</translation>
+        <translation>Заливка</translation>
     </message>
     <message>
         <source>Flood fill area (G)</source>
-        <translation type="vanished">Заливка області (G)</translation>
+        <translation>Заливка області (G)</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Лінія</translation>
+        <translation>Лінія</translation>
     </message>
     <message>
         <source>Draw line (L)</source>
-        <translation type="vanished">Намалювати лінію (L)</translation>
+        <translation>Намалювати лінію (L)</translation>
     </message>
     <message>
         <source>Rect</source>
-        <translation type="vanished">Прям</translation>
+        <translation>Прям</translation>
     </message>
     <message>
         <source>Draw rectangle (R)</source>
-        <translation type="vanished">Намалювати прямокутник (R)</translation>
+        <translation>Намалювати прямокутник (R)</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation type="vanished">Еліпс</translation>
+        <translation>Еліпс</translation>
     </message>
     <message>
         <source>Draw ellipse (O)</source>
-        <translation type="vanished">Намалювати еліпс (O)</translation>
+        <translation>Намалювати еліпс (O)</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Виділення</translation>
+        <translation>Виділення</translation>
     </message>
     <message>
         <source>Rectangle selection (S)</source>
-        <translation type="vanished">Прямокутне виділення (S)</translation>
+        <translation>Прямокутне виділення (S)</translation>
     </message>
     <message>
         <source>Select tool from list</source>
-        <translation type="vanished">Вибрати інструмент зі списку</translation>
+        <translation>Вибрати інструмент зі списку</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="vanished">Розмір:</translation>
+        <translation>Розмір:</translation>
     </message>
     <message>
         <source>Brush / line width in pixels</source>
-        <translation type="vanished">Ширина пензля / лінії в пікселях</translation>
+        <translation>Ширина пензля / лінії в пікселях</translation>
     </message>
     <message>
         <source>Origin</source>
-        <translation type="vanished">Початок</translation>
+        <translation>Початок</translation>
     </message>
     <message>
         <source>Origin preset</source>
-        <translation type="vanished">Попереднє налаштування початку</translation>
+        <translation>Попереднє налаштування початку</translation>
     </message>
     <message>
         <source>Top-Left</source>
-        <translation type="vanished">Верх-Ліво</translation>
+        <translation>Верх-Ліво</translation>
     </message>
     <message>
         <source>Top-Center</source>
-        <translation type="vanished">Верх-Центр</translation>
+        <translation>Верх-Центр</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="vanished">Центр</translation>
+        <translation>Центр</translation>
     </message>
     <message>
         <source>Center-Bottom</source>
-        <translation type="vanished">Центр-Низ</translation>
+        <translation>Центр-Низ</translation>
     </message>
     <message>
         <source>Bottom-Left</source>
-        <translation type="vanished">Низ-Ліво</translation>
+        <translation>Низ-Ліво</translation>
     </message>
     <message>
         <source>Bottom-Right</source>
-        <translation type="vanished">Низ-Право</translation>
+        <translation>Низ-Право</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Користувацький</translation>
+        <translation>Користувацький</translation>
     </message>
     <message>
         <source>Origin X coordinate</source>
-        <translation type="vanished">Координата X початку</translation>
+        <translation>Координата X початку</translation>
     </message>
     <message>
         <source>Origin Y coordinate</source>
-        <translation type="vanished">Координата Y початку</translation>
+        <translation>Координата Y початку</translation>
     </message>
     <message>
         <source>Filled</source>
-        <translation type="vanished">Заповнений</translation>
+        <translation>Заповнений</translation>
     </message>
     <message>
         <source>Toggle filled shapes</source>
-        <translation type="vanished">Увімкнути/вимкнути заповнені фігури</translation>
+        <translation>Увімкнути/вимкнути заповнені фігури</translation>
     </message>
     <message>
         <source>Mirror H</source>
-        <translation type="vanished">Дзеркало Г</translation>
+        <translation>Дзеркало Г</translation>
     </message>
     <message>
         <source>Mirror V</source>
-        <translation type="vanished">Дзеркало В</translation>
+        <translation>Дзеркало В</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="vanished">Сітка</translation>
+        <translation>Сітка</translation>
     </message>
     <message>
         <source>Toggle pixel grid</source>
-        <translation type="vanished">Показати/сховати піксельну сітку</translation>
+        <translation>Показати/сховати піксельну сітку</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="vanished">Зменшити</translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="vanished">Збільшити</translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <source>Resize</source>
-        <translation type="vanished">Змінити розмір</translation>
+        <translation>Змінити розмір</translation>
     </message>
     <message>
         <source>Draw</source>
-        <translation type="vanished">Малювати</translation>
+        <translation>Малювати</translation>
     </message>
     <message>
         <source>Scale to {0}x{1}</source>
-        <translation type="vanished">Масштабувати до {0}x{1}</translation>
+        <translation>Масштабувати до {0}x{1}</translation>
     </message>
     <message>
         <source>Resize Canvas to {0}x{1}</source>
-        <translation type="vanished">Змінити розмір полотна до {0}x{1}</translation>
+        <translation>Змінити розмір полотна до {0}x{1}</translation>
     </message>
     <message>
         <source>Tool: {0}</source>
-        <translation type="vanished">Інструмент: {0}</translation>
+        <translation>Інструмент: {0}</translation>
     </message>
     <message>
         <source>Copied selection</source>
-        <translation type="vanished">Виділення скопійовано</translation>
+        <translation>Виділення скопійовано</translation>
     </message>
     <message>
         <source>Cut selection</source>
-        <translation type="vanished">Виділення вирізано</translation>
+        <translation>Виділення вирізано</translation>
     </message>
     <message>
         <source>Pasted from clipboard</source>
-        <translation type="vanished">Вставлено з буфера обміну</translation>
+        <translation>Вставлено з буфера обміну</translation>
     </message>
     <message>
         <source>Copy	Ctrl+C</source>
-        <translation type="vanished">Копіювати	Ctrl+C</translation>
+        <translation>Копіювати	Ctrl+C</translation>
     </message>
     <message>
         <source>Cut	Ctrl+X</source>
-        <translation type="vanished">Вирізати	Ctrl+X</translation>
+        <translation>Вирізати	Ctrl+X</translation>
     </message>
     <message>
         <source>Paste	Ctrl+V</source>
-        <translation type="vanished">Вставити	Ctrl+V</translation>
+        <translation>Вставити	Ctrl+V</translation>
     </message>
     <message>
         <source>Delete	Del</source>
-        <translation type="vanished">Видалити	Del</translation>
+        <translation>Видалити	Del</translation>
     </message>
     <message>
         <source>Deselect	Esc</source>
-        <translation type="vanished">Зняти виділення	Esc</translation>
+        <translation>Зняти виділення	Esc</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Вибрати все</translation>
+        <translation>Вибрати все</translation>
     </message>
     <message>
         <source>No frames in sprite</source>
-        <translation type="vanished">Немає кадрів у спрайті</translation>
+        <translation>Немає кадрів у спрайті</translation>
     </message>
     <message>
         <source>Validation Error</source>
-        <translation type="vanished">Помилка перевірки</translation>
+        <translation>Помилка перевірки</translation>
     </message>
     <message>
         <source>Saved: {0}</source>
-        <translation type="vanished">Збережено: {0}</translation>
+        <translation>Збережено: {0}</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="vanished">Помилка збереження</translation>
+        <translation>Помилка збереження</translation>
     </message>
     <message>
         <source>Failed to save sprite: {0}</source>
-        <translation type="vanished">Не вдалося зберегти спрайт: {0}</translation>
+        <translation>Не вдалося зберегти спрайт: {0}</translation>
     </message>
 </context>
 <context>

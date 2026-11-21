@@ -2431,231 +2431,231 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <name>SpriteEditor</name>
     <message>
         <source>Pencil</source>
-        <translation type="vanished">Matita</translation>
+        <translation>Matita</translation>
     </message>
     <message>
         <source>Draw pixels (P)</source>
-        <translation type="vanished">Disegna pixel (P)</translation>
+        <translation>Disegna pixel (P)</translation>
     </message>
     <message>
         <source>Eraser</source>
-        <translation type="vanished">Gomma</translation>
+        <translation>Gomma</translation>
     </message>
     <message>
         <source>Erase pixels (E)</source>
-        <translation type="vanished">Cancella pixel (E)</translation>
+        <translation>Cancella pixel (E)</translation>
     </message>
     <message>
         <source>Picker</source>
-        <translation type="vanished">Contagocce</translation>
+        <translation>Contagocce</translation>
     </message>
     <message>
         <source>Pick color from canvas (I)</source>
-        <translation type="vanished">Preleva colore dal canvas (I)</translation>
+        <translation>Preleva colore dal canvas (I)</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="vanished">Riempi</translation>
+        <translation>Riempi</translation>
     </message>
     <message>
         <source>Flood fill area (G)</source>
-        <translation type="vanished">Riempimento area (G)</translation>
+        <translation>Riempimento area (G)</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Linea</translation>
+        <translation>Linea</translation>
     </message>
     <message>
         <source>Draw line (L)</source>
-        <translation type="vanished">Disegna linea (L)</translation>
+        <translation>Disegna linea (L)</translation>
     </message>
     <message>
         <source>Rect</source>
-        <translation type="vanished">Rett</translation>
+        <translation>Rett</translation>
     </message>
     <message>
         <source>Draw rectangle (R)</source>
-        <translation type="vanished">Disegna rettangolo (R)</translation>
+        <translation>Disegna rettangolo (R)</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation type="vanished">Ellisse</translation>
+        <translation>Ellisse</translation>
     </message>
     <message>
         <source>Draw ellipse (O)</source>
-        <translation type="vanished">Disegna ellisse (O)</translation>
+        <translation>Disegna ellisse (O)</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Selezione</translation>
+        <translation>Selezione</translation>
     </message>
     <message>
         <source>Rectangle selection (S)</source>
-        <translation type="vanished">Selezione rettangolare (S)</translation>
+        <translation>Selezione rettangolare (S)</translation>
     </message>
     <message>
         <source>Select tool from list</source>
-        <translation type="vanished">Seleziona strumento dalla lista</translation>
+        <translation>Seleziona strumento dalla lista</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="vanished">Dimensione:</translation>
+        <translation>Dimensione:</translation>
     </message>
     <message>
         <source>Brush / line width in pixels</source>
-        <translation type="vanished">Larghezza pennello / linea in pixel</translation>
+        <translation>Larghezza pennello / linea in pixel</translation>
     </message>
     <message>
         <source>Origin</source>
-        <translation type="vanished">Origine</translation>
+        <translation>Origine</translation>
     </message>
     <message>
         <source>Origin preset</source>
-        <translation type="vanished">Preimpostazione origine</translation>
+        <translation>Preimpostazione origine</translation>
     </message>
     <message>
         <source>Top-Left</source>
-        <translation type="vanished">Alto-Sinistra</translation>
+        <translation>Alto-Sinistra</translation>
     </message>
     <message>
         <source>Top-Center</source>
-        <translation type="vanished">Alto-Centro</translation>
+        <translation>Alto-Centro</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="vanished">Centro</translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <source>Center-Bottom</source>
-        <translation type="vanished">Centro-Basso</translation>
+        <translation>Centro-Basso</translation>
     </message>
     <message>
         <source>Bottom-Left</source>
-        <translation type="vanished">Basso-Sinistra</translation>
+        <translation>Basso-Sinistra</translation>
     </message>
     <message>
         <source>Bottom-Right</source>
-        <translation type="vanished">Basso-Destra</translation>
+        <translation>Basso-Destra</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Personalizzato</translation>
+        <translation>Personalizzato</translation>
     </message>
     <message>
         <source>Origin X coordinate</source>
-        <translation type="vanished">Coordinata X dell&apos;origine</translation>
+        <translation>Coordinata X dell&apos;origine</translation>
     </message>
     <message>
         <source>Origin Y coordinate</source>
-        <translation type="vanished">Coordinata Y dell&apos;origine</translation>
+        <translation>Coordinata Y dell&apos;origine</translation>
     </message>
     <message>
         <source>Filled</source>
-        <translation type="vanished">Pieno</translation>
+        <translation>Pieno</translation>
     </message>
     <message>
         <source>Toggle filled shapes</source>
-        <translation type="vanished">Attiva/disattiva forme piene</translation>
+        <translation>Attiva/disattiva forme piene</translation>
     </message>
     <message>
         <source>Mirror H</source>
-        <translation type="vanished">Specchio O</translation>
+        <translation>Specchio O</translation>
     </message>
     <message>
         <source>Mirror V</source>
-        <translation type="vanished">Specchio V</translation>
+        <translation>Specchio V</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="vanished">Griglia</translation>
+        <translation>Griglia</translation>
     </message>
     <message>
         <source>Toggle pixel grid</source>
-        <translation type="vanished">Mostra/nascondi griglia pixel</translation>
+        <translation>Mostra/nascondi griglia pixel</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="vanished">Rimpicciolisci</translation>
+        <translation>Rimpicciolisci</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="vanished">Ingrandisci</translation>
+        <translation>Ingrandisci</translation>
     </message>
     <message>
         <source>Resize</source>
-        <translation type="vanished">Ridimensiona</translation>
+        <translation>Ridimensiona</translation>
     </message>
     <message>
         <source>Draw</source>
-        <translation type="vanished">Disegna</translation>
+        <translation>Disegna</translation>
     </message>
     <message>
         <source>Scale to {0}x{1}</source>
-        <translation type="vanished">Scala a {0}x{1}</translation>
+        <translation>Scala a {0}x{1}</translation>
     </message>
     <message>
         <source>Resize Canvas to {0}x{1}</source>
-        <translation type="vanished">Ridimensiona tela a {0}x{1}</translation>
+        <translation>Ridimensiona tela a {0}x{1}</translation>
     </message>
     <message>
         <source>Tool: {0}</source>
-        <translation type="vanished">Strumento: {0}</translation>
+        <translation>Strumento: {0}</translation>
     </message>
     <message>
         <source>Copied selection</source>
-        <translation type="vanished">Selezione copiata</translation>
+        <translation>Selezione copiata</translation>
     </message>
     <message>
         <source>Cut selection</source>
-        <translation type="vanished">Selezione tagliata</translation>
+        <translation>Selezione tagliata</translation>
     </message>
     <message>
         <source>Pasted from clipboard</source>
-        <translation type="vanished">Incollato dagli appunti</translation>
+        <translation>Incollato dagli appunti</translation>
     </message>
     <message>
         <source>Copy	Ctrl+C</source>
-        <translation type="vanished">Copia	Ctrl+C</translation>
+        <translation>Copia	Ctrl+C</translation>
     </message>
     <message>
         <source>Cut	Ctrl+X</source>
-        <translation type="vanished">Taglia	Ctrl+X</translation>
+        <translation>Taglia	Ctrl+X</translation>
     </message>
     <message>
         <source>Paste	Ctrl+V</source>
-        <translation type="vanished">Incolla	Ctrl+V</translation>
+        <translation>Incolla	Ctrl+V</translation>
     </message>
     <message>
         <source>Delete	Del</source>
-        <translation type="vanished">Elimina	Canc</translation>
+        <translation>Elimina	Canc</translation>
     </message>
     <message>
         <source>Deselect	Esc</source>
-        <translation type="vanished">Deseleziona	Esc</translation>
+        <translation>Deseleziona	Esc</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="vanished">Seleziona tutto</translation>
+        <translation>Seleziona tutto</translation>
     </message>
     <message>
         <source>No frames in sprite</source>
-        <translation type="vanished">Nessun fotogramma nello sprite</translation>
+        <translation>Nessun fotogramma nello sprite</translation>
     </message>
     <message>
         <source>Validation Error</source>
-        <translation type="vanished">Errore di validazione</translation>
+        <translation>Errore di validazione</translation>
     </message>
     <message>
         <source>Saved: {0}</source>
-        <translation type="vanished">Salvato: {0}</translation>
+        <translation>Salvato: {0}</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="vanished">Errore di salvataggio</translation>
+        <translation>Errore di salvataggio</translation>
     </message>
     <message>
         <source>Failed to save sprite: {0}</source>
-        <translation type="vanished">Impossibile salvare lo sprite: {0}</translation>
+        <translation>Impossibile salvare lo sprite: {0}</translation>
     </message>
 </context>
 <context>
