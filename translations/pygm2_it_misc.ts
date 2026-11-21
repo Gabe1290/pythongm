@@ -163,147 +163,147 @@
     <name>ThymioPlaygroundWindow</name>
     <message>
         <source>Thymio Playground</source>
-        <translation type="vanished">Campo di gioco Thymio</translation>
+        <translation>Campo di gioco Thymio</translation>
     </message>
     <message>
         <source>Robot: Arrow keys = buttons, Space = stop, R = reset | Edit: Click+drag to draw, Delete = remove | Zoom: +/- or scroll, Middle-drag to pan, Home = reset view</source>
-        <translation type="vanished">Robot: Frecce = pulsanti, Spazio = stop, R = reimposta | Modifica: Clic+trascinamento per disegnare, Canc = rimuovi | Zoom: +/- o rotella, Clic-centrale+trascina per spostare, Home = reimposta vista</translation>
+        <translation>Robot: Frecce = pulsanti, Spazio = stop, R = reimposta | Modifica: Clic+trascinamento per disegnare, Canc = rimuovi | Zoom: +/- o rotella, Clic-centrale+trascina per spostare, Home = reimposta vista</translation>
     </message>
     <message>
         <source>Angle: -90°</source>
-        <translation type="vanished">Angolo: -90°</translation>
+        <translation>Angolo: -90°</translation>
     </message>
     <message>
         <source>L: 0</source>
-        <translation type="vanished">S: 0</translation>
+        <translation>S: 0</translation>
     </message>
     <message>
         <source>R: 0</source>
-        <translation type="vanished">D: 0</translation>
+        <translation>D: 0</translation>
     </message>
     <message>
         <source>Motors:</source>
-        <translation type="vanished">Motori:</translation>
+        <translation>Motori:</translation>
     </message>
     <message>
         <source>LED: Off</source>
-        <translation type="vanished">LED: Spento</translation>
+        <translation>LED: Spento</translation>
     </message>
     <message>
         <source>Robot Status</source>
-        <translation type="vanished">Stato del robot</translation>
+        <translation>Stato del robot</translation>
     </message>
     <message>
         <source>Zoom: 100%</source>
-        <translation type="vanished">Zoom: 100%</translation>
+        <translation>Zoom: 100%</translation>
     </message>
     <message>
         <source>Pan: 0, 0</source>
-        <translation type="vanished">Panoramica: 0, 0</translation>
+        <translation>Panoramica: 0, 0</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="vanished">Vista</translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Personalizzato</translation>
+        <translation>Personalizzato</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="vanished">Applica</translation>
+        <translation>Applica</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="vanished">Dimensione</translation>
+        <translation>Dimensione</translation>
     </message>
     <message>
         <source>Mode: Select</source>
-        <translation type="vanished">Modalità: Selezione</translation>
+        <translation>Modalità: Selezione</translation>
     </message>
     <message>
         <source>Click: select | Drag: draw</source>
-        <translation type="vanished">Clic: seleziona | Trascina: disegna</translation>
+        <translation>Clic: seleziona | Trascina: disegna</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="vanished">Modifica</translation>
+        <translation>Modifica</translation>
     </message>
     <message>
         <source>Reset Robot</source>
-        <translation type="vanished">Reimposta il robot</translation>
+        <translation>Reimposta il robot</translation>
     </message>
     <message>
         <source>Reset World</source>
-        <translation type="vanished">Reimposta il mondo</translation>
+        <translation>Reimposta il mondo</translation>
     </message>
     <message>
         <source>Toggle Sensors</source>
-        <translation type="vanished">Mostra/nascondi sensori</translation>
+        <translation>Mostra/nascondi sensori</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Selezione</translation>
+        <translation>Selezione</translation>
     </message>
     <message>
         <source>Select mode - click to select elements, Delete to remove</source>
-        <translation type="vanished">Modalità selezione - clicca per selezionare, Canc per rimuovere</translation>
+        <translation>Modalità selezione - clicca per selezionare, Canc per rimuovere</translation>
     </message>
     <message>
         <source>Obstacle</source>
-        <translation type="vanished">Ostacolo</translation>
+        <translation>Ostacolo</translation>
     </message>
     <message>
         <source>Draw rectangular obstacles - click and drag</source>
-        <translation type="vanished">Disegna ostacoli rettangolari - clicca e trascina</translation>
+        <translation>Disegna ostacoli rettangolari - clicca e trascina</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Linea</translation>
+        <translation>Linea</translation>
     </message>
     <message>
         <source>Draw line track segments - click and drag</source>
-        <translation type="vanished">Disegna segmenti di tracciato - clicca e trascina</translation>
+        <translation>Disegna segmenti di tracciato - clicca e trascina</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="vanished">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Clear Obstacles</source>
-        <translation type="vanished">Cancella ostacoli</translation>
+        <translation>Cancella ostacoli</translation>
     </message>
     <message>
         <source>Clear Lines</source>
-        <translation type="vanished">Cancella linee</translation>
+        <translation>Cancella linee</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="vanished">Pausa</translation>
+        <translation>Pausa</translation>
     </message>
     <message>
         <source>Sensors</source>
-        <translation type="vanished">Sensori</translation>
+        <translation>Sensori</translation>
     </message>
     <message>
         <source>Zoom In (+)</source>
-        <translation type="vanished">Ingrandisci (+)</translation>
+        <translation>Ingrandisci (+)</translation>
     </message>
     <message>
         <source>Zoom Out (-)</source>
-        <translation type="vanished">Riduci (-)</translation>
+        <translation>Riduci (-)</translation>
     </message>
     <message>
         <source>Reset View</source>
-        <translation type="vanished">Reimposta la vista</translation>
+        <translation>Reimposta la vista</translation>
     </message>
     <message>
         <source>Fit to Window</source>
-        <translation type="vanished">Adatta alla finestra</translation>
+        <translation>Adatta alla finestra</translation>
     </message>
     <message>
         <source>Ready - Use arrow keys to control Thymio</source>
-        <translation type="vanished">Pronto - Usa i tasti freccia per controllare Thymio</translation>
+        <translation>Pronto - Usa i tasti freccia per controllare Thymio</translation>
     </message>
     <message>
         <source>View reset to default</source>

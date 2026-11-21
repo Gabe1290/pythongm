@@ -163,147 +163,147 @@
     <name>ThymioPlaygroundWindow</name>
     <message>
         <source>Thymio Playground</source>
-        <translation type="vanished">Площадка Thymio</translation>
+        <translation>Площадка Thymio</translation>
     </message>
     <message>
         <source>Robot: Arrow keys = buttons, Space = stop, R = reset | Edit: Click+drag to draw, Delete = remove | Zoom: +/- or scroll, Middle-drag to pan, Home = reset view</source>
-        <translation type="vanished">Робот: Стрелки = кнопки, Пробел = стоп, R = сброс | Редактирование: Клик+перетаскивание = рисовать, Delete = удалить | Масштаб: +/- или прокрутка, Среднее перетаскивание = панорама, Home = сброс вида</translation>
+        <translation>Робот: Стрелки = кнопки, Пробел = стоп, R = сброс | Редактирование: Клик+перетаскивание = рисовать, Delete = удалить | Масштаб: +/- или прокрутка, Среднее перетаскивание = панорама, Home = сброс вида</translation>
     </message>
     <message>
         <source>Angle: -90°</source>
-        <translation type="vanished">Угол: -90°</translation>
+        <translation>Угол: -90°</translation>
     </message>
     <message>
         <source>L: 0</source>
-        <translation type="vanished">Л: 0</translation>
+        <translation>Л: 0</translation>
     </message>
     <message>
         <source>R: 0</source>
-        <translation type="vanished">П: 0</translation>
+        <translation>П: 0</translation>
     </message>
     <message>
         <source>Motors:</source>
-        <translation type="vanished">Моторы:</translation>
+        <translation>Моторы:</translation>
     </message>
     <message>
         <source>LED: Off</source>
-        <translation type="vanished">LED: Выкл</translation>
+        <translation>LED: Выкл</translation>
     </message>
     <message>
         <source>Robot Status</source>
-        <translation type="vanished">Статус робота</translation>
+        <translation>Статус робота</translation>
     </message>
     <message>
         <source>Zoom: 100%</source>
-        <translation type="vanished">Масштаб: 100%</translation>
+        <translation>Масштаб: 100%</translation>
     </message>
     <message>
         <source>Pan: 0, 0</source>
-        <translation type="vanished">Панорама: 0, 0</translation>
+        <translation>Панорама: 0, 0</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="vanished">Вид</translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Пользовательский</translation>
+        <translation>Пользовательский</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="vanished">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="vanished">Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <source>Mode: Select</source>
-        <translation type="vanished">Режим: Выбор</translation>
+        <translation>Режим: Выбор</translation>
     </message>
     <message>
         <source>Click: select | Drag: draw</source>
-        <translation type="vanished">Клик: выбор | Перетаскивание: рисование</translation>
+        <translation>Клик: выбор | Перетаскивание: рисование</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="vanished">Редактирование</translation>
+        <translation>Редактирование</translation>
     </message>
     <message>
         <source>Reset Robot</source>
-        <translation type="vanished">Сбросить робота</translation>
+        <translation>Сбросить робота</translation>
     </message>
     <message>
         <source>Reset World</source>
-        <translation type="vanished">Сбросить мир</translation>
+        <translation>Сбросить мир</translation>
     </message>
     <message>
         <source>Toggle Sensors</source>
-        <translation type="vanished">Переключить сенсоры</translation>
+        <translation>Переключить сенсоры</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Выбор</translation>
+        <translation>Выбор</translation>
     </message>
     <message>
         <source>Select mode - click to select elements, Delete to remove</source>
-        <translation type="vanished">Режим выбора — нажмите для выбора элементов, Delete для удаления</translation>
+        <translation>Режим выбора — нажмите для выбора элементов, Delete для удаления</translation>
     </message>
     <message>
         <source>Obstacle</source>
-        <translation type="vanished">Препятствие</translation>
+        <translation>Препятствие</translation>
     </message>
     <message>
         <source>Draw rectangular obstacles - click and drag</source>
-        <translation type="vanished">Рисование прямоугольных препятствий — нажмите и перетащите</translation>
+        <translation>Рисование прямоугольных препятствий — нажмите и перетащите</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Линия</translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <source>Draw line track segments - click and drag</source>
-        <translation type="vanished">Рисование линейных сегментов — нажмите и перетащите</translation>
+        <translation>Рисование линейных сегментов — нажмите и перетащите</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="vanished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>Clear Obstacles</source>
-        <translation type="vanished">Очистить препятствия</translation>
+        <translation>Очистить препятствия</translation>
     </message>
     <message>
         <source>Clear Lines</source>
-        <translation type="vanished">Очистить линии</translation>
+        <translation>Очистить линии</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="vanished">Пауза</translation>
+        <translation>Пауза</translation>
     </message>
     <message>
         <source>Sensors</source>
-        <translation type="vanished">Сенсоры</translation>
+        <translation>Сенсоры</translation>
     </message>
     <message>
         <source>Zoom In (+)</source>
-        <translation type="vanished">Увеличить (+)</translation>
+        <translation>Увеличить (+)</translation>
     </message>
     <message>
         <source>Zoom Out (-)</source>
-        <translation type="vanished">Уменьшить (-)</translation>
+        <translation>Уменьшить (-)</translation>
     </message>
     <message>
         <source>Reset View</source>
-        <translation type="vanished">Сбросить вид</translation>
+        <translation>Сбросить вид</translation>
     </message>
     <message>
         <source>Fit to Window</source>
-        <translation type="vanished">Вписать в окно</translation>
+        <translation>Вписать в окно</translation>
     </message>
     <message>
         <source>Ready - Use arrow keys to control Thymio</source>
-        <translation type="vanished">Готово — используйте стрелки для управления Thymio</translation>
+        <translation>Готово — используйте стрелки для управления Thymio</translation>
     </message>
     <message>
         <source>View reset to default</source>

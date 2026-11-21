@@ -909,7 +909,7 @@ de/it/ru/sl 202). Biggest groups: `SpriteEditor` 57, `ConditionalActionEditor`
   (de/it/ru/sl/uk each):
   - [x] SpriteEditor (57)
   - [x] ConditionalActionEditor (48)
-  - [ ] ThymioPlaygroundWindow (36)
+  - [x] ThymioPlaygroundWindow (36)
   - [ ] ThymioEventsPanel (14)
   - [ ] ThymioActionSelector (10)
   - [ ] MultiActionEditor (9)

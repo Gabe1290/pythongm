@@ -163,147 +163,147 @@
     <name>ThymioPlaygroundWindow</name>
     <message>
         <source>Thymio Playground</source>
-        <translation type="vanished">Igrišče Thymio</translation>
+        <translation>Igrišče Thymio</translation>
     </message>
     <message>
         <source>Robot: Arrow keys = buttons, Space = stop, R = reset | Edit: Click+drag to draw, Delete = remove | Zoom: +/- or scroll, Middle-drag to pan, Home = reset view</source>
-        <translation type="vanished">Robot: Puščice = gumbi, Presledek = stop, R = ponastavitev | Urejanje: Klik+vlek za risanje, Delete = odstrani | Povečava: +/- ali pomik, Srednji klik+vlek za premik, Home = ponastavi pogled</translation>
+        <translation>Robot: Puščice = gumbi, Presledek = stop, R = ponastavitev | Urejanje: Klik+vlek za risanje, Delete = odstrani | Povečava: +/- ali pomik, Srednji klik+vlek za premik, Home = ponastavi pogled</translation>
     </message>
     <message>
         <source>Angle: -90°</source>
-        <translation type="vanished">Kot: -90°</translation>
+        <translation>Kot: -90°</translation>
     </message>
     <message>
         <source>L: 0</source>
-        <translation type="vanished">L: 0</translation>
+        <translation>L: 0</translation>
     </message>
     <message>
         <source>R: 0</source>
-        <translation type="vanished">D: 0</translation>
+        <translation>D: 0</translation>
     </message>
     <message>
         <source>Motors:</source>
-        <translation type="vanished">Motorji:</translation>
+        <translation>Motorji:</translation>
     </message>
     <message>
         <source>LED: Off</source>
-        <translation type="vanished">LED: Izključeno</translation>
+        <translation>LED: Izključeno</translation>
     </message>
     <message>
         <source>Robot Status</source>
-        <translation type="vanished">Stanje robota</translation>
+        <translation>Stanje robota</translation>
     </message>
     <message>
         <source>Zoom: 100%</source>
-        <translation type="vanished">Povečava: 100%</translation>
+        <translation>Povečava: 100%</translation>
     </message>
     <message>
         <source>Pan: 0, 0</source>
-        <translation type="vanished">Premik: 0, 0</translation>
+        <translation>Premik: 0, 0</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="vanished">Pogled</translation>
+        <translation>Pogled</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Po meri</translation>
+        <translation>Po meri</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="vanished">Uporabi</translation>
+        <translation>Uporabi</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="vanished">Velikost</translation>
+        <translation>Velikost</translation>
     </message>
     <message>
         <source>Mode: Select</source>
-        <translation type="vanished">Način: Izbira</translation>
+        <translation>Način: Izbira</translation>
     </message>
     <message>
         <source>Click: select | Drag: draw</source>
-        <translation type="vanished">Klik: izberi | Vlek: riši</translation>
+        <translation>Klik: izberi | Vlek: riši</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="vanished">Urejanje</translation>
+        <translation>Urejanje</translation>
     </message>
     <message>
         <source>Reset Robot</source>
-        <translation type="vanished">Ponastavi robota</translation>
+        <translation>Ponastavi robota</translation>
     </message>
     <message>
         <source>Reset World</source>
-        <translation type="vanished">Ponastavi svet</translation>
+        <translation>Ponastavi svet</translation>
     </message>
     <message>
         <source>Toggle Sensors</source>
-        <translation type="vanished">Preklopi senzorje</translation>
+        <translation>Preklopi senzorje</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="vanished">Izbira</translation>
+        <translation>Izbira</translation>
     </message>
     <message>
         <source>Select mode - click to select elements, Delete to remove</source>
-        <translation type="vanished">Način izbire — kliknite za izbiro elementov, Delete za odstranitev</translation>
+        <translation>Način izbire — kliknite za izbiro elementov, Delete za odstranitev</translation>
     </message>
     <message>
         <source>Obstacle</source>
-        <translation type="vanished">Ovira</translation>
+        <translation>Ovira</translation>
     </message>
     <message>
         <source>Draw rectangular obstacles - click and drag</source>
-        <translation type="vanished">Risanje pravokotnih ovir — kliknite in povlecite</translation>
+        <translation>Risanje pravokotnih ovir — kliknite in povlecite</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="vanished">Črta</translation>
+        <translation>Črta</translation>
     </message>
     <message>
         <source>Draw line track segments - click and drag</source>
-        <translation type="vanished">Risanje črtnih segmentov — kliknite in povlecite</translation>
+        <translation>Risanje črtnih segmentov — kliknite in povlecite</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="vanished">Razveljavi</translation>
+        <translation>Razveljavi</translation>
     </message>
     <message>
         <source>Clear Obstacles</source>
-        <translation type="vanished">Počisti ovire</translation>
+        <translation>Počisti ovire</translation>
     </message>
     <message>
         <source>Clear Lines</source>
-        <translation type="vanished">Počisti črte</translation>
+        <translation>Počisti črte</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="vanished">Premor</translation>
+        <translation>Premor</translation>
     </message>
     <message>
         <source>Sensors</source>
-        <translation type="vanished">Senzorji</translation>
+        <translation>Senzorji</translation>
     </message>
     <message>
         <source>Zoom In (+)</source>
-        <translation type="vanished">Povečaj (+)</translation>
+        <translation>Povečaj (+)</translation>
     </message>
     <message>
         <source>Zoom Out (-)</source>
-        <translation type="vanished">Pomanjšaj (-)</translation>
+        <translation>Pomanjšaj (-)</translation>
     </message>
     <message>
         <source>Reset View</source>
-        <translation type="vanished">Ponastavi pogled</translation>
+        <translation>Ponastavi pogled</translation>
     </message>
     <message>
         <source>Fit to Window</source>
-        <translation type="vanished">Prilagodi oknu</translation>
+        <translation>Prilagodi oknu</translation>
     </message>
     <message>
         <source>Ready - Use arrow keys to control Thymio</source>
-        <translation type="vanished">Pripravljeno — uporabite puščice za upravljanje Thymio</translation>
+        <translation>Pripravljeno — uporabite puščice za upravljanje Thymio</translation>
     </message>
     <message>
         <source>View reset to default</source>
