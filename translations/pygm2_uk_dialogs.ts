@@ -1423,43 +1423,43 @@ Would you like to open the export directory?</source>
     <name>ThymioActionSelector</name>
     <message>
         <source>Select Thymio Action</source>
-        <translation type="vanished">Вибір дії Thymio</translation>
+        <translation>Вибір дії Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio action to add:</source>
-        <translation type="vanished">Виберіть дію Thymio для додавання:</translation>
+        <translation>Виберіть дію Thymio для додавання:</translation>
     </message>
     <message>
         <source>Click on the robot to filter actions, or select from the list below.</source>
-        <translation type="vanished">Натисніть на робота, щоб відфільтрувати дії, або виберіть зі списку нижче.</translation>
+        <translation>Натисніть на робота, щоб відфільтрувати дії, або виберіть зі списку нижче.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Усі</translation>
+        <translation>Усі</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Пошук:</translation>
+        <translation>Пошук:</translation>
     </message>
     <message>
         <source>Type to filter actions...</source>
-        <translation type="vanished">Введіть для фільтрування дій...</translation>
+        <translation>Введіть для фільтрування дій...</translation>
     </message>
     <message>
         <source>Configure &amp;&amp; Add</source>
-        <translation type="vanished">Налаштувати &amp;&amp; додати</translation>
+        <translation>Налаштувати &amp;&amp; додати</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Додати дію</translation>
+        <translation>Додати дію</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Нічого не вибрано</translation>
+        <translation>Нічого не вибрано</translation>
     </message>
     <message>
         <source>Please select a Thymio action first.</source>
-        <translation type="vanished">Спочатку виберіть дію Thymio.</translation>
+        <translation>Спочатку виберіть дію Thymio.</translation>
     </message>
 </context>
 <context>

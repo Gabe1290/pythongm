@@ -2662,59 +2662,59 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <name>ThymioEventsPanel</name>
     <message>
         <source>Thymio Programming</source>
-        <translation type="vanished">Programmazione Thymio</translation>
+        <translation>Programmazione Thymio</translation>
     </message>
     <message>
         <source>Click on the robot to add events</source>
-        <translation type="vanished">Clicca sul robot per aggiungere eventi</translation>
+        <translation>Clicca sul robot per aggiungere eventi</translation>
     </message>
     <message>
         <source>+ Event</source>
-        <translation type="vanished">+ Evento</translation>
+        <translation>+ Evento</translation>
     </message>
     <message>
         <source>Add Thymio event</source>
-        <translation type="vanished">Aggiungi evento Thymio</translation>
+        <translation>Aggiungi evento Thymio</translation>
     </message>
     <message>
         <source>Event</source>
-        <translation type="vanished">Evento</translation>
+        <translation>Evento</translation>
     </message>
     <message>
         <source>Actions</source>
-        <translation type="vanished">Azioni</translation>
+        <translation>Azioni</translation>
     </message>
     <message>
         <source>Add Event</source>
-        <translation type="vanished">Aggiungi evento</translation>
+        <translation>Aggiungi evento</translation>
     </message>
     <message>
         <source>Event Exists</source>
-        <translation type="vanished">L&apos;evento esiste già</translation>
+        <translation>L&apos;evento esiste già</translation>
     </message>
     <message>
         <source>This event already exists.</source>
-        <translation type="vanished">Questo evento esiste già.</translation>
+        <translation>Questo evento esiste già.</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Aggiungi azione</translation>
+        <translation>Aggiungi azione</translation>
     </message>
     <message>
         <source>Remove Event</source>
-        <translation type="vanished">Rimuovi evento</translation>
+        <translation>Rimuovi evento</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Modifica azione</translation>
+        <translation>Modifica azione</translation>
     </message>
     <message>
         <source>Remove Action</source>
-        <translation type="vanished">Rimuovi azione</translation>
+        <translation>Rimuovi azione</translation>
     </message>
     <message>
         <source>Remove this event and all its actions?</source>
-        <translation type="vanished">Rimuovere questo evento e tutte le sue azioni?</translation>
+        <translation>Rimuovere questo evento e tutte le sue azioni?</translation>
     </message>
 </context>
 <context>

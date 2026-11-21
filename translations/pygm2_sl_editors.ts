@@ -2662,59 +2662,59 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <name>ThymioEventsPanel</name>
     <message>
         <source>Thymio Programming</source>
-        <translation type="vanished">Programiranje Thymio</translation>
+        <translation>Programiranje Thymio</translation>
     </message>
     <message>
         <source>Click on the robot to add events</source>
-        <translation type="vanished">Kliknite na robota za dodajanje dogodkov</translation>
+        <translation>Kliknite na robota za dodajanje dogodkov</translation>
     </message>
     <message>
         <source>+ Event</source>
-        <translation type="vanished">+ Dogodek</translation>
+        <translation>+ Dogodek</translation>
     </message>
     <message>
         <source>Add Thymio event</source>
-        <translation type="vanished">Dodaj dogodek Thymio</translation>
+        <translation>Dodaj dogodek Thymio</translation>
     </message>
     <message>
         <source>Event</source>
-        <translation type="vanished">Dogodek</translation>
+        <translation>Dogodek</translation>
     </message>
     <message>
         <source>Actions</source>
-        <translation type="vanished">Dejanja</translation>
+        <translation>Dejanja</translation>
     </message>
     <message>
         <source>Add Event</source>
-        <translation type="vanished">Dodaj dogodek</translation>
+        <translation>Dodaj dogodek</translation>
     </message>
     <message>
         <source>Event Exists</source>
-        <translation type="vanished">Dogodek že obstaja</translation>
+        <translation>Dogodek že obstaja</translation>
     </message>
     <message>
         <source>This event already exists.</source>
-        <translation type="vanished">Ta dogodek že obstaja.</translation>
+        <translation>Ta dogodek že obstaja.</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Dodaj dejanje</translation>
+        <translation>Dodaj dejanje</translation>
     </message>
     <message>
         <source>Remove Event</source>
-        <translation type="vanished">Odstrani dogodek</translation>
+        <translation>Odstrani dogodek</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Uredi dejanje</translation>
+        <translation>Uredi dejanje</translation>
     </message>
     <message>
         <source>Remove Action</source>
-        <translation type="vanished">Odstrani dejanje</translation>
+        <translation>Odstrani dejanje</translation>
     </message>
     <message>
         <source>Remove this event and all its actions?</source>
-        <translation type="vanished">Odstrani ta dogodek in vsa njegova dejanja?</translation>
+        <translation>Odstrani ta dogodek in vsa njegova dejanja?</translation>
     </message>
 </context>
 <context>

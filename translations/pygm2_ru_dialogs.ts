@@ -1423,43 +1423,43 @@ Would you like to open the export directory?</source>
     <name>ThymioActionSelector</name>
     <message>
         <source>Select Thymio Action</source>
-        <translation type="vanished">Выбор действия Thymio</translation>
+        <translation>Выбор действия Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio action to add:</source>
-        <translation type="vanished">Выберите действие Thymio для добавления:</translation>
+        <translation>Выберите действие Thymio для добавления:</translation>
     </message>
     <message>
         <source>Click on the robot to filter actions, or select from the list below.</source>
-        <translation type="vanished">Нажмите на робота, чтобы отфильтровать действия, или выберите из списка ниже.</translation>
+        <translation>Нажмите на робота, чтобы отфильтровать действия, или выберите из списка ниже.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Все</translation>
+        <translation>Все</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Поиск:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <source>Type to filter actions...</source>
-        <translation type="vanished">Введите для фильтрации действий...</translation>
+        <translation>Введите для фильтрации действий...</translation>
     </message>
     <message>
         <source>Configure &amp;&amp; Add</source>
-        <translation type="vanished">Настроить &amp;&amp; добавить</translation>
+        <translation>Настроить &amp;&amp; добавить</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Добавить действие</translation>
+        <translation>Добавить действие</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Ничего не выбрано</translation>
+        <translation>Ничего не выбрано</translation>
     </message>
     <message>
         <source>Please select a Thymio action first.</source>
-        <translation type="vanished">Сначала выберите действие Thymio.</translation>
+        <translation>Сначала выберите действие Thymio.</translation>
     </message>
 </context>
 <context>

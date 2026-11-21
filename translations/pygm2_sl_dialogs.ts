@@ -1423,43 +1423,43 @@ Ali želite odpreti mapo izvoza?</translation>
     <name>ThymioActionSelector</name>
     <message>
         <source>Select Thymio Action</source>
-        <translation type="vanished">Izberite dejanje Thymio</translation>
+        <translation>Izberite dejanje Thymio</translation>
     </message>
     <message>
         <source>Select a Thymio action to add:</source>
-        <translation type="vanished">Izberite dejanje Thymio za dodajanje:</translation>
+        <translation>Izberite dejanje Thymio za dodajanje:</translation>
     </message>
     <message>
         <source>Click on the robot to filter actions, or select from the list below.</source>
-        <translation type="vanished">Kliknite na robota za filtriranje dejanj ali izberite s spodnjega seznama.</translation>
+        <translation>Kliknite na robota za filtriranje dejanj ali izberite s spodnjega seznama.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Vse</translation>
+        <translation>Vse</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Iskanje:</translation>
+        <translation>Iskanje:</translation>
     </message>
     <message>
         <source>Type to filter actions...</source>
-        <translation type="vanished">Tipkajte za filtriranje dejanj...</translation>
+        <translation>Tipkajte za filtriranje dejanj...</translation>
     </message>
     <message>
         <source>Configure &amp;&amp; Add</source>
-        <translation type="vanished">Nastavi &amp;&amp; dodaj</translation>
+        <translation>Nastavi &amp;&amp; dodaj</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Dodaj dejanje</translation>
+        <translation>Dodaj dejanje</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Ni izbire</translation>
+        <translation>Ni izbire</translation>
     </message>
     <message>
         <source>Please select a Thymio action first.</source>
-        <translation type="vanished">Najprej izberite dejanje Thymio.</translation>
+        <translation>Najprej izberite dejanje Thymio.</translation>
     </message>
 </context>
 <context>

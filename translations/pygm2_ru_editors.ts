@@ -2662,59 +2662,59 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <name>ThymioEventsPanel</name>
     <message>
         <source>Thymio Programming</source>
-        <translation type="vanished">Программирование Thymio</translation>
+        <translation>Программирование Thymio</translation>
     </message>
     <message>
         <source>Click on the robot to add events</source>
-        <translation type="vanished">Нажмите на робота, чтобы добавить события</translation>
+        <translation>Нажмите на робота, чтобы добавить события</translation>
     </message>
     <message>
         <source>+ Event</source>
-        <translation type="vanished">+ Событие</translation>
+        <translation>+ Событие</translation>
     </message>
     <message>
         <source>Add Thymio event</source>
-        <translation type="vanished">Добавить событие Thymio</translation>
+        <translation>Добавить событие Thymio</translation>
     </message>
     <message>
         <source>Event</source>
-        <translation type="vanished">Событие</translation>
+        <translation>Событие</translation>
     </message>
     <message>
         <source>Actions</source>
-        <translation type="vanished">Действия</translation>
+        <translation>Действия</translation>
     </message>
     <message>
         <source>Add Event</source>
-        <translation type="vanished">Добавить событие</translation>
+        <translation>Добавить событие</translation>
     </message>
     <message>
         <source>Event Exists</source>
-        <translation type="vanished">Событие существует</translation>
+        <translation>Событие существует</translation>
     </message>
     <message>
         <source>This event already exists.</source>
-        <translation type="vanished">Это событие уже существует.</translation>
+        <translation>Это событие уже существует.</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Добавить действие</translation>
+        <translation>Добавить действие</translation>
     </message>
     <message>
         <source>Remove Event</source>
-        <translation type="vanished">Удалить событие</translation>
+        <translation>Удалить событие</translation>
     </message>
     <message>
         <source>Edit Action</source>
-        <translation type="vanished">Редактировать действие</translation>
+        <translation>Редактировать действие</translation>
     </message>
     <message>
         <source>Remove Action</source>
-        <translation type="vanished">Удалить действие</translation>
+        <translation>Удалить действие</translation>
     </message>
     <message>
         <source>Remove this event and all its actions?</source>
-        <translation type="vanished">Удалить это событие и все его действия?</translation>
+        <translation>Удалить это событие и все его действия?</translation>
     </message>
 </context>
 <context>

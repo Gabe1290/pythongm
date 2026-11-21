@@ -1423,43 +1423,43 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
     <name>ThymioActionSelector</name>
     <message>
         <source>Select Thymio Action</source>
-        <translation type="vanished">Thymio-Aktion auswählen</translation>
+        <translation>Thymio-Aktion auswählen</translation>
     </message>
     <message>
         <source>Select a Thymio action to add:</source>
-        <translation type="vanished">Wählen Sie eine Thymio-Aktion zum Hinzufügen:</translation>
+        <translation>Wählen Sie eine Thymio-Aktion zum Hinzufügen:</translation>
     </message>
     <message>
         <source>Click on the robot to filter actions, or select from the list below.</source>
-        <translation type="vanished">Klicken Sie auf den Roboter, um Aktionen zu filtern, oder wählen Sie aus der Liste unten.</translation>
+        <translation>Klicken Sie auf den Roboter, um Aktionen zu filtern, oder wählen Sie aus der Liste unten.</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="vanished">Alle</translation>
+        <translation>Alle</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="vanished">Suchen:</translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <source>Type to filter actions...</source>
-        <translation type="vanished">Eingeben, um Aktionen zu filtern...</translation>
+        <translation>Eingeben, um Aktionen zu filtern...</translation>
     </message>
     <message>
         <source>Configure &amp;&amp; Add</source>
-        <translation type="vanished">Konfigurieren &amp;&amp; Hinzufügen</translation>
+        <translation>Konfigurieren &amp;&amp; Hinzufügen</translation>
     </message>
     <message>
         <source>Add Action</source>
-        <translation type="vanished">Aktion hinzufügen</translation>
+        <translation>Aktion hinzufügen</translation>
     </message>
     <message>
         <source>No Selection</source>
-        <translation type="vanished">Keine Auswahl</translation>
+        <translation>Keine Auswahl</translation>
     </message>
     <message>
         <source>Please select a Thymio action first.</source>
-        <translation type="vanished">Bitte wählen Sie zuerst eine Thymio-Aktion aus.</translation>
+        <translation>Bitte wählen Sie zuerst eine Thymio-Aktion aus.</translation>
     </message>
 </context>
 <context>
