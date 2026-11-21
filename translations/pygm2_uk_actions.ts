@@ -302,6 +302,194 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
             <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
             <translation>Робить цей екземпляр СХОДИНКОЮ у вигляді raycast: клітинки сітки, які покриває його спрайт, стають піднятою підлогою цієї висоти й малюються як сходинка, на яку гравець може піднятися (або край, з якого можна зістрибнути). Використовуйте в події Create нетвердого об'єкта</translation>
         </message>
+        <message>
+            <source>Enable</source>
+            <translation>Увімкнути</translation>
+        </message>
+        <message>
+            <source>Camera Object</source>
+            <translation>Об'єкт-камера</translation>
+        </message>
+        <message>
+            <source>Field of View</source>
+            <translation>Поле зору</translation>
+        </message>
+        <message>
+            <source>Render Distance</source>
+            <translation>Дальність промальовування</translation>
+        </message>
+        <message>
+            <source>Cell Size</source>
+            <translation>Розмір клітинки</translation>
+        </message>
+        <message>
+            <source>Columns</source>
+            <translation>Стовпці</translation>
+        </message>
+        <message>
+            <source>Wall Color</source>
+            <translation>Колір стін</translation>
+        </message>
+        <message>
+            <source>Floor Color</source>
+            <translation>Колір підлоги</translation>
+        </message>
+        <message>
+            <source>Ceiling Color</source>
+            <translation>Колір стелі</translation>
+        </message>
+        <message>
+            <source>Wall Texture</source>
+            <translation>Текстура стін</translation>
+        </message>
+        <message>
+            <source>Sky Texture</source>
+            <translation>Текстура неба</translation>
+        </message>
+        <message>
+            <source>Floor Texture</source>
+            <translation>Текстура підлоги</translation>
+        </message>
+        <message>
+            <source>Ceiling Texture</source>
+            <translation>Текстура стелі</translation>
+        </message>
+        <message>
+            <source>Textured Walls</source>
+            <translation>Текстуровані стіни</translation>
+        </message>
+        <message>
+            <source>Floor Detail</source>
+            <translation>Деталізація підлоги</translation>
+        </message>
+        <message>
+            <source>Viewport Height</source>
+            <translation>Висота вигляду</translation>
+        </message>
+        <message>
+            <source>Angle</source>
+            <translation>Кут</translation>
+        </message>
+        <message>
+            <source>Size</source>
+            <translation>Розмір</translation>
+        </message>
+        <message>
+            <source>Background Color</source>
+            <translation>Колір тла</translation>
+        </message>
+        <message>
+            <source>Player Color</source>
+            <translation>Колір гравця</translation>
+        </message>
+        <message>
+            <source>Mark Object</source>
+            <translation>Позначуваний об'єкт</translation>
+        </message>
+        <message>
+            <source>Mark Color</source>
+            <translation>Колір позначок</translation>
+        </message>
+        <message>
+            <source>Mark Object 2</source>
+            <translation>Позначуваний об'єкт 2</translation>
+        </message>
+        <message>
+            <source>Mark Color 2</source>
+            <translation>Колір позначок 2</translation>
+        </message>
+        <message>
+            <source>Show Trail</source>
+            <translation>Показувати слід</translation>
+        </message>
+        <message>
+            <source>Trail Color</source>
+            <translation>Колір сліду</translation>
+        </message>
+        <message>
+            <source>Width</source>
+            <translation>Ширина</translation>
+        </message>
+        <message>
+            <source>Divider Color</source>
+            <translation>Колір роздільника</translation>
+        </message>
+        <message>
+            <source>Text Color</source>
+            <translation>Колір тексту</translation>
+        </message>
+        <message>
+            <source>Health Label</source>
+            <translation>Підпис здоров'я</translation>
+        </message>
+        <message>
+            <source>Health Bar Width</source>
+            <translation>Ширина смуги здоров'я</translation>
+        </message>
+        <message>
+            <source>Health Bar Height</source>
+            <translation>Висота смуги здоров'я</translation>
+        </message>
+        <message>
+            <source>Health Bar Color</source>
+            <translation>Колір смуги здоров'я</translation>
+        </message>
+        <message>
+            <source>Face Sprite</source>
+            <translation>Спрайт обличчя</translation>
+        </message>
+        <message>
+            <source>Face Frames</source>
+            <translation>Кадри обличчя</translation>
+        </message>
+        <message>
+            <source>Score Label</source>
+            <translation>Підпис рахунку</translation>
+        </message>
+        <message>
+            <source>Lives Sprite</source>
+            <translation>Спрайт життів</translation>
+        </message>
+        <message>
+            <source>Lives Scale</source>
+            <translation>Масштаб життів</translation>
+        </message>
+        <message>
+            <source>Objective Value</source>
+            <translation>Значення мети</translation>
+        </message>
+        <message>
+            <source>Objective Label</source>
+            <translation>Підпис мети</translation>
+        </message>
+        <message>
+            <source>Angle Frames</source>
+            <translation>Кадри за кутами</translation>
+        </message>
+        <message>
+            <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
+            <translation>Відображати кімнату як 3D-вигляд від першої особи у стилі Doom/Wolfenstein (стіни, небо, підлога) замість вигляду згори</translation>
+        </message>
+        <message>
+            <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
+            <translation>Задати напрямок погляду екземпляра для камери raycast (від першої особи) — незалежно від швидкості руху</translation>
+        </message>
+        <message>
+            <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
+            <translation>Намалювати орієнтовану на північ мінікарту стін кімнати raycast із позначкою, що показує, де камера і куди вона дивиться</translation>
+        </message>
+        <message>
+            <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
+            <translation>Намалювати нижню смугу стану у стилі DOOM (смуга здоров'я + число, рахунок, життя, лічильник цілі та реагуюча на здоров'я іконка обличчя) поверх вигляду raycast</translation>
+        </message>
+        <message>
+            <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
+            <translation>Дає цьому екземпляру кілька кадрів для різних кутів огляду у вигляді raycast, щоб він виглядав як справжній об'єкт зі сторонами, а не як пласка вирізка, коли камера обходить його — кадр зі смуги спрайта вибирається за кутом огляду, а не за часом</translation>
+        </message>
+        <message>
+            <source>Relative</source>
+            <translation>Відносно</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

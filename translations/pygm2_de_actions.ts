@@ -302,6 +302,194 @@ Verwenden Sie stattdessen die Python-Operatoren (and / or / not), z. B. "vspeed 
             <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
             <translation>Macht diese Instanz in der Raycast-Ansicht zu einer STUFE: Die Rasterzellen, die ihr Sprite bedeckt, werden zu erhöhtem Boden dieser Höhe, gezeichnet als Stufe, die der Spieler hinaufsteigen kann (oder als Kante, von der er hinunterspringen kann). Im Create-Ereignis eines nicht soliden Objekts verwenden</translation>
         </message>
+        <message>
+            <source>Enable</source>
+            <translation>Aktivieren</translation>
+        </message>
+        <message>
+            <source>Camera Object</source>
+            <translation>Kameraobjekt</translation>
+        </message>
+        <message>
+            <source>Field of View</source>
+            <translation>Sichtfeld</translation>
+        </message>
+        <message>
+            <source>Render Distance</source>
+            <translation>Sichtweite</translation>
+        </message>
+        <message>
+            <source>Cell Size</source>
+            <translation>Zellgröße</translation>
+        </message>
+        <message>
+            <source>Columns</source>
+            <translation>Spalten</translation>
+        </message>
+        <message>
+            <source>Wall Color</source>
+            <translation>Wandfarbe</translation>
+        </message>
+        <message>
+            <source>Floor Color</source>
+            <translation>Bodenfarbe</translation>
+        </message>
+        <message>
+            <source>Ceiling Color</source>
+            <translation>Deckenfarbe</translation>
+        </message>
+        <message>
+            <source>Wall Texture</source>
+            <translation>Wandtextur</translation>
+        </message>
+        <message>
+            <source>Sky Texture</source>
+            <translation>Himmelstextur</translation>
+        </message>
+        <message>
+            <source>Floor Texture</source>
+            <translation>Bodentextur</translation>
+        </message>
+        <message>
+            <source>Ceiling Texture</source>
+            <translation>Deckentextur</translation>
+        </message>
+        <message>
+            <source>Textured Walls</source>
+            <translation>Texturierte Wände</translation>
+        </message>
+        <message>
+            <source>Floor Detail</source>
+            <translation>Bodendetail</translation>
+        </message>
+        <message>
+            <source>Viewport Height</source>
+            <translation>Ansichtshöhe</translation>
+        </message>
+        <message>
+            <source>Angle</source>
+            <translation>Winkel</translation>
+        </message>
+        <message>
+            <source>Size</source>
+            <translation>Größe</translation>
+        </message>
+        <message>
+            <source>Background Color</source>
+            <translation>Hintergrundfarbe</translation>
+        </message>
+        <message>
+            <source>Player Color</source>
+            <translation>Spielerfarbe</translation>
+        </message>
+        <message>
+            <source>Mark Object</source>
+            <translation>Markiertes Objekt</translation>
+        </message>
+        <message>
+            <source>Mark Color</source>
+            <translation>Markierungsfarbe</translation>
+        </message>
+        <message>
+            <source>Mark Object 2</source>
+            <translation>Markiertes Objekt 2</translation>
+        </message>
+        <message>
+            <source>Mark Color 2</source>
+            <translation>Markierungsfarbe 2</translation>
+        </message>
+        <message>
+            <source>Show Trail</source>
+            <translation>Spur anzeigen</translation>
+        </message>
+        <message>
+            <source>Trail Color</source>
+            <translation>Spurfarbe</translation>
+        </message>
+        <message>
+            <source>Width</source>
+            <translation>Breite</translation>
+        </message>
+        <message>
+            <source>Divider Color</source>
+            <translation>Trennlinienfarbe</translation>
+        </message>
+        <message>
+            <source>Text Color</source>
+            <translation>Textfarbe</translation>
+        </message>
+        <message>
+            <source>Health Label</source>
+            <translation>Gesundheitsbeschriftung</translation>
+        </message>
+        <message>
+            <source>Health Bar Width</source>
+            <translation>Breite der Gesundheitsleiste</translation>
+        </message>
+        <message>
+            <source>Health Bar Height</source>
+            <translation>Höhe der Gesundheitsleiste</translation>
+        </message>
+        <message>
+            <source>Health Bar Color</source>
+            <translation>Farbe der Gesundheitsleiste</translation>
+        </message>
+        <message>
+            <source>Face Sprite</source>
+            <translation>Gesichts-Sprite</translation>
+        </message>
+        <message>
+            <source>Face Frames</source>
+            <translation>Gesichtsbilder</translation>
+        </message>
+        <message>
+            <source>Score Label</source>
+            <translation>Punktebeschriftung</translation>
+        </message>
+        <message>
+            <source>Lives Sprite</source>
+            <translation>Leben-Sprite</translation>
+        </message>
+        <message>
+            <source>Lives Scale</source>
+            <translation>Leben-Skalierung</translation>
+        </message>
+        <message>
+            <source>Objective Value</source>
+            <translation>Zielwert</translation>
+        </message>
+        <message>
+            <source>Objective Label</source>
+            <translation>Zielbeschriftung</translation>
+        </message>
+        <message>
+            <source>Angle Frames</source>
+            <translation>Bilder pro Winkel</translation>
+        </message>
+        <message>
+            <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
+            <translation>Den Raum als First-Person-3D-Ansicht im Doom/Wolfenstein-Stil (Wände, Himmel, Boden) statt als Draufsicht darstellen</translation>
+        </message>
+        <message>
+            <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
+            <translation>Die Blickrichtung der Instanz für eine Raycast-Kamera (First-Person) festlegen — unabhängig von der Bewegungsgeschwindigkeit</translation>
+        </message>
+        <message>
+            <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
+            <translation>Eine nach Norden ausgerichtete Minikarte der Wände des Raycast-Raums zeichnen, mit einer Markierung, die zeigt, wo die Kamera ist und in welche Richtung sie blickt</translation>
+        </message>
+        <message>
+            <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
+            <translation>Eine untere Statusleiste im DOOM-Stil (Gesundheitsbalken + Zahl, Punkte, Leben, ein Zielzähler und ein auf die Gesundheit reagierendes Gesichtssymbol) über der Raycast-Ansicht zeichnen</translation>
+        </message>
+        <message>
+            <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
+            <translation>Gibt dieser Instanz in der Raycast-Ansicht mehrere Bilder für verschiedene Blickwinkel, sodass sie wie ein echtes Objekt mit Seiten aussieht statt wie ein flacher Ausschnitt, wenn die Kamera um sie herumgeht — das Bild aus dem Sprite-Streifen wird nach dem Blickwinkel statt nach der Zeit gewählt</translation>
+        </message>
+        <message>
+            <source>Relative</source>
+            <translation>Relativ</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

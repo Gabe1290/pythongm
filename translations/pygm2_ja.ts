@@ -2323,6 +2323,194 @@ Do you want to save anyway?</source>
         <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
         <translation>このインスタンスをレイキャスト表示の段にします。スプライトが覆うグリッドのセルがこの高さの床になり、プレイヤーが上れる段（または飛び降りられる縁）として描かれます。ソリッドでないオブジェクトの Create イベントで使います</translation>
     </message>
+    <message>
+        <source>Enable</source>
+        <translation>有効にする</translation>
+    </message>
+    <message>
+        <source>Camera Object</source>
+        <translation>カメラのオブジェクト</translation>
+    </message>
+    <message>
+        <source>Field of View</source>
+        <translation>視野角</translation>
+    </message>
+    <message>
+        <source>Render Distance</source>
+        <translation>描画距離</translation>
+    </message>
+    <message>
+        <source>Cell Size</source>
+        <translation>セルのサイズ</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation>列数</translation>
+    </message>
+    <message>
+        <source>Wall Color</source>
+        <translation>壁の色</translation>
+    </message>
+    <message>
+        <source>Floor Color</source>
+        <translation>床の色</translation>
+    </message>
+    <message>
+        <source>Ceiling Color</source>
+        <translation>天井の色</translation>
+    </message>
+    <message>
+        <source>Wall Texture</source>
+        <translation>壁のテクスチャ</translation>
+    </message>
+    <message>
+        <source>Sky Texture</source>
+        <translation>空のテクスチャ</translation>
+    </message>
+    <message>
+        <source>Floor Texture</source>
+        <translation>床のテクスチャ</translation>
+    </message>
+    <message>
+        <source>Ceiling Texture</source>
+        <translation>天井のテクスチャ</translation>
+    </message>
+    <message>
+        <source>Textured Walls</source>
+        <translation>壁にテクスチャ</translation>
+    </message>
+    <message>
+        <source>Floor Detail</source>
+        <translation>床の細かさ</translation>
+    </message>
+    <message>
+        <source>Viewport Height</source>
+        <translation>ビューの高さ</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>角度</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>サイズ</translation>
+    </message>
+    <message>
+        <source>Background Color</source>
+        <translation>背景色</translation>
+    </message>
+    <message>
+        <source>Player Color</source>
+        <translation>プレイヤーの色</translation>
+    </message>
+    <message>
+        <source>Mark Object</source>
+        <translation>印をつけるオブジェクト</translation>
+    </message>
+    <message>
+        <source>Mark Color</source>
+        <translation>印の色</translation>
+    </message>
+    <message>
+        <source>Mark Object 2</source>
+        <translation>印をつけるオブジェクト 2</translation>
+    </message>
+    <message>
+        <source>Mark Color 2</source>
+        <translation>印の色 2</translation>
+    </message>
+    <message>
+        <source>Show Trail</source>
+        <translation>軌跡を表示</translation>
+    </message>
+    <message>
+        <source>Trail Color</source>
+        <translation>軌跡の色</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>幅</translation>
+    </message>
+    <message>
+        <source>Divider Color</source>
+        <translation>区切り線の色</translation>
+    </message>
+    <message>
+        <source>Text Color</source>
+        <translation>文字の色</translation>
+    </message>
+    <message>
+        <source>Health Label</source>
+        <translation>体力のラベル</translation>
+    </message>
+    <message>
+        <source>Health Bar Width</source>
+        <translation>体力バーの幅</translation>
+    </message>
+    <message>
+        <source>Health Bar Height</source>
+        <translation>体力バーの高さ</translation>
+    </message>
+    <message>
+        <source>Health Bar Color</source>
+        <translation>体力バーの色</translation>
+    </message>
+    <message>
+        <source>Face Sprite</source>
+        <translation>顔のスプライト</translation>
+    </message>
+    <message>
+        <source>Face Frames</source>
+        <translation>顔のフレーム数</translation>
+    </message>
+    <message>
+        <source>Score Label</source>
+        <translation>スコアのラベル</translation>
+    </message>
+    <message>
+        <source>Lives Sprite</source>
+        <translation>残機のスプライト</translation>
+    </message>
+    <message>
+        <source>Lives Scale</source>
+        <translation>残機の拡大率</translation>
+    </message>
+    <message>
+        <source>Objective Value</source>
+        <translation>目標の値</translation>
+    </message>
+    <message>
+        <source>Objective Label</source>
+        <translation>目標のラベル</translation>
+    </message>
+    <message>
+        <source>Angle Frames</source>
+        <translation>角度ごとのフレーム数</translation>
+    </message>
+    <message>
+        <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
+        <translation>部屋を上からの表示ではなく、Doom や Wolfenstein のような一人称の 3D 表示（壁、空、床）で描画します</translation>
+    </message>
+    <message>
+        <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
+        <translation>レイキャスト（一人称）カメラのためにインスタンスの向きを設定します。移動速度とは独立しています</translation>
+    </message>
+    <message>
+        <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
+        <translation>レイキャストの部屋の壁を北が上のミニマップに描き、カメラの位置と向きを印で示します</translation>
+    </message>
+    <message>
+        <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
+        <translation>レイキャスト表示の上に、DOOM 風の下部ステータスバー（体力バーと数値、スコア、残機、目標カウンター、体力に応じて変わる顔アイコン）を描きます</translation>
+    </message>
+    <message>
+        <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
+        <translation>レイキャスト表示で、このインスタンスに視点の角度ごとの複数のフレームを持たせ、カメラが周りを回ったときに平らな切り抜きではなく側面のある本物の物体に見えるようにします。スプライトのフレーム列から、時間ではなく見る角度でフレームが選ばれます</translation>
+    </message>
+    <message>
+        <source>Relative</source>
+        <translation>相対</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>

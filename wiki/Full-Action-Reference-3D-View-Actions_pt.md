@@ -182,8 +182,8 @@ Renderizar a sala como uma vista 3D em primeira pessoa no estilo Doom/Wolfenstei
 | `ceiling_texture` | Sprite | — | Sprite projetado no teto quando não há céu; opcional |
 | `wall_textured` | Sim/Não | Sim | Desativado força cores uniformes dos muros mesmo quando há uma textura; opcional |
 | `floor_cast_res` | Número | `4` | Subamostragem do chão projetado (maior = mais rápido + mais grosseiro); opcional |
-| `wall_height` | Número | `1.5` | Altura das paredes e do teto, em células da grelha (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima); opcional |
-| `max_step` | Número | `12` | Degrau mais alto, em píxeis da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede; opcional |
+| `wall_height` | Número | `1.5` | Altura das paredes e do teto, em células da grade (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima); opcional |
+| `max_step` | Número | `12` | Degrau mais alto, em pixels da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede; opcional |
 | `viewport_height` | Número | `0` | Reduz a vista 3D para esta altura em pixels (letterbox), reservando a faixa inferior para uma barra de status no estilo DOOM (0 = altura total da janela, inalterado); opcional |
 
 ### Saltar
@@ -283,7 +283,7 @@ Escolhe qual o bloco selecionado na barra de acesso rápido, com o qual «Coloca
 | **Ícone** | 🔄 |
 | **Categoria** | Vista 3D |
 
-Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmara anda à sua volta — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo
+Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmera anda ao seu redor — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -363,11 +363,11 @@ Definir a direção do olhar da instância para uma câmera raycast (em primeira
 | **Ícone** | 🪜 |
 | **Categoria** | Vista 3D |
 
-Transforma esta instância num DEGRAU na vista raycast: as células da grelha cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido
+Transforma esta instância em um DEGRAU na vista raycast: as células da grade cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `height` | Número | `8` | Altura do chão em píxeis da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão) |
+| `height` | Número | `8` | Altura do chão em pixels da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão) |
 | `top_texture` | Sprite | — | Sprite para o topo do degrau (vazio = a textura do chão); opcional |
 | `side_texture` | Sprite | — | Sprite para a frente do degrau (vazio = a textura das paredes); opcional |
 

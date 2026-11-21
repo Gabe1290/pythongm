@@ -302,6 +302,194 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
             <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
             <translation>Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva njegov sprite, postanejo dvignjena tla te višine, narisana kot stopnica, na katero se igralec lahko povzpne (ali rob, s katerega lahko skoči). Uporabite v dogodku Create netrdnega objekta</translation>
         </message>
+        <message>
+            <source>Enable</source>
+            <translation>Omogoči</translation>
+        </message>
+        <message>
+            <source>Camera Object</source>
+            <translation>Objekt kamere</translation>
+        </message>
+        <message>
+            <source>Field of View</source>
+            <translation>Vidno polje</translation>
+        </message>
+        <message>
+            <source>Render Distance</source>
+            <translation>Razdalja izrisa</translation>
+        </message>
+        <message>
+            <source>Cell Size</source>
+            <translation>Velikost celice</translation>
+        </message>
+        <message>
+            <source>Columns</source>
+            <translation>Stolpci</translation>
+        </message>
+        <message>
+            <source>Wall Color</source>
+            <translation>Barva sten</translation>
+        </message>
+        <message>
+            <source>Floor Color</source>
+            <translation>Barva tal</translation>
+        </message>
+        <message>
+            <source>Ceiling Color</source>
+            <translation>Barva stropa</translation>
+        </message>
+        <message>
+            <source>Wall Texture</source>
+            <translation>Tekstura sten</translation>
+        </message>
+        <message>
+            <source>Sky Texture</source>
+            <translation>Tekstura neba</translation>
+        </message>
+        <message>
+            <source>Floor Texture</source>
+            <translation>Tekstura tal</translation>
+        </message>
+        <message>
+            <source>Ceiling Texture</source>
+            <translation>Tekstura stropa</translation>
+        </message>
+        <message>
+            <source>Textured Walls</source>
+            <translation>Teksturirane stene</translation>
+        </message>
+        <message>
+            <source>Floor Detail</source>
+            <translation>Podrobnost tal</translation>
+        </message>
+        <message>
+            <source>Viewport Height</source>
+            <translation>Višina pogleda</translation>
+        </message>
+        <message>
+            <source>Angle</source>
+            <translation>Kot</translation>
+        </message>
+        <message>
+            <source>Size</source>
+            <translation>Velikost</translation>
+        </message>
+        <message>
+            <source>Background Color</source>
+            <translation>Barva ozadja</translation>
+        </message>
+        <message>
+            <source>Player Color</source>
+            <translation>Barva igralca</translation>
+        </message>
+        <message>
+            <source>Mark Object</source>
+            <translation>Označeni objekt</translation>
+        </message>
+        <message>
+            <source>Mark Color</source>
+            <translation>Barva oznak</translation>
+        </message>
+        <message>
+            <source>Mark Object 2</source>
+            <translation>Označeni objekt 2</translation>
+        </message>
+        <message>
+            <source>Mark Color 2</source>
+            <translation>Barva oznak 2</translation>
+        </message>
+        <message>
+            <source>Show Trail</source>
+            <translation>Pokaži sled</translation>
+        </message>
+        <message>
+            <source>Trail Color</source>
+            <translation>Barva sledi</translation>
+        </message>
+        <message>
+            <source>Width</source>
+            <translation>Širina</translation>
+        </message>
+        <message>
+            <source>Divider Color</source>
+            <translation>Barva ločilne črte</translation>
+        </message>
+        <message>
+            <source>Text Color</source>
+            <translation>Barva besedila</translation>
+        </message>
+        <message>
+            <source>Health Label</source>
+            <translation>Oznaka zdravja</translation>
+        </message>
+        <message>
+            <source>Health Bar Width</source>
+            <translation>Širina vrstice zdravja</translation>
+        </message>
+        <message>
+            <source>Health Bar Height</source>
+            <translation>Višina vrstice zdravja</translation>
+        </message>
+        <message>
+            <source>Health Bar Color</source>
+            <translation>Barva vrstice zdravja</translation>
+        </message>
+        <message>
+            <source>Face Sprite</source>
+            <translation>Sprite obraza</translation>
+        </message>
+        <message>
+            <source>Face Frames</source>
+            <translation>Sličice obraza</translation>
+        </message>
+        <message>
+            <source>Score Label</source>
+            <translation>Oznaka točk</translation>
+        </message>
+        <message>
+            <source>Lives Sprite</source>
+            <translation>Sprite življenj</translation>
+        </message>
+        <message>
+            <source>Lives Scale</source>
+            <translation>Merilo življenj</translation>
+        </message>
+        <message>
+            <source>Objective Value</source>
+            <translation>Vrednost cilja</translation>
+        </message>
+        <message>
+            <source>Objective Label</source>
+            <translation>Oznaka cilja</translation>
+        </message>
+        <message>
+            <source>Angle Frames</source>
+            <translation>Sličice po kotih</translation>
+        </message>
+        <message>
+            <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
+            <translation>Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, tla) namesto pogleda od zgoraj</translation>
+        </message>
+        <message>
+            <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
+            <translation>Nastavi smer pogleda instance za kamero raycast (iz prve osebe) — neodvisno od hitrosti gibanja</translation>
+        </message>
+        <message>
+            <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
+            <translation>Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki prikazuje, kje je kamera in kam je usmerjena</translation>
+        </message>
+        <message>
+            <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
+            <translation>Nariši spodnjo vrstico stanja v slogu DOOM (vrstica zdravja + število, rezultat, življenja, števec cilja in na zdravje odziven obraz) čez pogled raycast</translation>
+        </message>
+        <message>
+            <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
+            <translation>Temu primerku v pogledu raycast da več sličic za različne kote pogleda, da je videti kot pravi predmet s stranicami namesto ploske izrezanke, ko gre kamera okoli njega — sličica iz traku spritea se izbere po kotu pogleda namesto po času</translation>
+        </message>
+        <message>
+            <source>Relative</source>
+            <translation>Relativno</translation>
+        </message>
 </context>
 <context>
     <name>ActionListWidget</name>

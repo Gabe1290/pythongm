@@ -83,3 +83,43 @@ def test_the_action_reference_translates_every_raycast_action():
         table = getattr(ref, "ACTIONS_" + code)
         missing = [n for n in names if not (table.get(n) or {}).get("desc")]
         assert not missing, (code, missing)
+
+
+# Translations that are legitimately the same word as the English source.
+COGNATES = {lang: {"X", "Y"} for lang in SHIPPED}
+COGNATES["fr"] = {"X", "Y", "Angle"}
+
+
+def _all_raycast_dialog_strings():
+    """Every label and description the configure dialog shows for the raycast
+    extension's actions (follow-up F2; Block World's 3D View actions are a
+    separate extension)."""
+    import json
+    from events.plugin_loader import load_all_plugins
+    from events.action_types import ACTION_TYPES
+    load_all_plugins()
+    names = json.loads((ROOT / "extensions" / "raycast_2_5d" / "extension.json")
+                       .read_text(encoding="utf-8"))["provides_actions"]
+    out = []
+    for n in names:
+        a = ACTION_TYPES[n]
+        for s in [a.description] + [p.display_name for p in a.parameters]:
+            if s not in out:
+                out.append(s)
+    return out
+
+
+@pytest.mark.parametrize("lang", SHIPPED)
+def test_every_raycast_dialog_string_resolves(lang):
+    from PySide6.QtCore import QCoreApplication
+    from PySide6.QtWidgets import QApplication
+    from core.language_manager import get_language_manager
+
+    QApplication.instance() or QApplication([])
+    get_language_manager().set_language(lang)
+    strings = _all_raycast_dialog_strings()
+    assert len(strings) > 50
+    unresolved = [s[:40] for s in strings
+                  if QCoreApplication.translate("ActionConfigDialog", s) == s
+                  and s not in COGNATES.get(lang, set())]
+    assert not unresolved, (lang, unresolved)

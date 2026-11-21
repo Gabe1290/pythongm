@@ -4818,14 +4818,14 @@ NOTES_ES.update({
     'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Escalón más alto, en píxeles de la sala, que el jugador (y todo lo que se mueve) puede subir; uno más alto bloquea como un muro',
 })
 ACTIONS_PT.update({
-    'set_floor_height': {'display': 'Definir altura do piso', 'desc': 'Transforma esta instância num DEGRAU na vista raycast: as células da grelha cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido'},
+    'set_floor_height': {'display': 'Definir altura do piso', 'desc': 'Transforma esta instância em um DEGRAU na vista raycast: as células da grade cobertas pelo seu sprite tornam-se chão elevado com esta altura, desenhado como um degrau que o jogador pode subir (ou uma borda de onde descer). Usar no evento Create de um objeto não sólido'},
 })
 NOTES_PT.update({
-    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Altura do chão em píxeis da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão)',
+    'Floor height in room pixels, the same unit as x/y and Cell Size (0 = ground level)': 'Altura do chão em pixels da sala, a mesma unidade que x/y e Cell Size (0 = nível do chão)',
     'Sprite for the top of the step (blank = the floor texture)': 'Sprite para o topo do degrau (vazio = a textura do chão)',
     'Sprite for the front of the step (blank = the wall texture)': 'Sprite para a frente do degrau (vazio = a textura das paredes)',
-    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Altura das paredes e do teto, em células da grelha (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima)',
-    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Degrau mais alto, em píxeis da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede',
+    'Height of the walls and ceiling, in grid cells (1.5 = usual; raise it to 3 for stairs and platforms, so there is headroom above them)': 'Altura das paredes e do teto, em células da grade (1.5 = o habitual; suba para 3 para escadas e plataformas, para haver espaço por cima)',
+    'Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall': 'Degrau mais alto, em pixels da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede',
 })
 ACTIONS_SL.update({
     'set_floor_height': {'display': 'Nastavi višino tal', 'desc': 'Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva njegov sprite, postanejo dvignjena tla te višine, narisana kot stopnica, na katero se igralec lahko povzpne (ali rob, s katerega lahko skoči). Uporabite v dogodku Create netrdnega objekta'},
@@ -4865,7 +4865,7 @@ ACTIONS_ES.update({
 })
 NOTES_ES.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Cuántas vistas espaciadas por igual contiene la tira de imágenes del sprite, la vista frontal primero (0 = desactivado, se usa la imagen animada normal)'})
 ACTIONS_PT.update({
-    'set_billboard_rotation': {'display': 'Definir rotação do sprite', 'desc': 'Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmara anda à sua volta — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo'},
+    'set_billboard_rotation': {'display': 'Definir rotação do sprite', 'desc': 'Dá a esta instância várias imagens conforme o ângulo de visão na vista raycast, para que pareça um objeto real com lados em vez de um recorte plano quando a câmera anda ao seu redor — a imagem da tira do sprite é escolhida pelo ângulo de visão e não pelo tempo'},
 })
 NOTES_PT.update({"How many equally-spaced views the sprite's frame strip holds, front view first (0 = off, use the normal animated frame instead)": 'Quantas vistas igualmente espaçadas a tira de imagens do sprite contém, a vista de frente primeiro (0 = desligado, usa-se a imagem animada normal)'})
 ACTIONS_SL.update({

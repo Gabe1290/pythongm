@@ -2147,6 +2147,194 @@ Do you want to save anyway?</source>
         <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
         <translation>让此实例成为光线投射视图中的台阶：其精灵覆盖的网格单元变为该高度的抬高地面，绘制成玩家可以登上的台阶（或可以跳下的边缘）。在非实心对象的 Create 事件中使用</translation>
     </message>
+    <message>
+        <source>Enable</source>
+        <translation>启用</translation>
+    </message>
+    <message>
+        <source>Camera Object</source>
+        <translation>摄像机对象</translation>
+    </message>
+    <message>
+        <source>Field of View</source>
+        <translation>视野</translation>
+    </message>
+    <message>
+        <source>Render Distance</source>
+        <translation>渲染距离</translation>
+    </message>
+    <message>
+        <source>Cell Size</source>
+        <translation>单元格大小</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation>列数</translation>
+    </message>
+    <message>
+        <source>Wall Color</source>
+        <translation>墙壁颜色</translation>
+    </message>
+    <message>
+        <source>Floor Color</source>
+        <translation>地面颜色</translation>
+    </message>
+    <message>
+        <source>Ceiling Color</source>
+        <translation>天花板颜色</translation>
+    </message>
+    <message>
+        <source>Wall Texture</source>
+        <translation>墙壁纹理</translation>
+    </message>
+    <message>
+        <source>Sky Texture</source>
+        <translation>天空纹理</translation>
+    </message>
+    <message>
+        <source>Floor Texture</source>
+        <translation>地面纹理</translation>
+    </message>
+    <message>
+        <source>Ceiling Texture</source>
+        <translation>天花板纹理</translation>
+    </message>
+    <message>
+        <source>Textured Walls</source>
+        <translation>墙壁使用纹理</translation>
+    </message>
+    <message>
+        <source>Floor Detail</source>
+        <translation>地面细节</translation>
+    </message>
+    <message>
+        <source>Viewport Height</source>
+        <translation>视口高度</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>角度</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>大小</translation>
+    </message>
+    <message>
+        <source>Background Color</source>
+        <translation>背景颜色</translation>
+    </message>
+    <message>
+        <source>Player Color</source>
+        <translation>玩家颜色</translation>
+    </message>
+    <message>
+        <source>Mark Object</source>
+        <translation>标记对象</translation>
+    </message>
+    <message>
+        <source>Mark Color</source>
+        <translation>标记颜色</translation>
+    </message>
+    <message>
+        <source>Mark Object 2</source>
+        <translation>标记对象 2</translation>
+    </message>
+    <message>
+        <source>Mark Color 2</source>
+        <translation>标记颜色 2</translation>
+    </message>
+    <message>
+        <source>Show Trail</source>
+        <translation>显示轨迹</translation>
+    </message>
+    <message>
+        <source>Trail Color</source>
+        <translation>轨迹颜色</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>宽度</translation>
+    </message>
+    <message>
+        <source>Divider Color</source>
+        <translation>分隔线颜色</translation>
+    </message>
+    <message>
+        <source>Text Color</source>
+        <translation>文字颜色</translation>
+    </message>
+    <message>
+        <source>Health Label</source>
+        <translation>生命值标签</translation>
+    </message>
+    <message>
+        <source>Health Bar Width</source>
+        <translation>生命值条宽度</translation>
+    </message>
+    <message>
+        <source>Health Bar Height</source>
+        <translation>生命值条高度</translation>
+    </message>
+    <message>
+        <source>Health Bar Color</source>
+        <translation>生命值条颜色</translation>
+    </message>
+    <message>
+        <source>Face Sprite</source>
+        <translation>脸部精灵</translation>
+    </message>
+    <message>
+        <source>Face Frames</source>
+        <translation>脸部帧数</translation>
+    </message>
+    <message>
+        <source>Score Label</source>
+        <translation>分数标签</translation>
+    </message>
+    <message>
+        <source>Lives Sprite</source>
+        <translation>生命精灵</translation>
+    </message>
+    <message>
+        <source>Lives Scale</source>
+        <translation>生命缩放</translation>
+    </message>
+    <message>
+        <source>Objective Value</source>
+        <translation>目标值</translation>
+    </message>
+    <message>
+        <source>Objective Label</source>
+        <translation>目标标签</translation>
+    </message>
+    <message>
+        <source>Angle Frames</source>
+        <translation>每个角度的帧数</translation>
+    </message>
+    <message>
+        <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
+        <translation>以 Doom/Wolfenstein 风格的第一人称 3D 视图（墙壁、天空、地面）而不是俯视图来绘制房间</translation>
+    </message>
+    <message>
+        <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
+        <translation>为光线投射（第一人称）摄像机设置实例的观察方向——与移动速度无关</translation>
+    </message>
+    <message>
+        <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
+        <translation>绘制光线投射房间墙壁的北向上小地图，并用标记显示摄像机的位置和朝向</translation>
+    </message>
+    <message>
+        <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
+        <translation>在光线投射视图上绘制 DOOM 风格的底部状态栏（生命值条和数字、分数、生命数、目标计数器，以及随生命值变化的脸部图标）</translation>
+    </message>
+    <message>
+        <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
+        <translation>在光线投射视图中，为此实例提供按观察角度区分的多个帧，使摄像机绕着它走时它看起来像一个有侧面的真实物体，而不是一张平面剪影——精灵帧条中的帧按观察角度而不是按时间选择</translation>
+    </message>
+    <message>
+        <source>Relative</source>
+        <translation>相对</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
