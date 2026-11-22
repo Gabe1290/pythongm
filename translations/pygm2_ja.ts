@@ -9791,4 +9791,57 @@ Adds about 15-20 MB to the exported file. Needs internet once now, to download a
         <translation>🪟 フロート</translation>
     </message>
 </context>
+<context>
+    <name>ActionParametersFormatter</name>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>with: {0}</source>
+        <translation>相手: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>at: ({0}, {1})</source>
+        <translation>位置: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>then: {0}, else: {1}</source>
+        <translation>なら: {0}, そうでなければ: {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>push {0}? then: {1}, else: {2}</source>
+        <translation>{0} を押す? なら: {1}, そうでなければ: {2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>target: {0}</source>
+        <translation>対象: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>no check</source>
+        <translation>確認なし</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>to: ({0}, {1})</source>
+        <translation>移動先: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>smooth</source>
+        <translation>なめらか</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translation]</source>
+        <translation>[翻訳 {0} 件]</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translations]</source>
+        <translation>[翻訳 {0} 件]</translation>
+    </message>
+</context>
 </TS>

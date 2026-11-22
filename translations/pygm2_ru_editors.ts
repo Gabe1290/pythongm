@@ -3297,4 +3297,57 @@ Right-click on {1} and add the action there instead.</source>
         <translation>🪟 Отсоединить</translation>
     </message>
 </context>
+<context>
+    <name>ActionParametersFormatter</name>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>with: {0}</source>
+        <translation>с: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>at: ({0}, {1})</source>
+        <translation>в: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>then: {0}, else: {1}</source>
+        <translation>тогда: {0}, иначе: {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>push {0}? then: {1}, else: {2}</source>
+        <translation>толкнуть {0}? тогда: {1}, иначе: {2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>target: {0}</source>
+        <translation>цель: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>no check</source>
+        <translation>без проверки</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>to: ({0}, {1})</source>
+        <translation>к: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>smooth</source>
+        <translation>плавно</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translation]</source>
+        <translation>[{0} перевод]</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translations]</source>
+        <translation>[переводов: {0}]</translation>
+    </message>
+</context>
 </TS>

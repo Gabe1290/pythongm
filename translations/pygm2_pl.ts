@@ -9986,4 +9986,57 @@ Czy otworzyć folder wyjściowy?</translation>
         <translation>🪟 Odłącz</translation>
     </message>
 </context>
+<context>
+    <name>ActionParametersFormatter</name>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>with: {0}</source>
+        <translation>z: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>at: ({0}, {1})</source>
+        <translation>w: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>then: {0}, else: {1}</source>
+        <translation>wtedy: {0}, w przeciwnym razie: {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>push {0}? then: {1}, else: {2}</source>
+        <translation>pchnąć {0}? wtedy: {1}, w przeciwnym razie: {2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>target: {0}</source>
+        <translation>cel: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>no check</source>
+        <translation>bez sprawdzania</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>to: ({0}, {1})</source>
+        <translation>do: ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>smooth</source>
+        <translation>płynnie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translation]</source>
+        <translation>[{0} tłumaczenie]</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_actions_formatter.py" line="0"/>
+        <source>[{0} translations]</source>
+        <translation>[tłumaczenia: {0}]</translation>
+    </message>
+</context>
 </TS>
