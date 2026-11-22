@@ -1003,8 +1003,12 @@ day: pl, pt, ja and zh have no entry at all in `CATEGORY_TRANSLATIONS` /
 blocks) is English** -- the Blockly workspace itself (`blockly_i18n.js`) is a separate table.
 **FIXED 2026-11-22** (`docs/BLOCKLY_DIALOG_I18N_2026-11-22.md`): `config/blockly_block_i18n_{pl,pt,ja,zh}.py`,
 merged via `MODULE_LANGUAGES`; the guard covers all eleven languages and builds the real dialog
-in each. Not done: Thymio's own Configure dialog tables (`extensions/thymio/blockly_categories.py`)
-have category names in 7 languages and no block names at all.
+in each. Thymio's own Configure dialog: its 8 category names now exist in all eleven languages
+(2026-11-22, `tests/test_thymio_block_category_i18n.py`). **Its 42 block names stay English on
+purpose:** the Thymio Blockly blocks are hard-coded English in `blockly_blocks.js` (no i18n hook)
+and the Thymio actions/events are English in the IDE (the French activity sheets rely on it), so
+translating the names only in the dialog would make it disagree with the workspace. Doing it
+properly means translating the workspace blocks too -- a separate, larger job.
 Original note: 32 more blocks lack a
 translation, but inside categories whose own label IS already translated
 (so the dialog mostly reads correctly, just a handful of individual block
