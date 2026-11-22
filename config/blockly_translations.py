@@ -718,7 +718,7 @@ for _type, (_names, _descs) in _MORE_BLOCKS.items():
 # Languages kept in their own modules (config/blockly_block_i18n_<lang>.py):
 # CATEGORIES = {category: text}, BLOCKS = {block_type: (name, description)}.
 # docs/BLOCKLY_DIALOG_I18N_2026-11-22.md.
-MODULE_LANGUAGES = ("pl", "pt")
+MODULE_LANGUAGES = ("pl", "pt", "ja")
 
 
 def _merge_language_modules():
