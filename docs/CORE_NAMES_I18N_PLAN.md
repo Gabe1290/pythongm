@@ -133,9 +133,18 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   `core.ui_names` loads them on first lookup -- no registration step. The D1 French choices are applied
   in U2, after the byte-identity proof. Plain imports, not importlib, so a frozen IDE bundles them.
   Guard: `tests/test_core_ui_names.py`.
-- [ ] **U2 — The wiki reads them.** `tools/gen_action_reference.py` takes names, descriptions, notes and
+- [x] **U2 — The wiki reads them.** `tools/gen_action_reference.py` takes names, descriptions, notes and
   categories from `config/ui_names`; regenerate all nine languages; **byte-identical** wiki output is
   the proof; delete the now-duplicated tables from `action_ref_i18n.py` (its page chrome stays).
+  *Done 2026-11-22:* `tools/action_ref_i18n.py` no longer holds names (4,434 → ~560 lines): its
+  `ACTIONS_<LANG>` / `NOTES_` / `CATEGORIES_` / `EVENTS_` are views built from `config/ui_names`, so both
+  wiki generators (`gen_action_reference.py`, `gen_preset_docs.py`) follow automatically. Proof: both
+  regenerated all nine languages **byte-identical** to the committed wiki, with identical "untranslated"
+  reports. Then D1: French *Set Network Mode (v1)* → « Définir le mode réseau (v1) » (one wiki page
+  changes). **Correction to D1:** « Activer la vue 2.5 D » was *not* applied — the French Blockly block
+  and the raycast handouts (11, 12, 14) all say « Activer la vue Raycast », so the wiki's wording stays
+  and the `.ts` one goes. Found for U4: `config/blockly_generated_block_i18n.py` already holds 119
+  French parameter labels (`PARAM_LABEL_TRANSLATIONS`) for the generated Blockly blocks -- reuse them.
 - [ ] **U3 — Show it.** One helper (`ui_name`, then `tr()`, then English — the `_name` pattern of
   `gm80_action_dialog.py`) at every U0 display site; choice combos show the translation with the
   English value as item data, select by data, save the data. Real-widget tests in French and Japanese

@@ -229,7 +229,7 @@ Stage a message of your own, delivered the same way "Set a Shared Variable (File
 | `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
 | `target` | Choix | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Choix: `all`, `host` |
 
-### Set Network Mode (v1)
+### Définir le mode réseau (v1)
 
 | Propriété | Valeur |
 |----------|-------|

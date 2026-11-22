@@ -120,7 +120,7 @@ NAMES = {
         'set_instance_owner': "Définir le propriétaire de l'instance",
         'set_lives': 'Définir les vies',
         'set_look_pitch': 'Regarder en haut / en bas',
-        'set_network_mode': 'Set Network Mode (v1)',
+        'set_network_mode': 'Définir le mode réseau (v1)',
         'set_room_caption': 'Définir le titre de la salle',
         'set_room_persistent': 'Définir la persistance de la salle',
         'set_room_speed': 'Définir la vitesse de la salle',
