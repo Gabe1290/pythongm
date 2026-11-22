@@ -68,7 +68,7 @@ sys.path.insert(0, str(ROOT))
 import pygame  # noqa: E402
 from runtime.game_runner import GameRunner  # noqa: E402
 
-SAMPLES = ["block_world_1", "block_world_2"]
+SAMPLES = ["block_world_1", "block_world_2", "block_world_3"]
 WARMUP = 15
 TARGET_FPS = 30
 

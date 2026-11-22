@@ -1,7 +1,8 @@
 """The three Block World renderers must agree on how many columns to cast.
 
-`columns` is the picture-quality/speed dial, and neither bundled sample sets
-it, so all three targets fall back to their own hardcoded default. Those
+`columns` is the picture-quality/speed dial. The bundled samples set it
+explicitly (128, with render_distance 8, since 2026-11-22), but any project that
+leaves it blank falls back to each target's own hardcoded default. Those
 defaults are three separate literals in three hand-written renderers (desktop
 Python, `export_html5.js`, `export_kivy.py`) -- exactly the shape of divergence
 this repo keeps finding, where an exported game quietly renders at a different

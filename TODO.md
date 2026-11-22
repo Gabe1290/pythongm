@@ -1273,9 +1273,10 @@ rough order of value:
 ### Block World renderer — occlusion culling for the first-person view (DONE 2026-08-21, partial)
 **2026-11-22: block_world_1 WALKING now meets 30 fps** (13-14 -> ~32.7 fps on this machine,
 pixel-identical; `docs/BLOCK_WORLD_PERF_PLAN.md` top section): a wall right in front of the
-camera was scaled to ~133,000 px for a 480 px window. Still under target on this machine:
-block_world_2 (~17-18 fps) and block_world_1 standing still (~25 fps), bound by per-strip
-Python (plan Phase 2). The notes below are the history.
+camera was scaled to ~133,000 px for a 480 px window. **All three samples now meet 30 fps**
+(2026-11-22): at the owner's request their Enable Block World View uses render_distance 8 and
+columns 128 (a smaller, hazier view; numbers in `docs/BLOCK_WORLD_PERF_PLAN.md`). Faster
+without changing the picture would need a renderer rewrite. The notes below are the history.
 
 - Investigated after a report that movement in the bundled block_world
   samples "feels quite slow." Measured, not assumed: `block_world_1` ran at

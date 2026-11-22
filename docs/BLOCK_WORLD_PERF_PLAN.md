@@ -183,6 +183,14 @@ Distance 8 + 128 columns meets 30 fps everywhere. The cost is visible: in block_
 platform is narrower and hazier and the stone layer behind it fades into the fog (no hard edge --
 Phase 1's fog hides the cut). It is a two-number change in each sample's Enable Block World View.
 
+**APPLIED 2026-11-22 at the owner's request, to all three bundled samples** (block_world_3 too, for
+consistency): render_distance 8, columns 128. Same-sitting A/B: block_world_1 26.6/23.8 ->
+36.6/34.4 static, 34.8/31.8 -> 46.5/43.9 walking; block_world_2 19.0/16.2 -> 32.0/31.6 static,
+18.2/17.0 -> 33.6/31.6 walking; block_world_3 25.9/23.7 -> ~38 static, 28.6/25.6 -> ~40 walking.
+A final run puts every case over 30 fps (block_world_2 walking the tightest, 30.0). The harness
+now measures block_world_3 as well. The renderer defaults (160 columns, distance 10) are unchanged,
+so a project that does not set them behaves as before.
+
 
 
 Measured with a spike against `block_world_2`'s real shape (9,000 strips, 4px
