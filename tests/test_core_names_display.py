@@ -125,3 +125,33 @@ def test_english_is_unchanged(lang):
         assert "Move Grid" in d.windowTitle()
     finally:
         d.deleteLater()
+
+
+def test_the_dialog_and_panel_in_japanese(lang):
+    """U6: a language with no wiki edition still gets names, labels and translated choices."""
+    from editors.object_editor.events import ObjectEventsPanel
+    from PySide6.QtWidgets import QLabel
+    lang("ja")
+    d = _dialog("move_grid", {"direction": "right"})
+    panel = ObjectEventsPanel()
+    try:
+        assert "グリッドで移動" in d.windowTitle()
+        labels = [w.text() for w in d.findChildren(QLabel)]
+        assert any("方向" in t for t in labels), labels
+        combo = d.param_widgets["direction"]
+        assert combo.currentText() == "右" and d.get_parameter_values()["direction"] == "right"
+        from PySide6.QtWidgets import QApplication
+        d.show()
+        QApplication.processEvents()
+        for label in d.findChildren(QLabel):           # laid out for real: nothing clipped
+            if label.text() and not label.wordWrap() and label.isVisible():
+                assert label.width() >= label.sizeHint().width(), label.text()
+        d.hide()
+        panel.current_events_data = {"create": {"actions": [{"action": "set_hspeed", "parameters": {"speed": 4}}]}}
+        panel.refresh_events_display()
+        top = panel.events_tree.topLevelItem(0)
+        assert "作成" in top.text(0), top.text(0)
+        assert "横の速さを設定" in top.child(0).text(0), top.child(0).text(0)
+    finally:
+        d.deleteLater()
+        panel.deleteLater()

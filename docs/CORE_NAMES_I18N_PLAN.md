@@ -193,7 +193,13 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   guard requires them only for the wiki languages (`WIKI_LANGUAGES`, pinned to the generator's list),
   which removes ~345 strings each from U5–U7. If the dialog ever shows them (tooltips), or a wiki
   edition is added, they become needed.
-- [ ] **U6 — Japanese.** Same; check widths in the configure dialog (the junior-theme clipping test).
+- [x] **U6 — Japanese.** Same; check widths in the configure dialog (the junior-theme clipping test).
+  *Done 2026-11-22* (`af505bdc` + this commit): 72 action names from the Japanese Blockly blocks, 48
+  from the `.ts` (its « 相手 », "the other instance", for the *Other* category was not used), the rest
+  new; descriptions in the polite 〜します style the existing ones use; no parameter descriptions (see
+  U5). Widget check in `test_core_names_display.py::test_the_dialog_and_panel_in_japanese`: title,
+  label, a translated choice saved in English, the panel tree, and no label clipped once the dialog is
+  laid out.
 - [ ] **U7 — Chinese.** Same.
 - [ ] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
   the names their language's IDE now shows (wiki pages, tutorials, handouts), PDFs/ODTs regenerated
