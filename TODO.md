@@ -45,19 +45,30 @@ initialised when the other two tabs were removed, and the Preferences
 dialog is now capped at 75% of the IDE window height.
 
 **Still open from this work:**
-- A systematic screenshot pass for the bigger default font clipping
-  hardcoded-pixel dialog layouts (the user has opened the junior edition
-  and found two issues, both fixed, but only Preferences and the object
-  editor have been looked at).
+- ~~A systematic screenshot pass for the bigger default font clipping
+  hardcoded-pixel dialog layouts~~ **DONE 2026-11-22**: every dialog a junior
+  user reaches, plus the action form of every action, built at the junior
+  theme + 13 pt on a 1366x768 screen in EN and FR, with a mechanical check
+  that no text widget is smaller than its text. Fixed: Create (fixed 400x150,
+  unreadable), Rename (fixed 400x180), the If-condition editor (opened at 2/3
+  of the screen height, rows crushed), the Show Message "Translations..." and
+  If Can Push "Configure..." buttons (capped at 120 px), the Preferences
+  "Browse..." button, the French Tutorials line
+  (`tests/test_junior_dialog_clipping.py`). Not junior, left: the Block World /
+  raycast / particle action forms are 850-900 px tall, taller than a 768 px
+  laptop screen (they could use a scroll area).
 - The object editor's left "Standard" events panel is still shown in
   junior; deliberately left for now (user decision 2026-10-16).
-- The new Assets > Create Sprite menu entry is translated only in fr and
-  pl; de/es/it/pt/ru/sl/uk/ja/zh show it in English (the "Name Already
-  Used" dialog text is untranslated everywhere).
+- ~~The new Assets > Create Sprite menu entry is translated only in fr and
+  pl~~ -- fixed 2026-11-21 with the mixin translations (all eleven languages).
 - Junior handout/guide wiki pages exist in EN + FR only; the other seven
   wiki languages have none.
 - Waiting on the user's review of `docs/junior/*.odt`, then fold edits
   back into the `.md` sources (`docs/TUTORIAL_HANDOUT_WORKFLOW.md`).
+  Checked 2026-11-22: the only committed hand edit (`fe1d7ff9`,
+  `lessons/maze2/student.fr.odt`) changed layout only -- its text is identical
+  to the draft before it -- and that page-split problem was then fixed in the
+  generator (`9b761d86`), so nothing is waiting to be folded back.
 
 (Thread B, the Blockly tutorial-wording audit,
 `docs/TUTORIAL_BLOCKLY_WORDING_AUDIT_2026-10-16.md`, closed the same

@@ -48,6 +48,7 @@ class TutorialDialog(QDialog):
 
         # Instructions
         instructions = QLabel(self.tr("Select a tutorial and click Open (or double-click):"))
+        instructions.setWordWrap(True)          # the French line is wider than the dialog at 13 pt
         layout.addWidget(instructions)
 
         # Tutorial list

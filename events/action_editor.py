@@ -212,7 +212,6 @@ class ActionConfigDialog(QDialog):
                 has_configurable = any(get_action_type(c) for c in (param.choices or []) if c and c != "none")
                 if has_configurable:
                     config_btn = QPushButton(self.tr("⚙️ Configure..."))
-                    config_btn.setMaximumWidth(120)
                     config_btn.clicked.connect(
                         lambda checked, p=param.name, w=widget: self.configure_nested_action(p, w.currentText())
                     )
@@ -465,7 +464,6 @@ class ActionConfigDialog(QDialog):
             # Add "Translations..." button for message string parameters
             if param.param_type == "string" and param.name == "message":
                 trans_btn = QPushButton(self.tr("Translations..."))
-                trans_btn.setMaximumWidth(120)
                 trans_btn.setToolTip(self.tr("Add translations for different languages"))
                 trans_btn.clicked.connect(
                     lambda checked, p=param.name: self.edit_translations(p)

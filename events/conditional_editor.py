@@ -88,6 +88,19 @@ class ConditionalActionEditor(QDialog):
 
         self.setup_ui()
         self.load_current_values()
+        self._fit_to_screen()
+
+    def _fit_to_screen(self):
+        """Open tall enough for the controls (the condition area keeps room for its tallest page).
+
+        Left alone, Qt opens a window at most 2/3 of the screen high: 512 px on a 768 px school laptop, below
+        what this dialog needs at the junior 13 pt font, so the Object/Count rows were crushed unreadable. An
+        explicit size skips that rule; it is capped at 90% of the screen so the dialog still fits."""
+        screen = self.screen()
+        avail = screen.availableGeometry().height() if screen is not None else 768
+        height = min(self.sizeHint().height(), int(avail * 0.9))
+        self.setMinimumHeight(min(self.minimumSizeHint().height(), height))
+        self.resize(max(self.width(), self.minimumWidth()), height)
 
     def setup_ui(self):
         """Setup the dialog UI"""

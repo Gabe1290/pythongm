@@ -6,7 +6,7 @@ UI dialogs for asset management operations
 
 from pathlib import Path
 
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QLayout,
                                QPushButton, QLabel, QMessageBox, QListWidget,
                                QListWidgetItem, QTreeWidget, QTreeWidgetItem,
                                QTableWidget, QTableWidgetItem, QHeaderView,
@@ -30,10 +30,12 @@ class AssetRenameDialog(QDialog):
     def setup_ui(self):
         """Setup the rename dialog UI"""
         self.setWindowTitle(self.tr("Rename {0}").format(self.asset_type.title()))
-        self.setFixedSize(400, 180)
         self.setModal(True)
 
         layout = QVBoxLayout(self)
+        # Sized by its contents, not a fixed 400x180: at the junior 13 pt font the
+        # fixed size crushed the name field and the buttons (2026-11-22).
+        layout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
         layout.setSpacing(12)
         layout.setContentsMargins(20, 20, 20, 20)
 
@@ -46,6 +48,7 @@ class AssetRenameDialog(QDialog):
         layout.addWidget(name_label)
 
         self.name_edit = QLineEdit()
+        self.name_edit.setMinimumWidth(360)
         self.name_edit.setText(self.current_name)
         self.name_edit.selectAll()
         self.name_edit.setFocus()
@@ -399,10 +402,12 @@ class CreateAssetDialog(QDialog):
     def setup_ui(self):
         """Setup the create asset dialog UI"""
         self.setWindowTitle(self.tr("Create {0}").format(self.asset_type.title()))
-        self.setFixedSize(400, 150)
         self.setModal(True)
 
         layout = QVBoxLayout(self)
+        # Sized by its contents, not a fixed 400x150: at the junior 13 pt font the
+        # title, the name field and the button labels were cut off (2026-11-22).
+        layout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
 
@@ -415,6 +420,7 @@ class CreateAssetDialog(QDialog):
         layout.addWidget(name_label)
 
         self.name_edit = QLineEdit()
+        self.name_edit.setMinimumWidth(360)
         self.name_edit.setPlaceholderText(self.tr("Enter {0} name...").format(self.asset_type))
         self.name_edit.setFocus()
         layout.addWidget(self.name_edit)

@@ -227,8 +227,10 @@ class PreferencesDialog(QDialog):
 
         projects_dir_layout = QHBoxLayout()
         self.projects_dir_edit = QLineEdit()
-        self.projects_dir_edit.setMinimumWidth(300)
+        self.projects_dir_edit.setMinimumWidth(200)
         self.projects_dir_btn = QPushButton(self.tr("Browse..."))
+        # Never narrower than its label (at the junior 13 pt font a 300 px field left it cut off).
+        self.projects_dir_btn.setMinimumWidth(self.projects_dir_btn.sizeHint().width())
         projects_dir_layout.addWidget(self.projects_dir_edit)
         projects_dir_layout.addWidget(self.projects_dir_btn)
 
