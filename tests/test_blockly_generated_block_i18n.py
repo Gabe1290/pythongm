@@ -51,9 +51,10 @@ def test_lookup_functions_fall_back_to_english():
     assert get_translated_action_display_name("bounce", "en", "Bounce") == "Bounce"
     assert get_translated_action_description("bounce", "en", "Bounce off") == "Bounce off"
     assert get_translated_param_label("Speed", "en") == "Speed"
-    # An untranslated language (not yet added) falls back too, same as 'en'.
-    assert get_translated_action_display_name("bounce", "de", "Bounce") == "Bounce"
-    assert get_translated_param_label("Speed", "de") == "Speed"
+    # A language whose Blockly workspace is not translated (Spanish: the hand-written blocks are
+    # English) keeps generated blocks English too, rather than mixing two languages.
+    assert get_translated_action_display_name("bounce", "es", "Bounce") == "Bounce"
+    assert get_translated_param_label("Speed", "es") == "Speed"
     # An unknown label (typo, or a label this table never covered) is
     # returned unchanged rather than raising.
     assert get_translated_param_label("Something Unmapped", "fr") == "Something Unmapped"
@@ -146,9 +147,8 @@ def test_register_custom_blocks_keeps_english_when_english_is_active(_qapp):
 
 
 def test_register_custom_blocks_untranslated_language_falls_back_to_english(_qapp):
-    """A language with no entry in this table yet (e.g. German, logged as
-    a follow-up in TODO.md) must render the same raw English it did before
-    this fix -- never a KeyError, never a blank label."""
+    """A language whose Blockly workspace is not translated (Spanish) renders generated blocks in
+    the same raw English as its hand-written ones -- never a KeyError, never a blank label."""
     from events.plugin_loader import load_all_plugins
     load_all_plugins()
     from core.language_manager import get_language_manager
@@ -160,7 +160,7 @@ def test_register_custom_blocks_untranslated_language_falls_back_to_english(_qap
 
     manager = get_language_manager()
     previous_language = manager.get_current_language()
-    manager.set_language("de")
+    manager.set_language("es")
     ide = _IDE()
     widget = BlocklyWidget(ide)
     try:
@@ -199,7 +199,52 @@ def test_hand_written_blocks_are_unaffected_by_this_change(_qapp):
     try:
         defs = _captured_action_defs(widget)
         assert "if_condition" in defs
-        assert defs["if_condition"]["display_name"] == ACTION_TYPES["if_condition"].display_name
+        # JS skips any action that already has a hand-written block, so this label is never shown;
+        # since the panel-name fallback (fr/pl/de/it/uk) it is simply the panel's own name.
+        from config.ui_names import language_table
+        assert defs["if_condition"]["display_name"] in (
+            ACTION_TYPES["if_condition"].display_name, language_table("fr")["core.action"]["if_condition"])
     finally:
         dispose_qt_widget(widget)
         manager.set_language(previous_language)
+
+
+def test_translated_workspaces_fall_back_to_the_panel_names():
+    """fr/pl/de/it/uk: a generated block with no Blockly-specific entry takes the events panel's name
+    (config/ui_names), so the block and the panel agree (docs/CORE_NAMES_I18N_PLAN.md follow-up)."""
+    from config.ui_names import language_table
+    from config.blockly_generated_block_i18n import BLOCKLY_WORKSPACE_LANGUAGES
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    assert set(BLOCKLY_WORKSPACE_LANGUAGES) == {"fr", "pl", "de", "it", "uk"}
+    for lang in BLOCKLY_WORKSPACE_LANGUAGES:
+        table = language_table(lang)
+        assert get_translated_action_display_name("bounce", lang, "Bounce") != "Bounce", lang
+        assert get_translated_param_label("Wall Texture", lang) == table["core.param"]["Wall Texture"], lang
+        assert get_translated_action_display_name("enable_raycast_view", lang, "Enable Raycast View") \
+            == table["core.action"]["enable_raycast_view"], lang
+    # a Blockly-specific entry still wins over the panel name
+    assert get_translated_action_display_name("bounce", "fr", "Bounce") == "Rebondir"
+    assert get_translated_action_display_name("bounce", "de", "Bounce") == language_table("de")["core.action"]["bounce"]
+
+
+def test_every_generated_block_is_translated_in_every_translated_workspace():
+    """No generated core block (or its fields) left English in fr/pl/de/it/uk."""
+    from config.ui_names import language_table
+    from config.blockly_generated_block_i18n import BLOCKLY_WORKSPACE_LANGUAGES
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    for lang in BLOCKLY_WORKSPACE_LANGUAGES:
+        missing = []
+        for name in GENERATED_ACTION_NAMES:
+            a = ACTION_TYPES[name]
+            if a.category == "micro:bit":
+                continue
+            table = language_table(lang)
+            if name not in ACTION_TRANSLATIONS and name not in table.get("core.action", {}):
+                missing.append(name)
+            for p in a.parameters or []:
+                if (p.display_name not in PARAM_LABEL_TRANSLATIONS.get(lang, {})
+                        and p.display_name not in table.get("core.param", {})):
+                    missing.append(f"{name}.{p.display_name}")
+        assert not missing, (lang, missing[:10])

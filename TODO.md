@@ -927,7 +927,13 @@ every action name, menu path and those steps, but the lessons themselves were no
 current curriculum. Re-translating them from the current English lessons is the real fix (Portuguese
 was done that way in 2026-08).
 
-### Blockly generated blocks stay English where the workspace is translated (found 2026-11-22)
+### ~~Blockly generated blocks stay English where the workspace is translated~~ (DONE 2026-11-22)
+
+**Done:** `config/blockly_generated_block_i18n.py` falls back to `config/ui_names` for fr / pl / de / it / uk
+(`BLOCKLY_WORKSPACE_LANGUAGES`), names and field labels; the French Blockly lessons, French handouts and
+German lesson 09 were converted to match. The visual-programming wiki pages were left alone: they discuss
+which blocks exist by their English names. Original note:
+
 
 In fr / de / it / pl / uk the hand-written Blockly blocks are translated, but auto-generated blocks
 (extension actions such as File Exchange, the raycast actions, and their field labels) show English,

@@ -318,14 +318,33 @@ def get_translated_event_display_name(event_name: str, language: str, fallback: 
     return EVENT_TRANSLATIONS.get(event_name, {}).get(language) or fallback
 
 
+# Languages whose hand-written Blockly blocks are translated (blockly_i18n.js BLOCK_MESSAGES). For
+# these, a generated block with no entry above falls back to the events panel's names
+# (config/ui_names, docs/CORE_NAMES_I18N_PLAN.md), so the panel and the blocks agree. Elsewhere the
+# hand-written blocks are English, and translating only the generated ones would mix two languages
+# in one workspace -- those stay English until the workspace itself is translated.
+BLOCKLY_WORKSPACE_LANGUAGES = ("fr", "pl", "de", "it", "uk")
+
+
+def _panel_name(kind: str, key: str, language: str):
+    if language not in BLOCKLY_WORKSPACE_LANGUAGES:
+        return None
+    try:
+        from config.ui_names import language_table
+    except ImportError:
+        return None
+    return language_table(language).get(kind, {}).get(key)
+
+
 def get_translated_action_display_name(action_name: str, language: str, fallback: str) -> str:
-    """Translated block label for a generated Blockly block, or `fallback`
-    (the raw English ActionType.display_name) for 'en' or any
-    untranslated action/language."""
+    """Translated block label for a generated Blockly block: this table, then the panel's name (for
+    a translated workspace), else `fallback` (the raw English ActionType.display_name)."""
     if language == "en":
         return fallback
     entry = ACTION_TRANSLATIONS.get(action_name, {}).get(language)
-    return entry["display_name"] if entry else fallback
+    if entry:
+        return entry["display_name"]
+    return _panel_name("core.action", action_name, language) or fallback
 
 
 def get_translated_action_description(action_name: str, language: str, fallback: str) -> str:
@@ -334,13 +353,15 @@ def get_translated_action_description(action_name: str, language: str, fallback:
     if language == "en":
         return fallback
     entry = ACTION_TRANSLATIONS.get(action_name, {}).get(language)
-    return entry["description"] if entry else fallback
+    if entry:
+        return entry["description"]
+    return _panel_name("core.action_description", action_name, language) or fallback
 
 
 def get_translated_param_label(label: str, language: str) -> str:
-    """Translated inline field label for a generated block's parameter, or
-    the original English `label` for 'en' or any untranslated label/
-    language."""
+    """Translated inline field label for a generated block's parameter: this table, then the panel's
+    label (for a translated workspace), else the original English `label`."""
     if language == "en":
         return label
-    return PARAM_LABEL_TRANSLATIONS.get(language, {}).get(label, label)
+    return (PARAM_LABEL_TRANSLATIONS.get(language, {}).get(label)
+            or _panel_name("core.param", label, language) or label)

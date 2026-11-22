@@ -410,8 +410,9 @@ class BlocklyWidget(QWidget):
         blockly_workspace.html's registerCustomBlocks() treats these as
         opaque strings, so no JS changes are needed; see
         config/blockly_generated_block_i18n.py for the translation tables
-        and TODO.md's "Blockly: generated/custom blocks never localize"
-        entry for the gap this closes (French only so far).
+        (French block entries, then -- in every language whose Blockly
+        workspace is translated -- the events panel's names from
+        config/ui_names).
         """
         try:
             from events.action_types import ACTION_TYPES
