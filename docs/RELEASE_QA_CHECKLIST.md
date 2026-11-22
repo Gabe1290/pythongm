@@ -143,6 +143,11 @@ python3 tools/verify_desktop_export.py   py -3.12 tools/verify_desktop_export.py
   (OK-then-Cancel on Win/Linux, Cancel-then-OK on macOS) — check the
   Sprite Strip Import dialog and the Blockly Block Config dialog (Select
   All / Select None stay left).
+- L [ ] M [ ] W [ ] **On a 768 px-high laptop screen**, open the configure dialog
+  of a tall action (**Enable Block World View**, **Set View**): the form
+  scrolls and **OK / Cancel stay visible** at the bottom; a short action's
+  dialog (e.g. Set Horizontal Speed) does not scroll. *(Added 2026-11-22;
+  checked offscreen on a simulated 1366x768 screen, not on a real one.)*
 
 ---
 
@@ -530,6 +535,18 @@ game genre, each adding the events/actions the previous didn't need:
 - L [ ] M [ ] W [ ] Block protection (`set_block_protection`) blocks
   break/place on protected types; block reward (`set_block_reward`) pays
   score on break.
+- L [ ] M [ ] W [ ] **The shorter view (2026-11-22).** All three samples now use
+  view distance **8** and **128** columns (was 10 and 160) to reach 30 fps.
+  Judge whether it still looks right: the far edge should fade into the fog with
+  **no hard cut**, and block_world_2's open landscape should not feel cramped.
+  The picture is slightly blockier at the diagonal edges of blocks. *(Measured
+  over 30 fps headless on one Linux machine; nobody has looked at it while
+  playing.)*
+- L [ ] M [ ] W [ ] **Walking into a wall is smooth** (block_world_1): walk
+  straight into a wall and keep walking — no stutter. *(This used to drop to
+  ~4 fps; fixed 2026-11-22 by not scaling the wall-in-your-face strip.)*
+- L [ ] M [ ] W [ ] The same view in an **HTML5 export** and on an **Android
+  phone**: the shorter distance and the fog match the desktop game.
 
 ---
 
@@ -655,6 +672,13 @@ first pass is expected to turn something up: record what differs.
   blue (programs 1–5). With no robot it says so; with Aseba Studio holding the robot it says the robot is in use.
   *The send worked on a real robot (all six programs, 2026-11-02) through the same code the menu uses, with the
   dialogs stubbed in a test; nobody has yet clicked the menu item by hand.*
+- L [ ] M [ ] W [ ] **File → Stop Thymio robot** (2026-11-22): send a program that drives (program 2, hold a
+  button), then choose Stop: the robot **stops dead**, every LED goes **off** and any sound stops; it then stays
+  still (no button restarts it). Works with **no project open**. With no robot it says so; with Aseba Studio holding
+  the robot it says the robot is in use. *(It sends a small program that sets the motors to 0; every line of it is
+  one the export already sent to a real robot. Not yet tried on a robot itself.)*
+- L [ ] M [ ] W [ ] The header comment of an exported program names **both** ways to run it (File → Send to Thymio
+  robot… and Aseba Studio), and the README beside an `.aesl` export mentions Send to Thymio first.
 - L [ ] M [ ] W [ ] Each opens in **Aseba Studio** (File → Open) **without a syntax error**; Load and Run work.
   Copy any error message as text.
 - L [ ] M [ ] W [x] Program-by-program, the robot does what the guide's table says (LEDs, motors only while held,
@@ -675,6 +699,28 @@ first pass is expected to turn something up: record what differs.
 - L [ ] M [ ] W [ ] Font settings; grid settings persist between sessions.
 - L [ ] M [ ] W [ ] Auto-save toggles persist to the config the editor
   reads at startup.
+
+---
+
+## 12a. Junior edition (8–9-year-olds) — at the junior font
+
+Switch with *Tools → Preferences*, **Edition: Junior**, and restart; it applies the junior theme and the
+**13 pt** font (unless the font was customized before). These dialogs were found clipped at that font
+and fixed on 2026-11-22; they were checked offscreen (simulated 1366x768 screen, English and French),
+not yet on a real junior setup.
+
+- L [ ] M [ ] W [ ] **Assets → Create Sprite / Create Object / Create Room**: the title, the name
+  field and **both button labels** are fully readable (they used to be cut in half).
+- L [ ] M [ ] W [ ] **Rename** an asset (right-click in the asset tree): field and buttons readable.
+- L [ ] M [ ] W [ ] An **If** action's condition editor (Standard events panel → If Condition): the
+  **Object** and **Count is** rows are full height, not crushed, on a 768 px-high screen.
+- L [ ] M [ ] W [ ] **Show Message**'s *Translations…* button and **If Can Push**'s *Configure…*
+  button show their whole label.
+- L [ ] M [ ] W [ ] *Tools → Preferences*: the **Browse…** button next to the projects folder shows
+  its whole label (also in French, *Parcourir…*).
+- L [ ] M [ ] W [ ] *Help → Tutorials* in **French**: the instruction line wraps instead of being cut off.
+- L [ ] M [ ] W [ ] Then browse the rest of the junior IDE at that font and note anything cut off —
+  the pass above covered every dialog a junior can open, but not every editor at every window size.
 
 ---
 
@@ -791,6 +837,18 @@ each row names what used to be wrong so a regression is recognisable.
   Editor, **Export dialog** — every string resolves, no truncation, no
   leftover English. (Known: the OK/Cancel button box falls back to
   `qtbase_<lang>.qm`, not this app's catalog — a packaging decision.)
+- L [ ] M [ ] W [ ] **Strings added 2026-11-21/22** (checked by tests in the running app, never
+  by eye): in **pl / pt / ja / zh**, *Tools → Configure Action Blocks…* shows every category and block
+  translated; the editors' shared toolbar (**Float / Attach**, auto-save) is translated in every
+  editor and every language (it used to stay English even in French); **File → Send to Thymio
+  robot…** and **Stop Thymio robot** are translated; Thymio's own Configure dialog shows translated
+  **category** names (its block names stay English on purpose). In **ru / sl**, the action configure
+  dialog, the If-condition editor and the multi-action editor show Russian / Slovenian, **not French**.
+- L [ ] M [ ] W [ ] **A native speaker reads it.** Several hundred strings per language were added
+  on 2026-11-21/22 (see `docs/I18N_CATCHUP_2026-11-21.md` and
+  `docs/BLOCKLY_DIALOG_I18N_2026-11-22.md`); none has been read by a native speaker. One teacher
+  per language you ship: skim the menus, the Configure Action Blocks dialog and an action's configure
+  dialog, and note anything wrong or awkward.
 - L [ ] M [ ] W [ ] Type accented characters into a **project name, an
   object name and a `draw_text` string** — they survive save → reopen.
 - L [ ] M [ ] W [ ] With the IDE in French, a sample's **in-game

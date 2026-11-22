@@ -212,3 +212,51 @@ def test_it_has_a_signoff_matrix():
     text = _text()
     assert "## Release sign-off" in text
     assert "Signed off for release?" in text
+
+
+def test_the_block_world_view_settings_are_as_stated():
+    """§9 says all three samples use view distance 8 and 128 columns."""
+    text = _text()
+    assert "view distance **8** and **128** columns" in text
+    for sample in ("block_world_1", "block_world_2", "block_world_3"):
+        found = []
+
+        def walk(node):
+            if isinstance(node, dict):
+                if node.get("action") == "enable_block_world_view":
+                    found.append(node["parameters"])
+                for v in node.values():
+                    walk(v)
+            elif isinstance(node, list):
+                for v in node:
+                    walk(v)
+        walk(json.loads((REPO_ROOT / "samples" / sample / "project.json").read_text(encoding="utf-8")))
+        assert found, sample
+        for params in found:
+            assert params.get("render_distance") == "8" and params.get("columns") == "128", (sample, params)
+
+
+def test_the_junior_font_size_is_as_stated():
+    from config.editions import EDITIONS
+    assert "**13 pt** font" in _text()
+    assert EDITIONS["junior"]["default_font_size"] == 13
+
+
+def test_the_menu_items_named_for_the_new_checks_exist():
+    text = _text()
+    menus = (REPO_ROOT / "core" / "ide" / "_menu_builder.py").read_text(encoding="utf-8")
+    thymio = (REPO_ROOT / "extensions" / "thymio" / "__init__.py").read_text(encoding="utf-8")
+    assert "Configure Action Blocks…" in text and 'self.tr("Configure &Action Blocks...")' in menus
+    assert "File → Stop Thymio robot" in text and 'ide.tr("St&op Thymio robot")' in thymio
+
+
+def test_the_actions_named_in_the_new_checks_exist():
+    from events.plugin_loader import load_all_plugins
+    from events.action_types import ACTION_TYPES
+    load_all_plugins()
+    names = {t.display_name for t in ACTION_TYPES.values()}
+    text = _text()
+    for name in ("Enable Block World View", "Set View", "Set Horizontal Speed", "If Condition",
+                 "Show Message", "If Can Push"):
+        assert name in text, name
+        assert name in names, name
