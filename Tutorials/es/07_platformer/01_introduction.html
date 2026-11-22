@@ -8,46 +8,70 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <h1>Plataforma: Corre, Salta y Recolecta</h1>
+    <h1>Plataformas: corre, salta y recoge</h1>
 
     <div class="game-preview">
         <img src="thumbnails/07_platformer.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#127939;</p>
-        <p><strong>JUEGO DE PLATAFORMA</strong></p>
-        <p>Salta entre plataformas, evita peligros, recolecta monedas!</p>
+        <p><strong>JUEGO DE PLATAFORMAS</strong></p>
+        <p>¡Salta entre plataformas, esquiva peligros y recoge monedas!</p>
     </div>
 
-    <h2>Lo Que Crearemos</h2>
-    <p>En este tutorial, construiras un juego de plataforma clásico:</p>
-    <ul>
-        <li>Un jugador afectado por la gravedad que cae</li>
-        <li>Mecánicas de salto con detección de suelo</li>
-        <li>Plataformas para pararse y saltar entre ellas</li>
-        <li>Monedas para recolectar por puntos</li>
-        <li>Pinchos que lastiman al jugador</li>
-        <li>Una bandera para completar el nivel</li>
-    </ul>
+    <h2>Lo que vamos a crear</h2>
+    <p>En este tutorial construirás paso a paso un juego de plataformas clásico.
+    El juego es <strong>jugable al final de cada fase</strong>, ¡así que puedes probar sobre la marcha!</p>
 
-    <h2>Lo Que Aprenderás</h2>
+    <div class="phase">
+        <strong>Fase 1 &mdash; Un jugador que salta</strong><br>
+        Crea un jugador con gravedad que salta sobre plataformas. ¡Ya puedes correr y saltar!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; Monedas y peligros</strong><br>
+        Añade monedas que recoger, pinchos que esquivar y una bandera a la que llegar. ¡El nivel se convierte en un verdadero reto!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Controlador del juego</strong><br>
+        Muestra la puntuación y las vidas en pantalla, y añade un sistema de vidas para los pinchos.
+    </div>
+
+    <h2>Lo que aprenderás</h2>
     <ul>
-        <li>Gravedad y física de caída</li>
-        <li>Mecánicas de salto con detección de suelo</li>
-        <li>Colisión con plataformas (aterrizar encima)</li>
-        <li>Controles de movimiento izquierda/derecha</li>
-        <li>Coleccionables y peligros</li>
+        <li>Gravedad y caída</li>
+        <li>Saltar con colisiones en las plataformas</li>
+        <li>Controles para moverse a izquierda y derecha</li>
+        <li>Objetos que recoger, peligros y un objetivo</li>
+        <li>Mostrar la puntuación y las vidas con un controlador del juego</li>
     </ul>
 
     <div class="highlight">
-        <strong>Tiempo Requerido:</strong> Aproximadamente 30-40 minutos
+        <strong>Tiempo necesario:</strong> unos 25-30 minutos
     </div>
 
     <div class="info">
-        <strong>Listo?</strong> Haz clic en "Siguiente" para comenzar a crear tus sprites!
+        <strong>¿Listo?</strong> ¡Haz clic en «Siguiente» para construir tu jugador saltarín!
     </div>
 </body>
 </html>
