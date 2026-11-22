@@ -27,7 +27,7 @@ gioco prevedibile (verificato contro il ciclo principale in
 2. **Allarme** — Tutti gli allarmi attivati contano alla rovescia e si attivano
 3. **Step** (e **Keyboard (tenuto premuto)**) — Logica principale di gioco,
    poi i controlli continui dei tasti tenuti premuti per la stessa istanza
-4. **Keyboard Press/Release, Mouse** — Gli eventi di input accumulati per
+4. **Tasto premuto/Release, Mouse** — Gli eventi di input accumulati per
    questo frame vengono elaborati (questo avviene *dopo* Step, non prima —
    il codice in Step reagisce ai tasti già premuti all'*inizio* del frame,
    non a quelli premuti durante il frame stesso)
@@ -49,9 +49,9 @@ Actions) e come si imposta il preset di un progetto.
 
 | Preset | Eventi Inclusi |
 |--------|----------------|
-| **Principiante** (19 eventi) | Create, Step, Keyboard (tenuto premuto), Keyboard \<Nessun Tasto\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
-| **Intermedio** (21 eventi) | + Destroy, Keyboard Press |
-| **Completo** (solo Edizione Sviluppo, 23 eventi) | + Keyboard Release, Mouse |
+| **Principiante** (19 eventi) | Create, Step, Keyboard (tenuto premuto), Keyboard \<Nessun Tasto\>, Collision, Inizio dello step, Fine dello step, Alarm, Draw, Disegno dell'interfaccia, Inizio della stanza, Fine della stanza, Inizio del gioco, Fine del gioco, Fuori dalla stanza, Tocca il bordo della stanza, Vite esaurite, Salute esaurita, Fine dell'animazione |
+| **Intermedio** (21 eventi) | + Destroy, Tasto premuto |
+| **Completo** (solo Edizione Sviluppo, 23 eventi) | + Tasto rilasciato, Mouse |
 
 ---
 

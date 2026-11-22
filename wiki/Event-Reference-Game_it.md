@@ -2,7 +2,7 @@
 
 *[Home](Home_it) | [Riferimento Eventi](Event-Reference_it) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
 
-### Game Start
+### Inizio del gioco
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `game_start` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Game End
+### Fine del gioco
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `game_end` |

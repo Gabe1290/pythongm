@@ -223,7 +223,7 @@ Il tuo gioco Breakout di base è completo! Ecco alcuni miglioramenti da provare:
 
 | Oggetto | Sprite | Solid | Eventi |
 |---------|--------|-------|--------|
-| `obj_paddle` | `spr_paddle` | Sì | Keyboard (Left/Right), Keyboard Release |
+| `obj_paddle` | `spr_paddle` | Sì | Keyboard (Left/Right), Tasto rilasciato |
 | `obj_ball` | `spr_ball` | Sì | Create, Collision (paddle, wall, brick) |
 | `obj_brick` | `spr_brick` | Sì | Collision (ball) - Destroy self |
 | `obj_wall` | `spr_wall` | Sì | Nessuno necessario |

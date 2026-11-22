@@ -24,7 +24,7 @@
 
 ---
 
-### Begin Step
+### Inizio dello step
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `begin_step` |
@@ -34,7 +34,7 @@
 
 **Descrizione:** Si attiva all'inizio di ogni frame, prima degli eventi Step regolari.
 
-**Ordine di esecuzione:** Begin Step → Step → End Step
+**Ordine di esecuzione:** Inizio dello step → Step → Fine dello step
 
 **Usi comuni:**
 - Elaborazione dell'input
@@ -42,7 +42,7 @@
 
 ---
 
-### End Step
+### Fine dello step
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `end_step` |

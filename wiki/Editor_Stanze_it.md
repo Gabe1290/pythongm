@@ -126,7 +126,7 @@ altre view per split-screen o picture-in-picture.
 
 ### Attivare le Views
 
-1. Seleziona "Enable Views" nelle proprietà della stanza
+1. Seleziona "Abilita viste" nelle proprietà della stanza
 2. Configura View 0 (la view primaria)
 
 ### Proprietà delle Views
@@ -152,7 +152,7 @@ Per far seguire il giocatore dalla camera:
 
 L'ordine delle stanze nell'albero delle risorse determina:
 1. Quale stanza carica per prima (stanza in alto = stanza iniziale)
-2. L'ordine per le azioni "Next Room" e "Previous Room"
+2. L'ordine per le azioni "Stanza successiva" e "Stanza precedente"
 
 ### Cambiare l'Ordine delle Stanze
 

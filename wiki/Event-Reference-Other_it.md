@@ -2,7 +2,7 @@
 
 *[Home](Home_it) | [Riferimento Eventi](Event-Reference_it) | [Riferimento completo delle azioni](Full-Action-Reference_it)*
 
-### Outside Room
+### Fuori dalla stanza
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `outside_room` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Intersect Boundary
+### Tocca il bordo della stanza
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `intersect_boundary` |
@@ -35,7 +35,7 @@
 
 ---
 
-### No More Lives
+### Vite esaurite
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `no_more_lives` |
@@ -52,7 +52,7 @@
 
 ---
 
-### No More Health
+### Salute esaurita
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `no_more_health` |
@@ -69,7 +69,7 @@
 
 ---
 
-### Animation End
+### Fine dell'animazione
 | Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `animation_end` |

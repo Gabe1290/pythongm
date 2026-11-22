@@ -147,7 +147,7 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 | **Disegna rettangolo** | Disegna un rettangolo | x1, y1, x2, y2, filled |
 | **Disegna cerchio** | Disegna un cerchio | x, y, radius, filled |
 | **Disegna linea** | Disegna una linea | x1, y1, x2, y2 |
-| **Imposta colore di disegno** | Imposta il colore per i successivi Draw Text/Draw Rectangle/ecc. | color |
+| **Imposta colore di disegno** | Imposta il colore per i successivi Disegna testo/Disegna rettangolo/ecc. | color |
 | **Imposta colore** | Imposta la tinta e la trasparenza di uno sprite (non il colore di disegno sopra) | color, alpha |
 | **Imposta font di disegno** | Imposta font e allineamento per il prossimo disegno di testo | font, halign, valign |
 

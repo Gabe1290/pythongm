@@ -18,7 +18,7 @@ In questo tutorial creerai un **Gioco di Allunaggio** - un classico gioco arcade
 - Zone di atterraggio sicure
 
 **Difficoltà:** Principiante
-**Preset:** Preset Intermedio (la fisica di spinta/carburante si affida a Execute Code ovunque, che non è nel preset Principiante)
+**Preset:** Preset Intermedio (la fisica di spinta/carburante si affida a Esegui codice ovunque, che non è nel preset Principiante)
 
 ---
 
@@ -206,7 +206,7 @@ codice è l'equivalente.
      2. **Output** → **Mostra messaggio** (Message: `Crashed! Too fast!`)
      3. **Stanza** → **Riavvia stanza**
 
-Il testo di Show Message è una stringa fissa — non può incorporare la
+Il testo di Mostra messaggio è una stringa fissa — non può incorporare la
 velocità reale di atterraggio. L'HUD (Passo 7) mostra già la velocità in
 tempo reale fino al momento del contatto, quindi il giocatore ha già
 visto il numero.
@@ -351,7 +351,7 @@ direzione verso cui è rivolto. Le istanze di questo motore hanno un vero
 attributo `rotation` (gradi, 0 = destra, crescente in senso antiorario)
 usato per ruotare lo sprite — non serve
 `image_angle`/`lengthdir_x`/`lengthdir_y`, dato che `math` è già
-disponibile in Execute Code:
+disponibile in Esegui codice:
 
 Sostituisci il codice dell'evento Create del 5.1 con:
 ```python
@@ -422,7 +422,7 @@ self.hspeed += self.wind_force
 
 | Problema | Soluzione |
 |----------|-----------|
-| Il modulo cade troppo veloce | Diminuisci il valore `Gravity` di Set Gravity, o aumenta `thrust_force` nel codice dell'evento Create |
+| Il modulo cade troppo veloce | Diminuisci il valore `Gravity` di Imposta gravità, o aumenta `thrust_force` nel codice dell'evento Create |
 | Non riesco a rallentare abbastanza | Aumenta `thrust_force`, o aumenta `safe_speed` |
 | Il carburante finisce troppo in fretta | Diminuisci `fuel_use`, o aumenta il `fuel` iniziale |
 | Il modulo esce dallo schermo | Controlla il blocco dei limiti alla fine del codice dell'evento Step |
@@ -434,11 +434,11 @@ self.hspeed += self.wind_force
 
 Congratulazioni! Hai creato un gioco di allunaggio! Hai imparato:
 
-- **Fisica della spinta** - Spingere `self.vspeed` contro un'attrazione continua di Set Gravity
+- **Fisica della spinta** - Spingere `self.vspeed` contro un'attrazione continua di Imposta gravità
 - **Gestione della velocità** - Calcolare la velocità da `hspeed`/`vspeed` con il teorema di Pitagora
 - **Sistema di carburante** - Gameplay di gestione delle risorse con una semplice variabile di istanza
-- **Rilevamento delle collisioni** - Esiti diversi per piattaforma vs terreno, scelti con Test Expression
-- **Visualizzazione HUD** - Calcolare i valori da mostrare in Execute Code e poi mostrarli con Draw Text/Draw Variable
+- **Rilevamento delle collisioni** - Esiti diversi per piattaforma vs terreno, scelti con Verifica espressione
+- **Visualizzazione HUD** - Calcolare i valori da mostrare in Esegui codice e poi mostrarli con Disegna testo/Disegna variabile
 
 ---
 

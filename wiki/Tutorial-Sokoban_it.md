@@ -162,7 +162,7 @@ Il giocatore si muove esattamente di una cella della griglia alla volta e spinge
 
 Aggiungi un evento **Key Press** per ogni direzione, ciascuno con un'azione **Move** → **Muovi sulla griglia**:
 
-| Evento | Azione Move Grid |
+| Evento | Azione Muovi sulla griglia |
 |---|---|
 | Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
 | Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
@@ -207,7 +207,7 @@ Ci serve un controllore invisibile che osservi se ogni cassa si trova su un bers
 2. Non è necessario uno sprite
 
 **Evento: Create** — imposta il conteggio dei bersagli una sola volta,
-usando **Controllo** → **Esegui codice** (l'azione Execute Code di questo
+usando **Controllo** → **Esegui codice** (l'azione Esegui codice di questo
 progetto esegue vero Python, non GameMaker Language — `self` è l'istanza
 corrente, `game` è il game runner):
 
@@ -233,11 +233,11 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
     self.restart_room_flag = True
 ```
 
-`self.restart_room_flag = True` è il modo in cui un blocco Execute Code
+`self.restart_room_flag = True` è il modo in cui un blocco Esegui codice
 grezzo attiva lo stesso riavvio della stanza eseguito dall'azione
 **Riavvia stanza** — il ciclo principale lo controlla ad ogni frame.
 Aggiungi un'azione **Mostra messaggio** (da **Output**, messaggio `Level
-Complete!`) subito dopo il blocco Execute Code se vuoi mostrare un popup
+Complete!`) subito dopo il blocco Esegui codice se vuoi mostrare un popup
 prima del riavvio.
 
 **Evento: Draw**
@@ -312,7 +312,7 @@ Nell'evento **Creazione** di `obj_game_controller`, aggiungi **Controllo** →
 **Imposta variabile** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 In ciascuno dei quattro eventi Key Press di `obj_player`, aggiungi una
-seconda azione subito dopo Move Grid: **Controllo** → **Imposta variabile**
+seconda azione subito dopo Muovi sulla griglia: **Controllo** → **Imposta variabile**
 (Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativo**
 selezionato) — questo aggiunge 1 al contatore ad ogni pressione di tasto,
 indipendentemente dal fatto che il movimento sia stato effettivamente
@@ -329,7 +329,7 @@ Archivia le posizioni precedenti e consenti di premere Z per annullare l'ultima 
 
 Crea più stanze (`room_level2`, `room_level3`, ecc.) e usa l'azione
 **Stanza successiva** (categoria Room) al posto di **Riavvia stanza** nel blocco
-Execute Code di controllo vittoria (`self.next_room_flag = True` invece di
+Esegui codice di controllo vittoria (`self.next_room_flag = True` invece di
 `self.restart_room_flag = True`) quando un livello viene completato.
 
 ### Aggiungi effetti sonori
@@ -350,7 +350,7 @@ Aggiungi suoni per:
 | La cassa non cambia colore | Verifica che l'azione **Se collisione** nell'evento Step punti a `obj_target` |
 | Puoi spingere la cassa attraverso il muro | Verifica il rilevamento delle collisioni prima di spostare la cassa |
 | Il messaggio di vittoria viene visualizzato immediatamente | Assicurati che i bersagli siano posizionati separatamente dalle casse |
-| Il giocatore si muove di più caselle | Usa l'evento Keyboard Press, non l'evento Keyboard |
+| Il giocatore si muove di più caselle | Usa l'evento Tasto premuto, non l'evento Keyboard |
 
 ---
 

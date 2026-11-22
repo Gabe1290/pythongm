@@ -177,7 +177,7 @@ che gira su una scheda fisica.
    scheda nuova che non ha mai eseguito MicroPython.
 
 Tutte le azioni e condizioni micro:bit vengono tradotte, come anche *Set
-Variable*, *Test Variable*, i blocchi e i commenti. Ogni evento diventa un
+Variable*, *Verifica variabile*, i blocchi e i commenti. Ogni evento diventa un
 controllo all'interno di un unico ciclo. Le azioni di gioco che non hanno
 significato su una scheda (stanze, sprite, punteggi…) non vengono esportate.
 Nelle espressioni funzionano `irandom`, `random` e `choose`; le altre funzioni

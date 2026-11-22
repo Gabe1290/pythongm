@@ -18,7 +18,7 @@ In questo tutorial, creerai un **Gioco del Labirinto** dove il giocatore naviga 
 - Sistema di timer semplice
 
 **Difficoltà:** Principiante
-**Preset:** Preset Intermedio (l'azione Execute Code usata per il timer
+**Preset:** Preset Intermedio (l'azione Esegui codice usata per il timer
 non è inclusa nel preset Principiante)
 
 ---
@@ -116,7 +116,7 @@ L'uscita termina il livello quando il giocatore la raggiunge.
    - Message: `You Win!`
 3. Add Action: **Stanza** → **Stanza successiva** (o **Riavvia stanza** per un singolo livello)
 
-Il testo di Show Message è una stringa statica fissa — non può includere un
+Il testo di Mostra messaggio è una stringa statica fissa — non può includere un
 valore dinamico come il tempo trascorso. Il timer resta visibile nell'HUD
 (Passo 7) fino alla vittoria, quindi il giocatore ha già visto il proprio
 tempo.
@@ -158,11 +158,11 @@ ciascuno con un'azione **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Azione |
 |---|---|
-| Keyboard (held) → Right Arrow | Set Horizontal Speed a `4` |
-| Keyboard (held) → Left Arrow | Set Horizontal Speed a `-4` |
-| Keyboard (held) → Down Arrow | Set Vertical Speed a `4` |
-| Keyboard (held) → Up Arrow | Set Vertical Speed a `-4` |
-| Keyboard: No Key | Set Horizontal Speed a `0` **e** Set Vertical Speed a `0` |
+| Tastiera (tenuto premuto) → Right Arrow | Imposta velocità orizzontale a `4` |
+| Tastiera (tenuto premuto) → Left Arrow | Imposta velocità orizzontale a `-4` |
+| Tastiera (tenuto premuto) → Down Arrow | Imposta velocità verticale a `4` |
+| Tastiera (tenuto premuto) → Up Arrow | Imposta velocità verticale a `-4` |
+| Keyboard: No Key | Imposta velocità orizzontale a `0` **e** Imposta velocità verticale a `0` |
 
 ### 6.2 Fermarsi ai muri
 
@@ -189,7 +189,7 @@ Il game controller gestisce il timer e visualizza le informazioni.
 2. Non serve uno sprite
 
 **Event: Create** — avvia il timer, usando **Controllo** → **Esegui codice**
-(l'azione Execute Code di questo progetto esegue vero Python, non
+(l'azione Esegui codice di questo progetto esegue vero Python, non
 GameMaker Language):
 
 ```python
@@ -205,7 +205,7 @@ self.timer += 1.0 / game.fps
 **Event: Draw** — costruisce l'HUD con veri comandi della coda di
 disegno. Aggiungi tre azioni **Gioco** → **Disegna testo**:
 
-| Azione Draw Text | Testo | Posizione |
+| Azione Disegna testo | Testo | Posizione |
 |---|---|---|
 | 1ª | `Score:` | X `10`, Y `10` |
 | 2ª | `Time:` | X `10`, Y `30` |
@@ -214,7 +214,7 @@ disegno. Aggiungi tre azioni **Gioco** → **Disegna testo**:
 poi tre azioni **Disegno** → **Disegna variabile** subito dopo, per mostrare i
 valori dinamici accanto a ogni etichetta:
 
-| Azione Draw Variable | Variabile | Posizione |
+| Azione Disegna variabile | Variabile | Posizione |
 |---|---|---|
 | 1ª | `score` | X `70`, Y `10` |
 | 2ª | `self.timer` | X `70`, Y `30` |
@@ -222,8 +222,8 @@ valori dinamici accanto a ogni etichetta:
 
 Non esiste un contatore integrato "monete rimanenti" a cui puntare Draw
 Variable — aggiungi un'altra azione **Controllo** → **Esegui codice**, subito
-prima delle azioni Draw Variable, per calcolarlo in una variabile
-d'istanza che Draw Variable può poi leggere:
+prima delle azioni Disegna variabile, per calcolarlo in una variabile
+d'istanza che Disegna variabile può poi leggere:
 
 ```python
 self.coins_left = sum(
@@ -232,7 +232,7 @@ self.coins_left = sum(
 )
 ```
 
-(poi imposta il campo Variable della 3ª azione Draw Variable su `self.coins_left`).
+(poi imposta il campo Variable della 3ª azione Disegna variabile su `self.coins_left`).
 
 ![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
 
