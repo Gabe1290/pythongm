@@ -1228,8 +1228,11 @@ rough order of value:
   36 events); **M3 done 2026-11-01 for all nine other languages** (de, es, it, pt, ru, uk, sl, ja, zh;
   `extensions/microbit/translations_<lang>.py`). None has been read by a native speaker -- a teacher
   per language should skim it before release.
-- **Translations:** the generated-block text is French only; the other nine
-  languages fall back to English (the wiki's action reference is the same).
+- **Translations:** ~~the generated-block text is French only~~ -- **blocks done 2026-11-01** (M3):
+  `extensions/microbit/translations_<lang>.py` give block labels, tooltips, parameter labels and
+  event labels in all ten languages. **Still open:** the wiki's
+  `Full-Action-Reference-Microbit-Actions_<lang>.md` pages keep the English action
+  descriptions (headings and table labels are translated; checked 2026-11-22).
 - **A "New micro:bit project" template** was dropped (templates are core, see
   the plan's "Decided in S10"); revisit if teachers ask.
 - **Views:** ~~a room with a scrolling view would misplace the board~~ -- **not a bug, settled
@@ -1796,12 +1799,9 @@ lines rather than matching their text.
   (`runtime/action_spawn.py`); **HTML5 did not either and is fixed**
   (`export/HTML5/templates/engine.js`, `case 'destroy_instance'`, verified in
   headless Chromium: doors 3 -> 0 after the key, previously only the key vanished).
-- **Still open on Kivy (Android/iOS):** `export/Kivy/code_generator.py`'s
-  `destroy_instance` branch only knows `self` and `other`, so the same action
-  generates `self.destroy()` and the doors stay. The Junior lessons target HTML5,
-  so this was not fixed here. Needs `for o in list(scene.objects): if o.object_name
-  == ...: o.destroy()` style codegen plus a stub-Kivy test (see
-  `tests/test_kivy_room_actions.py` for the harness pattern).
+- ~~**Still open on Kivy (Android/iOS):** `destroy_instance` only knew `self` and
+  `other`, so the same action generated `self.destroy()` and the doors stayed.~~
+  Fixed in `c7a1071e`, see the next bullet.
 - **Fixed 2026-11-19.** `code_generator.py`'s `destroy_instance` branch now emits
   `[_o.destroy() for _o in list(self.scene.instances) if getattr(_o, 'object_name',
   _o.__class__.__name__) == '<object>']` for `target: "object"` (a bare
