@@ -2263,7 +2263,8 @@ lines rather than matching their text.
 - **HTML5 DONE:** a browser player now controls the avatar the host assigns it (own/input
   frames, `is_instance_owner`, `bind_network_input`, `set_sync_rate`, host-loss keeps the
   avatar), and `if_condition` `key_pressed` was ported to `engine.js` (it never worked on
-  that target; `mouse_check` is still not ported -- no mouse-button state in the engine).
+  that target; `mouse_check` was not ported then -- it was the next day, see "HTML5 `mouse_check`
+  DONE 2026-11-20" below; re-verified 2026-11-22: `tests/test_html5_mouse_check.py` 10/10 in Chromium).
   See the addendum in `docs/MULTIPLAYER_LAN_V2_PLAN.md`.
 - **Kivy DONE (same day):** the owned avatar was ported to `kivy_glue.py` (promotion, `own` /
   `input` frames paced for fast displays, `bind_network_input`, `set_sync_rate`, host-loss keeps
