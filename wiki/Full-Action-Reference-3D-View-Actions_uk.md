@@ -42,7 +42,7 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `output` | Вибір | `brick` | Which registered recipe to attempt, by its output block type; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output` | Вибір | `brick` | Який зареєстрований рецепт спробувати — за типом виробленого блока; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Намалювати HUD Block World
 
@@ -119,8 +119,8 @@
 | `mark_color` | Колір | `#40e0ff` | Колір крапок «Позначити об'єкт»; необов'язково |
 | `mark_object_2` | Об'єкт | — | Другий об'єкт для позначення, власним кольором; необов'язково |
 | `mark_color_2` | Колір | `#ff5050` | Колір крапок «Позначити об'єкт 2»; необов'язково |
-| `show_trail` | Так/Ні | Ні | Dot every grid cell the camera has already visited, so you can see where you've been; необов'язково |
-| `trail_color` | Колір | `#406080` | Colour of the visited-cell trail dots; необов'язково |
+| `show_trail` | Так/Ні | Ні | Позначати крапкою кожну клітинку, де вже побувала камера, щоб бачити пройдений шлях; необов'язково |
+| `trail_color` | Колір | `#406080` | Колір крапок сліду відвіданих клітинок; необов'язково |
 
 ### Увімкнути вигляд Block World
 
@@ -138,11 +138,11 @@
 | `camera_object` | Об'єкт | — | Об'єкт, чия позиція + кут погляду є камерою (порожньо = об'єкт, що виконує цю дію); необов'язково |
 | `z_layer` | Число | `0` | Який шар світу малюється (на етапі 2a малюється рівно один шар — погляду вгору та вниз ще немає); необов'язково |
 | `fov` | Число | `66` | Горизонтальне поле зору в градусах; необов'язково |
-| `render_distance` | Число | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); необов'язково |
+| `render_distance` | Число | `10` | Максимальна довжина променів у клітинках (менше = швидше; далекий туман приховує край світу); необов'язково |
 | `cell_size` | Число | `32` | Розмір комірки сітки в пікселях (відповідно до сітки розміщення блоків); необов'язково |
 | `columns` | Число | `160` | Стовпці екрана для raycast (менше = швидше/грубіше); необов'язково |
-| `fog` | Так/Ні | Так | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; необов'язково |
-| `fog_color` | Колір | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); необов'язково |
+| `fog` | Так/Ні | Так | Розчиняти далекі блоки в небі, щоб край огляду виглядав як серпанок, а не різкий обрив. Вимкнено: колишній плаский вигляд; необов'язково |
+| `fog_color` | Колір | — | Колір, у який зникає далечінь; порожньо = колір неба (печері може знадобитися свій); необов'язково |
 | `wall_color` | Колір | `#8a8a8a` | Суцільний колір, використовується лише якщо текстурні блоки вимкнено; необов'язково |
 | `floor_color` | Колір | `#3a2f1c` | Суцільний колір підлоги (на етапі 2a підлога ще не текстурується); необов'язково |
 | `ceiling_color` | Колір | `#87CEEB` | Суцільний колір стелі або неба (на етапі 2a неба ще немає); необов'язково |
@@ -331,14 +331,14 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `output` | Вибір | `brick` | Which block type this recipe produces; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `output_count` | Число | `1` | How many of Output Block one craft produces |
-| `input_1` | Вибір | `stone` | First required block type; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `input_1_count` | Число | `1` | How many of Input 1 the recipe consumes |
-| `input_2` | Вибір | — | Second required block type (blank = unused); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
-| `input_2_count` | Число | `1` | How many of Input 2 the recipe consumes; необов'язково |
-| `input_3` | Вибір | — | Third required block type (blank = unused); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
-| `input_3_count` | Число | `1` | How many of Input 3 the recipe consumes; необов'язково |
+| `output` | Вибір | `brick` | Який тип блока виробляє цей рецепт; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Число | `1` | Скільки вироблених блоків дає одне виготовлення |
+| `input_1` | Вибір | `stone` | Перший потрібний тип блока; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Число | `1` | Скільки інгредієнта 1 витрачає рецепт |
+| `input_2` | Вибір | — | Другий потрібний тип блока (порожньо = немає); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
+| `input_2_count` | Число | `1` | Скільки інгредієнта 2 витрачає рецепт; необов'язково |
+| `input_3` | Вибір | — | Третій потрібний тип блока (порожньо = немає); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
+| `input_3_count` | Число | `1` | Скільки інгредієнта 3 витрачає рецепт; необов'язково |
 
 ### Задати кут погляду
 
@@ -388,7 +388,7 @@
 - [Малювання](Full-Action-Reference-Drawing_uk) (11)
 - [Мережа](Full-Action-Reference-Network-Actions_uk) (22)
 - [Частки](Full-Action-Reference-Particles_uk) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_uk) (5)
+- [Рахунок/Життя/Здоров'я](Full-Action-Reference-Score-Lives-Health_uk) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_uk) (16)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)
