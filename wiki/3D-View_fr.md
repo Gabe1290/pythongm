@@ -95,7 +95,7 @@ la grille comme des murs — le plus simple est un objet par hauteur
 - **Deux variables sur chaque instance qui bouge :** `raycast_step_blocked`
   (1 pendant une image où une marche était trop haute — une marche refusée ne
   déclenche aucun événement, donc un monstre peut la tester avec *Tester une
-  variable* dans End Step pour faire demi-tour) et `raycast_floor_z` (la
+  variable* dans Fin d'étape pour faire demi-tour) et `raycast_floor_z` (la
   hauteur du sol sous elle).
 - Les objets à ramasser et les monstres se tiennent sur le sol de leur case,
   et les marches cachent ce qui est derrière elles. La mini-carte nuance les

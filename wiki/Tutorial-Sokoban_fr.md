@@ -163,7 +163,7 @@ Le joueur se déplace d'une case de grille à la fois et pousse les caisses qu'i
 Ajoutez un événement **Key Press** par direction, chacun avec une action
 **Move** → **Déplacer sur la grille** :
 
-| Événement | Action Move Grid |
+| Événement | Action Déplacer sur la grille |
 |---|---|
 | Key Press → Right Arrow | Direction : `right`, Grid Size : `32` |
 | Key Press → Left Arrow | Direction : `left`, Grid Size : `32` |
@@ -208,7 +208,7 @@ sont sur une cible.
 2. Aucun sprite nécessaire
 
 **Événement : Create** — configurez le nombre de cibles une seule fois, avec
-**Contrôle** → **Exécuter du code** (l'action Execute Code de ce projet exécute
+**Contrôle** → **Exécuter du code** (l'action Exécuter du code de ce projet exécute
 du vrai Python, pas le langage GameMaker — `self` est l'instance courante,
 `game` est le moteur de jeu) :
 
@@ -235,11 +235,11 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
     self.restart_room_flag = True
 ```
 
-`self.restart_room_flag = True` permet à un bloc Execute Code brut de
+`self.restart_room_flag = True` permet à un bloc Exécuter du code brut de
 déclencher le même redémarrage de salle que l'action **Redémarrer la salle** — la
 boucle principale vérifie cette valeur à chaque image. Ajoutez une action
 **Afficher un message** (depuis **Output**, message `Level Complete!`) juste après
-le bloc Execute Code si vous voulez une fenêtre de dialogue avant le
+le bloc Exécuter du code si vous voulez une fenêtre de dialogue avant le
 redémarrage.
 
 **Événement : Draw**
@@ -313,8 +313,8 @@ T = Target
 Dans l'événement **Création** de `obj_game_controller`, ajoutez **Contrôle** →
 **Définir une variable** (Variable : `global.moves`, Value : `0`, Scope : `global`).
 
-Dans chacun des quatre événements Key Press à Move Grid de `obj_player`,
-ajoutez une seconde action juste après Move Grid : **Contrôle** → **Set
+Dans chacun des quatre événements Key Press à Déplacer sur la grille de `obj_player`,
+ajoutez une seconde action juste après Déplacer sur la grille : **Contrôle** → **Set
 Variable** (Variable : `global.moves`, Value : `1`, Scope : `global`, case
 **Relatif** cochée) — cela ajoute 1 au compteur à chaque appui de touche,
 que le mouvement ait été bloqué par un mur ou non.
@@ -330,7 +330,7 @@ Stockez les positions précédentes et permettez d'appuyer sur Z pour annuler le
 
 Créez plus de salles (`room_level2`, `room_level3`, etc.) et utilisez
 l'action **Salle suivante** (catégorie Room) à la place de **Redémarrer la salle** dans
-le bloc Execute Code de vérification de victoire (`self.next_room_flag =
+le bloc Exécuter du code de vérification de victoire (`self.next_room_flag =
 True` au lieu de `self.restart_room_flag = True`) quand un niveau est
 terminé.
 
@@ -352,7 +352,7 @@ Ajoutez des sons pour :
 | La caisse ne change pas de couleur | Vérifiez que l'action **Si collision** de l'événement Step cible bien `obj_target` |
 | Peut pousser la caisse à travers le mur | Vérifiez la détection de collision avant de déplacer la caisse |
 | Le message de victoire apparaît immédiatement | Assurez-vous que les cibles sont placées séparément des caisses |
-| Le joueur se déplace sur plusieurs carrés | Utilisez l'événement Keyboard Press, pas l'événement Keyboard |
+| Le joueur se déplace sur plusieurs carrés | Utilisez l'événement Appui sur une touche, pas l'événement Keyboard |
 
 ---
 

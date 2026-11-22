@@ -18,7 +18,7 @@ Dans ce tutoriel, vous allez créer un **Jeu de Plateforme** - un jeu d'action �
 - Les objets à collecter et les dangers
 
 **Difficulté :** Débutant
-**Preset :** Preset Intermédiaire (les actions Execute Code de la section Améliorations ne sont pas dans le preset Débutant ; le tutoriel de base jusqu'à l'étape 10 n'a besoin que d'actions du preset Débutant)
+**Preset :** Preset Intermédiaire (les actions Exécuter du code de la section Améliorations ne sont pas dans le preset Débutant ; le tutoriel de base jusqu'à l'étape 10 n'a besoin que d'actions du preset Débutant)
 
 ---
 
@@ -143,16 +143,16 @@ de ce wiki :
 
 | Événement | Action |
 |---|---|
-| Keyboard (maintenue) → Left Arrow | Set Horizontal Speed à `-4` |
-| Keyboard (maintenue) → Right Arrow | Set Horizontal Speed à `4` |
-| Keyboard: No Key | Set Horizontal Speed à `0` |
-| Key Press → Up Arrow | Set Vertical Speed à `-10` |
-| Collision avec obj_ground | Stop Movement |
+| Keyboard (maintenue) → Left Arrow | Définir la vitesse horizontale à `-4` |
+| Keyboard (maintenue) → Right Arrow | Définir la vitesse horizontale à `4` |
+| Keyboard: No Key | Définir la vitesse horizontale à `0` |
+| Key Press → Up Arrow | Définir la vitesse verticale à `-10` |
+| Collision avec obj_ground | Arrêter le mouvement |
 
 Deux détails qui rendent la sensation correcte :
 
 - **No Key ne règle QUE la vitesse horizontale à 0** — n'utilisez jamais
-  Stop Movement ici, car Stop Movement remet aussi la vitesse verticale à
+  Arrêter le mouvement ici, car Arrêter le mouvement remet aussi la vitesse verticale à
   zéro, ce qui annulerait la gravité à chaque fois que le joueur relâche
   une touche de direction.
 - **Key Press (pas maintenue)** est ce qui fait de Up une seule impulsion
@@ -216,7 +216,7 @@ Le drapeau termine le niveau quand le joueur l'atteint.
    - Message : `Level Complete!`
 3. Ajoutez l'action **Salle** → **Salle suivante** (ou **Redémarrer la salle** pour un niveau unique)
 
-Le texte de Show Message est une chaîne fixe — il ne peut pas intégrer une
+Le texte de Afficher un message est une chaîne fixe — il ne peut pas intégrer une
 valeur en direct comme le score. Le HUD du contrôleur de jeu (étape 9)
 affiche déjà le score à l'écran pendant tout le niveau, donc le joueur l'a
 déjà vu.
@@ -333,8 +333,8 @@ par trois, dans l'ordre :
    **Relatif** cochée)
 5. **Contrôle** → **Fin de bloc**
 
-La paire Start/End Block signifie que les deux actions à l'intérieur ne
-s'exécutent que lorsque le Test Variable au-dessus est vrai — le même
+La paire Start/Fin de bloc signifie que les deux actions à l'intérieur ne
+s'exécutent que lorsque le Tester une variable au-dessus est vrai — le même
 modèle de bloc gardé que les tutoriels Sokoban et Labyrinthe utilisent
 pour leurs propres conditions.
 
@@ -411,10 +411,10 @@ fois que les vies atteignent réellement 0. Ajoutez cet événement à
 | Problème | Solution |
 |----------|----------|
 | Le joueur tombe à travers le sol | Vérifiez que `obj_ground` a "Solide" coché |
-| Le joueur ne peut pas sauter | Vérifiez que l'événement Key Press → Up Arrow existe et que Set Vertical Speed est négatif |
-| Le joueur continue de monter après l'atterrissage | Assurez-vous que Collision avec obj_ground a une action Stop Movement |
-| Le saut paraît flottant | Augmentez la valeur Gravity de Set Gravity, ou rendez la valeur de saut de Set Vertical Speed plus négative |
-| Le saut paraît trop faible | Diminuez la valeur Gravity de Set Gravity, ou rendez la valeur de saut de Set Vertical Speed plus négative |
+| Le joueur ne peut pas sauter | Vérifiez que l'événement Key Press → Up Arrow existe et que Définir la vitesse verticale est négatif |
+| Le joueur continue de monter après l'atterrissage | Assurez-vous que Collision avec obj_ground a une action Arrêter le mouvement |
+| Le saut paraît flottant | Augmentez la valeur Gravity de Définir la gravité, ou rendez la valeur de saut de Définir la vitesse verticale plus négative |
+| Le saut paraît trop faible | Diminuez la valeur Gravity de Définir la gravité, ou rendez la valeur de saut de Définir la vitesse verticale plus négative |
 
 ---
 
@@ -422,7 +422,7 @@ fois que les vies atteignent réellement 0. Ajoutez cet événement à
 
 Félicitations ! Vous avez créé un jeu de plateforme ! Vous avez appris :
 
-- **La physique de gravité** - Set Gravity applique une force constante vers le bas à chaque pas
+- **La physique de gravité** - Définir la gravité applique une force constante vers le bas à chaque pas
 - **Les mécaniques de saut** - Un événement Key Press (pas maintenue) donne une seule impulsion de vitesse vers le haut
 - **La collision solide intégrée** - Le sol bloque le joueur automatiquement une fois marqué Solid, sans code de vérification manuelle de position
 - **Les dangers** - Créer des objets qui redémarrent le niveau

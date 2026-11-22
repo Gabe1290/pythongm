@@ -2,7 +2,7 @@
 
 *[Accueil](Home_fr) | [Référence des Événements](Event-Reference_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
-### Draw
+### Dessin
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `draw` |
@@ -31,7 +31,7 @@
 
 ---
 
-### Draw GUI
+### Dessin de l'interface
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `draw_gui` |
@@ -41,7 +41,7 @@
 
 **Description :** Dessine dans l'**espace écran (GUI)**, par-dessus la salle et sans être affecté par le défilement des vues/de la caméra.
 
-**Différence avec Draw :** l'événement Draw habituel est en coordonnées de salle (il défile avec la vue) ; Draw GUI reste fixe à l'écran — à utiliser pour les ATH (HUD), les scores et les menus.
+**Différence avec Draw :** l'événement Draw habituel est en coordonnées de salle (il défile avec la vue) ; Dessin de l'interface reste fixe à l'écran — à utiliser pour les ATH (HUD), les scores et les menus.
 
 ---
 

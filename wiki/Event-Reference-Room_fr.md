@@ -2,7 +2,7 @@
 
 *[Accueil](Home_fr) | [Référence des Événements](Event-Reference_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
-### Room Start
+### Début de la salle
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `room_start` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Room End
+### Fin de la salle
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `room_end` |

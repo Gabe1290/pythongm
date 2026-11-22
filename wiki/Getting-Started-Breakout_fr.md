@@ -354,8 +354,8 @@ Vous pouvez aussi le fignoler, comme par exemple rajouter :
 
 | Objet | Sprite | Solid | Événements |
 |-------|--------|-------|------------|
-| `obj_batte` | `spr_batte` | Oui | Keyboard (Gauche/Droite), Keyboard Release |
-| `obj_balle` | `spr_balle` | Oui | Create, Collision (batte, blocs), Outside Room |
+| `obj_batte` | `spr_batte` | Oui | Keyboard (Gauche/Droite), Relâchement d'une touche |
+| `obj_balle` | `spr_balle` | Oui | Create, Collision (batte, blocs), Hors de la salle |
 | `obj_bloc_1` | `spr_bloc_1` | Oui | Collision (balle) - Détruire self |
 | `obj_bloc_2` | `spr_bloc_2` | Oui | Hérite de `obj_bloc_1` |
 | `obj_bloc_3` | `spr_bloc_3` | Oui | Aucun (juste un mur) |

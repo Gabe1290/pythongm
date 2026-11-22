@@ -116,7 +116,7 @@ La sortie termine le niveau quand le joueur l'atteint.
    - Message : `Vous avez gagné !`
 3. Ajouter Action : **Salle** → **Salle suivante** (ou **Redémarrer la salle** pour un seul niveau)
 
-Le texte de Show Message est une chaîne fixe — il ne peut pas afficher une
+Le texte de Afficher un message est une chaîne fixe — il ne peut pas afficher une
 valeur en direct comme le temps écoulé. Le chronomètre reste visible dans le
 HUD (Étape 7) jusqu'à la victoire, le joueur a donc déjà vu son temps.
 
@@ -157,11 +157,11 @@ Key**, chacun avec une action **Move** → **Set Horizontal/Vertical Speed** :
 
 | Événement | Action |
 |---|---|
-| Keyboard (maintenue) → Right Arrow | Set Horizontal Speed à `4` |
-| Keyboard (maintenue) → Left Arrow | Set Horizontal Speed à `-4` |
-| Keyboard (maintenue) → Down Arrow | Set Vertical Speed à `4` |
-| Keyboard (maintenue) → Up Arrow | Set Vertical Speed à `-4` |
-| Keyboard: No Key | Set Horizontal Speed à `0` **et** Set Vertical Speed à `0` |
+| Keyboard (maintenue) → Right Arrow | Définir la vitesse horizontale à `4` |
+| Keyboard (maintenue) → Left Arrow | Définir la vitesse horizontale à `-4` |
+| Keyboard (maintenue) → Down Arrow | Définir la vitesse verticale à `4` |
+| Keyboard (maintenue) → Up Arrow | Définir la vitesse verticale à `-4` |
+| Keyboard: No Key | Définir la vitesse horizontale à `0` **et** Définir la vitesse verticale à `0` |
 
 ### 6.2 S'arrêter aux Murs
 
@@ -189,7 +189,7 @@ Le contrôleur de jeu gère le chronomètre et affiche les informations.
 2. Pas de sprite nécessaire
 
 **Événement : Create** — démarrez le chronomètre avec **Contrôle** →
-**Exécuter du code** (l'action Execute Code de ce projet exécute du vrai Python,
+**Exécuter du code** (l'action Exécuter du code de ce projet exécute du vrai Python,
 pas le langage GameMaker) :
 
 ```python
@@ -205,7 +205,7 @@ self.timer += 1.0 / game.fps
 **Événement : Draw** — construisez le HUD avec de vraies commandes de la
 file de dessin. Ajoutez trois actions **Jeu** → **Dessiner du texte** :
 
-| Action Draw Text | Texte | Position |
+| Action Dessiner du texte | Texte | Position |
 |---|---|---|
 | 1ère | `Score :` | X `10`, Y `10` |
 | 2ème | `Temps :` | X `10`, Y `30` |
@@ -214,7 +214,7 @@ file de dessin. Ajoutez trois actions **Jeu** → **Dessiner du texte** :
 puis trois actions **Dessin** → **Dessiner une variable** juste après, pour afficher
 les valeurs en direct à côté de chaque étiquette :
 
-| Action Draw Variable | Variable | Position |
+| Action Dessiner une variable | Variable | Position |
 |---|---|---|
 | 1ère | `score` | X `70`, Y `10` |
 | 2ème | `self.timer` | X `70`, Y `30` |
@@ -222,7 +222,7 @@ les valeurs en direct à côté de chaque étiquette :
 
 Il n'existe pas de compteur intégré "pièces restantes" — ajoutez une action
 **Contrôle** → **Exécuter du code** de plus, juste avant les actions Draw
-Variable, pour le calculer dans une variable d'instance que Draw Variable
+Variable, pour le calculer dans une variable d'instance que Dessiner une variable
 pourra ensuite lire :
 
 ```python
@@ -232,7 +232,7 @@ self.coins_left = sum(
 )
 ```
 
-(puis réglez le champ Variable de la 3ème Draw Variable sur
+(puis réglez le champ Variable de la 3ème Dessiner une variable sur
 `self.coins_left`).
 
 ![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)

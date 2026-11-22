@@ -46,7 +46,7 @@ de jeu prévisible (confirmé dans la boucle principale de
 2. **Alarme** — Toutes les alarmes déclenchées comptent à rebours et se déclenchent
 3. **Étape** (et **Keyboard (maintenue)**) — Logique de jeu principale, puis
    vérification continue des touches maintenues pour la même instance
-4. **Keyboard Press/Release, Mouse** — Les événements d'entrée en file
+4. **Appui sur une touche/Release, Mouse** — Les événements d'entrée en file
    d'attente pour la frame sont distribués (cela se produit *après* Step,
    pas avant — le code de Step réagit aux touches déjà maintenues au
    *début* de la frame, pas à celles pressées pendant celle-ci)
@@ -67,9 +67,9 @@ structuré Événements/Actions) et comment le préréglage d'un projet est déf
 
 | Préréglage | Événements inclus |
 |------------|-------------------|
-| **Débutant** (19 événements) | Create, Step, Keyboard (maintenue), Keyboard \<No Key\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
-| **Intermédiaire** (21 événements) | + Destroy, Keyboard Press |
-| **Full** (édition Développement uniquement, 23 événements) | + Keyboard Release, Mouse |
+| **Débutant** (19 événements) | Create, Step, Keyboard (maintenue), Keyboard \<No Key\>, Collision, Début d'étape, Fin d'étape, Alarm, Draw, Dessin de l'interface, Début de la salle, Fin de la salle, Début du jeu, Fin du jeu, Hors de la salle, Touche le bord de la salle, Plus de vies, Plus de santé, Fin de l'animation |
+| **Intermédiaire** (21 événements) | + Destroy, Appui sur une touche |
+| **Full** (édition Développement uniquement, 23 événements) | + Relâchement d'une touche, Mouse |
 
 ---
 

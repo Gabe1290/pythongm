@@ -223,7 +223,7 @@ Votre jeu de casse-briques basique est terminé ! Voici quelques améliorations 
 
 | Objet | Sprite | Solid | Événements |
 |-------|--------|-------|------------|
-| `obj_barre` | `spr_barre` | Oui | Keyboard (Gauche/Droite), Keyboard Release |
+| `obj_barre` | `spr_barre` | Oui | Keyboard (Gauche/Droite), Relâchement d'une touche |
 | `obj_balle` | `spr_balle` | Oui | Create, Collision (barre, mur, brique) |
 | `obj_brique` | `spr_brique` | Oui | Collision (balle) - Détruire self |
 | `obj_mur` | `spr_mur` | Oui | Aucun nécessaire |

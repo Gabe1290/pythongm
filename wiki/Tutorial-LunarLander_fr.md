@@ -18,7 +18,7 @@ Dans ce tutoriel, vous créerez un **Jeu d'Atterrissage Lunaire** - un jeu d'arc
 - Zones d'atterrissage sécurisées
 
 **Difficulté :** Débutant
-**Preset :** Preset Intermédiaire (la physique de poussée/carburant repose sur Execute Code tout au long, qui ne fait pas partie du Preset Débutant)
+**Preset :** Preset Intermédiaire (la physique de poussée/carburant repose sur Exécuter du code tout au long, qui ne fait pas partie du Preset Débutant)
 
 ---
 
@@ -207,7 +207,7 @@ l'équivalent.
      2. **Output** → **Afficher un message** (Message : `Crashed! Too fast!`)
      3. **Salle** → **Redémarrer la salle**
 
-Le texte de Show Message est une chaîne fixe — il ne peut pas intégrer la
+Le texte de Afficher un message est une chaîne fixe — il ne peut pas intégrer la
 vitesse réelle d'atterrissage. Le HUD (Étape 7) affiche déjà la vitesse en
 direct jusqu'au moment du contact, donc le joueur a déjà vu le chiffre.
 
@@ -352,7 +352,7 @@ poussez dans la direction où il pointe. Les instances de ce moteur ont un
 véritable attribut `rotation` (degrés, 0 = droite, croissant dans le sens
 antihoraire) utilisé pour faire pivoter le sprite — pas besoin de
 `image_angle`/`lengthdir_x`/`lengthdir_y`, puisque `math` est déjà
-disponible dans Execute Code :
+disponible dans Exécuter du code :
 
 Remplacez le code de l'événement Create du 5.1 par :
 ```python
@@ -424,7 +424,7 @@ self.hspeed += self.wind_force
 
 | Problème | Solution |
 |----------|----------|
-| L'atterrisseur tombe trop vite | Diminuez la valeur `Gravity` de Set Gravity, ou augmentez `thrust_force` dans le code de l'événement Create |
+| L'atterrisseur tombe trop vite | Diminuez la valeur `Gravity` de Définir la gravité, ou augmentez `thrust_force` dans le code de l'événement Create |
 | Impossible de ralentir assez | Augmentez `thrust_force`, ou augmentez `safe_speed` |
 | Le carburant s'épuise trop vite | Diminuez `fuel_use`, ou augmentez le `fuel` de départ |
 | L'atterrisseur sort de l'écran | Vérifiez le bloc de limites à la fin du code de l'événement Step |
@@ -436,11 +436,11 @@ self.hspeed += self.wind_force
 
 Félicitations ! Vous avez créé un jeu d'atterrissage lunaire ! Vous avez appris :
 
-- **Physique de poussée** - Ajuster `self.vspeed` contre une attraction continue de Set Gravity
+- **Physique de poussée** - Ajuster `self.vspeed` contre une attraction continue de Définir la gravité
 - **Gestion de vélocité** - Calculer la vitesse à partir de `hspeed`/`vspeed` avec le théorème de Pythagore
 - **Système de carburant** - Gameplay de gestion de ressources avec une simple variable d'instance
-- **Détection de collision** - Résultats différents pour la plateforme et le sol, choisis avec Test Expression
-- **Affichage HUD** - Calculer les valeurs d'affichage dans Execute Code, puis les montrer avec Draw Text/Draw Variable
+- **Détection de collision** - Résultats différents pour la plateforme et le sol, choisis avec Tester une expression
+- **Affichage HUD** - Calculer les valeurs d'affichage dans Exécuter du code, puis les montrer avec Dessiner du texte/Dessiner une variable
 
 ---
 

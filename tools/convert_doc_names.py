@@ -19,8 +19,19 @@ Rules:
   tree or a checkbox, not a parameter. "Relative" is always the action dialog's checkbox;
 - a category written as its own bold span before an arrow ("**Room** → **Next Room**") -> the
   language's category name.
+
+With ``--tables`` (Markdown), two more exact-match passes: a heading whose whole text is an action or
+event name ("### Game Start"), and a table cell whose whole text is one ("| Game Start | `game_start` |",
+or "Keyboard (held) → Right Arrow", where only the event part changes). Key columns in backticks and
+prose cells are never touched.
+
+With ``--prose`` (Markdown), running text too, but only MULTI-word action / event names ("Set
+Horizontal Speed", "Game Start"): a single word like "Step" or "Draw" is too often ordinary English
+("Step 6"). Code (backticks, fences) and image lines are skipped.
 """
 ALWAYS_PARAMS = {"Relative"}
+# Names that are also something else in running text: "Snap to Grid" is the room editor's setting too.
+PROSE_SKIP = {"Snap to Grid"}
 import re
 import sys
 from pathlib import Path
@@ -53,7 +64,9 @@ def load_names():
 
 
 class Converter:
-    def __init__(self, lang):
+    def __init__(self, lang, tables=False, prose=False):
+        self.tables = tables
+        self.prose = prose
         from config.ui_names import language_table
         self.t = language_table(lang)
         self.actions, self.events, self.params = load_names()
@@ -111,13 +124,75 @@ class Converter:
             changes.append((inner, new))
             return f"{open_}{new}{close}"
 
-        return SPAN.sub(repl, text), changes
+        text = SPAN.sub(repl, text)
+        if self.tables:
+            text = self._tables_and_headings(text, changes)
+        if self.prose:
+            text = self._prose(text, changes)
+        return text, changes
+
+    def _prose(self, text, changes):
+        names = {n for n in list(self.actions) + list(self.events) if " " in n and n not in PROSE_SKIP}
+        names = {n for n in names if self._exact(n) and self._exact(n) != n}
+        if not names:
+            return text
+        rx = re.compile(r"(?<![\w-])(" + "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True))
+                        + r")(?![\w-])")
+        out, fence = [], False
+        for line in text.split("\n"):
+            if line.lstrip().startswith("```"):
+                fence = not fence
+            if fence or line.lstrip().startswith("![") or line.lstrip().startswith("#"):
+                out.append(line)
+                continue
+            parts = re.split(r"(`[^`]*`|\]\([^)]*\))", line)
+            for i in range(0, len(parts), 2):
+                def sub(m):
+                    new = self._exact(m.group(1))
+                    changes.append((m.group(1), new))
+                    return new
+                parts[i] = rx.sub(sub, parts[i])
+            out.append("".join(parts))
+        return "\n".join(out)
+
+    def _exact(self, cell):
+        """An exact action/event name (or "Event → key") translated, else None."""
+        head, arrow, rest = cell.partition(" → ")
+        if arrow and head in self.events:
+            name = self._event(head)
+            return f"{name} → {rest}" if name else None
+        if cell in self.events:
+            return self._event(cell)
+        if cell in self.actions:
+            return self._action(cell)[0]
+        return None
+
+    def _tables_and_headings(self, text, changes):
+        out = []
+        for line in text.split("\n"):
+            m = re.match(r"^(#{1,6}\s+)(.+?)\s*$", line)
+            if m:
+                new = self._exact(m.group(2))
+                if new and new != m.group(2):
+                    changes.append((m.group(2), new))
+                    line = m.group(1) + new
+            elif line.lstrip().startswith("|") and "---" not in line:
+                cells = line.split("|")
+                for i, cell in enumerate(cells):
+                    core = cell.strip()
+                    new = self._exact(core) if core and "`" not in core else None
+                    if new and new != core:
+                        changes.append((core, new))
+                        cells[i] = cell.replace(core, new)
+                line = "|".join(cells)
+            out.append(line)
+        return "\n".join(out)
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     lang, files = args[0], args[1:]
-    conv = Converter(lang)
+    conv = Converter(lang, tables="--tables" in sys.argv, prose="--prose" in sys.argv)
     total = 0
     for f in files:
         text = Path(f).read_text(encoding="utf-8")

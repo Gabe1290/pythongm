@@ -24,17 +24,17 @@
 
 ---
 
-### Begin Step
+### Début d'étape
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `begin_step` |
 | **Icône** | ▶️ |
-| **Catégorie** | Step |
+| **Catégorie** | Étape |
 | **Préréglage** | Débutant |
 
 **Description :** Se déclenche au début de chaque frame, avant les événements Step réguliers.
 
-**Ordre d'exécution :** Begin Step → Step → End Step
+**Ordre d'exécution :** Début d'étape → Step → Fin d'étape
 
 **Utilisations courantes :**
 - Traitement des entrées
@@ -42,12 +42,12 @@
 
 ---
 
-### End Step
+### Fin d'étape
 | Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `end_step` |
 | **Icône** | ⏹️ |
-| **Catégorie** | Step |
+| **Catégorie** | Étape |
 | **Préréglage** | Débutant |
 
 **Description :** Se déclenche à la fin de chaque frame, après les collisions.

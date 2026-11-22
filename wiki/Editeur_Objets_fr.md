@@ -16,7 +16,7 @@ Les objets sont les éléments de base de votre jeu. Ils représentent tout, des
 2. Clic droit sur **Objets** > **Créer un objet**
 
 ![L'Éditeur d'Objets : une liste d'événements à gauche (Create, Step,
-plusieurs événements de Collision, Keyboard, No More Lives, Game Start),
+plusieurs événements de Collision, Keyboard, Plus de vies, Début du jeu),
 les propriétés de l'objet (sprite, parent, Visible/Persistent/Solid) à
 droite, et les onglets Liste d'Événements / Blockly / Éditeur de Code qui
 changent la façon d'écrire les actions de chaque
