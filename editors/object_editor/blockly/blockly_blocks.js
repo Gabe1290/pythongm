@@ -1437,15 +1437,15 @@ Blockly.Blocks['thymio_set_motor_speed'] = {
     init: function() {
         this.appendValueInput("LEFT_SPEED")
             .setCheck("Number")
-            .appendField("Set motor speeds - Left:");
+            .appendField(thymioMsg("Set motor speeds - Left:"));
         this.appendValueInput("RIGHT_SPEED")
             .setCheck("Number")
-            .appendField("Right:");
+            .appendField(thymioMsg("Right:"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Set left and right motor speeds (-500 to 500)");
+        this.setTooltip(thymioMsg("Set left and right motor speeds (-500 to 500)"));
     }
 };
 
@@ -1453,11 +1453,11 @@ Blockly.Blocks['thymio_move_forward'] = {
     init: function() {
         this.appendValueInput("SPEED")
             .setCheck("Number")
-            .appendField("Move forward at speed");
+            .appendField(thymioMsg("Move forward at speed"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Move forward at specified speed (0-500)");
+        this.setTooltip(thymioMsg("Move forward at specified speed (0-500)"));
     }
 };
 
@@ -1465,11 +1465,11 @@ Blockly.Blocks['thymio_move_backward'] = {
     init: function() {
         this.appendValueInput("SPEED")
             .setCheck("Number")
-            .appendField("Move backward at speed");
+            .appendField(thymioMsg("Move backward at speed"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Move backward at specified speed (0-500)");
+        this.setTooltip(thymioMsg("Move backward at specified speed (0-500)"));
     }
 };
 
@@ -1477,11 +1477,11 @@ Blockly.Blocks['thymio_turn_left'] = {
     init: function() {
         this.appendValueInput("SPEED")
             .setCheck("Number")
-            .appendField("Turn left at speed");
+            .appendField(thymioMsg("Turn left at speed"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Turn left in place (0-500)");
+        this.setTooltip(thymioMsg("Turn left in place (0-500)"));
     }
 };
 
@@ -1489,22 +1489,22 @@ Blockly.Blocks['thymio_turn_right'] = {
     init: function() {
         this.appendValueInput("SPEED")
             .setCheck("Number")
-            .appendField("Turn right at speed");
+            .appendField(thymioMsg("Turn right at speed"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Turn right in place (0-500)");
+        this.setTooltip(thymioMsg("Turn right in place (0-500)"));
     }
 };
 
 Blockly.Blocks['thymio_stop_motors'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Stop motors");
+            .appendField(thymioMsg("Stop motors"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#27AE60");
-        this.setTooltip("Stop both motors");
+        this.setTooltip(thymioMsg("Stop both motors"));
     }
 };
 
@@ -1516,18 +1516,18 @@ Blockly.Blocks['thymio_set_led_top'] = {
     init: function() {
         this.appendValueInput("RED")
             .setCheck("Number")
-            .appendField("Set top LED - Red:");
+            .appendField(thymioMsg("Set top LED - Red:"));
         this.appendValueInput("GREEN")
             .setCheck("Number")
-            .appendField("Green:");
+            .appendField(thymioMsg("Green:"));
         this.appendValueInput("BLUE")
             .setCheck("Number")
-            .appendField("Blue:");
+            .appendField(thymioMsg("Blue:"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Set top RGB LED color (0-32 for each channel)");
+        this.setTooltip(thymioMsg("Set top RGB LED color (0-32 for each channel)"));
     }
 };
 
@@ -1535,18 +1535,18 @@ Blockly.Blocks['thymio_set_led_bottom_left'] = {
     init: function() {
         this.appendValueInput("RED")
             .setCheck("Number")
-            .appendField("Set bottom left LED - Red:");
+            .appendField(thymioMsg("Set bottom left LED - Red:"));
         this.appendValueInput("GREEN")
             .setCheck("Number")
-            .appendField("Green:");
+            .appendField(thymioMsg("Green:"));
         this.appendValueInput("BLUE")
             .setCheck("Number")
-            .appendField("Blue:");
+            .appendField(thymioMsg("Blue:"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Set bottom left RGB LED color (0-32 for each channel)");
+        this.setTooltip(thymioMsg("Set bottom left RGB LED color (0-32 for each channel)"));
     }
 };
 
@@ -1554,43 +1554,43 @@ Blockly.Blocks['thymio_set_led_bottom_right'] = {
     init: function() {
         this.appendValueInput("RED")
             .setCheck("Number")
-            .appendField("Set bottom right LED - Red:");
+            .appendField(thymioMsg("Set bottom right LED - Red:"));
         this.appendValueInput("GREEN")
             .setCheck("Number")
-            .appendField("Green:");
+            .appendField(thymioMsg("Green:"));
         this.appendValueInput("BLUE")
             .setCheck("Number")
-            .appendField("Blue:");
+            .appendField(thymioMsg("Blue:"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Set bottom right RGB LED color (0-32 for each channel)");
+        this.setTooltip(thymioMsg("Set bottom right RGB LED color (0-32 for each channel)"));
     }
 };
 
 Blockly.Blocks['thymio_set_led_circle'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Set circle LED")
+            .appendField(thymioMsg("Set circle LED"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Front", "0"],
+                [thymioMsg("0 - Front"), "0"],
                 ["1", "1"],
                 ["2", "2"],
-                ["3 - Right", "3"],
-                ["4 - Back", "4"],
+                [thymioMsg("3 - Right"), "3"],
+                [thymioMsg("4 - Back"), "4"],
                 ["5", "5"],
                 ["6", "6"],
-                ["7 - Left", "7"]
+                [thymioMsg("7 - Left"), "7"]
             ]), "LED_INDEX");
         this.appendValueInput("INTENSITY")
             .setCheck("Number")
-            .appendField("to intensity");
+            .appendField(thymioMsg("to intensity"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Set one of the 8 circle LEDs (0-32)");
+        this.setTooltip(thymioMsg("Set one of the 8 circle LEDs (0-32)"));
     }
 };
 
@@ -1598,7 +1598,7 @@ Blockly.Blocks['thymio_set_led_circle_all'] = {
     init: function() {
         this.appendValueInput("LED0")
             .setCheck("Number")
-            .appendField("Set all circle LEDs - 0:");
+            .appendField(thymioMsg("Set all circle LEDs - 0:"));
         this.appendValueInput("LED1")
             .setCheck("Number")
             .appendField("1:");
@@ -1624,18 +1624,18 @@ Blockly.Blocks['thymio_set_led_circle_all'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Set all 8 circle LEDs at once (0-32 each)");
+        this.setTooltip(thymioMsg("Set all 8 circle LEDs at once (0-32 each)"));
     }
 };
 
 Blockly.Blocks['thymio_leds_off'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Turn off all LEDs");
+            .appendField(thymioMsg("Turn off all LEDs"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#F1C40F");
-        this.setTooltip("Turn off all LEDs");
+        this.setTooltip(thymioMsg("Turn off all LEDs"));
     }
 };
 
@@ -1647,49 +1647,49 @@ Blockly.Blocks['thymio_play_tone'] = {
     init: function() {
         this.appendValueInput("FREQUENCY")
             .setCheck("Number")
-            .appendField("Play tone at frequency");
+            .appendField(thymioMsg("Play tone at frequency"));
         this.appendValueInput("DURATION")
             .setCheck("Number")
-            .appendField("Hz for");
+            .appendField(thymioMsg("Hz for"));
         this.appendDummyInput()
-            .appendField("sixtieths of second");
+            .appendField(thymioMsg("sixtieths of second"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#9B59B6");
-        this.setTooltip("Play a tone (frequency in Hz, duration in 1/60 second units)");
+        this.setTooltip(thymioMsg("Play a tone (frequency in Hz, duration in 1/60 second units)"));
     }
 };
 
 Blockly.Blocks['thymio_play_system_sound'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Play system sound")
+            .appendField(thymioMsg("Play system sound"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Startup", "0"],
-                ["1 - Shutdown", "1"],
-                ["2 - Arrow", "2"],
-                ["3 - Central", "3"],
-                ["4 - Free Fall", "4"],
-                ["5 - Collision", "5"],
-                ["6 - Target Friendly", "6"],
-                ["7 - Target Detected", "7"]
+                [thymioMsg("0 - Startup"), "0"],
+                [thymioMsg("1 - Shutdown"), "1"],
+                [thymioMsg("2 - Arrow"), "2"],
+                [thymioMsg("3 - Central"), "3"],
+                [thymioMsg("4 - Free Fall"), "4"],
+                [thymioMsg("5 - Collision"), "5"],
+                [thymioMsg("6 - Target Friendly"), "6"],
+                [thymioMsg("7 - Target Detected"), "7"]
             ]), "SOUND_ID");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#9B59B6");
-        this.setTooltip("Play a built-in system sound");
+        this.setTooltip(thymioMsg("Play a built-in system sound"));
     }
 };
 
 Blockly.Blocks['thymio_stop_sound'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Stop sound");
+            .appendField(thymioMsg("Stop sound"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#9B59B6");
-        this.setTooltip("Stop currently playing sound");
+        this.setTooltip(thymioMsg("Stop currently playing sound"));
     }
 };
 
@@ -1700,65 +1700,65 @@ Blockly.Blocks['thymio_stop_sound'] = {
 Blockly.Blocks['thymio_read_proximity'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Read proximity sensor")
+            .appendField(thymioMsg("Read proximity sensor"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Front Left Far", "0"],
-                ["1 - Front Left", "1"],
-                ["2 - Front Center", "2"],
-                ["3 - Front Right", "3"],
-                ["4 - Front Right Far", "4"],
-                ["5 - Back Left", "5"],
-                ["6 - Back Right", "6"]
+                [thymioMsg("0 - Front Left Far"), "0"],
+                [thymioMsg("1 - Front Left"), "1"],
+                [thymioMsg("2 - Front Center"), "2"],
+                [thymioMsg("3 - Front Right"), "3"],
+                [thymioMsg("4 - Front Right Far"), "4"],
+                [thymioMsg("5 - Back Left"), "5"],
+                [thymioMsg("6 - Back Right"), "6"]
             ]), "SENSOR_INDEX");
         this.appendDummyInput()
-            .appendField("into variable")
+            .appendField(thymioMsg("into variable"))
             .appendField(new Blockly.FieldTextInput("prox_value"), "VARIABLE");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#3498DB");
-        this.setTooltip("Read proximity sensor value (0-4000) into variable");
+        this.setTooltip(thymioMsg("Read proximity sensor value (0-4000) into variable"));
     }
 };
 
 Blockly.Blocks['thymio_read_ground'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Read ground sensor")
+            .appendField(thymioMsg("Read ground sensor"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Left", "0"],
-                ["1 - Right", "1"]
+                [thymioMsg("0 - Left"), "0"],
+                [thymioMsg("1 - Right"), "1"]
             ]), "SENSOR_INDEX");
         this.appendDummyInput()
-            .appendField("into variable")
+            .appendField(thymioMsg("into variable"))
             .appendField(new Blockly.FieldTextInput("ground_value"), "VARIABLE");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#3498DB");
-        this.setTooltip("Read ground sensor value into variable");
+        this.setTooltip(thymioMsg("Read ground sensor value into variable"));
     }
 };
 
 Blockly.Blocks['thymio_read_button'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Read button")
+            .appendField(thymioMsg("Read button"))
             .appendField(new Blockly.FieldDropdown([
-                ["forward", "forward"],
-                ["backward", "backward"],
-                ["left", "left"],
-                ["right", "right"],
-                ["center", "center"]
+                [thymioMsg("forward"), "forward"],
+                [thymioMsg("backward"), "backward"],
+                [thymioMsg("left"), "left"],
+                [thymioMsg("right"), "right"],
+                [thymioMsg("center"), "center"]
             ]), "BUTTON");
         this.appendDummyInput()
-            .appendField("into variable")
+            .appendField(thymioMsg("into variable"))
             .appendField(new Blockly.FieldTextInput("button_state"), "VARIABLE");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#3498DB");
-        this.setTooltip("Read button state (0=released, 1=pressed) into variable");
+        this.setTooltip(thymioMsg("Read button state (0=released, 1=pressed) into variable"));
     }
 };
 
@@ -1769,15 +1769,15 @@ Blockly.Blocks['thymio_read_button'] = {
 Blockly.Blocks['thymio_if_proximity'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If proximity sensor")
+            .appendField(thymioMsg("If proximity sensor"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Front Left Far", "0"],
-                ["1 - Front Left", "1"],
-                ["2 - Front Center", "2"],
-                ["3 - Front Right", "3"],
-                ["4 - Front Right Far", "4"],
-                ["5 - Back Left", "5"],
-                ["6 - Back Right", "6"]
+                [thymioMsg("0 - Front Left Far"), "0"],
+                [thymioMsg("1 - Front Left"), "1"],
+                [thymioMsg("2 - Front Center"), "2"],
+                [thymioMsg("3 - Front Right"), "3"],
+                [thymioMsg("4 - Front Right Far"), "4"],
+                [thymioMsg("5 - Back Left"), "5"],
+                [thymioMsg("6 - Back Right"), "6"]
             ]), "SENSOR_INDEX")
             .appendField(new Blockly.FieldDropdown([
                 [">", ">"],
@@ -1791,111 +1791,111 @@ Blockly.Blocks['thymio_if_proximity'] = {
             .setCheck("Number");
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if proximity sensor matches condition (0-4000)");
+        this.setTooltip(thymioMsg("Execute actions if proximity sensor matches condition (0-4000)"));
     }
 };
 
 Blockly.Blocks['thymio_if_ground_dark'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If ground sensor")
+            .appendField(thymioMsg("If ground sensor"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Left", "0"],
-                ["1 - Right", "1"]
+                [thymioMsg("0 - Left"), "0"],
+                [thymioMsg("1 - Right"), "1"]
             ]), "SENSOR_INDEX")
-            .appendField("is dark (below");
+            .appendField(thymioMsg("is dark (below"));
         this.appendValueInput("THRESHOLD")
             .setCheck("Number");
         this.appendDummyInput()
             .appendField(")");
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if ground sensor detects dark surface");
+        this.setTooltip(thymioMsg("Execute actions if ground sensor detects dark surface"));
     }
 };
 
 Blockly.Blocks['thymio_if_ground_light'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If ground sensor")
+            .appendField(thymioMsg("If ground sensor"))
             .appendField(new Blockly.FieldDropdown([
-                ["0 - Left", "0"],
-                ["1 - Right", "1"]
+                [thymioMsg("0 - Left"), "0"],
+                [thymioMsg("1 - Right"), "1"]
             ]), "SENSOR_INDEX")
-            .appendField("is light (above");
+            .appendField(thymioMsg("is light (above"));
         this.appendValueInput("THRESHOLD")
             .setCheck("Number");
         this.appendDummyInput()
             .appendField(")");
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if ground sensor detects light surface");
+        this.setTooltip(thymioMsg("Execute actions if ground sensor detects light surface"));
     }
 };
 
 Blockly.Blocks['thymio_if_button_pressed'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If button")
+            .appendField(thymioMsg("If button"))
             .appendField(new Blockly.FieldDropdown([
-                ["forward", "forward"],
-                ["backward", "backward"],
-                ["left", "left"],
-                ["right", "right"],
-                ["center", "center"]
+                [thymioMsg("forward"), "forward"],
+                [thymioMsg("backward"), "backward"],
+                [thymioMsg("left"), "left"],
+                [thymioMsg("right"), "right"],
+                [thymioMsg("center"), "center"]
             ]), "BUTTON")
-            .appendField("is pressed");
+            .appendField(thymioMsg("is pressed"));
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if button is currently pressed");
+        this.setTooltip(thymioMsg("Execute actions if button is currently pressed"));
     }
 };
 
 Blockly.Blocks['thymio_if_button_released'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If button")
+            .appendField(thymioMsg("If button"))
             .appendField(new Blockly.FieldDropdown([
-                ["forward", "forward"],
-                ["backward", "backward"],
-                ["left", "left"],
-                ["right", "right"],
-                ["center", "center"]
+                [thymioMsg("forward"), "forward"],
+                [thymioMsg("backward"), "backward"],
+                [thymioMsg("left"), "left"],
+                [thymioMsg("right"), "right"],
+                [thymioMsg("center"), "center"]
             ]), "BUTTON")
-            .appendField("is released");
+            .appendField(thymioMsg("is released"));
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if button is currently released");
+        this.setTooltip(thymioMsg("Execute actions if button is currently released"));
     }
 };
 
 Blockly.Blocks['thymio_if_variable'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("If variable")
+            .appendField(thymioMsg("If variable"))
             .appendField(new Blockly.FieldTextInput("state"), "VARIABLE")
             .appendField(new Blockly.FieldDropdown([
                 ["==", "=="],
@@ -1909,12 +1909,12 @@ Blockly.Blocks['thymio_if_variable'] = {
             .setCheck("Number");
         this.appendStatementInput("DO")
             .setCheck(null)
-            .appendField("then");
+            .appendField(thymioMsg("then"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#E67E22");
-        this.setTooltip("Execute actions if variable matches condition");
+        this.setTooltip(thymioMsg("Execute actions if variable matches condition"));
     }
 };
 
@@ -1925,21 +1925,21 @@ Blockly.Blocks['thymio_if_variable'] = {
 Blockly.Blocks['thymio_set_timer_period'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Set Thymio timer")
+            .appendField(thymioMsg("Set Thymio timer"))
             .appendField(new Blockly.FieldDropdown([
                 ["0", "0"],
                 ["1", "1"]
             ]), "TIMER_ID");
         this.appendValueInput("PERIOD")
             .setCheck("Number")
-            .appendField("period to");
+            .appendField(thymioMsg("period to"));
         this.appendDummyInput()
-            .appendField("ms");
+            .appendField(thymioMsg("ms"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#FF6B6B");
-        this.setTooltip("Set timer period in milliseconds");
+        this.setTooltip(thymioMsg("Set timer period in milliseconds"));
     }
 };
 
@@ -1950,47 +1950,47 @@ Blockly.Blocks['thymio_set_timer_period'] = {
 Blockly.Blocks['thymio_set_variable'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Set Thymio variable")
+            .appendField(thymioMsg("Set Thymio variable"))
             .appendField(new Blockly.FieldTextInput("state"), "VARIABLE");
         this.appendValueInput("VALUE")
             .setCheck("Number")
-            .appendField("to");
+            .appendField(thymioMsg("to"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#2ECC71");
-        this.setTooltip("Set a Thymio variable (-32768 to 32767)");
+        this.setTooltip(thymioMsg("Set a Thymio variable (-32768 to 32767)"));
     }
 };
 
 Blockly.Blocks['thymio_increase_variable'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Increase Thymio variable")
+            .appendField(thymioMsg("Increase Thymio variable"))
             .appendField(new Blockly.FieldTextInput("counter"), "VARIABLE");
         this.appendValueInput("AMOUNT")
             .setCheck("Number")
-            .appendField("by");
+            .appendField(thymioMsg("by"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#2ECC71");
-        this.setTooltip("Increase a Thymio variable by amount");
+        this.setTooltip(thymioMsg("Increase a Thymio variable by amount"));
     }
 };
 
 Blockly.Blocks['thymio_decrease_variable'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Decrease Thymio variable")
+            .appendField(thymioMsg("Decrease Thymio variable"))
             .appendField(new Blockly.FieldTextInput("counter"), "VARIABLE");
         this.appendValueInput("AMOUNT")
             .setCheck("Number")
-            .appendField("by");
+            .appendField(thymioMsg("by"));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#2ECC71");
-        this.setTooltip("Decrease a Thymio variable by amount");
+        this.setTooltip(thymioMsg("Decrease a Thymio variable by amount"));
     }
 };
