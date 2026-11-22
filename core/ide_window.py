@@ -942,9 +942,18 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.menuBar().clear()
             self.create_menu_bar()
 
-            # Remove existing toolbar before creating new one
-            existing_toolbar = self.findChild(QToolBar, "MainToolbar")
-            if existing_toolbar:
+            # Remove EVERY existing main toolbar before creating the new one.
+            # deleteLater() keeps a removed toolbar alive (and findable) until
+            # the event loop runs, and startup sends several LanguageChange
+            # events in a row (main.py's retranslate_all reaches every widget):
+            # a single findChild then returned the already-removed toolbar, the
+            # live one stayed, and a second toolbar appeared beside it holding
+            # the previous menus' actions -- disabled before the project opened
+            # and never updated again (a grey Test Game button next to the
+            # working one). Renaming the old toolbar keeps it out of any later
+            # lookup.
+            for existing_toolbar in self.findChildren(QToolBar, "MainToolbar"):
+                existing_toolbar.setObjectName("")
                 self.removeToolBar(existing_toolbar)
                 existing_toolbar.deleteLater()
             self.create_toolbar()
