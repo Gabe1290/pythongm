@@ -352,8 +352,8 @@
 
 | Объект | Спрайт | Solid | События |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Да | Keyboard (Left/Right), Keyboard Release |
-| `obj_ball` | `spr_ball` | Да | Create, Collision (paddle, bricks), Outside Room |
+| `obj_paddle` | `spr_paddle` | Да | Keyboard (Left/Right), Отпускание клавиши |
+| `obj_ball` | `spr_ball` | Да | Create, Collision (paddle, bricks), Вне комнаты |
 | `obj_brick_1` | `spr_brick_1` | Да | Collision (ball) - Уничтожить себя |
 | `obj_brick_2` | `spr_brick_2` | Да | Наследует от `obj_brick_1` |
 | `obj_brick_3` | `spr_brick_3` | Да | Нет (просто стена) |

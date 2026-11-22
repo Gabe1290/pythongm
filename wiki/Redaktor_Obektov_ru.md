@@ -18,7 +18,7 @@
 2. Кликните правой кнопкой на **Objects** > **Create Object**
 
 ![Редактор Объектов: список событий слева (Create, Step, несколько
-событий Collision, Keyboard, No More Lives, Game Start), свойства
+событий Collision, Keyboard, Жизни закончились, Начало игры), свойства
 объекта (sprite, parent, Visible/Persistent/Solid) справа, и вкладки
 Список событий / Blockly / Редактор Кода, переключающие способ
 редактирования действий каждого события](images/object-editor.png)

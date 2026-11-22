@@ -223,7 +223,7 @@
 
 | Объект | Спрайт | Твердый | События |
 |--------|--------|---------|---------|
-| `obj_paddle` | `spr_paddle` | Да | Keyboard (Left/Right), Keyboard Release |
+| `obj_paddle` | `spr_paddle` | Да | Keyboard (Left/Right), Отпускание клавиши |
 | `obj_ball` | `spr_ball` | Да | Create, Collision (paddle, wall, brick) |
 | `obj_brick` | `spr_brick` | Да | Collision (ball) - Уничтожить self |
 | `obj_wall` | `spr_wall` | Да | Не требуется |
