@@ -163,7 +163,7 @@ Ce préréglage active **20** types d'événements et **68** types d'actions.
 | Définir la couleur de dessin | `set_draw_color` | `color` |
 | Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
 
-### Score/Lives/Health
+### Score/Vies/Santé
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|

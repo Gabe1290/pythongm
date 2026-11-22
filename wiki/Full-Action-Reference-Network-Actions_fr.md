@@ -37,7 +37,7 @@ Hôte uniquement : créer une instance qui apparaît automatiquement chez tous l
 | `owner` | Texte | `0` | Le joueur qui pilote cette instance (0 = l'hôte). Souvent global.network_sender dans « Joueur connecté ».; optionnel |
 | `relative` | Oui/Non | Non | Position relative à l'objet qui exécute l'action; optionnel |
 
-### End Turn (File Exchange)
+### Terminer le tour (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -45,7 +45,7 @@ Hôte uniquement : créer une instance qui apparaît automatiquement chez tous l
 | **Icône** | ✅ |
 | **Catégorie** | Réseau |
 
-Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+Envoyer le coup de cette manche : tout ce qui a été préparé avec « Définir une variable partagée (échange de fichiers) » depuis le dernier tour, écrit dans un seul fichier que l'hôte récupère. À appeler une fois par manche, même sans rien de préparé, si le jeu attend une réponse de chaque joueur à chaque manche ; un joueur qui ne l'appelle jamais est ignoré une fois le délai de la manche passé
 
 *Paramètres:* aucun
 
@@ -67,7 +67,7 @@ Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent 
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 | `show_lobby` | Oui/Non | Non | Afficher un écran « En attente de joueurs... » avec un bouton Démarrer avant le début de la partie; optionnel |
 
-### Host a Game (File Exchange)
+### Héberger une partie (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -75,15 +75,15 @@ Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent 
 | **Icône** | 🗂️ |
 | **Catégorie** | Réseau |
 
-Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+Devenir l'hôte d'une partie au tour par tour jouée par un dossier partagé plutôt que par une connexion directe : cela fonctionne derrière le pare-feu d'une école qui bloque les connexions entre machines. À appeler une fois (par exemple dans l'événement Création du contrôleur de la salle). Met global.player_id à 0 et global.is_host à 1
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `folder` | Texte | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `folder` | Texte | — | Chemin d'un dossier accessible aux deux machines (un lecteur réseau, un dossier Dropbox/OneDrive synchronisé, ...) |
 | `max_players` | Nombre | `8` | Nombre maximal de joueurs, hôte compris (de 2 à 16); optionnel |
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
-| `round_deadline` | Nombre | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); optionnel |
-| `show_lobby` | Oui/Non | Non | Show a "Waiting for players..." screen with a Start button before handing control back to the game; optionnel |
+| `round_deadline` | Nombre | `30` | Temps d'attente du coup de chaque joueur avant de passer quand même à la manche suivante (un joueur absent est ignoré pour cette manche au lieu de bloquer la partie); optionnel |
+| `show_lobby` | Oui/Non | Non | Afficher un écran « En attente des joueurs... » avec un bouton Démarrer avant de rendre la main au jeu; optionnel |
 
 ### Si je pilote cette instance
 
@@ -128,7 +128,7 @@ Se connecter à une partie multijoueur LAN hébergée par une autre machine. glo
 | `port` | Nombre | `45782` | Port TCP — doit correspondre à celui de l'hôte; optionnel |
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 
-### Join a Game (File Exchange)
+### Rejoindre une partie (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -136,11 +136,11 @@ Se connecter à une partie multijoueur LAN hébergée par une autre machine. glo
 | **Icône** | 🔌 |
 | **Catégorie** | Réseau |
 
-Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+Rejoindre une partie au tour par tour hébergée par une autre machine à travers un dossier partagé. L'hôte attribue global.player_id (1, 2, ...)
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `folder` | Texte | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `folder` | Texte | — | Chemin du MÊME dossier partagé que celui de l'hôte (« auto » ouvre l'écran intégré pour le saisir) |
 | `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 
 ### Quitter la partie
@@ -155,7 +155,7 @@ Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globa
 
 *Paramètres:* aucun
 
-### Leave the Game (File Exchange)
+### Quitter la partie (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -163,7 +163,7 @@ Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globa
 | **Icône** | 🚪 |
 | **Catégorie** | Réseau |
 
-Stop hosting or leave the game, and clear the global status variables
+Arrêter d'héberger ou quitter la partie, et effacer les variables globales d'état
 
 *Paramètres:* aucun
 
@@ -182,7 +182,7 @@ Copier une variable partagée dans une variable globale (pour l'utiliser dans un
 | `name` | Texte | — | Nom de la variable partagée à lire |
 | `into` | Texte | — | Nom de la variable globale dans laquelle écrire la valeur |
 
-### Read a Shared Variable (File Exchange)
+### Lire une variable partagée (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -190,7 +190,7 @@ Copier une variable partagée dans une variable globale (pour l'utiliser dans un
 | **Icône** | 📥 |
 | **Catégorie** | Réseau |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
+Copier une variable partagée dans une variable globale, pour l'utiliser dans un calcul. Revient à lire global.<nom> directement : c'est la valeur de la dernière manche publiée par l'hôte, pas une valeur en direct
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -213,7 +213,7 @@ Diffuser un message personnalisé. Déclenche l'événement « Message réseau �
 | `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
 | `target` | Choix | `all` | all = tout le monde ; host = l'hôte uniquement; Choix: `all`, `host` |
 
-### Send a Network Message (File Exchange)
+### Envoyer un message réseau (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -221,13 +221,13 @@ Diffuser un message personnalisé. Déclenche l'événement « Message réseau �
 | **Icône** | ✉️ |
 | **Catégorie** | Réseau |
 
-Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+Préparer un message personnalisé, livré comme « Définir une variable partagée (échange de fichiers) » : à la manche suivante, pas tout de suite. Déclenche l'événement « Message réseau (échange de fichiers) », avec global.network_event / global.network_data / global.network_sender
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
 | `event` | Texte | — | Un nom de votre choix que le gestionnaire teste (par ex. "buzz", "answer") |
 | `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
-| `target` | Choix | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Choix: `all`, `host` |
+| `target` | Choix | `all` | all = tout le monde, à la manche suivante ; host = l'hôte seulement, traité dès que la manche se termine; Choix: `all`, `host` |
 
 ### Définir le mode réseau (v1)
 
@@ -260,7 +260,7 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 | `name` | Texte | — | Un identifiant simple (lettres, chiffres, _) — ni espaces ni opérateurs |
 | `value` | Texte | `0` | Un nombre, du texte ou true/false (les objets complexes sont refusés) |
 
-### Set a Shared Variable (File Exchange)
+### Définir une variable partagée (échange de fichiers)
 
 | Propriété | Valeur |
 |----------|-------|
@@ -268,7 +268,7 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 | **Icône** | 📤 |
 | **Catégorie** | Réseau |
 
-Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
+Préparer une variable à publier pour tout le monde. Elle prend effet après « Terminer le tour », quand l'hôte intègre le coup dans la manche suivante, pas tout de suite, car il n'y a pas de connexion directe. Lisible partout sous la forme global.<nom> une fois publiée
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -347,7 +347,7 @@ Marquer l'instance qui exécute l'action comme « synchronisée » : sa position
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (20)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [Score/Vies/Santé](Full-Action-Reference-Score-Lives-Health_fr) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

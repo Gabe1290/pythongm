@@ -144,7 +144,7 @@ Supprime le système de particules de cette instance, en effaçant toutes ses pa
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (20)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_fr) (5)
+- [Score/Vies/Santé](Full-Action-Reference-Score-Lives-Health_fr) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_fr) (16)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

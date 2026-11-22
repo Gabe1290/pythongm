@@ -170,6 +170,14 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
 - [ ] **U4 — Fill the 8 wiki languages' gaps.** Parameter labels (246), event names (23), choice words
   (~60), the 7–23 missing actions and their parameter descriptions; one commit per language
   (fr, de, es, it, pt, ru, sl, uk). Guard test: every kind complete in every language.
+  *Progress:* **fr done 2026-11-22** — 367 entries: 120 parameter labels from the Blockly blocks'
+  `PARAM_LABEL_TRANSLATIONS` and 63 from the `.ts` (one conflict, *Background Color*: the Blockly
+  wording « Couleur d'arrière-plan » kept), the rest new. Event names are nouns (« Création »,
+  « Étape », « Appui sur une touche »…), matching « l'événement Création » already used in the
+  descriptions. `test_core_ui_names.py::test_complete_languages_name_everything` lists the finished
+  languages; the wiki regenerated (« Score/Vies/Santé » and 19 parameter notes now French). Noted for
+  U8: documents also name *parameters* in English (the raycast handouts' « règle **Wall Texture** »),
+  so U8's conversion covers parameter labels as well as action and event names.
 - [ ] **U5 — Polish.** The whole set (~1,050 strings).
 - [ ] **U6 — Japanese.** Same; check widths in the configure dialog (the junior-theme clipping test).
 - [ ] **U7 — Chinese.** Same.

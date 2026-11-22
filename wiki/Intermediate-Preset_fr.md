@@ -220,7 +220,7 @@ Ce préréglage active **21** types d'événements et **123** types d'actions.
 | Supprimer le système de particules | `destroy_particle_system` | — |
 | Émettre des particules en continu | `stream_particles` | `particle_type`, `number` |
 
-### Score/Lives/Health
+### Score/Vies/Santé
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|

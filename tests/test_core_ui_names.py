@@ -84,3 +84,45 @@ def test_ui_name_finds_the_core_tables():
 def test_all_tables_is_keyed_kind_key_lang():
     merged = all_tables()
     assert merged["core.action"]["set_hspeed"]["fr"] == "Définir la vitesse horizontale"
+
+
+# Languages whose table is complete (docs/CORE_NAMES_I18N_PLAN.md U4-U7); grows one language per commit.
+COMPLETE = ["fr"]
+# Choice values shown as they are in every language (operators, digits, axes, micro:bit buttons).
+UNTRANSLATED_CHOICES = {"", "!=", "<", "<=", "==", ">", ">=", "0", "1", "2", "3", "4", "5", "6", "7",
+                        "2g", "3g", "6g", "8g", "a", "b", "ab", "x", "y", "z"}
+
+
+def _wanted(actions, events):
+    """Everything the Standard panel and the action dialog can show, by kind (micro:bit, Thymio and the
+    network events have their own tables)."""
+    want = {kind: set() for kind in KINDS}
+    for key, a in actions.items():
+        if a.category == "micro:bit":
+            continue
+        want["core.action"].add(key)
+        want["core.category"].add(a.category)
+        if a.description:
+            want["core.action_description"].add(key)
+        for p in a.parameters:
+            want["core.param"].add(p.display_name)
+            if p.description:
+                want["core.param_description"].add(p.description)
+            if p.name not in ("then_action", "else_action"):
+                want["core.choice"].update(str(c) for c in (p.choices or []) if str(c) not in UNTRANSLATED_CHOICES)
+    for key, e in events.items():
+        if e.category.startswith(("Thymio", "micro")) or e.category == "Network":
+            continue
+        want["core.event"].add(key)
+        want["core.category"].add(e.category)
+        if e.description:
+            want["core.event_description"].add(key)
+    return want
+
+
+@pytest.mark.parametrize("lang", COMPLETE)
+def test_complete_languages_name_everything(lang, registry):
+    table = language_table(lang)
+    missing = {kind: sorted(keys - set(table.get(kind, {}))) for kind, keys in _wanted(*registry).items()}
+    missing = {kind: keys for kind, keys in missing.items() if keys}
+    assert not missing, missing

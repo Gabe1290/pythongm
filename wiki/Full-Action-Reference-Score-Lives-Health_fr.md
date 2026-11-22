@@ -1,4 +1,4 @@
-# Score/Lives/Health
+# Score/Vies/Santé
 
 *[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Référence des Événements](Event-Reference_fr)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nom** | `clear_highscore` |
 | **Icône** | 🗑️🏆 |
-| **Catégorie** | Score/Lives/Health |
+| **Catégorie** | Score/Vies/Santé |
 
 Effacer toutes les entrées du tableau des scores
 
@@ -22,7 +22,7 @@ Effacer toutes les entrées du tableau des scores
 |----------|-------|
 | **Nom** | `show_highscore` |
 | **Icône** | 🏆 |
-| **Catégorie** | Score/Lives/Health |
+| **Catégorie** | Score/Vies/Santé |
 
 Afficher la boîte de dialogue du tableau des meilleurs scores
 
@@ -39,7 +39,7 @@ Afficher la boîte de dialogue du tableau des meilleurs scores
 |----------|-------|
 | **Nom** | `test_health` |
 | **Icône** | ❓💚 |
-| **Catégorie** | Score/Lives/Health |
+| **Catégorie** | Score/Vies/Santé |
 
 Condition : comparer la santé actuelle à une valeur
 
@@ -54,7 +54,7 @@ Condition : comparer la santé actuelle à une valeur
 |----------|-------|
 | **Nom** | `test_lives` |
 | **Icône** | ❓❤️ |
-| **Catégorie** | Score/Lives/Health |
+| **Catégorie** | Score/Vies/Santé |
 
 Condition : comparer le nombre de vies à une valeur
 
@@ -69,7 +69,7 @@ Condition : comparer le nombre de vies à une valeur
 |----------|-------|
 | **Nom** | `test_score` |
 | **Icône** | ❓🏆 |
-| **Catégorie** | Score/Lives/Health |
+| **Catégorie** | Score/Vies/Santé |
 
 Condition : comparer le score à une valeur
 
