@@ -144,7 +144,7 @@
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (20)
 - [Рисование](Full-Action-Reference-Drawing_ru) (11)
 - [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_ru) (5)
+- [Счёт/Жизни/Здоровье](Full-Action-Reference-Score-Lives-Health_ru) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_ru) (16)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)
