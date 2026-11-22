@@ -58,12 +58,9 @@
             "description": "Crea un clásico juego de rompecabezas de empujar cajas",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_crate_behavior.html",
-                "05_player_movement.html",
-                "06_win_condition.html",
-                "07_room_setup.html"
+                "02_player_and_walls.html",
+                "03_pushing_crates.html",
+                "04_targets_and_controller.html"
             ],
             "thumbnail": "thumbnails/05_sokoban.png"
         },

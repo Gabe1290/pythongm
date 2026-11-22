@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Empujar cajas</h1>
+
+    <p>¡Ahora añadimos cajas que el jugador puede empujar &mdash; la mecánica central de Sokoban!</p>
+
+    <h2>Crear el sprite de la caja</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Sprites</strong> &rarr; <strong>Crear sprite</strong></li>
+            <li>Llámalo <code>spr_crate</code> (32&times;32 píxeles)</li>
+            <li>Dibuja una caja marrón o impórtala de <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Pulsa <strong>Ctrl+S</strong> para guardar</li>
+        </ol>
+    </div>
+
+    <h2>Crear el objeto de la caja</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> &rarr; <strong>Crear objeto</strong></li>
+            <li>Llámalo <code>obj_crate</code> y asígnale el sprite <code>spr_crate</code></li>
+            <li>Marca la casilla <strong>Sólido</strong></li>
+        </ol>
+    </div>
+
+    <h2>Cambiar al jugador: empujar cajas</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_player</code> para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+            <li>Añade un nuevo evento de colisión con <code>obj_crate</code>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_crate</span><br>
+            <span class="block block-control block-indent">If Can Push <span class="block-val">box</span> in direction <span class="block-val">facing</span> then <span class="block-val">push and move</span> else <span class="block-val">stop movement</span></span>
+        </div>
+        <p>Busca <strong>Collision</strong> en <em>Events</em> y escribe <code>obj_crate</code>.
+        Luego busca <strong>If Can Push</strong> en <em>Control</em> &mdash; es un solo bloque que comprueba
+        si la caja se puede empujar en la dirección en que se mueve el jugador, y hace el empujón él mismo:
+        <strong>Object Type</strong> <code>box</code>, <strong>Direction</strong> <code>facing</code>,
+        <strong>Then Action</strong> <code>push and move</code>, <strong>Else Action</strong>
+        <code>stop movement</code>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Cómo funciona el empujón:</strong> cuando el jugador choca con una caja, el motor comprueba
+        si el espacio detrás de la caja (en la dirección en que se mueve el jugador) está libre.
+        Si lo está, la caja avanza una casilla. Si detrás hay una pared u otra caja,
+        el empujón queda bloqueado.
+    </div>
+
+    <h2>Programar la caja: detenerse en las paredes</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_crate</code> para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+            <li>Añade un evento de colisión con <code>obj_wall</code>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Así las cajas se detienen al chocar con una pared.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Cambiar la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abre <code>room_sokoban</code></li>
+            <li>Coloca 2&ndash;3 instancias de <code>obj_crate</code> dentro de la sala</li>
+            <li>Asegúrate de que cada caja tenga espacio para empujarla</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Consejo:</strong> no pongas una caja pegada a una esquina &mdash; ¡quedaría atascada desde el principio!
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Acércate a una caja y empújala con las <strong>flechas</strong></li>
+            <li>Las cajas avanzan una casilla al empujarlas</li>
+            <li>Las cajas se detienen al chocar con una pared</li>
+            <li>No puedes empujar una caja si detrás hay otra caja o una pared</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        ¡Haz clic en «Siguiente» para añadir destinos y terminar el juego!
+    </div>
+</body>
+</html>
