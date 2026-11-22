@@ -1,6 +1,6 @@
 # Translating the Thymio events panel and action list — plan (2026-11-22)
 
-**Status: plan only, nothing implemented.** Asked for by the owner after the Thymio Blockly blocks
+**Status: owner chose the recommendations (2026-11-22); in progress — see the checkboxes.** Asked for by the owner after the Thymio Blockly blocks
 and Configure dialog were translated (`docs/THYMIO_BLOCKS_I18N_2026-11-22.md`). Decisions D1–D4 below
 need the owner's answer before U1 starts.
 
@@ -67,6 +67,14 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
 
 ## Units (one commit each, assuming the recommendations)
 
+- [x] **U0 — DONE 2026-11-22: choice text IS the stored value.** `GM80ActionDialog` (the configure
+  dialog every Thymio action uses) fills choice combos with `addItems(options)` and saves
+  `currentText()`; on reopen it calls `setCurrentText(saved)`. So a project stores the full English
+  label (`"0 - Startup"`, `"2 - Front Center"`), and both readers recover the index from it: the Aseba
+  exporter (`_choice_index`, split on `" - "`) and the simulator (`handlers._CHOICE_LABEL_RE`,
+  `^\d+ - [A-Za-z]` -- a Latin letter, so a Cyrillic or Japanese label would silently fall back). **U3
+  must therefore show the translation but keep the English label as the item's data, save the data, and
+  select by data on reopen.** Projects keep storing English labels; nothing else changes.
 - **U0 — Verify the value/label split.** For every Thymio parameter with choices, confirm what is
   stored (text or index) in a saved project, the Aseba exporter and the simulator. Record the answer
   here. If a choice's text is its stored value, U3 must use item data. No user-visible change.
