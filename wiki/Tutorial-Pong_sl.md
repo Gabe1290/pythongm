@@ -214,9 +214,9 @@ Cilji so nevidni predeli za vsakim veslom. Ko žoga vstopi v cilj, nasprotnik zb
 ### 6.3 Dodaj dogodke trčenja ciljev v žogo
 
 `global.p1score`/`global.p2score` sta spremenljivki po meri, ena za
-vsakega igralca — vgrajena akcija **Set Score** tukaj ne ustreza, saj
+vsakega igralca — vgrajena akcija **Nastavi rezultat** tukaj ne ustreza, saj
 vedno zapiše enotni vgrajeni rezultat, brez možnosti, da bi kazala na
-ime spremenljivke. **Set Variable** je prava akcija za spremenljivko
+ime spremenljivke. **Nastavi spremenljivko** je prava akcija za spremenljivko
 po meri in podpira obseg `global`:
 
 Pojdi nazaj k `obj_ball` in dodaj te dogodke:
@@ -224,7 +224,7 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 **Dogodek: Trčenje z obj_goal_left**
 1. Dodaj dogodek → Trčenje → obj_goal_left
 2. Dodaj akcijo: **Gibanje** → **Skoči na začetni položaj** (ponastavi žogo)
-3. Dodaj akcijo: **Nadzor** → **Set Variable**
+3. Dodaj akcijo: **Nadzor** → **Nastavi spremenljivko**
    - Spremenljivka: `p2score`
    - Vrednost: `1`
    - Obseg: `global`
@@ -233,7 +233,7 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 **Dogodek: Trčenje z obj_goal_right**
 1. Dodaj dogodek → Trčenje → obj_goal_right
 2. Dodaj akcijo: **Gibanje** → **Skoči na začetni položaj**
-3. Dodaj akcijo: **Nadzor** → **Set Variable**
+3. Dodaj akcijo: **Nadzor** → **Nastavi spremenljivko**
    - Spremenljivka: `p1score`
    - Vrednost: `1`
    - Obseg: `global`
@@ -250,14 +250,14 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 
 **Dogodek: Ustvari**
 1. Dodaj dogodek → Ustvari
-2. Dodaj akcijo: **Nadzor** → **Set Variable**
+2. Dodaj akcijo: **Nadzor** → **Nastavi spremenljivko**
    - Spremenljivka: `p1score`, Vrednost: `0`, Obseg: `global`
-3. Dodaj akcijo: **Nadzor** → **Set Variable**
+3. Dodaj akcijo: **Nadzor** → **Nastavi spremenljivko**
    - Spremenljivka: `p2score`, Vrednost: `0`, Obseg: `global`
 
 **Dogodek: Risanje**
 1. Dodaj dogodek → Risanje
-2. Dodaj akcijo: **Risanje** → **Nariši besedilo**
+2. Dodaj akcijo: **Igra** → **Nariši besedilo**
    - Besedilo: `Igralec 1:`
    - X: `10`
    - Y: `10`
@@ -265,7 +265,7 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
    - Spremenljivka: `global.p1score`
    - X: `100`
    - Y: `10`
-4. Dodaj akcijo: **Risanje** → **Nariši besedilo**
+4. Dodaj akcijo: **Igra** → **Nariši besedilo**
    - Besedilo: `Igralec 2:`
    - X: `10`
    - Y: `30`
@@ -328,7 +328,7 @@ ne hitrost gibanja — zato hitrost žoge sledi v spremenljivki po meri:
    Variable** (Spremenljivka: `ball_speed`, Vrednost: `6`) takoj za
    akcijo Začni se premikati.
 2. V vsakem dogodku trčenja z veslom, po akciji **Odbij se**, dodaj
-   **Nadzor** → **Set Variable** (Spremenljivka: `ball_speed`,
+   **Nadzor** → **Nastavi spremenljivko** (Spremenljivka: `ball_speed`,
    Vrednost: `0.5`, označeno "Relative"), nato **Gibanje** → **Nastavi
    hitrost** z vrednostjo `self.ball_speed`, da uveljaviš novo hitrost
    ob ohranitvi trenutne smeri (Odbij se jo je že obrnil).

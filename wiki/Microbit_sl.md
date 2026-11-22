@@ -72,7 +72,7 @@ Klik na ploščico ne sproži še vaših lastnih dogodkov miške.
 | **Set Display Brightness** (`microbit_set_brightness`) | Splošna svetlost, 0–255. |
 | **Play Tone** (`microbit_play_tone`) | Pisk s frekvenco za določeno število milisekund. |
 | **Play Melody** (`microbit_play_melody`) | Ena od 21 vgrajenih melodij (`DADADADUM`, `ENTERTAINER`, `POWER_UP`…) ali vaše note: `"C4:4 E G C5:8 R:4"` (nota, oktava, `:dolžina`; `R` je pavza). |
-| **Stop Sound** (`microbit_stop_sound`) | Utiša zvočnik in zavrže zvoke v vrsti. |
+| **Ustavi zvok** (`microbit_stop_sound`) | Utiša zvočnik in zavrže zvoke v vrsti. |
 | **Set Radio Group** (`microbit_radio_set_group`) | Izbere radijsko skupino, 0–255. |
 | **Send Radio Message** (`microbit_radio_send`) | Pošlje število ali besedilo drugim micro:bitom v skupini. |
 | **Read Sensor** (`microbit_read_sensor`) | Odčitek (pospeškomer x/y/z, jakost, kompas, svetloba, temperatura, raven zvoka, analogni priključek 0–2) zapiše v spremenljivko — ali v globalno spremenljivko, če se ime začne z `global.`. |
@@ -108,7 +108,7 @@ Sprožijo se na predmetu samega micro:bita:
 | **Sound Finished** | So vsi toni in melodije v vrsti predvajani. |
 | **Radio Message Received** | Je drug micro:bit v isti skupini poslal sporočilo. |
 
-»Forever« je navadni dogodek **Step**.
+»Forever« je navadni dogodek **Korak**.
 
 ### Radio
 
@@ -127,7 +127,7 @@ blokirati, zato se dejanja zaslona **postavijo v vrsto** in se predvajajo drugo 
 drugim (največ 16; zahteva po tem, kar je že prikazano, ne naredi ničesar).
 **Clear Display** vrsto izprazni, **Display Finished** pa sporoči, kdaj se je
 izpraznila, tako da lahko animacije povezujete v verigo. Zvoki se v vrsto postavijo enako, s
-**Stop Sound** in **Sound Finished**.
+**Ustavi zvok** in **Sound Finished**.
 
 Zvok je pravokotni val, kot pri brenčalu ploščice. Če računalnik nima zvočne
 naprave, se zvok tiho preskoči (simulator ga vseeno spremlja).

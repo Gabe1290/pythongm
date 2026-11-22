@@ -154,9 +154,9 @@ Prva soba v drevesu virov (na vrhu seznama) se naloži ob zagonu igre. Sobe povl
 ### Kako menjam sobo?
 
 Uporabite akcije sobe:
-- **Next Room**: Nadaljuj na naslednjo sobo po vrstnem redu
-- **Previous Room**: Pojdi na prejšnjo sobo
-- **Go to Room**: Skoči na določeno sobo
+- **Naslednja soba**: Nadaljuj na naslednjo sobo po vrstnem redu
+- **Prejšnja soba**: Pojdi na prejšnjo sobo
+- **Pojdi v sobo**: Skoči na določeno sobo
 
 ### Objekti izginejo, ko zamenjam sobo
 
@@ -216,7 +216,7 @@ Preverite:
 
 ### Kako naredim, da se glasba v ozadju predvaja v zanki?
 
-Uporabite akcijo **Play Music** z aktivirano možnostjo zanke, ali **Play Sound** s parametrom loop nastavljenim na true.
+Uporabite akcijo **Predvajaj glasbo** z aktivirano možnostjo zanke, ali **Predvajaj zvok** s parametrom loop nastavljenim na true.
 
 ---
 

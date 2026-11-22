@@ -90,14 +90,14 @@ Igralne entitete s sprite-i, lastnostmi in vedenji. Vsak objekt ima lahko več d
 
 ### Dogodki
 Sprožilci, ki izvršijo akcije, ko se pojavijo določeni pogoji:
-- **Create** - Ko je instanca ustvarjena
-- **Step** - Vsako sličico (običajno 60 FPS)
-- **Draw** - Faza prilagojenega izrisovanja
-- **Destroy** - Ko je instanca uničena
+- **Ustvarjanje** - Ko je instanca ustvarjena
+- **Korak** - Vsako sličico (običajno 60 FPS)
+- **Risanje** - Faza prilagojenega izrisovanja
+- **Uničenje** - Ko je instanca uničena
 - **Keyboard** - Tipka pritisnjena, sproščena ali držana
-- **Mouse** - Kliki, premikanje, vstop/izstop
+- **Miška** - Kliki, premikanje, vstop/izstop
 - **Collision** - Ko se instance dotaknejo
-- **Alarm** - Časovniki odštevanja (12 na voljo)
+- **Budilka** - Časovniki odštevanja (12 na voljo)
 
 Glejte [Referenco Dogodkov](Event-Reference_sl) za popolno dokumentacijo.
 

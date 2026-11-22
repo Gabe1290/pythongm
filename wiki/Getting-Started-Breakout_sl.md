@@ -122,7 +122,7 @@ V igri Breakout moramo premikati lopar, da preprečimo žogi pobeg na dnu. Uprav
 
 **Premikanje Desno:**
 1. Kliknite **Add Event** → **Keyboard** → **Right Arrow**
-2. Iz plošče akcij na desni dodajte akcijo **Set Horizontal Speed**
+2. Iz plošče akcij na desni dodajte akcijo **Nastavi vodoravno hitrost**
 3. Nastavite **vrednost** na `5`
 4. Kliknite **OK**
 
@@ -130,7 +130,7 @@ To pomeni: "Ko je pritisnjena tipka Puščica desno, nastavi vodoravno hitrost n
 
 **Premikanje Levo:**
 1. Kliknite **Add Event** → **Keyboard** → **Left Arrow**
-2. Dodajte akcijo **Set Horizontal Speed**
+2. Dodajte akcijo **Nastavi vodoravno hitrost**
 3. Nastavite **vrednost** na `-5`
 4. Kliknite **OK**
 
@@ -138,12 +138,12 @@ To pomeni: "Ko je pritisnjena tipka Puščica desno, nastavi vodoravno hitrost n
 
 Če zdaj testiramo, bi se lopar še naprej premikal tudi po sprostitvi tipke! Popravimo to:
 
-1. Kliknite **Add Event** → **Keyboard Release** → **Right Arrow**
-2. Dodajte akcijo **Set Horizontal Speed** z vrednostjo `0`
+1. Kliknite **Add Event** → **Spust tipke** → **Right Arrow**
+2. Dodajte akcijo **Nastavi vodoravno hitrost** z vrednostjo `0`
 3. Kliknite **OK**
 
-4. Kliknite **Add Event** → **Keyboard Release** → **Left Arrow**
-5. Dodajte akcijo **Set Horizontal Speed** z vrednostjo `0`
+4. Kliknite **Add Event** → **Spust tipke** → **Left Arrow**
+5. Dodajte akcijo **Nastavi vodoravno hitrost** z vrednostjo `0`
 6. Kliknite **OK**
 
 Zdaj se naš lopar premika, ko so tipke pritisnjene, in se ustavi, ko so sproščene. S tem objektom smo za zdaj končali!
@@ -176,10 +176,10 @@ Zdaj ustvarimo žogo, bistveni element naše igre.
 
 Želimo, da se žoga premika sama od začetka. Dajmo ji začetno hitrost in smer.
 
-1. Kliknite **Add Event** → **Create**
+1. Kliknite **Add Event** → **Ustvarjanje**
    > Dogodek Create izvrši akcije, ko se objekt pojavi v igri, torej ko vstopi na prizorišče.
-2. Dodajte akcijo **Set Horizontal Speed** z vrednostjo `4`
-3. Dodajte akcijo **Set Vertical Speed** z vrednostjo `-4`
+2. Dodajte akcijo **Nastavi vodoravno hitrost** z vrednostjo `4`
+3. Dodajte akcijo **Nastavi navpično hitrost** z vrednostjo `-4`
 4. Kliknite **OK**
 
 To da žogi diagonalno gibanje (desno in gor) na začetku igre.
@@ -190,7 +190,7 @@ Potrebujemo, da se žoga odbije, ko zadene lopar.
 
 1. Kliknite **Add Event** → **Collision** → izberite `obj_paddle`
    > Ta dogodek se sproži, ko se žoga zaleti v lopar.
-2. Dodajte akcijo **Reverse Vertical**
+2. Dodajte akcijo **Obrni navpično**
    > Ta obrne navpično smer, kar povzroči odboj žoge.
 3. Kliknite **OK**
 
@@ -199,8 +199,8 @@ Potrebujemo, da se žoga odbije, ko zadene lopar.
 Enaka operacija za opeke sten:
 
 1. Kliknite **Add Event** → **Collision** → izberite `obj_brick_3`
-2. Dodajte akcijo **Reverse Vertical**
-3. Dodajte akcijo **Reverse Horizontal**
+2. Dodajte akcijo **Obrni navpično**
+3. Dodajte akcijo **Obrni vodoravno**
    > Dodamo obe, ker lahko žoga zadene steno iz različnih kotov.
 4. Kliknite **OK**
 
@@ -251,7 +251,7 @@ Dodajmo nekaj opek za razbijanje, da bo naša igra bolj zabavna.
 Dodali bomo vedenje za samouničenje ob zadetku žoge:
 
 1. Kliknite **Add Event** → **Collision** → izberite `obj_ball`
-2. Dodajte akcijo **Destroy Instance** s ciljem **self**
+2. Dodajte akcijo **Uniči instanco** s ciljem **self**
    > Ta akcija odstrani objekt med igro - tukaj opeko samo.
 3. Kliknite **OK**
 
@@ -275,11 +275,11 @@ Kliknite **OK** za shranjevanje.
 Znova odprite `obj_ball` z dvojnim klikom nanj in dodajte dogodke trčenja za naše nove opeke:
 
 1. Kliknite **Add Event** → **Collision** → izberite `obj_brick_1`
-2. Dodajte akcijo **Reverse Vertical**
+2. Dodajte akcijo **Obrni navpično**
 3. Kliknite **OK**
 
 4. Kliknite **Add Event** → **Collision** → izberite `obj_brick_2`
-5. Dodajte akcijo **Reverse Vertical**
+5. Dodajte akcijo **Obrni navpično**
 6. Kliknite **OK**
 
 ---
@@ -290,8 +290,8 @@ Moramo ponovno zagnati nivo, če žoga pobegne z zaslona (če jo igralec ne ujam
 
 V `obj_ball`:
 
-1. Kliknite **Add Event** → **Other** → **Outside Room**
-2. Dodajte akcijo **Restart Room**
+1. Kliknite **Add Event** → **Other** → **Zunaj sobe**
+2. Dodajte akcijo **Znova zaženi sobo**
    > Ta akcija ponovno zažene trenutno sobo med igro.
 3. Kliknite **OK**
 

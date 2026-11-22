@@ -65,23 +65,23 @@ Zdaj bomo programirali lopar, ki ga igralec nadzoruje.
 
 ### 2.2 Dodaj premikanje z desno puščico
 1. Kliknite **Add Event** → **Keyboard** → izberite **Right Arrow**
-2. Dodajte akcijo **Set Horizontal Speed**
+2. Dodajte akcijo **Nastavi vodoravno hitrost**
 3. Nastavite **value** na `5` (ali katerokoli hitrost želite)
 
 ### 2.3 Dodaj premikanje z levo puščico
 1. Kliknite **Add Event** → **Keyboard** → izberite **Left Arrow**
-2. Dodajte akcijo **Set Horizontal Speed**
+2. Dodajte akcijo **Nastavi vodoravno hitrost**
 3. Nastavite **value** na `-5`
 
 ### 2.4 Ustavi ob sproščeni tipki
 Lopar se premika tudi po sproščeni tipki! Popravimo to.
 
-1. Kliknite **Add Event** → **Keyboard Release** → izberite **Right Arrow**
-2. Dodajte akcijo **Set Horizontal Speed**
+1. Kliknite **Add Event** → **Spust tipke** → izberite **Right Arrow**
+2. Dodajte akcijo **Nastavi vodoravno hitrost**
 3. Nastavite **value** na `0`
 
-4. Kliknite **Add Event** → **Keyboard Release** → izberite **Left Arrow**
-5. Dodajte akcijo **Set Horizontal Speed**
+4. Kliknite **Add Event** → **Spust tipke** → izberite **Left Arrow**
+5. Dodajte akcijo **Nastavi vodoravno hitrost**
 6. Nastavite **value** na `0`
 
 Zdaj se lopar ustavi, ko sprostite puščične tipke.
@@ -98,8 +98,8 @@ Zdaj se lopar ustavi, ko sprostite puščične tipke.
 3. Označite polje **Solid**
 
 ### 3.2 Nastavi začetno gibanje
-1. Kliknite **Add Event** → **Create**
-2. Dodajte akcijo **Start Moving (Direction)** (ali **Set Horizontal/Vertical Speed**)
+1. Kliknite **Add Event** → **Ustvarjanje**
+2. Dodajte akcijo **Začni se premikati (smer)** (ali **Set Horizontal/Vertical Speed**)
 3. Nastavite diagonalno smer s hitrostjo `5`
    - Na primer: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ To povzroči, da se žogica začne premikati ob začetku igre.
 
 ### 3.3 Odbij se od loparja
 1. Kliknite **Add Event** → **Collision** → izberite `obj_paddle`
-2. Dodajte akcijo **Reverse Vertical** (za odboj)
+2. Dodajte akcijo **Obrni navpično** (za odboj)
 
 ### 3.4 Odbij se od sten
 1. Kliknite **Add Event** → **Collision** → izberite `obj_wall`
-2. Dodajte akcijo **Reverse Horizontal** ali **Reverse Vertical** po potrebi
+2. Dodajte akcijo **Obrni vodoravno** ali **Obrni navpično** po potrebi
    - Ali uporabite obe za obravnavo odbijanja v kotih
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ To povzroči, da se žogica začne premikati ob začetku igre.
 
 ### 4.2 Uniči ob trku z žogico
 1. Kliknite **Add Event** → **Collision** → izberite `obj_ball`
-2. Dodajte akcijo **Destroy Instance** s ciljem **self**
+2. Dodajte akcijo **Uniči instanco** s ciljem **self**
 
 To uniči opeko, ko jo žogica zadene!
 
 ### 4.3 Odbij žogico
-**Reverse Vertical** se vedno uporabi na instanci, v čigar dogodku je
+**Obrni navpično** se vedno uporabi na instanci, v čigar dogodku je
 — nima možnosti "uporabi na other" — zato mora ta akcija biti na
 žogici, ne na opeki:
 
 1. Vrnite se na `obj_ball` in dodajte:
 2. **Add Event** → **Collision** → izberite `obj_brick`
-3. Dodajte akcijo **Reverse Vertical**
+3. Dodajte akcijo **Obrni navpično**
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Zdaj postavite svoje objekte v sobo:
 Vaša osnovna igra Breakout je dokončana! Tukaj je nekaj izboljšav, ki jih lahko preizkusite:
 
 ### Dodaj sistem življenj
-- Dodajte dogodek **No More Lives** za prikaz "Game Over"
+- Dodajte dogodek **Ni več življenj** za prikaz "Game Over"
 - Izgubite življenje, ko žogica uide skozi dno
 
 ### Dodaj točke
 - Uporabite akcijo **Add Score** pri uničenju opek
-- Prikažite točke z **Draw Score**
+- Prikažite točke z **Nariši rezultat**
 
 ### Dodaj več nivojev
 - Ustvarite več sob z različnimi razporeditvami opek
-- Uporabite **Next Room**, ko so vse opeke uničene
+- Uporabite **Naslednja soba**, ko so vse opeke uničene
 
 ### Dodaj zvočne učinke
 - Dodajte zvoke za odbijanje in uničenje opek
-- Uporabite akcijo **Play Sound**
+- Uporabite akcijo **Predvajaj zvok**
 
 ---
 

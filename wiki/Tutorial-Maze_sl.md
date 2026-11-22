@@ -112,9 +112,9 @@ Izhod konča raven, ko ga igralec doseže.
 
 **Dogodek: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Output** → **Show Message**
+2. Add Action: **Output** → **Prikaži sporočilo**
    - Message: `You Win!`
-3. Add Action: **Room** → **Next Room** (ali **Restart Room** za eno raven)
+3. Add Action: **Soba** → **Naslednja soba** (ali **Znova zaženi sobo** za eno raven)
 
 Besedilo Show Message je fiksen niz — ne more vsebovati žive vrednosti,
 kot je pretečen čas. Časovnik ostane viden v HUD-u (Korak 7) vse do
@@ -133,10 +133,10 @@ Kovanci dodajajo k rezultatu, ko so pobrani.
 
 **Dogodek: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Score** → **Set Score**
+2. Add Action: **Rezultat** → **Nastavi rezultat**
    - New Score: `10`
    - Označi "Relative" za dodajanje 10 točk
-3. Add Action: **Instance** → **Destroy Instance**
+3. Add Action: **Instanca** → **Uniči instanco**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
@@ -152,7 +152,7 @@ Igralec se gladko premika s puščičnimi tipkami.
 
 ### 6.1 Gibanje
 
-Dodaj štiri dogodke **Keyboard (held)** in en dogodek **No Key**,
+Dodaj štiri dogodke **Tipkovnica (pridržano)** in en dogodek **No Key**,
 vsakega z akcijo **Move** → **Set Horizontal/Vertical Speed**:
 
 | Dogodek | Akcija |
@@ -167,7 +167,7 @@ vsakega z akcijo **Move** → **Set Horizontal/Vertical Speed**:
 
 **Dogodek: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Ustavi gibanje**
 
 Tukaj ni potrebne ročne kode za preverjanje položaja. Gibalna zanka
 tega pogona že prepreči, da bi se instanca premaknila v trden objekt,
@@ -187,8 +187,8 @@ Game controller upravlja časovnik in prikazuje informacije.
 1. Ustvari nov objekt z imenom `obj_game_controller`
 2. Sprite ni potreben
 
-**Dogodek: Create** — zažene časovnik z uporabo **Control** →
-**Execute Code** (akcija Execute Code v tem projektu izvede pravi
+**Dogodek: Create** — zažene časovnik z uporabo **Nadzor** →
+**Izvedi kodo** (akcija Execute Code v tem projektu izvede pravi
 Python, ne GameMaker Language):
 
 ```python
@@ -202,7 +202,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Dogodek: Draw** — zgradi HUD z resničnimi ukazi vrste za risanje.
-Dodaj tri akcije **Draw** → **Draw Text**:
+Dodaj tri akcije **Igra** → **Nariši besedilo**:
 
 | Akcija Draw Text | Besedilo | Položaj |
 |---|---|---|
@@ -210,7 +210,7 @@ Dodaj tri akcije **Draw** → **Draw Text**:
 | 2. | `Time:` | X `10`, Y `30` |
 | 3. | `Coins:` | X `10`, Y `50` |
 
-nato takoj za njimi tri akcije **Draw** → **Draw Variable**, da
+nato takoj za njimi tri akcije **Risanje** → **Nariši spremenljivko**, da
 prikažeš žive vrednosti ob vsaki oznaki:
 
 | Akcija Draw Variable | Spremenljivka | Položaj |
@@ -221,7 +221,7 @@ prikažeš žive vrednosti ob vsaki oznaki:
 
 Ni vgrajenega števca "preostalih kovancev", na katerega bi kazal Draw
 Variable — tik pred akcijami Draw Variable dodaj še eno akcijo
-**Control** → **Execute Code**, da ga izračunaš v spremenljivko
+**Nadzor** → **Izvedi kodo**, da ga izračunaš v spremenljivko
 instance, ki jo Draw Variable nato lahko prebere:
 
 ```python
@@ -307,40 +307,40 @@ Horizontal** (obrne sovražnika, ko zadene steno — koda ni potrebna;
 skupaj z vgrajenim trdim trkom iz Koraka 6.2 sovražnik nikoli ne more
 iti skozi steno)
 
-**Dogodek: Collision with obj_player** — Add Action: **Room** →
-**Restart Room**
+**Dogodek: Collision with obj_player** — Add Action: **Soba** →
+**Znova zaženi sobo**
 
 ### Dodaj Sistem Življenj
 
-V dogodku **Create** za `obj_game_controller` dodaj **Score** →
-**Set Lives** (Value: `3`).
+V dogodku **Ustvarjanje** za `obj_game_controller` dodaj **Rezultat** →
+**Nastavi življenja** (Value: `3`).
 
 V dogodku **Collision with obj_player** za `obj_enemy` zamenjaj
-**Restart Room** z dvema akcijama: **Score** → **Set Lives** (Value:
-`-1`, **Relative** označeno), nato **Move** → **Jump to Start
+**Znova zaženi sobo** z dvema akcijama: **Rezultat** → **Nastavi življenja** (Value:
+`-1`, **Relativno** označeno), nato **Move** → **Jump to Start
 Position** (uporabljena na igralcu prek **Applies to: Other**), da se
 igralec ponovno pojavi namesto ponovnega zagona celega labirinta.
 
 Dodaj `obj_game_controller` še en dogodek: **Other Events** → **No
 More Lives** — ta se sproži samodejno takoj, ko življenja dosežejo 0,
-zato ga ni treba ročno preverjati. Dodaj **Output** → **Show Message**
-(`Game Over!`), nato **Room** → **Restart Game**.
+zato ga ni treba ročno preverjati. Dodaj **Output** → **Prikaži sporočilo**
+(`Game Over!`), nato **Igra** → **Znova zaženi igro**.
 
 ### Dodaj Ključe in Zaklenjena Vrata
 
-1. Ustvari `obj_key` — ob trku z `obj_player`: **Set Variable**
+1. Ustvari `obj_key` — ob trku z `obj_player`: **Nastavi spremenljivko**
    (Variable: `global.has_key`, Value: `true`, Scope: `global`), nato
-   **Destroy Instance** (self).
+   **Uniči instanco** (self).
 2. Ustvari `obj_locked_door` z označenim Solid. Dodaj mu dogodek
-   **Step** z **Control** → **Test Variable** (Variable:
-   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
-   **Destroy Instance** (self) — vrata izginejo (in prenehajo
+   **Korak** z **Nadzor** → **Preveri spremenljivko** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Instanca** →
+   **Uniči instanco** (self) — vrata izginejo (in prenehajo
    blokirati) takoj, ko je ključ pobran.
 
 ### Dodaj Več Ravni
 
 1. Ustvari dodatne sobe (`room_maze2`, `room_maze3`)
-2. V `obj_exit` uporabi akcijo **Next Room** namesto **Restart Room**
+2. V `obj_exit` uporabi akcijo **Naslednja soba** namesto **Znova zaženi sobo**
 
 ### Dodaj Zvočne Učinke
 

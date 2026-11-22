@@ -24,7 +24,7 @@ V tem vodiču bomo ustvarili preprosto igro "Ujemi Zvezde", v kateri se igralec 
 1. Zaženite PyGameMaker
 2. Pojdite na **File > New Project**
 3. Poimenujte svoj projekt "CatchTheStars"
-4. Kliknite **Create**
+4. Kliknite **Ustvarjanje**
 
 ---
 
@@ -59,15 +59,15 @@ V tem vodiču bomo ustvarili preprosto igro "Ujemi Zvezde", v kateri se igralec 
 
 **Puščica Levo:**
 1. Kliknite **Add Event** > **Keyboard** > **Left**
-2. Dodajte akcijo: **Set Horizontal Speed** z vrednostjo `-4`
+2. Dodajte akcijo: **Nastavi vodoravno hitrost** z vrednostjo `-4`
 
 **Puščica Desno:**
 1. Kliknite **Add Event** > **Keyboard** > **Right**
-2. Dodajte akcijo: **Set Horizontal Speed** z vrednostjo `4`
+2. Dodajte akcijo: **Nastavi vodoravno hitrost** z vrednostjo `4`
 
 **Nobena Tipka Pritisnjena:**
 1. Kliknite **Add Event** > **Keyboard** > **No Key**
-2. Dodajte akcijo: **Set Horizontal Speed** z vrednostjo `0`
+2. Dodajte akcijo: **Nastavi vodoravno hitrost** z vrednostjo `0`
 
 ---
 
@@ -78,23 +78,23 @@ V tem vodiču bomo ustvarili preprosto igro "Ujemi Zvezde", v kateri se igralec 
 3. Nastavite **Sprite** na `spr_star`
 
 ### Dodajte Dogodek Create
-1. Kliknite **Add Event** > **Create**
-2. Dodajte akcijo: **Set Vertical Speed** z vrednostjo `3`
-3. Dodajte akcijo: **Jump To Position** z X `irandom(600)`, Y `20` —
+1. Kliknite **Add Event** > **Ustvarjanje**
+2. Dodajte akcijo: **Nastavi navpično hitrost** z vrednostjo `3`
+3. Dodajte akcijo: **Skoči na položaj** z X `irandom(600)`, Y `20` —
    `irandom(n)` izbere naključno celo število od 0 do `n`, kar
    razprši zvezdo na naključno mesto blizu vrha sobe širine 640
    pikslov ob vsakem (ponovnem) pojavu
 
 ### Dodajte Dogodek Outside Room
-1. Kliknite **Add Event** > **Other** > **Outside Room**
-2. Dodajte akcijo: **Jump to Start Position**
-3. Dodajte akcijo: **Set Score** z vrednostjo `1` in označenim **Relative**
+1. Kliknite **Add Event** > **Other** > **Zunaj sobe**
+2. Dodajte akcijo: **Skoči na začetni položaj**
+3. Dodajte akcijo: **Nastavi rezultat** z vrednostjo `1` in označenim **Relativno**
 
 ### Dodajte Trk z Igralcem
 1. Kliknite **Add Event** > **Collision** > izberite `obj_player`
-2. Dodajte akcijo: **Set Score** z vrednostjo `10` in označenim **Relative**
-3. Dodajte akcijo: **Play Sound** (neobvezno, če imate zvok)
-4. Dodajte akcijo: **Jump to Random Position**
+2. Dodajte akcijo: **Nastavi rezultat** z vrednostjo `10` in označenim **Relativno**
+3. Dodajte akcijo: **Predvajaj zvok** (neobvezno, če imate zvok)
+4. Dodajte akcijo: **Skoči na naključni položaj**
 
 ---
 
@@ -115,8 +115,8 @@ V tem vodiču bomo ustvarili preprosto igro "Ujemi Zvezde", v kateri se igralec 
 ## Korak 7: Prikažite Rezultat
 
 1. Odprite `obj_player`
-2. Kliknite **Add Event** > **Draw**
-3. Dodajte akcijo: **Draw Score** na položaju (10, 10)
+2. Kliknite **Add Event** > **Risanje**
+3. Dodajte akcijo: **Nariši rezultat** na položaju (10, 10)
 
 ---
 
@@ -136,11 +136,11 @@ V tem vodiču bomo ustvarili preprosto igro "Ujemi Zvezde", v kateri se igralec 
 
 ### Dodajte Nivoje
 1. Ustvarite več sob
-2. Uporabite akcijo **Next Room**, ko rezultat doseže prag
+2. Uporabite akcijo **Naslednja soba**, ko rezultat doseže prag
 
 ### Dodajte Zvok
 1. Uvozite zvočne datoteke v vir Sounds
-2. Dodajte akcije **Play Sound** dogodkom
+2. Dodajte akcije **Predvajaj zvok** dogodkom
 
 ### Uporabite Vizualno Programiranje
 1. Odprite objekt

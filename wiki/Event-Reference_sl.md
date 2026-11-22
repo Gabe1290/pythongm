@@ -23,9 +23,9 @@ Razumevanje, kdaj se dogodki sprožijo, pomaga ustvariti predvidljivo
 obnašanje igre (preverjeno proti glavni zanki v
 `runtime/game_runner.py`):
 
-1. **Begin Step** — Začetek sličice
-2. **Alarm** — Vsi sproženi alarmi odštevajo in se sprožijo
-3. **Step** (in **Keyboard (pridržana)**) — Glavna logika igre, nato
+1. **Začetek koraka** — Začetek sličice
+2. **Budilka** — Vsi sproženi alarmi odštevajo in se sprožijo
+3. **Korak** (in **Keyboard (pridržana)**) — Glavna logika igre, nato
    neprekinjena preverjanja pridržanih tipk za isto instanco
 4. **Keyboard Press/Release, Mouse** — Nakopičeni dogodki vnosa za to
    sličico se obdelajo (to se zgodi *po* Step, ne pred njim — koda v
@@ -33,8 +33,8 @@ obnašanje igre (preverjeno proti glavni zanki v
    sličice, ne na tiste, pritisnjene med njo)
 5. **Gibanje, nato Trk** — Uveljavi se fizika (gravitacija/trenje/
    hspeed/vspeed), nato se zaznajo trki in sprožijo njihovi dogodki
-6. **End Step** (in **Destroy**) — Po trkih
-7. **Draw** — Faza izrisovanja
+6. **Konec koraka** (in **Uničenje**) — Po trkih
+7. **Risanje** — Faza izrisovanja
 
 ---
 

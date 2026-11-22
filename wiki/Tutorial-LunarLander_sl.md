@@ -112,7 +112,7 @@ Pristajalna ploščad je mesto, kjer mora igralec varno pristati.
 Modul je glavni objekt, ki ga nadzira igralec, s fiziko. Za razliko od
 drugih vodičev o gibanju v tem wikiju morajo njegove kontrole hitrost
 postopoma nabirati in slediti viru goriva, zato se ta objekt bolj opira
-na **Control** → **Execute Code** (pravi Python — `self` je trenutni
+na **Nadzor** → **Izvedi kodo** (pravi Python — `self` je trenutni
 primerek, `game` je pogon igre, `keyboard.check(ime)` sporoča pritisnjeno
 tipko) kot zgolj na strukturirana dejanja. Povsod, kjer strukturirano
 dejanje opravi delo, ga ta vodič še vedno uporabi.
@@ -123,11 +123,11 @@ dejanje opravi delo, ga ta vodič še vedno uporabi.
 ### 5.1 Gravitacija in Začetne Spremenljivke
 
 **Dogodek: Create**
-1. Dodaj dejanje **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+1. Dodaj dejanje **Move** → **Nastavi gravitacijo** (Direction: `270`, Gravity: `0.05`)
    — nežno vlečenje navzdol; pogon to ob vsakem koraku samodejno prišteje
    k navpični hitrosti modula, enako kot gravitacija v vodiču Platformer,
    le šibkeje.
-2. Dodaj dejanje **Control** → **Execute Code**:
+2. Dodaj dejanje **Nadzor** → **Izvedi kodo**:
 
 ```python
 self.thrust_force = 0.1
@@ -147,7 +147,7 @@ simulacija.
 
 ### 5.2 Dogodek Step — Potisk in Kontrole
 
-**Dogodek: Step** — Dodaj dejanje **Control** → **Execute Code**:
+**Dogodek: Step** — Dodaj dejanje **Nadzor** → **Izvedi kodo**:
 
 ```python
 if not self.landed and not self.crashed:
@@ -187,23 +187,23 @@ GML), zato je `if` okoli preostale kode enakovreden.
 ### 5.3 Trk s Pristajalno Ploščadjo
 
 **Dogodek: Collision with obj_pad**
-1. Dodaj dejanje **Control** → **Test Expression**
+1. Dodaj dejanje **Nadzor** → **Preveri izraz**
    - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
      — hitrost pristanka je dolžina vektorja hitrosti; Pitagora, ne
      spremenljivka `speed` (v tem pogonu je `speed` *hitrost animacije
      sprite-a*, ne velikost gibanja — prava past za tiste, ki prihajajo
      iz GameMakerja).
    - Then Actions:
-     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
-     2. **Move** → **Stop Movement**
-     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) —
+     1. **Control** → **Nastavi spremenljivko** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Ustavi gibanje**
+     3. **Move** → **Nastavi gravitacijo** (Direction: `270`, Gravity: `0`) —
         prepreči gravitaciji, da bi na že pristalem modulu spet tiho
         nabirala navpično hitrost
-     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+     4. **Output** → **Prikaži sporočilo** (Message: `Perfect Landing! You Win!`)
    - Else Actions:
-     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
-     3. **Room** → **Restart Room**
+     1. **Nadzor** → **Nastavi spremenljivko** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Prikaži sporočilo** (Message: `Crashed! Too fast!`)
+     3. **Soba** → **Znova zaženi sobo**
 
 Besedilo Show Message je nespremenljiv niz — ne more vgraditi dejanske
 hitrosti pristanka. HUD (Korak 7) že prikazuje živo hitrost vse do
@@ -212,9 +212,9 @@ trenutka dotika, tako da je igralec številko že videl.
 ### 5.4 Trk s Tlemi
 
 **Dogodek: Collision with obj_ground**
-1. Dodaj dejanje **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-2. Dodaj dejanje **Output** → **Show Message** (Message: `Crashed into terrain!`)
-3. Dodaj dejanje **Room** → **Restart Room**
+1. Dodaj dejanje **Nadzor** → **Nastavi spremenljivko** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Dodaj dejanje **Output** → **Prikaži sporočilo** (Message: `Crashed into terrain!`)
+3. Dodaj dejanje **Soba** → **Znova zaženi sobo**
 
 ![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
 
@@ -243,7 +243,7 @@ vsaki sličici prebere s primerka modula.
 2. Sprite ni potreben
 
 **Dogodek: Draw**
-1. Dodaj dejanje **Control** → **Execute Code** — poišče modul in izračuna
+1. Dodaj dejanje **Nadzor** → **Izvedi kodo** — poišče modul in izračuna
    vrednosti, ki jih bodo prikazala spodnja dejanja Draw:
 
 ```python
@@ -265,28 +265,28 @@ else:
     self.no_fuel = False
 ```
 
-2. Dodaj dejanje **Game** → **Set Draw Color** (Color: `#FFFFFF`)
-3. Dodaj dejanje **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
-4. Dodaj dejanje **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
-5. Dodaj dejanje **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
-6. Dodaj dejanje **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
-7. Dodaj dejanje **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
-8. Dodaj dejanje **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+2. Dodaj dejanje **Risanje** → **Nastavi barvo risanja** (Color: `#FFFFFF`)
+3. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Dodaj dejanje **Risanje** → **Nariši spremenljivko** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Dodaj dejanje **Risanje** → **Nariši spremenljivko** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
 
-Nato dve opozorilni vrstici, vsaka pogojena z **Control** → **Test
+Nato dve opozorilni vrstici, vsaka pogojena z **Nadzor** → **Test
 Expression** (Else ni potreben — nič se ne nariše, ko je pogoj neresničen):
 
-9. **Control** → **Test Expression** (Expression: `self.too_fast`)
-   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
-   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
-     **Draw Text** (`Speed OK`, X `10`, Y `90`)
-10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
-    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+9. **Nadzor** → **Preveri izraz** (Expression: `self.too_fast`)
+   - Then Actions: **Risanje** → **Nastavi barvo risanja** (`#FF0000`), **Game** →
+     **Nariši besedilo** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Risanje** → **Nastavi barvo risanja** (`#00FF00`), **Game** →
+     **Nariši besedilo** (`Speed OK`, X `10`, Y `90`)
+10. **Nadzor** → **Preveri izraz** (Expression: `self.no_fuel`)
+    - Then Actions: **Risanje** → **Nastavi barvo risanja** (`#FF0000`), **Game** →
+      **Nariši besedilo** (`NO FUEL!`, X `10`, Y `110`)
 
-11. Dodaj dejanje **Game** → **Set Draw Color** (Color: `#808080`)
-12. Dodaj dejanje **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+11. Dodaj dejanje **Risanje** → **Nastavi barvo risanja** (Color: `#808080`)
+12. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
     X: `10`, Y: `440`) — izberi Y blizu dna velikosti room, ki jo
     uporabiš v Koraku 8.
 

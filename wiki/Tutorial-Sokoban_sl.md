@@ -134,17 +134,17 @@ Zaboj potiska igralec in spremeni videz, ko je na cilju.
 
 **Dogodek: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Nadzor** → **Če trk**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Instanca** → **Nastavi sprite**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Nadzor** → **Sicer**
+5. Add Action: **Instanca** → **Nastavi sprite**
    - Sprite: `spr_crate`
 
-Zaboj tako postane zelen, ko je na ciljnem polju — **If Collision** z
+Zaboj tako postane zelen, ko je na ciljnem polju — **Če trk** z
 obema odmikoma na `0` preveri, ali se *trenutni* položaj zaboja
 prekriva z `obj_target`.
 
@@ -161,7 +161,7 @@ Igralec se premakne natanko za eno celico mreže naenkrat in potisne zaboje, ob 
 
 ### 6.1 Gibanje na Mreži
 
-Dodaj po en dogodek **Key Press** za vsako smer, vsakega z akcijo **Move** → **Move Grid**:
+Dodaj po en dogodek **Key Press** za vsako smer, vsakega z akcijo **Move** → **Premakni po mreži**:
 
 | Dogodek | Akcija Move Grid |
 |---|---|
@@ -170,7 +170,7 @@ Dodaj po en dogodek **Key Press** za vsako smer, vsakega z akcijo **Move** → *
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** premakne instanco natanko za eno celico mreže in sama
+**Premakni po mreži** premakne instanco natanko za eno celico mreže in sama
 zaznava trke — igralca ne bo premaknila v trdno steno `obj_wall`,
 zato dodatno preverjanje stene tukaj ni potrebno.
 
@@ -178,18 +178,18 @@ zato dodatno preverjanje stene tukaj ni potrebno.
 
 **Dogodek: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Ustavi gibanje**
 
 ### 6.3 Potiskanje Zabojev
 
 **Dogodek: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Nadzor** → **Če je mogoče potisniti**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** preveri, ali je prostor za zabojem (v smeri, v katero
+**Če je mogoče potisniti** preveri, ali je prostor za zabojem (v smeri, v katero
 se premika igralec) prost, in če je, potisne zaboj za eno celico ter
 premakne igralca na njegovo mesto, vse v eni sami akciji. Če je
 prostor za zabojem blokiran s steno ali drugim zabojem, se nič ne
@@ -207,7 +207,7 @@ Potrebujemo nevidni krmilnik, ki opazuje, ali je vsak zaboj na cilju.
 2. Sprite ni potreben
 
 **Dogodek: Create** — enkratno nastavi štetje ciljev, z uporabo
-**Control** → **Execute Code** (akcija Execute Code v tem projektu
+**Nadzor** → **Izvedi kodo** (akcija Execute Code v tem projektu
 izvede pravi Python, ne GameMaker Language — `self` je trenutna
 instanca, `game` je izvajalec igre):
 
@@ -237,11 +237,11 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 Code sproži isti ponovni zagon sobe, kot ga izvede akcija **Restart
 Room** — glavna zanka to preveri vsak sličico. Če želiš pred ponovnim
 zagonom prikazati pojavno okno, takoj za blokom Execute Code dodaj
-akcijo **Show Message** (iz **Output**, sporočilo `Level Complete!`).
+akcijo **Prikaži sporočilo** (iz **Output**, sporočilo `Level Complete!`).
 
 **Dogodek: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Igra** → **Nariši besedilo**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -307,17 +307,17 @@ T = Cilj
 
 ### Dodaj Števec Potez
 
-V dogodku **Create** za `obj_game_controller` dodaj **Control** →
-**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
+V dogodku **Ustvarjanje** za `obj_game_controller` dodaj **Nadzor** →
+**Nastavi spremenljivko** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 V vsakem od štirih dogodkov Key Press za `obj_player` dodaj drugo
-akcijo takoj za Move Grid: **Control** → **Set Variable** (Variable:
-`global.moves`, Value: `1`, Scope: `global`, **Relative** označeno) —
+akcijo takoj za Move Grid: **Nadzor** → **Nastavi spremenljivko** (Variable:
+`global.moves`, Value: `1`, Scope: `global`, **Relativno** označeno) —
 to prišteje 1 k števcu ob vsakem pritisku tipke, ne glede na to, ali je
 bil premik dejansko blokiran s steno.
 
-V dogodku **Draw** za `obj_game_controller` dodaj **Draw** →
-**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
+V dogodku **Risanje** za `obj_game_controller` dodaj **Risanje** →
+**Nariši spremenljivko** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Dodaj Funkcijo Razveljavitve
 
@@ -326,8 +326,8 @@ Shrani prejšnje položaje in omogoči pritisk na Z za razveljavitev zadnje pote
 ### Dodaj Več Nivojev
 
 Ustvari več sob (`room_level2`, `room_level3`, itd.) in v bloku
-Execute Code za preverjanje zmage uporabi akcijo **Next Room**
-(kategorija Room) namesto **Restart Room** (`self.next_room_flag =
+Execute Code za preverjanje zmage uporabi akcijo **Naslednja soba**
+(kategorija Room) namesto **Znova zaženi sobo** (`self.next_room_flag =
 True` namesto `self.restart_room_flag = True`), ko je nivo dokončan.
 
 ### Dodaj Zvočne Učinke
@@ -345,7 +345,7 @@ Dodaj zvoke za:
 | Problem | Rešitev |
 |---------|----------|
 | Igralec se premika skozi stene | Preveri, da ima `obj_wall` označeno "Solid" |
-| Zaboj ne spremeni barve | Preveri, da akcija **If Collision** v dogodku Step cilja na `obj_target` |
+| Zaboj ne spremeni barve | Preveri, da akcija **Če trk** v dogodku Step cilja na `obj_target` |
 | Zaboj lahko potisneš skozi steno | Preveri zaznavanje trkov pred premikanjem zaboja |
 | Sporočilo o zmagi se pojavi takoj | Poskrbi, da so cilji postavljeni ločeno od zabojev |
 | Igralec se premakne za več polj | Uporabi dogodek Keyboard Press, ne Keyboard |

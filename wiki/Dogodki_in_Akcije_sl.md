@@ -24,9 +24,9 @@ To je popolna referenca vseh dogodkov in akcij, ki so na voljo v PyGameMaker.
 
 | Dogodek | Kdaj |
 |-----------|-------|
-| **Step** | Vsako sličico (60-krat na sekundo) |
-| **Begin Step** | Pred preverjanji trkov |
-| **End Step** | Po vseh drugih dogodkih |
+| **Korak** | Vsako sličico (60-krat na sekundo) |
+| **Začetek koraka** | Pred preverjanji trkov |
+| **Konec koraka** | Po vseh drugih dogodkih |
 
 ### Dogodki Alarm
 
@@ -73,22 +73,22 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 
 | Dogodek | Kdaj |
 |-----------|-------|
-| **Outside Room** | Instanca je popolnoma zunaj sobe |
-| **Intersect Boundary** | Instanca se dotakne roba sobe |
-| **Game Start** | Igra se zažene (naložena prva soba) |
-| **Game End** | Igra se konča |
-| **Room Start** | Ob vstopu v sobo |
-| **Room End** | Ob izstopu iz sobe |
-| **No More Lives** | Življenja dosežejo 0 |
-| **No More Health** | Zdravje doseže 0 |
-| **Animation End** | Animacija sprita je dokončana |
+| **Zunaj sobe** | Instanca je popolnoma zunaj sobe |
+| **Dotik roba sobe** | Instanca se dotakne roba sobe |
+| **Začetek igre** | Igra se zažene (naložena prva soba) |
+| **Konec igre** | Igra se konča |
+| **Začetek sobe** | Ob vstopu v sobo |
+| **Konec sobe** | Ob izstopu iz sobe |
+| **Ni več življenj** | Življenja dosežejo 0 |
+| **Ni več zdravja** | Zdravje doseže 0 |
+| **Konec animacije** | Animacija sprita je dokončana |
 
 ### Dogodki Draw
 
 | Dogodek | Kdaj |
 |-----------|-------|
-| **Draw** | Med fazo izrisovanja |
-| **Draw GUI** | Po izrisu sobe (v prostoru zaslona) |
+| **Risanje** | Med fazo izrisovanja |
+| **Risanje vmesnika** | Po izrisu sobe (v prostoru zaslona) |
 
 ---
 
@@ -100,13 +100,13 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 |--------|-------------|------------|
 | **Nastavi hitrost** | Nastavi hitrost gibanja | hitrost, relativno |
 | **Nastavi smer** | Nastavi smer | smer (0-360), relativno |
-| **Set Horizontal Speed** | Nastavi hspeed | hspeed, relativno |
-| **Set Vertical Speed** | Nastavi vspeed | vspeed, relativno |
-| **Set Gravity** | Nastavi gravitacijo | gravity, direction |
-| **Set Friction** | Nastavi trenje | friction |
+| **Nastavi vodoravno hitrost** | Nastavi hspeed | hspeed, relativno |
+| **Nastavi navpično hitrost** | Nastavi vspeed | vspeed, relativno |
+| **Nastavi gravitacijo** | Nastavi gravitacijo | gravity, direction |
+| **Nastavi trenje** | Nastavi trenje | friction |
 | **Premakni proti točki** | Premik proti koordinatam | x, y, hitrost |
 | **Začni se premikati (smer)** | Premik v smeri | direction, hitrost |
-| **Jump To Position** | Teleportiraj na koordinate | x, y, relativno |
+| **Skoči na položaj** | Teleportiraj na koordinate | x, y, relativno |
 | **Skoči na začetni položaj** | Vrni se na položaj ustvarjanja | - |
 | **Skoči na naključni položaj** | Teleport na povsem naključen položaj (obe osi; možnost pripenjanja na mrežo) | snap_h, snap_v |
 | **Odbij se** | Odbij se od trdnih objektov | precise |
@@ -115,25 +115,25 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Create Instance** | Ustvari nov objekt | object, x, y, relativno |
-| **Create Moving Instance** | Ustvari s hitrostjo | object, x, y, speed, direction |
-| **Destroy Instance** | Odstrani instanco | - |
-| **Change Instance** | Preobrazi v drug objekt | object, perform_events |
+| **Ustvari instanco** | Ustvari nov objekt | object, x, y, relativno |
+| **Ustvari premikajočo se instanco** | Ustvari s hitrostjo | object, x, y, speed, direction |
+| **Uniči instanco** | Odstrani instanco | - |
+| **Spremeni instanco** | Preobrazi v drug objekt | object, perform_events |
 
 ### Akcije Časovnika
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Set Alarm** | Zaženi odštevanje | alarm_number, steps |
-| **Sleep** | Ustavi izvajanje | milisekunde |
+| **Nastavi budilko** | Zaženi odštevanje | alarm_number, steps |
+| **Premor** | Ustavi izvajanje | milisekunde |
 
 ### Akcije Score/Lives/Health
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Set Score** | Spremeni rezultat | value, relativno |
-| **Set Lives** | Spremeni življenja | value, relativno |
-| **Set Health** | Spremeni zdravje | value, relativno |
+| **Nastavi rezultat** | Spremeni rezultat | value, relativno |
+| **Nastavi življenja** | Spremeni življenja | value, relativno |
+| **Nastavi zdravje** | Spremeni zdravje | value, relativno |
 | **Nariši rezultat** | Prikaži rezultat | x, y, caption |
 | **Nariši življenja** | Prikaži življenja kot ponovljene slike spritea | x, y, sprite, scale, tiled |
 | **Nariši vrstico zdravja** | Prikaži zdravje kot dvobarvno vrstico | x1, y1, x2, y2, back_color, bar_color |
@@ -142,11 +142,11 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Draw Sprite** | Nariši sprite | sprite, x, y, subimage |
-| **Draw Text** | Prikaži besedilo | x, y, text |
-| **Draw Rectangle** | Nariši pravokotnik | x1, y1, x2, y2, filled |
-| **Draw Circle** | Nariši krog | x, y, radius, filled |
-| **Draw Line** | Nariši črto | x1, y1, x2, y2 |
+| **Nariši sprite** | Nariši sprite | sprite, x, y, subimage |
+| **Nariši besedilo** | Prikaži besedilo | x, y, text |
+| **Nariši pravokotnik** | Nariši pravokotnik | x1, y1, x2, y2, filled |
+| **Nariši krog** | Nariši krog | x, y, radius, filled |
+| **Nariši črto** | Nariši črto | x1, y1, x2, y2 |
 | **Nastavi barvo risanja** | Nastavi barvo za naslednje Draw Text/Draw Rectangle/itd. | color |
 | **Nastavi barvo** | Nastavi ton in prosojnost spritea (ne barve risanja zgoraj) | color, alpha |
 | **Nastavi pisavo risanja** | Nastavi pisavo in poravnavo za naslednje risanje besedila | font, halign, valign |
@@ -155,22 +155,22 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Next Room** | Pojdi na naslednjo sobo | transition |
-| **Previous Room** | Pojdi na prejšnjo sobo | transition |
-| **Restart Room** | Ponastavi sobo | - |
-| **Go to Room** | Skoči na določeno sobo | room, transition |
-| **If Next Room Exists** | Preveri, ali obstaja naslednja soba | - |
-| **If Previous Room Exists** | Preveri, ali obstaja prejšnja soba | - |
+| **Naslednja soba** | Pojdi na naslednjo sobo | transition |
+| **Prejšnja soba** | Pojdi na prejšnjo sobo | transition |
+| **Znova zaženi sobo** | Ponastavi sobo | - |
+| **Pojdi v sobo** | Skoči na določeno sobo | room, transition |
+| **Če obstaja naslednja soba** | Preveri, ali obstaja naslednja soba | - |
+| **Če obstaja prejšnja soba** | Preveri, ali obstaja prejšnja soba | - |
 
 ### Akcije Zvoka
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Play Sound** | Predvajaj zvočni učinek | sound, loop |
-| **Stop Sound** | Ustavi zvok | sound |
-| **Check Sound Playing** | Preveri, ali se zvok predvaja | sound |
-| **Play Music** | Predvajaj glasbo v ozadju | music, loop |
-| **Stop Music** | Ustavi vso glasbo | - |
+| **Predvajaj zvok** | Predvajaj zvočni učinek | sound, loop |
+| **Ustavi zvok** | Ustavi zvok | sound |
+| **Preveri predvajanje zvoka** | Preveri, ali se zvok predvaja | sound |
+| **Predvajaj glasbo** | Predvajaj glasbo v ozadju | music, loop |
+| **Ustavi glasbo** | Ustavi vso glasbo | - |
 
 ### Akcije Spremenljivk
 
@@ -186,18 +186,18 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 |--------|-------------|------------|
 | **Preveri izraz** | Pogojno preverjanje (logični izraz Python) | expression |
 | **Sicer** | Alternativna veja | - |
-| **Start Block** | Začni skupino akcij | - |
-| **End Block** | Zaključi skupino akcij | - |
-| **Repeat** | Ponovi N-krat | count |
-| **Exit Event** | Ustavi trenutni dogodek | - |
+| **Začetek bloka** | Začni skupino akcij | - |
+| **Konec bloka** | Zaključi skupino akcij | - |
+| **Ponovi** | Ponovi N-krat | count |
+| **Zapusti dogodek** | Ustavi trenutni dogodek | - |
 
 ### Ostale Akcije
 
 | Akcija | Opis | Parametri |
 |--------|-------------|------------|
-| **Show Message** | Prikaži pojavno sporočilo | message |
-| **Restart Game** | Ponovno zaženi igro | - |
-| **End Game** | Zapri igro | - |
+| **Prikaži sporočilo** | Prikaži pojavno sporočilo | message |
+| **Znova zaženi igro** | Ponovno zaženi igro | - |
+| **Končaj igro** | Zapri igro | - |
 
 ---
 

@@ -131,7 +131,7 @@ Igralec je najbolj zapleten objekt z gravitacijo, skakanjem in gibanjem.
 
 ### 5.1 Gravitacija
 
-**Dogodek: Create** — Dodaj dejanje **Move** → **Set Gravity**
+**Dogodek: Create** — Dodaj dejanje **Move** → **Nastavi gravitacijo**
 (Direction: `270`, Gravity: `0.5`) — 270° je naravnost navzdol; vrednost
 se ob vsakem koraku prišteje k navpični hitrosti igralca, tako da igralec
 od tu naprej sam pospešuje navzdol.
@@ -157,7 +157,7 @@ Dve podrobnosti, zaradi katerih je občutek pravi:
   smerno tipko.
 - **Key Press (ne held)** je tisto, kar naredi Up en sam sunek skoka,
   namesto da bi igralca poganjalo navzgor ob vsakem sličici, ko je tipka
-  pritisnjena. **Stop Movement** ob pristanku nato prekliče ta sunek,
+  pritisnjena. **Ustavi gibanje** ob pristanku nato prekliče ta sunek,
   tako da igralec po pristanku ne nadaljuje z vzpenjanjem — vgrajeni trk
   s trdnimi objekti v pogonu (korak 3 je `obj_ground` že označil kot
   Solid) že preprečuje, da bi se igralec pogreznil v tla; dogodek tukaj
@@ -176,10 +176,10 @@ Kovanci prištevajo k točkam, ko jih pobereš.
 
 **Dogodek: Collision with obj_player**
 1. Dodaj Dogodek → Collision → obj_player
-2. Dodaj dejanje **Score** → **Set Score**
+2. Dodaj dejanje **Rezultat** → **Nastavi rezultat**
    - New Score: `10`
    - Označi "Relative"
-3. Dodaj dejanje **Main1** → **Destroy Instance**
+3. Dodaj dejanje **Main1** → **Uniči instanco**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
@@ -195,9 +195,9 @@ Bodice poškodujejo igralca in ponovno zaženejo raven.
 
 **Dogodek: Collision with obj_player**
 1. Dodaj Dogodek → Collision → obj_player
-2. Dodaj dejanje **Main2** → **Show Message**
+2. Dodaj dejanje **Main2** → **Prikaži sporočilo**
    - Message: `Ouch! You hit a spike!`
-3. Dodaj dejanje **Main1** → **Restart Room**
+3. Dodaj dejanje **Main1** → **Znova zaženi sobo**
 
 ![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
@@ -212,9 +212,9 @@ Zastava konča raven, ko jo igralec doseže.
 
 **Dogodek: Collision with obj_player**
 1. Dodaj Dogodek → Collision → obj_player
-2. Dodaj dejanje **Output** → **Show Message**
+2. Dodaj dejanje **Output** → **Prikaži sporočilo**
    - Message: `Level Complete!`
-3. Dodaj dejanje **Room** → **Next Room** (ali **Restart Room** za eno raven)
+3. Dodaj dejanje **Soba** → **Naslednja soba** (ali **Znova zaženi sobo** za eno raven)
 
 Besedilo Show Message je nespremenljiv niz — ne more vgraditi žive
 vrednosti, kot je rezultat. HUD igralnega kontrolerja (korak 9) že
@@ -234,10 +234,10 @@ Igralni kontroler prikazuje rezultat.
 
 **Dogodek: Draw**
 1. Dodaj Dogodek → Draw → Draw
-2. Dodaj dejanje **Draw** → **Draw Text** (Text: `Score:`, X: `10`, Y: `10`)
-3. Dodaj dejanje **Draw** → **Draw Variable** (Variable: `score`, X: `70`, Y: `10`)
+2. Dodaj dejanje **Igra** → **Nariši besedilo** (Text: `Score:`, X: `10`, Y: `10`)
+3. Dodaj dejanje **Risanje** → **Nariši spremenljivko** (Variable: `score`, X: `70`, Y: `10`)
 
-Neobvezno: dodaj par **Draw Text** (`Lives:`, X `10`, Y `30`) + **Draw
+Neobvezno: dodaj par **Nariši besedilo** (`Lives:`, X `10`, Y `30`) + **Draw
 Variable** (`lives`, X `70`, Y `30`) na enak način, ko je spodnja
 izboljšava Sistem Življenj na mestu.
 
@@ -301,7 +301,7 @@ X = Bodica    === = Platforma
 
 ### Dodaj Spremenljivo Višino Skoka
 
-Dodaj dogodek **Step** na `obj_player` z **Control** → **Execute Code**
+Dodaj dogodek **Korak** na `obj_player` z **Nadzor** → **Izvedi kodo**
 (pravi Python — `self` je trenutni primerek, `keyboard` omogoča preverjanje
 pritisnjene tipke po imenu):
 
@@ -315,22 +315,22 @@ if self.vspeed < 0 and not keyboard.check('up'):
 
 To lahko narediš v celoti s strukturiranimi dejanji — koda ni potrebna.
 
-**Dogodek: Create** — Dodaj dejanje **Control** → **Set Variable**
+**Dogodek: Create** — Dodaj dejanje **Nadzor** → **Nastavi spremenljivko**
 (Variable: `jumps_left`, Value: `2`)
 
-**Dogodek: Collision with obj_ground** — za **Stop Movement** dodaj
-**Control** → **Set Variable** (Variable: `jumps_left`, Value: `2`), da ob
+**Dogodek: Collision with obj_ground** — za **Ustavi gibanje** dodaj
+**Nadzor** → **Nastavi spremenljivko** (Variable: `jumps_left`, Value: `2`), da ob
 pristanku napolniš oba skoka.
 
 Zamenjaj edino dejanje obstoječega dogodka **Key Press → Up Arrow** s
 tremi, po vrsti:
-1. **Control** → **Test Variable** (Variable: `jumps_left`, Value: `0`,
+1. **Nadzor** → **Preveri spremenljivko** (Variable: `jumps_left`, Value: `0`,
    Operation: `greater`)
-2. **Control** → **Start Block**
-3. **Move** → **Set Vertical Speed** (`-10`)
-4. **Control** → **Set Variable** (Variable: `jumps_left`, Value: `-1`,
-   **Relative** označeno)
-5. **Control** → **End Block**
+2. **Nadzor** → **Začetek bloka**
+3. **Move** → **Nastavi navpično hitrost** (`-10`)
+4. **Nadzor** → **Nastavi spremenljivko** (Variable: `jumps_left`, Value: `-1`,
+   **Relativno** označeno)
+5. **Nadzor** → **Konec bloka**
 
 Par Start/End Block pomeni, da se obe dejanji znotraj izvedeta le, ko je
 Test Variable nad njima resničen — isti vzorec zaščitenega bloka, ki ga
@@ -340,14 +340,14 @@ vodiča Sokoban in Labirint uporabljata za svoje pogoje.
 
 1. Ustvari `obj_moving_platform` kot otroka od `obj_platform`
 
-**Dogodek: Create** — Dodaj dejanje **Control** → **Execute Code**:
+**Dogodek: Create** — Dodaj dejanje **Nadzor** → **Izvedi kodo**:
 
 ```python
 self.start_x = self.x
 self.hspeed = 2
 ```
 
-**Dogodek: Step** — Dodaj dejanje **Control** → **Execute Code**:
+**Dogodek: Step** — Dodaj dejanje **Nadzor** → **Izvedi kodo**:
 
 ```python
 if self.x > self.start_x + 100:
@@ -364,23 +364,23 @@ elif self.x < self.start_x:
 (Directions: `right`, Speed: `2`)
 
 **Dogodek: Collision with obj_ground** — Dodaj dejanje **Move** →
-**Reverse Horizontal** (obrne se ob zidovih; skupaj s tem, da je
+**Obrni vodoravno** (obrne se ob zidovih; skupaj s tem, da je
 `obj_ground` Solid, sovražnik nikoli ne more zakorakati z roba platforme v
 tla spodaj ali skozi zid)
 
 **Dogodek: Collision with obj_player** — ta dogodek se sproži na
 `obj_enemy`, torej je `self` sovražnik in `other` igralec. Dodaj dejanje
-**Control** → **Test Expression** z ugnezdenimi dejanji Then/Else (isti
+**Nadzor** → **Preveri izraz** z ugnezdenimi dejanji Then/Else (isti
 vzorec, ki ga priloženi vzorec `plateforme_3` uporablja prav za to
 preverjanje "skoka na glavo", le zrcaljeno, ker preverjanje tukaj živi na
 sovražniku namesto na igralcu):
    - Expression: `other.vspeed > 0 and other.y - other.vspeed < y - 16`
-   - Then Actions: **Control** → **Execute Code** z `other.vspeed = -5`
+   - Then Actions: **Nadzor** → **Izvedi kodo** z `other.vspeed = -5`
      (majhen odboj za igralca — `set_vspeed` nima možnosti "applies to
      other", zato je to edino mesto, ki potrebuje vrstico pravega Pythona
-     namesto strukturiranega dejanja), nato **Instance** → **Destroy
+     namesto strukturiranega dejanja), nato **Instanca** → **Destroy
      Instance** (self)
-   - Else Actions: **Room** → **Restart Room** (igralec umre)
+   - Else Actions: **Soba** → **Znova zaženi sobo** (igralec umre)
 
 `other.vspeed > 0 and other.y - other.vspeed < y - 16` preveri položaj
 *igralca* od pred gibanjem padanja v tej sličici (z uporabo igralčevega
@@ -390,15 +390,15 @@ celotno zgodbo, zakaj je naivna različica `other.y < y - 16` krhka.
 
 ### Dodaj Sistem Življenj
 
-V dogodku **Create** objekta `obj_game_controller` dodaj **Score** → **Set
+V dogodku **Ustvarjanje** objekta `obj_game_controller` dodaj **Rezultat** → **Set
 Lives** (Value: `3`).
 
 Ko igralec umre (trk z bodico in veja Else sovražnika zgoraj), zamenjaj
-**Restart Room** s **Score** → **Set Lives** (Value: `-1`, **Relative**
+**Znova zaženi sobo** s **Rezultat** → **Nastavi življenja** (Value: `-1`, **Relativno**
 označeno) — room se ponovno zažene samodejno, ker se dogodek **No More
 Lives** sproži šele, ko življenja dejansko dosežejo 0. Dodaj ta dogodek na
-`obj_game_controller`: **Other Events** → **No More Lives** → **Output** →
-**Show Message** (`Game Over!`) → **Room** → **Restart Game**.
+`obj_game_controller`: **Other Events** → **Ni več življenj** → **Output** →
+**Prikaži sporočilo** (`Game Over!`) → **Igra** → **Znova zaženi igro**.
 
 ---
 

@@ -56,10 +56,10 @@ Event", da ga dodate.
 
 | Dogodek | Kdaj se Sproži |
 |-------|------------------|
-| **Create** | Enkrat, ko je instanca ustvarjena |
-| **Destroy** | Ko je instanca uničena |
-| **Step** | Vsako sličico igre (60-krat na sekundo) |
-| **Draw** | Med fazo risanja |
+| **Ustvarjanje** | Enkrat, ko je instanca ustvarjena |
+| **Uničenje** | Ko je instanca uničena |
+| **Korak** | Vsako sličico igre (60-krat na sekundo) |
+| **Risanje** | Med fazo risanja |
 | **Alarm [0-11]** | Ko časovnik alarma doseže nič |
 
 ### Dogodki Tipkovnice
@@ -90,12 +90,12 @@ Event", da ga dodate.
 
 | Dogodek | Kdaj se Sproži |
 |-------|------------------|
-| **Outside Room** | Ko instanca zapusti sobo |
-| **Intersect Boundary** | Ko se instanca dotakne roba sobe |
-| **Game Start** | Enkrat, ob zagonu igre |
-| **Game End** | Enkrat, ob zaprtju igre |
-| **Room Start** | Ob vstopu v sobo |
-| **Room End** | Ob izstopu iz sobe |
+| **Zunaj sobe** | Ko instanca zapusti sobo |
+| **Dotik roba sobe** | Ko se instanca dotakne roba sobe |
+| **Začetek igre** | Enkrat, ob zagonu igre |
+| **Konec igre** | Enkrat, ob zaprtju igre |
+| **Začetek sobe** | Ob vstopu v sobo |
+| **Konec sobe** | Ob izstopu iz sobe |
 
 ---
 
@@ -105,54 +105,54 @@ Akcije so operacije, ki se izvedejo, ko se sproži dogodek. Vsak
 dogodek ima lahko več akcij, ki se izvedejo po vrsti.
 
 ### Akcije Gibanja
-- **Set Speed** — Nastavi hitrost gibanja
-- **Set Direction** — Nastavi smer gibanja (0-360 stopinj)
-- **Set Horizontal Speed** — Nastavi hspeed
-- **Set Vertical Speed** — Nastavi vspeed
+- **Nastavi hitrost** — Nastavi hitrost gibanja
+- **Nastavi smer** — Nastavi smer gibanja (0-360 stopinj)
+- **Nastavi vodoravno hitrost** — Nastavi hspeed
+- **Nastavi navpično hitrost** — Nastavi vspeed
 - **Premakni proti točki** — Premik proti koordinatam
 - **Jump to Position** — Trenutna teleportacija na koordinate
 - **Skoči na začetni položaj** — Vrni se na položaj ustvarjanja
 - **Skoči na naključni položaj** — Teleportiraj na naključni položaj
 
 ### Akcije Instance
-- **Create Instance** — Ustvari nov objekt
-- **Destroy Instance** — Odstrani trenutno instanco
-- **Change Instance** — Preobrazi v drugo vrsto objekta
+- **Ustvari instanco** — Ustvari nov objekt
+- **Uniči instanco** — Odstrani trenutno instanco
+- **Spremeni instanco** — Preobrazi v drugo vrsto objekta
 
 ### Akcije Časovnika
-- **Set Alarm** — Zaženi odštevalni časovnik
-- **Sleep** — Ustavi izvajanje za kratek trenutek
+- **Nastavi budilko** — Zaženi odštevalni časovnik
+- **Premor** — Ustavi izvajanje za kratek trenutek
 
 ### Akcije Risanja
-- **Draw Sprite** — Nariši sprite
-- **Draw Text** — Prikaži besedilo na zaslonu
-- **Draw Rectangle** — Nariši zapolnjen ali obrobljen pravokotnik
+- **Nariši sprite** — Nariši sprite
+- **Nariši besedilo** — Prikaži besedilo na zaslonu
+- **Nariši pravokotnik** — Nariši zapolnjen ali obrobljen pravokotnik
 - **Nariši rezultat** — Prikaži trenutni rezultat
 - **Nariši življenja** — Prikaži preostala življenja
 - **Nariši vrstico zdravja** — Prikaži vrstico zdravja
 
 ### Score/Lives/Health
-- **Set Score** — Spremeni vrednost rezultata
-- **Set Lives** — Spremeni število življenj
-- **Set Health** — Spremeni vrednost zdravja
+- **Nastavi rezultat** — Spremeni vrednost rezultata
+- **Nastavi življenja** — Spremeni število življenj
+- **Nastavi zdravje** — Spremeni vrednost zdravja
 - **Preveri rezultat** — Preveri pogoj rezultata
 - **Preveri življenja** — Preveri pogoj življenj
 - **Preveri zdravje** — Preveri pogoj zdravja
 
 ### Akcije Sobe
-- **Next Room** — Pojdi na naslednjo sobo
-- **Previous Room** — Pojdi na prejšnjo sobo
-- **Restart Room** — Ponastavi trenutno sobo
-- **Go to Room** — Skoči na določeno sobo
+- **Naslednja soba** — Pojdi na naslednjo sobo
+- **Prejšnja soba** — Pojdi na prejšnjo sobo
+- **Znova zaženi sobo** — Ponastavi trenutno sobo
+- **Pojdi v sobo** — Skoči na določeno sobo
 
 ### Akcije Zvoka
-- **Play Sound** — Predvajaj zvočni učinek
-- **Stop Sound** — Ustavi predvajani zvok
-- **Play Music** — Predvajaj glasbo v ozadju
-- **Stop Music** — Ustavi glasbo v ozadju
+- **Predvajaj zvok** — Predvajaj zvočni učinek
+- **Ustavi zvok** — Ustavi predvajani zvok
+- **Predvajaj glasbo** — Predvajaj glasbo v ozadju
+- **Ustavi glasbo** — Ustavi glasbo v ozadju
 
 ### Akcije Spremenljivk
-- **Set Variable** — Dodeli vrednost spremenljivki
+- **Nastavi spremenljivko** — Dodeli vrednost spremenljivki
 - **Preveri spremenljivko** — Preveri pogoj spremenljivke
 
 ---
@@ -184,7 +184,7 @@ Za več podrobnosti glejte [[Vizualno_Programiranje_sl]].
 - Uničite instance, ki zapustijo sobo
 
 ### Odpravljanje Napak
-- Za prikaz vrednosti uporabite akcijo **Show Message**
+- Za prikaz vrednosti uporabite akcijo **Prikaži sporočilo**
 - Preverite izpis konzole za napake
 - Med razvojem pogosto testirajte
 

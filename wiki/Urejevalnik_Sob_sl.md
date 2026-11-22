@@ -101,8 +101,8 @@ Pogoste velikosti mreže:
 | **Tile Horizontal** | Ponovi vodoravno |
 | **Tile Vertical** | Ponovi navpično |
 | **Stretch** | Raztegne, da zapolni sobo |
-| **Horizontal Speed** | Hitrost drsenja (parallax) |
-| **Vertical Speed** | Hitrost drsenja (parallax) |
+| **Vodoravna hitrost** | Hitrost drsenja (parallax) |
+| **Navpična hitrost** | Hitrost drsenja (parallax) |
 
 ### Plasti Ozadja
 
