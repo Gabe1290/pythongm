@@ -378,18 +378,22 @@ LANGS = {
 
 # --------------------------------------------------------------------------- #
 # micro:bit extension (docs/MICROBIT_EXTENSION_PLAN.md, Stage S12).
-# French action names/descriptions come from the extension's OWN table, the
-# one the Blockly canvas uses, so the wiki and the editor cannot disagree.
-# Only French so far; the other languages fall back to the English schema text
-# (the generator reports them as untranslated).
+# Action names/descriptions come from the extension's OWN table, the one the
+# Blockly canvas uses, so the wiki and the editor cannot disagree -- for every
+# language the extension translates. Parameter notes stay English (the
+# extension has none; the generator reports them as untranslated).
 # --------------------------------------------------------------------------- #
 
 from extensions.microbit.translations import PLUGIN_GENERATED_BLOCK_TRANSLATIONS as _MB_TR
 
+# Every wiki language the extension translates (docs/OPEN_WORK_2026-11-22.md U2; French only before).
 for _name, _languages in _MB_TR["actions"].items():
-    ACTIONS_FR[_name] = {"display": _languages["fr"]["display_name"],
-                         "desc": _languages["fr"]["description"]}
+    for _lang, _texts in _languages.items():
+        _table = globals().get(f"ACTIONS_{_lang.upper()}")
+        if _table is not None:
+            _table[_name] = {"display": _texts["display_name"], "desc": _texts["description"]}
 
-CATEGORIES_FR["micro:bit"] = "micro:bit"
+for _lang in ("fr", "de", "uk", "ru", "it", "es", "pt", "sl"):
+    globals()[f"CATEGORIES_{_lang.upper()}"]["micro:bit"] = "micro:bit"
 
 

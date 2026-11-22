@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-### Clear Display
+### Počisti zaslon
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -12,11 +12,11 @@
 | **Ikona** | ⬛ |
 | **Kategorija** | micro:bit |
 
-Turn every LED off and drop anything still queued
+Ugasni vse LED diode in zavrzi vse, kar je čakalo
 
 *Parametri:* brez
 
-### If Button Pressed
+### Če je tipka pritisnjena
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -24,13 +24,13 @@ Turn every LED off and drop anything still queued
 | **Ikona** | 🔘 |
 | **Kategorija** | micro:bit |
 
-True while the button is held down (A+B = both)
+Res, dokler je tipka pridržana (A+B = obe)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `button` | Izbira | `a` | Izbire: `a`, `b`, `ab`, `logo` |
 
-### If Gesture
+### Če je poteza
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -38,13 +38,13 @@ True while the button is held down (A+B = both)
 | **Ikona** | 🤝 |
 | **Kategorija** | micro:bit |
 
-True while the board is in this gesture or posture
+Res, dokler je ploščica v tej potezi ali legi
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `gesture` | Izbira | `shake` | Izbire: `shake`, `up`, `down`, `left`, `right`, `face up`, `face down`, `freefall`, `2g`, `3g`, `6g`, `8g` |
 
-### If LED Brightness
+### Če je svetilnost LED diode
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -52,7 +52,7 @@ True while the board is in this gesture or posture
 | **Ikona** | 🔍 |
 | **Kategorija** | micro:bit |
 
-Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
+Primerjaj svetilnost LED diode (od 0 do 9) z vrednostjo; privzeto je vprašanje »ali sveti?«
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -61,7 +61,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | `comparison` | Izbira | `>` | Izbire: `<`, `<=`, `==`, `>=`, `>`, `!=`; neobvezno |
 | `value` | Besedilo | `0` | neobvezno |
 
-### If Tilt
+### Če je nagib
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -69,7 +69,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | **Ikona** | 📐 |
 | **Kategorija** | micro:bit |
 
-Compare an accelerometer axis (milli-g, -2048..2048) with a value
+Primerjaj os pospeškomera (mili-g, od -2048 do 2048) z vrednostjo
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -77,7 +77,7 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | `comparison` | Izbira | `>` | Izbire: `<`, `<=`, `==`, `>=`, `>`, `!=` |
 | `value` | Besedilo | `300` |  |
 
-### Play Melody
+### Zaigraj melodijo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -85,14 +85,14 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | **Ikona** | 🎵 |
 | **Kategorija** | micro:bit |
 
-Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FUNK, BLUES, BIRTHDAY, WEDDING, FUNERAL, PUNCHLINE, PYTHON, BADDY, CHASE, BA_DING, WAWAWAWAA, JUMP_UP, JUMP_DOWN, POWER_UP, POWER_DOWN) or your own notes such as "C4:4 E G C5:8 R:4" (note, octave, :length; R is a rest)
+Zaigraj vgrajeno melodijo (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, POWER_UP…) ali svoje note, na primer »C4:4 E G C5:8 R:4« (nota, oktava, :trajanje; R je premor)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `melody` | Besedilo | `DADADADUM` | Built-in name, or notes separated by spaces |
 | `tempo` | Besedilo | `120` | neobvezno |
 
-### Play Tone
+### Zaigraj ton
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -100,14 +100,14 @@ Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FU
 | **Ikona** | 🔔 |
 | **Kategorija** | micro:bit |
 
-Beep at a frequency for a number of milliseconds. Sounds queue and play one after another
+Oddaj pisk z dano frekvenco za dano število milisekund. Zvoki se uvrstijo v čakalno vrsto
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `frequency` | Besedilo | `440` | Pitch in hertz (440 = the note A) |
 | `duration` | Besedilo | `500` | neobvezno |
 
-### Read Sensor
+### Preberi tipalo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -115,14 +115,14 @@ Beep at a frequency for a number of milliseconds. Sounds queue and play one afte
 | **Ikona** | 📡 |
 | **Kategorija** | micro:bit |
 
-Read a micro:bit sensor into a variable of this object (or a global variable if the name starts with "global.")
+Preberi tipalo micro:bita v spremenljivko tega predmeta (ali v globalno spremenljivko, če se ime začne z »global.«)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `sensor` | Izbira | `accelerometer x` | Izbire: `accelerometer x`, `accelerometer y`, `accelerometer z`, `acceleration strength`, `compass heading`, `light level`, `temperature`, `sound level`, `pin 0 analog`, `pin 1 analog`, `pin 2 analog` |
 | `variable` | Besedilo | `sensor_value` | Variable that receives the reading |
 
-### Scroll Text
+### Drsi besedilo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -130,14 +130,14 @@ Read a micro:bit sensor into a variable of this object (or a global variable if 
 | **Ikona** | 🔤 |
 | **Kategorija** | micro:bit |
 
-Scroll text across the LED display. Put literal text in double quotes ("Hello"); otherwise a dash or plus is read as arithmetic. Accented letters show as ? as on the real board
+Besedilo drsi po zaslonu z LED diodami. Besedilo daj v narekovaje ("Živjo"); sicer se vezaj ali plus prebere kot izračun. Črke s strešico se prikažejo kot ?, tako kot na pravi ploščici
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `text` | Besedilo | `"Hello"` | Text or expression to scroll |
 | `delay` | Število | `150` | Scroll speed (MicroPython default 150); neobvezno |
 
-### Send Radio Message
+### Pošlji radijsko sporočilo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -145,13 +145,13 @@ Scroll text across the LED display. Put literal text in double quotes ("Hello");
 | **Ikona** | 📻 |
 | **Kategorija** | micro:bit |
 
-Send a number or text to the other micro:bits in the same group (not to this one). They get the Radio Message Received event, with the value in radio_number and radio_string. Put literal text in double quotes; text is cut to 32 characters
+Pošlji število ali besedilo drugim micro:bitom iz iste skupine (ne temu). Prejmejo dogodek »Radijsko sporočilo prejeto«, vrednost je v radio_number in radio_string. Besedilo daj v narekovaje; skrajša se na 32 znakov
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `value` | Besedilo | `1` | A number, an expression or quoted text |
 
-### Set Display Brightness
+### Svetilnost zaslona
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -159,13 +159,13 @@ Send a number or text to the other micro:bits in the same group (not to this one
 | **Ikona** | 🔆 |
 | **Kategorija** | micro:bit |
 
-Overall LED brightness, 0 (dark) to 255 (full)
+Splošna svetilnost LED diod, od 0 (ugasnjeno) do 255 (največ)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `brightness` | Besedilo | `255` |  |
 
-### Set LED
+### Prižgi LED diodo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -173,7 +173,7 @@ Overall LED brightness, 0 (dark) to 255 (full)
 | **Ikona** | 💡 |
 | **Kategorija** | micro:bit |
 
-Light one LED now (x and y are 0-4, brightness 0-9)
+Takoj prižgi LED diodo (x in y od 0 do 4, svetilnost od 0 do 9)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -181,7 +181,7 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | `y` | Besedilo | `0` |  |
 | `brightness` | Besedilo | `9` | neobvezno |
 
-### Set Radio Group
+### Nastavi radijsko skupino
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -189,13 +189,13 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | **Ikona** | 📡 |
 | **Kategorija** | micro:bit |
 
-Choose the radio group (0-255). Only micro:bits in the same group hear each other; every board starts in group 0
+Izberi radijsko skupino (od 0 do 255). Slišijo se le micro:biti iz iste skupine; vsaka ploščica začne v skupini 0
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `group` | Besedilo | `0` |  |
 
-### Show Image
+### Prikaži sliko
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -203,14 +203,14 @@ Choose the radio group (0-255). Only micro:bits in the same group hear each othe
 | **Ikona** | ❤️ |
 | **Kategorija** | micro:bit |
 
-Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL...) or five rows of brightness digits such as "09090:99999:99999:09990:00900". Display actions queue and play one after another
+Prikaži sliko na LED diodah: ime (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL…) ali pet vrstic številk svetilnosti, na primer »09090:99999:99999:09990:00900«. Slike se uvrstijo v čakalno vrsto
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `image` | Besedilo | `HEART` | Built-in image name, or 5 rows of 5 digits (0-9) separated by colons |
 | `hold` | Število | `0` | How long it stays before the next queued item (0 = until something else is shown); neobvezno |
 
-### Show Number
+### Prikaži število
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -218,13 +218,13 @@ Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, A
 | **Ikona** | 🔢 |
 | **Kategorija** | micro:bit |
 
-Show a number: one digit stays still, longer numbers scroll
+Prikaži število: ena števka ostane pri miru, daljše število drsi
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `value` | Besedilo | `0` | Number or expression |
 
-### Stop Sound
+### Ustavi zvok
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -232,7 +232,7 @@ Show a number: one digit stays still, longer numbers scroll
 | **Ikona** | 🔇 |
 | **Kategorija** | micro:bit |
 
-Silence the speaker and drop any queued sounds
+Izklopi zvočnik in zavrzi zvoke, ki čakajo
 
 *Parametri:* brez
 

@@ -4,7 +4,7 @@
 
 > **Generato automaticamente** dal registro delle azioni dell'IDE tramite `tools/gen_action_reference.py` — non modificare a mano; riesegui il generatore dopo aver cambiato le azioni. Le traduzioni provengono da `tools/action_ref_i18n.py`.
 
-### Clear Display
+### Cancella il display
 
 | Proprietà | Valore |
 |----------|-------|
@@ -12,11 +12,11 @@
 | **Icona** | ⬛ |
 | **Categoria** | micro:bit |
 
-Turn every LED off and drop anything still queued
+Spegnere tutti i LED e scartare ciò che era in attesa
 
 *Parametri:* nessuno
 
-### If Button Pressed
+### Se il pulsante è premuto
 
 | Proprietà | Valore |
 |----------|-------|
@@ -24,13 +24,13 @@ Turn every LED off and drop anything still queued
 | **Icona** | 🔘 |
 | **Categoria** | micro:bit |
 
-True while the button is held down (A+B = both)
+Vero finché il pulsante resta premuto (A+B = entrambi)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `button` | Scelta | `a` | Scelte: `a`, `b`, `ab`, `logo` |
 
-### If Gesture
+### Se c'è un gesto
 
 | Proprietà | Valore |
 |----------|-------|
@@ -38,13 +38,13 @@ True while the button is held down (A+B = both)
 | **Icona** | 🤝 |
 | **Categoria** | micro:bit |
 
-True while the board is in this gesture or posture
+Vero finché la scheda si trova in questo gesto o posizione
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `gesture` | Scelta | `shake` | Scelte: `shake`, `up`, `down`, `left`, `right`, `face up`, `face down`, `freefall`, `2g`, `3g`, `6g`, `8g` |
 
-### If LED Brightness
+### Se la luminosità del LED
 
 | Proprietà | Valore |
 |----------|-------|
@@ -52,7 +52,7 @@ True while the board is in this gesture or posture
 | **Icona** | 🔍 |
 | **Categoria** | micro:bit |
 
-Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
+Confrontare la luminosità di un LED (da 0 a 9) con un valore; per impostazione predefinita la domanda è «è acceso?»
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -61,7 +61,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | `comparison` | Scelta | `>` | Scelte: `<`, `<=`, `==`, `>=`, `>`, `!=`; facoltativo |
 | `value` | Testo | `0` | facoltativo |
 
-### If Tilt
+### Se c'è inclinazione
 
 | Proprietà | Valore |
 |----------|-------|
@@ -69,7 +69,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | **Icona** | 📐 |
 | **Categoria** | micro:bit |
 
-Compare an accelerometer axis (milli-g, -2048..2048) with a value
+Confrontare un asse dell'accelerometro (milli-g, da -2048 a 2048) con un valore
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -77,7 +77,7 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | `comparison` | Scelta | `>` | Scelte: `<`, `<=`, `==`, `>=`, `>`, `!=` |
 | `value` | Testo | `300` |  |
 
-### Play Melody
+### Suona una melodia
 
 | Proprietà | Valore |
 |----------|-------|
@@ -85,14 +85,14 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | **Icona** | 🎵 |
 | **Categoria** | micro:bit |
 
-Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FUNK, BLUES, BIRTHDAY, WEDDING, FUNERAL, PUNCHLINE, PYTHON, BADDY, CHASE, BA_DING, WAWAWAWAA, JUMP_UP, JUMP_DOWN, POWER_UP, POWER_DOWN) or your own notes such as "C4:4 E G C5:8 R:4" (note, octave, :length; R is a rest)
+Suonare una melodia integrata (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, POWER_UP…) oppure note tue come «C4:4 E G C5:8 R:4» (nota, ottava, :durata; R è una pausa)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `melody` | Testo | `DADADADUM` | Built-in name, or notes separated by spaces |
 | `tempo` | Testo | `120` | facoltativo |
 
-### Play Tone
+### Suona una nota
 
 | Proprietà | Valore |
 |----------|-------|
@@ -100,14 +100,14 @@ Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FU
 | **Icona** | 🔔 |
 | **Categoria** | micro:bit |
 
-Beep at a frequency for a number of milliseconds. Sounds queue and play one after another
+Emettere un segnale acustico a una frequenza per un certo numero di millisecondi. I suoni vengono messi in coda
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `frequency` | Testo | `440` | Pitch in hertz (440 = the note A) |
 | `duration` | Testo | `500` | facoltativo |
 
-### Read Sensor
+### Leggi un sensore
 
 | Proprietà | Valore |
 |----------|-------|
@@ -115,14 +115,14 @@ Beep at a frequency for a number of milliseconds. Sounds queue and play one afte
 | **Icona** | 📡 |
 | **Categoria** | micro:bit |
 
-Read a micro:bit sensor into a variable of this object (or a global variable if the name starts with "global.")
+Leggere un sensore della micro:bit in una variabile di questo oggetto (o in una variabile globale se il nome inizia con «global.»)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `sensor` | Scelta | `accelerometer x` | Scelte: `accelerometer x`, `accelerometer y`, `accelerometer z`, `acceleration strength`, `compass heading`, `light level`, `temperature`, `sound level`, `pin 0 analog`, `pin 1 analog`, `pin 2 analog` |
 | `variable` | Testo | `sensor_value` | Variable that receives the reading |
 
-### Scroll Text
+### Scorri un testo
 
 | Proprietà | Valore |
 |----------|-------|
@@ -130,14 +130,14 @@ Read a micro:bit sensor into a variable of this object (or a global variable if 
 | **Icona** | 🔤 |
 | **Categoria** | micro:bit |
 
-Scroll text across the LED display. Put literal text in double quotes ("Hello"); otherwise a dash or plus is read as arithmetic. Accented letters show as ? as on the real board
+Far scorrere un testo sul display a LED. Metti il testo tra virgolette ("Ciao"); altrimenti un trattino o un più viene letto come un calcolo. Le lettere accentate appaiono come ? come sulla scheda vera
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `text` | Testo | `"Hello"` | Text or expression to scroll |
 | `delay` | Numero | `150` | Scroll speed (MicroPython default 150); facoltativo |
 
-### Send Radio Message
+### Invia un messaggio radio
 
 | Proprietà | Valore |
 |----------|-------|
@@ -145,13 +145,13 @@ Scroll text across the LED display. Put literal text in double quotes ("Hello");
 | **Icona** | 📻 |
 | **Categoria** | micro:bit |
 
-Send a number or text to the other micro:bits in the same group (not to this one). They get the Radio Message Received event, with the value in radio_number and radio_string. Put literal text in double quotes; text is cut to 32 characters
+Inviare un numero o un testo alle altre micro:bit dello stesso gruppo (non a questa). Ricevono l'evento «Messaggio radio ricevuto», con il valore in radio_number e radio_string. Metti il testo tra virgolette; viene troncato a 32 caratteri
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `value` | Testo | `1` | A number, an expression or quoted text |
 
-### Set Display Brightness
+### Luminosità del display
 
 | Proprietà | Valore |
 |----------|-------|
@@ -159,13 +159,13 @@ Send a number or text to the other micro:bits in the same group (not to this one
 | **Icona** | 🔆 |
 | **Categoria** | micro:bit |
 
-Overall LED brightness, 0 (dark) to 255 (full)
+Luminosità generale dei LED, da 0 (spento) a 255 (massimo)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `brightness` | Testo | `255` |  |
 
-### Set LED
+### Accendi un LED
 
 | Proprietà | Valore |
 |----------|-------|
@@ -173,7 +173,7 @@ Overall LED brightness, 0 (dark) to 255 (full)
 | **Icona** | 💡 |
 | **Categoria** | micro:bit |
 
-Light one LED now (x and y are 0-4, brightness 0-9)
+Accendere subito un LED (x e y da 0 a 4, luminosità da 0 a 9)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -181,7 +181,7 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | `y` | Testo | `0` |  |
 | `brightness` | Testo | `9` | facoltativo |
 
-### Set Radio Group
+### Imposta il gruppo radio
 
 | Proprietà | Valore |
 |----------|-------|
@@ -189,13 +189,13 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | **Icona** | 📡 |
 | **Categoria** | micro:bit |
 
-Choose the radio group (0-255). Only micro:bits in the same group hear each other; every board starts in group 0
+Scegliere il gruppo radio (da 0 a 255). Solo le micro:bit dello stesso gruppo si sentono; ogni scheda parte dal gruppo 0
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `group` | Testo | `0` |  |
 
-### Show Image
+### Mostra un'immagine
 
 | Proprietà | Valore |
 |----------|-------|
@@ -203,14 +203,14 @@ Choose the radio group (0-255). Only micro:bits in the same group hear each othe
 | **Icona** | ❤️ |
 | **Categoria** | micro:bit |
 
-Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL...) or five rows of brightness digits such as "09090:99999:99999:09990:00900". Display actions queue and play one after another
+Mostrare un'immagine sui LED: un nome (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL…) oppure cinque righe di cifre di luminosità come «09090:99999:99999:09990:00900». Le immagini vengono messe in coda
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `image` | Testo | `HEART` | Built-in image name, or 5 rows of 5 digits (0-9) separated by colons |
 | `hold` | Numero | `0` | How long it stays before the next queued item (0 = until something else is shown); facoltativo |
 
-### Show Number
+### Mostra un numero
 
 | Proprietà | Valore |
 |----------|-------|
@@ -218,13 +218,13 @@ Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, A
 | **Icona** | 🔢 |
 | **Categoria** | micro:bit |
 
-Show a number: one digit stays still, longer numbers scroll
+Mostrare un numero: una cifra resta ferma, un numero più lungo scorre
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
 | `value` | Testo | `0` | Number or expression |
 
-### Stop Sound
+### Ferma il suono
 
 | Proprietà | Valore |
 |----------|-------|
@@ -232,7 +232,7 @@ Show a number: one digit stays still, longer numbers scroll
 | **Icona** | 🔇 |
 | **Categoria** | micro:bit |
 
-Silence the speaker and drop any queued sounds
+Spegnere l'altoparlante e scartare i suoni in attesa
 
 *Parametri:* nessuno
 

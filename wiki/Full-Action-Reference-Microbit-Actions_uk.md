@@ -4,7 +4,7 @@
 
 > **Згенеровано автоматично** з реєстру дій IDE за допомогою `tools/gen_action_reference.py` — не редагуйте вручну; повторно запустіть генератор після зміни дій. Переклади взято з `tools/action_ref_i18n.py`.
 
-### Clear Display
+### Очистити екран
 
 | Властивість | Значення |
 |----------|-------|
@@ -12,11 +12,11 @@
 | **Значок** | ⬛ |
 | **Категорія** | micro:bit |
 
-Turn every LED off and drop anything still queued
+Погасити всі світлодіоди та відкинути все, що чекало в черзі
 
 *Параметри:* немає
 
-### If Button Pressed
+### Якщо кнопку натиснуто
 
 | Властивість | Значення |
 |----------|-------|
@@ -24,13 +24,13 @@ Turn every LED off and drop anything still queued
 | **Значок** | 🔘 |
 | **Категорія** | micro:bit |
 
-True while the button is held down (A+B = both)
+Істинно, поки кнопку утримують натиснутою (A+B = обидві)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `button` | Вибір | `a` | Варіанти: `a`, `b`, `ab`, `logo` |
 
-### If Gesture
+### Якщо жест
 
 | Властивість | Значення |
 |----------|-------|
@@ -38,13 +38,13 @@ True while the button is held down (A+B = both)
 | **Значок** | 🤝 |
 | **Категорія** | micro:bit |
 
-True while the board is in this gesture or posture
+Істинно, поки плата перебуває в цьому жесті або положенні
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `gesture` | Вибір | `shake` | Варіанти: `shake`, `up`, `down`, `left`, `right`, `face up`, `face down`, `freefall`, `2g`, `3g`, `6g`, `8g` |
 
-### If LED Brightness
+### Якщо яскравість світлодіода
 
 | Властивість | Значення |
 |----------|-------|
@@ -52,7 +52,7 @@ True while the board is in this gesture or posture
 | **Значок** | 🔍 |
 | **Категорія** | micro:bit |
 
-Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
+Порівняти яскравість світлодіода (від 0 до 9) зі значенням; за замовчуванням питання таке: «чи він світиться?»
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -61,7 +61,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | `comparison` | Вибір | `>` | Варіанти: `<`, `<=`, `==`, `>=`, `>`, `!=`; необов'язково |
 | `value` | Текст | `0` | необов'язково |
 
-### If Tilt
+### Якщо нахил
 
 | Властивість | Значення |
 |----------|-------|
@@ -69,7 +69,7 @@ Compare one LED's brightness (0-9) with a value; the default asks "is it lit?"
 | **Значок** | 📐 |
 | **Категорія** | micro:bit |
 
-Compare an accelerometer axis (milli-g, -2048..2048) with a value
+Порівняти вісь акселерометра (мілі-g, від -2048 до 2048) зі значенням
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -77,7 +77,7 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | `comparison` | Вибір | `>` | Варіанти: `<`, `<=`, `==`, `>=`, `>`, `!=` |
 | `value` | Текст | `300` |  |
 
-### Play Melody
+### Зіграти мелодію
 
 | Властивість | Значення |
 |----------|-------|
@@ -85,14 +85,14 @@ Compare an accelerometer axis (milli-g, -2048..2048) with a value
 | **Значок** | 🎵 |
 | **Категорія** | micro:bit |
 
-Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FUNK, BLUES, BIRTHDAY, WEDDING, FUNERAL, PUNCHLINE, PYTHON, BADDY, CHASE, BA_DING, WAWAWAWAA, JUMP_UP, JUMP_DOWN, POWER_UP, POWER_DOWN) or your own notes such as "C4:4 E G C5:8 R:4" (note, octave, :length; R is a rest)
+Зіграти вбудовану мелодію (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, POWER_UP…) або власні ноти на кшталт «C4:4 E G C5:8 R:4» (нота, октава, :тривалість; R — пауза)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `melody` | Текст | `DADADADUM` | Built-in name, or notes separated by spaces |
 | `tempo` | Текст | `120` | необов'язково |
 
-### Play Tone
+### Зіграти ноту
 
 | Властивість | Значення |
 |----------|-------|
@@ -100,14 +100,14 @@ Play a built-in melody (DADADADUM, ENTERTAINER, PRELUDE, ODE, NYAN, RINGTONE, FU
 | **Значок** | 🔔 |
 | **Категорія** | micro:bit |
 
-Beep at a frequency for a number of milliseconds. Sounds queue and play one after another
+Видати сигнал заданої частоти на задану кількість мілісекунд. Звуки стають у чергу
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `frequency` | Текст | `440` | Pitch in hertz (440 = the note A) |
 | `duration` | Текст | `500` | необов'язково |
 
-### Read Sensor
+### Зчитати датчик
 
 | Властивість | Значення |
 |----------|-------|
@@ -115,14 +115,14 @@ Beep at a frequency for a number of milliseconds. Sounds queue and play one afte
 | **Значок** | 📡 |
 | **Категорія** | micro:bit |
 
-Read a micro:bit sensor into a variable of this object (or a global variable if the name starts with "global.")
+Зчитати датчик micro:bit у змінну цього об'єкта (або в глобальну змінну, якщо назва починається з «global.»)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `sensor` | Вибір | `accelerometer x` | Варіанти: `accelerometer x`, `accelerometer y`, `accelerometer z`, `acceleration strength`, `compass heading`, `light level`, `temperature`, `sound level`, `pin 0 analog`, `pin 1 analog`, `pin 2 analog` |
 | `variable` | Текст | `sensor_value` | Variable that receives the reading |
 
-### Scroll Text
+### Прокрутити текст
 
 | Властивість | Значення |
 |----------|-------|
@@ -130,14 +130,14 @@ Read a micro:bit sensor into a variable of this object (or a global variable if 
 | **Значок** | 🔤 |
 | **Категорія** | micro:bit |
 
-Scroll text across the LED display. Put literal text in double quotes ("Hello"); otherwise a dash or plus is read as arithmetic. Accented letters show as ? as on the real board
+Прокрутити текст на світлодіодному екрані. Візьміть текст у лапки ("Привіт"); інакше дефіс або плюс буде прочитано як обчислення. Літери з діакритикою показуються як ?, як і на справжній платі
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `text` | Текст | `"Hello"` | Text or expression to scroll |
 | `delay` | Число | `150` | Scroll speed (MicroPython default 150); необов'язково |
 
-### Send Radio Message
+### Надіслати радіоповідомлення
 
 | Властивість | Значення |
 |----------|-------|
@@ -145,13 +145,13 @@ Scroll text across the LED display. Put literal text in double quotes ("Hello");
 | **Значок** | 📻 |
 | **Категорія** | micro:bit |
 
-Send a number or text to the other micro:bits in the same group (not to this one). They get the Radio Message Received event, with the value in radio_number and radio_string. Put literal text in double quotes; text is cut to 32 characters
+Надіслати число або текст іншим micro:bit тієї самої групи (не цій). Вони отримають подію «Радіоповідомлення отримано», значення буде в radio_number і radio_string. Візьміть текст у лапки; його обрізають до 32 символів
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `value` | Текст | `1` | A number, an expression or quoted text |
 
-### Set Display Brightness
+### Яскравість екрана
 
 | Властивість | Значення |
 |----------|-------|
@@ -159,13 +159,13 @@ Send a number or text to the other micro:bits in the same group (not to this one
 | **Значок** | 🔆 |
 | **Категорія** | micro:bit |
 
-Overall LED brightness, 0 (dark) to 255 (full)
+Загальна яскравість світлодіодів: від 0 (вимкнено) до 255 (максимум)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `brightness` | Текст | `255` |  |
 
-### Set LED
+### Увімкнути світлодіод
 
 | Властивість | Значення |
 |----------|-------|
@@ -173,7 +173,7 @@ Overall LED brightness, 0 (dark) to 255 (full)
 | **Значок** | 💡 |
 | **Категорія** | micro:bit |
 
-Light one LED now (x and y are 0-4, brightness 0-9)
+Одразу ввімкнути світлодіод (x та y від 0 до 4, яскравість від 0 до 9)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -181,7 +181,7 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | `y` | Текст | `0` |  |
 | `brightness` | Текст | `9` | необов'язково |
 
-### Set Radio Group
+### Задати радіогрупу
 
 | Властивість | Значення |
 |----------|-------|
@@ -189,13 +189,13 @@ Light one LED now (x and y are 0-4, brightness 0-9)
 | **Значок** | 📡 |
 | **Категорія** | micro:bit |
 
-Choose the radio group (0-255). Only micro:bits in the same group hear each other; every board starts in group 0
+Вибрати радіогрупу (від 0 до 255). Одна одну чують лише micro:bit однієї групи; кожна плата починає з групи 0
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `group` | Текст | `0` |  |
 
-### Show Image
+### Показати зображення
 
 | Властивість | Значення |
 |----------|-------|
@@ -203,14 +203,14 @@ Choose the radio group (0-255). Only micro:bits in the same group hear each othe
 | **Значок** | ❤️ |
 | **Категорія** | micro:bit |
 
-Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL...) or five rows of brightness digits such as "09090:99999:99999:09990:00900". Display actions queue and play one after another
+Показати зображення на світлодіодах: назва (HEART, HAPPY, SAD, YES, NO, ARROW_N, SKULL…) або п'ять рядків цифр яскравості, наприклад «09090:99999:99999:09990:00900». Зображення стають у чергу
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `image` | Текст | `HEART` | Built-in image name, or 5 rows of 5 digits (0-9) separated by colons |
 | `hold` | Число | `0` | How long it stays before the next queued item (0 = until something else is shown); необов'язково |
 
-### Show Number
+### Показати число
 
 | Властивість | Значення |
 |----------|-------|
@@ -218,13 +218,13 @@ Show an image on the LED display: a built-in name (HEART, HAPPY, SAD, YES, NO, A
 | **Значок** | 🔢 |
 | **Категорія** | micro:bit |
 
-Show a number: one digit stays still, longer numbers scroll
+Показати число: одна цифра залишається на місці, довге число прокручується
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
 | `value` | Текст | `0` | Number or expression |
 
-### Stop Sound
+### Зупинити звук
 
 | Властивість | Значення |
 |----------|-------|
@@ -232,7 +232,7 @@ Show a number: one digit stays still, longer numbers scroll
 | **Значок** | 🔇 |
 | **Категорія** | micro:bit |
 
-Silence the speaker and drop any queued sounds
+Вимкнути динамік і відкинути звуки, що чекають
 
 *Параметри:* немає
 

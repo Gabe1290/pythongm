@@ -48,6 +48,19 @@ from .handlers import PluginExecutor
 from .events import MICROBIT_EVENT_TYPES
 from .translations import PLUGIN_GENERATED_BLOCK_TRANSLATIONS
 
+# The same names for the events panel and the action dialog (core.ui_names, docs/OPEN_WORK_2026-11-22.md
+# U2): actions keyed by action KEY, like core's tables ("Stop Sound" is also a core action), and the
+# parameter labels by their English text.
+PLUGIN_UI_TRANSLATIONS = {
+    "core.action": {name: {lang: t["display_name"] for lang, t in langs.items()}
+                    for name, langs in PLUGIN_GENERATED_BLOCK_TRANSLATIONS["actions"].items()},
+    "core.action_description": {name: {lang: t["description"] for lang, t in langs.items()}
+                                for name, langs in PLUGIN_GENERATED_BLOCK_TRANSLATIONS["actions"].items()},
+    "param": {label: {lang: table[label] for lang, table in PLUGIN_GENERATED_BLOCK_TRANSLATIONS["params"].items()
+                      if label in table}
+              for label in {k for table in PLUGIN_GENERATED_BLOCK_TRANSLATIONS["params"].values() for k in table}},
+}
+
 register_action_tabs(MICROBIT_TAB)
 
 PLUGIN_EVENTS = MICROBIT_EVENT_TYPES
