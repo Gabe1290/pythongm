@@ -133,18 +133,18 @@
 
 **Событие: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Управление** → **Если столкновение**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Экземпляр** → **Задать спрайт**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Управление** → **Иначе**
+5. Add Action: **Экземпляр** → **Задать спрайт**
    - Sprite: `spr_crate`
 
 Так ящик становится зелёным, как только оказывается на целевом месте
-— **If Collision** с обоими смещениями `0` проверяет, перекрывается
+— **Если столкновение** с обоими смещениями `0` проверяет, перекрывается
 ли *текущая* позиция ящика с `obj_target`.
 
 ![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
@@ -160,7 +160,7 @@
 
 ### 6.1 Движение по сетке
 
-Добавьте по одному событию **Key Press** для каждого направления, каждое с действием **Move** → **Move Grid**:
+Добавьте по одному событию **Key Press** для каждого направления, каждое с действием **Move** → **Движение по сетке**:
 
 | Событие | Действие Move Grid |
 |---|---|
@@ -169,7 +169,7 @@
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** перемещает экземпляр ровно на одну клетку сетки и
+**Движение по сетке** перемещает экземпляр ровно на одну клетку сетки и
 самостоятельно определяет столкновения — она не переместит игрока в
 твёрдую `obj_wall`, поэтому дополнительная проверка стены здесь не нужна.
 
@@ -177,18 +177,18 @@
 
 **Событие: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Остановить движение**
 
 ### 6.3 Толкание ящиков
 
 **Событие: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Управление** → **Если можно толкнуть**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** проверяет, свободно ли место за ящиком (в
+**Если можно толкнуть** проверяет, свободно ли место за ящиком (в
 направлении, в котором движется игрок), и если да, толкает ящик на
 одну клетку и перемещает игрока на его прежнее место — всё это одним
 действием. Если место за ящиком заблокировано стеной или другим
@@ -206,7 +206,7 @@
 2. Спрайт не требуется
 
 **Событие: Create** — единожды определяет количество целей с помощью
-**Control** → **Execute Code** (действие Execute Code в этом проекте
+**Управление** → **Выполнить код** (действие Execute Code в этом проекте
 выполняет настоящий Python, а не GameMaker Language — `self` — это
 текущий экземпляр, `game` — исполнитель игры):
 
@@ -233,14 +233,14 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 ```
 
 `self.restart_room_flag = True` запускает тот же перезапуск комнаты,
-что и действие **Restart Room** — главный цикл проверяет этот флаг
+что и действие **Перезапустить комнату** — главный цикл проверяет этот флаг
 каждый кадр. Если хотите показать всплывающее окно перед перезапуском,
-добавьте сразу после блока Execute Code действие **Show Message** (из
+добавьте сразу после блока Execute Code действие **Показать сообщение** (из
 категории **Output**, сообщение `Level Complete!`).
 
 **Событие: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Игра** → **Нарисовать текст**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -306,17 +306,17 @@ T = Цель
 
 ### Добавьте счётчик ходов
 
-В событии **Create** для `obj_game_controller` добавьте **Control** →
-**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
+В событии **Создание** для `obj_game_controller` добавьте **Управление** →
+**Задать переменную** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 В каждом из четырёх событий Key Press для `obj_player` добавьте второе
-действие сразу после Move Grid: **Control** → **Set Variable**
+действие сразу после Move Grid: **Управление** → **Задать переменную**
 (Variable: `global.moves`, Value: `1`, Scope: `global`, отмечено
-**Relative**) — это добавляет 1 к счётчику при каждом нажатии клавиши,
+**Относительно**) — это добавляет 1 к счётчику при каждом нажатии клавиши,
 независимо от того, была ли движение действительно заблокировано стеной.
 
-В событии **Draw** для `obj_game_controller` добавьте **Draw** →
-**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
+В событии **Рисование** для `obj_game_controller` добавьте **Рисование** →
+**Нарисовать переменную** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Добавьте функцию отмены
 
@@ -326,7 +326,7 @@ T = Цель
 
 Создайте больше комнат (`room_level2`, `room_level3` и т. д.) и в
 блоке Execute Code для проверки победы используйте действие **Next
-Room** (категория Room) вместо **Restart Room**
+Room** (категория Room) вместо **Перезапустить комнату**
 (`self.next_room_flag = True` вместо `self.restart_room_flag = True`)
 при завершении уровня.
 
@@ -345,7 +345,7 @@ Room** (категория Room) вместо **Restart Room**
 | Проблема | Решение |
 |----------|---------|
 | Игрок проходит сквозь стены | Проверьте, что у `obj_wall` отмечен "Solid" |
-| Ящик не меняет цвет | Проверьте, что действие **If Collision** в событии Step нацелено на `obj_target` |
+| Ящик не меняет цвет | Проверьте, что действие **Если столкновение** в событии Step нацелено на `obj_target` |
 | Ящик можно толкнуть сквозь стену | Проверьте обнаружение столкновений перед перемещением ящика |
 | Сообщение о победе появляется сразу | Убедитесь, что цели размещены отдельно от ящиков |
 | Игрок движется на несколько клеток | Используйте событие Keyboard Press, а не событие Keyboard |

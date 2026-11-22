@@ -112,7 +112,7 @@
 Модуль — главный объект, которым управляет игрок, с физикой. В отличие от
 других руководств по движению в этом вики, его управление должно
 постепенно накапливать скорость и отслеживать ресурс топлива, поэтому
-этот объект больше опирается на **Control** → **Execute Code** (настоящий
+этот объект больше опирается на **Управление** → **Выполнить код** (настоящий
 Python — `self` это текущий экземпляр, `game` это движок игры,
 `keyboard.check(имя)` сообщает об удерживаемой клавише), чем только на
 структурированные действия. Везде, где структурированное действие
@@ -124,11 +124,11 @@ Python — `self` это текущий экземпляр, `game` это дви
 ### 5.1 Гравитация и Начальные Переменные
 
 **Событие: Create**
-1. Добавьте действие **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+1. Добавьте действие **Move** → **Задать гравитацию** (Direction: `270`, Gravity: `0.05`)
    — лёгкое притяжение вниз; движок автоматически добавляет его к
    вертикальной скорости модуля на каждом шаге, так же как гравитация в
    руководстве Платформер, только слабее.
-2. Добавьте действие **Control** → **Execute Code**:
+2. Добавьте действие **Управление** → **Выполнить код**:
 
 ```python
 self.thrust_force = 0.1
@@ -148,7 +148,7 @@ self.safe_speed = 2
 
 ### 5.2 Событие Step — Тяга и Управление
 
-**Событие: Step** — Добавьте действие **Control** → **Execute Code**:
+**Событие: Step** — Добавьте действие **Управление** → **Выполнить код**:
 
 ```python
 if not self.landed and not self.crashed:
@@ -188,23 +188,23 @@ GML), поэтому `if` вокруг остального кода делае�
 ### 5.3 Столкновение с Посадочной Площадкой
 
 **Событие: Collision with obj_pad**
-1. Добавьте действие **Control** → **Test Expression**
+1. Добавьте действие **Управление** → **Проверить выражение**
    - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
      — скорость посадки это длина вектора скорости; Пифагор, а не
      переменная `speed` (в этом движке `speed` это *скорость анимации
      спрайта*, а не величина движения — настоящая ловушка для тех, кто
      пришёл из GameMaker).
    - Then Actions:
-     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
-     2. **Move** → **Stop Movement**
-     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) —
+     1. **Control** → **Задать переменную** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Остановить движение**
+     3. **Move** → **Задать гравитацию** (Direction: `270`, Gravity: `0`) —
         не даёт гравитации снова незаметно накапливать вертикальную
         скорость у уже приземлившегося модуля
-     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+     4. **Output** → **Показать сообщение** (Message: `Perfect Landing! You Win!`)
    - Else Actions:
-     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
-     3. **Room** → **Restart Room**
+     1. **Управление** → **Задать переменную** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Показать сообщение** (Message: `Crashed! Too fast!`)
+     3. **Комната** → **Перезапустить комнату**
 
 Текст Show Message — это фиксированная строка, в неё нельзя встроить
 реальную скорость посадки. HUD (Шаг 7) уже показывает живую скорость
@@ -213,9 +213,9 @@ GML), поэтому `if` вокруг остального кода делае�
 ### 5.4 Столкновение с Землёй
 
 **Событие: Collision with obj_ground**
-1. Добавьте действие **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-2. Добавьте действие **Output** → **Show Message** (Message: `Crashed into terrain!`)
-3. Добавьте действие **Room** → **Restart Room**
+1. Добавьте действие **Управление** → **Задать переменную** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Добавьте действие **Output** → **Показать сообщение** (Message: `Crashed into terrain!`)
+3. Добавьте действие **Комната** → **Перезапустить комнату**
 
 ![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
 
@@ -244,7 +244,7 @@ GML), поэтому `if` вокруг остального кода делае�
 2. Спрайт не нужен
 
 **Событие: Draw**
-1. Добавьте действие **Control** → **Execute Code** — находит модуль и
+1. Добавьте действие **Управление** → **Выполнить код** — находит модуль и
    вычисляет значения, которые покажут действия Draw ниже:
 
 ```python
@@ -266,29 +266,29 @@ else:
     self.no_fuel = False
 ```
 
-2. Добавьте действие **Game** → **Set Draw Color** (Color: `#FFFFFF`)
-3. Добавьте действие **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
-4. Добавьте действие **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
-5. Добавьте действие **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
-6. Добавьте действие **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
-7. Добавьте действие **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
-8. Добавьте действие **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+2. Добавьте действие **Рисование** → **Задать цвет рисования** (Color: `#FFFFFF`)
+3. Добавьте действие **Игра** → **Нарисовать текст** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Добавьте действие **Игра** → **Нарисовать текст** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Добавьте действие **Рисование** → **Нарисовать переменную** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Добавьте действие **Игра** → **Нарисовать текст** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Добавьте действие **Рисование** → **Нарисовать переменную** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Добавьте действие **Игра** → **Нарисовать текст** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
 
-Затем две строки предупреждений, каждая под управлением **Control** →
-**Test Expression** (Else не нужен — ничего не рисуется, когда условие
+Затем две строки предупреждений, каждая под управлением **Управление** →
+**Проверить выражение** (Else не нужен — ничего не рисуется, когда условие
 ложно):
 
-9. **Control** → **Test Expression** (Expression: `self.too_fast`)
-   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
-   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
-     **Draw Text** (`Speed OK`, X `10`, Y `90`)
-10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
-    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+9. **Управление** → **Проверить выражение** (Expression: `self.too_fast`)
+   - Then Actions: **Рисование** → **Задать цвет рисования** (`#FF0000`), **Game** →
+     **Нарисовать текст** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Рисование** → **Задать цвет рисования** (`#00FF00`), **Game** →
+     **Нарисовать текст** (`Speed OK`, X `10`, Y `90`)
+10. **Управление** → **Проверить выражение** (Expression: `self.no_fuel`)
+    - Then Actions: **Рисование** → **Задать цвет рисования** (`#FF0000`), **Game** →
+      **Нарисовать текст** (`NO FUEL!`, X `10`, Y `110`)
 
-11. Добавьте действие **Game** → **Set Draw Color** (Color: `#808080`)
-12. Добавьте действие **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+11. Добавьте действие **Рисование** → **Задать цвет рисования** (Color: `#808080`)
+12. Добавьте действие **Игра** → **Нарисовать текст** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
     X: `10`, Y: `440`) — выберите Y ближе к низу того размера room,
     который вы используете на Шаге 8.
 
