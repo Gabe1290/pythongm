@@ -16,7 +16,7 @@ Scope: the core registry only (Thymio's own dialog tables are separate).
 
 ## Queue (one commit each)
 
-- [ ] U1 pl
+- [x] U1 pl
 - [ ] U2 pt (Brazilian, as the pt catalogue)
 - [ ] U3 ja
 - [ ] U4 zh

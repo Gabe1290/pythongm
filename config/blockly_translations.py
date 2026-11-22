@@ -715,6 +715,25 @@ for _type, (_names, _descs) in _MORE_BLOCKS.items():
     })
 
 
+# Languages kept in their own modules (config/blockly_block_i18n_<lang>.py):
+# CATEGORIES = {category: text}, BLOCKS = {block_type: (name, description)}.
+# docs/BLOCKLY_DIALOG_I18N_2026-11-22.md.
+MODULE_LANGUAGES = ("pl",)
+
+
+def _merge_language_modules():
+    import importlib
+    for _lang in MODULE_LANGUAGES:
+        _mod = importlib.import_module(f"config.blockly_block_i18n_{_lang}")
+        CATEGORY_TRANSLATIONS.setdefault(_lang, {}).update(_mod.CATEGORIES)
+        for _type, (_name, _desc) in _mod.BLOCKS.items():
+            _entry = BLOCK_TRANSLATIONS.setdefault(_type, {"name": {}, "description": {}})
+            _entry["name"][_lang] = _name
+            _entry["description"][_lang] = _desc
+
+
+_merge_language_modules()
+
 def get_translated_category(category: str, language: str = "en") -> str:
     """Get translated category name"""
     if language == "en" or language not in CATEGORY_TRANSLATIONS:
