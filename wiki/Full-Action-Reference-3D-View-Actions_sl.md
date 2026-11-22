@@ -42,7 +42,7 @@ Poskusi izdelati izdelek registriranega recepta iz zaloge instance, ki kliče ak
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `output` | Izbira | `brick` | Which registered recipe to attempt, by its output block type; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output` | Izbira | `brick` | Kateri registrirani recept poskusiti, določen z vrsto bloka, ki ga izdela; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Nariši HUD Block World
 
@@ -119,8 +119,8 @@ Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki pri
 | `mark_color` | Barva | `#40e0ff` | Barva pik iz »Označi objekt«; neobvezno |
 | `mark_object_2` | Predmet | — | Drug objekt, ki se označi s svojo barvo; neobvezno |
 | `mark_color_2` | Barva | `#ff5050` | Barva pik iz »Označi objekt 2«; neobvezno |
-| `show_trail` | Da/Ne | Ne | Dot every grid cell the camera has already visited, so you can see where you've been; neobvezno |
-| `trail_color` | Barva | `#406080` | Colour of the visited-cell trail dots; neobvezno |
+| `show_trail` | Da/Ne | Ne | S piko označi vsako celico, ki jo je kamera že obiskala, da vidiš, kje si že bil; neobvezno |
+| `trail_color` | Barva | `#406080` | Barva pik sledi obiskanih celic; neobvezno |
 
 ### Vklopi pogled Block World
 
@@ -138,11 +138,11 @@ Sobo prikaže kot voksel pogled iz prve osebe (ena sama plast) namesto pogleda o
 | `camera_object` | Predmet | — | Predmet, čigar položaj + kot pogleda je kamera (prazno = predmet, ki izvaja to dejanje); neobvezno |
 | `z_layer` | Število | `0` | Katera plast sveta se nariše (faza 2a nariše natanko eno plast – pogleda gor in dol še ni); neobvezno |
 | `fov` | Število | `66` | Vodoravno vidno polje v stopinjah; neobvezno |
-| `render_distance` | Število | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); neobvezno |
+| `render_distance` | Število | `10` | Največja dolžina žarkov v celicah mreže (manj = hitreje; megla v daljavi skrije, kje se svet konča); neobvezno |
 | `cell_size` | Število | `32` | Velikost celice mreže v slikovnih točkah (naj se ujema z mrežo za postavljanje blokov); neobvezno |
 | `columns` | Število | `160` | Zaslonski stolpci za raycast (manj = hitreje/bolj grobo); neobvezno |
-| `fog` | Da/Ne | Da | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; neobvezno |
-| `fog_color` | Barva | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); neobvezno |
+| `fog` | Da/Ne | Da | Oddaljene bloke zlij z nebom, da rob pogleda deluje kot meglica namesto ostrega reza. Izklopljeno: stari ploski videz; neobvezno |
+| `fog_color` | Barva | — | Barva, v katero bledi daljava; prazno = barva neba (jama morda želi svojo); neobvezno |
 | `wall_color` | Barva | `#8a8a8a` | Enotna barva, uporabljena le, če so blokovne teksture izklopljene; neobvezno |
 | `floor_color` | Barva | `#3a2f1c` | Enotna barva tal (faza 2a tal še ne teksturira); neobvezno |
 | `ceiling_color` | Barva | `#87CEEB` | Enotna barva stropa oziroma neba (faza 2a neba še nima); neobvezno |
@@ -331,14 +331,14 @@ Registrira recept, ki ga lahko uporabi »Izdelaj predmet«: pokliči enkrat za v
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `output` | Izbira | `brick` | Which block type this recipe produces; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `output_count` | Število | `1` | How many of Output Block one craft produces |
-| `input_1` | Izbira | `stone` | First required block type; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `input_1_count` | Število | `1` | How many of Input 1 the recipe consumes |
-| `input_2` | Izbira | — | Second required block type (blank = unused); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
-| `input_2_count` | Število | `1` | How many of Input 2 the recipe consumes; neobvezno |
-| `input_3` | Izbira | — | Third required block type (blank = unused); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
-| `input_3_count` | Število | `1` | How many of Input 3 the recipe consumes; neobvezno |
+| `output` | Izbira | `brick` | Katero vrsto bloka izdela ta recept; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Število | `1` | Koliko izdelanih blokov da ena izdelava |
+| `input_1` | Izbira | `stone` | Prva potrebna vrsta bloka; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Število | `1` | Koliko sestavine 1 porabi recept |
+| `input_2` | Izbira | — | Druga potrebna vrsta bloka (prazno = brez); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
+| `input_2_count` | Število | `1` | Koliko sestavine 2 porabi recept; neobvezno |
+| `input_3` | Izbira | — | Tretja potrebna vrsta bloka (prazno = brez); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
+| `input_3_count` | Število | `1` | Koliko sestavine 3 porabi recept; neobvezno |
 
 ### Nastavi kot pogleda
 
@@ -388,7 +388,7 @@ Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [Rezultat/Življenja/Zdravje](Full-Action-Reference-Score-Lives-Health_sl) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

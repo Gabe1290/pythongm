@@ -220,7 +220,7 @@ Ta preset omogoča **21** vrst dogodkov in **123** vrst dejanj.
 | Odstrani sistem delcev | `destroy_particle_system` | — |
 | Neprekinjeno oddajaj delce | `stream_particles` | `particle_type`, `number` |
 
-### Score/Lives/Health
+### Rezultat/Življenja/Zdravje
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|

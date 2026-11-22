@@ -107,7 +107,7 @@ Ustavi predvajani zvok
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [Rezultat/Življenja/Zdravje](Full-Action-Reference-Score-Lives-Health_sl) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

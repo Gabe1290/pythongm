@@ -144,7 +144,7 @@ Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za 
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [Rezultat/Življenja/Zdravje](Full-Action-Reference-Score-Lives-Health_sl) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

@@ -1,4 +1,4 @@
-# Score/Lives/Health
+# Rezultat/Življenja/Zdravje
 
 *[Domov](Home_sl) | [Vodnik po prednastavitvah](Preset-Guide_sl) | [Referenca dogodkov](Event-Reference_sl)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Ime** | `clear_highscore` |
 | **Ikona** | 🗑️🏆 |
-| **Kategorija** | Score/Lives/Health |
+| **Kategorija** | Rezultat/Življenja/Zdravje |
 
 Počisti vse vnose tabele rekordov
 
@@ -22,7 +22,7 @@ Počisti vse vnose tabele rekordov
 |----------|-------|
 | **Ime** | `show_highscore` |
 | **Ikona** | 🏆 |
-| **Kategorija** | Score/Lives/Health |
+| **Kategorija** | Rezultat/Življenja/Zdravje |
 
 Prikaži pogovorno okno tabele rekordov
 
@@ -39,7 +39,7 @@ Prikaži pogovorno okno tabele rekordov
 |----------|-------|
 | **Ime** | `test_health` |
 | **Ikona** | ❓💚 |
-| **Kategorija** | Score/Lives/Health |
+| **Kategorija** | Rezultat/Življenja/Zdravje |
 
 Pogoj: primerjaj trenutno zdravje z vrednostjo
 
@@ -54,7 +54,7 @@ Pogoj: primerjaj trenutno zdravje z vrednostjo
 |----------|-------|
 | **Ime** | `test_lives` |
 | **Ikona** | ❓❤️ |
-| **Kategorija** | Score/Lives/Health |
+| **Kategorija** | Rezultat/Življenja/Zdravje |
 
 Pogoj: primerjaj število življenj z vrednostjo
 
@@ -69,7 +69,7 @@ Pogoj: primerjaj število življenj z vrednostjo
 |----------|-------|
 | **Ime** | `test_score` |
 | **Ikona** | ❓🏆 |
-| **Kategorija** | Score/Lives/Health |
+| **Kategorija** | Rezultat/Življenja/Zdravje |
 
 Pogoj: primerjaj rezultat z vrednostjo
 

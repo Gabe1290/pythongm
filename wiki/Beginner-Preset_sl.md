@@ -163,7 +163,7 @@ Ta preset omogoča **20** vrst dogodkov in **68** vrst dejanj.
 | Nastavi barvo risanja | `set_draw_color` | `color` |
 | Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
 
-### Score/Lives/Health
+### Rezultat/Življenja/Zdravje
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|

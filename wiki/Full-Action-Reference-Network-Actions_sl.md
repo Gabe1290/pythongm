@@ -37,7 +37,7 @@ Samo pri gostitelju: ustvari primerek, ki se samodejno pojavi pri vseh odjemalci
 | `owner` | Besedilo | `0` | Igralec, ki vodi ta primerek (0 = gostitelj). Pogosto global.network_sender znotraj »Igralec se je pridružil«.; neobvezno |
 | `relative` | Da/Ne | Ne | Položaj glede na objekt, ki izvaja dejanje; neobvezno |
 
-### End Turn (File Exchange)
+### Končaj potezo (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -45,7 +45,7 @@ Samo pri gostitelju: ustvari primerek, ki se samodejno pojavi pri vseh odjemalci
 | **Ikona** | ✅ |
 | **Kategorija** | Omrežje |
 
-Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+Oddaj potezo tega kroga: vse, kar je bilo od zadnje poteze pripravljeno z »Nastavi skupno spremenljivko (izmenjava datotek)«, zapisano v eno datoteko, ki jo prevzame gostitelj. Pokliči enkrat na krog, tudi brez pripravljenega, če igra v vsakem krogu pričakuje odgovor vsakega igralca; kdor je nikoli ne pokliče, je po izteku roka kroga preskočen
 
 *Parametri:* brez
 
@@ -67,7 +67,7 @@ Ta računalnik postane gostitelj večigralske igre v krajevnem omrežju: drugi i
 | `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
 | `show_lobby` | Da/Ne | Ne | Pred začetkom igre pokaži zaslon »Čakanje na igralce ...« z gumbom za začetek; neobvezno |
 
-### Host a Game (File Exchange)
+### Gosti igro (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -75,15 +75,15 @@ Ta računalnik postane gostitelj večigralske igre v krajevnem omrežju: drugi i
 | **Ikona** | 🗂️ |
 | **Kategorija** | Omrežje |
 
-Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+Postani gostitelj igre na poteze, ki poteka prek skupne mape namesto prek neposredne povezave – deluje tudi za šolskim požarnim zidom, ki blokira povezave med računalniki. Pokliči enkrat (na primer v dogodku Ustvarjanje krmilnika sobe). Nastavi global.player_id = 0 in global.is_host = 1
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `folder` | Besedilo | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `folder` | Besedilo | — | Pot do mape, ki je dosegljiva z obeh računalnikov (omrežni pogon, sinhronizirana mapa Dropbox/OneDrive, ...) |
 | `max_players` | Število | `8` | Največje število igralcev, skupaj z gostiteljem (od 2 do 16); neobvezno |
 | `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
-| `round_deadline` | Število | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); neobvezno |
-| `show_lobby` | Da/Ne | Ne | Show a "Waiting for players..." screen with a Start button before handing control back to the game; neobvezno |
+| `round_deadline` | Število | `30` | Kako dolgo čakati na potezo vsakega igralca, preden se krog vseeno nadaljuje (manjkajoči igralec je v tem krogu preskočen, namesto da bi za vedno blokiral igro); neobvezno |
+| `show_lobby` | Da/Ne | Ne | Pred vrnitvijo nadzora igri prikaži zaslon »Čakanje na igralce ...« z gumbom Začni; neobvezno |
 
 ### Če upravljam ta primerek
 
@@ -128,7 +128,7 @@ Poveže se z večigralsko igro v krajevnem omrežju, ki jo gosti drug računalni
 | `port` | Število | `45782` | Vrata TCP – morajo se ujemati z gostiteljevimi; neobvezno |
 | `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
 
-### Join a Game (File Exchange)
+### Pridruži se igri (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -136,11 +136,11 @@ Poveže se z večigralsko igro v krajevnem omrežju, ki jo gosti drug računalni
 | **Ikona** | 🔌 |
 | **Kategorija** | Omrežje |
 
-Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+Pridruži se igri na poteze, ki jo prek skupne mape gosti drug računalnik. Gostitelj dodeli global.player_id (1, 2, ...)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `folder` | Besedilo | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `folder` | Besedilo | — | Pot do ISTE skupne mape, kot jo uporablja gostitelj (»auto« odpre vgrajeni zaslon za vnos) |
 | `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
 
 ### Zapusti igro
@@ -155,7 +155,7 @@ Prekine povezavo (ali preneha gostiti) in počisti globalne omrežne spremenljiv
 
 *Parametri:* brez
 
-### Leave the Game (File Exchange)
+### Zapusti igro (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -163,7 +163,7 @@ Prekine povezavo (ali preneha gostiti) in počisti globalne omrežne spremenljiv
 | **Ikona** | 🚪 |
 | **Kategorija** | Omrežje |
 
-Stop hosting or leave the game, and clear the global status variables
+Nehaj gostiti ali zapusti igro in počisti globalne spremenljivke stanja
 
 *Parametri:* brez
 
@@ -182,7 +182,7 @@ Skupno spremenljivko prepiše v globalno, da jo lahko uporabiš v izračunu. Ena
 | `name` | Besedilo | — | Ime skupne spremenljivke, ki naj se prebere |
 | `into` | Besedilo | — | Ime globalne spremenljivke, v katero se zapiše vrednost |
 
-### Read a Shared Variable (File Exchange)
+### Preberi skupno spremenljivko (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -190,7 +190,7 @@ Skupno spremenljivko prepiše v globalno, da jo lahko uporabiš v izračunu. Ena
 | **Ikona** | 📥 |
 | **Kategorija** | Omrežje |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
+Kopiraj skupno spremenljivko v globalno spremenljivko, da jo uporabiš v izračunu. Enako kot neposredno branje global.<ime>: vrednost zadnjega kroga, ki ga je objavil gostitelj, ne trenutna
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -213,7 +213,7 @@ Razpošlje sporočilo po tvoji izbiri. Na zadevnih računalnikih sproži dogodek
 | `data` | Besedilo | — | Število, besedilo, true/false ali kratek seznam; neobvezno |
 | `target` | Izbira | `all` | all = vsi; host = samo gostitelj; Izbire: `all`, `host` |
 
-### Send a Network Message (File Exchange)
+### Pošlji omrežno sporočilo (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -221,13 +221,13 @@ Razpošlje sporočilo po tvoji izbiri. Na zadevnih računalnikih sproži dogodek
 | **Ikona** | ✉️ |
 | **Kategorija** | Omrežje |
 
-Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+Pripravi lastno sporočilo, dostavljeno enako kot z »Nastavi skupno spremenljivko (izmenjava datotek)«: v naslednjem krogu, ne takoj. Sproži dogodek »Omrežno sporočilo (izmenjava datotek)« z global.network_event / global.network_data / global.network_sender
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
 | `event` | Besedilo | — | Oznaka po tvoji izbiri, ki jo preverja obravnava (npr. "buzz", "answer") |
 | `data` | Besedilo | — | Število, besedilo, true/false ali kratek seznam; neobvezno |
-| `target` | Izbira | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Izbire: `all`, `host` |
+| `target` | Izbira | `all` | all = vsi, ko prevzamejo naslednji krog; host = samo gostitelj, obdelano takoj ob koncu kroga; Izbire: `all`, `host` |
 
 ### Nastavi omrežni način (v1)
 
@@ -260,7 +260,7 @@ Zapiše spremenljivko, ki si jo delijo vsi računalniki. Pri gostitelju se uvelj
 | `name` | Besedilo | — | Preprosto ime (črke, števke, _) – brez presledkov in operatorjev |
 | `value` | Besedilo | `0` | Število, besedilo ali true/false (sestavljeni predmeti so zavrnjeni) |
 
-### Set a Shared Variable (File Exchange)
+### Nastavi skupno spremenljivko (izmenjava datotek)
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -268,7 +268,7 @@ Zapiše spremenljivko, ki si jo delijo vsi računalniki. Pri gostitelju se uvelj
 | **Ikona** | 📤 |
 | **Kategorija** | Omrežje |
 
-Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
+Pripravi spremenljivko za objavo vsem. Učinkuje po »Končaj potezo«, ko gostitelj vključi potezo v naslednji krog – ne takoj, ker ni neposredne povezave. Po objavi je povsod berljiva kot global.<ime>
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -347,7 +347,7 @@ Primerek, ki izvaja to dejanje, označi kot sinhroniziran: njegov položaj, zasu
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [Rezultat/Življenja/Zdravje](Full-Action-Reference-Score-Lives-Health_sl) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

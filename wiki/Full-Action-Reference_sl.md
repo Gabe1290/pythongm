@@ -22,7 +22,7 @@ Ta stran navaja vseh **186** dejanj, ki so na voljo v PyGameMaker, natanko tako,
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_sl) (5)
+- [Rezultat/Življenja/Zdravje](Full-Action-Reference-Score-Lives-Health_sl) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_sl) (16)
 
 ---
