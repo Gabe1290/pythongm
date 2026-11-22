@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Ein springender Spieler</h1>
+
+    <p>In dieser Phase erstellen wir den Spieler und den Boden, richten Schwerkraft und Bewegung ein
+    und bauen einen Raum mit Plattformen. Am Ende kannst du laufen und springen!</p>
+
+    <h2>Sprites erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Sprites</strong> &gt; <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_player</code>, Größe <strong>32x32</strong></li>
+            <li>Zeichne eine Figur (oder importiere sie aus <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Erstelle ein weiteres Sprite: <code>spr_ground</code>, Größe <strong>32x32</strong></li>
+            <li>Zeichne eine Bodenkachel (oben grün, unten braun) oder importiere sie</li>
+        </ol>
+    </div>
+
+    <h2>Objekte erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &gt; <strong>Objekt erstellen</strong></li>
+            <li>Erstelle <code>obj_ground</code> mit dem Sprite <code>spr_ground</code></li>
+            <li>Setze bei <code>obj_ground</code> ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_player</code> mit dem Sprite <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Warum fest?</strong> Wenn <code>obj_ground</code> fest ist, weiß die Engine,
+        dass andere Objekte nicht hindurchgehen dürfen. Das ist für Plattformen entscheidend!
+    </div>
+
+    <h2>obj_player mit Blockly programmieren</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Schwerkraft einschalten (Wenn erstellt)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">Setze Schwerkraft Richtung: <span class="block-val">270</span>, Stärke: <span class="block-val">0.5</span></span>
+        </div>
+        <p>Suche <strong>Wenn erstellt</strong> in der Kategorie <em>Ereignisse</em>.
+        Suche dann <strong>Setze Schwerkraft</strong> in der Kategorie <em>Bewegung</em>.
+        Setze die Richtung auf <strong>270</strong> (nach unten) und die Stärke auf <strong>0.5</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Richtung 270 = nach unten.</strong> Winkel beginnen bei 0 (rechts) und laufen gegen den Uhrzeigersinn:
+        90 = oben, 180 = links, 270 = unten.
+    </div>
+
+    <h2>Nach links bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">-4</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil links</strong>.
+        Stecke dann <strong>setze horizontale Geschwindigkeit</strong> aus <em>Bewegung</em> mit dem Wert <strong>-4</strong> hinein
+        (negativ = nach links).</p>
+    </div>
+
+    <h2>Nach rechts bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">4</span></span>
+        </div>
+    </div>
+
+    <h2>Anhalten, wenn keine Taste gedrückt ist</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">0</span></span>
+        </div>
+        <p>So hört die waagrechte Bewegung auf, wenn keine Taste gedrückt ist.
+        Wir verwenden <strong>setze horizontale Geschwindigkeit auf 0</strong> (NICHT „Bewegung stoppen“), damit die Schwerkraft weiter wirkt!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Wichtig:</strong> Mit „Bewegung stoppen“ würde hier auch die vertikale Geschwindigkeit gelöscht
+        und die Schwerkraft hörte auf. Setzt du nur die horizontale Geschwindigkeit auf 0, fällt der Spieler ganz normal.
+    </div>
+
+    <h2>Springen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Pfeil oben</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-val">-10</span></span>
+        </div>
+        <p>Suche <strong>Taste gedrückt</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil oben</strong>.
+        Setze die vertikale Geschwindigkeit auf <strong>-10</strong> (negativ = nach oben).
+        Das Ereignis <em>Taste gedrückt</em> löst nur einmal aus und gibt einen einzelnen Sprung-Schub.</p>
+    </div>
+
+    <h2>Kollision mit dem Boden</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_ground</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_ground</code> ein.
+        Stecke <strong>Bewegung stoppen</strong> hinein. So fällt der Spieler nicht durch
+        den Boden und hält an Wänden an.</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>6 Ereignisblöcke</strong> im Arbeitsbereich haben
+        (Wenn erstellt + Links + Rechts + Keine Taste + Pfeil oben gedrückt + Kollision).</p>
+    </div>
+
+    <h2>Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Räume</strong> &gt; <strong>Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_level1</code></li>
+            <li>Setze die Größe: <strong>800 x 480</strong></li>
+            <li>Setze die Hintergrundfarbe auf Hellblau (Himmel)</li>
+            <li>Schalte „Am Raster ausrichten“ ein und setze das Raster auf <strong>32x32</strong></li>
+            <li>Setze <code>obj_ground</code> entlang der untersten Reihe</li>
+            <li>Baue Plattformen in verschiedenen Höhen, indem du weitere <code>obj_ground</code>-Blöcke in die Luft setzt</li>
+            <li>Setze ein <code>obj_player</code> auf die linke Seite, oben auf den Boden</li>
+        </ol>
+    </div>
+
+    <pre>
+                        ====
+            ====                  ====
+    P                 ====
+  ====  ====  ====          ====  ====  ====
+  GGGGGGGGGGGGGGGG    GGGGGGGGGGGGGGGGGGGGGG
+
+G = Ground (obj_ground)     P = Player (obj_player)
+==== = Platforms at different heights</pre>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Der Spieler fällt durch die Schwerkraft</li>
+            <li>Die Pfeiltasten Links/Rechts bewegen den Spieler</li>
+            <li>Pfeil oben lässt den Spieler springen</li>
+            <li>Der Spieler landet auf Plattformen und auf dem Boden</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Münzen, Stacheln und eine Fahne hinzuzufügen!
+    </div>
+</body>
+</html>

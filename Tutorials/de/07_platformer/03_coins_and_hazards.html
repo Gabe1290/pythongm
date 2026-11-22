@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Münzen und Gefahren</h1>
+
+    <p>Jetzt fügen wir Münzen zum Sammeln, gefährliche Stacheln und eine Fahne als Ziel hinzu.
+    Alles programmieren wir als neue Kollisionsereignisse von <code>obj_player</code>.</p>
+
+    <h2>Sprites erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle das Sprite <code>spr_coin</code>, Größe <strong>32x32</strong> &mdash; zeichne einen gelben oder goldenen Kreis (oder importiere es aus <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Erstelle das Sprite <code>spr_spike</code>, Größe <strong>32x32</strong> &mdash; zeichne dreieckige Stacheln, die nach oben zeigen</li>
+            <li>Erstelle das Sprite <code>spr_flag</code>, Größe <strong>32x32</strong> &mdash; zeichne eine Fahne an einer Stange</li>
+        </ol>
+    </div>
+
+    <h2>Objekte erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle <code>obj_coin</code> mit dem Sprite <code>spr_coin</code></li>
+            <li>Erstelle <code>obj_spike</code> mit dem Sprite <code>spr_spike</code></li>
+            <li>Erstelle <code>obj_flag</code> mit dem Sprite <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Diese Objekte brauchen kein Blockly!</strong> Wir programmieren alle Wechselwirkungen
+        als Kollisionsereignisse von <code>obj_player</code>, denn der Spieler ist es, der
+        Münzen, Stacheln und die Fahne berührt.
+    </div>
+
+    <h2>obj_player programmieren &mdash; Kollisionsereignisse hinzufügen</h2>
+    <div class="step">
+        <p>Öffne den Blockly-Editor von <code>obj_player</code> (die Blöcke aus Phase 1 sind noch da).
+        Füge diese neuen Ereignisblöcke hinzu:</p>
+    </div>
+
+    <h2>Münzen sammeln</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_coin</span><br>
+            <span class="block block-score block-indent">Zu Punkten hinzufügen <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Zerstöre andere Instanz</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_coin</code> ein.
+        Stecke <strong>Zu Punkten hinzufügen</strong> (aus <em>Punkte/Leben/Gesundheit</em>) mit dem Wert <strong>10</strong> hinein.
+        Stecke dann <strong>Zerstöre andere Instanz</strong> (aus <em>Instanz</em>) darunter,
+        damit die Münze beim Einsammeln verschwindet.</p>
+    </div>
+
+    <h2>Einen Stachel berühren</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_spike</span><br>
+            <span class="block block-room block-indent">Raum neu starten</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_spike</code> ein.
+        Stecke <strong>Raum neu starten</strong> (aus <em>Raum</em>) hinein.
+        Berührt der Spieler einen Stachel, beginnt das Level von vorn!</p>
+    </div>
+
+    <h2>Die Fahne erreichen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_flag</span><br>
+            <span class="block block-output block-indent">Zeige Nachricht <span class="block-val">"You Win!"</span></span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_flag</code> ein.
+        Stecke <strong>Zeige Nachricht</strong> (aus <em>Ausgabe</em>) hinein und gib <strong>You Win!</strong> ein.
+        Erreicht der Spieler die Fahne, erscheint ein Fenster!</p>
+    </div>
+
+    <h2>Deine Blöcke anwenden</h2>
+    <div class="step">
+        <ol>
+            <li>Du solltest jetzt insgesamt <strong>9 Ereignisblöcke</strong> für <code>obj_player</code> haben
+            (6 aus Phase 1 + 3 neue Kollisionsereignisse)</li>
+        </ol>
+    </div>
+
+    <h2>Deinen Raum ändern</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_level1</code></li>
+            <li>Setze <code>obj_coin</code> auf Plattformen und an schwer erreichbare Stellen</li>
+            <li>Setze <code>obj_spike</code> an Abgründe oder auf gefährliche Plattformen</li>
+            <li>Setze <code>obj_flag</code> ans Ende des Levels (rechte Seite)</li>
+        </ol>
+    </div>
+
+    <pre>
+                                        F
+                                      ====
+                  C           C
+                ====        ====
+    C                               C
+  ====  X     X         X     ====
+    P               C
+  ====  ====  ====  ====  ====  ====  ====
+  GGGGGG      GGGG  GGGG       GGGGGGGGGG
+
+G = Ground    P = Player    F = Flag    C = Coin    X = Spike</pre>
+
+    <div class="highlight">
+        <strong>Tipp fürs Leveldesign:</strong> Stacheln an Lücken erzeugen Spannung.
+        Münzen auf hohen Plattformen belohnen geschicktes Springen. Setze die Fahne
+        ganz ans Ende, damit der Spieler das ganze Level durchqueren muss!
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Sammle Münzen &mdash; jede bringt 10 Punkte und verschwindet</li>
+            <li>Berühre einen Stachel &mdash; der Raum startet neu!</li>
+            <li>Erreiche die Fahne &mdash; die Meldung „You Win!“ erscheint</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um einen Spiel-Controller hinzuzufügen, der Punkte und Leben anzeigt!
+    </div>
+</body>
+</html>
