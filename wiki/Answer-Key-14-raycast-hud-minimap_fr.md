@@ -14,11 +14,11 @@
 
 **Partie A :** 1-C, 2-D, 3-B, 4-A.
 
-**Partie B :** 1. Dessiner le score. 2. Définir la couleur de dessin (blanc). 3. Dessiner la mini-carte. 4. Viewport Height sur Activer la vue Raycast. 5. Dessiner l'ATH DOOM.
+**Partie B :** 1. Dessiner le score. 2. Définir la couleur de dessin (blanc). 3. Dessiner la mini-carte. 4. Hauteur de la vue sur Activer la vue Raycast. 5. Dessiner l'ATH DOOM.
 
 **Partie C :**
 
-1. Viewport Height 480 - 60 = 420 ; la Height de la barre est 60.
+1. Hauteur de la vue 480 - 60 = 420 ; la Height de la barre est 60.
 2. La flèche tourne ; les murs et la carte ne tournent pas (le nord reste en haut).
 3. La couleur du texte est noire sur une scène sombre (pas de Définir la couleur de dessin), ou l'objet est invisible ou n'a pas d'événement Dessin.
 

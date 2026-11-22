@@ -36,7 +36,7 @@ Les élèves construisent une salle entourée de murs et la regardent à la prem
 
 **Phase 2 : caméra et commandes**
 
-- L'objet joueur exécute *Activer la vue Raycast* dans son événement **Quand créé** : Field of View 66, Cell Size 32, Render Distance 20. Laissez Camera Object vide (= cet objet).
+- L'objet joueur exécute *Activer la vue Raycast* dans son événement **Quand créé** : Champ de vision 66, Taille des cases 32, Distance d'affichage 20. Laissez Objet caméra vide (= cet objet).
 - Rotation : *Définir l'angle de vue* 3 et -3 avec **Relatif** activé (s'ajoute à l'angle actuel). La gauche est une rotation positive.
 - La marche utilise *Définir direction et vitesse* avec la direction `facing_angle` (avant) ou `facing_angle+180` (arrière), vitesse 3 ; **Aucune touche** règle la direction 0 et la vitesse 0.
 - **N'oubliez pas le Quand collision avec obj_wall vide.** Un objet solide n'arrête qu'un autre objet qui a un événement de collision pour lui, même vide. Sans lui, le joueur sort de la salle (dans le projet de référence, il s'est retrouvé à plus de 400 pixels dehors). Avec lui, le joueur reste retenu à l'intérieur.
@@ -44,7 +44,7 @@ Les élèves construisent une salle entourée de murs et la regardent à la prem
 
 **Phase 3 : tester et régler**
 
-- Suggérez de changer un réglage à la fois (Field of View, Render Distance, les trois couleurs, Columns). Demandez aux élèves de prévoir avant de lancer.
+- Suggérez de changer un réglage à la fois (Champ de vision, Distance d'affichage, les trois couleurs, Columns). Demandez aux élèves de prévoir avant de lancer.
 - Columns : moins de colonnes se dessinent plus vite mais paraissent plus grossières.
 
 > **Astuce:** **Projets de référence.** Téléchargez le projet terminé de la leçon sur le wiki (`11_raycast_first_steps_checkpoints.zip`). Donnez à un élève bloqué le projet terminé pour qu'il se compare.
@@ -76,7 +76,7 @@ Les élèves construisent une salle entourée de murs et la regardent à la prem
 
 **Partie A :** 1-C, 2-B, 3-D, 4-A.
 
-**Partie B :** 1. Définir l'angle de vue (une valeur positive tourne à gauche). 2. Définir direction et vitesse avec la direction `facing_angle`. 3. Render Distance (la diminuer). 4. Les couleurs de mur, de sol et de plafond (plus sombres). 5. Cocher Solide sur l'objet du bloc.
+**Partie B :** 1. Définir l'angle de vue (une valeur positive tourne à gauche). 2. Définir direction et vitesse avec la direction `facing_angle`. 3. Distance d'affichage (la diminuer). 4. Les couleurs de mur, de sol et de plafond (plus sombres). 5. Cocher Solide sur l'objet du bloc.
 
 **Partie C :**
 

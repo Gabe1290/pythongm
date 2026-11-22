@@ -14,7 +14,7 @@
 
 **Partie A :** 1-C, 2-B, 3-D, 4-A.
 
-**Partie B :** 1. Définir l'angle de vue (une valeur positive tourne à gauche). 2. Définir direction et vitesse avec la direction `facing_angle`. 3. Render Distance (la diminuer). 4. Les couleurs de mur, de sol et de plafond (plus sombres). 5. Cocher Solide sur l'objet du bloc.
+**Partie B :** 1. Définir l'angle de vue (une valeur positive tourne à gauche). 2. Définir direction et vitesse avec la direction `facing_angle`. 3. Distance d'affichage (la diminuer). 4. Les couleurs de mur, de sol et de plafond (plus sombres). 5. Cocher Solide sur l'objet du bloc.
 
 **Partie C :**
 

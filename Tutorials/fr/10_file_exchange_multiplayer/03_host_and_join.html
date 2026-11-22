@@ -54,17 +54,17 @@
         <code>my_mark</code> :</p>
         <div class="blockly-group">
             <span class="block block-event">Touche pressée: H</span><br>
-            <span class="block block-network block-indent">Host a Game (File Exchange)
-            Shared folder:<span class="block-text">tictactoe_files</span>
-            Max players:<span class="block-num">2</span>
-            Player name:<span class="block-text">Joueur 1</span></span><br>
+            <span class="block block-network block-indent">Héberger une partie (échange de fichiers)
+            Dossier partagé:<span class="block-text">tictactoe_files</span>
+            Joueurs max:<span class="block-num">2</span>
+            Nom du joueur:<span class="block-text">Joueur 1</span></span><br>
             <span class="block block-control block-indent">Définir une variable Variable : my_mark Valeur : <span class="block-text">"X"</span> Portée : self Relatif : non</span>
         </div>
         <div class="blockly-group">
             <span class="block block-event">Touche pressée: J</span><br>
-            <span class="block block-network block-indent">Join a Game (File Exchange)
-            Shared folder:<span class="block-text">tictactoe_files</span>
-            Player name:<span class="block-text">Joueur 2</span></span><br>
+            <span class="block block-network block-indent">Rejoindre une partie (échange de fichiers)
+            Dossier partagé:<span class="block-text">tictactoe_files</span>
+            Nom du joueur:<span class="block-text">Joueur 2</span></span><br>
             <span class="block block-control block-indent">Définir une variable Variable : my_mark Valeur : <span class="block-text">"O"</span> Portée : self Relatif : non</span>
         </div>
         <div class="info" style="margin-top: 8px;">
@@ -92,7 +92,7 @@
             <span class="block block-event">Quand dessiner</span><br>
             <span class="block block-control block-indent">Si <span class="block-text">global.waiting_for_players == 1</span> alors</span><br>
             <span class="block block-draw block-indent2">Dessiner texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
-            <span class="block block-draw block-indent2">Exit Event</span>
+            <span class="block block-draw block-indent2">Quitter l'événement</span>
         </div>
         <div class="blockly-group">
             <span class="block block-draw">Dessiner texte <span class="block-text">"Vous êtes " + my_mark</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
@@ -102,7 +102,7 @@
             vaut <code>1</code> tant que la partie n'a pas autant de joueurs
             que son réglage <strong>Joueurs max</strong> (ici, 2), puis
             <code>0</code> &mdash; pas besoin de compter les joueurs
-            vous-même. <strong>Exit Event</strong> empêche la
+            vous-même. <strong>Quitter l'événement</strong> empêche la
             grille de se dessiner tant qu'on attend, de la même façon que
             l'exemple fourni garde son écran « appuyez sur H / appuyez sur
             J » jusqu'à ce que quelqu'un se connecte.

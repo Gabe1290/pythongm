@@ -41,7 +41,7 @@ Un jeu de labyrinthe : tu diriges un personnage dans des couloirs avec les flèc
 
 Ton jeu est terminé après la Phase 3 — ceci est seulement pour ceux qui veulent essayer quelque chose en plus. Pas besoin d'un nouveau labyrinthe.
 
-- [ ] **B1.** Dans `obj_player`, ajoute un événement **Création** avec *Activer la vue Raycast* (Cell Size 32).
+- [ ] **B1.** Dans `obj_player`, ajoute un événement **Création** avec *Activer la vue Raycast* (Taille des cases 32).
 - [ ] **B2.** Ajoute un bloc *Définir l'angle de vue* à chacun des quatre mêmes événements de touches fléchées des étapes 3/4 : Droite = 0, Gauche = 180, Haut = 90, Bas = 270.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Le labyrinthe apparaît maintenant à la première personne au lieu d'être vu de dessus, texturé avec ta propre image `spr_wall`, et tourner suit la flèche que tu maintiens — exactement comme l'image de ton joueur à la Phase 1.

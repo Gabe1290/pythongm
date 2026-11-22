@@ -31,25 +31,25 @@
     <h1>Phase 3 : Régler l'apparence</h1>
     <h2>Tout a une couleur unie de secours</h2>
     <table class="t"><tr><th>Texture</th><th>Couleur utilisée quand elle est vide</th></tr>
-    <tr><td>Wall Texture</td><td>Wall Color (rouge sombre par défaut)</td></tr>
-    <tr><td>Floor Texture</td><td>Floor Color (olive sombre par défaut)</td></tr>
-    <tr><td>Sky Texture / Ceiling Texture</td><td>Ceiling Color (bleu ciel par défaut)</td></tr></table>
-    <div class="step"><p>Essayez : videz <strong>Sky Texture</strong> et appuyez sur F5 &mdash; vous retrouvez le plafond bleu uni, sans rien d'autre de changé.
-    Mettez <strong>Textured Walls</strong> sur non pour voir des murs de couleur unie <em>même si</em> une Wall Texture est toujours définie &mdash; pratique pour comparer.</p></div>
+    <tr><td>Texture des murs</td><td>Couleur des murs (rouge sombre par défaut)</td></tr>
+    <tr><td>Texture du sol</td><td>Couleur du sol (olive sombre par défaut)</td></tr>
+    <tr><td>Texture du ciel / Texture du plafond</td><td>Couleur du plafond (bleu ciel par défaut)</td></tr></table>
+    <div class="step"><p>Essayez : videz <strong>Texture du ciel</strong> et appuyez sur F5 &mdash; vous retrouvez le plafond bleu uni, sans rien d'autre de changé.
+    Mettez <strong>Murs texturés</strong> sur non pour voir des murs de couleur unie <em>même si</em> une Texture des murs est toujours définie &mdash; pratique pour comparer.</p></div>
     <h2>Détail contre vitesse</h2>
     <p>Une vue 2.5D est dessinée colonne par colonne, et le sol est la partie la plus coûteuse. Deux réglages gèrent ce compromis :</p>
     <table class="t"><tr><th>Réglage</th><th>Plus bas signifie</th><th>Plus haut signifie</th></tr>
     <tr><td><strong>Columns</strong> (320 par défaut)</td><td>Murs plus grossiers, plus rapide</td><td>Murs plus lisses, plus lent</td></tr>
-    <tr><td><strong>Floor Detail</strong> (4 par défaut)</td><td>Sol plus net, plus lent</td><td>Sol plus pixellisé, plus rapide</td></tr></table>
-    <div class="highlight"><strong>Règle pratique :</strong> si votre jeu est lent, montez d'abord Floor Detail à 6 ou 8 &mdash; vous verrez à peine la différence &mdash;
+    <tr><td><strong>Détail du sol</strong> (4 par défaut)</td><td>Sol plus net, plus lent</td><td>Sol plus pixellisé, plus rapide</td></tr></table>
+    <div class="highlight"><strong>Règle pratique :</strong> si votre jeu est lent, montez d'abord Détail du sol à 6 ou 8 &mdash; vous verrez à peine la différence &mdash;
     puis baissez Columns. Si l'image est trop grossière, faites l'inverse.</div>
     <h2>Défis</h2>
     <div class="step"><ul>
         <li>Créez un second aspect de mur (pierre moussue) &mdash; puis changez de texture en modifiant un seul nom</li>
-        <li>Concevez une salle intérieure : laissez le ciel vide et donnez-lui une <strong>Ceiling Texture</strong> en planches de bois</li>
-        <li>Faites une grotte sombre avec une <strong>Ceiling Color</strong> presque noire et une <strong>Render Distance</strong> très courte (5)</li></ul></div>
+        <li>Concevez une salle intérieure : laissez le ciel vide et donnez-lui une <strong>Texture du plafond</strong> en planches de bois</li>
+        <li>Faites une grotte sombre avec une <strong>Couleur du plafond</strong> presque noire et une <strong>Distance d'affichage</strong> très courte (5)</li></ul></div>
     <h2>Vous avez habillé votre monde 2.5D !</h2>
-    <ul><li>Une texture n'est qu'un sprite choisi dans <strong>Enable Raycast View</strong></li><li>Le ciel défile avec vos rotations ; le sol se répète par case</li>
+    <ul><li>Une texture n'est qu'un sprite choisi dans <strong>Activer la vue Raycast</strong></li><li>Le ciel défile avec vos rotations ; le sol se répète par case</li>
         <li>Chaque texture peut revenir à une couleur unie</li></ul>
     <div class="highlight"><strong>Prochaine leçon :</strong> <em>Objectifs, gemmes et monstres</em> &mdash; placez dans le monde des choses à collecter et à fuir.</div>
 </body>

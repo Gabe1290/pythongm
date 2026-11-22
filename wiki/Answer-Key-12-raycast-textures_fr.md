@@ -14,12 +14,12 @@
 
 **Partie A :** 1-C, 2-D, 3-A, 4-B.
 
-**Partie B :** 1. Wall Texture. 2. Sky Texture. 3. Floor Texture. 4. Mettre Textured Walls sur non. 5. Monter Floor Detail.
+**Partie B :** 1. Texture des murs. 2. Texture du ciel. 3. Texture du sol. 4. Mettre Murs texturés sur non. 5. Monter Détail du sol.
 
 **Partie C :**
 
-1. Le ciel : une Sky Texture l'emporte toujours sur une Ceiling Texture.
+1. Le ciel : une Texture du ciel l'emporte toujours sur une Texture du plafond.
 2. Le sol est dessiné une dalle par case : une dalle de 32×32 s'aligne donc sur les cases et le bas des murs, et le sol ne semble pas glisser.
-3. Que le nom de la texture est écrit exactement comme le sprite, et que **Textured Walls** est activé.
+3. Que le nom de la texture est écrit exactement comme le sprite, et que **Murs texturés** est activé.
 
 **Parties D et E :** réalisation et bilan.

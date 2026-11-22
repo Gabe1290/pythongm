@@ -47,18 +47,18 @@
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Quand créé</span><br>
-            <span class="block block-view block-indent">Activer la vue Raycast &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span>
+            <span class="block block-view block-indent">Activer la vue Raycast &mdash; Champ de vision <span class="block-num">66</span> Taille des cases <span class="block-num">32</span> Distance d'affichage <span class="block-num">20</span></span>
         </div>
         <ol>
             <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'objets et cliquez sur l'onglet <strong>Blockly</strong></li>
             <li>Ajoutez un nouvel événement <strong>Quand créé</strong> (depuis <em>Événements</em>)</li>
             <li>Trouvez <strong>Activer la vue Raycast</strong> dans la catégorie <em>Vue 3D</em> et emboîtez-le à l'intérieur</li>
-            <li>Réglez <em>Cell Size</em> (taille de case) à <code>32</code> &mdash; elle doit correspondre à la grille de votre labyrinthe</li>
-            <li>Laissez <em>Camera Object</em> (objet caméra) vide &mdash; cela signifie « celui qui exécute cette action », c'est-à-dire le joueur</li>
+            <li>Réglez <em>Taille des cases</em> (taille de case) à <code>32</code> &mdash; elle doit correspondre à la grille de votre labyrinthe</li>
+            <li>Laissez <em>Objet caméra</em> (objet caméra) vide &mdash; cela signifie « celui qui exécute cette action », c'est-à-dire le joueur</li>
         </ol>
         <div class="info">
             Les noms des paramètres restent en anglais dans l'IDE, comme dans
-            <em>Cell Size</em> et <em>Render Distance</em> (distance de rendu)
+            <em>Taille des cases</em> et <em>Distance d'affichage</em> (distance de rendu)
             ci-dessus. Vous ne voyez pas <em>Vue 3D</em> dans la boîte à outils ?
             Ouvrez <strong>Fichier &rarr; Paramètres du projet... &rarr;
             Extensions</strong> et cochez la case nommée <strong>2.5D Raycast
@@ -131,7 +131,7 @@
     <table class="t"><tr><th>Ce que vous voyez</th><th>Cause probable</th></tr>
     <tr><td>La salle normale vue de dessus, inchangée</td><td>L'événement <strong>Quand créé</strong> avec <strong>Activer la vue Raycast</strong> est manquant, ou <em>2.5D Raycast View</em> n'est pas cochée dans Fichier &rarr; Paramètres du projet... &rarr; Extensions</td></tr>
     <tr><td>Vous traversez les murs</td><td><code>obj_wall</code> n'est pas <strong>Solide</strong>, ou l'événement <strong>Quand collision avec obj_wall</strong> de la Phase 1 a été supprimé</td></tr>
-    <tr><td>Les murs semblent faux ou il y a des trous</td><td>Un mur n'est pas aligné sur la grille de 32 pixels, ou <em>Cell Size</em> (taille de case) n'est pas <code>32</code></td></tr>
+    <tr><td>Les murs semblent faux ou il y a des trous</td><td>Un mur n'est pas aligné sur la grille de 32 pixels, ou <em>Taille des cases</em> (taille de case) n'est pas <code>32</code></td></tr>
     <tr><td>La caméra ne tourne pas quand vous bougez</td><td>Un bloc <strong>Définir l'angle de vue</strong> manque sur l'un des 4 événements de touches fléchées, ou a le mauvais nombre</td></tr>
     <tr><td>Tourner semble inversé (la gauche montre ce qui devrait être à droite)</td><td>Deux valeurs de <strong>Définir l'angle de vue</strong> ont été inversées &mdash; vérifiez 0/90/180/270 par rapport au tableau ci-dessus</td></tr>
     </table>

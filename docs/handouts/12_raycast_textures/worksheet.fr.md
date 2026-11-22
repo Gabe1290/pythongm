@@ -30,7 +30,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 
 ## Partie C : Réfléchis
 
-1. Tu as défini une Sky Texture et une Ceiling Texture. Laquelle vois-tu, et pourquoi ?
+1. Tu as défini une Texture du ciel et une Texture du plafond. Laquelle vois-tu, et pourquoi ?
 
 [[notes:3]]
 
@@ -38,7 +38,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 
 [[notes:3]]
 
-3. Les murs de ton ami sont toujours rouge uni bien qu'il ait défini une Wall Texture. Donne deux choses à vérifier.
+3. Les murs de ton ami sont toujours rouge uni bien qu'il ait défini une Texture des murs. Donne deux choses à vérifier.
 
 [[notes:3]]
 
@@ -47,8 +47,8 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 - [ ] Mes murs montrent une texture de briques (ou autre)
 - [ ] Le ciel glisse quand je tourne et reste en place quand je marche
 - [ ] Le sol est dallé
-- [ ] J'ai essayé les couleurs de secours (texture vide, Textured Walls désactivé)
-- [ ] J'ai changé Columns ou Floor Detail et j'ai vu l'effet
+- [ ] J'ai essayé les couleurs de secours (texture vide, Murs texturés désactivé)
+- [ ] J'ai changé Columns ou Détail du sol et j'ai vu l'effet
 
 ## Partie E : Bilan
 

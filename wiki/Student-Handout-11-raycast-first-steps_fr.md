@@ -27,7 +27,7 @@ Une petite salle que tu explores **à la première personne**, comme dans le jeu
 
 ## Phase 2 : La caméra et les commandes
 
-- [ ] **7.** Dans `obj_player`, **Quand créé** : *Activer la vue Raycast* avec Field of View (champ de vision) **66**, Cell Size (taille de case) **32**, Render Distance (distance d'affichage) **20**. Laisse Camera Object vide (cela veut dire « cet objet »).
+- [ ] **7.** Dans `obj_player`, **Quand créé** : *Activer la vue Raycast* avec Champ de vision (champ de vision) **66**, Taille des cases (taille de case) **32**, Distance d'affichage (distance d'affichage) **20**. Laisse Objet caméra vide (cela veut dire « cet objet »).
 - [ ] **8.** **Clavier : Flèche gauche (maintenue)** : *Définir l'angle de vue* **3**, Relatif activé. **Flèche droite (maintenue)** : *Définir l'angle de vue* **-3**, Relatif activé.
 - [ ] **9.** **Flèche haut (maintenue)** : *Définir direction et vitesse* direction `facing_angle`, vitesse **3**. **Flèche bas (maintenue)** : direction `facing_angle+180`, vitesse **3**. **Aucune touche** : direction 0, vitesse 0.
 - [ ] **10.** Ajoute **Quand collision avec obj_wall** et laisse-le **vide**. Ne l'oublie pas : sans lui, le joueur traverse les murs.
@@ -36,10 +36,10 @@ Une petite salle que tu explores **à la première personne**, comme dans le jeu
 
 ## Phase 3 : Tester et régler
 
-- [ ] **11.** Change un réglage à la fois de *Activer la vue Raycast* et appuie sur **F5** : Field of View 40 et 100 ; Render Distance 3 ; Wall Color, Floor Color, Ceiling Color (couleurs) ; Columns (colonnes).
+- [ ] **11.** Change un réglage à la fois de *Activer la vue Raycast* et appuie sur **F5** : Champ de vision 40 et 100 ; Distance d'affichage 3 ; Couleur des murs, Couleur du sol, Couleur du plafond (couleurs) ; Columns (colonnes).
 - [ ] **12.** Note dans tes notes ce que chaque changement a fait.
 
-> **Réussi:** **Tu dois voir :** une vue étroite pour 40, une vue large et un peu déformée pour 100, des murs lointains qui disparaissent pour une Render Distance courte, et de nouvelles couleurs.
+> **Réussi:** **Tu dois voir :** une vue étroite pour 40, une vue large et un peu déformée pour 100, des murs lointains qui disparaissent pour une Distance d'affichage courte, et de nouvelles couleurs.
 
 ## Bloqué·e ?
 
@@ -47,7 +47,7 @@ Une petite salle que tu explores **à la première personne**, comme dans le jeu
 |---|---|---|
 | Je vois la salle normale vue du dessus | L'action *Activer la vue Raycast* manque, ou elle est sur un objet qui n'est pas dans la salle | Mets-la dans **Quand créé** de `obj_player` et place le joueur dans la salle |
 | Je traverse les murs | Le **Quand collision avec obj_wall** vide manque, ou `obj_wall` n'est pas Solide | Ajoute l'événement (laisse-le vide) ; coche **Solide** |
-| Les murs paraissent bizarres ou ont des trous | Un mur est hors de la grille de 32 pixels, ou Cell Size n'est pas 32 | Utilise l'alignement sur la grille ; règle Cell Size sur 32 |
+| Les murs paraissent bizarres ou ont des trous | Un mur est hors de la grille de 32 pixels, ou Taille des cases n'est pas 32 | Utilise l'alignement sur la grille ; règle Taille des cases sur 32 |
 | Je tourne dans le mauvais sens | Le 3 et le -3 sont inversés | Inverse-les sur les deux événements de rotation |
 | Je peux tourner mais pas avancer | Haut et Bas n'ont pas *Définir direction et vitesse*, ou la direction n'est pas `facing_angle` | Vérifie exactement le texte de la direction |
 | Je continue d'avancer quand je relâche | L'événement **Aucune touche** manque | Ajoute direction 0, vitesse 0 |

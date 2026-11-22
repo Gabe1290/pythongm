@@ -27,20 +27,20 @@ Les élèves habillent la salle à la première personne avec des textures. Noti
 
 **Phase 1 : murs texturés**
 
-- Une texture est un sprite ordinaire. Réglez **Wall Texture** sur *Activer la vue Raycast* sur le nom exact du sprite. Les images **carrées** comme 64×64 rendent le mieux.
-- Si **Wall Texture** est vide, les murs sont dessinés avec la **Wall Color** unie. **Textured Walls = non** force la couleur unie même si une texture est définie (pratique pour comparer).
+- Une texture est un sprite ordinaire. Réglez **Texture des murs** sur *Activer la vue Raycast* sur le nom exact du sprite. Les images **carrées** comme 64×64 rendent le mieux.
+- Si **Texture des murs** est vide, les murs sont dessinés avec la **Couleur des murs** unie. **Murs texturés = non** force la couleur unie même si une texture est définie (pratique pour comparer).
 - Les murs tournés à l'opposé de la lumière sont dessinés plus sombres ; c'est une astuce d'ombrage normale qui donne du volume aux coins.
 
 **Phase 2 : ciel et sol**
 
 - Le **ciel** est une image large (256×64). Il défile latéralement quand on tourne (un tour complet fait passer l'image une fois) mais ne change pas de taille quand on marche, comme un horizon lointain.
 - La **dalle** du sol doit faire 32×32, une case de la grille. Elle se répète une fois par case et s'aligne sur le bas des murs.
-- **Ceiling Texture** n'est utilisée que **s'il n'y a pas de ciel** ; une Sky Texture l'emporte toujours.
-- Des noms vides donnent les couleurs de secours (Wall, Floor et Ceiling Color). Dans le projet de référence, vider les noms de texture redonne les couleurs unies.
+- **Texture du plafond** n'est utilisée que **s'il n'y a pas de ciel** ; une Texture du ciel l'emporte toujours.
+- Des noms vides donnent les couleurs de secours (Wall, Floor et Couleur du plafond). Dans le projet de référence, vider les noms de texture redonne les couleurs unies.
 
 **Phase 3 : régler l'apparence**
 
-- **Columns** (320 par défaut) et **Floor Detail** (4 par défaut) échangent du détail contre de la vitesse : moins de colonnes et un Floor Detail plus haut sont plus rapides mais plus grossiers. Bon ordre sur un ordinateur lent : monter Floor Detail à 6-8 d'abord, puis baisser Columns.
+- **Columns** (320 par défaut) et **Détail du sol** (4 par défaut) échangent du détail contre de la vitesse : moins de colonnes et un Détail du sol plus haut sont plus rapides mais plus grossiers. Bon ordre sur un ordinateur lent : monter Détail du sol à 6-8 d'abord, puis baisser Columns.
 - Les fautes de frappe dans les noms de texture sont le problème le plus courant ; faites copier les noms.
 
 > **Astuce:** **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`12_raycast_textures_checkpoints.zip`) : le projet au début de la leçon (le résultat du Tutoriel 11) et le projet terminé, texturé. Les textures du projet de référence sont de simples images générées ; les élèves doivent dessiner ou importer les leurs.
@@ -53,7 +53,7 @@ Les élèves habillent la salle à la première personne avec des textures. Noti
 | Panorama | Une image large qui défile quand on tourne (le ciel) |
 | Dalle | Une petite image répétée sur le sol |
 | Couleur de secours | La couleur unie utilisée quand une texture n'est pas définie |
-| Columns / Floor Detail | Les deux réglages vitesse contre détail |
+| Columns / Détail du sol | Les deux réglages vitesse contre détail |
 
 
 ## Questions de discussion
@@ -66,19 +66,19 @@ Les élèves habillent la salle à la première personne avec des textures. Noti
 ## Différenciation
 
 - **Soutien :** fournissez des images de texture prêtes à importer ; partez du projet terminé et changez une texture.
-- **Approfondissement :** plusieurs aspects de mur ; un plafond intérieur ; une grotte avec des couleurs sombres et une Render Distance courte.
+- **Approfondissement :** plusieurs aspects de mur ; un plafond intérieur ; une grotte avec des couleurs sombres et une Distance d'affichage courte.
 
 ## Corrigé de la feuille d'exercices
 
 **Partie A :** 1-C, 2-D, 3-A, 4-B.
 
-**Partie B :** 1. Wall Texture. 2. Sky Texture. 3. Floor Texture. 4. Mettre Textured Walls sur non. 5. Monter Floor Detail.
+**Partie B :** 1. Texture des murs. 2. Texture du ciel. 3. Texture du sol. 4. Mettre Murs texturés sur non. 5. Monter Détail du sol.
 
 **Partie C :**
 
-1. Le ciel : une Sky Texture l'emporte toujours sur une Ceiling Texture.
+1. Le ciel : une Texture du ciel l'emporte toujours sur une Texture du plafond.
 2. Le sol est dessiné une dalle par case : une dalle de 32×32 s'aligne donc sur les cases et le bas des murs, et le sol ne semble pas glisser.
-3. Que le nom de la texture est écrit exactement comme le sprite, et que **Textured Walls** est activé.
+3. Que le nom de la texture est écrit exactement comme le sprite, et que **Murs texturés** est activé.
 
 **Parties D et E :** réalisation et bilan.
 

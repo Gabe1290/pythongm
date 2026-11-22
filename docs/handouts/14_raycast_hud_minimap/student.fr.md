@@ -25,9 +25,9 @@ Un tableau de bord pour ton jeu à la première personne (un **ATH**, affichage 
 
 ## Phase 3 : La barre d'état
 
-- [ ] **4.** Fais de la place : dans **Quand créé** de `obj_player`, sur *Activer la vue Raycast*, règle **Viewport Height** sur **256** (la salle fait 320 de haut et la barre 64).
+- [ ] **4.** Fais de la place : dans **Quand créé** de `obj_player`, sur *Activer la vue Raycast*, règle **Hauteur de la vue** sur **256** (la salle fait 320 de haut et la barre 64).
 - [ ] **5.** Dans **Début du jeu**, ajoute *Définir la santé* à 100 après le score et les vies.
-- [ ] **6.** Dans l'événement **Quand dessiner**, remplace le score et les vies par *Dessiner l'ATH DOOM* : X 0, Y **-1** (bas de la fenêtre), Width **0** (pleine largeur), Height **64**, Health Label « SANTÉ », Score Label « SCORE ». Garde *Dessiner la mini-carte*.
+- [ ] **6.** Dans l'événement **Quand dessiner**, remplace le score et les vies par *Dessiner l'ATH DOOM* : X 0, Y **-1** (bas de la fenêtre), Width **0** (pleine largeur), Height **64**, Libellé de la santé « SANTÉ », Libellé du score « SCORE ». Garde *Dessiner la mini-carte*.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. La vue 3D est posée sur une barre sombre montrant une barre de santé verte avec son nombre, ton score et tes vies. La minicarte reste dans le coin.
 
@@ -37,7 +37,7 @@ Un tableau de bord pour ton jeu à la première personne (un **ATH**, affichage 
 | Je ne vois aucun ATH | L'objet de l'ATH est invisible, ou n'a pas d'événement **Quand dessiner** | Laisse **Visible** coché ; ajoute un événement Dessin |
 | Mon texte est invisible | C'est du texte noir sur une scène sombre | Ajoute d'abord *Définir la couleur de dessin* en blanc |
 | Le score ne change jamais | Pas d'événements de score (Tutoriel 13), ou l'objet n'est pas dans la salle | Vérifie les événements des gemmes |
-| La barre d'état cache une partie de la vue | **Viewport Height** vaut 0 ou est trop grand | Règle-le sur la hauteur de la salle moins la barre (320 - 64 = 256) |
+| La barre d'état cache une partie de la vue | **Hauteur de la vue** vaut 0 ou est trop grand | Règle-le sur la hauteur de la salle moins la barre (320 - 64 = 256) |
 | La barre n'est pas au bon endroit | Y n'est pas -1, ou Height ne correspond pas | Utilise Y -1 et Height 64 |
 | La barre de santé est vide | *Définir la santé* n'a pas été réglé | Ajoute *Définir la santé* 100 dans **Début du jeu** |
 | La minicarte est dans le mauvais coin | X et Y sont faux | Utilise X 230, Y 10 pour une salle de 320 de large |
@@ -63,7 +63,7 @@ Un tableau de bord pour ton jeu à la première personne (un **ATH**, affichage 
 Écris tes réponses dans les notes ci-dessous.
 
 1. Pourquoi l'objet qui dessine l'ATH doit-il être visible ?
-2. Pourquoi la vue 3D a-t-elle besoin d'un **Viewport Height** pour la barre d'état ?
+2. Pourquoi la vue 3D a-t-elle besoin d'un **Hauteur de la vue** pour la barre d'état ?
 3. Pourquoi la minicarte ne montre-t-elle pas les gemmes ?
 
 ## Mes notes

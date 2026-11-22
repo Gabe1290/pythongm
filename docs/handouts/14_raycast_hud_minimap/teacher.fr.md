@@ -4,7 +4,7 @@ Document d'accompagnement du tutoriel intégré (**Aide > Tutoriels > 2.5D : ATH
 
 ## Vue d'ensemble
 
-Les élèves ajoutent un ATH au jeu à la première personne en trois phases : texte du score et des vies, une minicarte, et une barre d'état façon DOOM. Notions nouvelles : l'**événement Dessin par-dessus la vue 3D**, pourquoi l'objet de l'ATH doit être **visible**, des actions d'aide en un bloc (**Dessiner la mini-carte**, **Dessiner l'ATH DOOM**), et le cadre **Viewport Height**.
+Les élèves ajoutent un ATH au jeu à la première personne en trois phases : texte du score et des vies, une minicarte, et une barre d'état façon DOOM. Notions nouvelles : l'**événement Dessin par-dessus la vue 3D**, pourquoi l'objet de l'ATH doit être **visible**, des actions d'aide en un bloc (**Dessiner la mini-carte**, **Dessiner l'ATH DOOM**), et le cadre **Hauteur de la vue**.
 
 ## Durée suggérée (45 minutes)
 
@@ -32,10 +32,10 @@ Les élèves ajoutent un ATH au jeu à la première personne en trois phases : t
 
 **Phase 3 : la barre d'état**
 
-- La barre a besoin de place. **Viewport Height** sur *Activer la vue Raycast* comprime la vue 3D dans la bande du haut ; la valeur par défaut 0 utilise toute la fenêtre (et la barre en cacherait une partie). Pour une salle de 320 pixels et une barre de 64 pixels, Viewport Height = 320 - 64 = 256.
+- La barre a besoin de place. **Hauteur de la vue** sur *Activer la vue Raycast* comprime la vue 3D dans la bande du haut ; la valeur par défaut 0 utilise toute la fenêtre (et la barre en cacherait une partie). Pour une salle de 320 pixels et une barre de 64 pixels, Hauteur de la vue = 320 - 64 = 256.
 - *Dessiner l'ATH DOOM* : **Y = -1** signifie le bas de la fenêtre, **Width = 0** signifie pleine largeur, et **Height** doit correspondre à la bande réservée (64). Elle affiche une barre de santé avec un nombre, le score et les vies.
 - **Santé :** réglez-la dans **Début du jeu** (*Définir la santé* 100) ; sinon la barre est vide.
-- L'Objective Label et le Face Sprite de la barre servent aux défis ; les valeurs par défaut montrent « Keys » et aucun visage.
+- L'Libellé de l'objectif et le Sprite du visage de la barre servent aux défis ; les valeurs par défaut montrent « Keys » et aucun visage.
 
 > TIP: **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`14_raycast_hud_minimap_checkpoints.zip`) : le projet au début de la leçon (le résultat du Tutoriel 13) et le jeu terminé avec la barre d'état et la minicarte. Dans le projet terminé, le texte du score et des vies est remplacé par la barre, comme dans le tutoriel.
 
@@ -64,11 +64,11 @@ Les élèves ajoutent un ATH au jeu à la première personne en trois phases : t
 
 **Partie A :** 1-C, 2-D, 3-B, 4-A.
 
-**Partie B :** 1. Dessiner le score. 2. Définir la couleur de dessin (blanc). 3. Dessiner la mini-carte. 4. Viewport Height sur Activer la vue Raycast. 5. Dessiner l'ATH DOOM.
+**Partie B :** 1. Dessiner le score. 2. Définir la couleur de dessin (blanc). 3. Dessiner la mini-carte. 4. Hauteur de la vue sur Activer la vue Raycast. 5. Dessiner l'ATH DOOM.
 
 **Partie C :**
 
-1. Viewport Height 480 - 60 = 420 ; la Height de la barre est 60.
+1. Hauteur de la vue 480 - 60 = 420 ; la Height de la barre est 60.
 2. La flèche tourne ; les murs et la carte ne tournent pas (le nord reste en haut).
 3. La couleur du texte est noire sur une scène sombre (pas de Définir la couleur de dessin), ou l'objet est invisible ou n'a pas d'événement Dessin.
 
@@ -77,7 +77,7 @@ Les élèves ajoutent un ATH au jeu à la première personne en trois phases : t
 ## Grille d'évaluation : 2.5D, ATH et minicarte
 
 | Niveau | Ce que montre le projet |
-| 4 - Complet | Score et vies (ou la barre d'état) sont visibles et corrects ; une minicarte avec une flèche ; un Viewport Height correct avec une barre d'état qui ne cache pas la vue ; la santé est réglée |
+| 4 - Complet | Score et vies (ou la barre d'état) sont visibles et corrects ; une minicarte avec une flèche ; un Hauteur de la vue correct avec une barre d'état qui ne cache pas la vue ; la santé est réglée |
 | 3 - Fonctionnel | Le texte de l'ATH et la minicarte fonctionnent ; la barre d'état manque ou cache une partie de la vue |
 | 2 - À moitié | Seul le score est affiché |
 | 1 - Commencé | L'objet d'ATH existe mais rien n'est dessiné |

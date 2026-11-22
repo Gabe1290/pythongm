@@ -32,9 +32,9 @@
     <p>Le texte dans les coins est bien, mais les jeux de tir classiques gardent une barre pleine en bas de l'écran. Deux étapes : <strong>faire de la place</strong>, puis <strong>dessiner la barre</strong>.</p>
     <h2>Étape 1 : Faire de la place</h2>
     <div class="step"><p>Notre salle fait 320 pixels de haut et nous voulons une barre de 64 pixels. La vue 3D reçoit donc <strong>320 &minus; 64 = 256</strong> pixels.
-    Dans l'événement <strong>Quand créé</strong> de <code>obj_player</code>, réglez <strong>Viewport Height</strong> sur <strong>Activer la vue Raycast</strong> :</p>
+    Dans l'événement <strong>Quand créé</strong> de <code>obj_player</code>, réglez <strong>Hauteur de la vue</strong> sur <strong>Activer la vue Raycast</strong> :</p>
         <div class="blockly-group"><span class="block block-event">Quand créé</span><br>
-        <span class="block block-view block-indent">Activer la vue Raycast &mdash; &hellip; Viewport Height <span class="block-num">256</span></span><br>
+        <span class="block block-view block-indent">Activer la vue Raycast &mdash; &hellip; Hauteur de la vue <span class="block-num">256</span></span><br>
         </div>
         <p style="font-style: italic;">À 0, la vue 3D occupe toute la fenêtre et la barre en cacherait une partie.</p></div>
     <h2>Étape 2 : Donner de la santé au joueur</h2>
@@ -42,7 +42,7 @@
     <h2>Étape 3 : Dessiner la barre</h2>
     <div class="step"><p>Dans l'événement <strong>Quand dessiner</strong>, remplacez le score et les vies par une seule action :</p>
         <div class="blockly-group"><span class="block block-event">Quand dessiner</span><br>
-        <span class="block block-view block-indent">Dessiner l'ATH DOOM &mdash; X <span class="block-num">0</span> Y <span class="block-num">-1</span> Width <span class="block-num">0</span> Height <span class="block-num">64</span> Health Label <span class="block-text">SANTÉ</span> Score Label <span class="block-text">SCORE </span></span><br>
+        <span class="block block-view block-indent">Dessiner l'ATH DOOM &mdash; X <span class="block-num">0</span> Y <span class="block-num">-1</span> Width <span class="block-num">0</span> Height <span class="block-num">64</span> Libellé de la santé <span class="block-text">SANTÉ</span> Libellé du score <span class="block-text">SCORE </span></span><br>
         <span class="block block-move block-indent">Dessiner la mini-carte &mdash; X <span class="block-num">230</span> Y <span class="block-num">10</span> Size <span class="block-num">80</span></span><br>
         </div>
         <ul><li><strong>Y = -1</strong> signifie « place la barre en bas de la fenêtre »</li>
@@ -55,11 +55,11 @@
     <h2>Défis</h2>
     <div class="step"><ul>
         <li>Faites que le monstre retire <strong>25 de santé</strong> (<strong>Définir la santé</strong> &minus;25 relatif) au lieu d'une vie, et remettez la santé au maximum quand une vie est perdue &mdash; comme <code>raycast_3</code></li>
-        <li>Dessinez un <strong>visage</strong> dans la barre : une bande de quatre visages, du plus en forme au plus abîmé, réglée comme <strong>Face Sprite</strong> avec <strong>Face Frames</strong> = 4. Le visage change quand la santé baisse</li>
-        <li>La barre a un compteur nommé <strong>Objective Label</strong> (« Keys : ») : comptez vos gemmes dans une variable d'instance et donnez son nom à <strong>Objective Value</strong></li></ul></div>
+        <li>Dessinez un <strong>visage</strong> dans la barre : une bande de quatre visages, du plus en forme au plus abîmé, réglée comme <strong>Sprite du visage</strong> avec <strong>Images du visage</strong> = 4. Le visage change quand la santé baisse</li>
+        <li>La barre a un compteur nommé <strong>Libellé de l'objectif</strong> (« Keys : ») : comptez vos gemmes dans une variable d'instance et donnez son nom à <strong>Valeur de l'objectif</strong></li></ul></div>
     <h2>Vous avez terminé la série !</h2>
     <ul><li>Les événements Quand dessiner placent l'ATH par-dessus la vue 3D</li><li><strong>Dessiner la mini-carte</strong> et <strong>Dessiner l'ATH DOOM</strong> font le gros du travail</li>
-        <li><strong>Viewport Height</strong> réserve de la place pour une barre</li></ul>
+        <li><strong>Hauteur de la vue</strong> réserve de la place pour une barre</li></ul>
     <div class="highlight"><strong>Et maintenant ?</strong> Ouvrez les quatre exemples <code>raycast_1</code> à <code>raycast_4</code> depuis l'onglet Bienvenue : ce sont des versions terminées de tout ce que ces leçons construisent. Et le même projet s'exporte pour le web et pour Android.</div>
 </body>
 </html>

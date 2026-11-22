@@ -45,7 +45,7 @@ Les élèves transforment la salle à la première personne en jeu en trois phas
 
 - Le but a deux vérifications : *Tester le nombre d'instances de obj_gem égal à 0* (victoire) et *supérieur à 0* (avertissement). Avec des gemmes restantes, la sortie ne fait que protester ; sans gemme, elle termine le jeu. Le paramètre « nombre » est un nombre (0).
 - **Afficher un message** attend un clic ; les élèves croient parfois que le jeu s'est figé.
-- Une seconde salle avec **Salle suivante** à la sortie est le principal défi du tutoriel : donnez à cette salle son propre objet caméra (avec d'autres textures) et réglez son Camera Object sur `obj_player`.
+- Une seconde salle avec **Salle suivante** à la sortie est le principal défi du tutoriel : donnez à cette salle son propre objet caméra (avec d'autres textures) et réglez son Objet caméra sur `obj_player`.
 
 > **Astuce:** **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`13_raycast_goals_monsters_checkpoints.zip`) : le projet au début de la leçon (issu du Tutoriel 11) et le jeu terminé avec une gemme, un monstre et la sortie. Donnez à un élève bloqué le projet terminé pour qu'il se compare.
 

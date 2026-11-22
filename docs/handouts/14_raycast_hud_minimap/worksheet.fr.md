@@ -30,7 +30,7 @@ Relie chaque mot à sa signification. Écris la lettre à côté du numéro.
 
 ## Partie C : Réfléchis
 
-1. La salle fait 480 pixels de haut et tu veux une barre d'état de 60 pixels. Quel Viewport Height règles-tu, et quelle Height pour la barre ?
+1. La salle fait 480 pixels de haut et tu veux une barre d'état de 60 pixels. Quel Hauteur de la vue règles-tu, et quelle Height pour la barre ?
 
 [[notes:3]]
 
