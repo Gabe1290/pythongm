@@ -94,7 +94,7 @@ BLOCKLY_PAGES = re.compile(r"Visuelle_Programmierung|Programmation_Visuelle|Prog
                            r"Vizualno_Programiranje|Vizualne_Prohramuvannya")
 BOLD = re.compile(r"\*\*([^*\n]+)\*\*")
 SPLIT_PATH = re.compile(r"\*\*([^*\n]+)\*\*\s*(?:→|&gt;|->)\s*\*\*([^*\n]+)\*\*")
-WIKI_DONE = ["fr", "de", "es"]
+WIKI_DONE = ["fr", "de", "es", "it"]
 
 
 @pytest.mark.parametrize("lang", WIKI_DONE)

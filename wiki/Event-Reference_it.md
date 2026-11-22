@@ -23,8 +23,8 @@ Capire quando gli eventi si attivano aiuta a creare un comportamento di
 gioco prevedibile (verificato contro il ciclo principale in
 `runtime/game_runner.py`):
 
-1. **Begin Step** — Inizio del frame
-2. **Alarm** — Tutti gli allarmi attivati contano alla rovescia e si attivano
+1. **Inizio dello step** — Inizio del frame
+2. **Allarme** — Tutti gli allarmi attivati contano alla rovescia e si attivano
 3. **Step** (e **Keyboard (tenuto premuto)**) — Logica principale di gioco,
    poi i controlli continui dei tasti tenuti premuti per la stessa istanza
 4. **Keyboard Press/Release, Mouse** — Gli eventi di input accumulati per
@@ -34,8 +34,8 @@ gioco prevedibile (verificato contro il ciclo principale in
 5. **Movimento, poi Collisione** — La fisica (gravità/attrito/hspeed/
    vspeed) viene applicata, poi le collisioni vengono rilevate e i loro
    eventi si attivano
-6. **End Step** (e **Destroy**) — Dopo le collisioni
-7. **Draw** — Fase di rendering
+6. **Fine dello step** (e **Distruzione**) — Dopo le collisioni
+7. **Disegno** — Fase di rendering
 
 ---
 

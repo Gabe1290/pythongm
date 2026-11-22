@@ -90,14 +90,14 @@ Entità di gioco con sprite, proprietà e comportamenti. Ogni oggetto può avere
 
 ### Eventi
 Trigger che eseguono azioni quando si verificano condizioni specifiche:
-- **Create** - Quando un'istanza viene creata
+- **Creazione** - Quando un'istanza viene creata
 - **Step** - Ogni frame (tipicamente 60 FPS)
-- **Draw** - Fase di rendering personalizzato
-- **Destroy** - Quando un'istanza viene distrutta
+- **Disegno** - Fase di rendering personalizzato
+- **Distruzione** - Quando un'istanza viene distrutta
 - **Keyboard** - Tasto premuto, rilasciato o tenuto
 - **Mouse** - Click, movimento, entrata/uscita
 - **Collision** - Quando le istanze si toccano
-- **Alarm** - Timer countdown (12 disponibili)
+- **Allarme** - Timer countdown (12 disponibili)
 
 Vedi il [Riferimento Eventi](Event-Reference_it) per la documentazione completa.
 

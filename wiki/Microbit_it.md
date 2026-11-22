@@ -76,7 +76,7 @@ Un clic sulla scheda non fa scattare anche i tuoi eventi del mouse.
 | **Set Display Brightness** (`microbit_set_brightness`) | Luminosità generale, da 0 a 255. |
 | **Play Tone** (`microbit_play_tone`) | Un bip a una frequenza per un numero di millisecondi. |
 | **Play Melody** (`microbit_play_melody`) | Una delle 21 melodie integrate (`DADADADUM`, `ENTERTAINER`, `POWER_UP`…) o le tue note: `"C4:4 E G C5:8 R:4"` (nota, ottava, `:durata`; `R` è una pausa). |
-| **Stop Sound** (`microbit_stop_sound`) | Zittire l'altoparlante e scartare i suoni in coda. |
+| **Ferma suono** (`microbit_stop_sound`) | Zittire l'altoparlante e scartare i suoni in coda. |
 | **Set Radio Group** (`microbit_radio_set_group`) | Scegliere il gruppo radio, da 0 a 255. |
 | **Send Radio Message** (`microbit_radio_send`) | Inviare un numero o un testo alle altre micro:bit del gruppo. |
 | **Read Sensor** (`microbit_read_sensor`) | Mettere una lettura (accelerometro x/y/z, intensità, bussola, luce, temperatura, livello sonoro, pin 0–2 analogico) in una variabile — o in una variabile globale se il nome inizia con `global.`. |
@@ -131,7 +131,7 @@ può bloccarsi, quindi le azioni del display vengono **messe in coda** e
 riprodotte una dopo l'altra (al massimo 16; chiedere ciò che è già mostrato non
 fa nulla). **Clear Display** svuota la coda e **Display Finished** ti dice
 quando si è esaurita, così puoi concatenare le animazioni. I suoni si mettono in
-coda allo stesso modo, con **Stop Sound** e **Sound Finished**.
+coda allo stesso modo, con **Ferma suono** e **Sound Finished**.
 
 Il suono è un'onda quadra, come il cicalino della scheda. Se il computer non ha
 un dispositivo audio, viene saltato in silenzio (il simulatore lo registra

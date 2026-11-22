@@ -133,18 +133,18 @@ La cassa viene spinta dal giocatore e cambia aspetto quando si trova su un bersa
 
 **Evento: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Controllo** → **Se collisione**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Istanza** → **Imposta sprite**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Controllo** → **Altrimenti**
+5. Add Action: **Istanza** → **Imposta sprite**
    - Sprite: `spr_crate`
 
 Questo fa diventare la cassa verde quando si trova su un punto bersaglio —
-**If Collision** con entrambi gli offset a `0` verifica se la posizione
+**Se collisione** con entrambi gli offset a `0` verifica se la posizione
 *attuale* della cassa sovrappone un `obj_target`.
 
 ![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
@@ -160,7 +160,7 @@ Il giocatore si muove esattamente di una cella della griglia alla volta e spinge
 
 ### 6.1 Movimento su griglia
 
-Aggiungi un evento **Key Press** per ogni direzione, ciascuno con un'azione **Move** → **Move Grid**:
+Aggiungi un evento **Key Press** per ogni direzione, ciascuno con un'azione **Move** → **Muovi sulla griglia**:
 
 | Evento | Azione Move Grid |
 |---|---|
@@ -169,7 +169,7 @@ Aggiungi un evento **Key Press** per ogni direzione, ciascuno con un'azione **Mo
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** sposta l'istanza esattamente di una cella della griglia ed è
+**Muovi sulla griglia** sposta l'istanza esattamente di una cella della griglia ed è
 già consapevole delle collisioni per conto proprio — non farà muovere il
 giocatore dentro un `obj_wall` solido, quindi non serve un controllo
 aggiuntivo sui muri qui.
@@ -178,18 +178,18 @@ aggiuntivo sui muri qui.
 
 **Evento: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Ferma il movimento**
 
 ### 6.3 Spingere le casse
 
 **Evento: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Controllo** → **Se si può spingere**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** verifica se lo spazio dietro la cassa (nella direzione in
+**Se si può spingere** verifica se lo spazio dietro la cassa (nella direzione in
 cui si muove il giocatore) è libero e, in tal caso, spinge la cassa di una
 cella e sposta il giocatore al suo posto, tutto in un'unica azione. Se lo
 spazio dietro la cassa è bloccato da un muro o da un'altra cassa, nulla si
@@ -207,7 +207,7 @@ Ci serve un controllore invisibile che osservi se ogni cassa si trova su un bers
 2. Non è necessario uno sprite
 
 **Evento: Create** — imposta il conteggio dei bersagli una sola volta,
-usando **Control** → **Execute Code** (l'azione Execute Code di questo
+usando **Controllo** → **Esegui codice** (l'azione Execute Code di questo
 progetto esegue vero Python, non GameMaker Language — `self` è l'istanza
 corrente, `game` è il game runner):
 
@@ -235,14 +235,14 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 
 `self.restart_room_flag = True` è il modo in cui un blocco Execute Code
 grezzo attiva lo stesso riavvio della stanza eseguito dall'azione
-**Restart Room** — il ciclo principale lo controlla ad ogni frame.
-Aggiungi un'azione **Show Message** (da **Output**, messaggio `Level
+**Riavvia stanza** — il ciclo principale lo controlla ad ogni frame.
+Aggiungi un'azione **Mostra messaggio** (da **Output**, messaggio `Level
 Complete!`) subito dopo il blocco Execute Code se vuoi mostrare un popup
 prima del riavvio.
 
 **Evento: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Gioco** → **Disegna testo**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -308,18 +308,18 @@ T = Bersaglio
 
 ### Aggiungi un contatore di mosse
 
-Nell'evento **Create** di `obj_game_controller`, aggiungi **Control** →
-**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
+Nell'evento **Creazione** di `obj_game_controller`, aggiungi **Controllo** →
+**Imposta variabile** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 In ciascuno dei quattro eventi Key Press di `obj_player`, aggiungi una
-seconda azione subito dopo Move Grid: **Control** → **Set Variable**
-(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+seconda azione subito dopo Move Grid: **Controllo** → **Imposta variabile**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativo**
 selezionato) — questo aggiunge 1 al contatore ad ogni pressione di tasto,
 indipendentemente dal fatto che il movimento sia stato effettivamente
 bloccato da un muro.
 
-Nell'evento **Draw** di `obj_game_controller`, aggiungi **Draw** →
-**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
+Nell'evento **Disegno** di `obj_game_controller`, aggiungi **Disegno** →
+**Disegna variabile** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Aggiungi funzione di annullamento
 
@@ -328,7 +328,7 @@ Archivia le posizioni precedenti e consenti di premere Z per annullare l'ultima 
 ### Aggiungi più livelli
 
 Crea più stanze (`room_level2`, `room_level3`, ecc.) e usa l'azione
-**Next Room** (categoria Room) al posto di **Restart Room** nel blocco
+**Stanza successiva** (categoria Room) al posto di **Riavvia stanza** nel blocco
 Execute Code di controllo vittoria (`self.next_room_flag = True` invece di
 `self.restart_room_flag = True`) quando un livello viene completato.
 
@@ -347,7 +347,7 @@ Aggiungi suoni per:
 | Problema | Soluzione |
 |---------|----------|
 | Il giocatore si muove attraverso i muri | Verifica che `obj_wall` abbia "Solid" selezionato |
-| La cassa non cambia colore | Verifica che l'azione **If Collision** nell'evento Step punti a `obj_target` |
+| La cassa non cambia colore | Verifica che l'azione **Se collisione** nell'evento Step punti a `obj_target` |
 | Puoi spingere la cassa attraverso il muro | Verifica il rilevamento delle collisioni prima di spostare la cassa |
 | Il messaggio di vittoria viene visualizzato immediatamente | Assicurati che i bersagli siano posizionati separatamente dalle casse |
 | Il giocatore si muove di più caselle | Usa l'evento Keyboard Press, non l'evento Keyboard |

@@ -65,23 +65,23 @@ Ora programmiamo il paddle che il giocatore controlla.
 
 ### 2.2 Aggiungere il Movimento con Freccia Destra
 1. Clicca su **Add Event** -> **Keyboard** -> seleziona **Right Arrow**
-2. Aggiungi l'azione **Set Horizontal Speed**
+2. Aggiungi l'azione **Imposta velocità orizzontale**
 3. Imposta **value** su `5` (o qualsiasi velocità tu preferisca)
 
 ### 2.3 Aggiungere il Movimento con Freccia Sinistra
 1. Clicca su **Add Event** -> **Keyboard** -> seleziona **Left Arrow**
-2. Aggiungi l'azione **Set Horizontal Speed**
+2. Aggiungi l'azione **Imposta velocità orizzontale**
 3. Imposta **value** su `-5`
 
 ### 2.4 Fermarsi Quando i Tasti Vengono Rilasciati
 Il paddle continua a muoversi anche dopo aver rilasciato il tasto! Risolviamo questo problema.
 
-1. Clicca su **Add Event** -> **Keyboard Release** -> seleziona **Right Arrow**
-2. Aggiungi l'azione **Set Horizontal Speed**
+1. Clicca su **Add Event** -> **Tasto rilasciato** -> seleziona **Right Arrow**
+2. Aggiungi l'azione **Imposta velocità orizzontale**
 3. Imposta **value** su `0`
 
-4. Clicca su **Add Event** -> **Keyboard Release** -> seleziona **Left Arrow**
-5. Aggiungi l'azione **Set Horizontal Speed**
+4. Clicca su **Add Event** -> **Tasto rilasciato** -> seleziona **Left Arrow**
+5. Aggiungi l'azione **Imposta velocità orizzontale**
 6. Imposta **value** su `0`
 
 Ora il paddle si ferma quando rilasci i tasti freccia.
@@ -98,8 +98,8 @@ Ora il paddle si ferma quando rilasci i tasti freccia.
 3. Spunta la casella **Solid**
 
 ### 3.2 Impostare il Movimento Iniziale
-1. Clicca su **Add Event** -> **Create**
-2. Aggiungi l'azione **Start Moving (Direction)** (o **Set Horizontal/Vertical Speed**)
+1. Clicca su **Add Event** -> **Creazione**
+2. Aggiungi l'azione **Inizia a muoverti (direzione)** (o **Set Horizontal/Vertical Speed**)
 3. Imposta una direzione diagonale con velocità `5`
    - Per esempio: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ Questo fa partire la palla quando il gioco inizia.
 
 ### 3.3 Rimbalzare sul Paddle
 1. Clicca su **Add Event** -> **Collision** -> seleziona `obj_paddle`
-2. Aggiungi l'azione **Reverse Vertical** (per rimbalzare)
+2. Aggiungi l'azione **Inverti verticale** (per rimbalzare)
 
 ### 3.4 Rimbalzare sui Muri
 1. Clicca su **Add Event** -> **Collision** -> seleziona `obj_wall`
-2. Aggiungi l'azione **Reverse Horizontal** o **Reverse Vertical** secondo necessità
+2. Aggiungi l'azione **Inverti orizzontale** o **Inverti verticale** secondo necessità
    - Oppure usa entrambe per gestire i rimbalzi negli angoli
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ Questo fa partire la palla quando il gioco inizia.
 
 ### 4.2 Distruggere alla Collisione con la Palla
 1. Clicca su **Add Event** -> **Collision** -> seleziona `obj_ball`
-2. Aggiungi l'azione **Destroy Instance** con obiettivo **self**
+2. Aggiungi l'azione **Distruggi istanza** con obiettivo **self**
 
 Questo distrugge il mattone quando la palla lo colpisce!
 
 ### 4.3 Far Rimbalzare la Palla
-**Reverse Vertical** si applica sempre all'istanza nel cui evento si
+**Inverti verticale** si applica sempre all'istanza nel cui evento si
 trova — non ha un'opzione "applica a other" — quindi questa azione deve
 stare sulla palla, non sul mattone:
 
 1. Torna a `obj_ball` e aggiungi:
 2. **Add Event** -> **Collision** -> seleziona `obj_brick`
-3. Aggiungi l'azione **Reverse Vertical**
+3. Aggiungi l'azione **Inverti verticale**
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Ora posiziona i tuoi oggetti nella stanza:
 Il tuo gioco Breakout di base è completo! Ecco alcuni miglioramenti da provare:
 
 ### Aggiungere un Sistema di Vite
-- Aggiungi un evento **No More Lives** per mostrare "Game Over"
+- Aggiungi un evento **Vite esaurite** per mostrare "Game Over"
 - Perdi una vita quando la palla esce dal basso
 
 ### Aggiungere il Punteggio
 - Usa l'azione **Add Score** quando distruggi i mattoni
-- Mostra il punteggio con **Draw Score**
+- Mostra il punteggio con **Disegna punteggio**
 
 ### Aggiungere Livelli Multipli
 - Crea più stanze con diverse disposizioni di mattoni
-- Usa **Next Room** quando tutti i mattoni sono distrutti
+- Usa **Stanza successiva** quando tutti i mattoni sono distrutti
 
 ### Aggiungere Effetti Sonori
 - Aggiungi suoni per rimbalzi e distruzione dei mattoni
-- Usa l'azione **Play Sound**
+- Usa l'azione **Riproduci suono**
 
 ---
 

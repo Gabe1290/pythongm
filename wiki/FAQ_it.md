@@ -154,9 +154,9 @@ La prima stanza nell'albero delle risorse (in alto nell'elenco) si carica all'av
 ### Come cambio stanza?
 
 Usa le azioni per le stanze:
-- **Next Room**: Vai alla stanza successiva nell'ordine
-- **Previous Room**: Vai alla stanza precedente
-- **Go to Room**: Salta a una stanza specifica
+- **Stanza successiva**: Vai alla stanza successiva nell'ordine
+- **Stanza precedente**: Vai alla stanza precedente
+- **Vai alla stanza**: Salta a una stanza specifica
 
 ### Gli oggetti scompaiono quando cambio stanza
 
@@ -216,7 +216,7 @@ Controlla:
 
 ### Come faccio la musica in loop?
 
-Usa l'azione **Play Music** con l'opzione loop attivata, oppure **Play Sound** con il parametro loop impostato a vero.
+Usa l'azione **Riproduci musica** con l'opzione loop attivata, oppure **Riproduci suono** con il parametro loop impostato a vero.
 
 ---
 

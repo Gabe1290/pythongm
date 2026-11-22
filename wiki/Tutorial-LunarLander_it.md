@@ -112,8 +112,8 @@ La piattaforma di atterraggio è il punto in cui il giocatore deve atterrare in 
 Il modulo è il principale oggetto controllato dal giocatore, con fisica. A
 differenza degli altri tutorial di movimento di questo wiki, i suoi
 comandi devono accumulare velocità gradualmente e tracciare una risorsa
-di carburante, quindi questo oggetto si affida più a **Control** →
-**Execute Code** (Python reale — `self` è l'istanza corrente, `game` è il
+di carburante, quindi questo oggetto si affida più a **Controllo** →
+**Esegui codice** (Python reale — `self` è l'istanza corrente, `game` è il
 game runner, `keyboard.check(nome)` segnala un tasto tenuto premuto) che
 alle sole azioni strutturate. Ovunque un'azione strutturata svolga il
 lavoro, questo tutorial ne usa comunque una.
@@ -124,11 +124,11 @@ lavoro, questo tutorial ne usa comunque una.
 ### 5.1 Gravità e Variabili Iniziali
 
 **Evento: Create**
-1. Aggiungi l'azione **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+1. Aggiungi l'azione **Move** → **Imposta gravità** (Direction: `270`, Gravity: `0.05`)
    — una lieve attrazione verso il basso; il motore la aggiunge
    automaticamente alla velocità verticale del modulo a ogni passo, come
    la gravità del tutorial Platform, solo più debole.
-2. Aggiungi l'azione **Control** → **Execute Code**:
+2. Aggiungi l'azione **Controllo** → **Esegui codice**:
 
 ```python
 self.thrust_force = 0.1
@@ -147,7 +147,7 @@ variabili `hsp`/`vsp` separate come farebbe una simulazione fisica grezza.
 
 ### 5.2 Evento Step — Spinta e Comandi
 
-**Evento: Step** — Aggiungi l'azione **Control** → **Execute Code**:
+**Evento: Step** — Aggiungi l'azione **Controllo** → **Esegui codice**:
 
 ```python
 if not self.landed and not self.crashed:
@@ -188,23 +188,23 @@ codice è l'equivalente.
 ### 5.3 Collisione con la Piattaforma di Atterraggio
 
 **Evento: Collision with obj_pad**
-1. Aggiungi l'azione **Control** → **Test Expression**
+1. Aggiungi l'azione **Controllo** → **Verifica espressione**
    - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
      — la velocità di atterraggio è la lunghezza del vettore velocità;
      Pitagora, non una variabile `speed` (in questo motore, `speed` è la
      *velocità di animazione dello sprite*, non la magnitudine del
      movimento — una vera trappola per chi viene da GameMaker).
    - Then Actions:
-     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
-     2. **Move** → **Stop Movement**
-     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) —
+     1. **Control** → **Imposta variabile** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Ferma il movimento**
+     3. **Move** → **Imposta gravità** (Direction: `270`, Gravity: `0`) —
         impedisce alla gravità di riaccumulare silenziosamente velocità
         verticale su un modulo già atterrato
-     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+     4. **Output** → **Mostra messaggio** (Message: `Perfect Landing! You Win!`)
    - Else Actions:
-     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
-     3. **Room** → **Restart Room**
+     1. **Controllo** → **Imposta variabile** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Mostra messaggio** (Message: `Crashed! Too fast!`)
+     3. **Stanza** → **Riavvia stanza**
 
 Il testo di Show Message è una stringa fissa — non può incorporare la
 velocità reale di atterraggio. L'HUD (Passo 7) mostra già la velocità in
@@ -214,9 +214,9 @@ visto il numero.
 ### 5.4 Collisione con il Terreno
 
 **Evento: Collision with obj_ground**
-1. Aggiungi l'azione **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-2. Aggiungi l'azione **Output** → **Show Message** (Message: `Crashed into terrain!`)
-3. Aggiungi l'azione **Room** → **Restart Room**
+1. Aggiungi l'azione **Controllo** → **Imposta variabile** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Aggiungi l'azione **Output** → **Mostra messaggio** (Message: `Crashed into terrain!`)
+3. Aggiungi l'azione **Stanza** → **Riavvia stanza**
 
 ![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
 
@@ -246,7 +246,7 @@ dall'istanza del modulo a ogni frame.
 2. Nessuno sprite necessario
 
 **Evento: Draw**
-1. Aggiungi l'azione **Control** → **Execute Code** — trova il modulo e
+1. Aggiungi l'azione **Controllo** → **Esegui codice** — trova il modulo e
    calcola i valori che le azioni Draw qui sotto mostreranno:
 
 ```python
@@ -268,29 +268,29 @@ else:
     self.no_fuel = False
 ```
 
-2. Aggiungi l'azione **Game** → **Set Draw Color** (Color: `#FFFFFF`)
-3. Aggiungi l'azione **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
-4. Aggiungi l'azione **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
-5. Aggiungi l'azione **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
-6. Aggiungi l'azione **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
-7. Aggiungi l'azione **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
-8. Aggiungi l'azione **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+2. Aggiungi l'azione **Disegno** → **Imposta colore di disegno** (Color: `#FFFFFF`)
+3. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Aggiungi l'azione **Disegno** → **Disegna variabile** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Aggiungi l'azione **Disegno** → **Disegna variabile** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
 
-Poi le due righe di avviso, ciascuna condizionata da **Control** → **Test
+Poi le due righe di avviso, ciascuna condizionata da **Controllo** → **Test
 Expression** (nessun Else necessario — non si disegna nulla quando la
 condizione è falsa):
 
-9. **Control** → **Test Expression** (Expression: `self.too_fast`)
-   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
-   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
-     **Draw Text** (`Speed OK`, X `10`, Y `90`)
-10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
-    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+9. **Controllo** → **Verifica espressione** (Expression: `self.too_fast`)
+   - Then Actions: **Disegno** → **Imposta colore di disegno** (`#FF0000`), **Game** →
+     **Disegna testo** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Disegno** → **Imposta colore di disegno** (`#00FF00`), **Game** →
+     **Disegna testo** (`Speed OK`, X `10`, Y `90`)
+10. **Controllo** → **Verifica espressione** (Expression: `self.no_fuel`)
+    - Then Actions: **Disegno** → **Imposta colore di disegno** (`#FF0000`), **Game** →
+      **Disegna testo** (`NO FUEL!`, X `10`, Y `110`)
 
-11. Aggiungi l'azione **Game** → **Set Draw Color** (Color: `#808080`)
-12. Aggiungi l'azione **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+11. Aggiungi l'azione **Disegno** → **Imposta colore di disegno** (Color: `#808080`)
+12. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
     X: `10`, Y: `440`) — scegli una Y vicino al fondo della dimensione di
     room che usi nel Passo 8.
 

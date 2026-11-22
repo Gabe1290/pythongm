@@ -24,7 +24,7 @@ In questo tutorial, creeremo un semplice gioco "Cattura le Stelle" in cui il gio
 1. Avvia PyGameMaker
 2. Vai su **File > New Project**
 3. Chiama il tuo progetto "CatchTheStars"
-4. Clicca su **Create**
+4. Clicca su **Creazione**
 
 ---
 
@@ -59,15 +59,15 @@ In questo tutorial, creeremo un semplice gioco "Cattura le Stelle" in cui il gio
 
 **Freccia Sinistra:**
 1. Clicca su **Add Event** > **Keyboard** > **Left**
-2. Aggiungi l'azione: **Set Horizontal Speed** con valore `-4`
+2. Aggiungi l'azione: **Imposta velocità orizzontale** con valore `-4`
 
 **Freccia Destra:**
 1. Clicca su **Add Event** > **Keyboard** > **Right**
-2. Aggiungi l'azione: **Set Horizontal Speed** con valore `4`
+2. Aggiungi l'azione: **Imposta velocità orizzontale** con valore `4`
 
 **Nessun Tasto Premuto:**
 1. Clicca su **Add Event** > **Keyboard** > **No Key**
-2. Aggiungi l'azione: **Set Horizontal Speed** con valore `0`
+2. Aggiungi l'azione: **Imposta velocità orizzontale** con valore `0`
 
 ---
 
@@ -78,23 +78,23 @@ In questo tutorial, creeremo un semplice gioco "Cattura le Stelle" in cui il gio
 3. Imposta lo **Sprite** su `spr_star`
 
 ### Aggiungere l'Evento Create
-1. Clicca su **Add Event** > **Create**
-2. Aggiungi l'azione: **Set Vertical Speed** con valore `3`
-3. Aggiungi l'azione: **Jump To Position** con X `irandom(600)`, Y `20` —
+1. Clicca su **Add Event** > **Creazione**
+2. Aggiungi l'azione: **Imposta velocità verticale** con valore `3`
+3. Aggiungi l'azione: **Salta alla posizione** con X `irandom(600)`, Y `20` —
    `irandom(n)` sceglie un numero intero casuale da 0 a `n`, quindi
    sparge la stella in un punto casuale vicino al bordo superiore di una
    stanza larga 640 pixel ogni volta che (ri)appare
 
 ### Aggiungere l'Evento Outside Room
-1. Clicca su **Add Event** > **Other** > **Outside Room**
-2. Aggiungi l'azione: **Jump to Start Position**
-3. Aggiungi l'azione: **Set Score** con valore `1` e **Relative** selezionato
+1. Clicca su **Add Event** > **Other** > **Fuori dalla stanza**
+2. Aggiungi l'azione: **Salta alla posizione iniziale**
+3. Aggiungi l'azione: **Imposta punteggio** con valore `1` e **Relativo** selezionato
 
 ### Aggiungere la Collisione con il Giocatore
 1. Clicca su **Add Event** > **Collision** > seleziona `obj_player`
-2. Aggiungi l'azione: **Set Score** con valore `10` e **Relative** selezionato
-3. Aggiungi l'azione: **Play Sound** (opzionale, se hai un suono)
-4. Aggiungi l'azione: **Jump to Random Position**
+2. Aggiungi l'azione: **Imposta punteggio** con valore `10` e **Relativo** selezionato
+3. Aggiungi l'azione: **Riproduci suono** (opzionale, se hai un suono)
+4. Aggiungi l'azione: **Salta a posizione casuale**
 
 ---
 
@@ -115,8 +115,8 @@ In questo tutorial, creeremo un semplice gioco "Cattura le Stelle" in cui il gio
 ## Passo 7: Visualizzare il Punteggio
 
 1. Apri `obj_player`
-2. Clicca su **Add Event** > **Draw**
-3. Aggiungi l'azione: **Draw Score** in posizione (10, 10)
+2. Clicca su **Add Event** > **Disegno**
+3. Aggiungi l'azione: **Disegna punteggio** in posizione (10, 10)
 
 ---
 
@@ -136,11 +136,11 @@ In questo tutorial, creeremo un semplice gioco "Cattura le Stelle" in cui il gio
 
 ### Aggiungere Livelli
 1. Crea più stanze
-2. Usa l'azione **Next Room** quando il punteggio raggiunge una soglia
+2. Usa l'azione **Stanza successiva** quando il punteggio raggiunge una soglia
 
 ### Aggiungere Suoni
 1. Importa i file audio nella risorsa Sounds
-2. Aggiungi azioni **Play Sound** agli eventi
+2. Aggiungi azioni **Riproduci suono** agli eventi
 
 ### Usare la Programmazione Visuale
 1. Apri un oggetto

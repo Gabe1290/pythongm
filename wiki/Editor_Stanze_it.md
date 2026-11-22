@@ -102,8 +102,8 @@ Dimensioni di griglia comuni:
 | **Tile Horizontal** | Ripeti orizzontalmente |
 | **Tile Vertical** | Ripeti verticalmente |
 | **Stretch** | Estendi per riempire la stanza |
-| **Horizontal Speed** | Velocità di scorrimento (parallasse) |
-| **Vertical Speed** | Velocità di scorrimento (parallasse) |
+| **Velocità orizzontale** | Velocità di scorrimento (parallasse) |
+| **Velocità verticale** | Velocità di scorrimento (parallasse) |
 
 ### Layer di Sfondo
 

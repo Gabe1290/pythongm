@@ -25,8 +25,8 @@ Questo è un riferimento completo di tutti gli eventi e le azioni disponibili in
 | Evento | Quando |
 |-----------|-------|
 | **Step** | Ad ogni frame (60 volte al secondo) |
-| **Begin Step** | Prima dei controlli di collisione |
-| **End Step** | Dopo tutti gli altri eventi |
+| **Inizio dello step** | Prima dei controlli di collisione |
+| **Fine dello step** | Dopo tutti gli altri eventi |
 
 ### Eventi Alarm
 
@@ -73,22 +73,22 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 
 | Evento | Quando |
 |-----------|-------|
-| **Outside Room** | L'istanza è completamente fuori dalla stanza |
-| **Intersect Boundary** | L'istanza tocca il bordo della stanza |
-| **Game Start** | Il gioco si avvia (prima stanza caricata) |
-| **Game End** | Il gioco termina |
-| **Room Start** | Entrando in una stanza |
-| **Room End** | Uscendo da una stanza |
-| **No More Lives** | Le vite raggiungono 0 |
-| **No More Health** | La salute raggiunge 0 |
-| **Animation End** | L'animazione dello sprite è completata |
+| **Fuori dalla stanza** | L'istanza è completamente fuori dalla stanza |
+| **Tocca il bordo della stanza** | L'istanza tocca il bordo della stanza |
+| **Inizio del gioco** | Il gioco si avvia (prima stanza caricata) |
+| **Fine del gioco** | Il gioco termina |
+| **Inizio della stanza** | Entrando in una stanza |
+| **Fine della stanza** | Uscendo da una stanza |
+| **Vite esaurite** | Le vite raggiungono 0 |
+| **Salute esaurita** | La salute raggiunge 0 |
+| **Fine dell'animazione** | L'animazione dello sprite è completata |
 
 ### Eventi Draw
 
 | Evento | Quando |
 |-----------|-------|
-| **Draw** | Durante la fase di rendering |
-| **Draw GUI** | Dopo aver disegnato la stanza (spazio schermo) |
+| **Disegno** | Durante la fase di rendering |
+| **Disegno dell'interfaccia** | Dopo aver disegnato la stanza (spazio schermo) |
 
 ---
 
@@ -100,13 +100,13 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 |--------|-------------|------------|
 | **Imposta velocità** | Imposta la velocità di movimento | velocità, relativo |
 | **Imposta direzione** | Imposta la direzione | direzione (0-360), relativo |
-| **Set Horizontal Speed** | Imposta hspeed | hspeed, relativo |
-| **Set Vertical Speed** | Imposta vspeed | vspeed, relativo |
-| **Set Gravity** | Imposta la gravità | gravity, direction |
-| **Set Friction** | Imposta l'attrito | friction |
+| **Imposta velocità orizzontale** | Imposta hspeed | hspeed, relativo |
+| **Imposta velocità verticale** | Imposta vspeed | vspeed, relativo |
+| **Imposta gravità** | Imposta la gravità | gravity, direction |
+| **Imposta attrito** | Imposta l'attrito | friction |
 | **Muovi verso un punto** | Muovi verso coordinate | x, y, velocità |
 | **Inizia a muoverti (direzione)** | Muoviti in una direzione | direction, velocità |
-| **Jump To Position** | Teletrasporta a coordinate | x, y, relativo |
+| **Salta alla posizione** | Teletrasporta a coordinate | x, y, relativo |
 | **Salta alla posizione iniziale** | Torna alla posizione di creazione | - |
 | **Salta a posizione casuale** | Teletrasporto a una posizione completamente casuale (entrambi gli assi; allineabile alla griglia) | snap_h, snap_v |
 | **Rimbalza** | Rimbalza dagli oggetti solidi | precise |
@@ -115,25 +115,25 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Create Instance** | Crea un nuovo oggetto | object, x, y, relativo |
-| **Create Moving Instance** | Crea con velocità | object, x, y, speed, direction |
-| **Destroy Instance** | Rimuove l'istanza | - |
-| **Change Instance** | Trasforma in un altro oggetto | object, perform_events |
+| **Crea istanza** | Crea un nuovo oggetto | object, x, y, relativo |
+| **Crea istanza in movimento** | Crea con velocità | object, x, y, speed, direction |
+| **Distruggi istanza** | Rimuove l'istanza | - |
+| **Cambia istanza** | Trasforma in un altro oggetto | object, perform_events |
 
 ### Azioni di Temporizzazione
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Set Alarm** | Avvia un conto alla rovescia | alarm_number, steps |
-| **Sleep** | Pausa l'esecuzione | millisecondi |
+| **Imposta allarme** | Avvia un conto alla rovescia | alarm_number, steps |
+| **Pausa** | Pausa l'esecuzione | millisecondi |
 
 ### Azioni Score/Vite/Salute
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Set Score** | Cambia il punteggio | value, relativo |
-| **Set Lives** | Cambia le vite | value, relativo |
-| **Set Health** | Cambia la salute | value, relativo |
+| **Imposta punteggio** | Cambia il punteggio | value, relativo |
+| **Imposta vite** | Cambia le vite | value, relativo |
+| **Imposta salute** | Cambia la salute | value, relativo |
 | **Disegna punteggio** | Mostra il punteggio | x, y, caption |
 | **Disegna vite** | Mostra le vite come immagini di sprite ripetute | x, y, sprite, scale, tiled |
 | **Disegna barra della salute** | Mostra la salute come barra a due colori | x1, y1, x2, y2, back_color, bar_color |
@@ -142,11 +142,11 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Draw Sprite** | Disegna uno sprite | sprite, x, y, subimage |
-| **Draw Text** | Mostra testo | x, y, text |
-| **Draw Rectangle** | Disegna un rettangolo | x1, y1, x2, y2, filled |
-| **Draw Circle** | Disegna un cerchio | x, y, radius, filled |
-| **Draw Line** | Disegna una linea | x1, y1, x2, y2 |
+| **Disegna sprite** | Disegna uno sprite | sprite, x, y, subimage |
+| **Disegna testo** | Mostra testo | x, y, text |
+| **Disegna rettangolo** | Disegna un rettangolo | x1, y1, x2, y2, filled |
+| **Disegna cerchio** | Disegna un cerchio | x, y, radius, filled |
+| **Disegna linea** | Disegna una linea | x1, y1, x2, y2 |
 | **Imposta colore di disegno** | Imposta il colore per i successivi Draw Text/Draw Rectangle/ecc. | color |
 | **Imposta colore** | Imposta la tinta e la trasparenza di uno sprite (non il colore di disegno sopra) | color, alpha |
 | **Imposta font di disegno** | Imposta font e allineamento per il prossimo disegno di testo | font, halign, valign |
@@ -155,22 +155,22 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Next Room** | Vai alla stanza successiva | transition |
-| **Previous Room** | Vai alla stanza precedente | transition |
-| **Restart Room** | Ripristina la stanza | - |
-| **Go to Room** | Salta a una stanza specifica | room, transition |
-| **If Next Room Exists** | Verifica se esiste una stanza successiva | - |
-| **If Previous Room Exists** | Verifica se esiste una stanza precedente | - |
+| **Stanza successiva** | Vai alla stanza successiva | transition |
+| **Stanza precedente** | Vai alla stanza precedente | transition |
+| **Riavvia stanza** | Ripristina la stanza | - |
+| **Vai alla stanza** | Salta a una stanza specifica | room, transition |
+| **Se esiste stanza successiva** | Verifica se esiste una stanza successiva | - |
+| **Se esiste stanza precedente** | Verifica se esiste una stanza precedente | - |
 
 ### Azioni Sound
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Play Sound** | Riproduci un effetto sonoro | sound, loop |
-| **Stop Sound** | Ferma un suono | sound |
-| **Check Sound Playing** | Verifica se un suono è in riproduzione | sound |
-| **Play Music** | Riproduci musica di sottofondo | music, loop |
-| **Stop Music** | Ferma tutta la musica | - |
+| **Riproduci suono** | Riproduci un effetto sonoro | sound, loop |
+| **Ferma suono** | Ferma un suono | sound |
+| **Verifica riproduzione suono** | Verifica se un suono è in riproduzione | sound |
+| **Riproduci musica** | Riproduci musica di sottofondo | music, loop |
+| **Ferma musica** | Ferma tutta la musica | - |
 
 ### Azioni Variabili
 
@@ -186,18 +186,18 @@ I controlli di collisione avvengono tra gli eventi Step e Draw.
 |--------|-------------|------------|
 | **Verifica espressione** | Controllo condizionale (un'espressione booleana Python) | expression |
 | **Altrimenti** | Ramo alternativo | - |
-| **Start Block** | Inizia un gruppo di azioni | - |
-| **End Block** | Termina un gruppo di azioni | - |
-| **Repeat** | Ripeti N volte | count |
-| **Exit Event** | Ferma l'evento attuale | - |
+| **Inizio blocco** | Inizia un gruppo di azioni | - |
+| **Fine blocco** | Termina un gruppo di azioni | - |
+| **Ripeti** | Ripeti N volte | count |
+| **Esci dall'evento** | Ferma l'evento attuale | - |
 
 ### Altre Azioni
 
 | Azione | Descrizione | Parametri |
 |--------|-------------|------------|
-| **Show Message** | Mostra un messaggio popup | message |
-| **Restart Game** | Riavvia il gioco | - |
-| **End Game** | Chiude il gioco | - |
+| **Mostra messaggio** | Mostra un messaggio popup | message |
+| **Riavvia gioco** | Riavvia il gioco | - |
+| **Termina gioco** | Chiude il gioco | - |
 
 ---
 

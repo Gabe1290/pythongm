@@ -112,9 +112,9 @@ L'uscita termina il livello quando il giocatore la raggiunge.
 
 **Event: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Output** → **Show Message**
+2. Add Action: **Output** → **Mostra messaggio**
    - Message: `You Win!`
-3. Add Action: **Room** → **Next Room** (o **Restart Room** per un singolo livello)
+3. Add Action: **Stanza** → **Stanza successiva** (o **Riavvia stanza** per un singolo livello)
 
 Il testo di Show Message è una stringa statica fissa — non può includere un
 valore dinamico come il tempo trascorso. Il timer resta visibile nell'HUD
@@ -134,10 +134,10 @@ Le monete aggiungono al punteggio quando vengono raccolte.
 
 **Event: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Score** → **Set Score**
+2. Add Action: **Punteggio** → **Imposta punteggio**
    - New Score: `10`
    - Seleziona "Relative" per aggiungere 10 punti
-3. Add Action: **Instance** → **Destroy Instance**
+3. Add Action: **Istanza** → **Distruggi istanza**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
@@ -153,7 +153,7 @@ Il giocatore si muove fluidamente usando i tasti freccia.
 
 ### 6.1 Movimento
 
-Aggiungi quattro eventi **Keyboard (held)** più un evento **No Key**,
+Aggiungi quattro eventi **Tastiera (tenuto premuto)** più un evento **No Key**,
 ciascuno con un'azione **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Azione |
@@ -168,7 +168,7 @@ ciascuno con un'azione **Move** → **Set Horizontal/Vertical Speed**:
 
 **Event: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Ferma il movimento**
 
 Qui non serve alcun codice manuale per controllare la posizione. Il ciclo
 di movimento di questo motore già impedisce che un'istanza venga spostata
@@ -188,7 +188,7 @@ Il game controller gestisce il timer e visualizza le informazioni.
 1. Crea un nuovo oggetto chiamato `obj_game_controller`
 2. Non serve uno sprite
 
-**Event: Create** — avvia il timer, usando **Control** → **Execute Code**
+**Event: Create** — avvia il timer, usando **Controllo** → **Esegui codice**
 (l'azione Execute Code di questo progetto esegue vero Python, non
 GameMaker Language):
 
@@ -203,7 +203,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Event: Draw** — costruisce l'HUD con veri comandi della coda di
-disegno. Aggiungi tre azioni **Draw** → **Draw Text**:
+disegno. Aggiungi tre azioni **Gioco** → **Disegna testo**:
 
 | Azione Draw Text | Testo | Posizione |
 |---|---|---|
@@ -211,7 +211,7 @@ disegno. Aggiungi tre azioni **Draw** → **Draw Text**:
 | 2ª | `Time:` | X `10`, Y `30` |
 | 3ª | `Coins:` | X `10`, Y `50` |
 
-poi tre azioni **Draw** → **Draw Variable** subito dopo, per mostrare i
+poi tre azioni **Disegno** → **Disegna variabile** subito dopo, per mostrare i
 valori dinamici accanto a ogni etichetta:
 
 | Azione Draw Variable | Variabile | Posizione |
@@ -221,7 +221,7 @@ valori dinamici accanto a ogni etichetta:
 | 3ª | *(vedi sotto)* | X `70`, Y `50` |
 
 Non esiste un contatore integrato "monete rimanenti" a cui puntare Draw
-Variable — aggiungi un'altra azione **Control** → **Execute Code**, subito
+Variable — aggiungi un'altra azione **Controllo** → **Esegui codice**, subito
 prima delle azioni Draw Variable, per calcolarlo in una variabile
 d'istanza che Draw Variable può poi leggere:
 
@@ -308,41 +308,41 @@ Horizontal** (fa girare il nemico quando colpisce un muro — nessun codice
 necessario; combinato con la collisione solida integrata del Passo 6.2,
 il nemico non può mai attraversare un muro)
 
-**Event: Collision with obj_player** — Add Action: **Room** → **Restart
+**Event: Collision with obj_player** — Add Action: **Stanza** → **Restart
 Room**
 
 ### Aggiungere Sistema di Vite
 
-Nell'evento **Create** di `obj_game_controller`, aggiungi **Score** →
-**Set Lives** (Value: `3`).
+Nell'evento **Creazione** di `obj_game_controller`, aggiungi **Punteggio** →
+**Imposta vite** (Value: `3`).
 
 Nell'evento **Collision with obj_player** di `obj_enemy`, sostituisci
-**Restart Room** con due azioni: **Score** → **Set Lives** (Value: `-1`,
-**Relative** selezionato), poi **Move** → **Jump to Start Position**
+**Riavvia stanza** con due azioni: **Punteggio** → **Imposta vite** (Value: `-1`,
+**Relativo** selezionato), poi **Move** → **Salta alla posizione iniziale**
 (applicata al giocatore tramite **Applies to: Other**) per far riapparire
 il giocatore invece di riavviare l'intero labirinto.
 
 Aggiungi un altro evento a `obj_game_controller`: **Other Events** →
-**No More Lives** — questo si attiva automaticamente non appena le vite
+**Vite esaurite** — questo si attiva automaticamente non appena le vite
 raggiungono 0, quindi non serve controllarlo manualmente. Aggiungi
-**Output** → **Show Message** (`Game Over!`) seguito da **Room** →
-**Restart Game**.
+**Output** → **Mostra messaggio** (`Game Over!`) seguito da **Gioco** →
+**Riavvia gioco**.
 
 ### Aggiungere Chiavi e Porte Chiuse
 
-1. Crea `obj_key` — alla collisione con `obj_player`, **Set Variable**
+1. Crea `obj_key` — alla collisione con `obj_player`, **Imposta variabile**
    (Variable: `global.has_key`, Value: `true`, Scope: `global`), poi
-   **Destroy Instance** (self).
+   **Distruggi istanza** (self).
 2. Crea `obj_locked_door`, con Solid selezionato. Dagli un evento
-   **Step** con **Control** → **Test Variable** (Variable:
-   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
-   **Destroy Instance** (self) — la porta scompare (e smette di
+   **Step** con **Controllo** → **Verifica variabile** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Istanza** →
+   **Distruggi istanza** (self) — la porta scompare (e smette di
    bloccare) non appena la chiave viene raccolta.
 
 ### Aggiungere Livelli Multipli
 
 1. Crea stanze aggiuntive (`room_maze2`, `room_maze3`)
-2. In `obj_exit`, usa l'azione **Next Room** invece di **Restart Room**
+2. In `obj_exit`, usa l'azione **Stanza successiva** invece di **Riavvia stanza**
 
 ### Aggiungere Effetti Sonori
 

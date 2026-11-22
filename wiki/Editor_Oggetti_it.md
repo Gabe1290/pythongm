@@ -56,10 +56,10 @@ Gli eventi sono trigger che causano l'esecuzione di azioni. Clicca su
 
 | Evento | Quando si Attiva |
 |-------|------------------|
-| **Create** | Una volta, quando un'istanza viene creata |
-| **Destroy** | Quando l'istanza viene distrutta |
+| **Creazione** | Una volta, quando un'istanza viene creata |
+| **Distruzione** | Quando l'istanza viene distrutta |
 | **Step** | Ad ogni frame di gioco (60 volte al secondo) |
-| **Draw** | Durante la fase di disegno |
+| **Disegno** | Durante la fase di disegno |
 | **Alarm [0-11]** | Quando un timer di allarme raggiunge lo zero |
 
 ### Eventi Tastiera
@@ -90,12 +90,12 @@ Gli eventi sono trigger che causano l'esecuzione di azioni. Clicca su
 
 | Evento | Quando si Attiva |
 |-------|------------------|
-| **Outside Room** | Quando l'istanza lascia i confini della stanza |
-| **Intersect Boundary** | Quando l'istanza tocca il bordo della stanza |
-| **Game Start** | Una volta, all'avvio del gioco |
-| **Game End** | Una volta, alla chiusura del gioco |
-| **Room Start** | Entrando in una stanza |
-| **Room End** | Uscendo da una stanza |
+| **Fuori dalla stanza** | Quando l'istanza lascia i confini della stanza |
+| **Tocca il bordo della stanza** | Quando l'istanza tocca il bordo della stanza |
+| **Inizio del gioco** | Una volta, all'avvio del gioco |
+| **Fine del gioco** | Una volta, alla chiusura del gioco |
+| **Inizio della stanza** | Entrando in una stanza |
+| **Fine della stanza** | Uscendo da una stanza |
 
 ---
 
@@ -105,54 +105,54 @@ Le azioni sono operazioni eseguite quando un evento si attiva. Ogni
 evento può avere più azioni, eseguite in ordine.
 
 ### Azioni di Movimento
-- **Set Speed** — Imposta la velocità di movimento
-- **Set Direction** — Imposta la direzione di movimento (0-360 gradi)
-- **Set Horizontal Speed** — Imposta hspeed
-- **Set Vertical Speed** — Imposta vspeed
+- **Imposta velocità** — Imposta la velocità di movimento
+- **Imposta direzione** — Imposta la direzione di movimento (0-360 gradi)
+- **Imposta velocità orizzontale** — Imposta hspeed
+- **Imposta velocità verticale** — Imposta vspeed
 - **Muovi verso un punto** — Muovi verso coordinate
 - **Jump to Position** — Teletrasporta istantaneamente a coordinate
 - **Salta alla posizione iniziale** — Torna alla posizione di creazione
 - **Salta a posizione casuale** — Teletrasporta a una posizione casuale
 
 ### Azioni di Istanza
-- **Create Instance** — Crea un nuovo oggetto
-- **Destroy Instance** — Rimuove l'istanza attuale
-- **Change Instance** — Si trasforma in un altro tipo di oggetto
+- **Crea istanza** — Crea un nuovo oggetto
+- **Distruggi istanza** — Rimuove l'istanza attuale
+- **Cambia istanza** — Si trasforma in un altro tipo di oggetto
 
 ### Azioni di Temporizzazione
-- **Set Alarm** — Avvia un timer a conto alla rovescia
-- **Sleep** — Mette in pausa l'esecuzione per un breve momento
+- **Imposta allarme** — Avvia un timer a conto alla rovescia
+- **Pausa** — Mette in pausa l'esecuzione per un breve momento
 
 ### Azioni di Disegno
-- **Draw Sprite** — Disegna uno sprite
-- **Draw Text** — Mostra testo sullo schermo
-- **Draw Rectangle** — Disegna un rettangolo pieno o contornato
+- **Disegna sprite** — Disegna uno sprite
+- **Disegna testo** — Mostra testo sullo schermo
+- **Disegna rettangolo** — Disegna un rettangolo pieno o contornato
 - **Disegna punteggio** — Mostra il punteggio attuale
 - **Disegna vite** — Mostra le vite rimanenti
 - **Disegna barra della salute** — Mostra la barra della salute
 
 ### Score/Lives/Health
-- **Set Score** — Cambia il valore del punteggio
-- **Set Lives** — Cambia il numero di vite
-- **Set Health** — Cambia il valore della salute
+- **Imposta punteggio** — Cambia il valore del punteggio
+- **Imposta vite** — Cambia il numero di vite
+- **Imposta salute** — Cambia il valore della salute
 - **Verifica punteggio** — Controlla una condizione sul punteggio
 - **Verifica vite** — Controlla una condizione sulle vite
 - **Verifica salute** — Controlla una condizione sulla salute
 
 ### Azioni di Stanza
-- **Next Room** — Vai alla stanza successiva
-- **Previous Room** — Vai alla stanza precedente
-- **Restart Room** — Ripristina la stanza attuale
-- **Go to Room** — Salta a una stanza specifica
+- **Stanza successiva** — Vai alla stanza successiva
+- **Stanza precedente** — Vai alla stanza precedente
+- **Riavvia stanza** — Ripristina la stanza attuale
+- **Vai alla stanza** — Salta a una stanza specifica
 
 ### Azioni Sound
-- **Play Sound** — Riproduci un effetto sonoro
-- **Stop Sound** — Ferma un suono in riproduzione
-- **Play Music** — Riproduci musica di sottofondo
-- **Stop Music** — Ferma la musica di sottofondo
+- **Riproduci suono** — Riproduci un effetto sonoro
+- **Ferma suono** — Ferma un suono in riproduzione
+- **Riproduci musica** — Riproduci musica di sottofondo
+- **Ferma musica** — Ferma la musica di sottofondo
 
 ### Azioni Variabili
-- **Set Variable** — Assegna un valore a una variabile
+- **Imposta variabile** — Assegna un valore a una variabile
 - **Verifica variabile** — Controlla una condizione su una variabile
 
 ---
@@ -184,7 +184,7 @@ Vedi [[Programmazione_Visuale_it]] per maggiori dettagli.
 - Distruggi le istanze che lasciano la stanza
 
 ### Debug
-- Usa l'azione **Show Message** per visualizzare i valori
+- Usa l'azione **Mostra messaggio** per visualizzare i valori
 - Controlla l'output della console per gli errori
 - Testa frequentemente durante lo sviluppo
 

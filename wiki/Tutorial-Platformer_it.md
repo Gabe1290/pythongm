@@ -131,7 +131,7 @@ Il giocatore è l'oggetto più complesso, con gravità, salto e movimento.
 
 ### 5.1 Gravità
 
-**Evento: Create** — Aggiungi l'azione **Move** → **Set Gravity**
+**Evento: Create** — Aggiungi l'azione **Move** → **Imposta gravità**
 (Direction: `270`, Gravity: `0.5`) — 270° è dritto verso il basso; il
 valore viene sommato alla velocità verticale del giocatore a ogni passo,
 quindi il giocatore accelera verso il basso da solo da qui in avanti.
@@ -157,7 +157,7 @@ Due dettagli che rendono la sensazione giusta:
   rilascia un tasto direzionale.
 - **Key Press (non held)** è ciò che rende Up un singolo impulso di
   salto, invece di spingere il giocatore verso l'alto a ogni frame in
-  cui è tenuto premuto. **Stop Movement** all'atterraggio annulla poi
+  cui è tenuto premuto. **Ferma il movimento** all'atterraggio annulla poi
   quell'impulso, così il giocatore non continua a salire dopo essere
   atterrato — la collisione solida integrata del motore (il Passo 3 ha
   già reso `obj_ground` Solid) impedisce già al giocatore di sprofondare
@@ -177,10 +177,10 @@ Le monete aggiungono al punteggio quando vengono raccolte.
 
 **Evento: Collision with obj_player**
 1. Aggiungi Evento → Collision → obj_player
-2. Aggiungi l'azione **Score** → **Set Score**
+2. Aggiungi l'azione **Punteggio** → **Imposta punteggio**
    - New Score: `10`
    - Seleziona "Relative"
-3. Aggiungi l'azione **Main1** → **Destroy Instance**
+3. Aggiungi l'azione **Main1** → **Distruggi istanza**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
@@ -196,9 +196,9 @@ Le punte feriscono il giocatore e riavviano il livello.
 
 **Evento: Collision with obj_player**
 1. Aggiungi Evento → Collision → obj_player
-2. Aggiungi l'azione **Main2** → **Show Message**
+2. Aggiungi l'azione **Main2** → **Mostra messaggio**
    - Message: `Ouch! You hit a spike!`
-3. Aggiungi l'azione **Main1** → **Restart Room**
+3. Aggiungi l'azione **Main1** → **Riavvia stanza**
 
 ![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
@@ -213,9 +213,9 @@ La bandiera termina il livello quando il giocatore la raggiunge.
 
 **Evento: Collision with obj_player**
 1. Aggiungi Evento → Collision → obj_player
-2. Aggiungi l'azione **Output** → **Show Message**
+2. Aggiungi l'azione **Output** → **Mostra messaggio**
    - Message: `Level Complete!`
-3. Aggiungi l'azione **Room** → **Next Room** (o **Restart Room** per un singolo livello)
+3. Aggiungi l'azione **Stanza** → **Stanza successiva** (o **Riavvia stanza** per un singolo livello)
 
 Il testo di Show Message è una stringa fissa — non può incorporare un
 valore dinamico come il punteggio. L'HUD del controller di gioco (Passo 9)
@@ -235,11 +235,11 @@ Il controller di gioco mostra il punteggio.
 
 **Evento: Draw**
 1. Aggiungi Evento → Draw → Draw
-2. Aggiungi l'azione **Draw** → **Draw Text** (Text: `Score:`, X: `10`, Y: `10`)
-3. Aggiungi l'azione **Draw** → **Draw Variable** (Variable: `score`, X: `70`, Y: `10`)
+2. Aggiungi l'azione **Gioco** → **Disegna testo** (Text: `Score:`, X: `10`, Y: `10`)
+3. Aggiungi l'azione **Disegno** → **Disegna variabile** (Variable: `score`, X: `70`, Y: `10`)
 
-Opzionale: aggiungi una coppia **Draw Text** (`Lives:`, X `10`, Y `30`) +
-**Draw Variable** (`lives`, X `70`, Y `30`) allo stesso modo, una volta
+Opzionale: aggiungi una coppia **Disegna testo** (`Lives:`, X `10`, Y `30`) +
+**Disegna variabile** (`lives`, X `70`, Y `30`) allo stesso modo, una volta
 che il miglioramento Sistema di Vite qui sotto è a posto.
 
 ![obj_game_controller's Object Events panel: a Draw event with one Draw Text and one Draw Variable action, with no sprite set](images/tutorial-platformer-09-controller-object.png)
@@ -302,7 +302,7 @@ X = Punta    === = Piattaforma
 
 ### Aggiungere un'Altezza di Salto Variabile
 
-Aggiungi un evento **Step** a `obj_player` con **Control** → **Execute
+Aggiungi un evento **Step** a `obj_player` con **Controllo** → **Execute
 Code** (Python reale — `self` è l'istanza corrente, `keyboard` ti permette
 di controllare un tasto tenuto premuto per nome):
 
@@ -316,22 +316,22 @@ if self.vspeed < 0 and not keyboard.check('up'):
 
 Si può fare interamente con azioni strutturate — nessun codice necessario.
 
-**Evento: Create** — Aggiungi l'azione **Control** → **Set Variable**
+**Evento: Create** — Aggiungi l'azione **Controllo** → **Imposta variabile**
 (Variable: `jumps_left`, Value: `2`)
 
-**Evento: Collision with obj_ground** — dopo **Stop Movement**, aggiungi
-**Control** → **Set Variable** (Variable: `jumps_left`, Value: `2`) per
+**Evento: Collision with obj_ground** — dopo **Ferma il movimento**, aggiungi
+**Controllo** → **Imposta variabile** (Variable: `jumps_left`, Value: `2`) per
 ricaricare entrambi i salti all'atterraggio.
 
 Sostituisci l'unica azione dell'evento **Key Press → Up Arrow** esistente
 con tre, in ordine:
-1. **Control** → **Test Variable** (Variable: `jumps_left`, Value: `0`,
+1. **Controllo** → **Verifica variabile** (Variable: `jumps_left`, Value: `0`,
    Operation: `greater`)
-2. **Control** → **Start Block**
-3. **Move** → **Set Vertical Speed** (`-10`)
-4. **Control** → **Set Variable** (Variable: `jumps_left`, Value: `-1`,
-   **Relative** selezionato)
-5. **Control** → **End Block**
+2. **Controllo** → **Inizio blocco**
+3. **Move** → **Imposta velocità verticale** (`-10`)
+4. **Controllo** → **Imposta variabile** (Variable: `jumps_left`, Value: `-1`,
+   **Relativo** selezionato)
+5. **Controllo** → **Fine blocco**
 
 La coppia Start/End Block significa che entrambe le azioni al suo interno
 vengono eseguite solo quando il Test Variable sopra è vero — lo stesso
@@ -342,14 +342,14 @@ loro condizioni.
 
 1. Crea `obj_moving_platform` come figlio di `obj_platform`
 
-**Evento: Create** — Aggiungi l'azione **Control** → **Execute Code**:
+**Evento: Create** — Aggiungi l'azione **Controllo** → **Esegui codice**:
 
 ```python
 self.start_x = self.x
 self.hspeed = 2
 ```
 
-**Evento: Step** — Aggiungi l'azione **Control** → **Execute Code**:
+**Evento: Step** — Aggiungi l'azione **Controllo** → **Esegui codice**:
 
 ```python
 if self.x > self.start_x + 100:
@@ -366,23 +366,23 @@ elif self.x < self.start_x:
 Direction** (Directions: `right`, Speed: `2`)
 
 **Evento: Collision with obj_ground** — Aggiungi l'azione **Move** →
-**Reverse Horizontal** (fa inversione ai muri; combinato con il fatto che
+**Inverti orizzontale** (fa inversione ai muri; combinato con il fatto che
 `obj_ground` è Solid, il nemico non può mai uscire dal bordo di una
 piattaforma nel terreno sottostante né attraversare un muro)
 
 **Evento: Collision with obj_player** — questo evento scatta su
 `obj_enemy`, quindi `self` è il nemico e `other` è il giocatore. Aggiungi
-l'azione **Control** → **Test Expression**, con azioni Then/Else annidate
+l'azione **Controllo** → **Verifica espressione**, con azioni Then/Else annidate
 (lo stesso schema che l'esempio incluso `plateforme_3` usa esattamente
 per questo controllo di "salto sulla testa", solo rispecchiato perché qui
 il controllo vive sul nemico invece che sul giocatore):
    - Expression: `other.vspeed > 0 and other.y - other.vspeed < y - 16`
-   - Then Actions: **Control** → **Execute Code** con `other.vspeed = -5`
+   - Then Actions: **Controllo** → **Esegui codice** con `other.vspeed = -5`
      (un piccolo rimbalzo per il giocatore — `set_vspeed` non ha
      un'opzione "applies to other", quindi questo è l'unico punto che
      richiede una riga di Python reale invece di un'azione strutturata),
-     poi **Instance** → **Destroy Instance** (self)
-   - Else Actions: **Room** → **Restart Room** (il giocatore muore)
+     poi **Istanza** → **Distruggi istanza** (self)
+   - Else Actions: **Stanza** → **Riavvia stanza** (il giocatore muore)
 
 `other.vspeed > 0 and other.y - other.vspeed < y - 16` controlla la
 posizione *del giocatore* da prima del movimento di caduta di questo frame
@@ -393,16 +393,16 @@ perché la versione ingenua `other.y < y - 16` è fragile.
 
 ### Aggiungere un Sistema di Vite
 
-Nell'evento **Create** di `obj_game_controller`, aggiungi **Score** →
-**Set Lives** (Value: `3`).
+Nell'evento **Creazione** di `obj_game_controller`, aggiungi **Punteggio** →
+**Imposta vite** (Value: `3`).
 
 Quando il giocatore muore (la collisione con la punta e il ramo Else del
-nemico sopra), sostituisci **Restart Room** con **Score** → **Set Lives**
-(Value: `-1`, **Relative** selezionato) — la room si riavvia
-automaticamente perché l'evento **No More Lives** scatta solo quando le
+nemico sopra), sostituisci **Riavvia stanza** con **Punteggio** → **Imposta vite**
+(Value: `-1`, **Relativo** selezionato) — la room si riavvia
+automaticamente perché l'evento **Vite esaurite** scatta solo quando le
 vite raggiungono effettivamente 0. Aggiungi quell'evento a
-`obj_game_controller`: **Other Events** → **No More Lives** → **Output** →
-**Show Message** (`Game Over!`) → **Room** → **Restart Game**.
+`obj_game_controller`: **Other Events** → **Vite esaurite** → **Output** →
+**Mostra messaggio** (`Game Over!`) → **Gioco** → **Riavvia gioco**.
 
 ---
 
