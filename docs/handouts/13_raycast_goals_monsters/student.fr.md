@@ -11,8 +11,8 @@ Ton labyrinthe à la première personne devient un vrai jeu : ramasse des gemmes
 ## Phase 1 : Gemmes et score
 
 - [ ] **1.** Crée un sprite `spr_gem` (16×16, un diamant jaune) et un objet `obj_gem` avec ce sprite. Laisse **Solide** décoché.
-- [ ] **2.** Dans `obj_gem` : **Quand collision avec obj_player** avec *Détruire cette instance* ; et un événement **Destroy** (destruction) avec *Ajouter au score 10*.
-- [ ] **3.** Dans `obj_player`, ajoute un événement **Game Start** (dans *Autres événements*) : *Définir le score à 0* et *Définir les vies à 3*. Ne les mets **pas** dans Création.
+- [ ] **2.** Dans `obj_gem` : **Quand collision avec obj_player** avec *Détruire cette instance* ; et un événement **Quand détruit** avec *Ajouter au score 10*.
+- [ ] **3.** Dans `obj_player`, ajoute un événement **Début du jeu** (dans *Autres événements*) : *Définir le score à 0* et *Définir les vies à 3*. Ne les mets **pas** dans Création.
 - [ ] **4.** Dans la salle, place quelques gemmes dans des couloirs dégagés, en dehors des murs, la première en ligne droite devant le joueur.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Les gemmes flottent devant toi et grossissent quand tu approches. Marche dedans : elle disparaît et tu gagnes 10 points. Une gemme derrière un mur est cachée tant que le mur la masque. (Tu ne vois pas encore le score : c'est le Tutoriel 14.)
@@ -21,7 +21,7 @@ Ton labyrinthe à la première personne devient un vrai jeu : ramasse des gemmes
 
 - [ ] **5.** Crée un sprite `spr_monster` (16×16, rouge) et un `obj_monster` non solide. **Quand créé** : *Commencer à bouger (direction)* gauche et droite, vitesse 2. **Quand collision avec obj_wall** : *Inverser horizontalement*.
 - [ ] **6.** Place le monstre dans une longue rangée droite pour qu'il ait de la place pour patrouiller.
-- [ ] **7.** Dans `obj_player` : **Quand collision avec obj_monster** : *Définir les vies à -1* (Relatif), puis *Redémarrer la salle*. **No More Lives** (plus de vies) : *Redémarrer le jeu*.
+- [ ] **7.** Dans `obj_player` : **Quand collision avec obj_monster** : *Définir les vies à -1* (Relatif), puis *Redémarrer la salle*. **Plus de vies** (plus de vies) : *Redémarrer le jeu*.
 
 > DONE: **Tu dois voir :** appuie sur **F5**. Le monstre glisse le long de son couloir et fait demi-tour à chaque bout. Tu le vois arriver, et il se cache derrière les murs. Le toucher coûte une vie ; après la troisième, la partie recommence.
 
@@ -38,8 +38,8 @@ Ton labyrinthe à la première personne devient un vrai jeu : ramasse des gemmes
 | Ce qui ne va pas | Cause la plus probable | Que faire |
 | Je ne vois pas les gemmes | La gemme est Solide (elle devient un mur) ou n'a pas de sprite | Décoche **Solide** ; donne-lui un sprite |
 | La gemme ne disparaît pas | L'événement de collision manque, ou il est sur le mauvais objet | Ajoute **Quand collision avec obj_player** à `obj_gem` |
-| Je ne gagne aucun point | L'événement **Destroy** avec *Ajouter au score 10* manque | Ajoute-le à `obj_gem` |
-| Je récupère toutes mes vies après un contact | Les vies ont été réglées dans **Création**, qui se relance à chaque redémarrage | Règle le score et les vies dans **Game Start** |
+| Je ne gagne aucun point | L'événement **Quand détruit** avec *Ajouter au score 10* manque | Ajoute-le à `obj_gem` |
+| Je récupère toutes mes vies après un contact | Les vies ont été réglées dans **Création**, qui se relance à chaque redémarrage | Règle le score et les vies dans **Début du jeu** |
 | Le monstre ne bouge pas | L'événement **Quand créé** manque, ou le monstre n'est pas dans la salle | Ajoute *Commencer à bouger (direction)* ; place-le |
 | Le monstre traverse les murs | Pas d'événement **Quand collision avec obj_wall** sur le monstre | Ajoute-le avec *Inverser horizontalement* |
 | La sortie me laisse partir avec des gemmes restantes | La vérification du nombre manque ou utilise un mauvais nombre | Utilise *Tester le nombre d'instances de obj_gem égal à 0* pour la branche de victoire |
@@ -65,7 +65,7 @@ Ton labyrinthe à la première personne devient un vrai jeu : ramasse des gemmes
 Écris tes réponses dans les notes ci-dessous.
 
 1. Quels objets apparaissent comme des panneaux dans la vue à la première personne, et lesquels deviennent des murs ?
-2. Pourquoi règle-t-on les vies dans **Game Start** et non dans **Création** ?
+2. Pourquoi règle-t-on les vies dans **Début du jeu** et non dans **Création** ?
 3. Comment la sortie sait-elle que toutes les gemmes ont été ramassées ?
 
 ## Mes notes

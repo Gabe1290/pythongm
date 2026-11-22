@@ -42,7 +42,7 @@ Les élèves ajoutent un ATH au jeu à la première personne en trois phases : t
 
 - La barre a besoin de place. **Viewport Height** sur *Activer la vue Raycast* comprime la vue 3D dans la bande du haut ; la valeur par défaut 0 utilise toute la fenêtre (et la barre en cacherait une partie). Pour une salle de 320 pixels et une barre de 64 pixels, Viewport Height = 320 - 64 = 256.
 - *Dessiner l'ATH DOOM* : **Y = -1** signifie le bas de la fenêtre, **Width = 0** signifie pleine largeur, et **Height** doit correspondre à la bande réservée (64). Elle affiche une barre de santé avec un nombre, le score et les vies.
-- **Santé :** réglez-la dans **Game Start** (*Définir la santé* 100) ; sinon la barre est vide.
+- **Santé :** réglez-la dans **Début du jeu** (*Définir la santé* 100) ; sinon la barre est vide.
 - L'Objective Label et le Face Sprite de la barre servent aux défis ; les valeurs par défaut montrent « Keys » et aucun visage.
 
 > **Astuce:** **Projets de référence.** Téléchargez les projets par étapes sur le wiki (`14_raycast_hud_minimap_checkpoints.zip`) : le projet au début de la leçon (le résultat du Tutoriel 13) et le jeu terminé avec la barre d'état et la minicarte. Dans le projet terminé, le texte du score et des vies est remplacé par la barre, comme dans le tutoriel.

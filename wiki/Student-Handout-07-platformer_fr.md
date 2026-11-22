@@ -40,7 +40,7 @@ Un jeu de plateforme : ton personnage tombe avec la gravité, court et saute ent
 ## Phase 3 : Contrôleur de jeu
 
 - [ ] **14.** Crée `obj_game_controller` (sans sprite).
-- [ ] **15.** Événement **Game Start** (dans *Autres événements*) : *Définir le score à 0* et *Définir les vies à 3*.
+- [ ] **15.** Événement **Début du jeu** (dans *Autres événements*) : *Définir le score à 0* et *Définir les vies à 3*.
 - [ ] **16.** Événement **Dessin** : *Afficher le score à x 10, y 10* et *Afficher les vies à x 200, y 10*.
 - [ ] **17.** Dans la collision avec les pics de `obj_player`, ajoute *Ajouter aux vies -1* **avant** *Recommencer la salle*.
 - [ ] **18.** Place `obj_game_controller` n'importe où dans la salle.
@@ -58,7 +58,7 @@ Un jeu de plateforme : ton personnage tombe avec la gravité, court et saute ent
 | Le joueur ne saute pas | L'événement Haut est *maintenue* au lieu de *Touche pressée*, ou un objet solide est juste au-dessus du joueur | Utilise **Touche pressée : Flèche haut** ; laisse la place libre au-dessus |
 | Le joueur saute sans arrêt tant que je maintiens Haut | C'est un événement Clavier (maintenue) | Utilise **Touche pressée** pour un saut par appui |
 | Les pièces ne font rien | L'événement de pièce est sur la pièce au lieu du joueur, ou manque | Mets **En collision avec obj_coin** sur `obj_player` |
-| Les pics ne coûtent jamais de vies | Les vies sont réglées dans **Création** au lieu de **Game Start**, ou *Ajouter aux vies -1* manque | Déplace les actions dans **Game Start** ; ajoute l'action avant *Recommencer la salle* |
+| Les pics ne coûtent jamais de vies | Les vies sont réglées dans **Création** au lieu de **Début du jeu**, ou *Ajouter aux vies -1* manque | Déplace les actions dans **Début du jeu** ; ajoute l'action avant *Recommencer la salle* |
 | Le score et les vies ne s'affichent pas | `obj_game_controller` n'est pas dans la salle | Place-le dans la salle |
 | Le drapeau ne fait rien | Pas de **En collision avec obj_flag** sur le joueur | Ajoute-le |
 
@@ -86,7 +86,7 @@ Un jeu de plateforme : ton personnage tombe avec la gravité, court et saute ent
 
 1. Pourquoi utilise-t-on *Définir la vitesse horizontale à 0* et non *Arrêter le mouvement* pour **Aucune touche** ?
 2. Pourquoi la vitesse de saut est-elle négative ?
-3. Pourquoi le score et les vies sont-ils réglés dans **Game Start** et non dans **Création** ?
+3. Pourquoi le score et les vies sont-ils réglés dans **Début du jeu** et non dans **Création** ?
 
 ## Mes notes
 

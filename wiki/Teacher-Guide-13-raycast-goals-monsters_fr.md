@@ -10,7 +10,7 @@ Document d'accompagnement du tutoriel intégré (**Aide > Tutoriels > 2.5D : Obj
 
 ## Vue d'ensemble
 
-Les élèves transforment la salle à la première personne en jeu en trois phases : gemmes et score, un monstre qui patrouille et des vies, et une sortie conditionnée aux gemmes. Notions nouvelles : les **panneaux** (billboards : les objets non solides avec un sprite sont dessinés comme des images qui font face au joueur, cachées derrière les murs), le **score et les vies** avec **Game Start**, et la condition **Tester le nombre d'instances**.
+Les élèves transforment la salle à la première personne en jeu en trois phases : gemmes et score, un monstre qui patrouille et des vies, et une sortie conditionnée aux gemmes. Notions nouvelles : les **panneaux** (billboards : les objets non solides avec un sprite sont dessinés comme des images qui font face au joueur, cachées derrière les murs), le **score et les vies** avec **Début du jeu**, et la condition **Tester le nombre d'instances**.
 
 ## Durée suggérée (45 à 60 minutes)
 
@@ -29,7 +29,7 @@ Les élèves transforment la salle à la première personne en jeu en trois phas
 **Phase 1 : gemmes et score**
 
 - Tout objet **visible et non solide** avec un sprite est dessiné automatiquement comme un panneau, mis à l'échelle selon la distance et **caché derrière les murs**. Une gemme solide deviendrait un mur. Le joueur est la caméra et n'est jamais dessiné comme un panneau.
-- L'événement **En collision avec obj_player** de la gemme la détruit ; son événement **Destroy** ajoute 10 au score. Dans le projet de référence, une gemme donne 10 points et disparaît.
+- L'événement **En collision avec obj_player** de la gemme la détruit ; son événement **Quand détruit** ajoute 10 au score. Dans le projet de référence, une gemme donne 10 points et disparaît.
 - **Le score et les vies vont dans Game Start, pas dans Création.** Création se relance à chaque redémarrage de la salle, et le monstre redémarre la salle. Avec Création, les vies seraient remises à fond après chaque mort. (Game Start ne s'exécute qu'une fois.) C'est le même piège qu'au Tutoriel 7.
 - Le score n'est pas encore affiché : la vue 3D ne dessine que le monde. Cela vient au Tutoriel 14.
 - Placez les gemmes hors des murs ; une gemme inaccessible rendra la sortie impossible plus tard.
@@ -37,7 +37,7 @@ Les élèves transforment la salle à la première personne en jeu en trois phas
 **Phase 2 : le monstre et les vies**
 
 - Le monstre est non solide. **Quand créé** : *Commencer à bouger (direction)* gauche et droite, vitesse 2. **Quand collision avec obj_wall** : *Inverser horizontalement*. Placez-le dans un long couloir droit. Dans le projet de référence, il reste dans son couloir et fait demi-tour à chaque bout.
-- **En collision avec obj_monster** sur le joueur : *Définir les vies à -1* (relatif) et *Redémarrer la salle*. Une collision se déclenche quand les objets **commencent** à se toucher : rester sur un monstre coûte donc une vie, pas une par image. **No More Lives** : *Redémarrer le jeu*.
+- **En collision avec obj_monster** sur le joueur : *Définir les vies à -1* (relatif) et *Redémarrer la salle*. Une collision se déclenche quand les objets **commencent** à se toucher : rester sur un monstre coûte donc une vie, pas une par image. **Plus de vies** : *Redémarrer le jeu*.
 - Le redémarrage de la salle remet les gemmes en place, mais les vies et le score sont conservés (réglés dans Game Start).
 - Un redémarrage peut causer un second contact si le monstre est juste au départ ; gardez le monstre loin du départ du joueur.
 
