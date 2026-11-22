@@ -101,7 +101,7 @@ Todo en la programación de juegos sigue este patrón: **Si esto sucede, entonce
 
 Esto es lo que llamamos **Events** y **Actions** en PyGameMaker:
 - **Events** = Cosas que pueden suceder (presión de tecla, colisión, temporizador, etc.)
-- **Actions** = Cosas que quieres hacer cuando ocurren los eventos (mover, destruir, cambiar puntaje, etc.)
+- **Acciones** = Cosas que quieres hacer cuando ocurren los eventos (mover, destruir, cambiar puntaje, etc.)
 
 ---
 
@@ -122,7 +122,7 @@ En un juego Breakout, necesitamos mover la paleta para evitar que la pelota esca
 
 **Moverse a la Derecha:**
 1. Haz clic en **Add Event** → **Keyboard** → **Right Arrow**
-2. Desde el panel de acciones a la derecha, agrega la acción **Set Horizontal Speed**
+2. Desde el panel de acciones a la derecha, agrega la acción **Establecer velocidad horizontal**
 3. Establece el **value** en `5`
 4. Haz clic en **OK**
 
@@ -130,7 +130,7 @@ Esto significa: "Cuando se presione la tecla Flecha Derecha, establecer la veloc
 
 **Moverse a la Izquierda:**
 1. Haz clic en **Add Event** → **Keyboard** → **Left Arrow**
-2. Agrega la acción **Set Horizontal Speed**
+2. Agrega la acción **Establecer velocidad horizontal**
 3. Establece el **value** en `-5`
 4. Haz clic en **OK**
 
@@ -138,12 +138,12 @@ Esto significa: "Cuando se presione la tecla Flecha Derecha, establecer la veloc
 
 ¡Si probamos ahora, la paleta seguiría moviéndose incluso después de soltar la tecla! Arreglemos eso:
 
-1. Haz clic en **Add Event** → **Keyboard Release** → **Right Arrow**
-2. Agrega la acción **Set Horizontal Speed** con valor `0`
+1. Haz clic en **Add Event** → **Tecla soltada** → **Right Arrow**
+2. Agrega la acción **Establecer velocidad horizontal** con valor `0`
 3. Haz clic en **OK**
 
-4. Haz clic en **Add Event** → **Keyboard Release** → **Left Arrow**
-5. Agrega la acción **Set Horizontal Speed** con valor `0`
+4. Haz clic en **Add Event** → **Tecla soltada** → **Left Arrow**
+5. Agrega la acción **Establecer velocidad horizontal** con valor `0`
 6. Haz clic en **OK**
 
 Ahora nuestra paleta se mueve cuando se presionan las teclas y se detiene cuando se sueltan. ¡Hemos terminado con este objeto por ahora!
@@ -176,10 +176,10 @@ Ahora creemos la pelota, el elemento esencial de nuestro juego.
 
 Queremos que la pelota se mueva por sí sola desde el inicio. Demosle una velocidad y dirección inicial.
 
-1. Haz clic en **Add Event** → **Create**
+1. Haz clic en **Add Event** → **Creación**
    > El evento Create ejecuta acciones cuando el objeto aparece en el juego, es decir, cuando entra en la escena.
-2. Agrega la acción **Set Horizontal Speed** con valor `4`
-3. Agrega la acción **Set Vertical Speed** con valor `-4`
+2. Agrega la acción **Establecer velocidad horizontal** con valor `4`
+3. Agrega la acción **Establecer velocidad vertical** con valor `-4`
 4. Haz clic en **OK**
 
 Esto le da a la pelota un movimiento diagonal (derecha y arriba) al inicio del juego.
@@ -190,7 +190,7 @@ Necesitamos que la pelota rebote cuando golpee la paleta.
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_paddle`
    > Este evento se activa cuando la pelota colisiona con la paleta.
-2. Agrega la acción **Reverse Vertical**
+2. Agrega la acción **Invertir vertical**
    > Esto invierte la dirección vertical, haciendo que la pelota rebote.
 3. Haz clic en **OK**
 
@@ -199,8 +199,8 @@ Necesitamos que la pelota rebote cuando golpee la paleta.
 La misma operación para los ladrillos muro:
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_brick_3`
-2. Agrega la acción **Reverse Vertical**
-3. Agrega la acción **Reverse Horizontal**
+2. Agrega la acción **Invertir vertical**
+3. Agrega la acción **Invertir horizontal**
    > Agregamos ambas porque la pelota podría golpear el muro desde diferentes ángulos.
 4. Haz clic en **OK**
 
@@ -251,7 +251,7 @@ Agreguemos algunos ladrillos para romper, para hacer nuestro juego más divertid
 Agregaremos el comportamiento para destruirse a sí mismo cuando sea golpeado por la pelota:
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_ball`
-2. Agrega la acción **Destroy Instance** con objetivo **self**
+2. Agrega la acción **Destruir instancia** con objetivo **self**
    > Esta acción elimina un objeto durante el juego - aquí, el ladrillo mismo.
 3. Haz clic en **OK**
 
@@ -275,11 +275,11 @@ Haz clic en **OK** para guardar.
 Vuelve a abrir `obj_ball` haciendo doble clic en él, y agrega eventos de colisión para nuestros nuevos ladrillos:
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_brick_1`
-2. Agrega la acción **Reverse Vertical**
+2. Agrega la acción **Invertir vertical**
 3. Haz clic en **OK**
 
 4. Haz clic en **Add Event** → **Collision** → selecciona `obj_brick_2`
-5. Agrega la acción **Reverse Vertical**
+5. Agrega la acción **Invertir vertical**
 6. Haz clic en **OK**
 
 ---
@@ -290,8 +290,8 @@ Necesitamos reiniciar el nivel si la pelota escapa de la pantalla (si el jugador
 
 En `obj_ball`:
 
-1. Haz clic en **Add Event** → **Other** → **Outside Room**
-2. Agrega la acción **Restart Room**
+1. Haz clic en **Add Event** → **Other** → **Fuera de la sala**
+2. Agrega la acción **Reiniciar sala**
    > Esta acción reinicia la room actual durante el juego.
 3. Haz clic en **OK**
 

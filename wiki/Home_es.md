@@ -90,14 +90,14 @@ Entidades del juego con sprites, propiedades y comportamientos. Cada objeto pued
 
 ### Eventos
 Disparadores que ejecutan acciones cuando ocurren condiciones específicas:
-- **Create** - Cuando se crea una instancia
-- **Step** - Cada fotograma (típicamente 60 FPS)
-- **Draw** - Fase de renderizado personalizado
-- **Destroy** - Cuando se destruye una instancia
+- **Creación** - Cuando se crea una instancia
+- **Paso** - Cada fotograma (típicamente 60 FPS)
+- **Dibujo** - Fase de renderizado personalizado
+- **Destrucción** - Cuando se destruye una instancia
 - **Keyboard** - Tecla presionada, liberada o mantenida
-- **Mouse** - Clics, movimiento, entrada/salida
+- **Ratón** - Clics, movimiento, entrada/salida
 - **Collision** - Cuando las instancias se tocan
-- **Alarm** - Temporizadores de cuenta regresiva (12 disponibles)
+- **Alarma** - Temporizadores de cuenta regresiva (12 disponibles)
 
 Consulta la [Referencia de Eventos](Event-Reference_es) para documentación completa.
 

@@ -102,8 +102,8 @@ Tamaños de cuadrícula comunes:
 | **Tile Horizontal** | Repite horizontalmente |
 | **Tile Vertical** | Repite verticalmente |
 | **Stretch** | Estira para llenar la sala |
-| **Horizontal Speed** | Velocidad de desplazamiento (parallax) |
-| **Vertical Speed** | Velocidad de desplazamiento (parallax) |
+| **Velocidad horizontal** | Velocidad de desplazamiento (parallax) |
+| **Velocidad vertical** | Velocidad de desplazamiento (parallax) |
 
 ### Capas de Fondo
 

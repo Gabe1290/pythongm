@@ -76,7 +76,7 @@ Un clic en la placa no dispara además tus propios eventos de ratón.
 | **Set Display Brightness** (`microbit_set_brightness`) | Brillo general, de 0 a 255. |
 | **Play Tone** (`microbit_play_tone`) | Un pitido a una frecuencia durante un número de milisegundos. |
 | **Play Melody** (`microbit_play_melody`) | Una de las 21 melodías integradas (`DADADADUM`, `ENTERTAINER`, `POWER_UP`…) o tus propias notas: `"C4:4 E G C5:8 R:4"` (nota, octava, `:duración`; `R` es un silencio). |
-| **Stop Sound** (`microbit_stop_sound`) | Silenciar el altavoz y descartar los sonidos en cola. |
+| **Detener sonido** (`microbit_stop_sound`) | Silenciar el altavoz y descartar los sonidos en cola. |
 | **Set Radio Group** (`microbit_radio_set_group`) | Elegir el grupo de radio, de 0 a 255. |
 | **Send Radio Message** (`microbit_radio_send`) | Enviar un número o un texto a las demás micro:bit del grupo. |
 | **Read Sensor** (`microbit_read_sensor`) | Guardar una lectura (acelerómetro x/y/z, intensidad, brújula, luz, temperatura, nivel de sonido, pin 0–2 analógico) en una variable — o en una variable global si el nombre empieza por `global.`. |
@@ -113,7 +113,7 @@ Se disparan en el propio objeto de la micro:bit:
 | **Sound Finished** | Se han reproducido todas las notas y melodías en cola. |
 | **Radio Message Received** | Otra micro:bit del mismo grupo envió un mensaje. |
 
-«Forever» es el evento normal **Step**.
+«Forever» es el evento normal **Paso**.
 
 ### Radio
 
@@ -132,7 +132,7 @@ puede bloquearse, así que las acciones de pantalla se **ponen en cola** y se
 reproducen una tras otra (16 como máximo; pedir lo que ya se está mostrando no
 hace nada). **Clear Display** vacía la cola y **Display Finished** te avisa de
 cuándo se ha agotado, para que puedas encadenar animaciones. Los sonidos se
-ponen en cola igual, con **Stop Sound** y **Sound Finished**.
+ponen en cola igual, con **Detener sonido** y **Sound Finished**.
 
 El sonido es una onda cuadrada, como el zumbador de la placa. Si el ordenador no
 tiene dispositivo de audio, se omite en silencio (el simulador lo sigue

@@ -65,23 +65,23 @@ Ahora programemos el paddle que el jugador controla.
 
 ### 2.2 Agregar Movimiento con Flecha Derecha
 1. Haz clic en **Add Event** -> **Keyboard** -> selecciona **Right Arrow**
-2. Agrega la acción **Set Horizontal Speed**
+2. Agrega la acción **Establecer velocidad horizontal**
 3. Establece **value** en `5` (o cualquier velocidad que prefieras)
 
 ### 2.3 Agregar Movimiento con Flecha Izquierda
 1. Haz clic en **Add Event** -> **Keyboard** -> selecciona **Left Arrow**
-2. Agrega la acción **Set Horizontal Speed**
+2. Agrega la acción **Establecer velocidad horizontal**
 3. Establece **value** en `-5`
 
 ### 2.4 Detenerse Cuando se Sueltan las Teclas
 ¡El paddle sigue moviéndose incluso después de soltar la tecla! Arreglemos eso.
 
-1. Haz clic en **Add Event** -> **Keyboard Release** -> selecciona **Right Arrow**
-2. Agrega la acción **Set Horizontal Speed**
+1. Haz clic en **Add Event** -> **Tecla soltada** -> selecciona **Right Arrow**
+2. Agrega la acción **Establecer velocidad horizontal**
 3. Establece **value** en `0`
 
-4. Haz clic en **Add Event** -> **Keyboard Release** -> selecciona **Left Arrow**
-5. Agrega la acción **Set Horizontal Speed**
+4. Haz clic en **Add Event** -> **Tecla soltada** -> selecciona **Left Arrow**
+5. Agrega la acción **Establecer velocidad horizontal**
 6. Establece **value** en `0`
 
 Ahora el paddle se detiene cuando sueltas las teclas de flecha.
@@ -98,8 +98,8 @@ Ahora el paddle se detiene cuando sueltas las teclas de flecha.
 3. Marca la casilla **Solid**
 
 ### 3.2 Establecer Movimiento Inicial
-1. Haz clic en **Add Event** -> **Create**
-2. Agrega la acción **Start Moving (Direction)** (o **Set Horizontal/Vertical Speed**)
+1. Haz clic en **Add Event** -> **Creación**
+2. Agrega la acción **Empezar a moverse (dirección)** (o **Set Horizontal/Vertical Speed**)
 3. Establece una dirección diagonal con velocidad `5`
    - Por ejemplo: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ Esto hace que la pelota comience a moverse cuando el juego inicia.
 
 ### 3.3 Rebotar en el Paddle
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_paddle`
-2. Agrega la acción **Reverse Vertical** (para rebotar)
+2. Agrega la acción **Invertir vertical** (para rebotar)
 
 ### 3.4 Rebotar en las Paredes
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_wall`
-2. Agrega la acción **Reverse Horizontal** o **Reverse Vertical** según sea necesario
+2. Agrega la acción **Invertir horizontal** o **Invertir vertical** según sea necesario
    - O usa ambas para manejar rebotes en esquinas
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ Esto hace que la pelota comience a moverse cuando el juego inicia.
 
 ### 4.2 Destruir en Colisión con la Pelota
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_ball`
-2. Agrega la acción **Destroy Instance** con objetivo **self**
+2. Agrega la acción **Destruir instancia** con objetivo **self**
 
 ¡Esto destruye el ladrillo cuando la pelota lo golpea!
 
 ### 4.3 Hacer Rebotar la Pelota
-**Reverse Vertical** siempre se aplica a la instancia en cuyo evento se
+**Invertir vertical** siempre se aplica a la instancia en cuyo evento se
 encuentra — no tiene una opción "aplicar a other" — así que esta acción
 debe ir en la pelota, no en el ladrillo:
 
 1. Regresa a `obj_ball` y agrega:
 2. **Add Event** -> **Collision** -> selecciona `obj_brick`
-3. Agrega la acción **Reverse Vertical**
+3. Agrega la acción **Invertir vertical**
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Ahora coloca tus objetos en la sala:
 ¡Tu juego básico de Breakout está completo! Aquí hay algunas mejoras para probar:
 
 ### Agregar un Sistema de Vidas
-- Agrega un evento **No More Lives** para mostrar "Game Over"
+- Agrega un evento **Sin vidas** para mostrar "Game Over"
 - Pierde una vida cuando la pelota sale por abajo
 
 ### Agregar Puntuación
 - Usa la acción **Add Score** al destruir ladrillos
-- Muestra la puntuación con **Draw Score**
+- Muestra la puntuación con **Dibujar puntuación**
 
 ### Agregar Múltiples Niveles
 - Crea más salas con diferentes disposiciones de ladrillos
-- Usa **Next Room** cuando todos los ladrillos sean destruidos
+- Usa **Sala siguiente** cuando todos los ladrillos sean destruidos
 
 ### Agregar Efectos de Sonido
 - Agrega sonidos para rebotes y destrucción de ladrillos
-- Usa la acción **Play Sound**
+- Usa la acción **Reproducir sonido**
 
 ---
 

@@ -215,9 +215,9 @@ Las zonas de gol son áreas invisibles detrás de cada paleta. Cuando la pelota 
 ### 6.3 Agrega Eventos de Colisión de Zona de Gol a la Pelota
 
 `global.p1score`/`global.p2score` son variables con nombre
-personalizado, una por jugador — la acción integrada **Set Score** no
+personalizado, una por jugador — la acción integrada **Establecer puntuación** no
 sirve aquí, porque siempre escribe la única puntuación integrada, sin
-forma de apuntar a un nombre de variable. **Set Variable** es la acción
+forma de apuntar a un nombre de variable. **Establecer variable** es la acción
 real para una variable con nombre personalizado y admite un ámbito
 `global`:
 
@@ -226,7 +226,7 @@ Vuelve a `obj_ball` y agrega estos eventos:
 **Evento: Colisión con obj_goal_left**
 1. Agregar Evento → Colisión → obj_goal_left
 2. Agregar Acción: **Movimiento** → **Saltar a Posición de Inicio** (reinicia la pelota)
-3. Agregar Acción: **Control** → **Set Variable**
+3. Agregar Acción: **Control** → **Establecer variable**
    - Variable: `p2score`
    - Valor: `1`
    - Ámbito: `global`
@@ -235,7 +235,7 @@ Vuelve a `obj_ball` y agrega estos eventos:
 **Evento: Colisión con obj_goal_right**
 1. Agregar Evento → Colisión → obj_goal_right
 2. Agregar Acción: **Movimiento** → **Saltar a Posición de Inicio**
-3. Agregar Acción: **Control** → **Set Variable**
+3. Agregar Acción: **Control** → **Establecer variable**
    - Variable: `p1score`
    - Valor: `1`
    - Ámbito: `global`
@@ -252,9 +252,9 @@ Vuelve a `obj_ball` y agrega estos eventos:
 
 **Evento: Crear**
 1. Agregar Evento → Crear
-2. Agregar Acción: **Control** → **Set Variable**
+2. Agregar Acción: **Control** → **Establecer variable**
    - Variable: `p1score`, Valor: `0`, Ámbito: `global`
-3. Agregar Acción: **Control** → **Set Variable**
+3. Agregar Acción: **Control** → **Establecer variable**
    - Variable: `p2score`, Valor: `0`, Ámbito: `global`
 
 **Evento: Dibujar**
@@ -329,11 +329,11 @@ así que rastrea la velocidad de la pelota en una variable
 personalizada:
 
 1. En el evento **Crear** de `obj_ball`, agrega **Control** →
-   **Set Variable** (Variable: `ball_speed`, Valor: `6`) justo después
+   **Establecer variable** (Variable: `ball_speed`, Valor: `6`) justo después
    de la acción Empezar a moverse.
 2. En cada evento de colisión con una paleta, después de la acción
-   **Rebotar**, agrega **Control** → **Set Variable** (Variable:
-   `ball_speed`, Valor: `0.5`, **Relative** marcado), luego
+   **Rebotar**, agrega **Control** → **Establecer variable** (Variable:
+   `ball_speed`, Valor: `0.5`, **Relativo** marcado), luego
    **Movimiento** → **Establecer Velocidad** con Valor
    `self.ball_speed` para aplicar la nueva velocidad manteniendo la
    dirección actual (Rebotar ya la invirtió).

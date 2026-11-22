@@ -24,7 +24,7 @@ En este tutorial, crearemos un juego sencillo "Atrapa las Estrellas" en el que e
 1. Inicia PyGameMaker
 2. Ve a **File > New Project**
 3. Nombra tu proyecto "CatchTheStars"
-4. Haz clic en **Create**
+4. Haz clic en **Creación**
 
 ---
 
@@ -59,15 +59,15 @@ En este tutorial, crearemos un juego sencillo "Atrapa las Estrellas" en el que e
 
 **Flecha Izquierda:**
 1. Haz clic en **Add Event** > **Keyboard** > **Left**
-2. Agrega la acción: **Set Horizontal Speed** con valor `-4`
+2. Agrega la acción: **Establecer velocidad horizontal** con valor `-4`
 
 **Flecha Derecha:**
 1. Haz clic en **Add Event** > **Keyboard** > **Right**
-2. Agrega la acción: **Set Horizontal Speed** con valor `4`
+2. Agrega la acción: **Establecer velocidad horizontal** con valor `4`
 
 **Ninguna Tecla Presionada:**
 1. Haz clic en **Add Event** > **Keyboard** > **No Key**
-2. Agrega la acción: **Set Horizontal Speed** con valor `0`
+2. Agrega la acción: **Establecer velocidad horizontal** con valor `0`
 
 ---
 
@@ -78,24 +78,24 @@ En este tutorial, crearemos un juego sencillo "Atrapa las Estrellas" en el que e
 3. Establece el **Sprite** en `spr_star`
 
 ### Agregar el Evento Create
-1. Haz clic en **Add Event** > **Create**
-2. Agrega la acción: **Set Vertical Speed** con valor `3`
-3. Agrega la acción: **Jump To Position** con X `irandom(600)`, Y `20`
+1. Haz clic en **Add Event** > **Creación**
+2. Agrega la acción: **Establecer velocidad vertical** con valor `3`
+3. Agrega la acción: **Saltar a posición** con X `irandom(600)`, Y `20`
    — `irandom(n)` elige un número entero aleatorio entre 0 y `n`, así
    que esto dispersa la estrella en un punto aleatorio cerca de la
    parte superior de una sala de 640 píxeles de ancho cada vez que
    (re)aparece
 
 ### Agregar el Evento Outside Room
-1. Haz clic en **Add Event** > **Other** > **Outside Room**
-2. Agrega la acción: **Jump to Start Position**
-3. Agrega la acción: **Set Score** con valor `1` y **Relative** marcado
+1. Haz clic en **Add Event** > **Other** > **Fuera de la sala**
+2. Agrega la acción: **Saltar a la posición inicial**
+3. Agrega la acción: **Establecer puntuación** con valor `1` y **Relativo** marcado
 
 ### Agregar la Colisión con el Jugador
 1. Haz clic en **Add Event** > **Collision** > selecciona `obj_player`
-2. Agrega la acción: **Set Score** con valor `10` y **Relative** marcado
-3. Agrega la acción: **Play Sound** (opcional, si tienes un sonido)
-4. Agrega la acción: **Jump to Random Position**
+2. Agrega la acción: **Establecer puntuación** con valor `10` y **Relativo** marcado
+3. Agrega la acción: **Reproducir sonido** (opcional, si tienes un sonido)
+4. Agrega la acción: **Saltar a posición aleatoria**
 
 ---
 
@@ -116,8 +116,8 @@ En este tutorial, crearemos un juego sencillo "Atrapa las Estrellas" en el que e
 ## Paso 7: Mostrar la Puntuación
 
 1. Abre `obj_player`
-2. Haz clic en **Add Event** > **Draw**
-3. Agrega la acción: **Draw Score** en la posición (10, 10)
+2. Haz clic en **Add Event** > **Dibujo**
+3. Agrega la acción: **Dibujar puntuación** en la posición (10, 10)
 
 ---
 
@@ -137,11 +137,11 @@ En este tutorial, crearemos un juego sencillo "Atrapa las Estrellas" en el que e
 
 ### Agregar Niveles
 1. Crea varias salas
-2. Usa la acción **Next Room** cuando la puntuación alcance un umbral
+2. Usa la acción **Sala siguiente** cuando la puntuación alcance un umbral
 
 ### Agregar Sonido
 1. Importa archivos de audio en el recurso Sounds
-2. Agrega acciones **Play Sound** a los eventos
+2. Agrega acciones **Reproducir sonido** a los eventos
 
 ### Usar la Programación Visual
 1. Abre un objeto

@@ -154,9 +154,9 @@ La primera sala en el árbol de recursos (en la parte superior de la lista) se c
 ### ¿Cómo cambio de sala?
 
 Usa las acciones de sala:
-- **Next Room**: Va a la siguiente sala en orden
-- **Previous Room**: Va a la sala anterior
-- **Go to Room**: Salta a una sala específica
+- **Sala siguiente**: Va a la siguiente sala en orden
+- **Sala anterior**: Va a la sala anterior
+- **Ir a la sala**: Salta a una sala específica
 
 ### Los objetos desaparecen cuando cambio de sala
 
@@ -216,7 +216,7 @@ Verifica:
 
 ### ¿Cómo reproduzco música de fondo en bucle?
 
-Usa la acción **Play Music** con la opción de bucle activada, o **Play Sound** con el parámetro loop establecido en verdadero.
+Usa la acción **Reproducir música** con la opción de bucle activada, o **Reproducir sonido** con el parámetro loop establecido en verdadero.
 
 ---
 

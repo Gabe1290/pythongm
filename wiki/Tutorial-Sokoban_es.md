@@ -133,18 +133,18 @@ La caja es empujada por el jugador y cambia de apariencia cuando está en un obj
 
 **Evento: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Control** → **Si colisión**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Instancia** → **Establecer sprite**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Control** → **Si no**
+5. Add Action: **Instancia** → **Establecer sprite**
    - Sprite: `spr_crate`
 
 Esto hace que la caja se vuelva verde cuando está en un lugar objetivo —
-**If Collision** con ambos desplazamientos en `0` comprueba si la
+**Si colisión** con ambos desplazamientos en `0` comprueba si la
 posición *actual* de la caja se superpone con un `obj_target`.
 
 ![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
@@ -160,7 +160,7 @@ El jugador se mueve exactamente una celda de la cuadrícula a la vez y empuja la
 
 ### 6.1 Movimiento en Cuadrícula
 
-Agrega un evento **Key Press** por dirección, cada uno con una acción **Move** → **Move Grid**:
+Agrega un evento **Key Press** por dirección, cada uno con una acción **Move** → **Mover por cuadrícula**:
 
 | Evento | Acción Move Grid |
 |---|---|
@@ -169,7 +169,7 @@ Agrega un evento **Key Press** por dirección, cada uno con una acción **Move**
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** mueve la instancia exactamente una celda de la cuadrícula
+**Mover por cuadrícula** mueve la instancia exactamente una celda de la cuadrícula
 y ya detecta colisiones por sí sola — no moverá al jugador hacia un
 `obj_wall` sólido, por lo que no hace falta una comprobación de pared
 adicional aquí.
@@ -178,18 +178,18 @@ adicional aquí.
 
 **Evento: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Detener movimiento**
 
 ### 6.3 Empujar Cajas
 
 **Evento: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Control** → **Si se puede empujar**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** comprueba si el espacio detrás de la caja (en la
+**Si se puede empujar** comprueba si el espacio detrás de la caja (en la
 dirección en la que se mueve el jugador) está libre y, si es así,
 empuja la caja una celda y mueve al jugador a su lugar, todo en una
 sola acción. Si el espacio detrás de la caja está bloqueado por una
@@ -207,7 +207,7 @@ Necesitamos un controlador invisible que observe si cada caja está en un objeti
 2. No se necesita sprite
 
 **Evento: Create** — establece el conteo de objetivos una sola vez,
-usando **Control** → **Execute Code** (la acción Execute Code de este
+usando **Control** → **Ejecutar código** (la acción Execute Code de este
 proyecto ejecuta Python real, no GameMaker Language — `self` es la
 instancia actual, `game` es el gestor del juego):
 
@@ -235,14 +235,14 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 
 `self.restart_room_flag = True` es la forma en que un bloque Execute
 Code crudo activa el mismo reinicio de sala que realiza la acción
-**Restart Room** — el bucle principal lo comprueba cada fotograma.
-Agrega una acción **Show Message** (de **Output**, mensaje `Level
+**Reiniciar sala** — el bucle principal lo comprueba cada fotograma.
+Agrega una acción **Mostrar mensaje** (de **Output**, mensaje `Level
 Complete!`) justo después del bloque Execute Code si quieres mostrar un
 popup antes del reinicio.
 
 **Evento: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Juego** → **Dibujar texto**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -308,18 +308,18 @@ T = Objetivo
 
 ### Agregar un Contador de Movimientos
 
-En el evento **Create** de `obj_game_controller`, agrega **Control** →
-**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
+En el evento **Creación** de `obj_game_controller`, agrega **Control** →
+**Establecer variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 En cada uno de los cuatro eventos Key Press de `obj_player`, agrega una
 segunda acción justo después de Move Grid: **Control** → **Set
 Variable** (Variable: `global.moves`, Value: `1`, Scope: `global`,
-**Relative** marcado) — esto suma 1 al contador en cada pulsación de
+**Relativo** marcado) — esto suma 1 al contador en cada pulsación de
 tecla, sin importar si el movimiento fue realmente bloqueado por una
 pared.
 
-En el evento **Draw** de `obj_game_controller`, agrega **Draw** →
-**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
+En el evento **Dibujo** de `obj_game_controller`, agrega **Dibujo** →
+**Dibujar variable** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Agregar Función Deshacer
 
@@ -328,7 +328,7 @@ Almacena posiciones anteriores y permite presionar Z para deshacer el último mo
 ### Agregar Múltiples Niveles
 
 Crea más salas (`room_level2`, `room_level3`, etc.) y usa la acción
-**Next Room** (categoría Room) en lugar de **Restart Room** en el
+**Sala siguiente** (categoría Room) en lugar de **Reiniciar sala** en el
 bloque Execute Code de comprobación de victoria (`self.next_room_flag =
 True` en lugar de `self.restart_room_flag = True`) al completar un
 nivel.
@@ -348,7 +348,7 @@ Agrega sonidos para:
 | Problema | Solución |
 |---------|----------|
 | El jugador se mueve a través de paredes | Verifica que `obj_wall` tenga "Solid" marcado |
-| La caja no cambia de color | Verifica que la acción **If Collision** del evento Step apunte a `obj_target` |
+| La caja no cambia de color | Verifica que la acción **Si colisión** del evento Step apunte a `obj_target` |
 | Puedes empujar una caja a través de la pared | Verifica la detección de colisiones antes de mover la caja |
 | El mensaje de victoria aparece inmediatamente | Asegúrate de que los objetivos se coloquen separados de las cajas |
 | El jugador se mueve varias casillas | Usa el evento Keyboard Press, no el evento Keyboard |

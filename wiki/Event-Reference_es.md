@@ -23,9 +23,9 @@ Entender cuándo se disparan los eventos ayuda a crear un comportamiento
 de juego predecible (verificado contra el bucle principal en
 `runtime/game_runner.py`):
 
-1. **Begin Step** — Inicio del fotograma
-2. **Alarm** — Todas las alarmas activadas cuentan regresivamente y se disparan
-3. **Step** (y **Keyboard (mantenida)**) — Lógica principal del juego,
+1. **Inicio del paso** — Inicio del fotograma
+2. **Alarma** — Todas las alarmas activadas cuentan regresivamente y se disparan
+3. **Paso** (y **Keyboard (mantenida)**) — Lógica principal del juego,
    luego comprobaciones continuas de teclas mantenidas para la misma
    instancia
 4. **Keyboard Press/Release, Mouse** — Los eventos de entrada
@@ -36,8 +36,8 @@ de juego predecible (verificado contra el bucle principal en
 5. **Movimiento, luego Colisión** — Se aplica la física (gravedad/
    fricción/hspeed/vspeed), luego se detectan las colisiones y se
    disparan sus eventos
-6. **End Step** (y **Destroy**) — Después de las colisiones
-7. **Draw** — Fase de renderizado
+6. **Fin del paso** (y **Destrucción**) — Después de las colisiones
+7. **Dibujo** — Fase de renderizado
 
 ---
 

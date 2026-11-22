@@ -112,9 +112,9 @@ La salida termina el nivel cuando el jugador la alcanza.
 
 **Evento: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Output** → **Show Message**
+2. Add Action: **Output** → **Mostrar mensaje**
    - Message: `You Win!`
-3. Add Action: **Room** → **Next Room** (o **Restart Room** para un solo nivel)
+3. Add Action: **Sala** → **Sala siguiente** (o **Reiniciar sala** para un solo nivel)
 
 El texto de Show Message es una cadena fija — no puede incluir un valor
 en vivo como el tiempo transcurrido. El temporizador permanece visible
@@ -134,10 +134,10 @@ Las monedas añaden al puntaje cuando se recogen.
 
 **Evento: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Score** → **Set Score**
+2. Add Action: **Puntuación** → **Establecer puntuación**
    - New Score: `10`
    - Marca "Relative" para añadir 10 puntos
-3. Add Action: **Instance** → **Destroy Instance**
+3. Add Action: **Instancia** → **Destruir instancia**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
@@ -153,7 +153,7 @@ El jugador se mueve fluidamente usando las teclas de flecha.
 
 ### 6.1 Movimiento
 
-Agrega cuatro eventos **Keyboard (held)** más un evento **No Key**,
+Agrega cuatro eventos **Teclado (mantenido)** más un evento **No Key**,
 cada uno con una acción **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Acción |
@@ -168,7 +168,7 @@ cada uno con una acción **Move** → **Set Horizontal/Vertical Speed**:
 
 **Evento: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Detener movimiento**
 
 No hace falta código manual para comprobar la posición aquí. El bucle
 de movimiento de este motor ya evita que una instancia se mueva dentro
@@ -190,7 +190,7 @@ El game controller gestiona el temporizador y muestra información.
 2. No se necesita sprite
 
 **Evento: Create** — inicia el temporizador, usando **Control** →
-**Execute Code** (la acción Execute Code de este proyecto ejecuta
+**Ejecutar código** (la acción Execute Code de este proyecto ejecuta
 Python real, no GameMaker Language):
 
 ```python
@@ -204,7 +204,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Evento: Draw** — construye el HUD con comandos reales de la cola de
-dibujo. Agrega tres acciones **Draw** → **Draw Text**:
+dibujo. Agrega tres acciones **Juego** → **Dibujar texto**:
 
 | Acción Draw Text | Texto | Posición |
 |---|---|---|
@@ -212,7 +212,7 @@ dibujo. Agrega tres acciones **Draw** → **Draw Text**:
 | 2ª | `Time:` | X `10`, Y `30` |
 | 3ª | `Coins:` | X `10`, Y `50` |
 
-luego tres acciones **Draw** → **Draw Variable** justo después, para
+luego tres acciones **Dibujo** → **Dibujar variable** justo después, para
 mostrar los valores en vivo junto a cada etiqueta:
 
 | Acción Draw Variable | Variable | Posición |
@@ -222,7 +222,7 @@ mostrar los valores en vivo junto a cada etiqueta:
 | 3ª | *(ver abajo)* | X `70`, Y `50` |
 
 No existe un contador integrado de "monedas restantes" al que apuntar
-Draw Variable — agrega otra acción **Control** → **Execute Code**,
+Draw Variable — agrega otra acción **Control** → **Ejecutar código**,
 justo antes de las acciones Draw Variable, para calcularlo en una
 variable de instancia que Draw Variable pueda leer después:
 
@@ -309,41 +309,41 @@ Horizontal** (hace girar al enemigo cuando choca con una pared — no
 hace falta código; combinado con la colisión sólida integrada del Paso
 6.2, el enemigo nunca puede atravesar una pared)
 
-**Evento: Collision with obj_player** — Add Action: **Room** →
-**Restart Room**
+**Evento: Collision with obj_player** — Add Action: **Sala** →
+**Reiniciar sala**
 
 ### Añadir Sistema de Vidas
 
-En el evento **Create** de `obj_game_controller`, agrega **Score** →
-**Set Lives** (Value: `3`).
+En el evento **Creación** de `obj_game_controller`, agrega **Puntuación** →
+**Establecer vidas** (Value: `3`).
 
 En el evento **Collision with obj_player** de `obj_enemy`, reemplaza
-**Restart Room** por dos acciones: **Score** → **Set Lives** (Value:
-`-1`, **Relative** marcado), luego **Move** → **Jump to Start
+**Reiniciar sala** por dos acciones: **Puntuación** → **Establecer vidas** (Value:
+`-1`, **Relativo** marcado), luego **Move** → **Jump to Start
 Position** (aplicada al jugador mediante **Applies to: Other**) para
 reaparecer al jugador en lugar de reiniciar todo el laberinto.
 
 Agrega otro evento a `obj_game_controller`: **Other Events** → **No
 More Lives** — esto se activa automáticamente en cuanto las vidas
 llegan a 0, así que no hace falta comprobarlo manualmente. Agrega
-**Output** → **Show Message** (`Game Over!`) seguido de **Room** →
-**Restart Game**.
+**Output** → **Mostrar mensaje** (`Game Over!`) seguido de **Juego** →
+**Reiniciar juego**.
 
 ### Añadir Llaves y Puertas Cerradas
 
-1. Crea `obj_key` — al chocar con `obj_player`, **Set Variable**
+1. Crea `obj_key` — al chocar con `obj_player`, **Establecer variable**
    (Variable: `global.has_key`, Value: `true`, Scope: `global`), luego
-   **Destroy Instance** (self).
-2. Crea `obj_locked_door`, con Solid marcado. Dale un evento **Step**
-   con **Control** → **Test Variable** (Variable: `global.has_key`,
-   Value: `true`, Scope: `global`) → **Instance** → **Destroy
+   **Destruir instancia** (self).
+2. Crea `obj_locked_door`, con Solid marcado. Dale un evento **Paso**
+   con **Control** → **Comprobar variable** (Variable: `global.has_key`,
+   Value: `true`, Scope: `global`) → **Instancia** → **Destroy
    Instance** (self) — la puerta desaparece (y deja de bloquear) en
    cuanto se recoge la llave.
 
 ### Añadir Múltiples Niveles
 
 1. Crea salas adicionales (`room_maze2`, `room_maze3`)
-2. En `obj_exit`, usa la acción **Next Room** en lugar de **Restart Room**
+2. En `obj_exit`, usa la acción **Sala siguiente** en lugar de **Reiniciar sala**
 
 ### Añadir Efectos de Sonido
 
