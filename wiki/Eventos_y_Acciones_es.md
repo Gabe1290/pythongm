@@ -147,7 +147,7 @@ Las comprobaciones de colisión ocurren entre los eventos Step y Draw.
 | **Dibujar rectángulo** | Dibuja un rectángulo | x1, y1, x2, y2, filled |
 | **Dibujar círculo** | Dibuja un círculo | x, y, radius, filled |
 | **Dibujar línea** | Dibuja una línea | x1, y1, x2, y2 |
-| **Establecer color de dibujo** | Establece el color para los siguientes Draw Text/Draw Rectangle/etc. | color |
+| **Establecer color de dibujo** | Establece el color para los siguientes Dibujar texto/Dibujar rectángulo/etc. | color |
 | **Establecer color** | Establece el tinte y la transparencia de un sprite (no el color de dibujo de arriba) | color, alpha |
 | **Establecer fuente de dibujo** | Establece la fuente y alineación para el siguiente dibujo de texto | font, halign, valign |
 

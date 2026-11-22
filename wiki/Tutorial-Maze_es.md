@@ -18,7 +18,7 @@ En este tutorial, crearás un **Juego de Laberinto** donde el jugador navega a t
 - Sistema de temporizador simple
 
 **Dificultad:** Principiante
-**Preset:** Preset Intermedio (la acción Execute Code usada para el
+**Preset:** Preset Intermedio (la acción Ejecutar código usada para el
 temporizador no está en el preset Principiante)
 
 ---
@@ -116,7 +116,7 @@ La salida termina el nivel cuando el jugador la alcanza.
    - Message: `You Win!`
 3. Add Action: **Sala** → **Sala siguiente** (o **Reiniciar sala** para un solo nivel)
 
-El texto de Show Message es una cadena fija — no puede incluir un valor
+El texto de Mostrar mensaje es una cadena fija — no puede incluir un valor
 en vivo como el tiempo transcurrido. El temporizador permanece visible
 en el HUD (Paso 7) hasta la victoria, así que el jugador ya ha visto su
 tiempo.
@@ -158,11 +158,11 @@ cada uno con una acción **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Acción |
 |---|---|
-| Keyboard (held) → Right Arrow | Set Horizontal Speed a `4` |
-| Keyboard (held) → Left Arrow | Set Horizontal Speed a `-4` |
-| Keyboard (held) → Down Arrow | Set Vertical Speed a `4` |
-| Keyboard (held) → Up Arrow | Set Vertical Speed a `-4` |
-| Keyboard: No Key | Set Horizontal Speed a `0` **y** Set Vertical Speed a `0` |
+| Teclado (mantenido) → Right Arrow | Establecer velocidad horizontal a `4` |
+| Teclado (mantenido) → Left Arrow | Establecer velocidad horizontal a `-4` |
+| Teclado (mantenido) → Down Arrow | Establecer velocidad vertical a `4` |
+| Teclado (mantenido) → Up Arrow | Establecer velocidad vertical a `-4` |
+| Keyboard: No Key | Establecer velocidad horizontal a `0` **y** Establecer velocidad vertical a `0` |
 
 ### 6.2 Detenerse en las Paredes
 
@@ -190,7 +190,7 @@ El game controller gestiona el temporizador y muestra información.
 2. No se necesita sprite
 
 **Evento: Create** — inicia el temporizador, usando **Control** →
-**Ejecutar código** (la acción Execute Code de este proyecto ejecuta
+**Ejecutar código** (la acción Ejecutar código de este proyecto ejecuta
 Python real, no GameMaker Language):
 
 ```python
@@ -206,7 +206,7 @@ self.timer += 1.0 / game.fps
 **Evento: Draw** — construye el HUD con comandos reales de la cola de
 dibujo. Agrega tres acciones **Juego** → **Dibujar texto**:
 
-| Acción Draw Text | Texto | Posición |
+| Acción Dibujar texto | Texto | Posición |
 |---|---|---|
 | 1ª | `Score:` | X `10`, Y `10` |
 | 2ª | `Time:` | X `10`, Y `30` |
@@ -215,16 +215,16 @@ dibujo. Agrega tres acciones **Juego** → **Dibujar texto**:
 luego tres acciones **Dibujo** → **Dibujar variable** justo después, para
 mostrar los valores en vivo junto a cada etiqueta:
 
-| Acción Draw Variable | Variable | Posición |
+| Acción Dibujar variable | Variable | Posición |
 |---|---|---|
 | 1ª | `score` | X `70`, Y `10` |
 | 2ª | `self.timer` | X `70`, Y `30` |
 | 3ª | *(ver abajo)* | X `70`, Y `50` |
 
 No existe un contador integrado de "monedas restantes" al que apuntar
-Draw Variable — agrega otra acción **Control** → **Ejecutar código**,
-justo antes de las acciones Draw Variable, para calcularlo en una
-variable de instancia que Draw Variable pueda leer después:
+Dibujar variable — agrega otra acción **Control** → **Ejecutar código**,
+justo antes de las acciones Dibujar variable, para calcularlo en una
+variable de instancia que Dibujar variable pueda leer después:
 
 ```python
 self.coins_left = sum(
@@ -233,7 +233,7 @@ self.coins_left = sum(
 )
 ```
 
-(luego establece el campo Variable de la 3ª acción Draw Variable en `self.coins_left`).
+(luego establece el campo Variable de la 3ª acción Dibujar variable en `self.coins_left`).
 
 ![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
 

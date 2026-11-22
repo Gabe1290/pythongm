@@ -126,7 +126,7 @@ o imagen en imagen.
 
 ### Activar las Views
 
-1. Selecciona "Enable Views" en las propiedades de la sala
+1. Selecciona "Habilitar vistas" en las propiedades de la sala
 2. Configura View 0 (la view principal)
 
 ### Propiedades de las Views
@@ -152,7 +152,7 @@ Para que la cámara siga al jugador:
 
 El orden de las salas en el árbol de recursos determina:
 1. Qué sala carga primero (sala superior = sala inicial)
-2. El orden para las acciones "Next Room" y "Previous Room"
+2. El orden para las acciones "Sala siguiente" y "Sala anterior"
 
 ### Cambiar el Orden de las Salas
 

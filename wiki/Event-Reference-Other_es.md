@@ -2,7 +2,7 @@
 
 *[Inicio](Home_es) | [Referencia de Eventos](Event-Reference_es) | [Referencia completa de acciones](Full-Action-Reference_es)*
 
-### Outside Room
+### Fuera de la sala
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `outside_room` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Intersect Boundary
+### Toca el borde de la sala
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `intersect_boundary` |
@@ -35,7 +35,7 @@
 
 ---
 
-### No More Lives
+### Sin vidas
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `no_more_lives` |
@@ -52,7 +52,7 @@
 
 ---
 
-### No More Health
+### Sin salud
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `no_more_health` |
@@ -69,7 +69,7 @@
 
 ---
 
-### Animation End
+### Fin de la animación
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `animation_end` |

@@ -2,7 +2,7 @@
 
 *[Inicio](Home_es) | [Referencia de Eventos](Event-Reference_es) | [Referencia completa de acciones](Full-Action-Reference_es)*
 
-### Draw
+### Dibujo
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `draw` |
@@ -31,7 +31,7 @@
 
 ---
 
-### Draw GUI
+### Dibujo de la interfaz
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `draw_gui` |
@@ -41,7 +41,7 @@
 
 **Descripción:** Dibuja en el **espacio de pantalla (GUI)**, encima de la sala y sin verse afectado por el desplazamiento de vistas/cámara.
 
-**Diferencia con Draw:** el evento Draw normal está en coordenadas de sala (se desplaza con la vista); Draw GUI permanece fijo a la pantalla — úsalo para HUD, puntuaciones y menús.
+**Diferencia con Draw:** el evento Draw normal está en coordenadas de sala (se desplaza con la vista); Dibujo de la interfaz permanece fijo a la pantalla — úsalo para HUD, puntuaciones y menús.
 
 ---
 

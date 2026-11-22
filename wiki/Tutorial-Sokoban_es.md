@@ -162,7 +162,7 @@ El jugador se mueve exactamente una celda de la cuadrícula a la vez y empuja la
 
 Agrega un evento **Key Press** por dirección, cada uno con una acción **Move** → **Mover por cuadrícula**:
 
-| Evento | Acción Move Grid |
+| Evento | Acción Mover por cuadrícula |
 |---|---|
 | Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
 | Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
@@ -207,7 +207,7 @@ Necesitamos un controlador invisible que observe si cada caja está en un objeti
 2. No se necesita sprite
 
 **Evento: Create** — establece el conteo de objetivos una sola vez,
-usando **Control** → **Ejecutar código** (la acción Execute Code de este
+usando **Control** → **Ejecutar código** (la acción Ejecutar código de este
 proyecto ejecuta Python real, no GameMaker Language — `self` es la
 instancia actual, `game` es el gestor del juego):
 
@@ -237,7 +237,7 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 Code crudo activa el mismo reinicio de sala que realiza la acción
 **Reiniciar sala** — el bucle principal lo comprueba cada fotograma.
 Agrega una acción **Mostrar mensaje** (de **Output**, mensaje `Level
-Complete!`) justo después del bloque Execute Code si quieres mostrar un
+Complete!`) justo después del bloque Ejecutar código si quieres mostrar un
 popup antes del reinicio.
 
 **Evento: Draw**
@@ -312,7 +312,7 @@ En el evento **Creación** de `obj_game_controller`, agrega **Control** →
 **Establecer variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 En cada uno de los cuatro eventos Key Press de `obj_player`, agrega una
-segunda acción justo después de Move Grid: **Control** → **Set
+segunda acción justo después de Mover por cuadrícula: **Control** → **Set
 Variable** (Variable: `global.moves`, Value: `1`, Scope: `global`,
 **Relativo** marcado) — esto suma 1 al contador en cada pulsación de
 tecla, sin importar si el movimiento fue realmente bloqueado por una
@@ -329,7 +329,7 @@ Almacena posiciones anteriores y permite presionar Z para deshacer el último mo
 
 Crea más salas (`room_level2`, `room_level3`, etc.) y usa la acción
 **Sala siguiente** (categoría Room) en lugar de **Reiniciar sala** en el
-bloque Execute Code de comprobación de victoria (`self.next_room_flag =
+bloque Ejecutar código de comprobación de victoria (`self.next_room_flag =
 True` en lugar de `self.restart_room_flag = True`) al completar un
 nivel.
 
@@ -351,7 +351,7 @@ Agrega sonidos para:
 | La caja no cambia de color | Verifica que la acción **Si colisión** del evento Step apunte a `obj_target` |
 | Puedes empujar una caja a través de la pared | Verifica la detección de colisiones antes de mover la caja |
 | El mensaje de victoria aparece inmediatamente | Asegúrate de que los objetivos se coloquen separados de las cajas |
-| El jugador se mueve varias casillas | Usa el evento Keyboard Press, no el evento Keyboard |
+| El jugador se mueve varias casillas | Usa el evento Tecla pulsada, no el evento Keyboard |
 
 ---
 

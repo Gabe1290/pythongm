@@ -18,7 +18,7 @@ En este tutorial, crearás un **Juego de Alunizaje** - un juego de arcade clási
 - Zonas de aterrizaje seguras
 
 **Dificultad:** Principiante
-**Preset:** Preset Intermedio (la física de empuje/combustible se apoya en Execute Code en todo momento, que no está en el preset Principiante)
+**Preset:** Preset Intermedio (la física de empuje/combustible se apoya en Ejecutar código en todo momento, que no está en el preset Principiante)
 
 ---
 
@@ -207,7 +207,7 @@ del resto del código es el equivalente.
      2. **Output** → **Mostrar mensaje** (Message: `Crashed! Too fast!`)
      3. **Sala** → **Reiniciar sala**
 
-El texto de Show Message es una cadena fija — no puede incrustar la
+El texto de Mostrar mensaje es una cadena fija — no puede incrustar la
 velocidad real de aterrizaje. El HUD (Paso 7) ya muestra la velocidad en
 vivo hasta el momento del contacto, así que el jugador ya ha visto el
 número.
@@ -351,7 +351,7 @@ en la dirección a la que apunta. Las instancias de este motor tienen un
 atributo `rotation` real (grados, 0 = derecha, creciente en sentido
 antihorario) que se usa para girar el sprite — no hace falta
 `image_angle`/`lengthdir_x`/`lengthdir_y`, ya que `math` ya está
-disponible en Execute Code:
+disponible en Ejecutar código:
 
 Reemplaza el código del evento Create del 5.1 por:
 ```python
@@ -422,7 +422,7 @@ self.hspeed += self.wind_force
 
 | Problema | Solución |
 |----------|----------|
-| El módulo cae demasiado rápido | Disminuye el valor `Gravity` de Set Gravity, o aumenta `thrust_force` en el código del evento Create |
+| El módulo cae demasiado rápido | Disminuye el valor `Gravity` de Establecer gravedad, o aumenta `thrust_force` en el código del evento Create |
 | No puedo frenar lo suficiente | Aumenta `thrust_force`, o aumenta `safe_speed` |
 | El combustible se agota demasiado rápido | Disminuye `fuel_use`, o aumenta el `fuel` inicial |
 | El módulo se sale de la pantalla | Comprueba el bloque de límites al final del código del evento Step |
@@ -434,11 +434,11 @@ self.hspeed += self.wind_force
 
 ¡Felicidades! ¡Has creado un juego de alunizaje! Aprendiste:
 
-- **Física de empuje** - Ajustar `self.vspeed` contra una atracción continua de Set Gravity
+- **Física de empuje** - Ajustar `self.vspeed` contra una atracción continua de Establecer gravedad
 - **Gestión de velocidad** - Calcular la velocidad a partir de `hspeed`/`vspeed` con el teorema de Pitágoras
 - **Sistema de combustible** - Jugabilidad de gestión de recursos con una simple variable de instancia
-- **Detección de colisión** - Resultados diferentes para plataforma vs suelo, elegidos con Test Expression
-- **Visualización de HUD** - Calcular los valores a mostrar en Execute Code y luego mostrarlos con Draw Text/Draw Variable
+- **Detección de colisión** - Resultados diferentes para plataforma vs suelo, elegidos con Comprobar expresión
+- **Visualización de HUD** - Calcular los valores a mostrar en Ejecutar código y luego mostrarlos con Dibujar texto/Dibujar variable
 
 ---
 

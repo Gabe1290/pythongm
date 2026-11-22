@@ -352,8 +352,8 @@ También puedes refinarlo aún más, como agregar:
 
 | Objeto | Sprite | Solid | Eventos |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Sí | Keyboard (Left/Right), Keyboard Release |
-| `obj_ball` | `spr_ball` | Sí | Create, Collision (paddle, bricks), Outside Room |
+| `obj_paddle` | `spr_paddle` | Sí | Keyboard (Left/Right), Tecla soltada |
+| `obj_ball` | `spr_ball` | Sí | Create, Collision (paddle, bricks), Fuera de la sala |
 | `obj_brick_1` | `spr_brick_1` | Sí | Collision (ball) - Se destruye a sí mismo |
 | `obj_brick_2` | `spr_brick_2` | Sí | Hereda de `obj_brick_1` |
 | `obj_brick_3` | `spr_brick_3` | Sí | Ninguno (solo un muro) |

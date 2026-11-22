@@ -223,7 +223,7 @@ Ahora coloca tus objetos en la sala:
 
 | Objeto | Sprite | Solid | Eventos |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Sí | Keyboard (Left/Right), Keyboard Release |
+| `obj_paddle` | `spr_paddle` | Sí | Keyboard (Left/Right), Tecla soltada |
 | `obj_ball` | `spr_ball` | Sí | Create, Collision (paddle, wall, brick) |
 | `obj_brick` | `spr_brick` | Sí | Collision (ball) - Destroy self |
 | `obj_wall` | `spr_wall` | Sí | Ninguno necesario |

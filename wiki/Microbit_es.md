@@ -177,7 +177,7 @@ que se ejecuta en una placa física.
    una placa nueva que nunca ha ejecutado MicroPython.
 
 Se traducen todas las acciones y condiciones de micro:bit, y también *Set
-Variable*, *Test Variable*, los bloques y los comentarios. Cada evento se
+Variable*, *Comprobar variable*, los bloques y los comentarios. Cada evento se
 convierte en una comprobación dentro de un único bucle. Las acciones de juego
 que no significan nada en una placa (salas, sprites, puntuaciones…) no se
 exportan. En las expresiones funcionan `irandom`, `random` y `choose`; las

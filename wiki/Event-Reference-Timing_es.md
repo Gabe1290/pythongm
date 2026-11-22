@@ -24,17 +24,17 @@
 
 ---
 
-### Begin Step
+### Inicio del paso
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `begin_step` |
 | **Icono** | ▶️ |
-| **Categoría** | Step |
+| **Categoría** | Paso |
 | **Preset** | Principiante |
 
 **Descripción:** Se dispara al comienzo de cada fotograma, antes de los eventos Step regulares.
 
-**Orden de ejecución:** Begin Step → Step → End Step
+**Orden de ejecución:** Inicio del paso → Step → Fin del paso
 
 **Usos comunes:**
 - Procesamiento de entrada
@@ -42,12 +42,12 @@
 
 ---
 
-### End Step
+### Fin del paso
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre** | `end_step` |
 | **Icono** | ⏹️ |
-| **Categoría** | Step |
+| **Categoría** | Paso |
 | **Preset** | Principiante |
 
 **Descripción:** Se dispara al final de cada fotograma, después de las colisiones.
