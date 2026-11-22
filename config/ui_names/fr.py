@@ -304,7 +304,7 @@ NAMES = {
         'set_room_speed': "Changer la fréquence d'images du jeu (images par seconde)",
         'set_score': "Définir le score, ou l'incrémenter avec Relatif",
         'set_shared_var': "Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>.",
-        'set_shared_var_files': "Préparer une variable à publier pour tout le monde. Elle prend effet après « Terminer le tour », quand l'hôte intègre le coup dans la manche suivante, pas tout de suite, car il n'y a pas de connexion directe. Lisible partout sous la forme global.<nom> une fois publiée.",
+        'set_shared_var_files': "Préparer une variable à publier pour tout le monde. Elle prend effet après « Terminer le tour (échange de fichiers) », quand l'hôte intègre le coup dans la manche suivante, pas tout de suite, car il n'y a pas de connexion directe. Lisible partout sous la forme global.<nom> une fois publiée.",
         'set_speed': 'Définir la vitesse de déplacement (magnitude)',
         'set_sprite': "Changer le sprite et/ou l'image/la vitesse d'animation d'une instance",
         'set_sync_rate': "Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai).",

@@ -200,7 +200,13 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   U5). Widget check in `test_core_names_display.py::test_the_dialog_and_panel_in_japanese`: title,
   label, a translated choice saved in English, the panel tree, and no label clipped once the dialog is
   laid out.
-- [ ] **U7 — Chinese.** Same.
+- [x] **U7 — Chinese.** Same.
+  *Done 2026-11-22* (`3a6a61f6` + this commit), Simplified Chinese: 72 action names from the Chinese
+  Blockly blocks, 48 from the `.ts` (its « 另一方 » for the *Other* category was not used), the rest
+  new; no parameter descriptions (see U5). A check of every name quoted inside a description against
+  the table's real action names caught two Chinese quotes and, in seven languages, *Set a Shared
+  Variable (File Exchange)* quoting « End Turn » without its « (File Exchange) » suffix -- all fixed.
+  **All eleven languages are now complete** (`COMPLETE` in `test_core_ui_names.py`).
 - [ ] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
   the names their language's IDE now shows (wiki pages, tutorials, handouts), PDFs/ODTs regenerated
   where they exist; a guard test like `test_thymio_fiches_docs.py` for any document that names actions.

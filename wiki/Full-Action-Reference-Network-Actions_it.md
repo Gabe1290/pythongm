@@ -268,7 +268,7 @@ Scrive una variabile condivisa da tutte le macchine. Sull'host viene applicata s
 | **Icona** | 📤 |
 | **Categoria** | Rete |
 
-Preparare una variabile da pubblicare per tutti. Ha effetto dopo «Termina il turno», quando l'host inserisce la mossa nel turno successivo; non subito, perché non c'è una connessione diretta. Una volta pubblicata è leggibile ovunque come global.<nome>
+Preparare una variabile da pubblicare per tutti. Ha effetto dopo «Termina il turno (scambio di file)», quando l'host inserisce la mossa nel turno successivo; non subito, perché non c'è una connessione diretta. Una volta pubblicata è leggibile ovunque come global.<nome>
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|

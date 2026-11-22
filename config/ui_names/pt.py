@@ -304,7 +304,7 @@ NAMES = {
         'set_room_speed': 'Alterar a taxa de quadros do jogo (quadros por segundo)',
         'set_score': 'Definir a pontuação, ou somar a ela com «Relativo»',
         'set_shared_var': 'Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplicada de imediato; num cliente é um pedido enviado ao anfitrião. Pode ler-se em qualquer lado como global.<nome>.',
-        'set_shared_var_files': 'Preparar uma variável para publicar para todos. Tem efeito depois de «Terminar a vez», quando o anfitrião integra a jogada na rodada seguinte; não de imediato, porque não há ligação direta. Depois de publicada, pode ser lida em qualquer lado como global.<nome>.',
+        'set_shared_var_files': 'Preparar uma variável para publicar para todos. Tem efeito depois de «Terminar a vez (troca de ficheiros)», quando o anfitrião integra a jogada na rodada seguinte; não de imediato, porque não há ligação direta. Depois de publicada, pode ser lida em qualquer lado como global.<nome>.',
         'set_speed': 'Definir a velocidade de movimento (magnitude)',
         'set_sprite': 'Mudar o sprite e/ou o quadro/velocidade de animação de uma instância',
         'set_sync_rate': 'Ajusta com que frequência o anfitrião envia instantâneos e com que atraso os clientes os desenham. Chama-a uma vez no anfitrião, e nos clientes para o atraso.',

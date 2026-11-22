@@ -92,7 +92,7 @@ def test_all_tables_is_keyed_kind_key_lang():
 
 
 # Languages whose table is complete (docs/CORE_NAMES_I18N_PLAN.md U4-U7); grows one language per commit.
-COMPLETE = ["fr", "de", "es", "it", "pt", "ru", "sl", "uk", "pl", "ja"]
+COMPLETE = ["fr", "de", "es", "it", "pt", "ru", "sl", "uk", "pl", "ja", "zh"]
 # Parameter descriptions are shown only by the wiki's action reference (the editor's dialogs show
 # parameter labels, not descriptions), so a language with no wiki edition does not need them.
 WIKI_LANGUAGES = {"fr", "de", "es", "it", "pt", "ru", "sl", "uk"}

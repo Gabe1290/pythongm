@@ -268,7 +268,7 @@ Schreibt eine Variable, die alle Maschinen teilen. Beim Host wird sie sofort üb
 | **Symbol** | 📤 |
 | **Kategorie** | Netzwerk |
 
-Eine Variable zur Veröffentlichung für alle vormerken. Sie wirkt erst nach „Zug beenden“, wenn der Host den Zug in die nächste Runde übernimmt – nicht sofort, da es keine direkte Verbindung gibt. Nach der Veröffentlichung überall als global.<name> lesbar
+Eine Variable zur Veröffentlichung für alle vormerken. Sie wirkt erst nach „Zug beenden (Dateiaustausch)“, wenn der Host den Zug in die nächste Runde übernimmt – nicht sofort, da es keine direkte Verbindung gibt. Nach der Veröffentlichung überall als global.<name> lesbar
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|

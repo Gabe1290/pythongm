@@ -268,7 +268,7 @@ Escribe una variable compartida por todas las máquinas. En el anfitrión se apl
 | **Icono** | 📤 |
 | **Categoría** | Red |
 
-Preparar una variable para publicarla para todos. Surte efecto después de «Terminar el turno», cuando el anfitrión incorpora la jugada a la ronda siguiente; no al instante, porque no hay conexión directa. Se puede leer en cualquier lugar como global.<nombre> una vez publicada
+Preparar una variable para publicarla para todos. Surte efecto después de «Terminar el turno (intercambio de archivos)», cuando el anfitrión incorpora la jugada a la ronda siguiente; no al instante, porque no hay conexión directa. Se puede leer en cualquier lugar como global.<nombre> una vez publicada
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|

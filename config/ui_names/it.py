@@ -304,7 +304,7 @@ NAMES = {
         'set_room_speed': 'Cambia il frame rate del gioco (fotogrammi al secondo)',
         'set_score': 'Imposta il punteggio, o aggiungi ad esso con «Relativo»',
         'set_shared_var': "Scrive una variabile condivisa da tutte le macchine. Sull'host viene applicata subito; su un client è una richiesta inviata all'host. Leggibile ovunque come global.<nome>.",
-        'set_shared_var_files': "Preparare una variabile da pubblicare per tutti. Ha effetto dopo «Termina il turno», quando l'host inserisce la mossa nel turno successivo; non subito, perché non c'è una connessione diretta. Una volta pubblicata è leggibile ovunque come global.<nome>.",
+        'set_shared_var_files': "Preparare una variabile da pubblicare per tutti. Ha effetto dopo «Termina il turno (scambio di file)», quando l'host inserisce la mossa nel turno successivo; non subito, perché non c'è una connessione diretta. Una volta pubblicata è leggibile ovunque come global.<nome>.",
         'set_speed': 'Imposta la velocità di movimento (intensità)',
         'set_sprite': "Cambia lo sprite e/o il fotogramma/la velocità di animazione di un'istanza",
         'set_sync_rate': "Regola ogni quanto l'host invia le istantanee e con quanto ritardo i client le disegnano. Va chiamata una volta sull'host, e sui client per il ritardo.",

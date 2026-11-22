@@ -268,7 +268,7 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 | **Icône** | 📤 |
 | **Catégorie** | Réseau |
 
-Préparer une variable à publier pour tout le monde. Elle prend effet après « Terminer le tour », quand l'hôte intègre le coup dans la manche suivante, pas tout de suite, car il n'y a pas de connexion directe. Lisible partout sous la forme global.<nom> une fois publiée
+Préparer une variable à publier pour tout le monde. Elle prend effet après « Terminer le tour (échange de fichiers) », quand l'hôte intègre le coup dans la manche suivante, pas tout de suite, car il n'y a pas de connexion directe. Lisible partout sous la forme global.<nom> une fois publiée
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|

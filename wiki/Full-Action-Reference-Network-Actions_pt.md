@@ -268,7 +268,7 @@ Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplica
 | **Ícone** | 📤 |
 | **Categoria** | Rede |
 
-Preparar uma variável para publicar para todos. Tem efeito depois de «Terminar a vez», quando o anfitrião integra a jogada na rodada seguinte; não de imediato, porque não há ligação direta. Depois de publicada, pode ser lida em qualquer lado como global.<nome>
+Preparar uma variável para publicar para todos. Tem efeito depois de «Terminar a vez (troca de ficheiros)», quando o anfitrião integra a jogada na rodada seguinte; não de imediato, porque não há ligação direta. Depois de publicada, pode ser lida em qualquer lado como global.<nome>
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|

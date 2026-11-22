@@ -304,7 +304,7 @@ NAMES = {
         'set_room_speed': 'Die Bildrate des Spiels ändern (Bilder pro Sekunde)',
         'set_score': 'Die Punktzahl setzen oder mit Relativ dazu addieren',
         'set_shared_var': 'Schreibt eine Variable, die alle Maschinen teilen. Beim Host wird sie sofort übernommen; auf einem Client ist es eine Anfrage an den Host. Überall lesbar als global.<name>.',
-        'set_shared_var_files': 'Eine Variable zur Veröffentlichung für alle vormerken. Sie wirkt erst nach „Zug beenden“, wenn der Host den Zug in die nächste Runde übernimmt – nicht sofort, da es keine direkte Verbindung gibt. Nach der Veröffentlichung überall als global.<name> lesbar.',
+        'set_shared_var_files': 'Eine Variable zur Veröffentlichung für alle vormerken. Sie wirkt erst nach „Zug beenden (Dateiaustausch)“, wenn der Host den Zug in die nächste Runde übernimmt – nicht sofort, da es keine direkte Verbindung gibt. Nach der Veröffentlichung überall als global.<name> lesbar.',
         'set_speed': 'Bewegungsgeschwindigkeit setzen (Betrag)',
         'set_sprite': 'Das Sprite und/oder das Animationsbild/-tempo einer Instanz ändern',
         'set_sync_rate': 'Stellt ein, wie oft der Host Momentaufnahmen sendet und wie weit dahinter die Clients sie zeichnen. Einmal beim Host aufrufen, und für die Verzögerung auch bei den Clients.',
