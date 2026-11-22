@@ -17,7 +17,7 @@
 <body>
     <h1>Paso 6: Controlador del Juego</h1>
 
-    <p>El controlador del juego muestra la puntuacion en pantalla.</p>
+    <p>El controlador del juego muestra la puntuación en pantalla.</p>
 
     <h2>Crear el Objeto Controlador</h2>
     <div class="step">
@@ -27,12 +27,12 @@
         </ol>
     </div>
 
-    <h2>Dibujar la Puntuacion</h2>
+    <h2>Dibujar la Puntuación</h2>
     <div class="step">
         <p>En <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Agregar Evento: <strong>Dibujar > Dibujar</strong></li>
-            <li>Agregar Accion: <strong>Control > Ejecutar Codigo</strong></li>
+            <li>Agregar Evento: <strong>Dibujo</strong></li>
+            <li>Agregar Acción: <strong>Control > Ejecutar código</strong></li>
         </ol>
         <pre>
 // Establecer color del texto
@@ -47,25 +47,25 @@ draw_text(10, 30, "Flechas: Mover  |  Espacio: Saltar");</pre>
 
     <h2>Alternativa: Usando Acciones</h2>
     <div class="step">
-        <p>En lugar de codigo, puedes usar:</p>
+        <p>En lugar de código, puedes usar:</p>
         <ol>
-            <li>Agregar Accion: <strong>Dibujar > Establecer Color</strong> (Blanco)</li>
-            <li>Agregar Accion: <strong>Puntuacion > Dibujar Puntuacion</strong>
+            <li>Agregar Acción: <strong>Dibujo > Establecer color de dibujo</strong> (Blanco)</li>
+            <li>Agregar Acción: <strong>Puntuación > Dibujar puntuación</strong>
                 <ul>
                     <li>X: 10</li>
                     <li>Y: 10</li>
-                    <li>Titulo: "Puntuacion: "</li>
+                    <li>Título: "Puntuación: "</li>
                 </ul>
             </li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Recuerda:</strong> Coloca el controlador del juego en tu habitacion! No aparecera por si solo.
+        <strong>Recuerda:</strong> Coloca el controlador del juego en tu habitación! No aparecerá por si solo.
     </div>
 
     <div class="info">
-        Haz clic en "Siguiente" para disenar tu nivel.
+        Haz clic en "Siguiente" para diseñar tu nivel.
     </div>
 </body>
 </html>

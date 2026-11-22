@@ -17,13 +17,13 @@
 <body>
     <h1>Paso 5: Controlador del Juego</h1>
 
-    <p>Crea un controlador para registrar el tiempo y mostrar la puntuacion.</p>
+    <p>Crea un controlador para registrar el tiempo y mostrar la puntuación.</p>
 
     <h2>Crear el Objeto Controlador</h2>
     <div class="step">
         <ol>
             <li>Crea el objeto <code>obj_game_controller</code></li>
-            <li>No se necesita sprite (dejalo vacio)</li>
+            <li>No se necesita sprite (déjalo vacío)</li>
         </ol>
     </div>
 
@@ -31,7 +31,7 @@
     <div class="step">
         <ol>
             <li>Agregar Evento: <strong>Crear</strong></li>
-            <li>Agregar Accion: <strong>Control &gt; Establecer Variable</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Establecer variable</strong></li>
             <li>Variable: <code>global.timer</code></li>
             <li>Valor: <code>0</code></li>
         </ol>
@@ -40,19 +40,19 @@
     <h2>Actualizar Temporizador (Evento Step)</h2>
     <div class="step">
         <ol>
-            <li>Agregar Evento: <strong>Step</strong></li>
-            <li>Agregar Accion: <strong>Control &gt; Establecer Variable</strong></li>
+            <li>Agregar Evento: <strong>Paso</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Establecer variable</strong></li>
             <li>Variable: <code>global.timer</code></li>
             <li>Valor: <code>1/room_speed</code></li>
             <li>Marca "Relativo"</li>
         </ol>
     </div>
 
-    <h2>Mostrar Informacion (Evento Draw)</h2>
+    <h2>Mostrar Información (Evento Draw)</h2>
     <div class="step">
         <ol>
-            <li>Agregar Evento: <strong>Draw</strong></li>
-            <li>Agregar Accion: <strong>Control &gt; Ejecutar Codigo</strong></li>
+            <li>Agregar Evento: <strong>Dibujo</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Ejecutar código</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
@@ -68,7 +68,7 @@ draw_text(10, 50, "Monedas: " + string(coins));</pre>
     </div>
 
     <div class="info">
-        Haz clic en "Siguiente" para configurar tu habitacion.
+        Haz clic en "Siguiente" para configurar tu habitación.
     </div>
 </body>
 </html>

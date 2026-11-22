@@ -23,14 +23,14 @@
     <div class="step">
         <p>En <code>obj_coin</code>:</p>
         <ol>
-            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
-            <li>Agregar Accion: <strong>Puntuacion > Establecer Puntuacion</strong>
+            <li>Agregar Evento: <strong>Colisión > obj_player</strong></li>
+            <li>Agregar Acción: <strong>Puntuación > Establecer puntuación</strong>
                 <ul>
-                    <li>Nueva Puntuacion: <code>10</code></li>
+                    <li>Nueva Puntuación: <code>10</code></li>
                     <li>Marca "Relativo"</li>
                 </ul>
             </li>
-            <li>Agregar Accion: <strong>Main1 > Destruir Instancia</strong>
+            <li>Agregar Acción: <strong>Instancia > Destruir instancia</strong>
                 <ul>
                     <li>Aplica a: Self</li>
                 </ul>
@@ -42,13 +42,13 @@
     <div class="danger">
         <p>En <code>obj_spike</code>:</p>
         <ol>
-            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
-            <li>Agregar Accion: <strong>Main2 > Mostrar Mensaje</strong>
+            <li>Agregar Evento: <strong>Colisión > obj_player</strong></li>
+            <li>Agregar Acción: <strong>Juego > Mostrar mensaje</strong>
                 <ul>
                     <li>Mensaje: <code>Auch! Tocaste un pincho!</code></li>
                 </ul>
             </li>
-            <li>Agregar Accion: <strong>Main1 > Reiniciar Habitacion</strong></li>
+            <li>Agregar Acción: <strong>Sala > Reiniciar sala</strong></li>
         </ol>
     </div>
 
@@ -56,22 +56,22 @@
     <div class="step">
         <p>En <code>obj_flag</code>:</p>
         <ol>
-            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
-            <li>Agregar Accion: <strong>Main2 > Mostrar Mensaje</strong>
+            <li>Agregar Evento: <strong>Colisión > obj_player</strong></li>
+            <li>Agregar Acción: <strong>Juego > Mostrar mensaje</strong>
                 <ul>
                     <li>Mensaje: <code>Nivel Completado!</code></li>
                 </ul>
             </li>
-            <li>Agregar Accion: <strong>Main1 > Reiniciar Habitacion</strong> (o Siguiente Habitacion para multiples niveles)</li>
+            <li>Agregar Acción: <strong>Sala > Reiniciar sala</strong> (o Siguiente Habitación para múltiples niveles)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Consejo:</strong> Coloca pinchos cerca de pozos o sobre plataformas para crear desafios!
+        <strong>Consejo:</strong> Coloca pinchos cerca de pozos o sobre plataformas para crear desafíos!
     </div>
 
     <div class="info">
-        Haz clic en "Siguiente" para agregar el controlador del juego para mostrar la puntuacion.
+        Haz clic en "Siguiente" para agregar el controlador del juego para mostrar la puntuación.
     </div>
 </body>
 </html>

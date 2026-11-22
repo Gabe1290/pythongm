@@ -14,15 +14,15 @@
     </style>
 </head>
 <body>
-    <h1>Paso 5: Agregar Porterias de Puntuacion</h1>
+    <h1>Paso 5: Agregar Porterias de Puntuación</h1>
 
-    <p>Necesitamos porterias invisibles detras de cada paleta para detectar cuando alguien anota.</p>
+    <p>Necesitamos porterias invisibles detrás de cada paleta para detectar cuando alguien anota.</p>
 
     <h2>Crear Sprite de Porteria</h2>
     <div class="step">
         <ol>
             <li>Crea un nuevo sprite llamado <code>spr_goal</code></li>
-            <li>Hazlo de 32x32 pixeles con cualquier color</li>
+            <li>Hazlo de 32x32 píxeles con cualquier color</li>
             <li>(Sera invisible en el juego)</li>
         </ol>
     </div>
@@ -33,7 +33,7 @@
             <li>Crea el objeto <code>obj_goal_left</code></li>
             <li>Establece el sprite a <code>spr_goal</code></li>
             <li><strong>Desmarca "Visible"</strong> - la porteria debe ser invisible</li>
-            <li>Marca "Solido"</li>
+            <li>Marca "Sólido"</li>
         </ol>
     </div>
 
@@ -43,7 +43,7 @@
             <li>Crea el objeto <code>obj_goal_right</code></li>
             <li>Establece el sprite a <code>spr_goal</code></li>
             <li><strong>Desmarca "Visible"</strong></li>
-            <li>Marca "Solido"</li>
+            <li>Marca "Sólido"</li>
         </ol>
     </div>
 
@@ -51,21 +51,21 @@
     <div class="step">
         <p>Vuelve a <code>obj_ball</code>:</p>
         <ol>
-            <li>Agrega Evento: <strong>Colision &gt; obj_goal_left</strong></li>
-            <li>Agrega Accion: <strong>Movimiento &gt; Saltar a Posicion Inicial</strong></li>
-            <li>Agrega Accion: <strong>Puntuacion &gt; Establecer Variable</strong></li>
+            <li>Agrega Evento: <strong>Colisión &gt; obj_goal_left</strong></li>
+            <li>Agrega Acción: <strong>Movimiento &gt; Saltar a la posición inicial</strong></li>
+            <li>Agrega Acción: <strong>Control &gt; Establecer variable</strong></li>
             <li>Variable: <code>global.p2score</code></li>
             <li>Valor: <code>1</code></li>
-            <li><strong>Marca "Relativo"</strong> (suma 1 a la puntuacion actual)</li>
+            <li><strong>Marca "Relativo"</strong> (suma 1 a la puntuación actual)</li>
         </ol>
     </div>
 
     <h2>Pelota Colisiona con Porteria Derecha (Jugador 1 Anota)</h2>
     <div class="step">
         <ol>
-            <li>Agrega Evento: <strong>Colision &gt; obj_goal_right</strong></li>
-            <li>Agrega Accion: <strong>Movimiento &gt; Saltar a Posicion Inicial</strong></li>
-            <li>Agrega Accion: <strong>Puntuacion &gt; Establecer Variable</strong></li>
+            <li>Agrega Evento: <strong>Colisión &gt; obj_goal_right</strong></li>
+            <li>Agrega Acción: <strong>Movimiento &gt; Saltar a la posición inicial</strong></li>
+            <li>Agrega Acción: <strong>Control &gt; Establecer variable</strong></li>
             <li>Variable: <code>global.p1score</code></li>
             <li>Valor: <code>1</code></li>
             <li><strong>Marca "Relativo"</strong></li>

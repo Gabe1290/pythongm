@@ -17,14 +17,14 @@
 <body>
     <h1>Paso 4: Movimiento del Jugador (Evento Step)</h1>
 
-    <p>Este es el nucleo de nuestro juego de plataforma: movimiento, gravedad, salto y colision.</p>
+    <p>Este es el nucleo de nuestro juego de plataforma: movimiento, gravedad, salto y colisión.</p>
 
     <h2>Agregar Evento Step</h2>
     <div class="step">
         <p>En <code>obj_player</code>:</p>
         <ol>
-            <li>Agregar Evento: <strong>Step > Step</strong></li>
-            <li>Agregar Accion: <strong>Control > Ejecutar Codigo</strong></li>
+            <li>Agregar Evento: <strong>Paso</strong></li>
+            <li>Agregar Acción: <strong>Control > Ejecutar código</strong></li>
         </ol>
         <pre>
 // === MOVIMIENTO HORIZONTAL ===
@@ -65,10 +65,10 @@ y += vsp;</pre>
     <h2>Como Funciona</h2>
     <ol>
         <li><strong>Entrada:</strong> Flecha derecha = 1, Izquierda = -1, Ninguna = 0</li>
-        <li><strong>Gravedad:</strong> Se suma a vsp cada frame (cayendo mas rapido)</li>
-        <li><strong>Verificacion de Suelo:</strong> Busca 1 pixel abajo por suelo</li>
+        <li><strong>Gravedad:</strong> Se suma a vsp cada frame (cayendo más rápido)</li>
+        <li><strong>Verificación de Suelo:</strong> Busca 1 pixel abajo por suelo</li>
         <li><strong>Salto:</strong> Solo funciona cuando on_ground es verdadero</li>
-        <li><strong>Colision:</strong> Moverse pixel por pixel hasta chocar con pared</li>
+        <li><strong>Colisión:</strong> Moverse pixel por pixel hasta chocar con pared</li>
     </ol>
 
     <div class="highlight">

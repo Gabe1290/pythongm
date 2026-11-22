@@ -17,24 +17,24 @@
 <body>
     <h1>Paso 3: Movimiento del Jugador</h1>
 
-    <p>El jugador necesita movimiento suave con deteccion de colisiones.</p>
+    <p>El jugador necesita movimiento suave con detección de colisiones.</p>
 
     <h2>Inicializar Velocidad (Evento Crear)</h2>
     <div class="step">
         <p>En <code>obj_player</code>:</p>
         <ol>
             <li>Agregar Evento: <strong>Crear</strong></li>
-            <li>Agregar Accion: <strong>Control &gt; Establecer Variable</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Establecer variable</strong></li>
             <li>Variable: <code>move_speed</code></li>
             <li>Valor: <code>4</code></li>
         </ol>
     </div>
 
-    <h2>Movimiento con Colision (Evento Step)</h2>
+    <h2>Movimiento con Colisión (Evento Step)</h2>
     <div class="step">
         <ol>
-            <li>Agregar Evento: <strong>Step</strong></li>
-            <li>Agregar Accion: <strong>Control &gt; Ejecutar Codigo</strong></li>
+            <li>Agregar Evento: <strong>Paso</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Ejecutar código</strong></li>
         </ol>
         <pre>
 // Movimiento horizontal
@@ -59,11 +59,11 @@ if (!place_meeting(x, y + vspd, obj_wall)) {
     </div>
 
     <div class="highlight">
-        <strong>Como funciona:</strong> Verificamos si la posicion objetivo colisionaria con una pared. Si no, nos movemos ahi!
+        <strong>Como funciona:</strong> Verificamos si la posición objetivo colisionaría con una pared. Si no, nos movemos ahí!
     </div>
 
     <div class="info">
-        Haz clic en "Siguiente" para agregar la recoleccion de monedas.
+        Haz clic en "Siguiente" para agregar la recolección de monedas.
     </div>
 </body>
 </html>
