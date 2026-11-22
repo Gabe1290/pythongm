@@ -918,14 +918,23 @@ plan for the rule and what was left on purpose). Also not done: the
 panel's code-like parameter summary column (`object_actions_formatter.py`: `key=value`, `with:`,
 `then:`). No native speaker has read any of it.
 
-### German and Spanish in-app lessons 02-08 are the older curriculum (found 2026-11-22)
+### In-app lessons 02-08: German and Spanish brought up to date; Italian, Russian, Slovenian, Ukrainian still the older curriculum (found 2026-11-22)
 
-`Tutorials/de` and `Tutorials/es` lessons 02_first_game .. 08_lunar_lander are a different, older
-version of those lessons (other page files, GameMaker-style menu paths) from today's English and French
-ones; some steps described actions that no longer exist. U8 of `docs/CORE_NAMES_I18N_PLAN.md` corrected
-every action name, menu path and those steps, but the lessons themselves were not brought up to the
-current curriculum. Re-translating them from the current English lessons is the real fix (Portuguese
-was done that way in 2026-08).
+**German and Spanish DONE 2026-11-22:** lessons 02_first_game .. 08_lunar_lander re-translated from the
+current English lessons (one commit per lesson and language). They were built segment by segment from
+the English HTML (each paragraph, list item, heading and table cell translated with its inline markup),
+so the pages are structurally identical to the English ones. The mock blocks follow what each
+workspace shows: German Blockly labels in German (the German workspace is translated), the English
+block and toolbox names in Spanish (the Spanish workspace is not). Index page lists updated, old page
+files removed.
+
+**Still open:** `Tutorials/it`, `Tutorials/ru`, `Tutorials/sl` and `Tutorials/uk` lessons 02-08 are the
+same older curriculum (seven or eight pages with GameMaker-style steps, some describing actions that no
+longer exist). They also still name actions in English: the U8 conversion of
+`docs/CORE_NAMES_I18N_PLAN.md` only covered the de/es/fr in-app folders (a later check found the other
+four). Re-translating them from the current English is the real fix -- the same way, about 1,100
+segments per language; the Italian and Ukrainian workspaces are translated (mock blocks then follow
+their Blockly labels), the Russian and Slovenian ones are not. Portuguese and Polish are already current.
 
 ### ~~Blockly generated blocks stay English where the workspace is translated~~ (DONE 2026-11-22)
 
