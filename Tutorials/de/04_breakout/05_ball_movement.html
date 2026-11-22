@@ -16,56 +16,56 @@
 <body>
     <h1>Schritt 4: Ballbewegung und Abprallen</h1>
 
-    <p>Der Ball muss sich bewegen und von Waenden, Schlaeger und Steinen abprallen.</p>
+    <p>Der Ball muss sich bewegen und von Wänden, Schläger und Steinen abprallen.</p>
 
     <h2>Ball starten (Erstellen-Ereignis)</h2>
     <div class="step">
         <ol>
-            <li>Oeffne <code>obj_ball</code></li>
-            <li>Fuege Ereignis hinzu: <strong>Erstellen</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; In Richtung bewegen starten</strong></li>
-            <li>Waehle eine schraege Aufwaertsrichtung</li>
+            <li>Öffne <code>obj_ball</code></li>
+            <li>Füge Ereignis hinzu: <strong>Erstellen</strong></li>
+            <li>Füge Aktion hinzu: <strong>Bewegung &gt; Losbewegen (Richtung)</strong></li>
+            <li>Wähle eine schräge Aufwärtsrichtung</li>
             <li>Setze Geschwindigkeit auf <code>5</code></li>
         </ol>
     </div>
 
-    <h2>Von Waenden abprallen</h2>
+    <h2>Von Wänden abprallen</h2>
     <div class="step">
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_wall</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
-            <li>Waehle "Gegen solide Objekte"</li>
+            <li>Füge Ereignis hinzu: <strong>Kollision &gt; obj_wall</strong></li>
+            <li>Füge Aktion hinzu: <strong>Bewegung &gt; Abprallen</strong></li>
+            <li>Wähle "Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Vom Schlaeger abprallen</h2>
+    <h2>Vom Schläger abprallen</h2>
     <div class="step">
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_paddle</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
-            <li>Waehle "Gegen solide Objekte"</li>
+            <li>Füge Ereignis hinzu: <strong>Kollision &gt; obj_paddle</strong></li>
+            <li>Füge Aktion hinzu: <strong>Bewegung &gt; Abprallen</strong></li>
+            <li>Wähle "Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Von Steinen abprallen (und sie zerstoeren!)</h2>
+    <h2>Von Steinen abprallen (und sie zerstören!)</h2>
     <div class="step">
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_brick_parent</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
-            <li>Waehle "Gegen solide Objekte"</li>
-            <li>Fuege Aktion hinzu: <strong>Main1 &gt; Instanz zerstoeren</strong></li>
-            <li>Waehle "Anderes" (zerstoert den Stein, nicht den Ball)</li>
-            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Zu Punktzahl addieren</strong></li>
-            <li>Wert: <code>10</code></li>
+            <li>Füge Ereignis hinzu: <strong>Kollision &gt; obj_brick_parent</strong></li>
+            <li>Füge Aktion hinzu: <strong>Bewegung &gt; Abprallen</strong></li>
+            <li>Wähle "Gegen solide Objekte"</li>
+            <li>Füge Aktion hinzu: <strong>Instanz &gt; Instanz zerstören</strong></li>
+            <li>Wähle "Anderes" (zerstört den Stein, nicht den Ball)</li>
+            <li>Füge Aktion hinzu: <strong>Punkte &gt; Punkte setzen</strong></li>
+            <li>Punktwert: <code>10</code>, <em>Relativ</em> angehakt</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Wichtiger Punkt:</strong> Die Verwendung von <code>obj_brick_parent</code> bedeutet, dass diese Kollision fuer ALLE Steinfarben funktioniert!
+        <strong>Wichtiger Punkt:</strong> Die Verwendung von <code>obj_brick_parent</code> bedeutet, dass diese Kollision für ALLE Steinfarben funktioniert!
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um das Leben-System hinzuzufuegen.
+        Klicke auf "Weiter", um das Leben-System hinzuzufügen.
     </div>
 </body>
 </html>

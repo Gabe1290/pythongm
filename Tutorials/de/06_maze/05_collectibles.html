@@ -14,20 +14,20 @@
     </style>
 </head>
 <body>
-    <h1>Schritt 4: Muenzen und Ausgang</h1>
+    <h1>Schritt 4: Münzen und Ausgang</h1>
 
-    <p>Jetzt machen wir die Muenzen sammelbar und den Ausgang funktionsfaehig.</p>
+    <p>Jetzt machen wir die Münzen sammelbar und den Ausgang funktionsfähig.</p>
 
-    <h2>Muenzen sammeln</h2>
+    <h2>Münzen sammeln</h2>
     <div class="step">
         <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Collision &gt; obj_player</strong></li>
-            <li>Aktion hinzufuegen: <strong>Score &gt; Set Score</strong></li>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufügen: <strong>Punkte &gt; Punkte setzen</strong></li>
             <li>Neuer Punktestand: <code>10</code></li>
-            <li>Aktiviere "Relative", um 10 Punkte hinzuzufuegen</li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Gilt fuer: <code>Self</code></li>
+            <li>Aktiviere "Relative", um 10 Punkte hinzuzufügen</li>
+            <li>Aktion hinzufügen: <strong>Instanz &gt; Instanz zerstören</strong></li>
+            <li>Gilt für: <code>Self</code></li>
         </ol>
     </div>
 
@@ -35,19 +35,19 @@
     <div class="step">
         <p>In <code>obj_exit</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Collision &gt; obj_player</strong></li>
-            <li>Aktion hinzufuegen: <strong>Main2 &gt; Show Message</strong></li>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufügen: <strong>Spiel &gt; Nachricht anzeigen</strong></li>
             <li>Nachricht: <code>Du hast gewonnen!</code></li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Aktion hinzufügen: <strong>Raum &gt; Raum neu starten</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tipp:</strong> Du kannst <strong>Next Room</strong> anstelle von <strong>Restart Room</strong> verwenden, wenn du mehrere Levels erstellst!
+        <strong>Tipp:</strong> Du kannst <strong>Nächster Raum</strong> anstelle von <strong>Raum neu starten</strong> verwenden, wenn du mehrere Levels erstellst!
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die Timer-Anzeige hinzuzufuegen.
+        Klicke auf "Weiter", um die Timer-Anzeige hinzuzufügen.
     </div>
 </body>
 </html>

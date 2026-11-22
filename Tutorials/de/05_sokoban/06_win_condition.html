@@ -22,25 +22,25 @@
     <div class="step">
         <ol>
             <li>Erstelle Objekt <code>obj_game_controller</code></li>
-            <li>Kein Sprite benoetigt</li>
+            <li>Kein Sprite benötigt</li>
         </ol>
     </div>
 
-    <h2>Zielfelder zaehlen (Create-Event)</h2>
+    <h2>Zielfelder zählen (Create-Event)</h2>
     <div class="step">
         <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Create</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Erstellen</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
             <li>Eingeben: <code>global.total_targets = instance_number(obj_target);</code></li>
         </ol>
     </div>
 
-    <h2>Siegbedingung pruefen (Step-Event)</h2>
+    <h2>Siegbedingung prüfen (Step-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Step</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Schritt</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
             <li>Diesen Code eingeben:</li>
         </ol>
         <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
@@ -63,8 +63,8 @@ if (crates_on_targets >= global.total_targets
     <h2>Anweisungen zeichnen (Draw-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Draw</strong></li>
-            <li>Aktion hinzufuegen: <strong>Draw &gt; Draw Text</strong></li>
+            <li>Event hinzufügen: <strong>Zeichnen</strong></li>
+            <li>Aktion hinzufügen: <strong>Spiel &gt; Text zeichnen</strong></li>
             <li>Text: <code>Schiebe Kisten auf die Zielfelder!</code></li>
             <li>X: <code>10</code>, Y: <code>10</code></li>
         </ol>

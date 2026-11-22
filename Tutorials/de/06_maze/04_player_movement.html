@@ -17,14 +17,14 @@
 <body>
     <h1>Schritt 3: Spielerbewegung</h1>
 
-    <p>Der Spieler braucht fluessige Bewegung mit Kollisionserkennung.</p>
+    <p>Der Spieler braucht flüssige Bewegung mit Kollisionserkennung.</p>
 
     <h2>Geschwindigkeit initialisieren (Create-Event)</h2>
     <div class="step">
         <p>In <code>obj_player</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Create</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Set Variable</strong></li>
+            <li>Event hinzufügen: <strong>Erstellen</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Variable setzen</strong></li>
             <li>Variable: <code>move_speed</code></li>
             <li>Wert: <code>4</code></li>
         </ol>
@@ -33,8 +33,8 @@
     <h2>Bewegung mit Kollision (Step-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Step</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Schritt</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
         </ol>
         <pre>
 // Horizontale Bewegung
@@ -59,11 +59,11 @@ if (!place_meeting(x, y + vspd, obj_wall)) {
     </div>
 
     <div class="highlight">
-        <strong>So funktioniert es:</strong> Wir pruefen, ob die Zielposition mit einer Wand kollidieren wuerde. Falls nicht, bewegen wir uns dorthin!
+        <strong>So funktioniert es:</strong> Wir prüfen, ob die Zielposition mit einer Wand kollidieren würde. Falls nicht, bewegen wir uns dorthin!
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um das Muenzensammeln hinzuzufuegen.
+        Klicke auf "Weiter", um das Münzensammeln hinzuzufügen.
     </div>
 </body>
 </html>

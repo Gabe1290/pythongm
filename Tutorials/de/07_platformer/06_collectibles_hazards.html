@@ -17,22 +17,22 @@
 <body>
     <h1>Schritt 5: Sammelobjekte und Gefahren</h1>
 
-    <p>Jetzt fuegen wir Muenzen zum Sammeln, Stacheln zum Ausweichen und eine Flagge zum Erreichen hinzu.</p>
+    <p>Jetzt fügen wir Münzen zum Sammeln, Stacheln zum Ausweichen und eine Flagge zum Erreichen hinzu.</p>
 
-    <h2>Muenze - Fuer Punkte sammeln</h2>
+    <h2>Münze - Für Punkte sammeln</h2>
     <div class="step">
         <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
-            <li>Aktion hinzufuegen: <strong>Punkte &gt; Punkte setzen</strong>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufügen: <strong>Punkte &gt; Punkte setzen</strong>
                 <ul>
                     <li>Neue Punkte: <code>10</code></li>
                     <li>"Relativ" aktivieren</li>
                 </ul>
             </li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Instanz zerstoeren</strong>
+            <li>Aktion hinzufügen: <strong>Instanz &gt; Instanz zerstören</strong>
                 <ul>
-                    <li>Gilt fuer: Selbst</li>
+                    <li>Gilt für: Selbst</li>
                 </ul>
             </li>
         </ol>
@@ -42,13 +42,13 @@
     <div class="danger">
         <p>In <code>obj_spike</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
-            <li>Aktion hinzufuegen: <strong>Main2 &gt; Nachricht anzeigen</strong>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufügen: <strong>Spiel &gt; Nachricht anzeigen</strong>
                 <ul>
                     <li>Nachricht: <code>Autsch! Du hast einen Stachel getroffen!</code></li>
                 </ul>
             </li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Raum neu starten</strong></li>
+            <li>Aktion hinzufügen: <strong>Raum &gt; Raum neu starten</strong></li>
         </ol>
     </div>
 
@@ -56,22 +56,22 @@
     <div class="step">
         <p>In <code>obj_flag</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
-            <li>Aktion hinzufuegen: <strong>Main2 &gt; Nachricht anzeigen</strong>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufügen: <strong>Spiel &gt; Nachricht anzeigen</strong>
                 <ul>
                     <li>Nachricht: <code>Level abgeschlossen!</code></li>
                 </ul>
             </li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Raum neu starten</strong> (oder Naechster Raum fuer mehrere Levels)</li>
+            <li>Aktion hinzufügen: <strong>Raum &gt; Raum neu starten</strong> (oder Nächster Raum für mehrere Levels)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tipp:</strong> Platziere Stacheln in der Naehe von Gruben oder auf Plattformen, um Herausforderungen zu schaffen!
+        <strong>Tipp:</strong> Platziere Stacheln in der Nähe von Gruben oder auf Plattformen, um Herausforderungen zu schaffen!
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um den Spiel-Controller fuer die Punkteanzeige hinzuzufuegen.
+        Klicke auf "Weiter", um den Spiel-Controller für die Punkteanzeige hinzuzufügen.
     </div>
 </body>
 </html>

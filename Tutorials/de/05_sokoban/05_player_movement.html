@@ -19,9 +19,9 @@
     <p>Der Spieler bewegt sich in festen 32-Pixel-Schritten (rasterbasierte Bewegung).</p>
 
     <div class="highlight">
-        <strong>Wichtig:</strong> Bei Sokoban muss die Bewegung pruefen:<br>
+        <strong>Wichtig:</strong> Bei Sokoban muss die Bewegung prüfen:<br>
         1. Ist dort eine Wand? (Kann nicht bewegen)<br>
-        2. Ist dort eine Kiste? (Koennen wir sie schieben?)<br>
+        2. Ist dort eine Kiste? (Können wir sie schieben?)<br>
         3. Ist eine Wand/Kiste hinter der Kiste? (Kann nicht schieben)
     </div>
 
@@ -29,8 +29,8 @@
     <div class="step">
         <p>In <code>obj_player</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Taste gedrückt &gt; Rechts</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
             <li>Diesen Code eingeben:</li>
         </ol>
         <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
@@ -53,7 +53,7 @@ if (!place_meeting(x + 32, y, obj_wall)) {
 
     <h2>Nach links bewegen (Pfeiltaste Links)</h2>
     <div class="step">
-        <p>Gleicher Code, aber aendern:</p>
+        <p>Gleicher Code, aber ändern:</p>
         <ul>
             <li><code>+ 32</code> wird zu <code>- 32</code></li>
             <li><code>+ 64</code> wird zu <code>- 64</code></li>
@@ -76,7 +76,7 @@ if (!place_meeting(x + 32, y, obj_wall)) {
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die Siegbedingung hinzuzufuegen.
+        Klicke auf "Weiter", um die Siegbedingung hinzuzufügen.
     </div>
 </body>
 </html>

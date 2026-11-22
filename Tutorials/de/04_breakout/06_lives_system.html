@@ -14,9 +14,9 @@
     </style>
 </head>
 <body>
-    <h1>Schritt 5: Fuege das Leben-System hinzu</h1>
+    <h1>Schritt 5: Füge das Leben-System hinzu</h1>
 
-    <p>Der Spieler verliert ein Leben, wenn der Ball vom unteren Bildschirmrand faellt.</p>
+    <p>Der Spieler verliert ein Leben, wenn der Ball vom unteren Bildschirmrand fällt.</p>
 
     <h2>Erstelle eine Todeszone</h2>
     <div class="step">
@@ -28,14 +28,14 @@
         </ol>
     </div>
 
-    <h2>Ball faellt in die Todeszone</h2>
+    <h2>Ball fällt in die Todeszone</h2>
     <div class="step">
         <p>In <code>obj_ball</code>:</p>
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_death_zone</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Von Leben abziehen</strong></li>
-            <li>Wert: <code>1</code></li>
-            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Zur Startposition springen</strong></li>
+            <li>Füge Ereignis hinzu: <strong>Kollision &gt; obj_death_zone</strong></li>
+            <li>Füge Aktion hinzu: <strong>Punkte &gt; Leben setzen</strong></li>
+            <li>Leben: <code>-1</code>, <em>Relativ</em> angehakt</li>
+            <li>Füge Aktion hinzu: <strong>Bewegung &gt; Zur Startposition springen</strong></li>
         </ol>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="step">
         <ol>
             <li>Erstelle Objekt <code>obj_game_controller</code></li>
-            <li>Kein Sprite benoetigt</li>
+            <li>Kein Sprite benötigt</li>
         </ol>
     </div>
 
@@ -51,23 +51,23 @@
     <div class="step">
         <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Erstellen</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Leben setzen</strong></li>
+            <li>Füge Ereignis hinzu: <strong>Erstellen</strong></li>
+            <li>Füge Aktion hinzu: <strong>Punkte &gt; Leben setzen</strong></li>
             <li>Wert: <code>3</code></li>
-            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Punktzahl setzen</strong></li>
+            <li>Füge Aktion hinzu: <strong>Punkte &gt; Punkte setzen</strong></li>
             <li>Wert: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Auf Spielende pruefen (Schritt-Ereignis)</h2>
+    <h2>Auf Spielende prüfen (Schritt-Ereignis)</h2>
     <div class="step">
         <ol>
-            <li>Fuege Ereignis hinzu: <strong>Schritt</strong></li>
-            <li>Fuege Aktion hinzu: <strong>Steuerung &gt; Leben testen</strong></li>
-            <li>Pruefe, ob Leben kleiner oder gleich 0 sind</li>
-            <li>Fuege Aktion hinzu: <strong>Main2 &gt; Nachricht anzeigen</strong></li>
+            <li>Füge Ereignis hinzu: <strong>Schritt</strong></li>
+            <li>Füge Aktion hinzu: <strong>Punkte/Leben/Gesundheit &gt; Leben testen</strong></li>
+            <li>Prüfe, ob Leben kleiner oder gleich 0 sind</li>
+            <li>Füge Aktion hinzu: <strong>Spiel &gt; Nachricht anzeigen</strong></li>
             <li>Nachricht: <code>Spiel vorbei!</code></li>
-            <li>Fuege Aktion hinzu: <strong>Main2 &gt; Raum neu starten</strong></li>
+            <li>Füge Aktion hinzu: <strong>Raum &gt; Raum neu starten</strong></li>
         </ol>
     </div>
 
@@ -76,7 +76,7 @@
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die Punkteanzeige hinzuzufuegen.
+        Klicke auf "Weiter", um die Punkteanzeige hinzuzufügen.
     </div>
 </body>
 </html>

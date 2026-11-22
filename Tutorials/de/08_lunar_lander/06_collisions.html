@@ -17,14 +17,14 @@
 <body>
     <h1>Schritt 5: Kollisionserkennung</h1>
 
-    <p>Behandle das Landen auf der Plattform und das Abstuerzen ins Gelaende.</p>
+    <p>Behandle das Landen auf der Plattform und das Abstürzen ins Gelände.</p>
 
     <h2>Kollision mit Landeplattform</h2>
     <div class="step">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Collision &gt; obj_pad</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_pad</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
         </ol>
         <pre>
 // Gesamtgeschwindigkeit berechnen
@@ -48,8 +48,8 @@ if (total_speed <= safe_speed) {
     <div class="danger">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Collision &gt; obj_ground</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Kollision &gt; obj_ground</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
         </ol>
         <pre>
 crashed = true;
@@ -63,11 +63,11 @@ room_restart();</pre>
     <p>Dies kombiniert horizontale und vertikale Geschwindigkeit zu einem Wert.</p>
 
     <div class="highlight">
-        <strong>Sichere Geschwindigkeit ist 2!</strong> Wenn total_speed > 2, stuerzt du sogar auf der Plattform ab.
+        <strong>Sichere Geschwindigkeit ist 2!</strong> Wenn total_speed > 2, stürzt du sogar auf der Plattform ab.
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die HUD-Anzeige hinzuzufuegen.
+        Klicke auf "Weiter", um die HUD-Anzeige hinzuzufügen.
     </div>
 </body>
 </html>

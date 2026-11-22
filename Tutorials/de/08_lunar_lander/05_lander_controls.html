@@ -16,14 +16,14 @@
 <body>
     <h1>Schritt 4: Lander-Steuerung (Step-Event)</h1>
 
-    <p>Fuege Schwerkraft, Schub, horizontale Bewegung und Randpruefungen hinzu.</p>
+    <p>Füge Schwerkraft, Schub, horizontale Bewegung und Randprüfungen hinzu.</p>
 
-    <h2>Step-Event hinzufuegen</h2>
+    <h2>Step-Event hinzufügen</h2>
     <div class="step">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Step &gt; Step</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Schritt</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
         </ol>
         <pre>
 // Nicht aktualisieren, wenn Spiel vorbei ist
@@ -62,7 +62,7 @@ if (y < 16) { y = 16; vsp = 0; }</pre>
         <li><strong>Schwerkraft:</strong> Addiert jeden Frame zu vsp (Fallen)</li>
         <li><strong>Schub:</strong> Subtrahiert von vsp (Steigen), verbraucht Treibstoff</li>
         <li><strong>Clamp:</strong> Begrenzt Geschwindigkeit auf sicheren Bereich</li>
-        <li><strong>Raender:</strong> Haelt den Lander auf dem Bildschirm</li>
+        <li><strong>Ränder:</strong> Hält den Lander auf dem Bildschirm</li>
     </ol>
 
     <div class="highlight">
@@ -70,7 +70,7 @@ if (y < 16) { y = 16; vsp = 0; }</pre>
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die Kollisionserkennung hinzuzufuegen.
+        Klicke auf "Weiter", um die Kollisionserkennung hinzuzufügen.
     </div>
 </body>
 </html>

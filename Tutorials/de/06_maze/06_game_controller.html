@@ -30,8 +30,8 @@
     <h2>Timer initialisieren (Create-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Create</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Set Variable</strong></li>
+            <li>Event hinzufügen: <strong>Erstellen</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Variable setzen</strong></li>
             <li>Variable: <code>global.timer</code></li>
             <li>Wert: <code>0</code></li>
         </ol>
@@ -40,8 +40,8 @@
     <h2>Timer aktualisieren (Step-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Step</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Set Variable</strong></li>
+            <li>Event hinzufügen: <strong>Schritt</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Variable setzen</strong></li>
             <li>Variable: <code>global.timer</code></li>
             <li>Wert: <code>1/room_speed</code></li>
             <li>Aktiviere "Relative"</li>
@@ -51,8 +51,8 @@
     <h2>Informationen anzeigen (Draw-Event)</h2>
     <div class="step">
         <ol>
-            <li>Event hinzufuegen: <strong>Draw</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufügen: <strong>Zeichnen</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Code ausführen</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
@@ -64,7 +64,7 @@ draw_text(10, 50, "Muenzen: " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Hinweis:</strong> Der Controller ist unsichtbar, aber essentiell fuer die Verfolgung des Spielzustands!
+        <strong>Hinweis:</strong> Der Controller ist unsichtbar, aber essentiell für die Verfolgung des Spielzustands!
     </div>
 
     <div class="info">

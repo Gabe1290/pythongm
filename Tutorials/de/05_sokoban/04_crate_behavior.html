@@ -16,44 +16,44 @@
 <body>
     <h1>Schritt 3: Kistenverhalten</h1>
 
-    <p>Die Kiste muss ihr Aussehen aendern, wenn sie auf einem Zielfeld steht.</p>
+    <p>Die Kiste muss ihr Aussehen ändern, wenn sie auf einem Zielfeld steht.</p>
 
-    <h2>Zielposition pruefen (Step-Event)</h2>
+    <h2>Zielposition prüfen (Step-Event)</h2>
     <div class="step">
         <p>In <code>obj_crate</code>:</p>
         <ol>
-            <li>Event hinzufuegen: <strong>Step</strong></li>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Test Instance Position</strong></li>
-            <li>Object: <code>obj_target</code></li>
-            <li>X: <code>0</code>, Y: <code>0</code> (relativ)</li>
-            <li>Pruefen, ob eine Kollision existiert</li>
+            <li>Event hinzufügen: <strong>Schritt</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Wenn Kollision bei</strong></li>
+            <li>Objekttyp: <code>obj_target</code></li>
+            <li>X-Position: <code>self.x</code>, Y-Position: <code>self.y</code></li>
+            <li>Prüfen, ob eine Kollision existiert</li>
         </ol>
     </div>
 
-    <h2>Sprite aendern, wenn auf Zielfeld</h2>
+    <h2>Sprite ändern, wenn auf Zielfeld</h2>
     <div class="step">
         <p>Wenn Kollision existiert (Kiste ist auf Zielfeld):</p>
         <ol>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Aktion hinzufügen: <strong>Instanz &gt; Sprite setzen</strong></li>
             <li>Sprite: <code>spr_crate_ok</code></li>
         </ol>
     </div>
 
-    <h2>Sprite aendern, wenn nicht auf Zielfeld</h2>
+    <h2>Sprite ändern, wenn nicht auf Zielfeld</h2>
     <div class="step">
         <ol>
-            <li>Aktion hinzufuegen: <strong>Control &gt; Else</strong></li>
-            <li>Aktion hinzufuegen: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Aktion hinzufügen: <strong>Steuerung &gt; Sonst</strong></li>
+            <li>Aktion hinzufügen: <strong>Instanz &gt; Sprite setzen</strong></li>
             <li>Sprite: <code>spr_crate</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Visuelles Feedback:</strong> Wenn die Kiste gruen wird, wissen die Spieler, dass sie richtig platziert ist!
+        <strong>Visuelles Feedback:</strong> Wenn die Kiste grün wird, wissen die Spieler, dass sie richtig platziert ist!
     </div>
 
     <div class="info">
-        Klicke auf "Weiter", um die Spielerbewegung hinzuzufuegen.
+        Klicke auf "Weiter", um die Spielerbewegung hinzuzufügen.
     </div>
 </body>
 </html>
