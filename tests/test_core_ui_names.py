@@ -92,7 +92,10 @@ def test_all_tables_is_keyed_kind_key_lang():
 
 
 # Languages whose table is complete (docs/CORE_NAMES_I18N_PLAN.md U4-U7); grows one language per commit.
-COMPLETE = ["fr", "de", "es", "it", "pt", "ru", "sl", "uk"]
+COMPLETE = ["fr", "de", "es", "it", "pt", "ru", "sl", "uk", "pl"]
+# Parameter descriptions are shown only by the wiki's action reference (the editor's dialogs show
+# parameter labels, not descriptions), so a language with no wiki edition does not need them.
+WIKI_LANGUAGES = {"fr", "de", "es", "it", "pt", "ru", "sl", "uk"}
 # Choice values shown as they are in every language (operators, digits, axes, micro:bit buttons).
 UNTRANSLATED_CHOICES = {"", "!=", "<", "<=", "==", ">", ">=", "0", "1", "2", "3", "4", "5", "6", "7",
                         "2g", "3g", "6g", "8g", "a", "b", "ab", "x", "y", "z"}
@@ -129,5 +132,14 @@ def _wanted(actions, events):
 def test_complete_languages_name_everything(lang, registry):
     table = language_table(lang)
     missing = {kind: sorted(keys - set(table.get(kind, {}))) for kind, keys in _wanted(*registry).items()}
+    if lang not in WIKI_LANGUAGES:
+        missing.pop("core.param_description", None)
     missing = {kind: keys for kind, keys in missing.items() if keys}
     assert not missing, missing
+
+
+def test_wiki_languages_match_the_wiki_generator():
+    """WIKI_LANGUAGES above is the generator's own list (tools/action_ref_i18n.py LANGS)."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import action_ref_i18n
+    assert set(action_ref_i18n.LANGS) == WIKI_LANGUAGES

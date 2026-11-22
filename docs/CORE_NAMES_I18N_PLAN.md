@@ -183,7 +183,16 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   `.ts`, 319 new, wording taken from each language's existing table (its words for room, alarm,
   score, shared). Portuguese: the table mixes Brazilian and European forms; new terms follow the
   word already used for each concept. All eight in `COMPLETE`; the wiki regenerated after each.
-- [ ] **U5 — Polish.** The whole set (~1,050 strings).
+- [x] **U5 — Polish.** The whole set (~1,050 strings).
+  *Done 2026-11-22* (`035d2f4b`, `0d619e3e`, this commit): every action name (72 taken from the Polish
+  Blockly block names, so panel and blocks agree), event, parameter label, drop-down word, category,
+  and the 170 action + 23 event descriptions. The `.ts` offered « Ctrl » for the *Control* category
+  (the keyboard key); the Blockly category « Sterowanie » is used instead. **Parameter descriptions
+  were not translated, on purpose:** the editor never shows them (the action dialog shows labels, not
+  descriptions); only the wiki's action reference does, and pl / ja / zh have no wiki edition. The
+  guard requires them only for the wiki languages (`WIKI_LANGUAGES`, pinned to the generator's list),
+  which removes ~345 strings each from U5–U7. If the dialog ever shows them (tooltips), or a wiki
+  edition is added, they become needed.
 - [ ] **U6 — Japanese.** Same; check widths in the configure dialog (the junior-theme clipping test).
 - [ ] **U7 — Chinese.** Same.
 - [ ] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
