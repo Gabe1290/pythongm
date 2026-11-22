@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Un módulo que vuela</h1>
+
+    <p>En esta fase creamos los sprites, los objetos y los controles para volar un módulo con la gravedad lunar.
+    ¡Al final tendrás un módulo jugable con el que volar por la pantalla!</p>
+
+    <h2>Crear los sprites</h2>
+
+    <div class="step">
+        <p><strong>spr_lander</strong> (32x32) &mdash; La nave</p>
+        <ol>
+            <li>Haz clic derecho en <strong>Sprites</strong> &gt; <strong>Crear sprite</strong></li>
+            <li>Llámalo <code>spr_lander</code> (32x32 píxeles)</li>
+            <li>Dibuja una nave pequeña (un triángulo o la forma clásica de un módulo lunar), o impórtala de <code>Tutorials/08_lunar_lander/assets/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>spr_ground</strong> (32x32) &mdash; Terreno rocoso</p>
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_ground</code> (32x32 píxeles)</li>
+            <li>Dibuja terreno rocoso en grises o marrones, o impórtalo de los recursos</li>
+        </ol>
+    </div>
+
+    <h2>Crear los objetos</h2>
+
+    <div class="step">
+        <p><strong>obj_ground</strong></p>
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> &gt; <strong>Crear objeto</strong></li>
+            <li>Llámalo <code>obj_ground</code> y asígnale <code>spr_ground</code></li>
+            <li>Marca la casilla <strong>Sólido</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>obj_lander</strong></p>
+        <ol>
+            <li>Crea un objeto nuevo llamado <code>obj_lander</code></li>
+            <li>Asígnale <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Programar el módulo (Blockly)</h2>
+    <p>Haz doble clic en <code>obj_lander</code> y abre la pestaña <strong>Blockly</strong>.</p>
+
+    <h2>1. Activar la gravedad (When created)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.05</span></span>
+        </div>
+        <p>Busca <strong>When created</strong> en la categoría <em>Events</em>.
+        Luego busca <strong>Set Gravity</strong> en la categoría <em>Movement</em>.
+        Pon la dirección en <strong>270</strong> (abajo) y la fuerza en <strong>0.05</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>¿Por qué 0.05?</strong> La gravedad de la Luna es más o menos 1/6 de la de la Tierra.
+        Un valor muy bajo como 0.05 hace que el módulo flote despacio &mdash; ¡como en un alunizaje de verdad!
+    </div>
+
+    <h2>2. Propulsión hacia arriba (flecha arriba mantenida)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-val">-2</span></span>
+        </div>
+        <p>Busca <strong>Keyboard (held)</strong> en <em>Events</em> y elige <strong>Up Arrow</strong>.
+        Añade <strong>Set vertical speed to</strong> (de <em>Movement</em>) con el valor <strong>-2</strong>.
+        Una velocidad vertical negativa mueve el módulo hacia arriba (propulsión contra la gravedad).</p>
+    </div>
+
+    <h2>3. Girar a la izquierda (flecha izquierda mantenida)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">-2</span></span>
+        </div>
+        <p>Busca <strong>Keyboard (held)</strong> en <em>Events</em> y elige <strong>Left Arrow</strong>.
+        Añade <strong>Set horizontal speed to</strong> (de <em>Movement</em>) con el valor <strong>-2</strong>.</p>
+    </div>
+
+    <h2>4. Girar a la derecha (flecha derecha mantenida)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">2</span></span>
+        </div>
+        <p>Busca <strong>Keyboard (held)</strong> en <em>Events</em> y elige <strong>Right Arrow</strong>.
+        Añade <strong>Set horizontal speed to</strong> (de <em>Movement</em>) con el valor <strong>2</strong>.</p>
+    </div>
+
+    <h2>5. Detener el movimiento horizontal cuando no se pulsa ninguna tecla</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">0</span></span>
+        </div>
+        <p>Busca <strong>Keyboard: No key</strong> en <em>Events</em>.
+        Añade <strong>Set horizontal speed to</strong> con el valor <strong>0</strong>.
+        Así se detiene el movimiento horizontal cuando no se pulsa ninguna flecha, ¡pero la gravedad sigue tirando del módulo hacia abajo!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> solo ponemos <code>hspeed</code> a 0, no <code>vspeed</code>.
+        Así la gravedad sigue actuando sobre el módulo cuando no se pulsa ninguna tecla &mdash; ¡el módulo sigue cayendo!
+    </div>
+
+    <div class="step">
+        <p>Deberías tener <strong>5 bloques de evento</strong> (Create + 3 de teclado + No key).</p>
+    </div>
+
+    <h2>Crear la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Salas</strong> &gt; <strong>Crear sala</strong></li>
+            <li>Llámala <code>room_game</code></li>
+            <li>Pon el tamaño: <strong>640 x 480</strong></li>
+            <li>Pon el color de fondo en <strong>negro</strong> (¡el espacio!)</li>
+            <li>Activa el ajuste a la cuadrícula (32x32)</li>
+            <li>Coloca bloques <code>obj_ground</code> a lo largo de toda la fila de abajo</li>
+            <li>Coloca <code>obj_lander</code> cerca de la parte de arriba de la sala</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>El módulo cae despacio hacia el suelo (¡gravedad lunar!)</li>
+            <li><strong>Flecha arriba:</strong> propulsión hacia arriba contra la gravedad</li>
+            <li><strong>Flechas izquierda/derecha:</strong> dirigir en horizontal</li>
+            <li>Suelta todas las teclas y mira cómo el módulo baja despacio</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        ¡Haz clic en «Siguiente» para añadir el aterrizaje y los choques!
+    </div>
+</body>
+</html>
