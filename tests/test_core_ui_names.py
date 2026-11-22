@@ -57,11 +57,16 @@ def test_every_key_is_a_real_action_or_event(lang, registry):
         assert not dead, (lang, kind, dead)
 
 
+# Words that really are the same in French and another language (checked, not copies).
+SAME_AS_FRENCH = {("pt", "core.event", "alarm")}   # « Alarme »
+
+
 @pytest.mark.parametrize("lang", [x for x in PRESENT if x != "fr"])
 def test_no_french_copies(lang):
     fr, table = language_table("fr"), language_table(lang)
     copies = [(kind, key) for kind, entries in table.items() for key, text in entries.items()
-              if len(text) > 3 and text != key and text == fr.get(kind, {}).get(key)]
+              if len(text) > 3 and text != key and text == fr.get(kind, {}).get(key)
+              and (lang, kind, key) not in SAME_AS_FRENCH]
     assert not copies, copies[:10]
 
 
