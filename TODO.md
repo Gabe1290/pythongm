@@ -912,11 +912,28 @@ speaker has read the new text. **Core half DONE in the editor 2026-11-22**
 (`docs/CORE_NAMES_I18N_PLAN.md` U0-U7): `config/ui_names/<lang>.py` names every core action, event,
 parameter label, drop-down word and category in all ten languages, and the Standard events panel, its
 menus, the action dialog and the If editor show them (drop-downs still save the English value). The wiki
-generators read the same tables, so the wiki and the editor cannot drift. **Still open (U8, its own
-session):** documents that name actions, events or parameters in English inside non-English text --
-~4,400 mentions in the in-app tutorials, handouts and wiki pages; see U8 in the plan. Also not done: the
+generators read the same tables, so the wiki and the editor cannot drift. **Documents (U8) done 2026-11-22:** in-app
+tutorials, handouts and wiki pages name things as the screen they describe shows them (see U8 in the
+plan for the rule and what was left on purpose). Also not done: the
 panel's code-like parameter summary column (`object_actions_formatter.py`: `key=value`, `with:`,
 `then:`). No native speaker has read any of it.
+
+### German and Spanish in-app lessons 02-08 are the older curriculum (found 2026-11-22)
+
+`Tutorials/de` and `Tutorials/es` lessons 02_first_game .. 08_lunar_lander are a different, older
+version of those lessons (other page files, GameMaker-style menu paths) from today's English and French
+ones; some steps described actions that no longer exist. U8 of `docs/CORE_NAMES_I18N_PLAN.md` corrected
+every action name, menu path and those steps, but the lessons themselves were not brought up to the
+current curriculum. Re-translating them from the current English lessons is the real fix (Portuguese
+was done that way in 2026-08).
+
+### Blockly generated blocks stay English where the workspace is translated (found 2026-11-22)
+
+In fr / de / it / pl / uk the hand-written Blockly blocks are translated, but auto-generated blocks
+(extension actions such as File Exchange, the raycast actions, and their field labels) show English,
+while the events panel now shows them translated (`config/ui_names`). `config/blockly_generated_block_i18n.py`
+could fall back to `config/ui_names` for those languages; the French Blockly lessons and handouts, which
+name these blocks in English to match the screen, would then need the same conversion.
 
 ### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
 

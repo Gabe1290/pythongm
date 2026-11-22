@@ -207,7 +207,7 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   the table's real action names caught two Chinese quotes and, in seven languages, *Set a Shared
   Variable (File Exchange)* quoting « End Turn » without its « (File Exchange) » suffix -- all fixed.
   **All eleven languages are now complete** (`COMPLETE` in `test_core_ui_names.py`).
-- [ ] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
+- [x] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
   the names their language's IDE now shows (wiki pages, tutorials, handouts), PDFs/ODTs regenerated
   where they exist; a guard test like `test_thymio_fiches_docs.py` for any document that names actions.
   *Progress 2026-11-22:* **D2 done** (`c5f4cc1e`): the multiplayer actions were already authored in
@@ -228,6 +228,25 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
     wiki (199 pages); one language per commit, with a guard like `test_thymio_fiches_docs.py` that
     fails on an English action/event/parameter name in bold or a `<strong>` in a non-English
     document. Budget it as its own session: ~4,400 mentions.
+  **D5 done 2026-11-22**, with `tools/convert_doc_names.py` (bold spans; `--tables` for exact headings
+  and table cells; `--prose` for multi-word names in running text) and a guard,
+  `tests/test_tutorial_names_match_ide.py`. **The rule that settled every case: a document names things
+  as the screen it describes shows them.** So:
+  - **Panel pages** use the panel names. In-app tutorials: the German and Spanish lessons 02–08 (every
+    menu path now "<the action's own category> > <action>"; three steps whose action was replaced
+    reworded; 365 German umlauts and 341 Spanish accents restored). Wiki: all eight languages, ~3,500
+    names (bold, headings, tables, prose), plus ~100 split paths fixed to the action's real category.
+  - **Blockly pages follow the Blockly workspace.** All French in-app lessons and the French handouts
+    are Blockly lessons; the French workspace shows the extension and raycast blocks (and their
+    fields) in **English**, so those names stay English; events use the Blockly labels (« Début du
+    jeu », « Quand détruit »). The Spanish Blockly lesson names its events as the English blocks show.
+    The visual-programming wiki pages are left alone in every language.
+  - **Left on purpose:** ~450 English image captions in the wiki (they describe English screenshots),
+    "Snap to Grid" in prose (also the room editor's setting), single words in prose ("Step 6").
+  - **Found, not fixed (TODO.md):** the German and Spanish lessons 02–08 are the *older curriculum*
+    (different pages from today's English lessons); and the French/German/Italian/Polish/Ukrainian
+    Blockly workspaces show generated blocks (extensions, raycast) in English -- they could fall back
+    to `config/ui_names`, which would then make the Blockly docs change too.
 
 - [ ] **U9 — Close.** Retire the unused `.ts` entries (D6), wiki regenerated and, with the owner's
   approval, published; QA checklist §17 item; `TODO.md`; `CLAUDE.md` note.
