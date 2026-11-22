@@ -1171,6 +1171,11 @@ Czy mimo to zapisać?</translation>
         <source>Please select a Thymio event first.</source>
         <translation>Najpierw wybierz zdarzenie Thymio.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategoria: {0}</translation>
+    </message>
 </context>
 <context>
     <name>TutorialDialog</name>
@@ -1492,6 +1497,21 @@ Czy mimo to zapisać?</translation>
         <location filename="../dialogs/thymio_action_selector.py" line="406"/>
         <source>Please select a Thymio action first.</source>
         <translation>Najpierw wybierz akcję Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategoria: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Parametry: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>Parametry: {0}</translation>
     </message>
 </context>
 <context>

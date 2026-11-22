@@ -703,3 +703,66 @@ PLUGIN_UI_TRANSLATIONS = {
     "choice": CHOICES,
     "category": CATEGORIES,
 }
+
+# Event categories are also shown without the word "Thymio" (a short name), which cannot be cut out of a
+# translation reliably ("Botões do Thymio"), so the short names have their own entries.
+CATEGORY_SHORT = {
+    "Buttons": _t("Boutons", "Tasten", "Botones", "Pulsanti", "Przyciski", "Botões", "Кнопки", "Gumbi", "Кнопки", "ボタン", "按钮"),
+    "Sensors": CATEGORIES["Sensors"],
+    "Timing": CATEGORIES["Timing"],
+    "Sound": CATEGORIES["Sound"],
+    "Communication": _t("Communication", "Kommunikation", "Comunicación", "Comunicazione", "Komunikacja", "Comunicação", "Связь",
+                        "Komunikacija", "Зв'язок", "通信", "通信"),
+}
+CATEGORY_DESCRIPTIONS = {
+    "Thymio capacitive button events": _t(
+        "Événements des boutons tactiles du Thymio", "Ereignisse der Thymio-Sensortasten", "Eventos de los botones táctiles de Thymio",
+        "Eventi dei pulsanti tattili di Thymio", "Zdarzenia przycisków dotykowych Thymio", "Eventos dos botões sensíveis ao toque do Thymio",
+        "События сенсорных кнопок Thymio", "Dogodki gumbov na dotik Thymia", "Події сенсорних кнопок Thymio",
+        "Thymio のタッチボタンのイベント", "Thymio 触摸按钮事件"),
+    "Thymio sensor update events": _t(
+        "Événements de mise à jour des capteurs du Thymio", "Ereignisse bei aktualisierten Thymio-Sensoren",
+        "Eventos de actualización de los sensores de Thymio", "Eventi di aggiornamento dei sensori di Thymio",
+        "Zdarzenia aktualizacji czujników Thymio", "Eventos de atualização dos sensores do Thymio", "События обновления датчиков Thymio",
+        "Dogodki posodobitve senzorjev Thymia", "Події оновлення датчиків Thymio", "Thymio のセンサー更新イベント", "Thymio 传感器更新事件"),
+    "Thymio timer events": _t(
+        "Événements des minuteries du Thymio", "Ereignisse der Thymio-Timer", "Eventos de los temporizadores de Thymio",
+        "Eventi dei timer di Thymio", "Zdarzenia liczników czasu Thymio", "Eventos dos temporizadores do Thymio", "События таймеров Thymio",
+        "Dogodki časovnikov Thymia", "Події таймерів Thymio", "Thymio のタイマーイベント", "Thymio 计时器事件"),
+    "Thymio sound events": _t(
+        "Événements sonores du Thymio", "Klangereignisse des Thymio", "Eventos de sonido de Thymio", "Eventi sonori di Thymio",
+        "Zdarzenia dźwiękowe Thymio", "Eventos de som do Thymio", "Звуковые события Thymio", "Zvočni dogodki Thymia",
+        "Звукові події Thymio", "Thymio のサウンドイベント", "Thymio 声音事件"),
+    "Thymio inter-robot communication": _t(
+        "Communication entre robots Thymio", "Kommunikation zwischen Thymio-Robotern", "Comunicación entre robots Thymio",
+        "Comunicazione tra robot Thymio", "Komunikacja między robotami Thymio", "Comunicação entre robôs Thymio",
+        "Связь между роботами Thymio", "Komunikacija med roboti Thymio", "Зв'язок між роботами Thymio",
+        "Thymio ロボット同士の通信", "Thymio 机器人之间的通信"),
+    "Motor control actions": _t("Actions de commande des moteurs", "Aktionen zur Motorsteuerung", "Acciones de control de los motores",
+                                "Azioni di controllo dei motori", "Akcje sterowania silnikami", "Ações de controle dos motores",
+                                "Действия управления моторами", "Dejanja za upravljanje motorjev", "Дії керування моторами",
+                                "モーターを動かすアクション", "电机控制动作"),
+    "LED control actions": _t("Actions de commande des LED", "Aktionen zur LED-Steuerung", "Acciones de control de los LED",
+                              "Azioni di controllo dei LED", "Akcje sterowania diodami LED", "Ações de controle dos LEDs",
+                              "Действия управления светодиодами", "Dejanja za upravljanje LED", "Дії керування світлодіодами",
+                              "LED を操作するアクション", "LED 控制动作"),
+    "Sound and tone actions": _t("Actions de sons et de notes", "Aktionen für Klänge und Töne", "Acciones de sonidos y tonos",
+                                 "Azioni di suoni e toni", "Akcje dźwięków i tonów", "Ações de sons e tons", "Действия со звуками и тонами",
+                                 "Dejanja za zvoke in tone", "Дії зі звуками й тонами", "音を鳴らすアクション", "声音和音调动作"),
+    "Sensor reading actions": _t("Actions de lecture des capteurs", "Aktionen zum Auslesen der Sensoren", "Acciones de lectura de sensores",
+                                 "Azioni di lettura dei sensori", "Akcje odczytu czujników", "Ações de leitura dos sensores",
+                                 "Действия чтения датчиков", "Dejanja za branje senzorjev", "Дії читання датчиків",
+                                 "センサーを読むアクション", "读取传感器动作"),
+    "Conditional check actions": _t("Actions de test (conditions)", "Aktionen zum Prüfen von Bedingungen", "Acciones de comprobación de condiciones",
+                                    "Azioni di controllo delle condizioni", "Akcje sprawdzania warunków", "Ações de verificação de condições",
+                                    "Действия проверки условий", "Dejanja za preverjanje pogojev", "Дії перевірки умов",
+                                    "条件を調べるアクション", "条件检查动作"),
+    "Timer configuration": _t("Réglage des minuteries", "Timer-Einstellung", "Configuración de temporizadores", "Configurazione dei timer",
+                              "Ustawienia liczników czasu", "Configuração dos temporizadores", "Настройка таймеров", "Nastavitev časovnikov",
+                              "Налаштування таймерів", "タイマーの設定", "计时器配置"),
+    "Variable manipulation": _t("Manipulation des variables", "Umgang mit Variablen", "Manejo de variables", "Gestione delle variabili",
+                                "Operacje na zmiennych", "Manipulação de variáveis", "Работа с переменными", "Delo s spremenljivkami",
+                                "Робота зі змінними", "変数の操作", "变量操作"),
+}
+PLUGIN_UI_TRANSLATIONS["category_short"] = CATEGORY_SHORT
+PLUGIN_UI_TRANSLATIONS["category_description"] = CATEGORY_DESCRIPTIONS

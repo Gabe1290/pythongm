@@ -26,6 +26,8 @@ was given.
 """
 from PySide6.QtWidgets import QMessageBox, QDialog
 
+from core.ui_names import ui_name
+
 from .events import THYMIO_EVENT_CATEGORIES
 
 
@@ -61,11 +63,11 @@ def build_add_event_menu(menu, panel, available_events) -> None:
         cat_icon = cat_info.get("icon", "🤖")
         # Strip "Thymio " prefix for cleaner submenu names
         cat_label = category.replace("Thymio ", "")
-        cat_submenu = thymio_menu.addMenu(f"{cat_icon} {panel.tr(cat_label)}")
+        cat_submenu = thymio_menu.addMenu(f"{cat_icon} {ui_name('category_short', cat_label)}")
 
         for event_type in thymio_by_category[category]:
             action = cat_submenu.addAction(
-                f"{event_type.icon} {panel.tr(event_type.display_name)}"
+                f"{event_type.icon} {ui_name('event', event_type.display_name)}"
             )
             action.triggered.connect(
                 lambda checked, name=event_type.name: panel.add_event(name)

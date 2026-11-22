@@ -23,6 +23,7 @@ from extensions.thymio.actions import THYMIO_ACTIONS
 from editors.object_editor.gm80_action_dialog import GM80ActionDialog
 
 from core.logger import get_logger
+from core.ui_names import ui_name
 logger = get_logger(__name__)
 
 
@@ -99,9 +100,9 @@ class ThymioEventsPanel(QWidget):
         self.category_buttons = {}
         for cat_key, cat_info in sorted(THYMIO_EVENT_CATEGORIES.items(),
                                          key=lambda x: x[1].get('order', 0)):
-            short_name = cat_info['name'].replace("Thymio ", "")
+            short_name = ui_name("category_short", cat_info['name'].replace("Thymio ", ""))
             btn = QPushButton(f"{cat_info['icon']}")
-            btn.setToolTip(f"{short_name}: {cat_info.get('description', '')}")
+            btn.setToolTip(f"{short_name}: {ui_name('category_description', cat_info.get('description', ''))}")
             btn.setFixedSize(28, 28)
             btn.setStyleSheet("QPushButton { font-size: 14px; }")
             btn.clicked.connect(lambda checked, c=cat_key: self.show_category_events_menu(c))
@@ -155,7 +156,7 @@ class ThymioEventsPanel(QWidget):
             for event_name in related_events:
                 event_type = THYMIO_EVENT_TYPES.get(event_name)
                 if event_type:
-                    action = menu.addAction(f"{event_type.icon} {event_type.display_name}")
+                    action = menu.addAction(f"{event_type.icon} {ui_name('event', event_type.display_name)}")
                     action.triggered.connect(
                         lambda checked, e=event_name: self.add_event(e)
                     )
@@ -177,7 +178,7 @@ class ThymioEventsPanel(QWidget):
 
         for event_name, event_type in THYMIO_EVENT_TYPES.items():
             if event_type.category == category:
-                action = menu.addAction(f"{event_type.icon} {event_type.display_name}")
+                action = menu.addAction(f"{event_type.icon} {ui_name('event', event_type.display_name)}")
                 action.triggered.connect(
                     lambda checked, e=event_name: self.add_event(e)
                 )
@@ -193,12 +194,12 @@ class ThymioEventsPanel(QWidget):
         # Group by category
         for cat_key, cat_info in sorted(THYMIO_EVENT_CATEGORIES.items(),
                                          key=lambda x: x[1].get('order', 0)):
-            short_name = cat_info['name'].replace("Thymio ", "")
+            short_name = ui_name("category_short", cat_info['name'].replace("Thymio ", ""))
             submenu = menu.addMenu(f"{cat_info['icon']} {short_name}")
 
             for event_name, event_type in THYMIO_EVENT_TYPES.items():
                 if event_type.category == cat_key:
-                    action = submenu.addAction(f"{event_type.icon} {event_type.display_name}")
+                    action = submenu.addAction(f"{event_type.icon} {ui_name('event', event_type.display_name)}")
                     action.triggered.connect(
                         lambda checked, e=event_name: self.add_event(e)
                     )
@@ -248,11 +249,13 @@ class ThymioEventsPanel(QWidget):
 
             for category in sorted(actions_by_category.keys()):
                 # Get category display name
-                cat_display = category.replace("thymio_", "").title()
+                from extensions.thymio.dialogs.thymio_action_selector import THYMIO_ACTION_CATEGORIES
+                cat_display = ui_name("category", THYMIO_ACTION_CATEGORIES.get(category, {}).get(
+                    "name", category.replace("thymio_", "").title()))
                 category_menu = add_action_menu.addMenu(cat_display)
 
                 for action_name, action_def in actions_by_category[category]:
-                    action_item = category_menu.addAction(f"{action_def.icon} {action_def.display_name}")
+                    action_item = category_menu.addAction(f"{action_def.icon} {ui_name('action', action_def.display_name)}")
                     action_item.triggered.connect(
                         lambda checked, e=event_name, a=action_name: self.add_action_to_event(e, a)
                     )
@@ -394,9 +397,9 @@ class ThymioEventsPanel(QWidget):
 
             # Create event item
             event_item = QTreeWidgetItem()
-            event_item.setText(0, f"{event_type.icon} {event_type.display_name}")
+            event_item.setText(0, f"{event_type.icon} {ui_name('event', event_type.display_name)}")
             event_item.setData(0, Qt.UserRole, event_name)
-            event_item.setToolTip(0, event_type.description)
+            event_item.setToolTip(0, ui_name("event_description", event_type.description))
 
             # Add actions
             actions = event_data.get("actions", [])
@@ -407,7 +410,7 @@ class ThymioEventsPanel(QWidget):
 
                     if action_def:
                         action_item = QTreeWidgetItem()
-                        action_item.setText(0, f"  {action_def.icon} {action_def.display_name}")
+                        action_item.setText(0, f"  {action_def.icon} {ui_name('action', action_def.display_name)}")
                         action_item.setData(0, Qt.UserRole, action_data)
 
                         # Format parameters for display

@@ -985,6 +985,11 @@ Do you want to save anyway?</source>
         <source>Please select a Thymio event first.</source>
         <translation>先にThymioイベントを選択してください。</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>カテゴリ: {0}</translation>
+    </message>
 </context>
 <context>
     <name>BaseBlockConfigDialog</name>
@@ -1204,6 +1209,21 @@ Do you want to save anyway?</source>
         <location filename="../dialogs/thymio_action_selector.py" line="406"/>
         <source>Please select a Thymio action first.</source>
         <translation>先にThymioアクションを選択してください。</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>カテゴリ: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>パラメーター: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>パラメーター {0} 個</translation>
     </message>
 </context>
 <context>

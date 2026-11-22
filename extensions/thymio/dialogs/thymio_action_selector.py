@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
     QPushButton, QFrame, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
+from core.ui_names import ui_name
 from PySide6.QtGui import QFont
 
 from extensions.thymio.diagram_widget import (
@@ -140,9 +141,9 @@ class ThymioActionSelector(QDialog):
         # Category buttons
         for cat_key, cat_info in sorted(THYMIO_ACTION_CATEGORIES.items(),
                                          key=lambda x: x[1].get('order', 0)):
-            btn = QPushButton(f"{cat_info['icon']} {cat_info['name']}")
+            btn = QPushButton(f"{cat_info['icon']} {ui_name('category', cat_info['name'])}")
             btn.setCheckable(True)
-            btn.setToolTip(cat_info.get('description', ''))
+            btn.setToolTip(ui_name("category_description", cat_info.get('description', '')))
             btn.clicked.connect(lambda checked, c=cat_key: self.filter_by_category(c))
             category_layout.addWidget(btn)
             self.category_buttons[cat_key] = btn
@@ -201,26 +202,27 @@ class ThymioActionSelector(QDialog):
 
             # Create list item
             icon = action_def.icon or ""
-            display_text = f"{icon} {action_def.display_name}"
-            description = action_def.description or ""
+            shown_name = ui_name("action", action_def.display_name)
+            display_text = f"{icon} {shown_name}"
+            description = ui_name("action_description", action_def.description or "")
 
             # Add parameter hint
             param_count = len(action_def.parameters) if action_def.parameters else 0
             if param_count > 0:
-                param_hint = f" [{param_count} param{'s' if param_count > 1 else ''}]"
+                param_hint = " [" + self.tr("{0} parameter(s)").format(param_count) + "]"
             else:
                 param_hint = ""
 
             item = QListWidgetItem(f"{display_text}{param_hint}\n   {description}")
             item.setData(Qt.UserRole, {
                 'name': action_name,
-                'display_name': action_def.display_name,
+                'display_name': shown_name,
                 'description': description,
                 'category': action_def.category,
                 'icon': icon,
                 'param_count': param_count
             })
-            item.setToolTip(f"{action_def.display_name}\n{description}")
+            item.setToolTip(f"{shown_name}\n{description}")
 
             self.action_list.addItem(item)
 
@@ -322,18 +324,18 @@ class ThymioActionSelector(QDialog):
             param_count = action_data.get('param_count', 0)
 
             # Get category display name
-            cat_display = THYMIO_ACTION_CATEGORIES.get(category, {}).get('name', category)
+            cat_display = ui_name("category", THYMIO_ACTION_CATEGORIES.get(category, {}).get('name', category))
 
             param_info = ""
             if param_count > 0:
                 action_def = THYMIO_ACTIONS.get(self.selected_action)
                 if action_def and action_def.parameters:
-                    param_names = [p.display_name for p in action_def.parameters]
-                    param_info = f"<br><small>Parameters: {', '.join(param_names)}</small>"
+                    param_names = [ui_name("param", p.display_name) for p in action_def.parameters]
+                    param_info = f"<br><small>{self.tr('Parameters: {0}').format(', '.join(param_names))}</small>"
 
             self.description_label.setText(
                 f"<b>{icon} {name}</b><br>"
-                f"<small>Category: {cat_display}</small>"
+                f"<small>{self.tr('Category: {0}').format(cat_display)}</small>"
                 f"{param_info}<br><br>"
                 f"{desc}"
             )

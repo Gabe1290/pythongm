@@ -1491,6 +1491,21 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
         <source>Please select a Thymio action first.</source>
         <translation>Bitte wählen Sie zuerst eine Thymio-Aktion aus.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategorie: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Parameter: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>{0} Parameter</translation>
+    </message>
 </context>
 <context>
     <name>ThymioConfigDialog</name>
@@ -1618,6 +1633,11 @@ Möchten Sie trotzdem speichern?</translation>
     <message>
         <source>Please select a Thymio event first.</source>
         <translation>Bitte wählen Sie zuerst ein Thymio-Ereignis aus.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategorie: {0}</translation>
     </message>
 </context>
 <context>

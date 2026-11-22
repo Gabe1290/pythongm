@@ -36,14 +36,20 @@ DISPLAY_SITES = [
 ]
 
 
+# Calls that translate: tr() itself, and GM80ActionDialog._name(kind, text), which looks the text up in
+# an extension's table (core/ui_names, e.g. Thymio) and otherwise falls back to self.tr(text) --
+# test_name_helper_falls_back_to_tr pins that fallback so _name cannot become a loophole.
+TRANSLATING = {"tr", "_name"}
+
+
 def _tr_wrapped_attributes(path):
-    """Attribute names appearing as `<something>.tr(X.attr)` in the file."""
+    """Attribute names appearing as `<something>.tr(X.attr)` (or `._name(..., X.attr)`) in the file."""
     tree = ast.parse((REPO_ROOT / path).read_text(encoding="utf-8"))
     wrapped = set()
     for node in ast.walk(tree):
         if not (isinstance(node, ast.Call)
                 and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "tr"):
+                and node.func.attr in TRANSLATING):
             continue
         for arg in node.args:
             for inner in ast.walk(arg):
@@ -71,7 +77,7 @@ def _bare_display_calls(path, attr):
                            for i in ast.walk(arg))
             has_tr = any(isinstance(i, ast.Call)
                          and isinstance(i.func, ast.Attribute)
-                         and i.func.attr == "tr"
+                         and i.func.attr in TRANSLATING
                          for i in ast.walk(arg))
             if has_attr and not has_tr:
                 offenders.append((name, node.lineno))
@@ -116,3 +122,11 @@ def test_the_catalogues_can_now_receive_descriptions():
                      if sample in p.read_text(encoding="utf-8", errors="replace")]
     # Not an assertion of emptiness -- just a stable record of the baseline.
     assert isinstance(translated_in, list)
+
+
+def test_name_helper_falls_back_to_tr():
+    """GM80ActionDialog._name counts as translating only because it ends in self.tr(text)."""
+    tree = ast.parse((REPO_ROOT / "editors/object_editor/gm80_action_dialog.py").read_text(encoding="utf-8"))
+    helper = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "_name")
+    calls = [c for c in ast.walk(helper) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)]
+    assert any(c.func.attr == "tr" and isinstance(c.func.value, ast.Name) and c.func.value.id == "self" for c in calls)

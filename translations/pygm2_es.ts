@@ -9866,6 +9866,21 @@ Añade unos 15-20 MB al archivo exportado. Ahora se necesita Internet una vez pa
         <source>Please select a Thymio action first.</source>
         <translation>Primero seleccione una acción Thymio.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Categoría: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Parámetros: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>{0} parámetro(s)</translation>
+    </message>
 </context>
 <context>
     <name>ThymioConfigDialog</name>
@@ -10014,6 +10029,11 @@ Do you want to save anyway?</source>
         <location filename="../dialogs/thymio_event_selector.py" line="309"/>
         <source>Please select a Thymio event first.</source>
         <translation>Primero seleccione un evento Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Categoría: {0}</translation>
     </message>
 </context>
 <context>

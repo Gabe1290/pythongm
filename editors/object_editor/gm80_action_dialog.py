@@ -33,20 +33,27 @@ class GM80ActionDialog(QDialog):
 
         self.setup_ui()
 
+    def _name(self, kind, text):
+        """A name that is data (action, parameter...): the extension's table first (core/ui_names,
+        e.g. Thymio's PLUGIN_UI_TRANSLATIONS), then this dialog's catalogue as before."""
+        from core.ui_names import ui_name
+        shown = ui_name(kind, text)
+        return shown if shown != text else self.tr(text)
+
     def setup_ui(self):
         """Setup the dialog UI"""
-        self.setWindowTitle(self.tr("Configure: {0}").format(self.action_def.display_name))
+        self.setWindowTitle(self.tr("Configure: {0}").format(self._name("action", self.action_def.display_name)))
         self.setMinimumWidth(450)
 
         layout = QVBoxLayout(self)
 
         # Action title and description
-        title_label = QLabel(f"{self.action_def.icon} {self.tr(self.action_def.display_name)}")
+        title_label = QLabel(f"{self.action_def.icon} {self._name('action', self.action_def.display_name)}")
         title_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(title_label)
 
         if self.action_def.description:
-            desc_label = QLabel(self.tr(self.action_def.description))
+            desc_label = QLabel(self._name("action_description", self.action_def.description))
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet("color: gray; padding: 5px;")
             layout.addWidget(desc_label)
@@ -66,13 +73,13 @@ class GM80ActionDialog(QDialog):
                 widget = self.create_parameter_widget(param)
                 if widget:
                     self.param_widgets[param.name] = widget
-                    label = QLabel(self.tr(param.display_name) + ":")
+                    label = QLabel(self._name("param", param.display_name) + ":")
                     if param.description:
                         # tr() to match the label right beside it, which has
                         # always been translated; without it a parameter's
                         # tooltip is the one string in this dialog that cannot
                         # be localized.
-                        label.setToolTip(self.tr(param.description))
+                        label.setToolTip(self._name("param_description", param.description))
                     params_layout.addRow(label, widget)
 
             params_group.setLayout(params_layout)
@@ -251,9 +258,14 @@ class GM80ActionDialog(QDialog):
         elif param_type == "choice":
             widget = QComboBox()
             if param.options:
-                widget.addItems([str(opt) for opt in param.options])
+                # Show the translated label, but keep the option itself as the item's data and save
+                # that: projects store the English label ("0 - Startup") and the Thymio exporter and
+                # simulator read its number (docs/THYMIO_PANEL_I18N_PLAN.md, U0).
+                from core.ui_names import ui_name
+                for opt in param.options:
+                    widget.addItem(ui_name("choice", str(opt)), str(opt))
                 if default_value is not None and default_value in param.options:
-                    widget.setCurrentText(str(default_value))
+                    widget.setCurrentIndex(widget.findData(str(default_value)))
             return widget
 
         elif param_type == "color":
@@ -390,7 +402,8 @@ class GM80ActionDialog(QDialog):
                 values[param_name] = widget.toPlainText()
 
             elif param_type == "choice":
-                values[param_name] = widget.currentText()
+                data = widget.currentData()
+                values[param_name] = data if data is not None else widget.currentText()
 
             elif param_type == "color":
                 # Extract color from the container widget

@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QPushButton, QFrame, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
+from core.ui_names import ui_name
 from PySide6.QtGui import QFont
 
 from extensions.thymio.diagram_widget import (
@@ -93,10 +94,10 @@ class ThymioEventSelector(QDialog):
         for cat_key, cat_info in sorted(THYMIO_EVENT_CATEGORIES.items(),
                                          key=lambda x: x[1].get('order', 0)):
             # Shorten the display name (remove "Thymio " prefix)
-            short_name = cat_info['name'].replace("Thymio ", "")
+            short_name = ui_name("category_short", cat_info['name'].replace("Thymio ", ""))
             btn = QPushButton(f"{cat_info['icon']} {short_name}")
             btn.setCheckable(True)
-            btn.setToolTip(cat_info.get('description', ''))
+            btn.setToolTip(ui_name("category_description", cat_info.get('description', '')))
             btn.clicked.connect(lambda checked, c=cat_key: self.filter_by_category(c))
             category_layout.addWidget(btn)
             self.category_buttons[cat_key] = btn
@@ -155,18 +156,19 @@ class ThymioEventSelector(QDialog):
 
             # Create list item
             icon = event_type.icon or ""
-            display_text = f"{icon} {event_type.display_name}"
-            description = event_type.description or ""
+            shown_name = ui_name("event", event_type.display_name)
+            display_text = f"{icon} {shown_name}"
+            description = ui_name("event_description", event_type.description or "")
 
             item = QListWidgetItem(f"{display_text}\n   {description}")
             item.setData(Qt.UserRole, {
                 'name': event_name,
-                'display_name': event_type.display_name,
+                'display_name': shown_name,
                 'description': description,
                 'category': event_type.category,
                 'icon': icon
             })
-            item.setToolTip(f"{event_type.display_name}\n{description}")
+            item.setToolTip(f"{shown_name}\n{description}")
 
             self.event_list.addItem(item)
 
@@ -270,7 +272,7 @@ class ThymioEventSelector(QDialog):
 
             self.description_label.setText(
                 f"<b>{icon} {name}</b><br>"
-                f"<small>Category: {category}</small><br><br>"
+                f"<small>{self.tr('Category: {0}').format(ui_name('category', category))}</small><br><br>"
                 f"{desc}"
             )
 

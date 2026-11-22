@@ -82,7 +82,7 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
   Configure dialog (`block_translations.py`) where the same thing is named, so the dialog, the blocks
   and the panel agree. Guard test: every name, description, parameter label, choice label and category
   has all eleven languages; French accents; same-word list explicit.
-- [ ] **U3 — Show it.** Route every display site through `ui_name`: the Thymio tab (event/action trees,
+- [x] **U3 — Show it.** Route every display site through `ui_name`: the Thymio tab (event/action trees,
   category buttons and menus), both selectors, `panel_menus.py`, the action configure dialog's title and
   parameter labels, choice combos (with item data if U0 says so). Real-widget test in French and
   Japanese: build each panel/dialog and read what it shows; no English left except the listed same

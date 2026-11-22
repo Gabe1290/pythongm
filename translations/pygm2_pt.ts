@@ -1346,6 +1346,21 @@ Deseja salvar mesmo assim?</translation>
         <source>Please select a Thymio action first.</source>
         <translation>Selecione uma ação do Thymio primeiro.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Categoria: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Parâmetros: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>{0} parâmetro(s)</translation>
+    </message>
 </context>
 <context>
     <name>ThymioConfigDialog</name>
@@ -1496,6 +1511,11 @@ Deseja salvar mesmo assim?</translation>
         <location filename="../dialogs/thymio_event_selector.py" line="309"/>
         <source>Please select a Thymio event first.</source>
         <translation>Selecione um evento do Thymio primeiro.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Categoria: {0}</translation>
     </message>
 </context>
 <context>

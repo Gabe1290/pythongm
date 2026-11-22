@@ -10208,6 +10208,21 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <source>Please select a Thymio action first.</source>
         <translation>Veuillez d&apos;abord sélectionner une action Thymio.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Catégorie : {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Paramètres : {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>{0} paramètre(s)</translation>
+    </message>
 </context>
 <context>
     <name>ThymioConfigDialog</name>
@@ -10366,6 +10381,11 @@ Voulez-vous quand même enregistrer ?</translation>
         <location filename="../dialogs/thymio_event_selector.py" line="309"/>
         <source>Please select a Thymio event first.</source>
         <translation>Veuillez d&apos;abord sélectionner un événement Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Catégorie : {0}</translation>
     </message>
 </context>
 <context>

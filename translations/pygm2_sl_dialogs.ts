@@ -1491,6 +1491,21 @@ Ali želite odpreti mapo izvoza?</translation>
         <source>Please select a Thymio action first.</source>
         <translation>Najprej izberite dejanje Thymio.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategorija: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>Parameters: {0}</source>
+        <translation>Parametri: {0}</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_action_selector.py" line="0"/>
+        <source>{0} parameter(s)</source>
+        <translation>Parametrov: {0}</translation>
+    </message>
 </context>
 <context>
     <name>ThymioConfigDialog</name>
@@ -1618,6 +1633,11 @@ Do you want to save anyway?</source>
     <message>
         <source>Please select a Thymio event first.</source>
         <translation>Najprej izberite dogodek Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/dialogs/thymio_event_selector.py" line="0"/>
+        <source>Category: {0}</source>
+        <translation>Kategorija: {0}</translation>
     </message>
 </context>
 <context>
