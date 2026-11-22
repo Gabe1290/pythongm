@@ -18,7 +18,7 @@ Neste tutorial, você criará um **Jogo de Labirinto** onde o jogador navega atr
 - Sistema de cronômetro simples
 
 **Dificuldade:** Iniciante
-**Preset:** Preset Intermediário (a ação Execute Code usada para o
+**Preset:** Preset Intermediário (a ação Executar código usada para o
 cronômetro não está no preset Iniciante)
 
 ---
@@ -116,7 +116,7 @@ A saída termina o nível quando o jogador a alcança.
    - Message: `You Win!`
 3. Add Action: **Sala** → **Sala seguinte** (ou **Reiniciar sala** para um único nível)
 
-O texto de Show Message é uma string fixa — não pode incluir um valor
+O texto de Mostrar mensagem é uma string fixa — não pode incluir um valor
 dinâmico como o tempo decorrido. O cronômetro permanece visível no HUD
 (Passo 7) até a vitória, então o jogador já viu seu tempo.
 
@@ -157,11 +157,11 @@ cada um com uma ação **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Ação |
 |---|---|
-| Keyboard (held) → Right Arrow | Set Horizontal Speed para `4` |
-| Keyboard (held) → Left Arrow | Set Horizontal Speed para `-4` |
-| Keyboard (held) → Down Arrow | Set Vertical Speed para `4` |
-| Keyboard (held) → Up Arrow | Set Vertical Speed para `-4` |
-| Keyboard: No Key | Set Horizontal Speed para `0` **e** Set Vertical Speed para `0` |
+| Teclado (mantido) → Right Arrow | Definir velocidade horizontal para `4` |
+| Teclado (mantido) → Left Arrow | Definir velocidade horizontal para `-4` |
+| Teclado (mantido) → Down Arrow | Definir velocidade vertical para `4` |
+| Teclado (mantido) → Up Arrow | Definir velocidade vertical para `-4` |
+| Keyboard: No Key | Definir velocidade horizontal para `0` **e** Definir velocidade vertical para `0` |
 
 ### 6.2 Parar nas Paredes
 
@@ -188,7 +188,7 @@ O game controller gerencia o cronômetro e exibe informações.
 2. Nenhum sprite necessário
 
 **Evento: Create** — inicia o cronômetro, usando **Controle** →
-**Executar código** (a ação Execute Code deste projeto executa Python
+**Executar código** (a ação Executar código deste projeto executa Python
 real, não GameMaker Language):
 
 ```python
@@ -204,7 +204,7 @@ self.timer += 1.0 / game.fps
 **Evento: Draw** — constrói o HUD com comandos reais da fila de
 desenho. Adicione três ações **Jogo** → **Desenhar texto**:
 
-| Ação Draw Text | Texto | Posição |
+| Ação Desenhar texto | Texto | Posição |
 |---|---|---|
 | 1ª | `Score:` | X `10`, Y `10` |
 | 2ª | `Time:` | X `10`, Y `30` |
@@ -213,7 +213,7 @@ desenho. Adicione três ações **Jogo** → **Desenhar texto**:
 depois três ações **Desenho** → **Desenhar variável** logo em seguida, para
 mostrar os valores em tempo real ao lado de cada rótulo:
 
-| Ação Draw Variable | Variável | Posição |
+| Ação Desenhar variável | Variável | Posição |
 |---|---|---|
 | 1ª | `score` | X `70`, Y `10` |
 | 2ª | `self.timer` | X `70`, Y `30` |
@@ -221,8 +221,8 @@ mostrar os valores em tempo real ao lado de cada rótulo:
 
 Não existe um contador integrado de "moedas restantes" para o Draw
 Variable apontar — adicione mais uma ação **Controle** → **Execute
-Code**, logo antes das ações Draw Variable, para calculá-lo em uma
-variável de instância que o Draw Variable possa então ler:
+Code**, logo antes das ações Desenhar variável, para calculá-lo em uma
+variável de instância que o Desenhar variável possa então ler:
 
 ```python
 self.coins_left = sum(
@@ -231,7 +231,7 @@ self.coins_left = sum(
 )
 ```
 
-(depois defina o campo Variable da 3ª ação Draw Variable como `self.coins_left`).
+(depois defina o campo Variable da 3ª ação Desenhar variável como `self.coins_left`).
 
 ![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
 

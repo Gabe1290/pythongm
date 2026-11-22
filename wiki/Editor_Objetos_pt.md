@@ -18,7 +18,7 @@ elementos de interface.
 2. Clique com o botão direito em **Objects** > **Create Object**
 
 ![O Editor de Objetos: uma lista de eventos à esquerda (Create, Step,
-vários eventos Collision, Keyboard, No More Lives, Game Start),
+vários eventos Collision, Keyboard, Sem vidas, Início do jogo),
 propriedades do objeto (sprite, parent, Visible/Persistent/Solid) à
 direita, e os separadores Event List / Blockly / Editor de Código que
 mudam a forma de editar as ações de cada evento](images/object-editor.png)

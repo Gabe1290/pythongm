@@ -18,7 +18,7 @@ Neste tutorial, você vai criar um **Jogo de Pouso Lunar** - um jogo de arcade c
 - Zonas de pouso seguras
 
 **Dificuldade:** Iniciante
-**Preset:** Preset Intermediário (a física de empuxo/combustível apoia-se em Execute Code o tempo todo, que não está no preset Iniciante)
+**Preset:** Preset Intermediário (a física de empuxo/combustível apoia-se em Executar código o tempo todo, que não está no preset Iniciante)
 
 ---
 
@@ -205,7 +205,7 @@ estilo GML), então um `if` em torno do resto do código é o equivalente.
      2. **Output** → **Mostrar mensagem** (Message: `Crashed! Too fast!`)
      3. **Sala** → **Reiniciar sala**
 
-O texto de Show Message é uma string fixa — ele não pode embutir a
+O texto de Mostrar mensagem é uma string fixa — ele não pode embutir a
 velocidade real de pouso. O HUD (Passo 7) já exibe a velocidade ao vivo
 até o momento do contato, então o jogador já viu o número.
 
@@ -349,7 +349,7 @@ direção para a qual ele aponta. As instâncias deste motor têm um atributo
 `rotation` real (graus, 0 = direita, crescente no sentido anti-horário)
 usado para girar o sprite — não é preciso
 `image_angle`/`lengthdir_x`/`lengthdir_y`, já que `math` já está
-disponível em Execute Code:
+disponível em Executar código:
 
 Substitua o código do evento Create do 5.1 por:
 ```python
@@ -420,7 +420,7 @@ self.hspeed += self.wind_force
 
 | Problema | Solução |
 |----------|---------|
-| O módulo cai rápido demais | Diminua o valor `Gravity` de Set Gravity, ou aumente `thrust_force` no código do evento Create |
+| O módulo cai rápido demais | Diminua o valor `Gravity` de Definir gravidade, ou aumente `thrust_force` no código do evento Create |
 | Não consigo frear o suficiente | Aumente `thrust_force`, ou aumente `safe_speed` |
 | O combustível acaba rápido demais | Diminua `fuel_use`, ou aumente o `fuel` inicial |
 | O módulo sai da tela | Verifique o bloco de limites no fim do código do evento Step |
@@ -432,11 +432,11 @@ self.hspeed += self.wind_force
 
 Parabéns! Você criou um jogo de pouso lunar! Você aprendeu:
 
-- **Física de empuxo** - Ajustar `self.vspeed` contra uma puxada contínua de Set Gravity
+- **Física de empuxo** - Ajustar `self.vspeed` contra uma puxada contínua de Definir gravidade
 - **Gestão de velocidade** - Calcular a velocidade a partir de `hspeed`/`vspeed` com o teorema de Pitágoras
 - **Sistema de combustível** - Jogabilidade de gestão de recursos com uma simples variável de instância
-- **Detecção de colisão** - Resultados diferentes para plataforma vs solo, escolhidos com Test Expression
-- **Exibição de HUD** - Calcular os valores a exibir em Execute Code e depois mostrá-los com Draw Text/Draw Variable
+- **Detecção de colisão** - Resultados diferentes para plataforma vs solo, escolhidos com Testar expressão
+- **Exibição de HUD** - Calcular os valores a exibir em Executar código e depois mostrá-los com Desenhar texto/Desenhar variável
 
 ---
 

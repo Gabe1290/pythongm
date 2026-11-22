@@ -2,7 +2,7 @@
 
 *[Início](Home_pt) | [Referência de Eventos](Event-Reference_pt) | [Referência completa de ações](Full-Action-Reference_pt)*
 
-### Create
+### Criação
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `create` |
@@ -24,7 +24,7 @@
 
 ---
 
-### Step
+### Passo
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `step` |
@@ -46,7 +46,7 @@
 
 ---
 
-### Destroy
+### Destruição
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `destroy` |

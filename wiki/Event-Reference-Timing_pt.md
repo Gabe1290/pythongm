@@ -24,17 +24,17 @@
 
 ---
 
-### Begin Step
+### Início do passo
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `begin_step` |
 | **Ícone** | ▶️ |
-| **Categoria** | Step |
+| **Categoria** | Passo |
 | **Preset** | Iniciante |
 
 **Descrição:** Dispara no início de cada quadro, antes dos eventos Step regulares.
 
-**Ordem de execução:** Begin Step → Step → End Step
+**Ordem de execução:** Início do passo → Step → Fim do passo
 
 **Usos comuns:**
 - Processamento de entrada
@@ -42,12 +42,12 @@
 
 ---
 
-### End Step
+### Fim do passo
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `end_step` |
 | **Ícone** | ⏹️ |
-| **Categoria** | Step |
+| **Categoria** | Passo |
 | **Preset** | Iniciante |
 
 **Descrição:** Dispara no final de cada quadro, após as colisões.

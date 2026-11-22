@@ -173,7 +173,7 @@ que roda em uma placa física.
    também funciona em uma placa nova que nunca rodou MicroPython.
 
 Todas as ações e condições do micro:bit são traduzidas, assim como *Set
-Variable*, *Test Variable*, blocos e comentários. Cada evento vira uma
+Variable*, *Testar variável*, blocos e comentários. Cada evento vira uma
 verificação dentro de um único laço. Ações de jogo que não significam nada em
 uma placa (salas, sprites, pontuações…) não são exportadas. Nas expressões,
 `irandom`, `random` e `choose` funcionam; as outras funções do GameMaker não

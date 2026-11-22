@@ -28,7 +28,7 @@ jogo previsível (verificado contra o loop principal em
 3. **Passo** (e **Keyboard (mantida)**) — Lógica principal do jogo,
    depois verificações contínuas de teclas mantidas para a mesma
    instância
-4. **Keyboard Press/Release, Mouse** — Os eventos de entrada
+4. **Tecla pressionada/Release, Mouse** — Os eventos de entrada
    acumulados para este quadro são processados (isso acontece *depois*
    de Step, não antes — o código em Step reage às teclas que já
    estavam pressionadas no *início* do quadro, não às pressionadas
@@ -52,9 +52,9 @@ definida.
 
 | Preset | Eventos Incluídos |
 |--------|-------------------|
-| **Iniciante** (19 eventos) | Create, Step, Keyboard (mantida), Keyboard \<Sem Tecla\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
-| **Intermediário** (21 eventos) | + Destroy, Keyboard Press |
-| **Completo** (apenas Edição Desenvolvimento, 23 eventos) | + Keyboard Release, Mouse |
+| **Iniciante** (19 eventos) | Create, Step, Keyboard (mantida), Keyboard \<Sem Tecla\>, Collision, Início do passo, Fim do passo, Alarm, Draw, Desenho da interface, Início da sala, Fim da sala, Início do jogo, Fim do jogo, Fora da sala, Toca a borda da sala, Sem vidas, Sem saúde, Fim da animação |
+| **Intermediário** (21 eventos) | + Destroy, Tecla pressionada |
+| **Completo** (apenas Edição Desenvolvimento, 23 eventos) | + Tecla solta, Mouse |
 
 ---
 

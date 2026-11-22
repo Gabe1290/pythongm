@@ -162,7 +162,7 @@ O jogador se move exatamente uma célula da grade por vez e empurra as caixas em
 
 Adicione um evento **Key Press** por direção, cada um com uma ação **Move** → **Mover pela grade**:
 
-| Evento | Ação Move Grid |
+| Evento | Ação Mover pela grade |
 |---|---|
 | Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
 | Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
@@ -207,7 +207,7 @@ Precisamos de um controlador invisível que observe se cada caixa está em um de
 2. Nenhum sprite necessário
 
 **Evento: Create** — define a contagem de destinos uma única vez,
-usando **Controle** → **Executar código** (a ação Execute Code deste
+usando **Controle** → **Executar código** (a ação Executar código deste
 projeto executa Python real, não GameMaker Language — `self` é a
 instância atual, `game` é o executor do jogo):
 
@@ -233,11 +233,11 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
     self.restart_room_flag = True
 ```
 
-`self.restart_room_flag = True` é a forma como um bloco Execute Code
+`self.restart_room_flag = True` é a forma como um bloco Executar código
 bruto aciona o mesmo reinício de sala que a ação **Reiniciar sala**
 realiza — o loop principal verifica isso a cada quadro. Adicione uma
 ação **Mostrar mensagem** (de **Output**, mensagem `Level Complete!`)
-logo após o bloco Execute Code se quiser mostrar um popup antes do
+logo após o bloco Executar código se quiser mostrar um popup antes do
 reinício.
 
 **Evento: Draw**
@@ -312,7 +312,7 @@ No evento **Criação** de `obj_game_controller`, adicione **Controle** →
 **Definir variável** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 Em cada um dos quatro eventos Key Press de `obj_player`, adicione uma
-segunda ação logo após Move Grid: **Controle** → **Definir variável**
+segunda ação logo após Mover pela grade: **Controle** → **Definir variável**
 (Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativo**
 marcado) — isso soma 1 ao contador a cada pressionamento de tecla,
 independentemente de o movimento ter sido realmente bloqueado por uma
@@ -329,7 +329,7 @@ Armazene posições anteriores e permita pressionar Z para desfazer o último mo
 
 Crie mais salas (`room_level2`, `room_level3`, etc.) e use a ação
 **Sala seguinte** (categoria Room) em vez de **Reiniciar sala** no bloco
-Execute Code de verificação de vitória (`self.next_room_flag = True`
+Executar código de verificação de vitória (`self.next_room_flag = True`
 em vez de `self.restart_room_flag = True`) ao completar um nível.
 
 ### Adicionar Efeitos Sonoros
@@ -350,7 +350,7 @@ Adicione sons para:
 | Caixa não muda de cor | Verifique se a ação **Se colisão** do evento Step aponta para `obj_target` |
 | Pode empurrar caixa através de parede | Verifique a detecção de colisão antes de mover a caixa |
 | Mensagem de vitória aparece imediatamente | Certifique-se de que os destinos foram colocados separadamente das caixas |
-| Jogador se move vários quadrados | Use o evento Keyboard Press, não o evento Keyboard |
+| Jogador se move vários quadrados | Use o evento Tecla pressionada, não o evento Keyboard |
 
 ---
 

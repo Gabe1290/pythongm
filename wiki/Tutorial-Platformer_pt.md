@@ -18,7 +18,7 @@ Neste tutorial, você vai criar um **Jogo de Plataforma** - um jogo de ação co
 - Coletáveis e perigos
 
 **Dificuldade:** Iniciante
-**Preset:** Preset Intermediário (as ações Execute Code da seção Melhorias não estão no preset Iniciante; o tutorial base até o Passo 10 só precisa de ações do preset Iniciante)
+**Preset:** Preset Intermediário (as ações Executar código da seção Melhorias não estão no preset Iniciante; o tutorial base até o Passo 10 só precisa de ações do preset Iniciante)
 
 ---
 
@@ -143,16 +143,16 @@ anteriores deste wiki já usam:
 
 | Evento | Ação |
 |---|---|
-| Keyboard (held) → Left Arrow | Set Horizontal Speed para `-4` |
-| Keyboard (held) → Right Arrow | Set Horizontal Speed para `4` |
-| Keyboard: No Key | Set Horizontal Speed para `0` |
-| Key Press → Up Arrow | Set Vertical Speed para `-10` |
-| Collision with obj_ground | Stop Movement |
+| Teclado (mantido) → Left Arrow | Definir velocidade horizontal para `-4` |
+| Teclado (mantido) → Right Arrow | Definir velocidade horizontal para `4` |
+| Keyboard: No Key | Definir velocidade horizontal para `0` |
+| Key Press → Up Arrow | Definir velocidade vertical para `-10` |
+| Collision with obj_ground | Parar movimento |
 
 Dois detalhes que fazem a sensação ficar certa:
 
 - **No Key zera APENAS a velocidade horizontal** — nunca use
-  Stop Movement aí, porque Stop Movement zera a velocidade vertical
+  Parar movimento aí, porque Parar movimento zera a velocidade vertical
   também, o que cancelaria a gravidade toda vez que o jogador soltasse
   uma tecla de direção.
 - **Key Press (não held)** é o que faz Up ser um único impulso de salto,
@@ -216,7 +216,7 @@ A bandeira termina o nível quando o jogador a alcança.
    - Message: `Level Complete!`
 3. Adicione a ação **Sala** → **Sala seguinte** (ou **Reiniciar sala** para um único nível)
 
-O texto de Show Message é uma string fixa — ele não pode embutir um valor
+O texto de Mostrar mensagem é uma string fixa — ele não pode embutir um valor
 ao vivo como a pontuação. O HUD do controlador de jogo (Passo 9) já mostra
 a pontuação na tela durante todo o nível, então o jogador já a viu.
 
@@ -332,8 +332,8 @@ três, em ordem:
    **Relativo** marcado)
 5. **Controle** → **Fim de bloco**
 
-O par Start/End Block significa que ambas as ações dentro dele só são
-executadas quando o Test Variable acima é verdadeiro — o mesmo padrão de
+O par Start/Fim de bloco significa que ambas as ações dentro dele só são
+executadas quando o Testar variável acima é verdadeiro — o mesmo padrão de
 bloco protegido que os tutoriais Sokoban e Labirinto usam para suas
 próprias condições.
 
@@ -410,10 +410,10 @@ Lives** → **Output** → **Mostrar mensagem** (`Game Over!`) → **Jogo** →
 | Problema | Solução |
 |----------|---------|
 | O jogador cai através do chão | Verifique se `obj_ground` tem "Solid" marcado |
-| O jogador não consegue saltar | Verifique se o evento Key Press → Up Arrow existe e se Set Vertical Speed é negativo |
-| O jogador continua subindo após a aterrissagem | Certifique-se de que Collision with obj_ground tem uma ação Stop Movement |
-| O salto parece flutuante | Aumente o valor Gravity de Set Gravity, ou torne o valor de salto de Set Vertical Speed mais negativo |
-| O salto parece fraco demais | Diminua o valor Gravity de Set Gravity, ou torne o valor de salto de Set Vertical Speed mais negativo |
+| O jogador não consegue saltar | Verifique se o evento Key Press → Up Arrow existe e se Definir velocidade vertical é negativo |
+| O jogador continua subindo após a aterrissagem | Certifique-se de que Collision with obj_ground tem uma ação Parar movimento |
+| O salto parece flutuante | Aumente o valor Gravity de Definir gravidade, ou torne o valor de salto de Definir velocidade vertical mais negativo |
+| O salto parece fraco demais | Diminua o valor Gravity de Definir gravidade, ou torne o valor de salto de Definir velocidade vertical mais negativo |
 
 ---
 
@@ -421,7 +421,7 @@ Lives** → **Output** → **Mostrar mensagem** (`Game Over!`) → **Jogo** →
 
 Parabéns! Você criou um jogo de plataforma! Você aprendeu:
 
-- **Física da gravidade** - Set Gravity aplica uma força constante para baixo a cada passo
+- **Física da gravidade** - Definir gravidade aplica uma força constante para baixo a cada passo
 - **Mecânicas de salto** - Um evento Key Press (não held) dá um único impulso de velocidade para cima
 - **Colisão sólida integrada** - O chão bloqueia o jogador automaticamente assim que marcado Solid, sem código manual de verificação de posição
 - **Perigos** - Criar objetos que reiniciam o nível
