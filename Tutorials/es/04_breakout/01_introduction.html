@@ -10,43 +10,63 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
-    <h1>Breakout: Juego de Romper Ladrillos</h1>
+    <h1>Breakout: rompe los ladrillos</h1>
 
     <div class="game-preview">
         <img src="thumbnails/04_breakout.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#129521;</p>
         <p><strong>BREAKOUT</strong></p>
-        <p>¡Rompe todos los ladrillos con tu pelota y paleta!</p>
+        <p>¡Rompe todos los ladrillos con la pelota y la pala!</p>
     </div>
 
-    <h2>Lo Que Crearemos</h2>
-    <p>En este tutorial, construirás un juego clásico de Breakout:</p>
-    <ul>
-        <li>Una paleta que se mueve a izquierda y derecha con las teclas de flecha</li>
-        <li>Una pelota que rebota por la pantalla</li>
-        <li>Filas de ladrillos coloridos para destruir</li>
-        <li>Seguimiento de puntuación al romper ladrillos</li>
-        <li>Sistema de vidas - pierdes una vida cuando la pelota cae</li>
-    </ul>
+    <h2>Lo que vamos a crear</h2>
+    <p>En este tutorial construirás paso a paso un Breakout clásico con
+    <strong>bloques visuales de Blockly</strong>. En lugar de construirlo todo antes de probar,
+    avanzaremos poco a poco &mdash; ¡tendrás un juego jugable al final de cada fase!</p>
 
-    <h2>Lo Que Aprenderás</h2>
+    <h2>Cómo funciona este tutorial</h2>
+
+    <div class="phase">
+        <strong>Fase 1 &mdash; Una pelota que rebota</strong><br>
+        Crea una pala, una pelota y paredes. La pelota rebota por todas partes ¡y puedes jugar enseguida!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; La primera fila de ladrillos</strong><br>
+        Añade una fila de ladrillos que romper. Aprende qué son los objetos padre y la puntuación.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Más filas de ladrillos</strong><br>
+        Añade filas de ladrillos de colores, cada una con su propio valor en puntos.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 4 &mdash; Controlador del juego</strong><br>
+        Añade un sistema de vidas y muestra la puntuación en pantalla.
+    </div>
+
+    <h2>Lo que aprenderás</h2>
     <ul>
-        <li>Controles de teclado para el movimiento de la paleta</li>
-        <li>Mecánicas de rebote de la pelota</li>
-        <li>Destruir objetos en colisión</li>
-        <li>Seguimiento de puntuación y vidas</li>
-        <li>Usar objetos padre para ladrillos similares</li>
+        <li>Usar <strong>bloques visuales de Blockly</strong> para programar el comportamiento del juego</li>
+        <li>Controles de teclado para mover la pala</li>
+        <li>Rebotes de la pelota con bloques de inversión del movimiento</li>
+        <li>Destruir objetos al chocar</li>
+        <li>Usar <strong>objetos padre</strong> para ladrillos parecidos</li>
+        <li>Llevar la puntuación y las vidas</li>
     </ul>
 
     <div class="highlight">
-        <strong>Tiempo Requerido:</strong> Aproximadamente 25-30 minutos
+        <strong>Tiempo necesario:</strong> unos 25&ndash;30 minutos
     </div>
 
     <div class="info">
-        <strong>¿Listo?</strong> ¡Haz clic en "Siguiente" para comenzar a crear tus sprites!
+        <strong>¿Listo?</strong> ¡Haz clic en «Siguiente» para crear tus primeros sprites!
     </div>
 </body>
 </html>

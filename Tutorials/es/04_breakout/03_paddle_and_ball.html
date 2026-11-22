@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Objetos, pala y pelota</h1>
+
+    <p>¡Vamos a crear los objetos del juego y programarlos para poder probarlo rápido!</p>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Crear los objetos</h2>
+    <p>Necesitamos dos tipos de pared distintos para que la pelota sepa en qué dirección rebotar.</p>
+
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> &rarr; <strong>Crear objeto</strong></li>
+            <li>Crea <code>obj_wall_side</code> &mdash; sprite: <code>spr_wall</code>, marca <strong>Sólido</strong></li>
+            <li>Crea <code>obj_wall_top</code> &mdash; sprite: <code>spr_wall</code>, marca <strong>Sólido</strong></li>
+            <li>Crea <code>obj_paddle</code> &mdash; sprite: <code>spr_paddle</code>, marca <strong>Sólido</strong></li>
+            <li>Crea <code>obj_ball</code> &mdash; sprite: <code>spr_ball</code>, deja Sólido <strong>sin marcar</strong></li>
+            <li>Crea <code>obj_death_zone</code> &mdash; sprite: <code>spr_death_zone</code>, desmarca <strong>Visible</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>¿Por qué dos tipos de pared?</strong> Cuando la pelota choca con una pared lateral, invierte su
+        dirección horizontal. Cuando choca con la pared de arriba, invierte su dirección vertical.
+        ¡Con dos objetos podemos programar rebotes distintos!
+    </div>
+
+    <!-- ============= PADDLE ============= -->
+    <h2>Programar la pala</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_paddle</code> para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Cómo funciona Blockly:</strong> arrastra bloques desde la caja de herramientas de la izquierda al área de trabajo.
+        Encaja bloques de acción dentro de bloques de evento para indicar qué ocurre.
+        Tus bloques se guardan automáticamente en el panel de eventos mientras editas.
+    </div>
+
+    <h2>Mover a la izquierda</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-8</span></span>
+        </div>
+        <p>Busca <strong>Keyboard (held)</strong> en <em>Events</em> y elige <strong>Left Arrow</strong>.
+        Luego encaja <strong>Set Horizontal Speed</strong> de <em>Movement</em> dentro.
+        Escribe <strong>-8</strong> (negativo = izquierda).</p>
+    </div>
+
+    <h2>Mover a la derecha</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">8</span></span>
+        </div>
+        <p>Igual que arriba, pero elige <strong>Right Arrow</strong> y escribe <strong>8</strong> (positivo = derecha).</p>
+    </div>
+
+    <h2>Detenerse cuando no se pulsa ninguna tecla</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Así la pala no sigue deslizándose sin fin cuando sueltas la tecla.</p>
+    </div>
+
+    <h2>Detenerse en las paredes laterales</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Así la pala se queda dentro de la zona de juego.</p>
+    </div>
+
+    <div class="step">
+        <p>Deberías tener <strong>4 bloques de evento</strong>.</p>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Programar la pelota</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_ball</code> para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Poner la pelota en movimiento</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-3</span></span>
+        </div>
+        <p>El evento <strong>When created</strong> se ejecuta una vez cuando empieza el juego.
+        Con las dos velocidades, la pelota sube en diagonal.</p>
+    </div>
+
+    <div class="info">
+        <strong>¿Por qué dos velocidades?</strong> La velocidad horizontal (3) mueve la pelota de lado.
+        La velocidad vertical (-3) la mueve hacia arriba (negativo = arriba). ¡Juntas, la pelota va en diagonal!
+    </div>
+
+    <h2>Rebotar en las paredes laterales</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Reverse horizontal movement</span>
+        </div>
+        <p>La pelota invierte su dirección izquierda/derecha al chocar con una pared lateral.</p>
+    </div>
+
+    <h2>Rebotar en la pared de arriba</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_top</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>La pelota rebota hacia abajo al chocar con la pared de arriba.</p>
+    </div>
+
+    <h2>Rebotar en la pala</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_paddle</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>Igual que con la pared de arriba &mdash; la pelota rebota hacia arriba.</p>
+    </div>
+
+    <h2>La pelota cae fuera de la pantalla</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p>Cuando la pelota toca la zona mortal de abajo, reaparece encima de la pala.
+        Las vidas las añadiremos más adelante &mdash; ¡de momento la pelota simplemente vuelve!</p>
+    </div>
+
+    <div class="step">
+        <p>Deberías tener <strong>5 bloques de evento</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Cómo funciona el rebote:</strong> la pelota siempre se mueve en diagonal. Cuando choca con una
+        superficie vertical (pared lateral), invertimos el movimiento horizontal. Cuando choca con una superficie
+        horizontal (pared de arriba, pala), invertimos el movimiento vertical. ¡Así el rebote parece real!
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para crear la sala y jugar a tu juego.
+    </div>
+</body>
+</html>

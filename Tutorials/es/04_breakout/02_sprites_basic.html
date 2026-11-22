@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Crear los sprites</h1>
+
+    <p>Empezamos solo con lo que necesita un juego de pelota que rebota &mdash; ¡todavía sin ladrillos!
+    Cada sprite puedes <strong>dibujarlo tú mismo</strong> o <strong>cargarlo desde una imagen de ejemplo</strong>.</p>
+
+    <table>
+        <tr><th>Sprite</th><th>Tamaño</th><th>Descripción</th></tr>
+        <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Círculo amarillo pequeño</td></tr>
+        <tr><td><code>spr_paddle</code></td><td>64&times;16</td><td>Rectángulo azul ancho</td></tr>
+        <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Motivo de ladrillo gris</td></tr>
+        <tr><td><code>spr_death_zone</code></td><td>32&times;32</td><td>Rectángulo oscuro (invisible en el juego)</td></tr>
+    </table>
+
+    <!-- ================================================== -->
+    <h2>spr_ball (16&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>En el árbol de recursos, haz clic derecho en <strong>Sprites</strong> y elige <strong>Crear sprite</strong></li>
+            <li>Llámalo <code>spr_ball</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Haz doble clic en <code>spr_ball</code> para abrir el editor de sprites</li>
+                <li>Dibuja un círculo pequeño de un color vivo, como <strong>amarillo</strong> o blanco</li>
+                <li>Mantén el tamaño en <strong>16&times;16 píxeles</strong></li>
+                <li>Guarda tu trabajo con <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Haz clic derecho en <code>spr_ball</code> en el árbol de recursos</li>
+                <li>Elige <strong>Importar imagen...</strong></li>
+                <li>Busca <code>Tutorials/04_breakout/assets/</code> dentro de la carpeta de PyGameMaker</li>
+                <li>Elige <code>spr_ball.png</code> y haz clic en Abrir</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_paddle (64&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_paddle</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Abre el editor de sprites y dibuja un rectángulo ancho y plano</li>
+                <li>Usa un color vivo, como <strong>azul</strong></li>
+                <li>Tamaño: <strong>64&times;16 píxeles</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic derecho en <code>spr_paddle</code> &rarr; <strong>Importar imagen...</strong></li>
+                <li>Elige <code>Tutorials/04_breakout/assets/spr_paddle.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_wall (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Dibuja un motivo de ladrillo o de piedra en tonos <strong>grises</strong></li>
+                <li>Tamaño: <strong>32&times;32 píxeles</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic derecho en <code>spr_wall</code> &rarr; <strong>Importar imagen...</strong></li>
+                <li>Elige <code>Tutorials/04_breakout/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_death_zone (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_death_zone</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Dibuja un rectángulo relleno de cualquier color (por ejemplo, rojo oscuro)</li>
+                <li>Tamaño: <strong>32&times;32 píxeles</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic derecho en <code>spr_death_zone</code> &rarr; <strong>Importar imagen...</strong></li>
+                <li>Elige <code>Tutorials/04_breakout/assets/spr_death_zone.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="info">
+        <strong>Para aprender:</strong> con <strong>Importar imagen</strong> puedes cargar cualquier archivo PNG, GIF
+        o BMP como sprite. Es útil cuando tienes dibujos hechos con otro programa
+        o imágenes de ejemplo que acompañan a un tutorial.
+    </div>
+
+    <div class="highlight">
+        <strong>¡Por ahora, nada más!</strong> Para empezar solo necesitamos 4 sprites.
+        Los sprites de los ladrillos los añadiremos cuando los necesitemos.
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para crear los objetos y programar la pala y la pelota.
+    </div>
+</body>
+</html>

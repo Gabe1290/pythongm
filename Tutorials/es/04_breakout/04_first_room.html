@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Crear la sala &mdash; ¡a jugar!</h1>
+
+    <p>¡Es hora de construir la sala y probar tu juego! Pondremos paredes alrededor de los bordes,
+    una zona mortal abajo, una pala y la pelota.</p>
+
+    <h2>Crear la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Salas</strong> y elige <strong>Crear sala</strong></li>
+            <li>Llámala <code>room_breakout</code></li>
+            <li>Pon el tamaño en <strong>640&times;480</strong> píxeles</li>
+        </ol>
+    </div>
+
+    <h2>Distribución de la sala</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+S = Side Wall (obj_wall_side)
+T = Top Wall (obj_wall_top)
+D = Death Zone (obj_death_zone, invisible)
+(o) = Ball</pre>
+
+    <h2>Colocar los objetos</h2>
+
+    <h3>1. Paredes laterales</h3>
+    <div class="step">
+        <p>Coloca <code>obj_wall_side</code> a lo largo de los bordes <strong>izquierdo y derecho</strong>,
+        de arriba abajo. Apílalas en vertical para formar columnas macizas.</p>
+    </div>
+
+    <h3>2. Pared de arriba</h3>
+    <div class="step">
+        <p>Coloca <code>obj_wall_top</code> a lo largo del borde <strong>superior</strong>,
+        entre las paredes laterales.</p>
+    </div>
+
+    <h3>3. Zona mortal</h3>
+    <div class="step">
+        <p>Coloca <code>obj_death_zone</code> a lo largo del borde <strong>inferior</strong>.
+        Será invisible al jugar &mdash; atrapa la pelota cuando cae.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> ¡abajo NO hay pared! Por el borde inferior abierto
+        puede escaparse la pelota. La zona mortal invisible detecta cuándo ocurre.
+    </div>
+
+    <h3>4. Pala</h3>
+    <div class="step">
+        <p>Coloca <code>obj_paddle</code> cerca de la parte inferior de la sala, centrada en horizontal.</p>
+    </div>
+
+    <h3>5. Pelota</h3>
+    <div class="step">
+        <p>Coloca <code>obj_ball</code> justo encima de la pala, cerca del centro de la sala.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Usa las flechas <strong>izquierda</strong> y <strong>derecha</strong> para mover la pala</li>
+            <li>La pelota debería rebotar en las paredes y en la pala</li>
+            <li>Cuando la pelota pasa por debajo de la pala, reaparece en el centro</li>
+        </ul>
+        <p>Si algo no funciona, vuelve atrás y revisa tus bloques de Blockly.
+        Tus cambios se guardan automáticamente mientras editas, así que los bloques de la pala y la pelota ya están activos.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>¡Bien hecho!</strong> Ya tienes un juego jugable con una pelota que rebota.
+        ¡Ahora vamos a hacerlo más interesante con ladrillos que romper!
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para añadir tu primera fila de ladrillos.
+    </div>
+</body>
+</html>
