@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Spieler und Wände</h1>
+
+    <p>Wir erstellen einen Spieler, der in einem ummauerten Raum auf einem Raster läuft!</p>
+
+    <h2>Die Sprites erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke im Asset-Baum auf <strong>Sprites</strong> &rarr; <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_player</code> (32&times;32 Pixel)</li>
+            <li>Zeichne eine einfache Figur oder importiere sie aus <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Drücke <strong>Strg+S</strong> zum Speichern</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Erstelle ein weiteres Sprite: <code>spr_wall</code> (32&times;32 Pixel)</li>
+            <li>Zeichne ein dunkles Ziegel- oder Steinmuster oder importiere es aus <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Drücke <strong>Strg+S</strong> zum Speichern</li>
+        </ol>
+    </div>
+
+    <h2>Die Objekte erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_wall</code> und setze sein Sprite auf <code>spr_wall</code></li>
+            <li>Setze ein Häkchen bei <strong>Fest</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Erstelle ein weiteres Objekt: <code>obj_player</code></li>
+            <li>Setze sein Sprite auf <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Den Spieler programmieren (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Nach rechts bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Pfeil rechts</span><br>
+            <span class="block block-move block-indent">Raster bewegen rechts Größe <span class="block-val">32</span></span>
+        </div>
+        <p>Suche <strong>Taste gedrückt</strong> in der Kategorie <em>Ereignisse</em> und wähle <strong>Pfeil rechts</strong>.
+        Suche dann <strong>Raster bewegen</strong> in der Kategorie <em>Bewegung</em>, setze die Richtung auf <strong>rechts</strong>
+        und die Größe auf <strong>32</strong>.</p>
+    </div>
+
+    <h2>Nach links, oben und unten bewegen</h2>
+    <div class="step">
+        <p>Wiederhole das für die anderen drei Richtungen:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Pfeil links</span><br>
+            <span class="block block-move block-indent">Raster bewegen links Größe <span class="block-val">32</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Pfeil oben</span><br>
+            <span class="block block-move block-indent">Raster bewegen oben Größe <span class="block-val">32</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Pfeil unten</span><br>
+            <span class="block block-move block-indent">Raster bewegen unten Größe <span class="block-val">32</span></span>
+        </div>
+        <p>Jedes Ereignis <strong>Taste gedrückt</strong> löst einmal pro Tastendruck aus &mdash; ideal für Rasterbewegung!</p>
+    </div>
+
+    <h2>An Wänden anhalten</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_wall</code> ein.
+        Stecke einen Block <strong>Bewegung stoppen</strong> hinein. So läuft der Spieler nicht durch Wände.</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>5 Ereignisblöcke</strong> haben (4 Tastatur + 1 Kollision).</p>
+    </div>
+
+    <h2>Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Räume</strong> &rarr; <strong>Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_sokoban</code></li>
+            <li>Setze die Größe auf <strong>320&times;320</strong> Pixel (ein Raster von 10&times;10)</li>
+            <li>Schalte das Einrasten am Raster ein: <strong>32&times;32</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Setze <code>obj_wall</code> rundherum an die Ränder, sodass ein geschlossener Raum entsteht</li>
+            <li>Füge innen ein paar Wände hinzu, damit Gänge und Ecken entstehen</li>
+            <li>Setze <code>obj_player</code> irgendwo in den Raum</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert es:</strong> Ein Druck auf eine Pfeiltaste bewegt den Spieler genau 32 Pixel (eine Rasterzelle).
+        Trifft der Spieler eine Wand, löst das Kollisionsereignis aus und stoppt die Bewegung.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Lauf mit den <strong>Pfeiltasten</strong> herum</li>
+            <li>Der Spieler bewegt sich pro Tastendruck genau eine Zelle</li>
+            <li>Wände blockieren dich &mdash; du kannst nicht durch sie hindurchlaufen</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Kisten zum Schieben hinzuzufügen!
+    </div>
+</body>
+</html>

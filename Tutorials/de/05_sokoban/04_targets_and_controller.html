@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Ziele und Spiel-Controller</h1>
+
+    <p>Wir stellen das Spiel fertig: mit Zielfeldern, sichtbarer Rückmeldung und einem Controller mit Anleitung!</p>
+
+    <h2>Die Sprites für Ziel und richtig platzierte Kiste erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite: <code>spr_target</code> (32&times;32 Pixel)</li>
+            <li>Zeichne ein rotes oder gelbes X, eine Raute oder einen Kreis, um das Zielfeld zu markieren</li>
+            <li>Oder importiere es aus <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Drücke <strong>Strg+S</strong> zum Speichern</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite: <code>spr_crate_ok</code> (32&times;32 Pixel)</li>
+            <li>Zeichne eine grüne Version deiner Kiste &mdash; sie zeigt eine richtig platzierte Kiste</li>
+            <li>Drücke <strong>Strg+S</strong> zum Speichern</li>
+        </ol>
+    </div>
+
+    <h2>Das Ziel-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_target</code> und setze sein Sprite auf <code>spr_target</code></li>
+            <li>Setze <strong>KEIN</strong> Häkchen bei Fest &mdash; Spieler und Kisten müssen über die Ziele gehen können</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Warum nicht fest?</strong> Ziele sind Bodenmarkierungen. Der Spieler läuft darüber und
+        Kisten stehen darauf. Wären die Ziele fest, könnte nichts sie erreichen!
+    </div>
+
+    <h2>Die Kiste programmieren: sichtbare Rückmeldung</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_crate</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge ein Ereignis <strong>Jeden Schritt</strong> mit einer Wenn/Sonst-Prüfung hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Jeden Schritt</span><br>
+            <span class="block block-control block-indent">Wenn Kollision X-Versatz: 0 Y-Versatz: 0 Gegen: <span class="block-val">obj_target</span> Umkehren: &#9744;</span><br>
+            <span class="block block-instance block-indent2">Setze Sprite auf <span class="block-val">spr_crate_ok</span></span><br>
+            <span class="block block-control block-indent">Sonst</span><br>
+            <span class="block block-instance block-indent2">Setze Sprite auf <span class="block-val">spr_crate</span></span>
+        </div>
+        <p>Suche <strong>Jeden Schritt</strong> in der Kategorie <em>Ereignisse</em>.
+        Suche dann <strong>Wenn Kollision</strong> in der Kategorie <em>Steuerung</em>, lass den X- und Y-Versatz auf <code>0</code>,
+        setze <strong>Gegen</strong> auf <code>obj_target</code> und lass <strong>Umkehren</strong> ohne Häkchen.
+        Stecke für den Fall „dann“ einen Block <strong>Setze Sprite auf</strong> (aus <em>Instanz</em>) mit <code>spr_crate_ok</code> hinein.
+        Füge einen Abschnitt <strong>Sonst</strong> mit einem weiteren Block <strong>Setze Sprite auf</strong> für <code>spr_crate</code> hinzu.</p>
+    </div>
+
+    <div class="info">
+        <strong>Sichtbare Rückmeldung:</strong> Steht eine Kiste auf einem Ziel, wird sie grün. Wird sie heruntergeschoben, bekommt sie wieder ihre normale Farbe.
+        So sieht der Spieler, welche Kisten richtig stehen!
+    </div>
+
+    <h2>Den Spiel-Controller erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne ihn <code>obj_controller</code></li>
+            <li>Dieses Objekt braucht kein Sprite</li>
+        </ol>
+    </div>
+
+    <h2>Den Controller programmieren: Anleitung zeichnen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_controller</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge ein Ereignis <strong>Beim Zeichnen</strong> hinzu, das die Anleitung zeigt:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-draw block-indent">Text zeichnen <span class="block-val">"Push crates onto targets!"</span> bei <span class="block-val">10</span>, <span class="block-val">10</span></span>
+        </div>
+        <p>Suche <strong>Beim Zeichnen</strong> in der Kategorie <em>Ereignisse</em>.
+        Suche dann <strong>Text zeichnen</strong> in der Kategorie <em>Zeichnen</em>.
+        Gib als Text <code>Push crates onto targets!</code> ein und setze X auf <strong>10</strong>, Y auf <strong>10</strong>.</p>
+    </div>
+
+    <h2>Den Controller programmieren: Level neu starten</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: R</span><br>
+            <span class="block block-game block-indent">Raum neu starten</span>
+        </div>
+        <p>Suche <strong>Taste gedrückt</strong> in <em>Ereignisse</em> und wähle <strong>R</strong>.
+        Suche dann <strong>Raum neu starten</strong> in der Kategorie <em>Raum</em>.
+        So kann der Spieler das Rätsel zurücksetzen, wenn er feststeckt!</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>2 Ereignisblöcke</strong> haben (Beim Zeichnen + Taste R).</p>
+    </div>
+
+    <h2>Den Raum ändern</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_sokoban</code></li>
+            <li>Setze Instanzen von <code>obj_target</code> dorthin, wo die Kisten landen sollen</li>
+            <li>Achte darauf, dass die <strong>Zahl der Ziele gleich der Zahl der Kisten</strong> ist</li>
+            <li>Setze <code>obj_controller</code> irgendwo in den Raum (er hat kein Sprite und ist daher unsichtbar)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Wichtig:</strong> Die Zahl der Kisten MUSS gleich der Zahl der Ziele sein!
+        Bei 2 Kisten setzt du genau 2 Ziele.
+    </div>
+
+    <div class="highlight">
+        <strong>Setze zuerst die Ziele!</strong> Das Spiel zeichnet die Dinge in der Reihenfolge, in der du sie in den Raum gesetzt hast. Ein
+        Ziel, das du <em>nach</em> einer Kiste oder dem Spieler setzt, wird darüber gezeichnet &mdash; eine Kiste auf einem Ziel sähe dann
+        rot statt grün aus und der Spieler schiene auf einem Ziel zu verschwinden. Also: Setze die Ziele, dann
+        <strong>lösche Spieler und Kisten und setze sie erneut</strong> darüber.
+    </div>
+
+    <h2>Beispiel für einen Levelaufbau</h2>
+    <pre>
+W W W W W W W W W W
+W . . . . . . . . W
+W . P . . . C . . W
+W . . W W . . . . W
+W . . W T . . C . W
+W . . . . . W W . W
+W . T . . . . . . W
+W . . . . . . . . W
+W . . . . . . . . W
+W W W W W W W W W W
+
+W = Wall     T = Target
+P = Player   C = Crate
+. = Empty</pre>
+
+    <div class="info">
+        <strong>Tipp:</strong> Fang mit einem einfachen Rätsel an! Prüfe im Kopf, ob der Spieler es wirklich lösen kann,
+        bevor du die Objekte setzt.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Lauf mit den <strong>Pfeiltasten</strong> und schiebe Kisten</li>
+            <li>Schiebe jede Kiste auf ein Zielfeld &mdash; sie wird <strong>grün</strong>!</li>
+            <li>Sind alle Kisten grün, hast du das Rätsel gelöst</li>
+            <li>Drücke <strong>R</strong>, um das Level neu zu starten, wenn du feststeckst</li>
+            <li>Die Anleitung erscheint oben am Bildschirm</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="text-align: center;"><strong>Glückwunsch!</strong> Dein Sokoban-Spiel ist fertig!</p>
+    </div>
+
+    <h2>Ideen für Herausforderungen</h2>
+    <div class="challenge">
+        <ul>
+            <li><strong>Schwerere Level:</strong> Erstelle neue Räume mit mehr Kisten und engeren Gängen</li>
+            <li><strong>Zugzähler:</strong> Füge eine Variable hinzu, die die Züge des Spielers zählt</li>
+            <li><strong>Mehrere Räume:</strong> Erstelle mehrere Räume mit steigender Schwierigkeit und verwende <code>Gehe zum nächsten Raum</code>, wenn alle Kisten stehen</li>
+            <li><strong>Rückgängig:</strong> Speichere die vorherige Position und lass den Spieler mit U den letzten Zug zurücknehmen</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Kisten schieben</h1>
+
+    <p>Jetzt fügen wir Kisten hinzu, die der Spieler schieben kann &mdash; das Herzstück von Sokoban!</p>
+
+    <h2>Das Kisten-Sprite erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Sprites</strong> &rarr; <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_crate</code> (32&times;32 Pixel)</li>
+            <li>Zeichne eine braune Kiste oder importiere sie aus <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Drücke <strong>Strg+S</strong> zum Speichern</li>
+        </ol>
+    </div>
+
+    <h2>Das Kisten-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_crate</code> und setze sein Sprite auf <code>spr_crate</code></li>
+            <li>Setze ein Häkchen bei <strong>Fest</strong></li>
+        </ol>
+    </div>
+
+    <h2>Den Spieler ändern: Kisten schieben</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge ein neues Kollisionsereignis für <code>obj_crate</code> hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_crate</span><br>
+            <span class="block block-control block-indent">Wenn schiebbar <span class="block-val">box</span> in Richtung <span class="block-val">facing</span> dann <span class="block-val">push and move</span> sonst <span class="block-val">stop movement</span></span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_crate</code> ein.
+        Suche dann <strong>Wenn schiebbar</strong> in <em>Steuerung</em> &mdash; ein einzelner Block, der prüft,
+        ob die Kiste in die Laufrichtung des Spielers geschoben werden kann, und das Schieben selbst erledigt:
+        <strong>Objekttyp</strong> <code>box</code>, <strong>Richtung</strong> <code>facing</code>,
+        <strong>Dann-Aktion</strong> <code>push and move</code>, <strong>Sonst-Aktion</strong>
+        <code>stop movement</code>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert das Schieben:</strong> Stößt der Spieler gegen eine Kiste, prüft die Engine,
+        ob der Platz hinter der Kiste (in Laufrichtung des Spielers) frei ist.
+        Ist er frei, wird die Kiste eine Zelle weitergeschoben. Steht dahinter eine Wand oder eine andere Kiste,
+        ist das Schieben blockiert.
+    </div>
+
+    <h2>Die Kiste programmieren: an Wänden anhalten</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_crate</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge ein Kollisionsereignis für <code>obj_wall</code> hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>So halten Kisten an, wenn sie gegen eine Wand stoßen.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Den Raum ändern</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_sokoban</code></li>
+            <li>Setze 2&ndash;3 Instanzen von <code>obj_crate</code> in den Raum</li>
+            <li>Achte darauf, dass jede Kiste Platz zum Schieben hat</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Tipp:</strong> Stell keine Kiste direkt in eine Ecke &mdash; sie säße sofort fest!
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Geh zu einer Kiste und schiebe sie mit den <strong>Pfeiltasten</strong></li>
+            <li>Kisten bewegen sich beim Schieben eine Zelle weiter</li>
+            <li>Kisten halten an, wenn sie gegen eine Wand stoßen</li>
+            <li>Du kannst keine Kiste schieben, hinter der eine andere Kiste oder eine Wand steht</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Ziele hinzuzufügen und das Spiel fertigzustellen!
+    </div>
+</body>
+</html>
