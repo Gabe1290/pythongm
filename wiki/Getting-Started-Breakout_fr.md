@@ -124,7 +124,7 @@ Ce que l'on veut dans un casse-brique, c'est éviter que la gentille baballe ne 
 
 **Se Déplacer à Droite :**
 1. Cliquez sur **Add Event** → **Keyboard** → **Flèche Droite**
-2. Depuis le panneau d'actions à droite, ajoutez l'action **Set Horizontal Speed**
+2. Depuis le panneau d'actions à droite, ajoutez l'action **Définir la vitesse horizontale**
 3. Mettez la **valeur** à `5`
 4. Cliquez sur **OK**
 
@@ -132,7 +132,7 @@ Cela signifie : "Quand la touche Flèche Droite est enfoncée, définir la vites
 
 **Se Déplacer à Gauche :**
 1. Cliquez sur **Add Event** → **Keyboard** → **Flèche Gauche**
-2. Ajoutez l'action **Set Horizontal Speed**
+2. Ajoutez l'action **Définir la vitesse horizontale**
 3. Mettez la **valeur** à `-5`
 4. Cliquez sur **OK**
 
@@ -140,12 +140,12 @@ Cela signifie : "Quand la touche Flèche Droite est enfoncée, définir la vites
 
 Si nous testons maintenant, la batte continuerait de bouger même après avoir relâché la touche ! Corrigeons cela :
 
-1. Cliquez sur **Add Event** → **Keyboard Release** → **Flèche Droite**
-2. Ajoutez l'action **Set Horizontal Speed** avec la valeur `0`
+1. Cliquez sur **Add Event** → **Relâchement d'une touche** → **Flèche Droite**
+2. Ajoutez l'action **Définir la vitesse horizontale** avec la valeur `0`
 3. Cliquez sur **OK**
 
-4. Cliquez sur **Add Event** → **Keyboard Release** → **Flèche Gauche**
-5. Ajoutez l'action **Set Horizontal Speed** avec la valeur `0`
+4. Cliquez sur **Add Event** → **Relâchement d'une touche** → **Flèche Gauche**
+5. Ajoutez l'action **Définir la vitesse horizontale** avec la valeur `0`
 6. Cliquez sur **OK**
 
 Maintenant la batte bouge quand les touches sont enfoncées et s'arrête quand elles sont relâchées. Nous n'avons plus rien à faire pour cet objet pour le moment !
@@ -178,10 +178,10 @@ Nous allons maintenant créer la balle, élément important de notre petit jeu.
 
 Nous voulons que la balle bouge par elle-même dès le début. Donnons-lui une vitesse et une direction de départ.
 
-1. Cliquez sur **Add Event** → **Create**
+1. Cliquez sur **Add Event** → **Création**
    > L'événement Create s'exécute lorsque l'objet est créé dans le jeu, donc au moment où il entre en scène.
-2. Ajoutez l'action **Set Horizontal Speed** avec la valeur `4`
-3. Ajoutez l'action **Set Vertical Speed** avec la valeur `-4`
+2. Ajoutez l'action **Définir la vitesse horizontale** avec la valeur `4`
+3. Ajoutez l'action **Définir la vitesse verticale** avec la valeur `-4`
 4. Cliquez sur **OK**
 
 Cela donne à la balle un mouvement diagonal (droite et haut) au début du jeu.
@@ -192,7 +192,7 @@ Il faut maintenant faire rebondir notre balle lorsqu'elle entre en collision ave
 
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_batte`
    > Cet événement se déclenche quand la balle entre en collision avec la batte.
-2. Ajoutez l'action **Reverse Vertical**
+2. Ajoutez l'action **Inverser verticalement**
    > Cela inverse la direction verticale, faisant rebondir la balle.
 3. Cliquez sur **OK**
 
@@ -201,8 +201,8 @@ Il faut maintenant faire rebondir notre balle lorsqu'elle entre en collision ave
 Même opération pour les blocs murs :
 
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_bloc_3`
-2. Ajoutez l'action **Reverse Vertical**
-3. Ajoutez l'action **Reverse Horizontal**
+2. Ajoutez l'action **Inverser verticalement**
+3. Ajoutez l'action **Inverser horizontalement**
    > On ajoute les deux car la balle peut toucher le mur sous différents angles.
 4. Cliquez sur **OK**
 
@@ -253,7 +253,7 @@ Nous allons maintenant rajouter quelques blocs à casser, pour rendre notre jeu 
 Nous allons simplement rajouter le fait qu'il se détruise au contact de la balle :
 
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_balle`
-2. Ajoutez l'action **Destroy Instance** avec la cible **self**
+2. Ajoutez l'action **Détruire une instance** avec la cible **self**
    > Cette action sert à effacer un objet pendant le jeu, en l'occurrence ici le bloc lui-même.
 3. Cliquez sur **OK**
 
@@ -277,11 +277,11 @@ Cliquez sur **OK** pour sauvegarder.
 Rouvrez `obj_balle` en double-cliquant dessus, et ajoutez des événements de collision pour nos nouveaux blocs :
 
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_bloc_1`
-2. Ajoutez l'action **Reverse Vertical**
+2. Ajoutez l'action **Inverser verticalement**
 3. Cliquez sur **OK**
 
 4. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_bloc_2`
-5. Ajoutez l'action **Reverse Vertical**
+5. Ajoutez l'action **Inverser verticalement**
 6. Cliquez sur **OK**
 
 ---
@@ -292,8 +292,8 @@ Nous allons aussi faire en sorte que le niveau redémarre si la balle sort de l'
 
 Dans `obj_balle` :
 
-1. Cliquez sur **Add Event** → **Other** → **Outside Room**
-2. Ajoutez l'action **Restart Room**
+1. Cliquez sur **Add Event** → **Other** → **Hors de la salle**
+2. Ajoutez l'action **Redémarrer la salle**
    > Cette action sert à redémarrer la room en cours de jeu.
 3. Cliquez sur **OK**
 

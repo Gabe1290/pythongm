@@ -78,7 +78,7 @@ Dans ce tutoriel, nous allons créer un jeu simple « Attrape les étoiles » o�
 3. Définissez le **Sprite** sur `spr_etoile`
 
 ### Ajouter l'événement Create
-1. Cliquez sur **Ajouter un événement** > **Create**
+1. Cliquez sur **Ajouter un événement** > **Création**
 2. Ajoutez l'action : **Définir la vitesse verticale** avec la valeur `3`
 
 ### Ajouter la collision avec le joueur

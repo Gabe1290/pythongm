@@ -86,10 +86,10 @@ la grille comme des murs — le plus simple est un objet par hauteur
 (`obj_step_8`, `obj_step_16`, …).
 
 - **Monter :** tout ce qui bouge (le joueur, les monstres) peut monter une
-  marche d'au plus **Max Step** pixels (dans Activer la vue Raycast, 12 par
+  marche d'au plus **Marche maximale** pixels (dans Activer la vue Raycast, 12 par
   défaut) ; une marche plus haute l'arrête comme un mur, et il glisse le long.
   **Descendre** est toujours permis. La vue monte et descend en douceur.
-- **De la place au-dessus :** augmentez **Wall Height** (par exemple `3`) — à
+- **De la place au-dessus :** augmentez **Hauteur des murs** (par exemple `3`) — à
   la valeur par défaut, 1.5, il n'y a de la place que pour 20 px de sol sous le
   plafond (les sols plus hauts sont ramenés à 20 px).
 - **Deux variables sur chaque instance qui bouge :** `raycast_step_blocked`

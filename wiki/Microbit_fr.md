@@ -114,7 +114,7 @@ Déclenchés sur l'objet de la micro:bit elle-même :
 | **Radio Message Received** | Une autre micro:bit du même groupe a envoyé un message. |
 
 Les noms des événements s'affichent en anglais dans l'éditeur. « Pour
-toujours » est l'événement **Step** habituel.
+toujours » est l'événement **Étape** habituel.
 
 ### Radio
 

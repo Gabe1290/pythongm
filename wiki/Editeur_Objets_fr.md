@@ -45,10 +45,10 @@ Les événements sont des déclencheurs qui provoquent l'exécution d'actions.
 
 | Événement | Quand il se déclenche |
 |-----------|----------------------|
-| **Create** | Une fois quand une instance est créée |
-| **Destroy** | Quand l'instance est détruite |
-| **Step** | À chaque frame du jeu (60 fois par seconde) |
-| **Draw** | Pendant la phase de dessin |
+| **Création** | Une fois quand une instance est créée |
+| **Destruction** | Quand l'instance est détruite |
+| **Étape** | À chaque frame du jeu (60 fois par seconde) |
+| **Dessin** | Pendant la phase de dessin |
 | **Alarm [0-11]** | Quand un minuteur atteint zéro |
 
 ### Événements clavier

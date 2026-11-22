@@ -112,9 +112,9 @@ La sortie termine le niveau quand le joueur l'atteint.
 
 **Événement : Collision avec obj_player**
 1. Ajouter Événement → Collision → obj_player
-2. Ajouter Action : **Output** → **Show Message**
+2. Ajouter Action : **Output** → **Afficher un message**
    - Message : `Vous avez gagné !`
-3. Ajouter Action : **Room** → **Next Room** (ou **Restart Room** pour un seul niveau)
+3. Ajouter Action : **Salle** → **Salle suivante** (ou **Redémarrer la salle** pour un seul niveau)
 
 Le texte de Show Message est une chaîne fixe — il ne peut pas afficher une
 valeur en direct comme le temps écoulé. Le chronomètre reste visible dans le
@@ -167,7 +167,7 @@ Key**, chacun avec une action **Move** → **Set Horizontal/Vertical Speed** :
 
 **Événement : Collision avec obj_wall**
 1. Ajouter Événement → Collision → `obj_wall`
-2. Ajouter Action : **Move** → **Stop Movement**
+2. Ajouter Action : **Move** → **Arrêter le mouvement**
 
 Aucun code de vérification manuelle de position n'est nécessaire ici. La
 boucle de mouvement de ce moteur refuse déjà de déplacer une instance dans
@@ -188,8 +188,8 @@ Le contrôleur de jeu gère le chronomètre et affiche les informations.
 1. Créez un nouvel objet nommé `obj_game_controller`
 2. Pas de sprite nécessaire
 
-**Événement : Create** — démarrez le chronomètre avec **Control** →
-**Execute Code** (l'action Execute Code de ce projet exécute du vrai Python,
+**Événement : Create** — démarrez le chronomètre avec **Contrôle** →
+**Exécuter du code** (l'action Execute Code de ce projet exécute du vrai Python,
 pas le langage GameMaker) :
 
 ```python
@@ -203,7 +203,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Événement : Draw** — construisez le HUD avec de vraies commandes de la
-file de dessin. Ajoutez trois actions **Draw** → **Draw Text** :
+file de dessin. Ajoutez trois actions **Jeu** → **Dessiner du texte** :
 
 | Action Draw Text | Texte | Position |
 |---|---|---|
@@ -211,7 +211,7 @@ file de dessin. Ajoutez trois actions **Draw** → **Draw Text** :
 | 2ème | `Temps :` | X `10`, Y `30` |
 | 3ème | `Pièces :` | X `10`, Y `50` |
 
-puis trois actions **Draw** → **Draw Variable** juste après, pour afficher
+puis trois actions **Dessin** → **Dessiner une variable** juste après, pour afficher
 les valeurs en direct à côté de chaque étiquette :
 
 | Action Draw Variable | Variable | Position |
@@ -221,7 +221,7 @@ les valeurs en direct à côté de chaque étiquette :
 | 3ème | *(voir ci-dessous)* | X `70`, Y `50` |
 
 Il n'existe pas de compteur intégré "pièces restantes" — ajoutez une action
-**Control** → **Execute Code** de plus, juste avant les actions Draw
+**Contrôle** → **Exécuter du code** de plus, juste avant les actions Draw
 Variable, pour le calculer dans une variable d'instance que Draw Variable
 pourra ensuite lire :
 
@@ -305,44 +305,44 @@ Créez un ennemi qui patrouille simplement :
 Direction** (Directions : `right`, Speed : `2`)
 
 **Événement : Collision avec obj_wall** — Ajouter Action : **Move** →
-**Reverse Horizontal** (fait demi-tour à l'ennemi quand il touche un mur —
+**Inverser horizontalement** (fait demi-tour à l'ennemi quand il touche un mur —
 aucun code nécessaire ; combiné à la collision solide intégrée de l'étape
 6.2, l'ennemi ne peut de toute façon jamais traverser un mur)
 
-**Événement : Collision avec obj_player** — Ajouter Action : **Room** →
-**Restart Room**
+**Événement : Collision avec obj_player** — Ajouter Action : **Salle** →
+**Redémarrer la salle**
 
 ### Ajouter un Système de Vies
 
-Dans l'événement **Create** de `obj_game_controller`, ajoutez **Score** →
-**Set Lives** (Value : `3`).
+Dans l'événement **Création** de `obj_game_controller`, ajoutez **Score** →
+**Définir les vies** (Value : `3`).
 
 Dans l'événement **Collision avec obj_player** de `obj_enemy`, remplacez
-**Restart Room** par deux actions : **Score** → **Set Lives** (Value : `-1`,
-case **Relative** cochée), puis **Move** → **Jump to Start Position** (sur
+**Redémarrer la salle** par deux actions : **Score** → **Définir les vies** (Value : `-1`,
+case **Relatif** cochée), puis **Move** → **Sauter à la position de départ** (sur
 le joueur, via **Applies to: Other**) pour faire réapparaître le joueur au
 lieu de redémarrer tout le labyrinthe.
 
 Ajoutez un événement de plus à `obj_game_controller` : **Other Events** →
-**No More Lives** — il se déclenche automatiquement dès que les vies
+**Plus de vies** — il se déclenche automatiquement dès que les vies
 atteignent 0, inutile de le vérifier vous-même. Ajoutez **Output** → **Show
-Message** (`Game Over !`) puis **Room** → **Restart Game**.
+Message** (`Game Over !`) puis **Jeu** → **Redémarrer le jeu**.
 
 ### Ajouter des Clés et des Portes Verrouillées
 
-1. Créez `obj_key` — en collision avec `obj_player`, **Set Variable**
+1. Créez `obj_key` — en collision avec `obj_player`, **Définir une variable**
    (Variable : `global.has_key`, Value : `true`, Scope : `global`), puis
-   **Destroy Instance** (self).
+   **Détruire une instance** (self).
 2. Créez `obj_locked_door`, case Solid cochée. Donnez-lui un événement
-   **Step** avec **Control** → **Test Variable** (Variable :
+   **Étape** avec **Contrôle** → **Tester une variable** (Variable :
    `global.has_key`, Value : `true`, Scope : `global`) → **Instance** →
-   **Destroy Instance** (self) — la porte disparaît (et arrête de bloquer)
+   **Détruire une instance** (self) — la porte disparaît (et arrête de bloquer)
    dès que la clé est ramassée.
 
 ### Ajouter Plusieurs Niveaux
 
 1. Créez des rooms supplémentaires (`room_maze2`, `room_maze3`)
-2. Dans `obj_exit`, utilisez l'action **Next Room** au lieu de **Restart
+2. Dans `obj_exit`, utilisez l'action **Salle suivante** au lieu de **Restart
    Room**
 
 ### Ajouter des Effets Sonores

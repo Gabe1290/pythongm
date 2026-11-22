@@ -65,23 +65,23 @@ Maintenant, programmons la barre que le joueur contrôle.
 
 ### 2.2 Ajouter le Mouvement Flèche Droite
 1. Cliquez sur **Add Event** → **Keyboard** → sélectionnez **Flèche Droite**
-2. Ajoutez l'action **Set Horizontal Speed**
+2. Ajoutez l'action **Définir la vitesse horizontale**
 3. Mettez **value** à `5` (ou la vitesse que vous préférez)
 
 ### 2.3 Ajouter le Mouvement Flèche Gauche
 1. Cliquez sur **Add Event** → **Keyboard** → sélectionnez **Flèche Gauche**
-2. Ajoutez l'action **Set Horizontal Speed**
+2. Ajoutez l'action **Définir la vitesse horizontale**
 3. Mettez **value** à `-5`
 
 ### 2.4 Arrêter Quand les Touches sont Relâchées
 La barre continue de bouger même après avoir relâché la touche ! Corrigeons cela.
 
-1. Cliquez sur **Add Event** → **Keyboard Release** → sélectionnez **Flèche Droite**
-2. Ajoutez l'action **Set Horizontal Speed**
+1. Cliquez sur **Add Event** → **Relâchement d'une touche** → sélectionnez **Flèche Droite**
+2. Ajoutez l'action **Définir la vitesse horizontale**
 3. Mettez **value** à `0`
 
-4. Cliquez sur **Add Event** → **Keyboard Release** → sélectionnez **Flèche Gauche**
-5. Ajoutez l'action **Set Horizontal Speed**
+4. Cliquez sur **Add Event** → **Relâchement d'une touche** → sélectionnez **Flèche Gauche**
+5. Ajoutez l'action **Définir la vitesse horizontale**
 6. Mettez **value** à `0`
 
 Maintenant la barre s'arrête quand vous relâchez les touches.
@@ -98,8 +98,8 @@ Maintenant la barre s'arrête quand vous relâchez les touches.
 3. Cochez la case **Solid**
 
 ### 3.2 Définir le Mouvement Initial
-1. Cliquez sur **Add Event** → **Create**
-2. Ajoutez l'action **Start Moving (Direction)** (ou **Set Horizontal/Vertical Speed**)
+1. Cliquez sur **Add Event** → **Création**
+2. Ajoutez l'action **Commencer à bouger (direction)** (ou **Set Horizontal/Vertical Speed**)
 3. Définissez une direction diagonale avec vitesse `5`
    - Par exemple : **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ Cela fait bouger la balle dès le début du jeu.
 
 ### 3.3 Rebondir sur la Barre
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_barre`
-2. Ajoutez l'action **Reverse Vertical** (pour rebondir)
+2. Ajoutez l'action **Inverser verticalement** (pour rebondir)
 
 ### 3.4 Rebondir sur les Murs
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_mur`
-2. Ajoutez l'action **Reverse Horizontal** ou **Reverse Vertical** selon besoin
+2. Ajoutez l'action **Inverser horizontalement** ou **Inverser verticalement** selon besoin
    - Ou utilisez les deux pour gérer les rebonds dans les coins
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ Cela fait bouger la balle dès le début du jeu.
 
 ### 4.2 Détruire lors de la Collision avec la Balle
 1. Cliquez sur **Add Event** → **Collision** → sélectionnez `obj_balle`
-2. Ajoutez l'action **Destroy Instance** avec cible **self**
+2. Ajoutez l'action **Détruire une instance** avec cible **self**
 
 Cela détruit la brique quand la balle la touche !
 
 ### 4.3 Faire Rebondir la Balle
-**Reverse Vertical** s'applique toujours à l'instance dont c'est
+**Inverser verticalement** s'applique toujours à l'instance dont c'est
 l'événement — il n'y a pas d'option « appliquer à other » — donc ceci doit
 aller sur la balle, pas sur la brique :
 
 1. Retournez à `obj_balle` et ajoutez :
 2. **Add Event** → **Collision** → sélectionnez `obj_brique`
-3. Ajoutez l'action **Reverse Vertical**
+3. Ajoutez l'action **Inverser verticalement**
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Maintenant placez vos objets dans la salle :
 Votre jeu de casse-briques basique est terminé ! Voici quelques améliorations à essayer :
 
 ### Ajouter un Système de Vies
-- Ajoutez un événement **No More Lives** pour afficher "Game Over"
+- Ajoutez un événement **Plus de vies** pour afficher "Game Over"
 - Perdez une vie quand la balle sort par le bas
 
 ### Ajouter un Score
 - Utilisez l'action **Add Score** en détruisant les briques
-- Affichez le score avec **Draw Score**
+- Affichez le score avec **Dessiner le score**
 
 ### Ajouter Plusieurs Niveaux
 - Créez plus de salles avec différentes dispositions de briques
-- Utilisez **Next Room** quand toutes les briques sont détruites
+- Utilisez **Salle suivante** quand toutes les briques sont détruites
 
 ### Ajouter des Effets Sonores
 - Ajoutez des sons pour les rebonds et la destruction des briques
-- Utilisez l'action **Play Sound**
+- Utilisez l'action **Jouer un son**
 
 ---
 

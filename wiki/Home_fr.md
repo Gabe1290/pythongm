@@ -90,14 +90,14 @@ Entités de jeu avec sprites, propriétés et comportements. Chaque objet peut a
 
 ### Événements
 Déclencheurs qui exécutent des actions lorsque des conditions spécifiques se produisent:
-- **Create** - Quand une instance est créée
-- **Step** - Chaque frame (généralement 60 FPS)
-- **Draw** - Phase de rendu personnalisé
-- **Destroy** - Quand une instance est détruite
+- **Création** - Quand une instance est créée
+- **Étape** - Chaque frame (généralement 60 FPS)
+- **Dessin** - Phase de rendu personnalisé
+- **Destruction** - Quand une instance est détruite
 - **Keyboard** - Touche pressée, relâchée ou maintenue
-- **Mouse** - Clics, mouvement, entrée/sortie
+- **Souris** - Clics, mouvement, entrée/sortie
 - **Collision** - Quand des instances se touchent
-- **Alarm** - Minuteries (12 disponibles)
+- **Alarme** - Minuteries (12 disponibles)
 
 Consultez la [Référence des Événements](Event-Reference_fr) pour la documentation complète.
 

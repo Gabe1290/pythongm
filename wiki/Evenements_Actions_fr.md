@@ -24,9 +24,9 @@ Ceci est une référence complète de tous les événements et actions disponibl
 
 | Événement | Quand |
 |-----------|-------|
-| **Step** | À chaque frame (60 fois/seconde) |
-| **Begin Step** | Avant les vérifications de collision |
-| **End Step** | Après tous les autres événements |
+| **Étape** | À chaque frame (60 fois/seconde) |
+| **Début d'étape** | Avant les vérifications de collision |
+| **Fin d'étape** | Après tous les autres événements |
 
 ### Événements Alarm
 
@@ -87,8 +87,8 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 
 | Événement | Quand |
 |-----------|-------|
-| **Draw** | Pendant la phase de rendu |
-| **Draw GUI** | Après le dessin de la salle (espace écran) |
+| **Dessin** | Pendant la phase de rendu |
+| **Dessin de l'interface** | Après le dessin de la salle (espace écran) |
 
 ---
 

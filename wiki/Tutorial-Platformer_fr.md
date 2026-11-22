@@ -131,7 +131,7 @@ Le joueur est l'objet le plus complexe, avec la gravité, le saut et le mouvemen
 
 ### 5.1 Gravité
 
-**Événement : Create** — Ajoutez l'action **Move** → **Set Gravity**
+**Événement : Create** — Ajoutez l'action **Move** → **Définir la gravité**
 (Direction : `270`, Gravity : `0.5`) — 270° correspond à tout droit vers le
 bas ; la valeur est ajoutée à la vitesse verticale du joueur à chaque pas,
 donc le joueur accélère vers le bas tout seul à partir de maintenant.
@@ -157,7 +157,7 @@ Deux détails qui rendent la sensation correcte :
   une touche de direction.
 - **Key Press (pas maintenue)** est ce qui fait de Up une seule impulsion
   de saut au lieu de propulser le joueur vers le haut à chaque image où la
-  touche est maintenue. **Stop Movement** à l'atterrissage annule ensuite
+  touche est maintenue. **Arrêter le mouvement** à l'atterrissage annule ensuite
   cette impulsion, pour que le joueur ne continue pas à monter une fois
   posé — la collision solide intégrée du moteur (l'étape 3 a déjà rendu
   `obj_ground` Solid) empêche déjà le joueur de s'enfoncer dans le sol ;
@@ -176,10 +176,10 @@ Les pièces ajoutent au score quand elles sont collectées.
 
 **Événement : Collision avec obj_player**
 1. Ajoutez Événement → Collision → obj_player
-2. Ajoutez l'action **Score** → **Set Score**
+2. Ajoutez l'action **Score** → **Définir le score**
    - Nouveau Score : `10`
    - Cochez "Relative"
-3. Ajoutez l'action **Main1** → **Destroy Instance**
+3. Ajoutez l'action **Main1** → **Détruire une instance**
    - S'applique à : Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
@@ -195,9 +195,9 @@ Les pics blessent le joueur et redémarrent le niveau.
 
 **Événement : Collision avec obj_player**
 1. Ajoutez Événement → Collision → obj_player
-2. Ajoutez l'action **Main2** → **Show Message**
+2. Ajoutez l'action **Main2** → **Afficher un message**
    - Message : `Ouch! You hit a spike!`
-3. Ajoutez l'action **Main1** → **Restart Room**
+3. Ajoutez l'action **Main1** → **Redémarrer la salle**
 
 ![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
@@ -212,9 +212,9 @@ Le drapeau termine le niveau quand le joueur l'atteint.
 
 **Événement : Collision avec obj_player**
 1. Ajoutez Événement → Collision → obj_player
-2. Ajoutez l'action **Output** → **Show Message**
+2. Ajoutez l'action **Output** → **Afficher un message**
    - Message : `Level Complete!`
-3. Ajoutez l'action **Room** → **Next Room** (ou **Restart Room** pour un niveau unique)
+3. Ajoutez l'action **Salle** → **Salle suivante** (ou **Redémarrer la salle** pour un niveau unique)
 
 Le texte de Show Message est une chaîne fixe — il ne peut pas intégrer une
 valeur en direct comme le score. Le HUD du contrôleur de jeu (étape 9)
@@ -234,11 +234,11 @@ Le contrôleur de jeu affiche le score.
 
 **Événement : Draw**
 1. Ajoutez Événement → Draw → Draw
-2. Ajoutez l'action **Draw** → **Draw Text** (Text : `Score:`, X : `10`, Y : `10`)
-3. Ajoutez l'action **Draw** → **Draw Variable** (Variable : `score`, X : `70`, Y : `10`)
+2. Ajoutez l'action **Jeu** → **Dessiner du texte** (Text : `Score:`, X : `10`, Y : `10`)
+3. Ajoutez l'action **Dessin** → **Dessiner une variable** (Variable : `score`, X : `70`, Y : `10`)
 
-Optionnel : ajoutez une paire **Draw Text** (`Lives:`, X `10`, Y `30`) +
-**Draw Variable** (`lives`, X `70`, Y `30`) de la même façon, une fois
+Optionnel : ajoutez une paire **Dessiner du texte** (`Lives:`, X `10`, Y `30`) +
+**Dessiner une variable** (`lives`, X `70`, Y `30`) de la même façon, une fois
 l'amélioration Système de Vies ci-dessous en place.
 
 ![obj_game_controller's Object Events panel: a Draw event with one Draw Text and one Draw Variable action, with no sprite set](images/tutorial-platformer-09-controller-object.png)
@@ -301,7 +301,7 @@ X = Pic    === = Plateforme
 
 ### Ajouter une Hauteur de Saut Variable
 
-Ajoutez un événement **Step** à `obj_player` avec **Control** → **Execute
+Ajoutez un événement **Étape** à `obj_player` avec **Contrôle** → **Execute
 Code** (du vrai Python — `self` est l'instance courante, `keyboard` permet
 de tester une touche maintenue par son nom) :
 
@@ -316,22 +316,22 @@ if self.vspeed < 0 and not keyboard.check('up'):
 Cela peut se faire entièrement avec des actions structurées — aucun code
 nécessaire.
 
-**Événement : Create** — Ajoutez l'action **Control** → **Set Variable**
+**Événement : Create** — Ajoutez l'action **Contrôle** → **Définir une variable**
 (Variable : `jumps_left`, Value : `2`)
 
-**Événement : Collision avec obj_ground** — après **Stop Movement**,
-ajoutez **Control** → **Set Variable** (Variable : `jumps_left`, Value :
+**Événement : Collision avec obj_ground** — après **Arrêter le mouvement**,
+ajoutez **Contrôle** → **Définir une variable** (Variable : `jumps_left`, Value :
 `2`) pour refaire le plein des deux sauts à l'atterrissage.
 
 Remplacez l'unique action de l'événement **Key Press → Up Arrow** existant
 par trois, dans l'ordre :
-1. **Control** → **Test Variable** (Variable : `jumps_left`, Value : `0`,
+1. **Contrôle** → **Tester une variable** (Variable : `jumps_left`, Value : `0`,
    Operation : `greater`)
-2. **Control** → **Start Block**
-3. **Move** → **Set Vertical Speed** (`-10`)
-4. **Control** → **Set Variable** (Variable : `jumps_left`, Value : `-1`,
-   **Relative** cochée)
-5. **Control** → **End Block**
+2. **Contrôle** → **Début de bloc**
+3. **Move** → **Définir la vitesse verticale** (`-10`)
+4. **Contrôle** → **Définir une variable** (Variable : `jumps_left`, Value : `-1`,
+   **Relatif** cochée)
+5. **Contrôle** → **Fin de bloc**
 
 La paire Start/End Block signifie que les deux actions à l'intérieur ne
 s'exécutent que lorsque le Test Variable au-dessus est vrai — le même
@@ -342,14 +342,14 @@ pour leurs propres conditions.
 
 1. Créez `obj_moving_platform` en tant qu'enfant de `obj_platform`
 
-**Événement : Create** — Ajoutez l'action **Control** → **Execute Code** :
+**Événement : Create** — Ajoutez l'action **Contrôle** → **Exécuter du code** :
 
 ```python
 self.start_x = self.x
 self.hspeed = 2
 ```
 
-**Événement : Step** — Ajoutez l'action **Control** → **Execute Code** :
+**Événement : Step** — Ajoutez l'action **Contrôle** → **Exécuter du code** :
 
 ```python
 if self.x > self.start_x + 100:
@@ -366,23 +366,23 @@ elif self.x < self.start_x:
 Direction** (Directions : `right`, Speed : `2`)
 
 **Événement : Collision avec obj_ground** — Ajoutez l'action **Move** →
-**Reverse Horizontal** (fait demi-tour aux murs ; combiné au fait que
+**Inverser horizontalement** (fait demi-tour aux murs ; combiné au fait que
 `obj_ground` est Solid, l'ennemi ne peut jamais sortir du bord d'une
 plateforme dans le sol en dessous ni traverser un mur)
 
 **Événement : Collision avec obj_player** — cet événement se déclenche sur
 `obj_enemy`, donc `self` est l'ennemi et `other` est le joueur. Ajoutez
-l'action **Control** → **Test Expression**, avec des actions Then/Else
+l'action **Contrôle** → **Tester une expression**, avec des actions Then/Else
 imbriquées (le même modèle que l'échantillon fourni `plateforme_3` utilise
 pour exactement cette vérification de « saut sur la tête », juste inversé
 puisque la vérification vit sur l'ennemi ici au lieu du joueur) :
    - Expression : `other.vspeed > 0 and other.y - other.vspeed < y - 16`
-   - Then Actions : **Control** → **Execute Code** avec `other.vspeed = -5`
+   - Then Actions : **Contrôle** → **Exécuter du code** avec `other.vspeed = -5`
      (un petit rebond pour le joueur — `set_vspeed` n'a pas d'option
      « s'applique à other », donc c'est le seul endroit qui a besoin d'une
      ligne de vrai Python au lieu d'une action structurée), puis
-     **Instance** → **Destroy Instance** (self)
-   - Else Actions : **Room** → **Restart Room** (le joueur meurt)
+     **Instance** → **Détruire une instance** (self)
+   - Else Actions : **Salle** → **Redémarrer la salle** (le joueur meurt)
 
 `other.vspeed > 0 and other.y - other.vspeed < y - 16` vérifie la position
 *du joueur* d'avant le mouvement de chute de cette image (en utilisant le
@@ -393,16 +393,16 @@ version naïve `other.y < y - 16` est fragile.
 
 ### Ajouter un Système de Vies
 
-Dans l'événement **Create** de `obj_game_controller`, ajoutez **Score** →
-**Set Lives** (Value : `3`).
+Dans l'événement **Création** de `obj_game_controller`, ajoutez **Score** →
+**Définir les vies** (Value : `3`).
 
 Quand le joueur meurt (la collision avec le pic, et la branche Else de
-l'ennemi ci-dessus), remplacez **Restart Room** par **Score** → **Set
-Lives** (Value : `-1`, **Relative** cochée) — la room redémarre
-automatiquement car l'événement **No More Lives** ne se déclenche qu'une
+l'ennemi ci-dessus), remplacez **Redémarrer la salle** par **Score** → **Set
+Lives** (Value : `-1`, **Relatif** cochée) — la room redémarre
+automatiquement car l'événement **Plus de vies** ne se déclenche qu'une
 fois que les vies atteignent réellement 0. Ajoutez cet événement à
-`obj_game_controller` : **Other Events** → **No More Lives** → **Output** →
-**Show Message** (`Game Over!`) → **Room** → **Restart Game**.
+`obj_game_controller` : **Other Events** → **Plus de vies** → **Output** →
+**Afficher un message** (`Game Over!`) → **Jeu** → **Redémarrer le jeu**.
 
 ---
 

@@ -16,8 +16,11 @@ Rules:
 - an event name, or a path ending in one ("Step > Step") -> the event name;
 - a parameter label -> its translation, but a one-word label only when "=" follows the bold span
   ("**Object** = obj_gem"): lone words like "Visible", "Objects" or "Sprite" usually name the asset
-  tree or a checkbox, not a parameter.
+  tree or a checkbox, not a parameter. "Relative" is always the action dialog's checkbox;
+- a category written as its own bold span before an arrow ("**Room** → **Next Room**") -> the
+  language's category name.
 """
+ALWAYS_PARAMS = {"Relative"}
 import re
 import sys
 from pathlib import Path
@@ -41,6 +44,7 @@ def load_names():
     actions, events, params = {}, {}, {}
     for key, a in ACTION_TYPES.items():
         actions.setdefault(a.display_name, (key, a.category))
+        params.setdefault("__categories__", set()).add(a.category)
         for p in a.parameters:
             params.setdefault(p.display_name, p.display_name)
     for key, e in EVENT_TYPES.items():
@@ -63,7 +67,7 @@ class Converter:
     def _event(self, english):
         return self.t.get("core.event", {}).get(self.events[english])
 
-    def convert_inner(self, inner, followed_by_equals):
+    def convert_inner(self, inner, followed_by_equals, followed_by_arrow=False):
         """The translated text for one bold span, or None to leave it alone."""
         html = "&gt;" in inner
         parts = [p for p in SEP.split(inner.strip()) if p and not SEP.fullmatch(p)]
@@ -80,8 +84,10 @@ class Converter:
             return self._action(last)[0]
         if last in self.events:
             return self._event(last)
-        if last in self.params and (" " in last or followed_by_equals):
+        if last in self.params and (" " in last or followed_by_equals or last in ALWAYS_PARAMS):
             return self.t.get("core.param", {}).get(last)
+        if followed_by_arrow and last in self.params.get("__categories__", ()):
+            return self.t.get("core.category", {}).get(last)
         return None
 
     def convert(self, text):
@@ -93,8 +99,9 @@ class Converter:
                 open_, inner, close = m.group(1), m.group(3), m.group(4)
             else:
                 open_, inner, close = m.group(5), m.group(6), m.group(7)
-            after = text[m.end():m.end() + 3]
-            new = self.convert_inner(inner, after.lstrip().startswith("="))
+            after = text[m.end():m.end() + 8]
+            arrow = bool(re.match(r"\s*(→|&gt;|->)\s*(\*\*|<strong>|<b>)", after))
+            new = self.convert_inner(inner, after.lstrip().startswith("="), arrow)
             if not new or new == inner:
                 return m.group(0)
             before = re.sub(r"<[^>]+>", "", text[max(0, m.start() - 40):m.start()])

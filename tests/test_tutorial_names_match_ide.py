@@ -81,3 +81,39 @@ def test_spanish_tutorials_keep_their_accents():
         text = re.sub(r"<(code|pre)[^>]*>.*?</\1>", "", page.read_text(encoding="utf-8"), flags=re.S)
         bad += [(page.name, m) for m in stripped.findall(text)]
     assert not bad, bad[:10]
+
+
+# --- wiki pages (U8): hand-written pages only; the action reference, presets and the pages built from
+# docs/handouts are generated and checked elsewhere.
+GENERATED = re.compile(r"Full-Action-Reference|-Preset|Student-Handout|Worksheet-|Teacher-Guide|"
+                       r"Teacher-Resources|Answer-Key")
+BOLD = re.compile(r"\*\*([^*\n]+)\*\*")
+SPLIT_PATH = re.compile(r"\*\*([^*\n]+)\*\*\s*(?:→|&gt;|->)\s*\*\*([^*\n]+)\*\*")
+WIKI_DONE = ["fr"]
+
+
+@pytest.mark.parametrize("lang", WIKI_DONE)
+def test_wiki_pages_use_the_ide_names(lang, registry):
+    from config.ui_names import language_table
+    actions, events = registry
+    table = language_table(lang)
+    translated_actions = {actions[k].display_name for k in table.get("core.action", {}) if k in actions}
+    translated_events = {events[k].display_name for k in table.get("core.event", {}) if k in events}
+    english = (translated_actions | translated_events) - set(table["core.action"].values()) \
+        - set(table["core.event"].values())
+    by_name = {v: k for k, v in table["core.action"].items() if k in actions}
+    problems = []
+    for page in sorted((ROOT / "wiki").glob(f"*_{lang}.md")):
+        if GENERATED.search(page.name):
+            continue
+        text = page.read_text(encoding="utf-8")
+        for inner in BOLD.findall(text):
+            last = SEP.split(inner.strip())[-1]
+            if last in english:
+                problems.append((page.name, inner))
+        for cat, name in SPLIT_PATH.findall(text):
+            if name in by_name and cat in table["core.category"].values():
+                want = table["core.category"][actions[by_name[name]].category]
+                if cat != want:
+                    problems.append((page.name, f"{cat} -> {name}", f"want {want}"))
+    assert not problems, problems[:15]

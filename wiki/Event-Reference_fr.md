@@ -42,9 +42,9 @@ Comprendre quand les événements se déclenchent aide à créer un comportement
 de jeu prévisible (confirmé dans la boucle principale de
 `runtime/game_runner.py`) :
 
-1. **Begin Step** — Début de la frame
-2. **Alarm** — Toutes les alarmes déclenchées comptent à rebours et se déclenchent
-3. **Step** (et **Keyboard (maintenue)**) — Logique de jeu principale, puis
+1. **Début d'étape** — Début de la frame
+2. **Alarme** — Toutes les alarmes déclenchées comptent à rebours et se déclenchent
+3. **Étape** (et **Keyboard (maintenue)**) — Logique de jeu principale, puis
    vérification continue des touches maintenues pour la même instance
 4. **Keyboard Press/Release, Mouse** — Les événements d'entrée en file
    d'attente pour la frame sont distribués (cela se produit *après* Step,
@@ -52,8 +52,8 @@ de jeu prévisible (confirmé dans la boucle principale de
    *début* de la frame, pas à celles pressées pendant celle-ci)
 5. **Movement, puis Collision** — La physique (gravité/friction/hspeed/vspeed)
    est appliquée, puis les collisions sont détectées et leurs événements se déclenchent
-6. **End Step** (et **Destroy**) — Après les collisions
-7. **Draw** — Phase de rendu
+6. **Fin d'étape** (et **Destruction**) — Après les collisions
+7. **Dessin** — Phase de rendu
 
 ---
 
