@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Spieler und Labyrinth</h1>
+
+    <p>In dieser Phase erstellst du die Sprites für Spieler und Wand, baust Objekte,
+    programmierst die Bewegung mit Blockly, lässt den Spieler in seine Laufrichtung
+    schauen und entwirfst ein einfaches Labyrinth.
+    Am Ende kannst du in deinem Labyrinth herumlaufen!</p>
+
+    <!-- ========== SPRITES ========== -->
+    <h2>Schritt 1: Die Sprites erstellen</h2>
+
+    <h2>spr_player (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke im Asset-Baum auf <strong>Sprites</strong> und wähle <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_player</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Doppelklicke auf <code>spr_player</code>, um den Sprite-Editor zu öffnen</li>
+                <li>Setze die Größe auf <strong>32x32 Pixel</strong></li>
+                <li>Zeichne eine kleine Figur (einen Kreis mit Augen oder eine einfache Person)</li>
+                <li>Nimm eine kräftige Farbe wie <strong>Blau</strong></li>
+                <li>Speichere mit <strong>Strg+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke im Asset-Baum auf <code>spr_player</code></li>
+                <li>Wähle <strong>Bild importieren...</strong></li>
+                <li>Gehe zu <code>Tutorials/06_maze/assets/</code></li>
+                <li>Wähle <code>spr_player.png</code> und klicke auf Öffnen</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>spr_wall (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Öffne den Sprite-Editor und setze die Größe auf <strong>32x32 Pixel</strong></li>
+                <li>Zeichne ein Ziegel- oder Steinmuster</li>
+                <li>Nimm <strong>graue oder braune</strong> Farben</li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke auf <code>spr_wall</code> &rarr; <strong>Bild importieren...</strong></li>
+                <li>Wähle <code>Tutorials/06_maze/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ========== OBJECTS ========== -->
+    <h2>Schritt 2: Die Objekte erstellen</h2>
+
+    <h2>obj_wall (fest)</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_wall</code></li>
+            <li>Setze das Sprite auf <code>spr_wall</code></li>
+            <li><strong>Setze ein Häkchen bei „Fest“</strong> &mdash; das ist entscheidend, damit der Spieler nicht durch Wände läuft</li>
+            <li>Die Wand braucht keine Ereignisse</li>
+        </ol>
+    </div>
+
+    <h2>obj_player</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_player</code></li>
+            <li>Setze das Sprite auf <code>spr_player</code></li>
+            <li>Lass „Fest“ ohne Häkchen</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Schritt 3: Den Spieler programmieren (Blockly)</h2>
+
+    <div class="info">
+        <strong>So funktioniert Blockly:</strong> Ziehe Blöcke aus der Werkzeugleiste links in den Arbeitsbereich.
+        Stecke Aktionsblöcke in Ereignisblöcke, um festzulegen, was passiert.
+        Deine Blöcke werden beim Bearbeiten automatisch in der Ereignisliste gespeichert.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Doppelklicke im Asset-Baum auf <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke oben im Editor auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Nach rechts bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">4</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in der Kategorie <em>Ereignisse</em> und wähle in der Auswahlliste <strong>Pfeil rechts</strong>.
+        Suche dann <strong>setze horizontale Geschwindigkeit</strong> in der Kategorie <em>Bewegung</em> und stecke ihn hinein.
+        Gib im Zahlenfeld <strong>4</strong> ein.</p>
+    </div>
+
+    <h2>Nach links bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">-4</span></span>
+        </div>
+        <p>Wie oben, aber wähle <strong>Pfeil links</strong> und gib <strong>-4</strong> ein (negativ = nach links).</p>
+    </div>
+
+    <h2>Nach unten bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil unten (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">4</span></span>
+        </div>
+        <p>Nimm <strong>setze vertikale Geschwindigkeit</strong> aus <em>Bewegung</em>. Positiv = nach unten.</p>
+    </div>
+
+    <h2>Nach oben bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil oben (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-4</span></span>
+        </div>
+        <p>Gib <strong>-4</strong> für die Bewegung nach oben ein.</p>
+    </div>
+
+    <h2>Anhalten, wenn keine Taste gedrückt ist</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>Suche <strong>Tastatur: Keine Taste</strong> in <em>Ereignisse</em> und <strong>Bewegung stoppen</strong> in <em>Bewegung</em>.
+        So rutscht der Spieler nicht endlos weiter!</p>
+    </div>
+
+    <h2>An Wänden anhalten</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em>. Gib <code>obj_wall</code> in das Textfeld ein.
+        Stecke einen Block <strong>Bewegung stoppen</strong> hinein.</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>6 Ereignisblöcke</strong> im Arbeitsbereich haben.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert es:</strong> Jede Pfeiltaste setzt die Geschwindigkeit in ihre Richtung.
+        Lässt du alle Tasten los, hält der Spieler an. Stößt er gegen eine Wand, hält er ebenfalls an.
+    </div>
+
+    <!-- ========== FACING DIRECTION ========== -->
+    <h2>Schritt 3B: Den Spieler in die richtige Richtung schauen lassen</h2>
+
+    <div class="info">
+        Im Moment sieht dein Spieler immer gleich aus, egal in welche Richtung er läuft.
+        Viele Spiele zeigen <strong>für jede Richtung ein anderes Bild</strong> &mdash;
+        ein anderes <em>Sprite</em>, je nachdem, wohin die Figur schaut.
+        Die 4 Pfeiltasten-Ereignisse hast du schon gebaut; in diesem Schritt kommt
+        in jedes nur ein weiterer Block hinzu.
+    </div>
+
+    <h2>spr_player_up / _down / _left / _right (24x24)</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle <strong>4 neue Sprites</strong>: <code>spr_player_up</code>,
+            <code>spr_player_down</code>, <code>spr_player_left</code>, <code>spr_player_right</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Gib jedem dieselbe Größe wie <code>spr_player</code></li>
+                <li>Zeichne dieselbe kleine Figur, aber verschiebe die Augen (oder einen
+                Pfeil), damit man sieht, wohin sie schaut: beide Augen für
+                <code>_down</code>, kein Gesicht für <code>_up</code> (der
+                Hinterkopf), ein Auge auf der jeweiligen Seite für <code>_left</code> /
+                <code>_right</code></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Die Beispiel-Sprites laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke auf jedes neue Sprite &rarr; <strong>Bild importieren...</strong></li>
+                <li>Gehe zu <code>Tutorials/06_maze/assets/</code></li>
+                <li>Wähle die passende Datei (<code>spr_player_up.png</code>,
+                <code>spr_player_down.png</code>, <code>spr_player_left.png</code>,
+                <code>spr_player_right.png</code>)</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>Jeder Pfeiltaste einen Block „Setze Sprite auf“ hinzufügen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_player</code>, um den Objekt-Editor zu öffnen
+            (falls er noch nicht offen ist), und klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Suche jedes deiner 4 Pfeiltasten-Ereignisse aus Schritt 3 und stecke einen weiteren
+            Block hinein &mdash; <strong>Setze Sprite auf</strong> (aus der
+            Kategorie <em>Instanz</em>)</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_right</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_left</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil oben (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_up</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil unten (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_down</span></span>
+        </div>
+
+        <p>Lass <strong>Tastatur: Keine Taste</strong> und <strong>Wenn Kollision mit
+        obj_wall</strong> genau so, wie sie waren &mdash; der Spieler zeigt einfach
+        weiter die Richtung, in die er zuletzt gelaufen ist.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert es:</strong> Jede Pfeiltaste macht jetzt zwei Dinge: Sie setzt
+        die Geschwindigkeit <em>und</em> wählt das passende Bild. Das Sprite des Spielers
+        zeigt immer die zuletzt gedrückte Richtung, auch wenn er stehen bleibt.
+    </div>
+
+    <!-- ========== ROOM ========== -->
+    <h2>Schritt 4: Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Räume</strong> &rarr; <strong>Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_maze</code></li>
+            <li>Setze die Größe auf <strong>640x480</strong></li>
+            <li>Schalte <strong>Am Raster ausrichten</strong> ein: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Ein einfaches Labyrinth bauen</h2>
+    <div class="step">
+        <ol>
+            <li>Wähle <code>obj_wall</code> und klicke, um Wände um den Rand zu setzen</li>
+            <li>Füge innen Wände hinzu, damit Gänge und Wege entstehen</li>
+            <li>Setze <code>obj_player</code> oben links in das Labyrinth</li>
+            <li>Lass etwas Platz frei, damit du herumlaufen kannst</li>
+        </ol>
+    </div>
+
+    <h2>Beispiel für einen Labyrinth-Aufbau</h2>
+    <pre>
+W W W W W W W W W W W W W W W W W W W W
+W P . . . . W . . . . . . . W . . . . W
+W . W W W . W . W W W W W . W . W W . W
+W . W . . . . . . . . . . . . . . W . W
+W . W . W W W W W . W W W W W W . W . W
+W . . . W . . . . . . . . . . W . . . W
+W W W . W . W W W W W W W . . W W W . W
+W . . . . . W . . . . . W . . . . . . W
+W . W W W W W . W W W . W W W W W W . W
+W . . . . . . . . . . . . . . . . . . W
+W . W W W W W W W W W . W W W W W W . W
+W . . . . . . . . . . . W . . . . . . W
+W W W W W W W W W W W . W . W W W W . W
+W . . . . . . . . . . . . . W . . . . W
+W W W W W W W W W W W W W W W W W W W W
+
+W = obj_wall   P = obj_player   . = Empty space</pre>
+
+    <div class="highlight">
+        <strong>Tipp:</strong> Halte die Maustaste gedrückt und ziehe, um schnell viele Wandkacheln zu setzen.
+        Achte darauf, dass jeder Gang mindestens eine Kachel breit ist, damit der Spieler hindurchpasst.
+    </div>
+
+    <!-- ========== TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Bewege den Spieler mit den <strong>Pfeiltasten</strong></li>
+            <li>Das Bild des Spielers sollte sich in die Laufrichtung drehen</li>
+            <li>Der Spieler sollte an Wänden anhalten</li>
+            <li>Der Spieler sollte anhalten, wenn du alle Tasten loslässt</li>
+            <li>Versuche, durch die Gänge deines Labyrinths zu laufen</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Dein Labyrinth ist schon spielbar! Klicke auf „Weiter“, um Münzen und einen Ausgang hinzuzufügen.
+    </div>
+</body>
+</html>

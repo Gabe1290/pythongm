@@ -8,8 +8,26 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -17,36 +35,49 @@
 
     <div class="game-preview">
         <img src="thumbnails/06_maze.png" width="280" height="210" style="border-radius: 5px;">
-        <p style="font-size: 24px;">&#128736;</p>
+        <p style="font-size: 24px;">&#128737;</p>
         <p><strong>LABYRINTH-SPIEL</strong></p>
-        <p>Finde deinen Weg durch das Labyrinth und sammle Münzen!</p>
+        <p>Finde den Weg durch das Labyrinth und sammle Münzen!</p>
     </div>
 
-    <h2>Was wir erstellen werden</h2>
-    <p>In diesem Tutorial baust du ein Labyrinth-Navigationsspiel:</p>
-    <ul>
-        <li>Einen Spieler, der sich flüssig mit den Pfeiltasten bewegt</li>
-        <li>Wände, die die Spielerbewegung blockieren</li>
-        <li>Münzen zum Sammeln für Punkte</li>
-        <li>Einen Ausgang, der das Level abschliesst</li>
-        <li>Einen Timer, der misst, wie schnell du fertig wirst</li>
-    </ul>
+    <h2>Was wir bauen</h2>
+    <p>In diesem Tutorial baust du Schritt für Schritt ein Labyrinth-Spiel.
+    Das Spiel ist <strong>am Ende jeder Phase spielbar</strong>, du kannst also laufend testen!</p>
 
-    <h2>Was du lernen wirst</h2>
+    <div class="phase">
+        <strong>Phase 1 &mdash; Durch ein Labyrinth laufen</strong><br>
+        Erstelle einen Spieler, der sich mit den Pfeiltasten bewegt, und Wände, die den Weg versperren.
+        Baue ein einfaches Labyrinth und lauf darin herum.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Münzen sammeln und der Ausgang</strong><br>
+        Füge Münzen hinzu, die deinen Punktestand erhöhen, und eine Ausgangstür,
+        die eine Siegesmeldung zeigt.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Punkteanzeige</strong><br>
+        Füge einen Spiel-Controller hinzu, der den Punktestand auf dem Bildschirm zeigt,
+        damit der Spieler seinen Fortschritt sieht.
+    </div>
+
+    <h2>Was du lernst</h2>
     <ul>
-        <li>Flüssige Bewegung mit Tastatureingabe</li>
-        <li>Wandkollisionserkennung und -behandlung</li>
+        <li>Spielverhalten mit <strong>visuellen Blockly-Blöcken</strong> programmieren</li>
+        <li>Flüssige Bewegung mit Blöcken für die Tastatureingabe</li>
+        <li>Kollisionen mit Wänden erkennen und behandeln</li>
         <li>Sammelbare Gegenstände erstellen</li>
-        <li>Timer- und Punkteanzeige</li>
-        <li>Level-Design für Labyrinthspiele</li>
+        <li>Punkteanzeige mit einem Spiel-Controller-Objekt</li>
+        <li>Leveldesign für Labyrinth-Spiele</li>
     </ul>
 
     <div class="highlight">
-        <strong>Zeitaufwand:</strong> Etwa 25-30 Minuten
+        <strong>Benötigte Zeit:</strong> etwa 20&ndash;25 Minuten
     </div>
 
     <div class="info">
-        <strong>Bereit?</strong> Klicke auf "Weiter", um mit dem Erstellen deiner Sprites zu beginnen!
+        <strong>Bereit?</strong> Klicke auf „Weiter“ und beginne Phase 1: Spieler und Labyrinth bauen!
     </div>
 </body>
 </html>

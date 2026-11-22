@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Spiel-Controller</h1>
+
+    <p>Das Spiel funktioniert, aber deinen Punktestand siehst du noch nicht!
+    In dieser letzten Phase erstellst du ein unsichtbares Spiel-Controller-Objekt,
+    das den Punktestand anzeigt und ihn zu Spielbeginn zurücksetzt.</p>
+
+    <div class="info">
+        <strong>Was ist ein Spiel-Controller?</strong> Ein Objekt ohne Sprite, das Dinge wie
+        die Punkteanzeige verwaltet. Da es unsichtbar ist, stört es
+        das Spiel nicht &mdash; es arbeitet einfach im Hintergrund.
+    </div>
+
+    <!-- ========== CREATE OBJECT ========== -->
+    <h2>Schritt 1: Das Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_game_controller</code></li>
+            <li><strong>Kein Sprite nötig</strong> &mdash; lass das Sprite-Feld leer</li>
+            <li>Lass „Fest“ ohne Häkchen</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Schritt 2: Den Spiel-Controller programmieren (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_game_controller</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Punkte zu Beginn zurücksetzen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-score block-indent">Setze Punkte auf <span class="block-num">0</span></span>
+        </div>
+        <p>Ziehe aus <em>Ereignisse</em> einen Block <strong>Wenn erstellt</strong>.
+        Stecke aus <em>Punkte/Leben/Gesundheit</em> den Block <strong>Setze Punkte auf</strong> hinein und gib <strong>0</strong> ein.</p>
+        <p>So beginnen die Punkte bei jedem Laden des Raums bei null.</p>
+    </div>
+
+    <h2>Die Punkte auf dem Bildschirm anzeigen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-score block-indent">Zeige Punkte bei x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Ziehe aus <em>Ereignisse</em> einen Block <strong>Beim Zeichnen</strong>.
+        Stecke aus <em>Punkte/Leben/Gesundheit</em> den Block <strong>Zeige Punkte</strong> hinein.
+        Setze x auf <strong>10</strong> und y auf <strong>10</strong> (oben links).</p>
+    </div>
+
+    <h2>Deine Blöcke anwenden</h2>
+    <div class="step">
+        <ol>
+            <li>Du solltest jetzt <strong>2 Ereignisblöcke</strong> im Arbeitsbereich haben (Wenn erstellt und Beim Zeichnen)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert es:</strong> Das Ereignis <strong>Wenn erstellt</strong> läuft einmal, wenn das Objekt im Raum erscheint,
+        und setzt die Punkte auf 0. Das Ereignis <strong>Beim Zeichnen</strong> läuft in jedem Bild und zeigt
+        oben links „Score: X“ an. Sammelt der Spieler Münzen,
+        aktualisiert sich der Punktestand automatisch!
+    </div>
+
+    <!-- ========== PLACE IN ROOM ========== -->
+    <h2>Schritt 3: In den Raum setzen</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_maze</code></li>
+            <li>Wähle <code>obj_game_controller</code> und setze ihn irgendwo in den Raum</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nicht vergessen!</strong> Der Spiel-Controller muss im Raum stehen,
+        damit die Punkte angezeigt werden. Da er kein Sprite hat, siehst du ihn beim Spielen nicht,
+        aber er läuft trotzdem.
+    </div>
+
+    <!-- ========== FINAL TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Der Punktestand sollte oben links als <strong>„Score: 0“</strong> erscheinen</li>
+            <li>Sammle Münzen &mdash; der Punktestand sollte pro Münze um <strong>10</strong> steigen</li>
+            <li>Lauf zum Ausgang &mdash; die Meldung <strong>„You Win!“</strong> erscheint</li>
+            <li>Nach der Meldung startet der Raum neu und die Punkte stehen wieder auf 0</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Glückwunsch!</strong> Du hast ein komplettes Labyrinth-Spiel gebaut!
+        </p>
+        <p>Dein Spiel hat einen Spieler, der durch Gänge läuft, sammelbare Münzen,
+        eine Punkteanzeige und einen Ausgang zum Sieg. Gut gemacht!</p>
+    </div>
+
+    <!-- ========== CHALLENGES ========== -->
+    <h2>Ideen für Herausforderungen</h2>
+    <div class="challenge">
+        <p>Willst du dein Labyrinth-Spiel noch besser machen? Probiere diese Herausforderungen:</p>
+        <ul>
+            <li><strong>Mehrere Level:</strong> Erstelle weitere Räume (<code>room_maze2</code>, <code>room_maze3</code>)
+            mit schwereren Labyrinthen. Ersetze beim Ausgang den Block <strong>Raum neu starten</strong> durch <strong>Gehe zum nächsten Raum</strong>.</li>
+            <li><strong>Zeitlimit:</strong> Füge mit einer Variable einen Countdown hinzu. Ist die Zeit abgelaufen, startet der Raum neu!</li>
+            <li><strong>Gegner:</strong> Erstelle ein Gegner-Objekt, das hin und her patrouilliert.
+            Stößt der Spieler mit ihm zusammen, startet der Raum neu.</li>
+            <li><strong>Schlüssel und Türen:</strong> Füge einen Schlüssel hinzu, den man einsammeln muss, bevor sich der Ausgang öffnet.</li>
+            <li><strong>Ab in 2.5D:</strong> Willst du dein Labyrinth von innen sehen? Die
+            nächste Seite ist ein freiwilliger Bonus, der daraus ein Spiel aus der Ich-Perspektive
+            im Stil von Doom macht &mdash; ohne neues Labyrinth.</li>
+        </ul>
+    </div>
+</body>
+</html>

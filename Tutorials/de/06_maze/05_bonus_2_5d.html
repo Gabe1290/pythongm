@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Bonus: Mach es 2.5D</h1>
+
+    <div class="info">
+        <strong>Diese Seite ist freiwillig.</strong> Dein Labyrinth-Spiel ist schon fertig
+        &mdash; das hier ist ein Extra für alle, die etwas Neues ausprobieren wollen. Kein neues
+        Labyrinth, keine neue Grafik für das Labyrinth selbst: Du siehst dir <em>genau dasselbe
+        Labyrinth</em> von innen an, im Stil von Doom oder Wolfenstein.
+    </div>
+
+    <p>Erinnerst du dich an Phase 1, in der dein Spieler für jede Laufrichtung
+    ein anderes Bild zeigte? Das war die <strong>Blickrichtung</strong>. Eine Kamera aus der Ich-Perspektive
+    braucht genau dieselbe Idee &mdash; wohin sie zeigt &mdash; nur dass sie mit dieser Richtung
+    kein Bild auswählt, sondern entscheidet, was gezeichnet wird.
+    Das Muster kennst du schon; jetzt verwendest du es wieder.</p>
+
+    <h2>Die 2.5D-Ansicht einschalten</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-view block-indent">Raycast-Ansicht aktivieren &mdash; Sichtfeld <span class="block-num">66</span> Zellgröße <span class="block-num">32</span> Sichtweite <span class="block-num">20</span></span>
+        </div>
+        <ol>
+            <li>Doppelklicke auf <code>obj_player</code>, um den Objekt-Editor zu öffnen, und klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge ein neues Ereignis <strong>Wenn erstellt</strong> hinzu (aus <em>Ereignisse</em>)</li>
+            <li>Suche <strong>Raycast-Ansicht aktivieren</strong> in der Kategorie <em>3D-Ansicht</em> und stecke ihn hinein</li>
+            <li>Setze <strong>Zellgröße</strong> auf <code>32</code> &mdash; sie muss zum Raster passen, auf dem dein Labyrinth gebaut ist</li>
+            <li>Lass <strong>Kameraobjekt</strong> leer &mdash; das bedeutet „wer auch immer diese Aktion ausführt“, also der Spieler</li>
+        </ol>
+        <div class="info">
+            Du siehst <em>3D-Ansicht</em> nicht in der Werkzeugleiste? Öffne <strong>Datei &rarr;
+            Projekteinstellungen... &rarr; Erweiterungen</strong> und setze ein Häkchen bei <strong>2.5D
+            Raycast View</strong>.
+        </div>
+    </div>
+
+    <h2>Die Kamera in dieselbe Richtung schauen lassen wie dein Sprite</h2>
+    <div class="step">
+        <p>Geh zurück zu denselben 4 Pfeiltasten-Ereignissen aus Phase 1 und füge jedem
+        <strong>einen weiteren Block</strong> hinzu &mdash; <strong>Blickwinkel setzen</strong>
+        (aus <em>3D-Ansicht</em>), mit den Winkeln wie auf einem Kompass: 0 =
+        rechts, 90 = oben, 180 = links, 270 = unten.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_right</span></span><br>
+            <span class="block block-view block-indent">Blickwinkel setzen <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_left</span></span><br>
+            <span class="block block-view block-indent">Blickwinkel setzen <span class="block-num">180</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil oben (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_up</span></span><br>
+            <span class="block block-view block-indent">Blickwinkel setzen <span class="block-num">90</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil unten (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Setze Sprite auf <span class="block-str">spr_player_down</span></span><br>
+            <span class="block block-view block-indent">Blickwinkel setzen <span class="block-num">270</span></span>
+        </div>
+
+        <div class="highlight">
+            <strong>Warum nicht einfach das Sprite verwenden?</strong> <code>Setze Sprite auf</code>
+            wählt ein Bild; <code>Blickwinkel setzen</code> wählt eine Zahl (den
+            Winkel). Die Kamera braucht die Zahl, um auszurechnen, was du aus dieser
+            Richtung tatsächlich sehen würdest &mdash; Wände, Gänge, alles.
+        </div>
+    </div>
+
+    <h2>Die Wände sind für den Spieler schon fest</h2>
+    <div class="info">
+        Hier musst du nichts hinzufügen! Dein Ereignis <strong>Wenn Kollision mit obj_wall &rarr; Bewegung
+        stoppen</strong> aus Phase 1 lässt die Wände den Spieler bereits aufhalten
+        &mdash; das funktioniert genau gleich, ob der Raum von oben oder
+        aus der Ich-Perspektive gezeichnet wird.
+    </div>
+
+    <h2>Teste dein 2.5D-Labyrinth!</h2>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Der Raum erscheint jetzt in der <strong>Ich-Perspektive</strong> statt von oben</li>
+            <li>Die Wände tragen dein eigenes Bild <code>spr_wall</code> als Textur &mdash; du hast keine Wandtextur gesetzt, jede Wand verwendet automatisch ihr eigenes Sprite</li>
+            <li>Beim Drehen schaust du sofort in die Richtung der gedrückten Pfeiltaste, genau wie dein Sprite in Phase 1</li>
+            <li>Du stößt gegen Wände, statt durch sie hindurchzulaufen</li>
+            <li>Münzen und Ausgang funktionieren weiter &mdash; sie schweben in der Luft und schauen dich an, ganz ohne Änderung</li>
+        </ul>
+    </div>
+
+    <h2>Wenn etwas falsch aussieht</h2>
+    <table class="t"><tr><th>Was du siehst</th><th>Wahrscheinliche Ursache</th></tr>
+    <tr><td>Der normale Raum von oben, unverändert</td><td>Das Ereignis <strong>Wenn erstellt</strong> mit <strong>Raycast-Ansicht aktivieren</strong> fehlt, oder <em>2.5D Raycast View</em> ist unter Datei &rarr; Projekteinstellungen... &rarr; Erweiterungen nicht angehakt</td></tr>
+    <tr><td>Du läufst durch Wände</td><td><code>obj_wall</code> ist nicht <strong>Fest</strong>, oder das Ereignis <strong>Wenn Kollision mit obj_wall</strong> aus Phase 1 wurde gelöscht</td></tr>
+    <tr><td>Wände sehen falsch aus oder es gibt Lücken</td><td>Ein Wandblock liegt nicht auf dem 32-Pixel-Raster, oder <strong>Zellgröße</strong> ist nicht <code>32</code></td></tr>
+    <tr><td>Die Kamera dreht sich beim Laufen nicht</td><td>In einem der 4 Pfeiltasten-Ereignisse fehlt ein Block <strong>Blickwinkel setzen</strong>, oder er hat die falsche Zahl</td></tr>
+    <tr><td>Das Drehen wirkt vertauscht (links siehst du, was rechts sein sollte)</td><td>Zwei Werte von <strong>Blickwinkel setzen</strong> wurden vertauscht &mdash; vergleiche 0/90/180/270 mit der Liste oben</td></tr>
+    </table>
+
+    <h2>Lust auf mehr?</h2>
+    <div class="highlight">
+        Es gibt zwei weitere Aktionen der 3D-Ansicht, wenn du selbst weiterforschen willst:
+        <strong>Minikarte zeichnen</strong> (eine kleine Karte von oben in der Ecke des
+        Bildschirms) und <strong>DOOM-HUD zeichnen</strong> (eine klassische Statusleiste mit
+        Gesundheit und Punkten). Beide werden hier nicht erklärt &mdash; stecke einfach eine davon in das
+        Ereignis „Beim Zeichnen“ deines <code>obj_game_controller</code> und schau, was passiert!
+    </div>
+
+    <div class="info">
+        Du hast gerade ein 2D-Labyrinth von oben in ein Spiel im 3D-Stil aus der Ich-Perspektive verwandelt &mdash;
+        mit genau demselben Raum, genau denselben Wänden und genau derselben Idee der
+        Blickrichtung aus Phase 1, nur dass sie jetzt auf eine Kamera statt auf ein
+        Sprite zeigt.
+    </div>
+</body>
+</html>
