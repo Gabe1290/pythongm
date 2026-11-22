@@ -144,7 +144,31 @@ case the fog cannot hide a distance that short.
 
 ---
 
-## Phase 2 — make each strip cheaper (only if Phase 1 falls short)
+## 2026-11-22 — walking in block_world_1 meets the target: the wall-in-your-face strip
+
+Re-measured first (this machine, same sitting): block_world_1 25.7 static / **14.3 walking**,
+block_world_2 ~17.5. The walking profile was 40% `transform.scale`, and a spy on its calls
+found the cause: against a wall a texel is taller than the screen, and `_draw_wall_strip`'s
+"needed texels + 2" crop made it scale a 3-texel column to **~133,000 px** for a 480 px
+window -- 23.4M px per frame, 76x the screen -- then blit a screen-high slice.
+`_fill_visible_window` now paints just that slice (one fill per texel) whenever the scaled
+height would exceed 2x the screen, using pygame's measured row rule
+(`r * src_h // dest_h`, exact up to 200,000 px) and shading/fog on the source column
+(the shade-at-source proof). Falls back to scale + blit if a texel is not fully opaque.
+
+- Pixel-identical: 690 frames over 10 scripted camera paths (walk/strafe/turn/pitch/static,
+  both samples) hash the same as the previous commit, which was itself deterministic run to
+  run; `tests/test_block_world_window_fill.py` compares the real function with the path on
+  and off over 1,800 random strips (two mutations fail it).
+- **block_world_1 walking 14.3/13.9/13.2 -> 32.9/32.5/32.9 fps** (three same-sitting A/B
+  rounds, order alternated), worst frame 285 -> 42 ms. Static and block_world_2 unchanged.
+- Desktop only: the HTML5 and Kivy ports draw a scaled texture region and never build
+  the oversized surface.
+
+Still open: **block_world_2 (~17-18 fps) and block_world_1 standing still (~25 fps)** are
+under 30 on this machine. Their cost is the per-strip Python, not pixels (Phase 2 below).
+
+
 
 Measured with a spike against `block_world_2`'s real shape (9,000 strips, 4px
 wide, mostly short):

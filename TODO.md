@@ -1270,6 +1270,12 @@ rough order of value:
   regression-test registry (removed 2026-09-02, closed).
 
 ### Block World renderer — occlusion culling for the first-person view (DONE 2026-08-21, partial)
+**2026-11-22: block_world_1 WALKING now meets 30 fps** (13-14 -> ~32.7 fps on this machine,
+pixel-identical; `docs/BLOCK_WORLD_PERF_PLAN.md` top section): a wall right in front of the
+camera was scaled to ~133,000 px for a 480 px window. Still under target on this machine:
+block_world_2 (~17-18 fps) and block_world_1 standing still (~25 fps), bound by per-strip
+Python (plan Phase 2). The notes below are the history.
+
 - Investigated after a report that movement in the bundled block_world
   samples "feels quite slow." Measured, not assumed: `block_world_1` ran at
   ~8.0 fps and `block_world_2` at ~4.35 fps against their project-configured

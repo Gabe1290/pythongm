@@ -767,6 +767,64 @@ def _is_covered(covered, y0, y1):
     return any(a <= y0 and y1 <= b for a, b in covered)
 
 
+# When a texel is taller than the screen (standing against a wall), the strip below would be scaled to a
+# height far beyond what is ever shown -- measured 133,000 px for a 480 px window, 76x the screen's area
+# scaled per frame while walking in block_world_1, 40% of the frame. Above this multiple of the screen
+# height, _fill_visible_window paints just the rows that get blitted instead.
+_WINDOW_FILL_ABOVE = 2
+
+
+def _fill_visible_window(screen, x0, y0, strip_w, vis_h, col_surf, src_h, dest_h, frac_px,
+                         shade, shade_at_source, fogging, fog_add):
+    """Paint exactly what blitting ``transform.scale(col_surf, (strip_w, dest_h))`` would show, without
+    building that surface: one fill per source texel in the visible window.
+
+    It relies on two facts, both checked by tests/test_block_world_window_fill.py:
+    * pygame's ``transform.scale`` maps destination row r to source row ``r * src_h // dest_h`` (verified
+      exhaustively against the real function, up to 200,000 px tall);
+    * shading and fog commute with that nearest-neighbour copy (the shade-at-source proof above), so they
+      are applied to the 1px source column here whichever branch the caller would have taken.
+    Returns False -- having drawn nothing -- when a texel in the window is not fully opaque: a fill cannot
+    blend the way a blit does, so the caller falls back to the scale + blit path."""
+    col = col_surf
+    if not shade_at_source and (fogging or shade < 1.0):
+        v = int(shade * 255)
+        col = col.copy()
+        col.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+        if fogging:
+            col.fill(fog_add, special_flags=pygame.BLEND_RGB_ADD)
+    off = int(round(frac_px))
+    if off < 0:
+        off = 0
+    elif off > dest_h - 1:
+        off = dest_h - 1
+    covered = dest_h - off
+    if vis_h < covered:
+        covered = vis_h
+    fills = []
+    end = off + covered
+    for j in range(off * src_h // dest_h, (end - 1) * src_h // dest_h + 1):
+        c = col.get_at((0, j))
+        if c.a != 255:
+            return False
+        a = -((-j * dest_h) // src_h)                  # first destination row of texel j
+        b = -((-(j + 1) * dest_h) // src_h)            # first row of texel j + 1
+        if a < off:
+            a = off
+        if b > end:
+            b = end
+        if b > a:
+            fills.append(((c.r, c.g, c.b), (x0, y0 + a - off, strip_w, b - a)))
+    if covered < vis_h:                                # the seam patch: repeat the strip's last row
+        c = col.get_at((0, (dest_h - 1) * src_h // dest_h))
+        if c.a != 255:
+            return False
+        fills.append(((c.r, c.g, c.b), (x0, y0 + covered, strip_w, vis_h - covered)))
+    for color, rect in fills:
+        screen.fill(color, rect)
+    return True
+
+
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
                      texture_path, tex_u, flat_color, screen_h=None,
                      fog=0.0, fog_color=None, fog_add=None):
@@ -871,6 +929,10 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
         col_surf.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
         if fogging:
             col_surf.fill(fog_add, special_flags=pygame.BLEND_RGB_ADD)
+    if dest_h > _WINDOW_FILL_ABOVE * screen_h and _fill_visible_window(
+            screen, x0, y0, strip_w, vis_h, col_surf, src_h, dest_h, frac_px,
+            shade, shade_at_source, fogging, fog_add):
+        return
     strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
     if fogging and shade_at_source:
         pass                      # already applied to the source column
