@@ -22,7 +22,7 @@ Esta página enumera todas las **186** acciones disponibles en PyGameMaker, exac
 - [Dibujo](Full-Action-Reference-Drawing_es) (11)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_es) (5)
+- [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_es) (16)
 
 ---

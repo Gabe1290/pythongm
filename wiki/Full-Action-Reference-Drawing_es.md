@@ -201,7 +201,7 @@ Establecer la fuente y la alineación para el siguiente dibujo de texto
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (20)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_es) (5)
+- [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_es) (16)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

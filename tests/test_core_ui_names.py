@@ -87,7 +87,7 @@ def test_all_tables_is_keyed_kind_key_lang():
 
 
 # Languages whose table is complete (docs/CORE_NAMES_I18N_PLAN.md U4-U7); grows one language per commit.
-COMPLETE = ["fr", "de"]
+COMPLETE = ["fr", "de", "es"]
 # Choice values shown as they are in every language (operators, digits, axes, micro:bit buttons).
 UNTRANSLATED_CHOICES = {"", "!=", "<", "<=", "==", ">", ">=", "0", "1", "2", "3", "4", "5", "6", "7",
                         "2g", "3g", "6g", "8g", "a", "b", "ab", "x", "y", "z"}

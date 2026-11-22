@@ -254,6 +254,6 @@ Silence the speaker and drop any queued sounds
 - [Dibujo](Full-Action-Reference-Drawing_es) (11)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_es) (5)
+- [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

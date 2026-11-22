@@ -220,7 +220,7 @@ Este preajuste habilita **21** tipos de eventos y **123** tipos de acciones.
 | Destruir sistema de partículas | `destroy_particle_system` | — |
 | Emitir partículas en continuo | `stream_particles` | `particle_type`, `number` |
 
-### Score/Lives/Health
+### Puntuación/Vidas/Salud
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|

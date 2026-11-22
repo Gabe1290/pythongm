@@ -42,7 +42,7 @@ Intenta fabricar la salida de una receta registrada a partir del inventario de l
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `output` | Elección | `brick` | Which registered recipe to attempt, by its output block type; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output` | Elección | `brick` | Qué receta registrada intentar, indicada por el tipo de bloque que produce; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Dibujar HUD de Block World
 
@@ -119,8 +119,8 @@ Dibujar un minimapa orientado al norte de los muros de la sala raycast, con un m
 | `mark_color` | Color | `#40e0ff` | Color de los puntos de «Marcar objeto»; opcional |
 | `mark_object_2` | Objeto | — | Un segundo objeto que se marca con un color propio; opcional |
 | `mark_color_2` | Color | `#ff5050` | Color de los puntos de «Marcar objeto 2»; opcional |
-| `show_trail` | Sí/No | No | Dot every grid cell the camera has already visited, so you can see where you've been; opcional |
-| `trail_color` | Color | `#406080` | Colour of the visited-cell trail dots; opcional |
+| `show_trail` | Sí/No | No | Marcar con un punto cada casilla que la cámara ya ha visitado, para ver por dónde se ha pasado; opcional |
+| `trail_color` | Color | `#406080` | Color de los puntos del rastro de casillas visitadas; opcional |
 
 ### Activar vista Block World
 
@@ -138,11 +138,11 @@ Muestra la sala como una vista de vóxeles en primera persona (una sola capa) en
 | `camera_object` | Objeto | — | Objeto cuya posición + ángulo de mirada es la cámara (vacío = el objeto que ejecuta esta acción); opcional |
 | `z_layer` | Número | `0` | Qué capa del mundo se dibuja (la fase 2a dibuja exactamente una capa: todavía no se mira arriba ni abajo); opcional |
 | `fov` | Número | `66` | Campo de visión horizontal en grados; opcional |
-| `render_distance` | Número | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); opcional |
+| `render_distance` | Número | `10` | Longitud máxima de los rayos en casillas (menor = más rápido; la niebla lejana oculta dónde acaba el mundo); opcional |
 | `cell_size` | Número | `32` | Tamaño de la celda de la rejilla, en píxeles (que coincida con la rejilla donde se colocan los bloques); opcional |
 | `columns` | Número | `160` | Columnas de pantalla para raycast (menos = más rápido/más tosco); opcional |
-| `fog` | Sí/No | Sí | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; opcional |
-| `fog_color` | Color | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); opcional |
+| `fog` | Sí/No | Sí | Fundir los bloques lejanos con el cielo para que el borde de la vista parezca bruma y no un corte brusco. Desactivado: el aspecto plano de antes; opcional |
+| `fog_color` | Color | — | Color hacia el que se difumina la distancia; vacío = el color del cielo (una cueva puede querer el suyo); opcional |
 | `wall_color` | Color | `#8a8a8a` | Color plano, usado solo si los bloques con textura están desactivados; opcional |
 | `floor_color` | Color | `#3a2f1c` | Color plano del suelo (la fase 2a todavía no textura el suelo); opcional |
 | `ceiling_color` | Color | `#87CEEB` | Color plano del techo o cielo (la fase 2a todavía no tiene cielo); opcional |
@@ -331,14 +331,14 @@ Registra una receta que «Fabricar objeto» puede usar: llámala una vez por cad
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `output` | Elección | `brick` | Which block type this recipe produces; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `output_count` | Número | `1` | How many of Output Block one craft produces |
-| `input_1` | Elección | `stone` | First required block type; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `input_1_count` | Número | `1` | How many of Input 1 the recipe consumes |
-| `input_2` | Elección | — | Second required block type (blank = unused); Opciones: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; opcional |
-| `input_2_count` | Número | `1` | How many of Input 2 the recipe consumes; opcional |
-| `input_3` | Elección | — | Third required block type (blank = unused); Opciones: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; opcional |
-| `input_3_count` | Número | `1` | How many of Input 3 the recipe consumes; opcional |
+| `output` | Elección | `brick` | Qué tipo de bloque produce esta receta; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Número | `1` | Cuántos bloques producidos da cada fabricación |
+| `input_1` | Elección | `stone` | Primer tipo de bloque necesario; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Número | `1` | Cuánto del ingrediente 1 consume la receta |
+| `input_2` | Elección | — | Segundo tipo de bloque necesario (vacío = ninguno); Opciones: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; opcional |
+| `input_2_count` | Número | `1` | Cuánto del ingrediente 2 consume la receta; opcional |
+| `input_3` | Elección | — | Tercer tipo de bloque necesario (vacío = ninguno); Opciones: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; opcional |
+| `input_3_count` | Número | `1` | Cuánto del ingrediente 3 consume la receta; opcional |
 
 ### Establecer ángulo de mirada
 
@@ -388,7 +388,7 @@ Convierte esta instancia en un ESCALÓN de la vista raycast: las casillas de la 
 - [Dibujo](Full-Action-Reference-Drawing_es) (11)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_es) (5)
+- [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_es) (16)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

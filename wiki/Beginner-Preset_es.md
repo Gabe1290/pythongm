@@ -163,7 +163,7 @@ Este preajuste habilita **20** tipos de eventos y **68** tipos de acciones.
 | Establecer color de dibujo | `set_draw_color` | `color` |
 | Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
 
-### Score/Lives/Health
+### Puntuación/Vidas/Salud
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
