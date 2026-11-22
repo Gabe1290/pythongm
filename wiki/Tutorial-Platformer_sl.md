@@ -18,7 +18,7 @@ V tem vodiču boš ustvaril **Platformsko Igro** - akcijsko igro s stranskim pom
 - Zbirateljske predmete in nevarnosti
 
 **Težavnost:** Začetnik
-**Prednastavitev:** Vmesna prednastavitev (dejanja Execute Code v razdelku Izboljšave niso v prednastavitvi za začetnike; osnovni vodič do 10. koraka potrebuje samo dejanja iz prednastavitve za začetnike)
+**Prednastavitev:** Vmesna prednastavitev (dejanja Izvedi kodo v razdelku Izboljšave niso v prednastavitvi za začetnike; osnovni vodič do 10. koraka potrebuje samo dejanja iz prednastavitve za začetnike)
 
 ---
 
@@ -143,16 +143,16 @@ tega wikija:
 
 | Dogodek | Dejanje |
 |---|---|
-| Keyboard (held) → Left Arrow | Set Horizontal Speed na `-4` |
-| Keyboard (held) → Right Arrow | Set Horizontal Speed na `4` |
-| Keyboard: No Key | Set Horizontal Speed na `0` |
-| Key Press → Up Arrow | Set Vertical Speed na `-10` |
-| Collision with obj_ground | Stop Movement |
+| Tipkovnica (pridržano) → Left Arrow | Nastavi vodoravno hitrost na `-4` |
+| Tipkovnica (pridržano) → Right Arrow | Nastavi vodoravno hitrost na `4` |
+| Keyboard: No Key | Nastavi vodoravno hitrost na `0` |
+| Key Press → Up Arrow | Nastavi navpično hitrost na `-10` |
+| Collision with obj_ground | Ustavi gibanje |
 
 Dve podrobnosti, zaradi katerih je občutek pravi:
 
 - **No Key ponastavi na nič SAMO vodoravno hitrost** — tukaj nikoli ne
-  uporabi Stop Movement, ker Stop Movement ponastavi na nič tudi navpično
+  uporabi Ustavi gibanje, ker Ustavi gibanje ponastavi na nič tudi navpično
   hitrost, kar bi preklicalo gravitacijo vsakič, ko igralec spusti
   smerno tipko.
 - **Key Press (ne held)** je tisto, kar naredi Up en sam sunek skoka,
@@ -216,7 +216,7 @@ Zastava konča raven, ko jo igralec doseže.
    - Message: `Level Complete!`
 3. Dodaj dejanje **Soba** → **Naslednja soba** (ali **Znova zaženi sobo** za eno raven)
 
-Besedilo Show Message je nespremenljiv niz — ne more vgraditi žive
+Besedilo Prikaži sporočilo je nespremenljiv niz — ne more vgraditi žive
 vrednosti, kot je rezultat. HUD igralnega kontrolerja (korak 9) že
 prikazuje rezultat na zaslonu skozi celotno raven, tako da ga je igralec
 že videl.
@@ -332,8 +332,8 @@ tremi, po vrsti:
    **Relativno** označeno)
 5. **Nadzor** → **Konec bloka**
 
-Par Start/End Block pomeni, da se obe dejanji znotraj izvedeta le, ko je
-Test Variable nad njima resničen — isti vzorec zaščitenega bloka, ki ga
+Par Start/Konec bloka pomeni, da se obe dejanji znotraj izvedeta le, ko je
+Preveri spremenljivko nad njima resničen — isti vzorec zaščitenega bloka, ki ga
 vodiča Sokoban in Labirint uporabljata za svoje pogoje.
 
 ### Dodaj Premikajoče se Platforme
@@ -407,10 +407,10 @@ Lives** sproži šele, ko življenja dejansko dosežejo 0. Dodaj ta dogodek na
 | Težava | Rešitev |
 |--------|---------|
 | Igralec pade skozi tla | Preveri, da ima `obj_ground` označeno "Solid" |
-| Igralec ne more skočiti | Preveri, da dogodek Key Press → Up Arrow obstaja in da je Set Vertical Speed negativen |
-| Igralec se po pristanku še naprej vzpenja | Poskrbi, da ima Collision with obj_ground dejanje Stop Movement |
-| Skok se zdi "lebdeč" | Povečaj vrednost Gravity v Set Gravity ali naredi vrednost skoka v Set Vertical Speed bolj negativno |
-| Skok se zdi prešibek | Zmanjšaj vrednost Gravity v Set Gravity ali naredi vrednost skoka v Set Vertical Speed bolj negativno |
+| Igralec ne more skočiti | Preveri, da dogodek Key Press → Up Arrow obstaja in da je Nastavi navpično hitrost negativen |
+| Igralec se po pristanku še naprej vzpenja | Poskrbi, da ima Collision with obj_ground dejanje Ustavi gibanje |
+| Skok se zdi "lebdeč" | Povečaj vrednost Gravity v Nastavi gravitacijo ali naredi vrednost skoka v Nastavi navpično hitrost bolj negativno |
+| Skok se zdi prešibek | Zmanjšaj vrednost Gravity v Nastavi gravitacijo ali naredi vrednost skoka v Nastavi navpično hitrost bolj negativno |
 
 ---
 
@@ -418,7 +418,7 @@ Lives** sproži šele, ko življenja dejansko dosežejo 0. Dodaj ta dogodek na
 
 Čestitke! Ustvaril si platformsko igro! Naučil si se:
 
-- **Fiziko gravitacije** - Set Gravity ob vsakem koraku uporabi stalno silo navzdol
+- **Fiziko gravitacije** - Nastavi gravitacijo ob vsakem koraku uporabi stalno silo navzdol
 - **Mehaniko skakanja** - Dogodek Key Press (ne held) da en sam sunek hitrosti navzgor
 - **Vgrajeni trk s trdnimi objekti** - Tla samodejno blokirajo igralca, ko so označena kot Solid, brez ročne kode za preverjanje položaja
 - **Nevarnosti** - Ustvarjanje objektov, ki ponovno zaženejo raven

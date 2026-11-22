@@ -169,7 +169,7 @@ predmetov micro:bit v pravo kodo **MicroPython**, ki teče na fizični ploščic
    `.hex`, ki jo povlečete na USB-pogon **MICROBIT** ploščice — to deluje tudi
    na novi ploščici, ki še nikoli ni poganjala MicroPythona.
 
-Prevedena so vsa dejanja in pogoji micro:bita, pa tudi *Set Variable*, *Test
+Prevedena so vsa dejanja in pogoji micro:bita, pa tudi *Nastavi spremenljivko*, *Test
 Variable*, bloki in komentarji. Vsak dogodek postane preverjanje znotraj ene
 same zanke. Igralna dejanja, ki na ploščici ne pomenijo nič (sobe, spriti,
 točke …), se ne izvozijo. V izrazih delujejo `irandom`, `random` in `choose`;

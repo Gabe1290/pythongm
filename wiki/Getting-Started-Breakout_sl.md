@@ -352,8 +352,8 @@ Lahko jo tudi še izboljšate, na primer z dodajanjem:
 
 | Objekt | Sprite | Solid | Dogodki |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Da | Keyboard (Left/Right), Keyboard Release |
-| `obj_ball` | `spr_ball` | Da | Create, Collision (lopar, opeke), Outside Room |
+| `obj_paddle` | `spr_paddle` | Da | Keyboard (Left/Right), Spust tipke |
+| `obj_ball` | `spr_ball` | Da | Create, Collision (lopar, opeke), Zunaj sobe |
 | `obj_brick_1` | `spr_brick_1` | Da | Collision (žoga) - Uniči sebe |
 | `obj_brick_2` | `spr_brick_2` | Da | Podeduje od `obj_brick_1` |
 | `obj_brick_3` | `spr_brick_3` | Da | Brez (le stena) |

@@ -124,7 +124,7 @@ sliki.
 
 ### Aktiviranje Views
 
-1. Izberite "Enable Views" v lastnostih sobe
+1. Izberite "Omogoči poglede" v lastnostih sobe
 2. Konfigurirajte View 0 (glavni view)
 
 ### Lastnosti Views
@@ -150,7 +150,7 @@ Da kamera sledi igralcu:
 
 Vrstni red sob v drevesu virov določa:
 1. Katera soba se naloži prva (soba na vrhu = začetna soba)
-2. Vrstni red za akciji "Next Room" in "Previous Room"
+2. Vrstni red za akciji "Naslednja soba" in "Prejšnja soba"
 
 ### Spreminjanje Vrstnega Reda Sob
 

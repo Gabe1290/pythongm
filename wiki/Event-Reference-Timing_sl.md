@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Alarm
+### Budilka
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `alarm` |
@@ -24,17 +24,17 @@
 
 ---
 
-### Begin Step
+### Začetek koraka
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `begin_step` |
 | **Ikona** | ▶️ |
-| **Kategorija** | Step |
+| **Kategorija** | Korak |
 | **Preset** | Začetnik |
 
 **Opis:** Sproži se na začetku vsakega okvirja, pred rednimi dogodki Step.
 
-**Vrstni red izvajanja:** Begin Step → Step → End Step
+**Vrstni red izvajanja:** Začetek koraka → Step → Konec koraka
 
 **Pogoste uporabe:**
 - Obdelava vnosa
@@ -42,12 +42,12 @@
 
 ---
 
-### End Step
+### Konec koraka
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `end_step` |
 | **Ikona** | ⏹️ |
-| **Kategorija** | Step |
+| **Kategorija** | Korak |
 | **Preset** | Začetnik |
 
 **Opis:** Sproži se na koncu vsakega okvirja, po trkih.

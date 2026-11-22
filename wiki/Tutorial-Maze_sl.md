@@ -18,7 +18,7 @@ V tem vodiču boš ustvaril **Igro Labirinta**, kjer igralec navigira skozi hodn
 - Preprost sistem časovnika
 
 **Težavnost:** Začetnik
-**Prednastavitev:** Srednja prednastavitev (akcija Execute Code,
+**Prednastavitev:** Srednja prednastavitev (akcija Izvedi kodo,
 uporabljena za časovnik, ni del prednastavitve za začetnike)
 
 ---
@@ -116,7 +116,7 @@ Izhod konča raven, ko ga igralec doseže.
    - Message: `You Win!`
 3. Add Action: **Soba** → **Naslednja soba** (ali **Znova zaženi sobo** za eno raven)
 
-Besedilo Show Message je fiksen niz — ne more vsebovati žive vrednosti,
+Besedilo Prikaži sporočilo je fiksen niz — ne more vsebovati žive vrednosti,
 kot je pretečen čas. Časovnik ostane viden v HUD-u (Korak 7) vse do
 zmage, zato je igralec svoj čas že videl.
 
@@ -157,11 +157,11 @@ vsakega z akcijo **Move** → **Set Horizontal/Vertical Speed**:
 
 | Dogodek | Akcija |
 |---|---|
-| Keyboard (held) → Right Arrow | Set Horizontal Speed na `4` |
-| Keyboard (held) → Left Arrow | Set Horizontal Speed na `-4` |
-| Keyboard (held) → Down Arrow | Set Vertical Speed na `4` |
-| Keyboard (held) → Up Arrow | Set Vertical Speed na `-4` |
-| Keyboard: No Key | Set Horizontal Speed na `0` **in** Set Vertical Speed na `0` |
+| Tipkovnica (pridržano) → Right Arrow | Nastavi vodoravno hitrost na `4` |
+| Tipkovnica (pridržano) → Left Arrow | Nastavi vodoravno hitrost na `-4` |
+| Tipkovnica (pridržano) → Down Arrow | Nastavi navpično hitrost na `4` |
+| Tipkovnica (pridržano) → Up Arrow | Nastavi navpično hitrost na `-4` |
+| Keyboard: No Key | Nastavi vodoravno hitrost na `0` **in** Nastavi navpično hitrost na `0` |
 
 ### 6.2 Ustavljanje ob Stenah
 
@@ -188,7 +188,7 @@ Game controller upravlja časovnik in prikazuje informacije.
 2. Sprite ni potreben
 
 **Dogodek: Create** — zažene časovnik z uporabo **Nadzor** →
-**Izvedi kodo** (akcija Execute Code v tem projektu izvede pravi
+**Izvedi kodo** (akcija Izvedi kodo v tem projektu izvede pravi
 Python, ne GameMaker Language):
 
 ```python
@@ -204,7 +204,7 @@ self.timer += 1.0 / game.fps
 **Dogodek: Draw** — zgradi HUD z resničnimi ukazi vrste za risanje.
 Dodaj tri akcije **Igra** → **Nariši besedilo**:
 
-| Akcija Draw Text | Besedilo | Položaj |
+| Akcija Nariši besedilo | Besedilo | Položaj |
 |---|---|---|
 | 1. | `Score:` | X `10`, Y `10` |
 | 2. | `Time:` | X `10`, Y `30` |
@@ -213,16 +213,16 @@ Dodaj tri akcije **Igra** → **Nariši besedilo**:
 nato takoj za njimi tri akcije **Risanje** → **Nariši spremenljivko**, da
 prikažeš žive vrednosti ob vsaki oznaki:
 
-| Akcija Draw Variable | Spremenljivka | Položaj |
+| Akcija Nariši spremenljivko | Spremenljivka | Položaj |
 |---|---|---|
 | 1. | `score` | X `70`, Y `10` |
 | 2. | `self.timer` | X `70`, Y `30` |
 | 3. | *(glej spodaj)* | X `70`, Y `50` |
 
 Ni vgrajenega števca "preostalih kovancev", na katerega bi kazal Draw
-Variable — tik pred akcijami Draw Variable dodaj še eno akcijo
+Variable — tik pred akcijami Nariši spremenljivko dodaj še eno akcijo
 **Nadzor** → **Izvedi kodo**, da ga izračunaš v spremenljivko
-instance, ki jo Draw Variable nato lahko prebere:
+instance, ki jo Nariši spremenljivko nato lahko prebere:
 
 ```python
 self.coins_left = sum(
@@ -231,7 +231,7 @@ self.coins_left = sum(
 )
 ```
 
-(nato nastavi polje Variable 3. akcije Draw Variable na `self.coins_left`).
+(nato nastavi polje Variable 3. akcije Nariši spremenljivko na `self.coins_left`).
 
 ![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
 

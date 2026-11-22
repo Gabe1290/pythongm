@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Create
+### Ustvarjanje
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `create` |
@@ -24,7 +24,7 @@
 
 ---
 
-### Step
+### Korak
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `step` |
@@ -46,7 +46,7 @@
 
 ---
 
-### Destroy
+### Uničenje
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `destroy` |

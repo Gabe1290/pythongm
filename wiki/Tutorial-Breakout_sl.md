@@ -223,7 +223,7 @@ Vaša osnovna igra Breakout je dokončana! Tukaj je nekaj izboljšav, ki jih lah
 
 | Objekt | Sprite | Trden | Dogodki |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Da | Keyboard (Left/Right), Keyboard Release |
+| `obj_paddle` | `spr_paddle` | Da | Keyboard (Left/Right), Spust tipke |
 | `obj_ball` | `spr_ball` | Da | Create, Collision (paddle, wall, brick) |
 | `obj_brick` | `spr_brick` | Da | Collision (ball) - Uniči self |
 | `obj_wall` | `spr_wall` | Da | Ni potrebno |

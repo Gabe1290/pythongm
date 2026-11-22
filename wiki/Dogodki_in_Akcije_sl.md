@@ -147,7 +147,7 @@ Preverjanja trkov potekajo med dogodkoma Step in Draw.
 | **Nariši pravokotnik** | Nariši pravokotnik | x1, y1, x2, y2, filled |
 | **Nariši krog** | Nariši krog | x, y, radius, filled |
 | **Nariši črto** | Nariši črto | x1, y1, x2, y2 |
-| **Nastavi barvo risanja** | Nastavi barvo za naslednje Draw Text/Draw Rectangle/itd. | color |
+| **Nastavi barvo risanja** | Nastavi barvo za naslednje Nariši besedilo/Nariši pravokotnik/itd. | color |
 | **Nastavi barvo** | Nastavi ton in prosojnost spritea (ne barve risanja zgoraj) | color, alpha |
 | **Nastavi pisavo risanja** | Nastavi pisavo in poravnavo za naslednje risanje besedila | font, halign, valign |
 

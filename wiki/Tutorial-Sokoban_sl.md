@@ -163,7 +163,7 @@ Igralec se premakne natanko za eno celico mreže naenkrat in potisne zaboje, ob 
 
 Dodaj po en dogodek **Key Press** za vsako smer, vsakega z akcijo **Move** → **Premakni po mreži**:
 
-| Dogodek | Akcija Move Grid |
+| Dogodek | Akcija Premakni po mreži |
 |---|---|
 | Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
 | Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
@@ -207,7 +207,7 @@ Potrebujemo nevidni krmilnik, ki opazuje, ali je vsak zaboj na cilju.
 2. Sprite ni potreben
 
 **Dogodek: Create** — enkratno nastavi štetje ciljev, z uporabo
-**Nadzor** → **Izvedi kodo** (akcija Execute Code v tem projektu
+**Nadzor** → **Izvedi kodo** (akcija Izvedi kodo v tem projektu
 izvede pravi Python, ne GameMaker Language — `self` je trenutna
 instanca, `game` je izvajalec igre):
 
@@ -236,7 +236,7 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 `self.restart_room_flag = True` je način, kako surov blok Execute
 Code sproži isti ponovni zagon sobe, kot ga izvede akcija **Restart
 Room** — glavna zanka to preveri vsak sličico. Če želiš pred ponovnim
-zagonom prikazati pojavno okno, takoj za blokom Execute Code dodaj
+zagonom prikazati pojavno okno, takoj za blokom Izvedi kodo dodaj
 akcijo **Prikaži sporočilo** (iz **Output**, sporočilo `Level Complete!`).
 
 **Dogodek: Draw**
@@ -311,7 +311,7 @@ V dogodku **Ustvarjanje** za `obj_game_controller` dodaj **Nadzor** →
 **Nastavi spremenljivko** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 V vsakem od štirih dogodkov Key Press za `obj_player` dodaj drugo
-akcijo takoj za Move Grid: **Nadzor** → **Nastavi spremenljivko** (Variable:
+akcijo takoj za Premakni po mreži: **Nadzor** → **Nastavi spremenljivko** (Variable:
 `global.moves`, Value: `1`, Scope: `global`, **Relativno** označeno) —
 to prišteje 1 k števcu ob vsakem pritisku tipke, ne glede na to, ali je
 bil premik dejansko blokiran s steno.
@@ -326,7 +326,7 @@ Shrani prejšnje položaje in omogoči pritisk na Z za razveljavitev zadnje pote
 ### Dodaj Več Nivojev
 
 Ustvari več sob (`room_level2`, `room_level3`, itd.) in v bloku
-Execute Code za preverjanje zmage uporabi akcijo **Naslednja soba**
+Izvedi kodo za preverjanje zmage uporabi akcijo **Naslednja soba**
 (kategorija Room) namesto **Znova zaženi sobo** (`self.next_room_flag =
 True` namesto `self.restart_room_flag = True`), ko je nivo dokončan.
 
@@ -348,7 +348,7 @@ Dodaj zvoke za:
 | Zaboj ne spremeni barve | Preveri, da akcija **Če trk** v dogodku Step cilja na `obj_target` |
 | Zaboj lahko potisneš skozi steno | Preveri zaznavanje trkov pred premikanjem zaboja |
 | Sporočilo o zmagi se pojavi takoj | Poskrbi, da so cilji postavljeni ločeno od zabojev |
-| Igralec se premakne za več polj | Uporabi dogodek Keyboard Press, ne Keyboard |
+| Igralec se premakne za več polj | Uporabi dogodek Pritisk tipke, ne Keyboard |
 
 ---
 

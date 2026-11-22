@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Room Start
+### Začetek sobe
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `room_start` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Room End
+### Konec sobe
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `room_end` |

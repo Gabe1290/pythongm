@@ -27,7 +27,7 @@ obnašanje igre (preverjeno proti glavni zanki v
 2. **Budilka** — Vsi sproženi alarmi odštevajo in se sprožijo
 3. **Korak** (in **Keyboard (pridržana)**) — Glavna logika igre, nato
    neprekinjena preverjanja pridržanih tipk za isto instanco
-4. **Keyboard Press/Release, Mouse** — Nakopičeni dogodki vnosa za to
+4. **Pritisk tipke/Release, Mouse** — Nakopičeni dogodki vnosa za to
    sličico se obdelajo (to se zgodi *po* Step, ne pred njim — koda v
    Step reagira na tipke, ki so bile pritisnjene že na *začetku*
    sličice, ne na tiste, pritisnjene med njo)
@@ -49,9 +49,9 @@ Prednastavitvah](Preset-Guide_sl).
 
 | Preset | Vključeni Dogodki |
 |--------|-------------------|
-| **Začetnik** (19 dogodkov) | Create, Step, Keyboard (pridržana), Keyboard \<Brez Tipke\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
-| **Srednji** (21 dogodkov) | + Destroy, Keyboard Press |
-| **Popoln** (samo Razvojna izdaja, 23 dogodkov) | + Keyboard Release, Mouse |
+| **Začetnik** (19 dogodkov) | Create, Step, Keyboard (pridržana), Keyboard \<Brez Tipke\>, Collision, Začetek koraka, Konec koraka, Alarm, Draw, Risanje vmesnika, Začetek sobe, Konec sobe, Začetek igre, Konec igre, Zunaj sobe, Dotik roba sobe, Ni več življenj, Ni več zdravja, Konec animacije |
+| **Srednji** (21 dogodkov) | + Destroy, Pritisk tipke |
+| **Popoln** (samo Razvojna izdaja, 23 dogodkov) | + Spust tipke, Mouse |
 
 ---
 

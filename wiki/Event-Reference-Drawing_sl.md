@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Draw
+### Risanje
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `draw` |
@@ -31,7 +31,7 @@
 
 ---
 
-### Draw GUI
+### Risanje vmesnika
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `draw_gui` |
@@ -41,7 +41,7 @@
 
 **Opis:** Riše v **zaslonskem prostoru (GUI)**, čez sobo in neodvisno od drsenja pogledov/kamere.
 
-**Razlika od Draw:** navadni dogodek Draw je v koordinatah sobe (drsi s pogledom); Draw GUI ostane pritrjen na zaslon — uporabite ga za HUD, rezultate in menije.
+**Razlika od Draw:** navadni dogodek Draw je v koordinatah sobe (drsi s pogledom); Risanje vmesnika ostane pritrjen na zaslon — uporabite ga za HUD, rezultate in menije.
 
 ---
 

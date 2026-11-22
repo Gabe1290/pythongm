@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Outside Room
+### Zunaj sobe
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `outside_room` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Intersect Boundary
+### Dotik roba sobe
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `intersect_boundary` |
@@ -35,7 +35,7 @@
 
 ---
 
-### No More Lives
+### Ni več življenj
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `no_more_lives` |
@@ -52,7 +52,7 @@
 
 ---
 
-### No More Health
+### Ni več zdravja
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `no_more_health` |
@@ -69,7 +69,7 @@
 
 ---
 
-### Animation End
+### Konec animacije
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `animation_end` |

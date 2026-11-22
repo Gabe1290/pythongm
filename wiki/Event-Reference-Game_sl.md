@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Referenca Dogodkov](Event-Reference_sl) | [Popolna referenca dejanj](Full-Action-Reference_sl)*
 
-### Game Start
+### Začetek igre
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `game_start` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Game End
+### Konec igre
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `game_end` |

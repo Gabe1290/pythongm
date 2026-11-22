@@ -18,7 +18,7 @@ V tem vodiču boš ustvaril **Igro Pristanka na Luni** - klasično arkadno igro,
 - Varna pristajalna območja
 
 **Težavnost:** Začetnik
-**Prednastavitev:** Vmesna prednastavitev (fizika potiska/goriva se povsod opira na Execute Code, ki ni v prednastavitvi za začetnike)
+**Prednastavitev:** Vmesna prednastavitev (fizika potiska/goriva se povsod opira na Izvedi kodo, ki ni v prednastavitvi za začetnike)
 
 ---
 
@@ -205,7 +205,7 @@ GML), zato je `if` okoli preostale kode enakovreden.
      2. **Output** → **Prikaži sporočilo** (Message: `Crashed! Too fast!`)
      3. **Soba** → **Znova zaženi sobo**
 
-Besedilo Show Message je nespremenljiv niz — ne more vgraditi dejanske
+Besedilo Prikaži sporočilo je nespremenljiv niz — ne more vgraditi dejanske
 hitrosti pristanka. HUD (Korak 7) že prikazuje živo hitrost vse do
 trenutka dotika, tako da je igralec številko že videl.
 
@@ -346,7 +346,7 @@ Namesto gibanja levo/desno modul zavrti in daj potisk v smer, kamor je
 obrnjen. Primerki tega pogona imajo pravi atribut `rotation` (stopinje, 0
 = desno, narašča v nasprotni smeri urnega kazalca), s katerim se vrti
 sprite — ni potreben `image_angle`/`lengthdir_x`/`lengthdir_y`, saj je
-`math` v Execute Code že na voljo:
+`math` v Izvedi kodo že na voljo:
 
 Zamenjaj kodo dogodka Create iz 5.1 z:
 ```python
@@ -414,7 +414,7 @@ self.hspeed += self.wind_force
 
 | Težava | Rešitev |
 |--------|---------|
-| Modul pada prehitro | Zmanjšaj vrednost `Gravity` v Set Gravity ali povečaj `thrust_force` v kodi dogodka Create |
+| Modul pada prehitro | Zmanjšaj vrednost `Gravity` v Nastavi gravitacijo ali povečaj `thrust_force` v kodi dogodka Create |
 | Ne morem dovolj zavreti | Povečaj `thrust_force` ali povečaj `safe_speed` |
 | Gorivo poide prehitro | Zmanjšaj `fuel_use` ali povečaj začetni `fuel` |
 | Modul gre s zaslona | Preveri blok meja na koncu kode dogodka Step |
@@ -426,11 +426,11 @@ self.hspeed += self.wind_force
 
 Čestitke! Ustvaril si igro pristanka na Luni! Naučil si se:
 
-- **Fiziko potiska** - Rahlo spreminjanje `self.vspeed` proti neprekinjenemu vleku Set Gravity
+- **Fiziko potiska** - Rahlo spreminjanje `self.vspeed` proti neprekinjenemu vleku Nastavi gravitacijo
 - **Upravljanje hitrosti** - Izračun hitrosti iz `hspeed`/`vspeed` s Pitagorovim izrekom
 - **Sistem goriva** - Igranje z upravljanjem virov s preprosto spremenljivko primerka
-- **Zaznavanje trkov** - Različni izidi za ploščad in tla, izbrani s Test Expression
-- **Prikaz HUD** - Izračun prikazanih vrednosti v Execute Code, nato njihov prikaz z Draw Text/Draw Variable
+- **Zaznavanje trkov** - Različni izidi za ploščad in tla, izbrani s Preveri izraz
+- **Prikaz HUD** - Izračun prikazanih vrednosti v Izvedi kodo, nato njihov prikaz z Nariši besedilo/Nariši spremenljivko
 
 ---
 
