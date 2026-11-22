@@ -144,62 +144,40 @@ def french():
 @pytest.mark.parametrize("context", CONTEXTS)
 def test_french_users_still_get_french(context, french):
     """The whole point of the change: re-authoring in English must not cost
-    French users what they already had. Checked through a live QTranslator
-    rather than by reading the .ts, because a string can be present in the
-    catalogue and still not resolve -- that is exactly how the `self.ide`
-    context bug survived in every language for months."""
-    from PySide6.QtCore import QCoreApplication
+    French users what they already had. Since 2026-11-22 the names come from
+    config/ui_names (docs/CORE_NAMES_I18N_PLAN.md) rather than per-context .ts
+    entries, so the check goes through the helper both contexts use --
+    PRESENCE of a translation, not "differs from its source" (Port, Mode, X, Y
+    are the same words in French)."""
+    from config.ui_names import language_table
+    from core.ui_names import action_label
 
-    actions = _network_actions()
-    catalogue = (REPO_ROOT / "translations" / "pygm2_fr.ts").read_text(
-        encoding="utf-8")
-    missing = []
-    for name, action in actions.items():
-        source = action.display_name
-        # PRESENCE in the catalogue, not "differs from its source". Four
-        # strings in this extension -- Port, Mode, X, Y -- are genuinely
-        # the same word in French, so a differs-from-source check would
-        # call a correct translation a missing one. (It did exactly that
-        # on the first run, while also correctly catching two REAL gaps:
-        # "Set Network Mode (v1)" and "Host Address" had been English all
-        # along, so the French-to-English pass never touched them and no
-        # French was ever written for them.)
-        # The EXACT element, not a bare substring: a first version
-        # searched for the text alone and survived a mutation that
-        # renamed the entry to "Host a Game REMOVED", because the
-        # original text was still present inside the new one.
-        element = "<source>%s</source>" % escape(source)
-        if element not in catalogue:
-            missing.append("%s (%r)" % (name, source))
-    assert not missing, (
-        "no entry in the French catalogue for:\n  %s"
-        % chr(10).join(missing))
-
-    # Resolving at runtime is a separate claim from being present.
-    for name, action in actions.items():
-        assert QCoreApplication.translate(context, action.display_name), name
+    table = language_table("fr")["core.action"]
+    missing = [f"{name} ({a.display_name!r})" for name, a in _network_actions().items()
+               if name not in table]
+    assert not missing, "no French name for:\n  " + "\n  ".join(missing)
+    for name, action in _network_actions().items():
+        assert action_label(action, lang="fr") == table[name], (context, name)
 
 
 def test_the_french_really_is_french(french):
     """Guards the test above from passing on a translation that is just the
     English copied across."""
-    from PySide6.QtCore import QCoreApplication
+    from core.ui_names import action_label
 
-    translated = QCoreApplication.translate("ObjectEventsPanel", "Host a Game")
+    translated = action_label(_network_actions()["host_game"], lang="fr")
     assert translated != "Host a Game"
     assert ACCENTED.search(translated), translated
 
 
 def test_accents_survive_the_round_trip(french):
     """This is educational software for French-speaking students; a stripped
-    accent is a defect, not cosmetics. Byte-level, because a cp1252 console
-    makes correct UTF-8 look broken and broken UTF-8 look fine."""
-    from PySide6.QtCore import QCoreApplication
+    accent is a defect, not cosmetics."""
+    from core.ui_names import action_label, param_label
 
-    got = QCoreApplication.translate("ActionConfigDialog", "Max players")
-    assert got == "Joueurs max"
-
-    host = QCoreApplication.translate("ObjectEventsPanel", "Host a Game")
+    max_players = [p for p in _network_actions()["host_game"].parameters if p.display_name == "Max players"][0]
+    assert param_label(max_players, lang="fr") == "Joueurs max"
+    host = action_label(_network_actions()["host_game"], lang="fr")
     assert host == "H\u00e9berger une partie", host.encode("unicode_escape")
 
 
@@ -276,9 +254,14 @@ def test_every_extension_action_name_resolves(lang):
     previous = getattr(manager, "current_language", "en")
     try:
         manager.set_language(lang)
+        from core.ui_names import action_label
         unresolved = []
         for name, action in _extension_actions().items():
             source = action.display_name
+            # The name tables (config/ui_names) first, as the panel and the dialog do; an extension
+            # with no table entry (micro:bit) still resolves through the catalogue in both contexts.
+            if action_label(action, lang=lang) != source:
+                continue
             for context in CONTEXTS:
                 if QCoreApplication.translate(context, source) == source:
                     unresolved.append("%s/%s (%s)" % (context, name, source))

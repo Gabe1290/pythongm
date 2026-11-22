@@ -35,6 +35,21 @@ def _sources():
     return labels + [floor.description]
 
 
+def _resolves(s, lang):
+    """What the action dialog shows for s: the name tables first (config/ui_names, as the dialog's
+    helpers do since docs/CORE_NAMES_I18N_PLAN.md), else the Qt catalogue."""
+    from PySide6.QtCore import QCoreApplication
+    from config.ui_names import language_table
+    from events.action_types import ACTION_TYPES
+    table = language_table(lang)
+    if s in table.get("core.param", {}):
+        return True                      # presence: "X" or "Angle" may be the same word
+    for key, a in ACTION_TYPES.items():
+        if a.description == s and key in table.get("core.action_description", {}):
+            return True
+    return QCoreApplication.translate("ActionConfigDialog", s) != s
+
+
 def test_the_strings_are_the_ones_the_dialog_shows():
     assert _sources()[:5] == ["Height", "Top Texture", "Side Texture", "Wall Height", "Max Step"]
 
@@ -59,13 +74,12 @@ def test_every_stairs_string_resolves(lang):
 
     QApplication.instance() or QApplication([])
     get_language_manager().set_language(lang)
-    unresolved = [s[:40] for s in _sources()
-                  if QCoreApplication.translate("ActionConfigDialog", s) == s]
+    unresolved = [s[:40] for s in _sources() if not _resolves(s, lang)]
     assert not unresolved, (lang, unresolved)
 
 
 def test_french_keeps_its_accents():
-    text = (ROOT / "translations" / "pygm2_fr.ts").read_text(encoding="utf-8")
+    text = (ROOT / "config" / "ui_names" / "fr.py").read_text(encoding="utf-8")
     for word in ("Texture du côté", "surélevé", "À utiliser", "l'événement"):
         assert word in text, word
 
@@ -120,6 +134,5 @@ def test_every_raycast_dialog_string_resolves(lang):
     strings = _all_raycast_dialog_strings()
     assert len(strings) > 50
     unresolved = [s[:40] for s in strings
-                  if QCoreApplication.translate("ActionConfigDialog", s) == s
-                  and s not in COGNATES.get(lang, set())]
+                  if not _resolves(s, lang) and s not in COGNATES.get(lang, set())]
     assert not unresolved, (lang, unresolved)

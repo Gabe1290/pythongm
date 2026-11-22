@@ -1,6 +1,6 @@
 # Translating the core action and event names — plan (2026-11-22)
 
-**Status: owner chose the recommendations (2026-11-22); in progress — see the checkboxes.** This is the second half of
+**Status: COMPLETE (2026-11-22).** Follow-ups are in TODO.md. This is the second half of
 `docs/THYMIO_PANEL_I18N_PLAN.md`: that plan built `core/ui_names.py` and used it for Thymio; this one
 uses it for everything else in the Standard events panel.
 
@@ -248,8 +248,16 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
     Blockly workspaces show generated blocks (extensions, raycast) in English -- they could fall back
     to `config/ui_names`, which would then make the Blockly docs change too.
 
-- [ ] **U9 — Close.** Retire the unused `.ts` entries (D6), wiki regenerated and, with the owner's
+- [x] **U9 — Close.** Retire the unused `.ts` entries (D6), wiki regenerated and, with the owner's
   approval, published; QA checklist §17 item; `TODO.md`; `CLAUDE.md` note.
+  *Done 2026-11-22:* 2,066 superseded catalogue entries removed (`.ts` + compiled `.qm`, all ten
+  languages) -- only in the four contexts whose names now go through the `core.ui_names` helpers
+  (`ObjectEventsPanel`, `ActionConfigDialog`, `ConditionalActionEditor`, `MultiActionEditor`), only for
+  names every language's table covers, never a string code passes to `tr()` literally (44 kept), and
+  never a name an extension without a table still needs (micro:bit). Other widgets' entries for the
+  same words stay: they may call `tr()` on a variable the code scan cannot see. Two tests that pinned
+  the old per-context entries (`test_extension_action_i18n.py`, `test_raycast_stairs_i18n.py`) now
+  check through the helpers. The wiki was published the same day; QA item and TODO were done in U8.
 
 ## Risks
 

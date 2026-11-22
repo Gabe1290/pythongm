@@ -211,14 +211,6 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>10-30 convient sur un réseau local (défaut 20)</translation>
     </message>
     <message>
-        <source>A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character.</source>
-        <translation>Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar.</translation>
-    </message>
-    <message>
-        <source>A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine.</source>
-        <translation>Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur.</translation>
-    </message>
-    <message>
         <source>A key name: "space", "left", "a", "5", "lshift"...</source>
         <translation>Nom de touche : "space", "left", "a", "5", "lshift"...</translation>
     </message>
@@ -243,136 +235,20 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur</translation>
     </message>
     <message>
-        <source>Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay.</source>
-        <translation>Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai).</translation>
-    </message>
-    <message>
-        <source>An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags.</source>
-        <translation>Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client.</translation>
-    </message>
-    <message>
-        <source>Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space").</source>
-        <translation>Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space").</translation>
-    </message>
-    <message>
-        <source>Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host".</source>
-        <translation>Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host".</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Associer une touche réseau</translation>
-    </message>
-    <message>
-        <source>Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender.</source>
-        <translation>Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender.</translation>
-    </message>
-    <message>
-        <source>Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1.</source>
-        <translation>Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1).</translation>
-    </message>
-    <message>
-        <source>Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player.</source>
-        <translation>Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo.</translation>
-    </message>
-    <message>
-        <source>Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.&lt;name&gt; directly.</source>
-        <translation>Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.&lt;nom&gt; directement.</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Créer un objet réseau</translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation>Donnée</translation>
-    </message>
-    <message>
-        <source>Disconnect (or stop hosting) and clear the global network variables.</source>
-        <translation>Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales.</translation>
-    </message>
-    <message>
-        <source>Game name</source>
-        <translation>Nom de la partie</translation>
-    </message>
-    <message>
-        <source>Global variable</source>
-        <translation>Variable globale</translation>
-    </message>
-    <message>
         <source>Host = others connect to you; Client = you connect to a host</source>
         <translation>Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Héberger une partie</translation>
-    </message>
-    <message>
-        <source>Host address</source>
-        <translation>Adresse de l'hôte</translation>
-    </message>
-    <message>
-        <source>Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1.</source>
-        <translation>Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1.</translation>
-    </message>
-    <message>
-        <source>Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine.</source>
-        <translation>Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines.</translation>
     </message>
     <message>
         <source>How far behind ghosts are drawn, in milliseconds (default 100)</source>
         <translation>Retard d'affichage des fantômes, en millisecondes (défaut 100)</translation>
     </message>
     <message>
-        <source>If I Drive This Instance</source>
-        <translation>Si je pilote cette instance</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Si le joueur appuie</translation>
-    </message>
-    <message>
-        <source>Input name</source>
-        <translation>Nom de l'entrée</translation>
-    </message>
-    <message>
         <source>Instance variable names to copy as well, separated by commas (e.g. "hp, colour")</source>
         <translation>Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur")</translation>
     </message>
     <message>
-        <source>Join a Game</source>
-        <translation>Rejoindre une partie</translation>
-    </message>
-    <message>
-        <source>Key</source>
-        <translation>Touche</translation>
-    </message>
-    <message>
         <source>Largest number of players, host included (2 to 16)</source>
         <translation>Nombre maximal de joueurs, hôte compris (2 à 16)</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Quitter la partie</translation>
-    </message>
-    <message>
-        <source>Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it.</source>
-        <translation>Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote.</translation>
-    </message>
-    <message>
-        <source>Max players</source>
-        <translation>Joueurs max</translation>
-    </message>
-    <message>
-        <source>Message name</source>
-        <translation>Nom du message</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation>Mode</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Nom</translation>
     </message>
     <message>
         <source>Name of the global variable to write the value into</source>
@@ -387,26 +263,6 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)</translation>
     </message>
     <message>
-        <source>Network</source>
-        <translation>Réseau</translation>
-    </message>
-    <message>
-        <source>Object</source>
-        <translation>Objet</translation>
-    </message>
-    <message>
-        <source>Owner</source>
-        <translation>Propriétaire</translation>
-    </message>
-    <message>
-        <source>Player</source>
-        <translation>Joueur</translation>
-    </message>
-    <message>
-        <source>Player name</source>
-        <translation>Nom du joueur</translation>
-    </message>
-    <message>
         <source>Player number (0 = host)</source>
         <translation>Numéro de joueur (0 = hôte)</translation>
     </message>
@@ -415,64 +271,12 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
     </message>
     <message>
-        <source>Port</source>
-        <translation>Port</translation>
-    </message>
-    <message>
         <source>Position relative to the object running the action</source>
         <translation>Position relative à l'objet qui exécute l'action</translation>
     </message>
     <message>
-        <source>Read a Shared Variable</source>
-        <translation>Lire une variable partagée</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation>Relatif</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Envoyer un message réseau</translation>
-    </message>
-    <message>
-        <source>Send to</source>
-        <translation>Destinataire</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Définir une variable partagée</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Définir le propriétaire de l'instance</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Régler la fréquence de synchro</translation>
-    </message>
-    <message>
-        <source>Shared name</source>
-        <translation>Nom partagé</translation>
-    </message>
-    <message>
         <source>Show a "Waiting for players..." screen with a Start button before the game begins</source>
         <translation>Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie</translation>
-    </message>
-    <message>
-        <source>Smoothing (ms)</source>
-        <translation>Interpolation (ms)</translation>
-    </message>
-    <message>
-        <source>Snapshots per second</source>
-        <translation>Instantanés / seconde</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Démarrer la partie en réseau</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Synchroniser cette instance</translation>
     </message>
     <message>
         <source>TCP port -- must be the same on the host and every client</source>
@@ -515,36 +319,8 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>Valeur</translation>
     </message>
     <message>
-        <source>Variables to copy</source>
-        <translation>Variables à répliquer</translation>
-    </message>
-    <message>
-        <source>Waiting room</source>
-        <translation>Salon d'attente</translation>
-    </message>
-    <message>
-        <source>Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.&lt;name&gt;.</source>
-        <translation>Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.&lt;nom&gt;.</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
         <source>all = everyone; host = the host only</source>
         <translation>all = tout le monde ; host = l'hôte seulement</translation>
-    </message>
-    <message>
-        <source>Host Address</source>
-        <translation>Adresse de l'hôte</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Définir le mode réseau (v1)</translation>
     </message>
     <message>
         <source>A custom message arrived. global.network_event is its label, global.network_data its data, global.network_sender the sender.</source>
@@ -595,345 +371,9 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
     </message>
     <message>
-        <source>Apply Gravity</source>
-        <translation>Appliquer la gravité</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Casser un bloc</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Dessiner l'ATH Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Dessiner l'ATH DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Dessiner la mini-carte</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Activer la vue Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Activer la vue 2.5 D</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Sauter</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Charger un monde Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Regarder en haut / en bas</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Déplacer avec collision</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Poser un bloc</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Jouer une musique</translation>
-    </message>
-    <message>
-        <source>Play Sound</source>
-        <translation>Jouer un son</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Choisir une case de la barre</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Définir la rotation du sprite</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Définir la hauteur du sol</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Définir la protection des blocs</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Définir la récompense d'un bloc</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Définir l'angle de vue</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Régler le volume</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Arrêter la musique</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Vérifier si un son joue</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Arrêter un son</translation>
     </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Définir une recette de fabrication</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Fabriquer un objet</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Héberger une partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Rejoindre une partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Quitter la partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Définir une variable partagée (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Lire une variable partagée (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Terminer le tour (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Envoyer un message réseau (échange de fichiers)</translation>
-    </message>
-        <message>
-            <source>Height</source>
-            <translation>Hauteur</translation>
-        </message>
-        <message>
-            <source>Top Texture</source>
-            <translation>Texture du dessus</translation>
-        </message>
-        <message>
-            <source>Side Texture</source>
-            <translation>Texture du côté</translation>
-        </message>
-        <message>
-            <source>Wall Height</source>
-            <translation>Hauteur des murs</translation>
-        </message>
-        <message>
-            <source>Max Step</source>
-            <translation>Marche maximale</translation>
-        </message>
-        <message>
-            <source>Make this instance a STEP in the raycast view: the grid cells its sprite covers become raised floor of this height, drawn as a step the player can climb (or a ledge to drop from). Use it in the Create event of a non-solid object</source>
-            <translation>Fait de cette instance une MARCHE dans la vue raycast : les cases de la grille couvertes par son sprite deviennent un sol surélevé de cette hauteur, dessiné comme une marche que le joueur peut monter (ou un rebord d'où descendre). À utiliser dans l'événement Create d'un objet non solide</translation>
-        </message>
-        <message>
-            <source>Enable</source>
-            <translation>Activer</translation>
-        </message>
-        <message>
-            <source>Camera Object</source>
-            <translation>Objet caméra</translation>
-        </message>
-        <message>
-            <source>Field of View</source>
-            <translation>Champ de vision</translation>
-        </message>
-        <message>
-            <source>Render Distance</source>
-            <translation>Distance d'affichage</translation>
-        </message>
-        <message>
-            <source>Cell Size</source>
-            <translation>Taille des cases</translation>
-        </message>
-        <message>
-            <source>Columns</source>
-            <translation>Colonnes</translation>
-        </message>
-        <message>
-            <source>Wall Color</source>
-            <translation>Couleur des murs</translation>
-        </message>
-        <message>
-            <source>Floor Color</source>
-            <translation>Couleur du sol</translation>
-        </message>
-        <message>
-            <source>Ceiling Color</source>
-            <translation>Couleur du plafond</translation>
-        </message>
-        <message>
-            <source>Wall Texture</source>
-            <translation>Texture des murs</translation>
-        </message>
-        <message>
-            <source>Sky Texture</source>
-            <translation>Texture du ciel</translation>
-        </message>
-        <message>
-            <source>Floor Texture</source>
-            <translation>Texture du sol</translation>
-        </message>
-        <message>
-            <source>Ceiling Texture</source>
-            <translation>Texture du plafond</translation>
-        </message>
-        <message>
-            <source>Textured Walls</source>
-            <translation>Murs texturés</translation>
-        </message>
-        <message>
-            <source>Floor Detail</source>
-            <translation>Détail du sol</translation>
-        </message>
-        <message>
-            <source>Viewport Height</source>
-            <translation>Hauteur de la vue</translation>
-        </message>
-        <message>
-            <source>Angle</source>
-            <translation>Angle</translation>
-        </message>
-        <message>
-            <source>Size</source>
-            <translation>Taille</translation>
-        </message>
-        <message>
-            <source>Background Color</source>
-            <translation>Couleur de fond</translation>
-        </message>
-        <message>
-            <source>Player Color</source>
-            <translation>Couleur du joueur</translation>
-        </message>
-        <message>
-            <source>Mark Object</source>
-            <translation>Objet à marquer</translation>
-        </message>
-        <message>
-            <source>Mark Color</source>
-            <translation>Couleur des marques</translation>
-        </message>
-        <message>
-            <source>Mark Object 2</source>
-            <translation>Objet à marquer 2</translation>
-        </message>
-        <message>
-            <source>Mark Color 2</source>
-            <translation>Couleur des marques 2</translation>
-        </message>
-        <message>
-            <source>Show Trail</source>
-            <translation>Afficher la trace</translation>
-        </message>
-        <message>
-            <source>Trail Color</source>
-            <translation>Couleur de la trace</translation>
-        </message>
-        <message>
-            <source>Width</source>
-            <translation>Largeur</translation>
-        </message>
-        <message>
-            <source>Divider Color</source>
-            <translation>Couleur du séparateur</translation>
-        </message>
-        <message>
-            <source>Text Color</source>
-            <translation>Couleur du texte</translation>
-        </message>
-        <message>
-            <source>Health Label</source>
-            <translation>Libellé de la santé</translation>
-        </message>
-        <message>
-            <source>Health Bar Width</source>
-            <translation>Largeur de la barre de santé</translation>
-        </message>
-        <message>
-            <source>Health Bar Height</source>
-            <translation>Hauteur de la barre de santé</translation>
-        </message>
-        <message>
-            <source>Health Bar Color</source>
-            <translation>Couleur de la barre de santé</translation>
-        </message>
-        <message>
-            <source>Face Sprite</source>
-            <translation>Sprite du visage</translation>
-        </message>
-        <message>
-            <source>Face Frames</source>
-            <translation>Images du visage</translation>
-        </message>
-        <message>
-            <source>Score Label</source>
-            <translation>Libellé du score</translation>
-        </message>
-        <message>
-            <source>Lives Sprite</source>
-            <translation>Sprite des vies</translation>
-        </message>
-        <message>
-            <source>Lives Scale</source>
-            <translation>Échelle des vies</translation>
-        </message>
-        <message>
-            <source>Objective Value</source>
-            <translation>Valeur de l'objectif</translation>
-        </message>
-        <message>
-            <source>Objective Label</source>
-            <translation>Libellé de l'objectif</translation>
-        </message>
-        <message>
-            <source>Angle Frames</source>
-            <translation>Images par angle</translation>
-        </message>
-        <message>
-            <source>Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, floor) instead of the top-down view</source>
-            <translation>Afficher la salle en vue 3D à la première personne façon Doom/Wolfenstein (murs, ciel, sol) au lieu de la vue du dessus</translation>
-        </message>
-        <message>
-            <source>Set the instance's look direction for a raycast (first-person) camera — independent of movement speed</source>
-            <translation>Définir la direction du regard de l'instance pour une caméra à lancer de rayons (première personne) — indépendante de la vitesse de déplacement</translation>
-        </message>
-        <message>
-            <source>Draw a north-up minimap of the raycast room's walls, with a marker showing where the camera is and which way it faces</source>
-            <translation>Dessiner une mini-carte orientée nord des murs de la salle en lancer de rayons, avec un repère indiquant où se trouve la caméra et dans quelle direction elle regarde</translation>
-        </message>
-        <message>
-            <source>Draw a DOOM-style bottom status bar (health bar + number, score, lives, an objective counter, and a health-reactive face icon) over the raycast view</source>
-            <translation>Dessiner une barre d'état inférieure façon DOOM (barre de santé + valeur, score, vies, un compteur d'objectif et une icône de visage réactive à la santé) par-dessus la vue en lancer de rayons</translation>
-        </message>
-        <message>
-            <source>Give this instance multiple view-angle frames in the raycast view, so it looks like a real object with sides instead of a flat cutout as the camera walks around it — the sprite's frame strip is picked by viewing angle instead of by time</source>
-            <translation>Donne à cette instance plusieurs images selon l'angle de vue dans la vue raycast, pour qu'elle ressemble à un vrai objet avec des côtés plutôt qu'à une découpe plate quand la caméra tourne autour — l'image de la bande du sprite est choisie selon l'angle de vue et non selon le temps</translation>
-        </message>
         <message>
         <location filename="../events/action_editor.py" line="0"/>
             <source>Object:</source>
@@ -4700,14 +4140,6 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>10-30 convient sur un réseau local (défaut 20)</translation>
     </message>
     <message>
-        <source>A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character.</source>
-        <translation>Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar.</translation>
-    </message>
-    <message>
-        <source>A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine.</source>
-        <translation>Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur.</translation>
-    </message>
-    <message>
         <source>A key name: "space", "left", "a", "5", "lshift"...</source>
         <translation>Nom de touche : "space", "left", "a", "5", "lshift"...</translation>
     </message>
@@ -4732,136 +4164,20 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur</translation>
     </message>
     <message>
-        <source>Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay.</source>
-        <translation>Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai).</translation>
-    </message>
-    <message>
-        <source>An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags.</source>
-        <translation>Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client.</translation>
-    </message>
-    <message>
-        <source>Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space").</source>
-        <translation>Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space").</translation>
-    </message>
-    <message>
-        <source>Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host".</source>
-        <translation>Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host".</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Associer une touche réseau</translation>
-    </message>
-    <message>
-        <source>Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender.</source>
-        <translation>Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender.</translation>
-    </message>
-    <message>
-        <source>Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1.</source>
-        <translation>Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1).</translation>
-    </message>
-    <message>
-        <source>Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player.</source>
-        <translation>Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo.</translation>
-    </message>
-    <message>
-        <source>Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.&lt;name&gt; directly.</source>
-        <translation>Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.&lt;nom&gt; directement.</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Créer un objet réseau</translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation>Donnée</translation>
-    </message>
-    <message>
-        <source>Disconnect (or stop hosting) and clear the global network variables.</source>
-        <translation>Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales.</translation>
-    </message>
-    <message>
-        <source>Game name</source>
-        <translation>Nom de la partie</translation>
-    </message>
-    <message>
-        <source>Global variable</source>
-        <translation>Variable globale</translation>
-    </message>
-    <message>
         <source>Host = others connect to you; Client = you connect to a host</source>
         <translation>Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Héberger une partie</translation>
-    </message>
-    <message>
-        <source>Host address</source>
-        <translation>Adresse de l'hôte</translation>
-    </message>
-    <message>
-        <source>Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1.</source>
-        <translation>Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1.</translation>
-    </message>
-    <message>
-        <source>Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine.</source>
-        <translation>Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines.</translation>
     </message>
     <message>
         <source>How far behind ghosts are drawn, in milliseconds (default 100)</source>
         <translation>Retard d'affichage des fantômes, en millisecondes (défaut 100)</translation>
     </message>
     <message>
-        <source>If I Drive This Instance</source>
-        <translation>Si je pilote cette instance</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Si le joueur appuie</translation>
-    </message>
-    <message>
-        <source>Input name</source>
-        <translation>Nom de l'entrée</translation>
-    </message>
-    <message>
         <source>Instance variable names to copy as well, separated by commas (e.g. "hp, colour")</source>
         <translation>Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur")</translation>
     </message>
     <message>
-        <source>Join a Game</source>
-        <translation>Rejoindre une partie</translation>
-    </message>
-    <message>
-        <source>Key</source>
-        <translation>Touche</translation>
-    </message>
-    <message>
         <source>Largest number of players, host included (2 to 16)</source>
         <translation>Nombre maximal de joueurs, hôte compris (2 à 16)</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Quitter la partie</translation>
-    </message>
-    <message>
-        <source>Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it.</source>
-        <translation>Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote.</translation>
-    </message>
-    <message>
-        <source>Max players</source>
-        <translation>Joueurs max</translation>
-    </message>
-    <message>
-        <source>Message name</source>
-        <translation>Nom du message</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation>Mode</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Nom</translation>
     </message>
     <message>
         <source>Name of the global variable to write the value into</source>
@@ -4876,26 +4192,6 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)</translation>
     </message>
     <message>
-        <source>Network</source>
-        <translation>Réseau</translation>
-    </message>
-    <message>
-        <source>Object</source>
-        <translation>Objet</translation>
-    </message>
-    <message>
-        <source>Owner</source>
-        <translation>Propriétaire</translation>
-    </message>
-    <message>
-        <source>Player</source>
-        <translation>Joueur</translation>
-    </message>
-    <message>
-        <source>Player name</source>
-        <translation>Nom du joueur</translation>
-    </message>
-    <message>
         <source>Player number (0 = host)</source>
         <translation>Numéro de joueur (0 = hôte)</translation>
     </message>
@@ -4904,64 +4200,12 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
     </message>
     <message>
-        <source>Port</source>
-        <translation>Port</translation>
-    </message>
-    <message>
         <source>Position relative to the object running the action</source>
         <translation>Position relative à l'objet qui exécute l'action</translation>
     </message>
     <message>
-        <source>Read a Shared Variable</source>
-        <translation>Lire une variable partagée</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation>Relatif</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Envoyer un message réseau</translation>
-    </message>
-    <message>
-        <source>Send to</source>
-        <translation>Destinataire</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Définir une variable partagée</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Définir le propriétaire de l'instance</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Régler la fréquence de synchro</translation>
-    </message>
-    <message>
-        <source>Shared name</source>
-        <translation>Nom partagé</translation>
-    </message>
-    <message>
         <source>Show a "Waiting for players..." screen with a Start button before the game begins</source>
         <translation>Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie</translation>
-    </message>
-    <message>
-        <source>Smoothing (ms)</source>
-        <translation>Interpolation (ms)</translation>
-    </message>
-    <message>
-        <source>Snapshots per second</source>
-        <translation>Instantanés / seconde</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Démarrer la partie en réseau</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Synchroniser cette instance</translation>
     </message>
     <message>
         <source>TCP port -- must be the same on the host and every client</source>
@@ -5004,36 +4248,8 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>Valeur</translation>
     </message>
     <message>
-        <source>Variables to copy</source>
-        <translation>Variables à répliquer</translation>
-    </message>
-    <message>
-        <source>Waiting room</source>
-        <translation>Salon d'attente</translation>
-    </message>
-    <message>
-        <source>Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.&lt;name&gt;.</source>
-        <translation>Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.&lt;nom&gt;.</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
         <source>all = everyone; host = the host only</source>
         <translation>all = tout le monde ; host = l'hôte seulement</translation>
-    </message>
-    <message>
-        <source>Host Address</source>
-        <translation>Adresse de l'hôte</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Définir le mode réseau (v1)</translation>
     </message>
     <message>
         <source>A custom message arrived. global.network_event is its label, global.network_data its data, global.network_sender the sender.</source>
@@ -5084,136 +4300,8 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
     </message>
     <message>
-        <source>Apply Gravity</source>
-        <translation>Appliquer la gravité</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Casser un bloc</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Dessiner l'ATH Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Dessiner l'ATH DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Dessiner la mini-carte</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Activer la vue Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Activer la vue 2.5 D</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Sauter</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Charger un monde Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Regarder en haut / en bas</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Déplacer avec collision</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Poser un bloc</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Jouer une musique</translation>
-    </message>
-    <message>
-        <source>Play Sound</source>
-        <translation>Jouer un son</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Choisir une case de la barre</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Définir la rotation du sprite</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Définir la hauteur du sol</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Définir la protection des blocs</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Définir la récompense d'un bloc</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Définir l'angle de vue</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Régler le volume</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Arrêter la musique</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Vérifier si un son joue</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Arrêter un son</translation>
-    </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Définir une recette de fabrication</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Fabriquer un objet</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Héberger une partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Rejoindre une partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Quitter la partie (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Définir une variable partagée (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Lire une variable partagée (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Terminer le tour (échange de fichiers)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Envoyer un message réseau (échange de fichiers)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/events/_event_crud.py" line="0"/>

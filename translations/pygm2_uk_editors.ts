@@ -1486,152 +1486,12 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation>🤖 Дія Thymio...</translation>
     </message>
     <message>
-        <source>Create</source>
-        <translation type="vanished">Створення</translation>
-    </message>
-    <message>
-        <source>Step</source>
-        <translation type="vanished">Крок</translation>
-    </message>
-    <message>
-        <source>Destroy</source>
-        <translation type="vanished">Знищення</translation>
-    </message>
-    <message>
-        <source>Collision With...</source>
-        <translation type="vanished">Зіткнення з...</translation>
-    </message>
-    <message>
         <source>Keyboard</source>
         <translation type="vanished">Клавіатура</translation>
     </message>
     <message>
-        <source>Keyboard Press</source>
-        <translation type="vanished">Натискання клавіші</translation>
-    </message>
-    <message>
-        <source>Keyboard Release</source>
-        <translation type="vanished">Відпускання клавіші</translation>
-    </message>
-    <message>
-        <source>Keyboard &lt;No Key&gt;</source>
-        <translation type="vanished">Клавіатура &lt;Жодної клавіші&gt;</translation>
-    </message>
-    <message>
-        <source>Mouse</source>
-        <translation type="vanished">Миша</translation>
-    </message>
-    <message>
-        <source>Begin Step</source>
-        <translation type="vanished">Початок кроку</translation>
-    </message>
-    <message>
-        <source>End Step</source>
-        <translation type="vanished">Кінець кроку</translation>
-    </message>
-    <message>
-        <source>Draw</source>
-        <translation type="vanished">Малювання</translation>
-    </message>
-    <message>
-        <source>Draw GUI</source>
-        <translation type="vanished">Малювання GUI</translation>
-    </message>
-    <message>
         <source>Alarm</source>
         <translation>Будильник</translation>
-    </message>
-    <message>
-        <source>Room Start</source>
-        <translation type="vanished">Початок кімнати</translation>
-    </message>
-    <message>
-        <source>Room End</source>
-        <translation type="vanished">Кінець кімнати</translation>
-    </message>
-    <message>
-        <source>Game Start</source>
-        <translation type="vanished">Початок гри</translation>
-    </message>
-    <message>
-        <source>Game End</source>
-        <translation type="vanished">Кінець гри</translation>
-    </message>
-    <message>
-        <source>Outside Room</source>
-        <translation type="vanished">За межами кімнати</translation>
-    </message>
-    <message>
-        <source>Intersect Boundary</source>
-        <translation type="vanished">Перетин межі</translation>
-    </message>
-    <message>
-        <source>No More Lives</source>
-        <translation type="vanished">Життів більше немає</translation>
-    </message>
-    <message>
-        <source>No More Health</source>
-        <translation type="vanished">Здоров&apos;я більше немає</translation>
-    </message>
-    <message>
-        <source>Move Grid</source>
-        <translation type="vanished">Рухати по сітці</translation>
-    </message>
-    <message>
-        <source>Move Free</source>
-        <translation type="vanished">Рухати вільно</translation>
-    </message>
-    <message>
-        <source>Set Horizontal Speed</source>
-        <translation type="vanished">Задати горизонтальну швидкість</translation>
-    </message>
-    <message>
-        <source>Set Vertical Speed</source>
-        <translation type="vanished">Задати вертикальну швидкість</translation>
-    </message>
-    <message>
-        <source>Set Speed</source>
-        <translation type="vanished">Задати швидкість</translation>
-    </message>
-    <message>
-        <source>Set Direction</source>
-        <translation type="vanished">Задати напрямок</translation>
-    </message>
-    <message>
-        <source>Set Gravity</source>
-        <translation type="vanished">Задати гравітацію</translation>
-    </message>
-    <message>
-        <source>Set Friction</source>
-        <translation type="vanished">Задати тертя</translation>
-    </message>
-    <message>
-        <source>Stop Movement</source>
-        <translation type="vanished">Зупинити рух</translation>
-    </message>
-    <message>
-        <source>Reverse Horizontal</source>
-        <translation type="vanished">Обернути горизонтально</translation>
-    </message>
-    <message>
-        <source>Reverse Vertical</source>
-        <translation type="vanished">Обернути вертикально</translation>
-    </message>
-    <message>
-        <source>Bounce</source>
-        <translation type="vanished">Відскок</translation>
-    </message>
-    <message>
-        <source>Move to Contact</source>
-        <translation type="vanished">Рухатися до контакту</translation>
-    </message>
-    <message>
-        <source>Wrap Around Room</source>
-        <translation type="vanished">З&apos;явитися з іншого боку</translation>
-    </message>
-    <message>
-        <source>Jump To Position</source>
-        <translation type="vanished">Перейти на позицію</translation>
     </message>
     <message>
         <source>Jump To Start</source>
@@ -1642,20 +1502,8 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Перейти у випадкове місце</translation>
     </message>
     <message>
-        <source>Move Towards Point</source>
-        <translation type="vanished">Рухатися до точки</translation>
-    </message>
-    <message>
         <source>Wrap Screen</source>
         <translation type="vanished">Перенос через край екрана</translation>
-    </message>
-    <message>
-        <source>Create Instance</source>
-        <translation type="vanished">Створити екземпляр</translation>
-    </message>
-    <message>
-        <source>Destroy Instance</source>
-        <translation type="vanished">Знищити екземпляр</translation>
     </message>
     <message>
         <source>Destroy At Position</source>
@@ -1674,76 +1522,16 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Задати твердість</translation>
     </message>
     <message>
-        <source>Play Sound</source>
-        <translation>Відтворити звук</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Зупинити звук</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Відтворити музику</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Зупинити музику</translation>
-    </message>
-    <message>
-        <source>Set Score</source>
-        <translation type="vanished">Задати рахунок</translation>
-    </message>
-    <message>
-        <source>Set Lives</source>
-        <translation type="vanished">Задати життя</translation>
-    </message>
-    <message>
-        <source>Set Health</source>
-        <translation type="vanished">Задати здоров&apos;я</translation>
-    </message>
-    <message>
-        <source>Show Message</source>
-        <translation type="vanished">Показати повідомлення</translation>
     </message>
     <message>
         <source>Show Highscore Table</source>
         <translation type="vanished">Показати таблицю рекордів</translation>
     </message>
     <message>
-        <source>Next Room</source>
-        <translation type="vanished">Наступна кімната</translation>
-    </message>
-    <message>
-        <source>Previous Room</source>
-        <translation type="vanished">Попередня кімната</translation>
-    </message>
-    <message>
-        <source>Restart Room</source>
-        <translation type="vanished">Перезапустити кімнату</translation>
-    </message>
-    <message>
         <source>Go To Room</source>
         <translation type="vanished">Перейти до кімнати</translation>
-    </message>
-    <message>
-        <source>Restart Game</source>
-        <translation type="vanished">Перезапустити гру</translation>
-    </message>
-    <message>
-        <source>End Game</source>
-        <translation type="vanished">Завершити гру</translation>
-    </message>
-    <message>
-        <source>Set Alarm</source>
-        <translation type="vanished">Задати будильник</translation>
-    </message>
-    <message>
-        <source>If Collision</source>
-        <translation type="vanished">Якщо зіткнення</translation>
-    </message>
-    <message>
-        <source>If On Grid</source>
-        <translation type="vanished">Якщо на сітці</translation>
     </message>
     <message>
         <source>If Variable</source>
@@ -1762,36 +1550,8 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Якщо здоров&apos;я</translation>
     </message>
     <message>
-        <source>Else</source>
-        <translation type="vanished">Інакше</translation>
-    </message>
-    <message>
         <source>Set Variable</source>
         <translation type="vanished">Задати змінну</translation>
-    </message>
-    <message>
-        <source>Draw Text</source>
-        <translation type="vanished">Намалювати текст</translation>
-    </message>
-    <message>
-        <source>Draw Sprite</source>
-        <translation type="vanished">Намалювати спрайт</translation>
-    </message>
-    <message>
-        <source>Draw Rectangle</source>
-        <translation type="vanished">Намалювати прямокутник</translation>
-    </message>
-    <message>
-        <source>Draw Circle</source>
-        <translation type="vanished">Намалювати коло</translation>
-    </message>
-    <message>
-        <source>Draw Line</source>
-        <translation type="vanished">Намалювати лінію</translation>
-    </message>
-    <message>
-        <source>Set Color</source>
-        <translation type="vanished">Задати колір</translation>
     </message>
     <message>
         <source>Set Font Size</source>
@@ -1800,42 +1560,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <source>Draw Self</source>
         <translation type="vanished">Намалювати себе</translation>
-    </message>
-    <message>
-        <source>Execute Code</source>
-        <translation type="vanished">Виконати код</translation>
-    </message>
-    <message>
-        <source>If Collision At</source>
-        <translation type="vanished">Якщо зіткнення в</translation>
-    </message>
-    <message>
-        <source>If Can Push</source>
-        <translation type="vanished">Якщо можна штовхнути</translation>
-    </message>
-    <message>
-        <source>If Condition</source>
-        <translation type="vanished">Якщо умова</translation>
-    </message>
-    <message>
-        <source>If Next Room Exists</source>
-        <translation type="vanished">Якщо наступна кімната існує</translation>
-    </message>
-    <message>
-        <source>If Previous Room Exists</source>
-        <translation type="vanished">Якщо попередня кімната існує</translation>
-    </message>
-    <message>
-        <source>Test Expression</source>
-        <translation type="vanished">Перевірити вираз</translation>
-    </message>
-    <message>
-        <source>Test Variable</source>
-        <translation type="vanished">Перевірити змінну</translation>
-    </message>
-    <message>
-        <source>Check Empty</source>
-        <translation type="vanished">Перевірити чи порожньо</translation>
     </message>
     <message>
         <source>Check Collision</source>
@@ -1850,14 +1574,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Рухатися до</translation>
     </message>
     <message>
-        <source>Snap to Grid</source>
-        <translation type="vanished">Вирівняти по сітці</translation>
-    </message>
-    <message>
-        <source>Stop If No Keys Pressed</source>
-        <translation type="vanished">Зупинити якщо немає клавіш</translation>
-    </message>
-    <message>
         <source>Add to Score</source>
         <translation type="vanished">Додати до рахунку</translation>
     </message>
@@ -1868,78 +1584,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <source>Add Health</source>
         <translation type="vanished">Додати здоров&apos;я</translation>
-    </message>
-    <message>
-        <source>Start Block</source>
-        <translation type="vanished">Початок блоку</translation>
-    </message>
-    <message>
-        <source>End Block</source>
-        <translation type="vanished">Кінець блоку</translation>
-    </message>
-    <message>
-        <source>Exit Event</source>
-        <translation type="vanished">Вийти з події</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="vanished">Повторити</translation>
-    </message>
-    <message>
-        <source>Go to Room</source>
-        <translation type="vanished">Перейти до кімнати</translation>
-    </message>
-    <message>
-        <source>Then Actions</source>
-        <translation type="vanished">Дії Тоді</translation>
-    </message>
-    <message>
-        <source>Else Actions</source>
-        <translation type="vanished">Дії Інакше</translation>
-    </message>
-    <message>
-        <source>Then Action</source>
-        <translation type="vanished">Дія Тоді</translation>
-    </message>
-    <message>
-        <source>Else Action</source>
-        <translation type="vanished">Дія Інакше</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation type="vanished">Відносно</translation>
-    </message>
-    <message>
-        <source>Movement</source>
-        <translation type="vanished">Рух</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Керування</translation>
-    </message>
-    <message>
-        <source>Instance</source>
-        <translation type="vanished">Екземпляр</translation>
-    </message>
-    <message>
-        <source>Room</source>
-        <translation type="vanished">Кімната</translation>
-    </message>
-    <message>
-        <source>Score</source>
-        <translation type="vanished">Рахунок</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="vanished">Сітка</translation>
-    </message>
-    <message>
-        <source>Timing</source>
-        <translation type="vanished">Таймер</translation>
-    </message>
-    <message>
-        <source>Game</source>
-        <translation type="vanished">Гра</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
@@ -1968,182 +1612,6 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (потребує {1})</translation>
-    </message>
-    <message>
-        <source>Apply Gravity</source>
-        <translation>Застосувати гравітацію</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Призначити мережеву клавішу</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Зруйнувати блок</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Створити мережевий об'єкт</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Намалювати HUD Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Намалювати HUD DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Намалювати мінікарту</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Увімкнути вигляд Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Увімкнути вигляд 2.5 D</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Створити гру</translation>
-    </message>
-    <message>
-        <source>If I Drive This Instance</source>
-        <translation>Якщо я керую цим екземпляром</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Якщо гравець натискає</translation>
-    </message>
-    <message>
-        <source>Join a Game</source>
-        <translation>Приєднатися до гри</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Стрибок</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Покинути гру</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Завантажити світ Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Дивитися вгору / вниз</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Рухатися зі зіткненням</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Поставити блок</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable</source>
-        <translation>Прочитати спільну змінну</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Вибрати комірку панелі</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Надіслати мережеве повідомлення</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Задати обертання спрайту</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Задати висоту підлоги</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Задати захист блоків</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Задати нагороду за блок</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Задати кут огляду</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Задати мережевий режим (v1)</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Задати гучність</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Задати спільну змінну</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Задати власника екземпляра</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Задати частоту синхронізації</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Почати мережеву гру</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Синхронізувати цей екземпляр</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Перевірити, чи звучить звук</translation>
-    </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Задати рецепт крафту</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Скрафтити предмет</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Створити гру (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Приєднатися до гри (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Покинути гру (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Задати спільну змінну (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Прочитати спільну змінну (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Завершити хід (обмін файлами)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Надіслати мережеве повідомлення (обмін файлами)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>

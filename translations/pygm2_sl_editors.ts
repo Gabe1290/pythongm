@@ -1486,152 +1486,12 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <translation>🤖 Dejanje Thymio...</translation>
     </message>
     <message>
-        <source>Create</source>
-        <translation type="vanished">Ustvari</translation>
-    </message>
-    <message>
-        <source>Step</source>
-        <translation type="vanished">Korak</translation>
-    </message>
-    <message>
-        <source>Destroy</source>
-        <translation type="vanished">Uniči</translation>
-    </message>
-    <message>
-        <source>Collision With...</source>
-        <translation type="vanished">Trk z...</translation>
-    </message>
-    <message>
         <source>Keyboard</source>
         <translation type="vanished">Tipkovnica</translation>
     </message>
     <message>
-        <source>Keyboard Press</source>
-        <translation type="vanished">Pritisk tipke</translation>
-    </message>
-    <message>
-        <source>Keyboard Release</source>
-        <translation type="vanished">Spust tipke</translation>
-    </message>
-    <message>
-        <source>Keyboard &lt;No Key&gt;</source>
-        <translation type="vanished">Tipkovnica &lt;Brez tipke&gt;</translation>
-    </message>
-    <message>
-        <source>Mouse</source>
-        <translation type="vanished">Miška</translation>
-    </message>
-    <message>
-        <source>Begin Step</source>
-        <translation type="vanished">Začetek koraka</translation>
-    </message>
-    <message>
-        <source>End Step</source>
-        <translation type="vanished">Konec koraka</translation>
-    </message>
-    <message>
-        <source>Draw</source>
-        <translation type="vanished">Riši</translation>
-    </message>
-    <message>
-        <source>Draw GUI</source>
-        <translation type="vanished">Riši GUI</translation>
-    </message>
-    <message>
         <source>Alarm</source>
         <translation>Alarm</translation>
-    </message>
-    <message>
-        <source>Room Start</source>
-        <translation type="vanished">Začetek sobe</translation>
-    </message>
-    <message>
-        <source>Room End</source>
-        <translation type="vanished">Konec sobe</translation>
-    </message>
-    <message>
-        <source>Game Start</source>
-        <translation type="vanished">Začetek igre</translation>
-    </message>
-    <message>
-        <source>Game End</source>
-        <translation type="vanished">Konec igre</translation>
-    </message>
-    <message>
-        <source>Outside Room</source>
-        <translation type="vanished">Zunaj sobe</translation>
-    </message>
-    <message>
-        <source>Intersect Boundary</source>
-        <translation type="vanished">Presečišče z robom</translation>
-    </message>
-    <message>
-        <source>No More Lives</source>
-        <translation type="vanished">Ni več življenj</translation>
-    </message>
-    <message>
-        <source>No More Health</source>
-        <translation type="vanished">Ni več zdravja</translation>
-    </message>
-    <message>
-        <source>Move Grid</source>
-        <translation type="vanished">Premakni po mreži</translation>
-    </message>
-    <message>
-        <source>Move Free</source>
-        <translation type="vanished">Premakni prosto</translation>
-    </message>
-    <message>
-        <source>Set Horizontal Speed</source>
-        <translation type="vanished">Nastavi vodoravno hitrost</translation>
-    </message>
-    <message>
-        <source>Set Vertical Speed</source>
-        <translation type="vanished">Nastavi navpično hitrost</translation>
-    </message>
-    <message>
-        <source>Set Speed</source>
-        <translation type="vanished">Nastavi hitrost</translation>
-    </message>
-    <message>
-        <source>Set Direction</source>
-        <translation type="vanished">Nastavi smer</translation>
-    </message>
-    <message>
-        <source>Set Gravity</source>
-        <translation type="vanished">Nastavi gravitacijo</translation>
-    </message>
-    <message>
-        <source>Set Friction</source>
-        <translation type="vanished">Nastavi trenje</translation>
-    </message>
-    <message>
-        <source>Stop Movement</source>
-        <translation type="vanished">Ustavi gibanje</translation>
-    </message>
-    <message>
-        <source>Reverse Horizontal</source>
-        <translation type="vanished">Obrni vodoravno</translation>
-    </message>
-    <message>
-        <source>Reverse Vertical</source>
-        <translation type="vanished">Obrni navpično</translation>
-    </message>
-    <message>
-        <source>Bounce</source>
-        <translation type="vanished">Odbij se</translation>
-    </message>
-    <message>
-        <source>Move to Contact</source>
-        <translation type="vanished">Premakni do stika</translation>
-    </message>
-    <message>
-        <source>Wrap Around Room</source>
-        <translation type="vanished">Pojavi se na drugi strani</translation>
-    </message>
-    <message>
-        <source>Jump To Position</source>
-        <translation type="vanished">Skoči na položaj</translation>
     </message>
     <message>
         <source>Jump To Start</source>
@@ -1642,20 +1502,8 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <translation type="vanished">Skoči naključno</translation>
     </message>
     <message>
-        <source>Move Towards Point</source>
-        <translation type="vanished">Premakni proti točki</translation>
-    </message>
-    <message>
         <source>Wrap Screen</source>
         <translation type="vanished">Pojavi se na drugi strani</translation>
-    </message>
-    <message>
-        <source>Create Instance</source>
-        <translation type="vanished">Ustvari primerek</translation>
-    </message>
-    <message>
-        <source>Destroy Instance</source>
-        <translation type="vanished">Uniči primerek</translation>
     </message>
     <message>
         <source>Destroy At Position</source>
@@ -1674,76 +1522,16 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <translation type="vanished">Nastavi trdnost</translation>
     </message>
     <message>
-        <source>Play Sound</source>
-        <translation>Predvajaj zvok</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Ustavi zvok</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Predvajaj glasbo</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Ustavi glasbo</translation>
-    </message>
-    <message>
-        <source>Set Score</source>
-        <translation type="vanished">Nastavi rezultat</translation>
-    </message>
-    <message>
-        <source>Set Lives</source>
-        <translation type="vanished">Nastavi življenja</translation>
-    </message>
-    <message>
-        <source>Set Health</source>
-        <translation type="vanished">Nastavi zdravje</translation>
-    </message>
-    <message>
-        <source>Show Message</source>
-        <translation type="vanished">Prikaži sporočilo</translation>
     </message>
     <message>
         <source>Show Highscore Table</source>
         <translation type="vanished">Prikaži lestvico najboljših</translation>
     </message>
     <message>
-        <source>Next Room</source>
-        <translation type="vanished">Naslednja soba</translation>
-    </message>
-    <message>
-        <source>Previous Room</source>
-        <translation type="vanished">Prejšnja soba</translation>
-    </message>
-    <message>
-        <source>Restart Room</source>
-        <translation type="vanished">Znova zaženi sobo</translation>
-    </message>
-    <message>
         <source>Go To Room</source>
         <translation type="vanished">Pojdi v sobo</translation>
-    </message>
-    <message>
-        <source>Restart Game</source>
-        <translation type="vanished">Znova zaženi igro</translation>
-    </message>
-    <message>
-        <source>End Game</source>
-        <translation type="vanished">Končaj igro</translation>
-    </message>
-    <message>
-        <source>Set Alarm</source>
-        <translation type="vanished">Nastavi alarm</translation>
-    </message>
-    <message>
-        <source>If Collision</source>
-        <translation type="vanished">Če trk</translation>
-    </message>
-    <message>
-        <source>If On Grid</source>
-        <translation type="vanished">Če na mreži</translation>
     </message>
     <message>
         <source>If Variable</source>
@@ -1762,36 +1550,8 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <translation type="vanished">Če zdravje</translation>
     </message>
     <message>
-        <source>Else</source>
-        <translation type="vanished">Sicer</translation>
-    </message>
-    <message>
         <source>Set Variable</source>
         <translation type="vanished">Nastavi spremenljivko</translation>
-    </message>
-    <message>
-        <source>Draw Text</source>
-        <translation type="vanished">Nariši besedilo</translation>
-    </message>
-    <message>
-        <source>Draw Sprite</source>
-        <translation type="vanished">Nariši sprite</translation>
-    </message>
-    <message>
-        <source>Draw Rectangle</source>
-        <translation type="vanished">Nariši pravokotnik</translation>
-    </message>
-    <message>
-        <source>Draw Circle</source>
-        <translation type="vanished">Nariši krog</translation>
-    </message>
-    <message>
-        <source>Draw Line</source>
-        <translation type="vanished">Nariši črto</translation>
-    </message>
-    <message>
-        <source>Set Color</source>
-        <translation type="vanished">Nastavi barvo</translation>
     </message>
     <message>
         <source>Set Font Size</source>
@@ -1800,42 +1560,6 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <source>Draw Self</source>
         <translation type="vanished">Nariši sebe</translation>
-    </message>
-    <message>
-        <source>Execute Code</source>
-        <translation type="vanished">Izvedi kodo</translation>
-    </message>
-    <message>
-        <source>If Collision At</source>
-        <translation type="vanished">Če trk pri</translation>
-    </message>
-    <message>
-        <source>If Can Push</source>
-        <translation type="vanished">Če lahko potisne</translation>
-    </message>
-    <message>
-        <source>If Condition</source>
-        <translation type="vanished">Če pogoj</translation>
-    </message>
-    <message>
-        <source>If Next Room Exists</source>
-        <translation type="vanished">Če naslednja soba obstaja</translation>
-    </message>
-    <message>
-        <source>If Previous Room Exists</source>
-        <translation type="vanished">Če prejšnja soba obstaja</translation>
-    </message>
-    <message>
-        <source>Test Expression</source>
-        <translation type="vanished">Testiraj izraz</translation>
-    </message>
-    <message>
-        <source>Test Variable</source>
-        <translation type="vanished">Testiraj spremenljivko</translation>
-    </message>
-    <message>
-        <source>Check Empty</source>
-        <translation type="vanished">Preveri če prazno</translation>
     </message>
     <message>
         <source>Check Collision</source>
@@ -1850,14 +1574,6 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <translation type="vanished">Premik proti</translation>
     </message>
     <message>
-        <source>Snap to Grid</source>
-        <translation type="vanished">Poravnaj na mrežo</translation>
-    </message>
-    <message>
-        <source>Stop If No Keys Pressed</source>
-        <translation type="vanished">Ustavi če ni tipk</translation>
-    </message>
-    <message>
         <source>Add to Score</source>
         <translation type="vanished">Dodaj k rezultatu</translation>
     </message>
@@ -1868,78 +1584,6 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <source>Add Health</source>
         <translation type="vanished">Dodaj zdravje</translation>
-    </message>
-    <message>
-        <source>Start Block</source>
-        <translation type="vanished">Začetek bloka</translation>
-    </message>
-    <message>
-        <source>End Block</source>
-        <translation type="vanished">Konec bloka</translation>
-    </message>
-    <message>
-        <source>Exit Event</source>
-        <translation type="vanished">Zapusti dogodek</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="vanished">Ponovi</translation>
-    </message>
-    <message>
-        <source>Go to Room</source>
-        <translation type="vanished">Pojdi v sobo</translation>
-    </message>
-    <message>
-        <source>Then Actions</source>
-        <translation type="vanished">Potem akcije</translation>
-    </message>
-    <message>
-        <source>Else Actions</source>
-        <translation type="vanished">Sicer akcije</translation>
-    </message>
-    <message>
-        <source>Then Action</source>
-        <translation type="vanished">Potem akcija</translation>
-    </message>
-    <message>
-        <source>Else Action</source>
-        <translation type="vanished">Sicer akcija</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation type="vanished">Relativno</translation>
-    </message>
-    <message>
-        <source>Movement</source>
-        <translation type="vanished">Gibanje</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Nadzor</translation>
-    </message>
-    <message>
-        <source>Instance</source>
-        <translation type="vanished">Instanca</translation>
-    </message>
-    <message>
-        <source>Room</source>
-        <translation type="vanished">Soba</translation>
-    </message>
-    <message>
-        <source>Score</source>
-        <translation type="vanished">Rezultat</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="vanished">Mreža</translation>
-    </message>
-    <message>
-        <source>Timing</source>
-        <translation type="vanished">Časovnik</translation>
-    </message>
-    <message>
-        <source>Game</source>
-        <translation type="vanished">Igra</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
@@ -1968,182 +1612,6 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (potrebuje {1})</translation>
-    </message>
-    <message>
-        <source>Apply Gravity</source>
-        <translation>Uporabi težnost</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Dodeli omrežno tipko</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Razbij blok</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Ustvari omrežni predmet</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Nariši HUD Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Nariši HUD DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Nariši mini zemljevid</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Vklopi pogled Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Vklopi pogled 2.5 D</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Gosti igro</translation>
-    </message>
-    <message>
-        <source>If I Drive This Instance</source>
-        <translation>Če upravljam ta primerek</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Če igralec pritisne</translation>
-    </message>
-    <message>
-        <source>Join a Game</source>
-        <translation>Pridruži se igri</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Skoči</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Zapusti igro</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Naloži svet Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Poglej gor / dol</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Premakni s trkom</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Postavi blok</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable</source>
-        <translation>Preberi skupno spremenljivko</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Izberi mesto v vrstici</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Pošlji omrežno sporočilo</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Nastavi vrtenje sprite-a</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Nastavi višino tal</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Nastavi zaščito blokov</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Nastavi nagrado za blok</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Nastavi kot pogleda</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Nastavi omrežni način (v1)</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Nastavi glasnost</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Nastavi skupno spremenljivko</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Nastavi lastnika primerka</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Nastavi hitrost sinhronizacije</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Začni omrežno igro</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Sinhroniziraj ta primerek</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Preveri, ali zvok teče</translation>
-    </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Nastavi recept za izdelavo</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Izdelaj predmet</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Gosti igro (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Pridruži se igri (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Zapusti igro (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Nastavi skupno spremenljivko (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Preberi skupno spremenljivko (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Končaj potezo (izmenjava datotek)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Pošlji omrežno sporočilo (izmenjava datotek)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>

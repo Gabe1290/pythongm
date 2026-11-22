@@ -1486,152 +1486,12 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation>🤖 Действие Thymio...</translation>
     </message>
     <message>
-        <source>Create</source>
-        <translation type="vanished">Создание</translation>
-    </message>
-    <message>
-        <source>Step</source>
-        <translation type="vanished">Шаг</translation>
-    </message>
-    <message>
-        <source>Destroy</source>
-        <translation type="vanished">Уничтожение</translation>
-    </message>
-    <message>
-        <source>Collision With...</source>
-        <translation type="vanished">Столкновение с...</translation>
-    </message>
-    <message>
         <source>Keyboard</source>
         <translation type="vanished">Клавиатура</translation>
     </message>
     <message>
-        <source>Keyboard Press</source>
-        <translation type="vanished">Нажатие клавиши</translation>
-    </message>
-    <message>
-        <source>Keyboard Release</source>
-        <translation type="vanished">Отпускание клавиши</translation>
-    </message>
-    <message>
-        <source>Keyboard &lt;No Key&gt;</source>
-        <translation type="vanished">Клавиатура &lt;Нет клавиши&gt;</translation>
-    </message>
-    <message>
-        <source>Mouse</source>
-        <translation type="vanished">Мышь</translation>
-    </message>
-    <message>
-        <source>Begin Step</source>
-        <translation type="vanished">Начало шага</translation>
-    </message>
-    <message>
-        <source>End Step</source>
-        <translation type="vanished">Конец шага</translation>
-    </message>
-    <message>
-        <source>Draw</source>
-        <translation type="vanished">Рисование</translation>
-    </message>
-    <message>
-        <source>Draw GUI</source>
-        <translation type="vanished">Рисование GUI</translation>
-    </message>
-    <message>
         <source>Alarm</source>
         <translation>Будильник</translation>
-    </message>
-    <message>
-        <source>Room Start</source>
-        <translation type="vanished">Начало комнаты</translation>
-    </message>
-    <message>
-        <source>Room End</source>
-        <translation type="vanished">Конец комнаты</translation>
-    </message>
-    <message>
-        <source>Game Start</source>
-        <translation type="vanished">Начало игры</translation>
-    </message>
-    <message>
-        <source>Game End</source>
-        <translation type="vanished">Конец игры</translation>
-    </message>
-    <message>
-        <source>Outside Room</source>
-        <translation type="vanished">За пределами комнаты</translation>
-    </message>
-    <message>
-        <source>Intersect Boundary</source>
-        <translation type="vanished">Пересечение границы</translation>
-    </message>
-    <message>
-        <source>No More Lives</source>
-        <translation type="vanished">Жизни закончились</translation>
-    </message>
-    <message>
-        <source>No More Health</source>
-        <translation type="vanished">Здоровье закончилось</translation>
-    </message>
-    <message>
-        <source>Move Grid</source>
-        <translation type="vanished">Двигать по сетке</translation>
-    </message>
-    <message>
-        <source>Move Free</source>
-        <translation type="vanished">Двигать свободно</translation>
-    </message>
-    <message>
-        <source>Set Horizontal Speed</source>
-        <translation type="vanished">Задать горизонтальную скорость</translation>
-    </message>
-    <message>
-        <source>Set Vertical Speed</source>
-        <translation type="vanished">Задать вертикальную скорость</translation>
-    </message>
-    <message>
-        <source>Set Speed</source>
-        <translation type="vanished">Задать скорость</translation>
-    </message>
-    <message>
-        <source>Set Direction</source>
-        <translation type="vanished">Задать направление</translation>
-    </message>
-    <message>
-        <source>Set Gravity</source>
-        <translation type="vanished">Задать гравитацию</translation>
-    </message>
-    <message>
-        <source>Set Friction</source>
-        <translation type="vanished">Задать трение</translation>
-    </message>
-    <message>
-        <source>Stop Movement</source>
-        <translation type="vanished">Остановить движение</translation>
-    </message>
-    <message>
-        <source>Reverse Horizontal</source>
-        <translation type="vanished">Обратить горизонтально</translation>
-    </message>
-    <message>
-        <source>Reverse Vertical</source>
-        <translation type="vanished">Обратить вертикально</translation>
-    </message>
-    <message>
-        <source>Bounce</source>
-        <translation type="vanished">Отскок</translation>
-    </message>
-    <message>
-        <source>Move to Contact</source>
-        <translation type="vanished">Двигаться до контакта</translation>
-    </message>
-    <message>
-        <source>Wrap Around Room</source>
-        <translation type="vanished">Появиться с другой стороны</translation>
-    </message>
-    <message>
-        <source>Jump To Position</source>
-        <translation type="vanished">Перейти на позицию</translation>
     </message>
     <message>
         <source>Jump To Start</source>
@@ -1642,20 +1502,8 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Перейти в случайное место</translation>
     </message>
     <message>
-        <source>Move Towards Point</source>
-        <translation type="vanished">Двигаться к точке</translation>
-    </message>
-    <message>
         <source>Wrap Screen</source>
         <translation type="vanished">Перенос через край экрана</translation>
-    </message>
-    <message>
-        <source>Create Instance</source>
-        <translation type="vanished">Создать экземпляр</translation>
-    </message>
-    <message>
-        <source>Destroy Instance</source>
-        <translation type="vanished">Уничтожить экземпляр</translation>
     </message>
     <message>
         <source>Destroy At Position</source>
@@ -1674,76 +1522,16 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Задать твёрдость</translation>
     </message>
     <message>
-        <source>Play Sound</source>
-        <translation>Воспроизвести звук</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Остановить звук</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Воспроизвести музыку</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Остановить музыку</translation>
-    </message>
-    <message>
-        <source>Set Score</source>
-        <translation type="vanished">Задать счёт</translation>
-    </message>
-    <message>
-        <source>Set Lives</source>
-        <translation type="vanished">Задать жизни</translation>
-    </message>
-    <message>
-        <source>Set Health</source>
-        <translation type="vanished">Задать здоровье</translation>
-    </message>
-    <message>
-        <source>Show Message</source>
-        <translation type="vanished">Показать сообщение</translation>
     </message>
     <message>
         <source>Show Highscore Table</source>
         <translation type="vanished">Показать таблицу рекордов</translation>
     </message>
     <message>
-        <source>Next Room</source>
-        <translation type="vanished">Следующая комната</translation>
-    </message>
-    <message>
-        <source>Previous Room</source>
-        <translation type="vanished">Предыдущая комната</translation>
-    </message>
-    <message>
-        <source>Restart Room</source>
-        <translation type="vanished">Перезапустить комнату</translation>
-    </message>
-    <message>
         <source>Go To Room</source>
         <translation type="vanished">Перейти в комнату</translation>
-    </message>
-    <message>
-        <source>Restart Game</source>
-        <translation type="vanished">Перезапустить игру</translation>
-    </message>
-    <message>
-        <source>End Game</source>
-        <translation type="vanished">Завершить игру</translation>
-    </message>
-    <message>
-        <source>Set Alarm</source>
-        <translation type="vanished">Задать будильник</translation>
-    </message>
-    <message>
-        <source>If Collision</source>
-        <translation type="vanished">Если столкновение</translation>
-    </message>
-    <message>
-        <source>If On Grid</source>
-        <translation type="vanished">Если на сетке</translation>
     </message>
     <message>
         <source>If Variable</source>
@@ -1762,36 +1550,8 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Если здоровье</translation>
     </message>
     <message>
-        <source>Else</source>
-        <translation type="vanished">Иначе</translation>
-    </message>
-    <message>
         <source>Set Variable</source>
         <translation type="vanished">Задать переменную</translation>
-    </message>
-    <message>
-        <source>Draw Text</source>
-        <translation type="vanished">Нарисовать текст</translation>
-    </message>
-    <message>
-        <source>Draw Sprite</source>
-        <translation type="vanished">Нарисовать спрайт</translation>
-    </message>
-    <message>
-        <source>Draw Rectangle</source>
-        <translation type="vanished">Нарисовать прямоугольник</translation>
-    </message>
-    <message>
-        <source>Draw Circle</source>
-        <translation type="vanished">Нарисовать круг</translation>
-    </message>
-    <message>
-        <source>Draw Line</source>
-        <translation type="vanished">Нарисовать линию</translation>
-    </message>
-    <message>
-        <source>Set Color</source>
-        <translation type="vanished">Задать цвет</translation>
     </message>
     <message>
         <source>Set Font Size</source>
@@ -1800,42 +1560,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <source>Draw Self</source>
         <translation type="vanished">Нарисовать себя</translation>
-    </message>
-    <message>
-        <source>Execute Code</source>
-        <translation type="vanished">Выполнить код</translation>
-    </message>
-    <message>
-        <source>If Collision At</source>
-        <translation type="vanished">Если столкновение в</translation>
-    </message>
-    <message>
-        <source>If Can Push</source>
-        <translation type="vanished">Если можно толкнуть</translation>
-    </message>
-    <message>
-        <source>If Condition</source>
-        <translation type="vanished">Если условие</translation>
-    </message>
-    <message>
-        <source>If Next Room Exists</source>
-        <translation type="vanished">Если следующая комната существует</translation>
-    </message>
-    <message>
-        <source>If Previous Room Exists</source>
-        <translation type="vanished">Если предыдущая комната существует</translation>
-    </message>
-    <message>
-        <source>Test Expression</source>
-        <translation type="vanished">Проверить выражение</translation>
-    </message>
-    <message>
-        <source>Test Variable</source>
-        <translation type="vanished">Проверить переменную</translation>
-    </message>
-    <message>
-        <source>Check Empty</source>
-        <translation type="vanished">Проверить пусто ли</translation>
     </message>
     <message>
         <source>Check Collision</source>
@@ -1850,14 +1574,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation type="vanished">Двигаться к</translation>
     </message>
     <message>
-        <source>Snap to Grid</source>
-        <translation type="vanished">Выровнять по сетке</translation>
-    </message>
-    <message>
-        <source>Stop If No Keys Pressed</source>
-        <translation type="vanished">Остановить если нет клавиш</translation>
-    </message>
-    <message>
         <source>Add to Score</source>
         <translation type="vanished">Добавить к счёту</translation>
     </message>
@@ -1868,78 +1584,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <source>Add Health</source>
         <translation type="vanished">Добавить здоровье</translation>
-    </message>
-    <message>
-        <source>Start Block</source>
-        <translation type="vanished">Начало блока</translation>
-    </message>
-    <message>
-        <source>End Block</source>
-        <translation type="vanished">Конец блока</translation>
-    </message>
-    <message>
-        <source>Exit Event</source>
-        <translation type="vanished">Выйти из события</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="vanished">Повторить</translation>
-    </message>
-    <message>
-        <source>Go to Room</source>
-        <translation type="vanished">Перейти в комнату</translation>
-    </message>
-    <message>
-        <source>Then Actions</source>
-        <translation type="vanished">Действия Тогда</translation>
-    </message>
-    <message>
-        <source>Else Actions</source>
-        <translation type="vanished">Действия Иначе</translation>
-    </message>
-    <message>
-        <source>Then Action</source>
-        <translation type="vanished">Действие Тогда</translation>
-    </message>
-    <message>
-        <source>Else Action</source>
-        <translation type="vanished">Действие Иначе</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation type="vanished">Относительно</translation>
-    </message>
-    <message>
-        <source>Movement</source>
-        <translation type="vanished">Движение</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Управление</translation>
-    </message>
-    <message>
-        <source>Instance</source>
-        <translation type="vanished">Экземпляр</translation>
-    </message>
-    <message>
-        <source>Room</source>
-        <translation type="vanished">Комната</translation>
-    </message>
-    <message>
-        <source>Score</source>
-        <translation type="vanished">Счёт</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="vanished">Сетка</translation>
-    </message>
-    <message>
-        <source>Timing</source>
-        <translation type="vanished">Таймер</translation>
-    </message>
-    <message>
-        <source>Game</source>
-        <translation type="vanished">Игра</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
@@ -1968,182 +1612,6 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (требуется {1})</translation>
-    </message>
-    <message>
-        <source>Apply Gravity</source>
-        <translation>Применить гравитацию</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Назначить сетевую клавишу</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Разрушить блок</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Создать сетевой объект</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Нарисовать HUD Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Нарисовать HUD DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Нарисовать миникарту</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Включить вид Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Включить вид 2.5 D</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Создать игру</translation>
-    </message>
-    <message>
-        <source>If I Drive This Instance</source>
-        <translation>Если я управляю этим экземпляром</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Если игрок нажимает</translation>
-    </message>
-    <message>
-        <source>Join a Game</source>
-        <translation>Присоединиться к игре</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Прыжок</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Покинуть игру</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Загрузить мир Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Смотреть вверх / вниз</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Двигаться со столкновением</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Поставить блок</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable</source>
-        <translation>Прочитать общую переменную</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Выбрать ячейку панели</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Отправить сетевое сообщение</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Задать вращение спрайта</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Задать высоту пола</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Задать защиту блоков</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Задать награду за блок</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Задать угол обзора</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Задать сетевой режим (v1)</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Задать громкость</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Задать общую переменную</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Задать владельца экземпляра</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Задать частоту синхронизации</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Начать сетевую игру</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Синхронизировать этот экземпляр</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Проверить, играет ли звук</translation>
-    </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Задать рецепт крафта</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Скрафтить предмет</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Создать игру (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Присоединиться к игре (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Покинуть игру (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Задать общую переменную (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Прочитать общую переменную (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Завершить ход (обмен файлами)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Отправить сетевое сообщение (обмен файлами)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>

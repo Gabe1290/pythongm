@@ -1486,152 +1486,12 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <translation>🤖 Azione Thymio...</translation>
     </message>
     <message>
-        <source>Create</source>
-        <translation type="vanished">Crea</translation>
-    </message>
-    <message>
-        <source>Step</source>
-        <translation type="vanished">Passo</translation>
-    </message>
-    <message>
-        <source>Destroy</source>
-        <translation type="vanished">Distruggi</translation>
-    </message>
-    <message>
-        <source>Collision With...</source>
-        <translation type="vanished">Collisione con...</translation>
-    </message>
-    <message>
         <source>Keyboard</source>
         <translation type="vanished">Tastiera</translation>
     </message>
     <message>
-        <source>Keyboard Press</source>
-        <translation type="vanished">Pressione tasto</translation>
-    </message>
-    <message>
-        <source>Keyboard Release</source>
-        <translation type="vanished">Rilascio tasto</translation>
-    </message>
-    <message>
-        <source>Keyboard &lt;No Key&gt;</source>
-        <translation type="vanished">Tastiera &lt;Nessun tasto&gt;</translation>
-    </message>
-    <message>
-        <source>Mouse</source>
-        <translation type="vanished">Mouse</translation>
-    </message>
-    <message>
-        <source>Begin Step</source>
-        <translation type="vanished">Inizio passo</translation>
-    </message>
-    <message>
-        <source>End Step</source>
-        <translation type="vanished">Fine passo</translation>
-    </message>
-    <message>
-        <source>Draw</source>
-        <translation type="vanished">Disegna</translation>
-    </message>
-    <message>
-        <source>Draw GUI</source>
-        <translation type="vanished">Disegna GUI</translation>
-    </message>
-    <message>
         <source>Alarm</source>
         <translation>Allarme</translation>
-    </message>
-    <message>
-        <source>Room Start</source>
-        <translation type="vanished">Inizio stanza</translation>
-    </message>
-    <message>
-        <source>Room End</source>
-        <translation type="vanished">Fine stanza</translation>
-    </message>
-    <message>
-        <source>Game Start</source>
-        <translation type="vanished">Inizio gioco</translation>
-    </message>
-    <message>
-        <source>Game End</source>
-        <translation type="vanished">Fine gioco</translation>
-    </message>
-    <message>
-        <source>Outside Room</source>
-        <translation type="vanished">Fuori dalla stanza</translation>
-    </message>
-    <message>
-        <source>Intersect Boundary</source>
-        <translation type="vanished">Intersezione con il bordo</translation>
-    </message>
-    <message>
-        <source>No More Lives</source>
-        <translation type="vanished">Nessuna vita rimasta</translation>
-    </message>
-    <message>
-        <source>No More Health</source>
-        <translation type="vanished">Nessuna salute rimasta</translation>
-    </message>
-    <message>
-        <source>Move Grid</source>
-        <translation type="vanished">Muovi sulla griglia</translation>
-    </message>
-    <message>
-        <source>Move Free</source>
-        <translation type="vanished">Muovi liberamente</translation>
-    </message>
-    <message>
-        <source>Set Horizontal Speed</source>
-        <translation type="vanished">Imposta velocità orizzontale</translation>
-    </message>
-    <message>
-        <source>Set Vertical Speed</source>
-        <translation type="vanished">Imposta velocità verticale</translation>
-    </message>
-    <message>
-        <source>Set Speed</source>
-        <translation type="vanished">Imposta velocità</translation>
-    </message>
-    <message>
-        <source>Set Direction</source>
-        <translation type="vanished">Imposta direzione</translation>
-    </message>
-    <message>
-        <source>Set Gravity</source>
-        <translation type="vanished">Imposta gravità</translation>
-    </message>
-    <message>
-        <source>Set Friction</source>
-        <translation type="vanished">Imposta attrito</translation>
-    </message>
-    <message>
-        <source>Stop Movement</source>
-        <translation type="vanished">Ferma il movimento</translation>
-    </message>
-    <message>
-        <source>Reverse Horizontal</source>
-        <translation type="vanished">Inverti orizzontale</translation>
-    </message>
-    <message>
-        <source>Reverse Vertical</source>
-        <translation type="vanished">Inverti verticale</translation>
-    </message>
-    <message>
-        <source>Bounce</source>
-        <translation type="vanished">Rimbalza</translation>
-    </message>
-    <message>
-        <source>Move to Contact</source>
-        <translation type="vanished">Muovi al contatto</translation>
-    </message>
-    <message>
-        <source>Wrap Around Room</source>
-        <translation type="vanished">Riappari dall&apos;altro lato</translation>
-    </message>
-    <message>
-        <source>Jump To Position</source>
-        <translation type="vanished">Vai alla posizione</translation>
     </message>
     <message>
         <source>Jump To Start</source>
@@ -1642,20 +1502,8 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <translation type="vanished">Vai a caso</translation>
     </message>
     <message>
-        <source>Move Towards Point</source>
-        <translation type="vanished">Muovi verso un punto</translation>
-    </message>
-    <message>
         <source>Wrap Screen</source>
         <translation type="vanished">Riapparire dall&apos;altro lato</translation>
-    </message>
-    <message>
-        <source>Create Instance</source>
-        <translation type="vanished">Crea istanza</translation>
-    </message>
-    <message>
-        <source>Destroy Instance</source>
-        <translation type="vanished">Distruggi istanza</translation>
     </message>
     <message>
         <source>Destroy At Position</source>
@@ -1674,76 +1522,16 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <translation type="vanished">Imposta solido</translation>
     </message>
     <message>
-        <source>Play Sound</source>
-        <translation>Riproduci suono</translation>
-    </message>
-    <message>
         <source>Stop Sound</source>
         <translation>Ferma suono</translation>
-    </message>
-    <message>
-        <source>Play Music</source>
-        <translation>Riproduci musica</translation>
-    </message>
-    <message>
-        <source>Stop Music</source>
-        <translation>Ferma musica</translation>
-    </message>
-    <message>
-        <source>Set Score</source>
-        <translation type="vanished">Imposta punteggio</translation>
-    </message>
-    <message>
-        <source>Set Lives</source>
-        <translation type="vanished">Imposta vite</translation>
-    </message>
-    <message>
-        <source>Set Health</source>
-        <translation type="vanished">Imposta salute</translation>
-    </message>
-    <message>
-        <source>Show Message</source>
-        <translation type="vanished">Mostra messaggio</translation>
     </message>
     <message>
         <source>Show Highscore Table</source>
         <translation type="vanished">Mostra classifica</translation>
     </message>
     <message>
-        <source>Next Room</source>
-        <translation type="vanished">Stanza successiva</translation>
-    </message>
-    <message>
-        <source>Previous Room</source>
-        <translation type="vanished">Stanza precedente</translation>
-    </message>
-    <message>
-        <source>Restart Room</source>
-        <translation type="vanished">Riavvia stanza</translation>
-    </message>
-    <message>
         <source>Go To Room</source>
         <translation type="vanished">Vai alla stanza</translation>
-    </message>
-    <message>
-        <source>Restart Game</source>
-        <translation type="vanished">Riavvia gioco</translation>
-    </message>
-    <message>
-        <source>End Game</source>
-        <translation type="vanished">Termina gioco</translation>
-    </message>
-    <message>
-        <source>Set Alarm</source>
-        <translation type="vanished">Imposta allarme</translation>
-    </message>
-    <message>
-        <source>If Collision</source>
-        <translation type="vanished">Se collisione</translation>
-    </message>
-    <message>
-        <source>If On Grid</source>
-        <translation type="vanished">Se sulla griglia</translation>
     </message>
     <message>
         <source>If Variable</source>
@@ -1762,36 +1550,8 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <translation type="vanished">Se salute</translation>
     </message>
     <message>
-        <source>Else</source>
-        <translation type="vanished">Altrimenti</translation>
-    </message>
-    <message>
         <source>Set Variable</source>
         <translation type="vanished">Imposta variabile</translation>
-    </message>
-    <message>
-        <source>Draw Text</source>
-        <translation type="vanished">Disegna testo</translation>
-    </message>
-    <message>
-        <source>Draw Sprite</source>
-        <translation type="vanished">Disegna sprite</translation>
-    </message>
-    <message>
-        <source>Draw Rectangle</source>
-        <translation type="vanished">Disegna rettangolo</translation>
-    </message>
-    <message>
-        <source>Draw Circle</source>
-        <translation type="vanished">Disegna cerchio</translation>
-    </message>
-    <message>
-        <source>Draw Line</source>
-        <translation type="vanished">Disegna linea</translation>
-    </message>
-    <message>
-        <source>Set Color</source>
-        <translation type="vanished">Imposta colore</translation>
     </message>
     <message>
         <source>Set Font Size</source>
@@ -1800,42 +1560,6 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
     <message>
         <source>Draw Self</source>
         <translation type="vanished">Disegna se stesso</translation>
-    </message>
-    <message>
-        <source>Execute Code</source>
-        <translation type="vanished">Esegui codice</translation>
-    </message>
-    <message>
-        <source>If Collision At</source>
-        <translation type="vanished">Se collisione a</translation>
-    </message>
-    <message>
-        <source>If Can Push</source>
-        <translation type="vanished">Se può spingere</translation>
-    </message>
-    <message>
-        <source>If Condition</source>
-        <translation type="vanished">Se condizione</translation>
-    </message>
-    <message>
-        <source>If Next Room Exists</source>
-        <translation type="vanished">Se stanza successiva esiste</translation>
-    </message>
-    <message>
-        <source>If Previous Room Exists</source>
-        <translation type="vanished">Se stanza precedente esiste</translation>
-    </message>
-    <message>
-        <source>Test Expression</source>
-        <translation type="vanished">Testa espressione</translation>
-    </message>
-    <message>
-        <source>Test Variable</source>
-        <translation type="vanished">Testa variabile</translation>
-    </message>
-    <message>
-        <source>Check Empty</source>
-        <translation type="vanished">Verifica se vuoto</translation>
     </message>
     <message>
         <source>Check Collision</source>
@@ -1850,14 +1574,6 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <translation type="vanished">Muovi verso</translation>
     </message>
     <message>
-        <source>Snap to Grid</source>
-        <translation type="vanished">Allinea alla griglia</translation>
-    </message>
-    <message>
-        <source>Stop If No Keys Pressed</source>
-        <translation type="vanished">Ferma se nessun tasto</translation>
-    </message>
-    <message>
         <source>Add to Score</source>
         <translation type="vanished">Aggiungi al punteggio</translation>
     </message>
@@ -1868,78 +1584,6 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
     <message>
         <source>Add Health</source>
         <translation type="vanished">Aggiungi salute</translation>
-    </message>
-    <message>
-        <source>Start Block</source>
-        <translation type="vanished">Inizio blocco</translation>
-    </message>
-    <message>
-        <source>End Block</source>
-        <translation type="vanished">Fine blocco</translation>
-    </message>
-    <message>
-        <source>Exit Event</source>
-        <translation type="vanished">Esci dall&apos;evento</translation>
-    </message>
-    <message>
-        <source>Repeat</source>
-        <translation type="vanished">Ripeti</translation>
-    </message>
-    <message>
-        <source>Go to Room</source>
-        <translation type="vanished">Vai alla stanza</translation>
-    </message>
-    <message>
-        <source>Then Actions</source>
-        <translation type="vanished">Azioni Se vero</translation>
-    </message>
-    <message>
-        <source>Else Actions</source>
-        <translation type="vanished">Azioni Altrimenti</translation>
-    </message>
-    <message>
-        <source>Then Action</source>
-        <translation type="vanished">Azione Se vero</translation>
-    </message>
-    <message>
-        <source>Else Action</source>
-        <translation type="vanished">Azione Altrimenti</translation>
-    </message>
-    <message>
-        <source>Relative</source>
-        <translation type="vanished">Relativo</translation>
-    </message>
-    <message>
-        <source>Movement</source>
-        <translation type="vanished">Movimento</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Controllo</translation>
-    </message>
-    <message>
-        <source>Instance</source>
-        <translation type="vanished">Istanza</translation>
-    </message>
-    <message>
-        <source>Room</source>
-        <translation type="vanished">Stanza</translation>
-    </message>
-    <message>
-        <source>Score</source>
-        <translation type="vanished">Punteggio</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="vanished">Griglia</translation>
-    </message>
-    <message>
-        <source>Timing</source>
-        <translation type="vanished">Temporizzazione</translation>
-    </message>
-    <message>
-        <source>Game</source>
-        <translation type="vanished">Gioco</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
@@ -1968,182 +1612,6 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (richiede {1})</translation>
-    </message>
-    <message>
-        <source>Apply Gravity</source>
-        <translation>Applica gravità</translation>
-    </message>
-    <message>
-        <source>Bind a Network Key</source>
-        <translation>Associa un tasto di rete</translation>
-    </message>
-    <message>
-        <source>Break Block</source>
-        <translation>Rompi blocco</translation>
-    </message>
-    <message>
-        <source>Create a Networked Object</source>
-        <translation>Crea oggetto in rete</translation>
-    </message>
-    <message>
-        <source>Draw Block World HUD</source>
-        <translation>Disegna HUD Block World</translation>
-    </message>
-    <message>
-        <source>Draw DOOM HUD</source>
-        <translation>Disegna HUD DOOM</translation>
-    </message>
-    <message>
-        <source>Draw Minimap</source>
-        <translation>Disegna minimappa</translation>
-    </message>
-    <message>
-        <source>Enable Block World View</source>
-        <translation>Attiva vista Block World</translation>
-    </message>
-    <message>
-        <source>Enable Raycast View</source>
-        <translation>Attiva vista 2.5 D</translation>
-    </message>
-    <message>
-        <source>Host a Game</source>
-        <translation>Ospita una partita</translation>
-    </message>
-    <message>
-        <source>If I Drive This Instance</source>
-        <translation>Se controllo questa istanza</translation>
-    </message>
-    <message>
-        <source>If the Player Presses</source>
-        <translation>Se il giocatore preme</translation>
-    </message>
-    <message>
-        <source>Join a Game</source>
-        <translation>Unisciti a una partita</translation>
-    </message>
-    <message>
-        <source>Jump</source>
-        <translation>Salta</translation>
-    </message>
-    <message>
-        <source>Leave the Game</source>
-        <translation>Esci dalla partita</translation>
-    </message>
-    <message>
-        <source>Load Block World</source>
-        <translation>Carica Block World</translation>
-    </message>
-    <message>
-        <source>Look Up / Down</source>
-        <translation>Guarda su / giù</translation>
-    </message>
-    <message>
-        <source>Move And Collide</source>
-        <translation>Muovi con collisione</translation>
-    </message>
-    <message>
-        <source>Place Block</source>
-        <translation>Posiziona blocco</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable</source>
-        <translation>Leggi variabile condivisa</translation>
-    </message>
-    <message>
-        <source>Select Hotbar Slot</source>
-        <translation>Scegli casella della barra</translation>
-    </message>
-    <message>
-        <source>Send a Network Message</source>
-        <translation>Invia messaggio di rete</translation>
-    </message>
-    <message>
-        <source>Set Billboard Rotation</source>
-        <translation>Imposta rotazione sprite</translation>
-    </message>
-    <message>
-        <source>Set Floor Height</source>
-        <translation>Imposta altezza del pavimento</translation>
-    </message>
-    <message>
-        <source>Set Block Protection</source>
-        <translation>Imposta protezione blocchi</translation>
-    </message>
-    <message>
-        <source>Set Block Reward</source>
-        <translation>Imposta ricompensa blocco</translation>
-    </message>
-    <message>
-        <source>Set Facing Angle</source>
-        <translation>Imposta angolo di vista</translation>
-    </message>
-    <message>
-        <source>Set Network Mode (v1)</source>
-        <translation>Imposta la modalità di rete (v1)</translation>
-    </message>
-    <message>
-        <source>Set Volume</source>
-        <translation>Imposta volume</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable</source>
-        <translation>Imposta variabile condivisa</translation>
-    </message>
-    <message>
-        <source>Set the Instance's Owner</source>
-        <translation>Imposta il proprietario dell'istanza</translation>
-    </message>
-    <message>
-        <source>Set the Sync Rate</source>
-        <translation>Imposta la frequenza di sincronia</translation>
-    </message>
-    <message>
-        <source>Start the Networked Game</source>
-        <translation>Avvia la partita in rete</translation>
-    </message>
-    <message>
-        <source>Synchronise This Instance</source>
-        <translation>Sincronizza questa istanza</translation>
-    </message>
-    <message>
-        <source>Check Sound Playing</source>
-        <translation>Verifica se il suono è attivo</translation>
-    </message>
-    <message>
-        <source>Set Crafting Recipe</source>
-        <translation>Imposta ricetta di creazione</translation>
-    </message>
-    <message>
-        <source>Craft Item</source>
-        <translation>Crea oggetto</translation>
-    </message>
-    <message>
-        <source>Host a Game (File Exchange)</source>
-        <translation>Ospita una partita (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>Join a Game (File Exchange)</source>
-        <translation>Unisciti a una partita (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>Leave the Game (File Exchange)</source>
-        <translation>Esci dalla partita (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>Set a Shared Variable (File Exchange)</source>
-        <translation>Imposta variabile condivisa (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>Read a Shared Variable (File Exchange)</source>
-        <translation>Leggi variabile condivisa (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>End Turn (File Exchange)</source>
-        <translation>Fine turno (Scambio di file)</translation>
-    </message>
-    <message>
-        <source>Send a Network Message (File Exchange)</source>
-        <translation>Invia messaggio di rete (Scambio di file)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/events/_action_crud.py" line="0"/>
