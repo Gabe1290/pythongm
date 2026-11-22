@@ -54,9 +54,10 @@ dialog is now capped at 75% of the IDE window height.
   of the screen height, rows crushed), the Show Message "Translations..." and
   If Can Push "Configure..." buttons (capped at 120 px), the Preferences
   "Browse..." button, the French Tutorials line
-  (`tests/test_junior_dialog_clipping.py`). Not junior, left: the Block World /
-  raycast / particle action forms are 850-900 px tall, taller than a 768 px
-  laptop screen (they could use a scroll area).
+  (`tests/test_junior_dialog_clipping.py`). The Block World / raycast / particle
+  action forms (850-900 px tall, taller than a 768 px laptop) now scroll inside
+  the dialog with OK/Cancel always visible, every form capped at 90% of the
+  screen (`tests/test_action_dialog_fits_screen.py`, 2026-11-22).
 - The object editor's left "Standard" events panel is still shown in
   junior; deliberately left for now (user decision 2026-10-16).
 - ~~The new Assets > Create Sprite menu entry is translated only in fr and

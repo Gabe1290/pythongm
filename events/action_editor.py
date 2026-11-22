@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QApplication, QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
     QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
-    QWidget, QScrollArea, QFormLayout, QMessageBox,
+    QWidget, QScrollArea, QFormLayout, QMessageBox, QFrame,
     QGroupBox, QRadioButton, QButtonGroup, QGridLayout,
 )
 from PySide6.QtCore import Qt
@@ -74,8 +74,20 @@ class ActionConfigDialog(QDialog):
             layout.addWidget(button_box)
             return
 
-        # Regular action configuration
-        layout = QVBoxLayout(self)
+        # Regular action configuration. The form scrolls inside a QScrollArea and
+        # OK/Cancel stay outside it, always visible: some forms (Block World, 2.5D,
+        # particles) are 850-900 px tall, taller than a 768 px school laptop.
+        # _fit_to_screen sizes the dialog to its content, so a form that fits
+        # looks exactly as before and only a too-tall one scrolls (2026-11-22).
+        outer = QVBoxLayout(self)
+        self._form_scroll = QScrollArea()
+        self._form_scroll.setWidgetResizable(True)
+        self._form_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        self._form_body = QWidget()
+        layout = QVBoxLayout(self._form_body)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self._form_scroll.setWidget(self._form_body)
+        outer.addWidget(self._form_scroll)
 
         # Action info
         title_label = QLabel(f"{self.action_type.icon} {self.tr(self.action_type.display_name)}")
@@ -480,9 +492,25 @@ class ActionConfigDialog(QDialog):
         )
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
-        layout.addWidget(button_box)
+        outer.addWidget(button_box)
 
         self._install_find_replace_shortcuts()
+        self._fit_to_screen(outer, button_box)
+
+    def _fit_to_screen(self, outer, button_box):
+        """Open at the form's natural size, at most 90% of the screen high (then the form scrolls)."""
+        self._form_body.ensurePolished()
+        body = self._form_body.sizeHint()
+        margins = outer.contentsMargins()
+        bar = self._form_scroll.verticalScrollBar().sizeHint().width()
+        want_h = (body.height() + button_box.sizeHint().height() + outer.spacing()
+                  + margins.top() + margins.bottom())
+        screen = self.screen()
+        avail = screen.availableGeometry().height() if screen is not None else 768
+        cap = int(avail * 0.9)
+        height = max(min(want_h, cap), min(400, cap))      # never shorter than the old 400, never off-screen
+        width = max(500, body.width() + margins.left() + margins.right() + (bar if want_h > cap else 0))
+        self.resize(width, height)
 
     # ------------------------------------------------------------------
     # Find / Replace for this dialog's multi-line ("code"/"text") params
