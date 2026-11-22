@@ -19,5 +19,5 @@ Scope: the core registry only (Thymio's own dialog tables are separate).
 - [x] U1 pl
 - [x] U2 pt (Brazilian, as the pt catalogue)
 - [x] U3 ja
-- [ ] U4 zh
+- [x] U4 zh
 - [ ] U5 close: TODO.md entry, guard covers all eleven languages
