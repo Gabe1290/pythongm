@@ -167,7 +167,7 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   panel's second column (`object_actions_formatter.py`) is a code-like `key=value` summary with a few
   hard-coded English words (`with:`, `then:`, `push …?`); translating it is a separate follow-up (U9
   puts it in TODO.md).
-- [ ] **U4 — Fill the 8 wiki languages' gaps.** Parameter labels (246), event names (23), choice words
+- [x] **U4 — Fill the 8 wiki languages' gaps.** Parameter labels (246), event names (23), choice words
   (~60), the 7–23 missing actions and their parameter descriptions; one commit per language
   (fr, de, es, it, pt, ru, sl, uk). Guard test: every kind complete in every language.
   *Progress:* **fr done 2026-11-22** — 367 entries: 120 parameter labels from the Blockly blocks'
@@ -178,6 +178,11 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   languages; the wiki regenerated (« Score/Vies/Santé » and 19 parameter notes now French). Noted for
   U8: documents also name *parameters* in English (the raycast handouts' « règle **Wall Texture** »),
   so U8's conversion covers parameter labels as well as action and event names.
+  **de, es, it, pt, ru, sl, uk done the same day**, one commit each (`160a23fc`, `7561b8fc`,
+  `5576ca46`, `964fd4be`, `cf8dc458`, `3a419504`, `71e8a31b`): 48 parameter labels each from the
+  `.ts`, 319 new, wording taken from each language's existing table (its words for room, alarm,
+  score, shared). Portuguese: the table mixes Brazilian and European forms; new terms follow the
+  word already used for each concept. All eight in `COMPLETE`; the wiki regenerated after each.
 - [ ] **U5 — Polish.** The whole set (~1,050 strings).
 - [ ] **U6 — Japanese.** Same; check widths in the configure dialog (the junior-theme clipping test).
 - [ ] **U7 — Chinese.** Same.
