@@ -648,8 +648,11 @@ to both the generated `categories` dict and the static pre-load toolbox.
   for both** — a strong sign the importer has closed most of its gaps
   since rc.12 (from general `GM_ACTION_MAP` work over the following
   months, not anything specific to these two samples). Pinned by
-  `tests/test_gmk_treasure_maze4_import.py`. **Not yet re-added to the
-  bundled set** — a clean unmapped-action result isn't proof of full
+  `tests/test_gmk_treasure_maze4_import.py`. *(Superseded: both were
+  re-added on 2026-07-16 after the playtest above; re-checked 2026-11-22 --
+  tests, asset references, a 900-frame scripted play with no errors, HTML5 and
+  Kivy exports all clean.)* ~~**Not yet re-added to the
+  bundled set**~~ — a clean unmapped-action result isn't proof of full
   correctness; still needs a visual playtest / test-game smoke run /
   asset-reference check before shipping. See the plan doc for detail.
 - The earlier hypothesis that only treasure was affected (because
