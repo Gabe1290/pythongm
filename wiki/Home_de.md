@@ -90,14 +90,14 @@ Spielentitäten mit Sprites, Eigenschaften und Verhaltensweisen. Jedes Objekt ka
 
 ### Ereignisse
 Auslöser, die Aktionen ausführen, wenn bestimmte Bedingungen eintreten:
-- **Create** - Wenn eine Instanz erstellt wird
-- **Step** - Jeden Frame (typischerweise 60 FPS)
-- **Draw** - Benutzerdefinierte Renderphase
-- **Destroy** - Wenn eine Instanz zerstört wird
+- **Erstellen** - Wenn eine Instanz erstellt wird
+- **Schritt** - Jeden Frame (typischerweise 60 FPS)
+- **Zeichnen** - Benutzerdefinierte Renderphase
+- **Zerstören** - Wenn eine Instanz zerstört wird
 - **Keyboard** - Taste gedrückt, losgelassen oder gehalten
-- **Mouse** - Klicks, Bewegung, Betreten/Verlassen
+- **Maus** - Klicks, Bewegung, Betreten/Verlassen
 - **Collision** - Wenn Instanzen sich berühren
-- **Alarm** - Countdown-Timer (12 verfügbar)
+- **Wecker** - Countdown-Timer (12 verfügbar)
 
 Siehe die [Ereignis-Referenz](Event-Reference_de) für vollständige Dokumentation.
 

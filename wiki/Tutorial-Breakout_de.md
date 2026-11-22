@@ -65,23 +65,23 @@ Jetzt programmieren wir das Paddle, das der Spieler steuert.
 
 ### 2.2 Rechtspfeil-Bewegung hinzufügen
 1. Klicke auf **Add Event** -> **Keyboard** -> wähle **Right Arrow**
-2. Füge die Aktion **Set Horizontal Speed** hinzu
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 3. Setze **value** auf `5` (oder eine beliebige Geschwindigkeit)
 
 ### 2.3 Linkspfeil-Bewegung hinzufügen
 1. Klicke auf **Add Event** -> **Keyboard** -> wähle **Left Arrow**
-2. Füge die Aktion **Set Horizontal Speed** hinzu
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 3. Setze **value** auf `-5`
 
 ### 2.4 Stoppen, wenn Tasten losgelassen werden
 Das Paddle bewegt sich weiter, auch nachdem die Taste losgelassen wurde! Lass uns das beheben.
 
-1. Klicke auf **Add Event** -> **Keyboard Release** -> wähle **Right Arrow**
-2. Füge die Aktion **Set Horizontal Speed** hinzu
+1. Klicke auf **Add Event** -> **Taste losgelassen** -> wähle **Right Arrow**
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 3. Setze **value** auf `0`
 
-4. Klicke auf **Add Event** -> **Keyboard Release** -> wähle **Left Arrow**
-5. Füge die Aktion **Set Horizontal Speed** hinzu
+4. Klicke auf **Add Event** -> **Taste losgelassen** -> wähle **Left Arrow**
+5. Füge die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 6. Setze **value** auf `0`
 
 Jetzt stoppt das Paddle, wenn du die Pfeiltasten loslässt.
@@ -98,8 +98,8 @@ Jetzt stoppt das Paddle, wenn du die Pfeiltasten loslässt.
 3. Aktiviere das **Solid**-Kontrollkästchen
 
 ### 3.2 Anfangsbewegung setzen
-1. Klicke auf **Add Event** -> **Create**
-2. Füge die Aktion **Start Moving (Direction)** hinzu (oder **Set Horizontal/Vertical Speed**)
+1. Klicke auf **Add Event** -> **Erstellen**
+2. Füge die Aktion **Losbewegen (Richtung)** hinzu (oder **Set Horizontal/Vertical Speed**)
 3. Setze eine diagonale Richtung mit Geschwindigkeit `5`
    - Zum Beispiel: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ Dies lässt den Ball starten, wenn das Spiel beginnt.
 
 ### 3.3 Vom Paddle abprallen
 1. Klicke auf **Add Event** -> **Collision** -> wähle `obj_paddle`
-2. Füge die Aktion **Reverse Vertical** hinzu (zum Abprallen)
+2. Füge die Aktion **Vertikal umkehren** hinzu (zum Abprallen)
 
 ### 3.4 Von Wänden abprallen
 1. Klicke auf **Add Event** -> **Collision** -> wähle `obj_wall`
-2. Füge die Aktion **Reverse Horizontal** oder **Reverse Vertical** nach Bedarf hinzu
+2. Füge die Aktion **Horizontal umkehren** oder **Vertikal umkehren** nach Bedarf hinzu
    - Oder verwende beide, um Eckabpraller zu handhaben
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ Dies lässt den Ball starten, wenn das Spiel beginnt.
 
 ### 4.2 Bei Ball-Kollision zerstören
 1. Klicke auf **Add Event** -> **Collision** -> wähle `obj_ball`
-2. Füge die Aktion **Destroy Instance** mit Ziel **self** hinzu
+2. Füge die Aktion **Instanz zerstören** mit Ziel **self** hinzu
 
 Dies zerstört den Brick, wenn der Ball ihn trifft!
 
 ### 4.3 Den Ball abprallen lassen
-**Reverse Vertical** wirkt immer auf die Instanz, in deren Event sie steht
+**Vertikal umkehren** wirkt immer auf die Instanz, in deren Event sie steht
 — es gibt keine Option „auf other anwenden" — daher muss diese Aktion beim
 Ball stehen, nicht beim Brick:
 
 1. Gehe zurück zu `obj_ball` und füge hinzu:
 2. **Add Event** -> **Collision** -> wähle `obj_brick`
-3. Füge die Aktion **Reverse Vertical** hinzu
+3. Füge die Aktion **Vertikal umkehren** hinzu
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Jetzt platziere deine Objekte im Raum:
 Dein grundlegendes Breakout-Spiel ist fertig! Hier sind einige Verbesserungen zum Ausprobieren:
 
 ### Ein Leben-System hinzufügen
-- Füge ein **No More Lives**-Event hinzu, um „Game Over" anzuzeigen
+- Füge ein **Keine Leben mehr**-Event hinzu, um „Game Over" anzuzeigen
 - Verliere ein Leben, wenn der Ball unten herausfällt
 
 ### Punktestand hinzufügen
 - Benutze die **Add Score**-Aktion beim Zerstören von Bricks
-- Zeige den Punktestand mit **Draw Score** an
+- Zeige den Punktestand mit **Punkte zeichnen** an
 
 ### Mehrere Levels hinzufügen
 - Erstelle mehr Räume mit verschiedenen Brick-Anordnungen
-- Benutze **Next Room**, wenn alle Bricks zerstört sind
+- Benutze **Nächster Raum**, wenn alle Bricks zerstört sind
 
 ### Soundeffekte hinzufügen
 - Füge Sounds für Abprallen und Brick-Zerstörung hinzu
-- Benutze die **Play Sound**-Aktion
+- Benutze die **Klang abspielen**-Aktion
 
 ---
 

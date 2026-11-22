@@ -101,7 +101,7 @@ Alles in der Spielprogrammierung folgt diesem Muster: **Wenn das passiert, dann 
 
 Dies nennen wir **Events** und **Actions** in PyGameMaker:
 - **Events** = Dinge, die passieren können (Tastendruck, Kollision, Timer, usw.)
-- **Actions** = Dinge, die du tun möchtest, wenn Events eintreten (bewegen, zerstören, Punktestand ändern, usw.)
+- **Aktionen** = Dinge, die du tun möchtest, wenn Events eintreten (bewegen, zerstören, Punktestand ändern, usw.)
 
 ---
 
@@ -122,7 +122,7 @@ In einem Breakout-Spiel müssen wir den Schläger bewegen, um zu verhindern, das
 
 **Nach rechts bewegen:**
 1. Klicke auf **Add Event** → **Keyboard** → **Right Arrow**
-2. Füge aus dem Aktions-Panel auf der rechten Seite die Aktion **Set Horizontal Speed** hinzu
+2. Füge aus dem Aktions-Panel auf der rechten Seite die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 3. Setze den **value** auf `5`
 4. Klicke auf **OK**
 
@@ -130,7 +130,7 @@ Das bedeutet: "Wenn die Pfeiltaste nach rechts gedrückt wird, setze die horizon
 
 **Nach links bewegen:**
 1. Klicke auf **Add Event** → **Keyboard** → **Left Arrow**
-2. Füge die Aktion **Set Horizontal Speed** hinzu
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** hinzu
 3. Setze den **value** auf `-5`
 4. Klicke auf **OK**
 
@@ -138,12 +138,12 @@ Das bedeutet: "Wenn die Pfeiltaste nach rechts gedrückt wird, setze die horizon
 
 Wenn wir jetzt testen würden, würde der Schläger sich weiter bewegen, auch nachdem die Taste losgelassen wurde! Lass uns das beheben:
 
-1. Klicke auf **Add Event** → **Keyboard Release** → **Right Arrow**
-2. Füge die Aktion **Set Horizontal Speed** mit dem Wert `0` hinzu
+1. Klicke auf **Add Event** → **Taste losgelassen** → **Right Arrow**
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** mit dem Wert `0` hinzu
 3. Klicke auf **OK**
 
-4. Klicke auf **Add Event** → **Keyboard Release** → **Left Arrow**
-5. Füge die Aktion **Set Horizontal Speed** mit dem Wert `0` hinzu
+4. Klicke auf **Add Event** → **Taste losgelassen** → **Left Arrow**
+5. Füge die Aktion **Horizontale Geschwindigkeit setzen** mit dem Wert `0` hinzu
 6. Klicke auf **OK**
 
 Jetzt bewegt sich unser Schläger, wenn die Tasten gedrückt werden, und stoppt, wenn sie losgelassen werden. Wir sind mit diesem Objekt vorerst fertig!
@@ -176,10 +176,10 @@ Jetzt erstellen wir den Ball, das wesentliche Element unseres Spiels.
 
 Wir möchten, dass sich der Ball von Anfang an selbstständig bewegt. Geben wir ihm eine Anfangsgeschwindigkeit und Richtung.
 
-1. Klicke auf **Add Event** → **Create**
+1. Klicke auf **Add Event** → **Erstellen**
    > Das Create-Event führt Aktionen aus, wenn das Objekt im Spiel erscheint, d.h. wenn es die Szene betritt.
-2. Füge die Aktion **Set Horizontal Speed** mit dem Wert `4` hinzu
-3. Füge die Aktion **Set Vertical Speed** mit dem Wert `-4` hinzu
+2. Füge die Aktion **Horizontale Geschwindigkeit setzen** mit dem Wert `4` hinzu
+3. Füge die Aktion **Vertikale Geschwindigkeit setzen** mit dem Wert `-4` hinzu
 4. Klicke auf **OK**
 
 Dies gibt dem Ball eine diagonale Bewegung (nach rechts und oben) zu Beginn des Spiels.
@@ -190,7 +190,7 @@ Wir müssen den Ball abprallen lassen, wenn er den Schläger trifft.
 
 1. Klicke auf **Add Event** → **Collision** → wähle `obj_paddle`
    > Dieses Event wird ausgelöst, wenn der Ball mit dem Schläger kollidiert.
-2. Füge die Aktion **Reverse Vertical** hinzu
+2. Füge die Aktion **Vertikal umkehren** hinzu
    > Dies kehrt die vertikale Richtung um und lässt den Ball abprallen.
 3. Klicke auf **OK**
 
@@ -199,8 +199,8 @@ Wir müssen den Ball abprallen lassen, wenn er den Schläger trifft.
 Die gleiche Operation für die Wandsteine:
 
 1. Klicke auf **Add Event** → **Collision** → wähle `obj_brick_3`
-2. Füge die Aktion **Reverse Vertical** hinzu
-3. Füge die Aktion **Reverse Horizontal** hinzu
+2. Füge die Aktion **Vertikal umkehren** hinzu
+3. Füge die Aktion **Horizontal umkehren** hinzu
    > Wir fügen beide hinzu, weil der Ball die Wand aus verschiedenen Winkeln treffen könnte.
 4. Klicke auf **OK**
 
@@ -251,7 +251,7 @@ Lass uns einige Steine zum Zerstören hinzufügen, um unser Spiel unterhaltsamer
 Wir fügen das Verhalten hinzu, sich selbst zu zerstören, wenn er vom Ball getroffen wird:
 
 1. Klicke auf **Add Event** → **Collision** → wähle `obj_ball`
-2. Füge die Aktion **Destroy Instance** mit Ziel **self** hinzu
+2. Füge die Aktion **Instanz zerstören** mit Ziel **self** hinzu
    > Diese Aktion entfernt ein Objekt während des Spiels - hier den Stein selbst.
 3. Klicke auf **OK**
 
@@ -275,11 +275,11 @@ Klicke auf **OK** zum Speichern.
 Öffne `obj_ball` erneut durch Doppelklick und füge Kollisions-Events für unsere neuen Steine hinzu:
 
 1. Klicke auf **Add Event** → **Collision** → wähle `obj_brick_1`
-2. Füge die Aktion **Reverse Vertical** hinzu
+2. Füge die Aktion **Vertikal umkehren** hinzu
 3. Klicke auf **OK**
 
 4. Klicke auf **Add Event** → **Collision** → wähle `obj_brick_2`
-5. Füge die Aktion **Reverse Vertical** hinzu
+5. Füge die Aktion **Vertikal umkehren** hinzu
 6. Klicke auf **OK**
 
 ---
@@ -290,8 +290,8 @@ Wir müssen das Level neu starten, wenn der Ball den Bildschirm verlässt (wenn 
 
 In `obj_ball`:
 
-1. Klicke auf **Add Event** → **Other** → **Outside Room**
-2. Füge die Aktion **Restart Room** hinzu
+1. Klicke auf **Add Event** → **Other** → **Außerhalb des Raums**
+2. Füge die Aktion **Raum neu starten** hinzu
    > Diese Aktion startet den aktuellen Raum während des Spiels neu.
 3. Klicke auf **OK**
 

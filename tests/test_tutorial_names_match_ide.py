@@ -87,9 +87,14 @@ def test_spanish_tutorials_keep_their_accents():
 # docs/handouts are generated and checked elsewhere.
 GENERATED = re.compile(r"Full-Action-Reference|-Preset|Student-Handout|Worksheet-|Teacher-Guide|"
                        r"Teacher-Resources|Answer-Key")
+# The visual-programming pages describe Blockly blocks, which follow the Blockly workspace (several of
+# its generated blocks are still English there), not the events panel.
+BLOCKLY_PAGES = re.compile(r"Visuelle_Programmierung|Programmation_Visuelle|Programacion_Visual|"
+                           r"Programmazione_Visuale|Programacao_Visual|Vizualnoe_Programmirovanie|"
+                           r"Vizualno_Programiranje|Vizualne_Prohramuvannya")
 BOLD = re.compile(r"\*\*([^*\n]+)\*\*")
 SPLIT_PATH = re.compile(r"\*\*([^*\n]+)\*\*\s*(?:→|&gt;|->)\s*\*\*([^*\n]+)\*\*")
-WIKI_DONE = ["fr"]
+WIKI_DONE = ["fr", "de"]
 
 
 @pytest.mark.parametrize("lang", WIKI_DONE)
@@ -104,7 +109,7 @@ def test_wiki_pages_use_the_ide_names(lang, registry):
     by_name = {v: k for k, v in table["core.action"].items() if k in actions}
     problems = []
     for page in sorted((ROOT / "wiki").glob(f"*_{lang}.md")):
-        if GENERATED.search(page.name):
+        if GENERATED.search(page.name) or BLOCKLY_PAGES.search(page.name):
             continue
         text = page.read_text(encoding="utf-8")
         for inner in BOLD.findall(text):

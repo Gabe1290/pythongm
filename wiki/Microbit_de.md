@@ -79,7 +79,7 @@ Ein Klick auf die Platine löst nie zusätzlich deine eigenen Maus-Ereignisse au
 | **Set Display Brightness** (`microbit_set_brightness`) | Gesamthelligkeit, 0–255. |
 | **Play Tone** (`microbit_play_tone`) | Ein Piepton mit einer Frequenz für eine Anzahl Millisekunden. |
 | **Play Melody** (`microbit_play_melody`) | Eine der 21 eingebauten Melodien (`DADADADUM`, `ENTERTAINER`, `POWER_UP`…) oder eigene Noten: `"C4:4 E G C5:8 R:4"` (Note, Oktave, `:Länge`; `R` ist eine Pause). |
-| **Stop Sound** (`microbit_stop_sound`) | Den Lautsprecher stummschalten und wartende Töne verwerfen. |
+| **Klang stoppen** (`microbit_stop_sound`) | Den Lautsprecher stummschalten und wartende Töne verwerfen. |
 | **Set Radio Group** (`microbit_radio_set_group`) | Die Funkgruppe wählen, 0–255. |
 | **Send Radio Message** (`microbit_radio_send`) | Eine Zahl oder einen Text an die anderen micro:bits der Gruppe senden. |
 | **Read Sensor** (`microbit_read_sensor`) | Einen Messwert (Beschleunigung x/y/z, Stärke, Kompass, Licht, Temperatur, Geräuschpegel, Pin 0–2 analog) in eine Variable schreiben — oder in eine globale Variable, wenn der Name mit `global.` beginnt. |
@@ -115,7 +115,7 @@ Sie werden auf dem eigenen Objekt des micro:bit ausgelöst:
 | **Sound Finished** | Alle wartenden Töne und Melodien abgespielt sind. |
 | **Radio Message Received** | Ein anderer micro:bit derselben Gruppe eine Nachricht gesendet hat. |
 
-„Forever“ ist das gewöhnliche **Step**-Ereignis.
+„Forever“ ist das gewöhnliche **Schritt**-Ereignis.
 
 ### Funk
 
@@ -135,7 +135,7 @@ Spiel darf nicht blockieren, deshalb werden Anzeige-Aktionen **eingereiht** und
 nacheinander abgespielt (höchstens 16; etwas anzufordern, das schon angezeigt wird,
 bewirkt nichts). **Clear Display** leert die Warteschlange, und **Display
 Finished** meldet, wann sie leer ist — so kannst du Animationen verketten. Töne
-werden genauso eingereiht, mit **Stop Sound** und **Sound Finished**.
+werden genauso eingereiht, mit **Klang stoppen** und **Sound Finished**.
 
 Der Ton ist eine Rechteckwelle, wie beim Summer der Platine. Hat der Computer
 kein Audiogerät, wird er stillschweigend übersprungen (der Simulator verfolgt

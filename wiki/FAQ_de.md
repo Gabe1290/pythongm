@@ -154,9 +154,9 @@ Der erste Room im Ressourcenbaum (oben in der Liste) lädt beim Spielstart. Zieh
 ### Wie wechsle ich zwischen Rooms?
 
 Verwenden Sie Room-Aktionen:
-- **Next Room**: Zum nächsten Room in der Reihenfolge gehen
-- **Previous Room**: Zum vorherigen Room gehen
-- **Go to Room**: Zu einem bestimmten Room springen
+- **Nächster Raum**: Zum nächsten Room in der Reihenfolge gehen
+- **Vorheriger Raum**: Zum vorherigen Room gehen
+- **Zu Raum gehen**: Zu einem bestimmten Room springen
 
 ### Objekte verschwinden beim Room-Wechsel
 
@@ -216,7 +216,7 @@ Prüfen Sie:
 
 ### Wie spiele ich Hintergrundmusik in einer Schleife?
 
-Verwenden Sie die Aktion **Play Music** mit aktivierter Loop-Option, oder **Play Sound** mit dem Loop-Parameter auf „wahr" gesetzt.
+Verwenden Sie die Aktion **Musik abspielen** mit aktivierter Loop-Option, oder **Klang abspielen** mit dem Loop-Parameter auf „wahr" gesetzt.
 
 ---
 

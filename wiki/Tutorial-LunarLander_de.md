@@ -113,7 +113,7 @@ Die Landefähre ist das wichtigste vom Spieler gesteuerte Objekt mit
 Physik. Anders als bei den anderen Bewegungs-Tutorials dieses Wikis müssen
 ihre Steuerungen Geschwindigkeit allmählich aufbauen und eine
 Treibstoffressource verfolgen, daher stützt sich dieses Objekt stärker auf
-**Control** → **Execute Code** (echtes Python — `self` ist die aktuelle
+**Steuerung** → **Code ausführen** (echtes Python — `self` ist die aktuelle
 Instanz, `game` ist der Game Runner, `keyboard.check(name)` meldet eine
 gehaltene Taste) als allein auf strukturierte Aktionen. Überall, wo eine
 strukturierte Aktion die Arbeit erledigt, verwendet dieses Tutorial
@@ -125,11 +125,11 @@ weiterhin eine.
 ### 5.1 Schwerkraft und Startvariablen
 
 **Event: Create**
-1. Aktion hinzufügen: **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+1. Aktion hinzufügen: **Move** → **Schwerkraft setzen** (Direction: `270`, Gravity: `0.05`)
    — ein sanfter Zug nach unten; die Engine addiert dies bei jedem Schritt
    automatisch zur Vertikalgeschwindigkeit der Landefähre, genau wie die
    Schwerkraft des Plattformer-Tutorials, nur schwächer.
-2. Aktion hinzufügen: **Control** → **Execute Code**:
+2. Aktion hinzufügen: **Steuerung** → **Code ausführen**:
 
 ```python
 self.thrust_force = 0.1
@@ -149,7 +149,7 @@ Physiksimulation verfolgen würde.
 
 ### 5.2 Step-Event — Schub und Steuerung
 
-**Event: Step** — Aktion hinzufügen: **Control** → **Execute Code**:
+**Event: Step** — Aktion hinzufügen: **Steuerung** → **Code ausführen**:
 
 ```python
 if not self.landed and not self.crashed:
@@ -190,23 +190,23 @@ das `self`-Objekt hat keine Möglichkeit, ein Event mittendrin abzubrechen
 ### 5.3 Kollision mit der Landeplattform
 
 **Event: Collision with obj_pad**
-1. Aktion hinzufügen: **Control** → **Test Expression**
+1. Aktion hinzufügen: **Steuerung** → **Ausdruck testen**
    - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
      — die Landegeschwindigkeit ist die Länge des Geschwindigkeitsvektors;
      Pythagoras, keine `speed`-Variable (in dieser Engine ist `speed` die
      *Sprite-Animations*-Rate, nicht der Bewegungsbetrag — eine echte
      Falle für alle, die von GameMaker kommen).
    - Then Actions:
-     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
-     2. **Move** → **Stop Movement**
-     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) — hält
+     1. **Control** → **Variable setzen** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Bewegung stoppen**
+     3. **Move** → **Schwerkraft setzen** (Direction: `270`, Gravity: `0`) — hält
         die Schwerkraft davon ab, bei einer bereits gelandeten Landefähre
         wieder unbemerkt Vertikalgeschwindigkeit aufzubauen
-     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+     4. **Output** → **Nachricht anzeigen** (Message: `Perfect Landing! You Win!`)
    - Else Actions:
-     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
-     3. **Room** → **Restart Room**
+     1. **Steuerung** → **Variable setzen** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Nachricht anzeigen** (Message: `Crashed! Too fast!`)
+     3. **Raum** → **Raum neu starten**
 
 Der Text von Show Message ist eine feste Zeichenkette — er kann die
 tatsächliche Landegeschwindigkeit nicht einbetten. Das HUD (Schritt 7)
@@ -216,9 +216,9 @@ hat die Zahl also bereits gesehen.
 ### 5.4 Kollision mit dem Boden
 
 **Event: Collision with obj_ground**
-1. Aktion hinzufügen: **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-2. Aktion hinzufügen: **Output** → **Show Message** (Message: `Crashed into terrain!`)
-3. Aktion hinzufügen: **Room** → **Restart Room**
+1. Aktion hinzufügen: **Steuerung** → **Variable setzen** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Aktion hinzufügen: **Output** → **Nachricht anzeigen** (Message: `Crashed into terrain!`)
+3. Aktion hinzufügen: **Raum** → **Raum neu starten**
 
 ![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
 
@@ -248,7 +248,7 @@ indem er sie bei jedem Frame von der Landefähren-Instanz abliest.
 2. Kein Sprite nötig
 
 **Event: Draw**
-1. Aktion hinzufügen: **Control** → **Execute Code** — findet die
+1. Aktion hinzufügen: **Steuerung** → **Code ausführen** — findet die
    Landefähre und berechnet die Werte, die die Draw-Aktionen unten
    anzeigen:
 
@@ -271,29 +271,29 @@ else:
     self.no_fuel = False
 ```
 
-2. Aktion hinzufügen: **Game** → **Set Draw Color** (Color: `#FFFFFF`)
-3. Aktion hinzufügen: **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
-4. Aktion hinzufügen: **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
-5. Aktion hinzufügen: **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
-6. Aktion hinzufügen: **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
-7. Aktion hinzufügen: **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
-8. Aktion hinzufügen: **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+2. Aktion hinzufügen: **Zeichnen** → **Zeichenfarbe festlegen** (Color: `#FFFFFF`)
+3. Aktion hinzufügen: **Spiel** → **Text zeichnen** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Aktion hinzufügen: **Spiel** → **Text zeichnen** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Aktion hinzufügen: **Zeichnen** → **Variable zeichnen** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Aktion hinzufügen: **Spiel** → **Text zeichnen** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Aktion hinzufügen: **Zeichnen** → **Variable zeichnen** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Aktion hinzufügen: **Spiel** → **Text zeichnen** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
 
-Dann die zwei Warnzeilen, jede über **Control** → **Test Expression**
+Dann die zwei Warnzeilen, jede über **Steuerung** → **Ausdruck testen**
 gesteuert (kein Else nötig — es wird nichts gezeichnet, wenn die Bedingung
 falsch ist):
 
-9. **Control** → **Test Expression** (Expression: `self.too_fast`)
-   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
-   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
-     **Draw Text** (`Speed OK`, X `10`, Y `90`)
-10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
-    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+9. **Steuerung** → **Ausdruck testen** (Expression: `self.too_fast`)
+   - Then Actions: **Zeichnen** → **Zeichenfarbe festlegen** (`#FF0000`), **Game** →
+     **Text zeichnen** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Zeichnen** → **Zeichenfarbe festlegen** (`#00FF00`), **Game** →
+     **Text zeichnen** (`Speed OK`, X `10`, Y `90`)
+10. **Steuerung** → **Ausdruck testen** (Expression: `self.no_fuel`)
+    - Then Actions: **Zeichnen** → **Zeichenfarbe festlegen** (`#FF0000`), **Game** →
+      **Text zeichnen** (`NO FUEL!`, X `10`, Y `110`)
 
-11. Aktion hinzufügen: **Game** → **Set Draw Color** (Color: `#808080`)
-12. Aktion hinzufügen: **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+11. Aktion hinzufügen: **Zeichnen** → **Zeichenfarbe festlegen** (Color: `#808080`)
+12. Aktion hinzufügen: **Spiel** → **Text zeichnen** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
     X: `10`, Y: `440`) — wählen Sie ein Y nahe dem unteren Rand der
     Raumgröße, die Sie in Schritt 8 verwenden.
 

@@ -133,14 +133,14 @@ Die Kiste wird vom Spieler geschoben und ändert ihr Aussehen, wenn sie auf eine
 
 **Ereignis: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Steuerung** → **Wenn Kollision**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Instanz** → **Sprite setzen**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Steuerung** → **Sonst**
+5. Add Action: **Instanz** → **Sprite setzen**
    - Sprite: `spr_crate`
 
 Dadurch wird die Kiste grün, sobald sie auf einem Zielfeld steht — **If
@@ -160,7 +160,7 @@ Der Spieler bewegt sich immer genau eine Gitterzelle weit und schiebt Kisten, in
 
 ### 6.1 Gitterbewegung
 
-Fügen Sie ein **Key Press**-Ereignis pro Richtung hinzu, jeweils mit einer **Move** → **Move Grid**-Aktion:
+Fügen Sie ein **Key Press**-Ereignis pro Richtung hinzu, jeweils mit einer **Move** → **Auf Gitter bewegen**-Aktion:
 
 | Ereignis | Move-Grid-Aktion |
 |---|---|
@@ -169,7 +169,7 @@ Fügen Sie ein **Key Press**-Ereignis pro Richtung hinzu, jeweils mit einer **Mo
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** bewegt die Instanz exakt eine Gitterzelle weit und erkennt
+**Auf Gitter bewegen** bewegt die Instanz exakt eine Gitterzelle weit und erkennt
 dabei selbstständig Kollisionen — es bewegt den Spieler nicht in eine
 solide `obj_wall` hinein, daher ist hier keine zusätzliche Wandprüfung nötig.
 
@@ -177,18 +177,18 @@ solide `obj_wall` hinein, daher ist hier keine zusätzliche Wandprüfung nötig.
 
 **Ereignis: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Bewegung stoppen**
 
 ### 6.3 Kisten schieben
 
 **Ereignis: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Steuerung** → **Wenn Schieben möglich**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** prüft, ob der Platz hinter der Kiste (in der Richtung, in
+**Wenn Schieben möglich** prüft, ob der Platz hinter der Kiste (in der Richtung, in
 die sich der Spieler bewegt) frei ist, und schiebt — falls ja — die Kiste
 um eine Zelle weiter und bewegt den Spieler an ihre bisherige Stelle,
 alles in einer einzigen Aktion. Ist der Platz hinter der Kiste durch eine
@@ -205,8 +205,8 @@ Wir brauchen einen unsichtbaren Controller, der überwacht, ob sich jede Kiste a
 1. Erstellen Sie ein neues Objekt mit dem Namen `obj_game_controller`
 2. Kein Sprite nötig
 
-**Ereignis: Create** — die Zielanzahl einmalig ermitteln, mit **Control** →
-**Execute Code** (die Execute-Code-Aktion dieses Projekts führt echtes
+**Ereignis: Create** — die Zielanzahl einmalig ermitteln, mit **Steuerung** →
+**Code ausführen** (die Execute-Code-Aktion dieses Projekts führt echtes
 Python aus, keine GameMaker Language — `self` ist die aktuelle Instanz,
 `game` ist der Game Runner):
 
@@ -233,14 +233,14 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 ```
 
 `self.restart_room_flag = True` löst denselben Room-Neustart aus, den auch
-die **Restart Room**-Aktion durchführt — die Hauptschleife prüft dieses
+die **Raum neu starten**-Aktion durchführt — die Hauptschleife prüft dieses
 Flag bei jedem Frame. Fügen Sie direkt nach dem Execute-Code-Block eine
-**Show Message**-Aktion (aus **Output**, Nachricht `Level Complete!`)
+**Nachricht anzeigen**-Aktion (aus **Output**, Nachricht `Level Complete!`)
 hinzu, wenn Sie vor dem Neustart ein Popup anzeigen möchten.
 
 **Ereignis: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Spiel** → **Text zeichnen**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -306,17 +306,17 @@ T = Ziel
 
 ### Zugzähler hinzufügen
 
-Fügen Sie im **Create**-Ereignis von `obj_game_controller` **Control** →
-**Set Variable** hinzu (Variable: `global.moves`, Value: `0`, Scope: `global`).
+Fügen Sie im **Erstellen**-Ereignis von `obj_game_controller` **Steuerung** →
+**Variable setzen** hinzu (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 Fügen Sie in jedem der vier Key-Press-Ereignisse von `obj_player` direkt
-nach Move Grid eine zweite Aktion hinzu: **Control** → **Set Variable**
-(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+nach Move Grid eine zweite Aktion hinzu: **Steuerung** → **Variable setzen**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativ**
 aktiviert) — dies addiert bei jedem Tastendruck 1 zum Zähler, unabhängig
 davon, ob die Bewegung tatsächlich durch eine Wand blockiert wurde.
 
-Fügen Sie im **Draw**-Ereignis von `obj_game_controller` **Draw** →
-**Draw Variable** hinzu (Variable: `global.moves`, X: `10`, Y: `30`).
+Fügen Sie im **Zeichnen**-Ereignis von `obj_game_controller` **Zeichnen** →
+**Variable zeichnen** hinzu (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Undo-Funktion hinzufügen
 
@@ -325,8 +325,8 @@ Speichern Sie vorherige Positionen und ermöglichen Sie es, mit Z den letzten Zu
 ### Mehrere Level hinzufügen
 
 Erstellen Sie weitere Rooms (`room_level2`, `room_level3` usw.) und
-verwenden Sie im Gewinnprüfungs-Codeblock die **Next Room**-Aktion
-(Kategorie Room) statt **Restart Room** (`self.next_room_flag = True`
+verwenden Sie im Gewinnprüfungs-Codeblock die **Nächster Raum**-Aktion
+(Kategorie Room) statt **Raum neu starten** (`self.next_room_flag = True`
 statt `self.restart_room_flag = True`), wenn ein Level abgeschlossen wird.
 
 ### Soundeffekte hinzufügen
@@ -344,7 +344,7 @@ Fügen Sie Sounds hinzu für:
 | Problem | Lösung |
 |---------|--------|
 | Spieler geht durch Wände | Prüfen Sie, ob `obj_wall` "Solid" aktiviert hat |
-| Kiste ändert die Farbe nicht | Prüfen Sie, ob die **If Collision**-Aktion im Step-Ereignis auf `obj_target` zielt |
+| Kiste ändert die Farbe nicht | Prüfen Sie, ob die **Wenn Kollision**-Aktion im Step-Ereignis auf `obj_target` zielt |
 | Kiste kann durch Wand geschoben werden | Kollisionserkennung vor dem Verschieben der Kiste prüfen |
 | Gewinnmeldung erscheint sofort | Stellen Sie sicher, dass Ziele getrennt von Kisten platziert sind |
 | Spieler bewegt sich mehrere Felder | Verwenden Sie das Keyboard-Press-Ereignis, nicht das Keyboard-Ereignis |

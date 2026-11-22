@@ -55,10 +55,10 @@ auf „Event hinzufügen", um eines hinzuzufügen.
 
 | Event | Wann es auslöst |
 |-------|------------------|
-| **Create** | Einmal, wenn eine Instanz erstellt wird |
-| **Destroy** | Wenn die Instanz zerstört wird |
-| **Step** | Bei jedem Spielframe (60-mal pro Sekunde) |
-| **Draw** | Während der Zeichenphase |
+| **Erstellen** | Einmal, wenn eine Instanz erstellt wird |
+| **Zerstören** | Wenn die Instanz zerstört wird |
+| **Schritt** | Bei jedem Spielframe (60-mal pro Sekunde) |
+| **Zeichnen** | Während der Zeichenphase |
 | **Alarm [0-11]** | Wenn ein Alarm-Timer null erreicht |
 
 ### Tastatur-Events
@@ -89,12 +89,12 @@ auf „Event hinzufügen", um eines hinzuzufügen.
 
 | Event | Wann es auslöst |
 |-------|------------------|
-| **Outside Room** | Wenn die Instanz den Room verlässt |
-| **Intersect Boundary** | Wenn die Instanz den Rand des Rooms berührt |
-| **Game Start** | Einmal, wenn das Spiel beginnt |
-| **Game End** | Einmal, wenn das Spiel beendet wird |
-| **Room Start** | Beim Betreten eines Rooms |
-| **Room End** | Beim Verlassen eines Rooms |
+| **Außerhalb des Raums** | Wenn die Instanz den Room verlässt |
+| **Raumgrenze berührt** | Wenn die Instanz den Rand des Rooms berührt |
+| **Spielstart** | Einmal, wenn das Spiel beginnt |
+| **Spielende** | Einmal, wenn das Spiel beendet wird |
+| **Raumstart** | Beim Betreten eines Rooms |
+| **Raumende** | Beim Verlassen eines Rooms |
 
 ---
 
@@ -106,52 +106,52 @@ Jedes Event kann mehrere Aktionen haben, die der Reihe nach ausgeführt werden.
 ### Bewegungs-Aktionen
 - **Geschwindigkeit setzen** — Bewegungsgeschwindigkeit festlegen
 - **Richtung setzen** — Bewegungsrichtung festlegen (0-360 Grad)
-- **Set Horizontal Speed** — hspeed festlegen
-- **Set Vertical Speed** — vspeed festlegen
+- **Horizontale Geschwindigkeit setzen** — hspeed festlegen
+- **Vertikale Geschwindigkeit setzen** — vspeed festlegen
 - **Zu Punkt bewegen** — Zu Koordinaten bewegen
 - **Jump to Position** — Sofort zu Koordinaten teleportieren
 - **Zur Startposition springen** — Zurück zur Erstellungsposition
 - **Zu zufälliger Position springen** — An eine zufällige Position teleportieren
 
 ### Instanz-Aktionen
-- **Create Instance** — Ein neues Objekt erzeugen
-- **Destroy Instance** — Die aktuelle Instanz entfernen
-- **Change Instance** — In einen anderen Objekttyp verwandeln
+- **Instanz erstellen** — Ein neues Objekt erzeugen
+- **Instanz zerstören** — Die aktuelle Instanz entfernen
+- **Instanz ändern** — In einen anderen Objekttyp verwandeln
 
 ### Zeitsteuerungs-Aktionen
-- **Set Alarm** — Einen Countdown-Timer starten
-- **Sleep** — Ausführung kurz pausieren
+- **Wecker stellen** — Einen Countdown-Timer starten
+- **Warten** — Ausführung kurz pausieren
 
 ### Zeichen-Aktionen
-- **Draw Sprite** — Ein Sprite zeichnen
-- **Draw Text** — Text auf dem Bildschirm anzeigen
-- **Draw Rectangle** — Ein gefülltes oder umrandetes Rechteck zeichnen
+- **Sprite zeichnen** — Ein Sprite zeichnen
+- **Text zeichnen** — Text auf dem Bildschirm anzeigen
+- **Rechteck zeichnen** — Ein gefülltes oder umrandetes Rechteck zeichnen
 - **Punkte zeichnen** — Den aktuellen Punktestand anzeigen
 - **Leben zeichnen** — Verbleibende Leben anzeigen
 - **Gesundheitsbalken zeichnen** — Gesundheitsbalken anzeigen
 
 ### Score/Leben/Gesundheit
-- **Set Score** — Punktestand ändern
-- **Set Lives** — Lebenszahl ändern
-- **Set Health** — Gesundheitswert ändern
+- **Punkte setzen** — Punktestand ändern
+- **Leben setzen** — Lebenszahl ändern
+- **Gesundheit setzen** — Gesundheitswert ändern
 - **Punkte testen** — Punktestand-Bedingung prüfen
 - **Leben testen** — Lebenszahl-Bedingung prüfen
 - **Gesundheit testen** — Gesundheits-Bedingung prüfen
 
 ### Room-Aktionen
-- **Next Room** — Zum nächsten Room gehen
-- **Previous Room** — Zum vorherigen Room gehen
-- **Restart Room** — Den aktuellen Room zurücksetzen
-- **Go to Room** — Zu einem bestimmten Room springen
+- **Nächster Raum** — Zum nächsten Room gehen
+- **Vorheriger Raum** — Zum vorherigen Room gehen
+- **Raum neu starten** — Den aktuellen Room zurücksetzen
+- **Zu Raum gehen** — Zu einem bestimmten Room springen
 
 ### Sound-Aktionen
-- **Play Sound** — Einen Soundeffekt abspielen
-- **Stop Sound** — Einen abgespielten Sound stoppen
-- **Play Music** — Hintergrundmusik abspielen
-- **Stop Music** — Hintergrundmusik stoppen
+- **Klang abspielen** — Einen Soundeffekt abspielen
+- **Klang stoppen** — Einen abgespielten Sound stoppen
+- **Musik abspielen** — Hintergrundmusik abspielen
+- **Musik stoppen** — Hintergrundmusik stoppen
 
 ### Variablen-Aktionen
-- **Set Variable** — Einer Variable einen Wert zuweisen
+- **Variable setzen** — Einer Variable einen Wert zuweisen
 - **Variable testen** — Eine Variablen-Bedingung prüfen
 
 ---
@@ -183,7 +183,7 @@ Siehe [[Visuelle_Programmierung_de]] für weitere Details.
 - Zerstören Sie Instanzen, die den Room verlassen
 
 ### Fehlersuche
-- Verwenden Sie die Aktion **Show Message**, um Werte anzuzeigen
+- Verwenden Sie die Aktion **Nachricht anzeigen**, um Werte anzuzeigen
 - Prüfen Sie die Konsolenausgabe auf Fehler
 - Testen Sie häufig während der Entwicklung
 

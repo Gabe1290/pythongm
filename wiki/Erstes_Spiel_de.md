@@ -59,15 +59,15 @@ In diesem Tutorial erstellen wir ein einfaches Spiel „Sterne fangen", bei dem 
 
 **Pfeiltaste links:**
 1. Klicken Sie auf **Add Event** > **Keyboard** > **Left**
-2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `-4`
+2. Aktion hinzufügen: **Horizontale Geschwindigkeit setzen** mit Wert `-4`
 
 **Pfeiltaste rechts:**
 1. Klicken Sie auf **Add Event** > **Keyboard** > **Right**
-2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `4`
+2. Aktion hinzufügen: **Horizontale Geschwindigkeit setzen** mit Wert `4`
 
 **Keine Taste gedrückt:**
 1. Klicken Sie auf **Add Event** > **Keyboard** > **No Key**
-2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `0`
+2. Aktion hinzufügen: **Horizontale Geschwindigkeit setzen** mit Wert `0`
 
 ---
 
@@ -78,23 +78,23 @@ In diesem Tutorial erstellen wir ein einfaches Spiel „Sterne fangen", bei dem 
 3. Setzen Sie das **Sprite** auf `spr_star`
 
 ### Create-Event hinzufügen
-1. Klicken Sie auf **Add Event** > **Create**
-2. Aktion hinzufügen: **Set Vertical Speed** mit Wert `3`
-3. Aktion hinzufügen: **Jump To Position** mit X `irandom(600)`, Y `20` —
+1. Klicken Sie auf **Add Event** > **Erstellen**
+2. Aktion hinzufügen: **Vertikale Geschwindigkeit setzen** mit Wert `3`
+3. Aktion hinzufügen: **Zu Position springen** mit X `irandom(600)`, Y `20` —
    `irandom(n)` wählt eine zufällige ganze Zahl von 0 bis `n`, sodass der
    Stern bei jedem (Wieder-)Erscheinen an einer zufälligen Stelle nahe dem
    oberen Rand eines 640 Pixel breiten Raums platziert wird
 
 ### Outside-Room-Event hinzufügen
-1. Klicken Sie auf **Add Event** > **Other** > **Outside Room**
-2. Aktion hinzufügen: **Jump to Start Position**
-3. Aktion hinzufügen: **Set Score** mit Wert `1` und aktiviertem **Relative**
+1. Klicken Sie auf **Add Event** > **Other** > **Außerhalb des Raums**
+2. Aktion hinzufügen: **Zur Startposition springen**
+3. Aktion hinzufügen: **Punkte setzen** mit Wert `1` und aktiviertem **Relativ**
 
 ### Kollision mit dem Spieler hinzufügen
 1. Klicken Sie auf **Add Event** > **Collision** > wählen Sie `obj_player`
-2. Aktion hinzufügen: **Set Score** mit Wert `10` und aktiviertem **Relative**
-3. Aktion hinzufügen: **Play Sound** (optional, falls Sie einen Sound haben)
-4. Aktion hinzufügen: **Jump to Random Position**
+2. Aktion hinzufügen: **Punkte setzen** mit Wert `10` und aktiviertem **Relativ**
+3. Aktion hinzufügen: **Klang abspielen** (optional, falls Sie einen Sound haben)
+4. Aktion hinzufügen: **Zu zufälliger Position springen**
 
 ---
 
@@ -115,8 +115,8 @@ In diesem Tutorial erstellen wir ein einfaches Spiel „Sterne fangen", bei dem 
 ## Schritt 7: Den Punktestand anzeigen
 
 1. Öffnen Sie `obj_player`
-2. Klicken Sie auf **Add Event** > **Draw**
-3. Aktion hinzufügen: **Draw Score** an Position (10, 10)
+2. Klicken Sie auf **Add Event** > **Zeichnen**
+3. Aktion hinzufügen: **Punkte zeichnen** an Position (10, 10)
 
 ---
 
@@ -136,11 +136,11 @@ In diesem Tutorial erstellen wir ein einfaches Spiel „Sterne fangen", bei dem 
 
 ### Levels hinzufügen
 1. Erstellen Sie mehrere Räume
-2. Verwenden Sie die Aktion **Next Room**, wenn der Punktestand einen Schwellenwert erreicht
+2. Verwenden Sie die Aktion **Nächster Raum**, wenn der Punktestand einen Schwellenwert erreicht
 
 ### Sound hinzufügen
 1. Importieren Sie Audiodateien in die Sounds-Ressource
-2. Fügen Sie Events die Aktion **Play Sound** hinzu
+2. Fügen Sie Events die Aktion **Klang abspielen** hinzu
 
 ### Visuelle Programmierung verwenden
 1. Öffnen Sie ein Objekt

@@ -259,7 +259,7 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
 
 **Ereignis: Zeichnen**
 1. Ereignis hinzufügen → Zeichnen
-2. Aktion hinzufügen: **Zeichnen** → **Text zeichnen**
+2. Aktion hinzufügen: **Spiel** → **Text zeichnen**
    - Text: `Spieler 1:`
    - X: `10`
    - Y: `10`
@@ -267,7 +267,7 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
    - Variable: `global.p1score`
    - X: `100`
    - Y: `10`
-4. Aktion hinzufügen: **Zeichnen** → **Text zeichnen**
+4. Aktion hinzufügen: **Spiel** → **Text zeichnen**
    - Text: `Spieler 2:`
    - X: `10`
    - Y: `30`

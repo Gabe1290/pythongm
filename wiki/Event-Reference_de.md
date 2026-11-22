@@ -22,9 +22,9 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielverhalten zu erstellen
 (bestätigt gegen die Hauptschleife in `runtime/game_runner.py`):
 
-1. **Begin Step** — Anfang des Frames
-2. **Alarm** — Alle ausgelösten Alarme zählen herunter und lösen aus
-3. **Step** (und **Keyboard (gehalten)**) — Haupt-Spiellogik, danach kontinuierliche
+1. **Schrittbeginn** — Anfang des Frames
+2. **Wecker** — Alle ausgelösten Alarme zählen herunter und lösen aus
+3. **Schritt** (und **Keyboard (gehalten)**) — Haupt-Spiellogik, danach kontinuierliche
    Tastenprüfungen für dieselbe Instanz
 4. **Keyboard Press/Release, Mouse** — Für diesen Frame angesammelte Eingabeereignisse
    werden verarbeitet (das geschieht *nach* Step, nicht davor — Code im Step-Ereignis
@@ -32,8 +32,8 @@ Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielve
    solche, die während des Frames gedrückt wurden)
 5. **Bewegung, dann Kollision** — Physik (Schwerkraft/Reibung/hspeed/vspeed) wird
    angewendet, dann werden Kollisionen erkannt und ihre Ereignisse ausgelöst
-6. **End Step** (und **Destroy**) — Nach den Kollisionen
-7. **Draw** — Renderphase
+6. **Schrittende** (und **Zerstören**) — Nach den Kollisionen
+7. **Zeichnen** — Renderphase
 
 ---
 

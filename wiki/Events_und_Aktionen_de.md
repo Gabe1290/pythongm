@@ -24,9 +24,9 @@ Dies ist eine vollständige Referenz aller Events und Aktionen, die in PyGameMak
 
 | Event | Wann |
 |-----------|-------|
-| **Step** | Bei jedem Frame (60-mal pro Sekunde) |
-| **Begin Step** | Vor den Kollisionsprüfungen |
-| **End Step** | Nach allen anderen Events |
+| **Schritt** | Bei jedem Frame (60-mal pro Sekunde) |
+| **Schrittbeginn** | Vor den Kollisionsprüfungen |
+| **Schrittende** | Nach allen anderen Events |
 
 ### Alarm-Events
 
@@ -73,22 +73,22 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 
 | Event | Wann |
 |-----------|-------|
-| **Outside Room** | Die Instanz ist vollständig außerhalb des Rooms |
-| **Intersect Boundary** | Die Instanz berührt den Rand des Rooms |
-| **Game Start** | Das Spiel startet (erster Room geladen) |
-| **Game End** | Das Spiel wird beendet |
-| **Room Start** | Beim Betreten eines Rooms |
-| **Room End** | Beim Verlassen eines Rooms |
-| **No More Lives** | Die Leben erreichen 0 |
-| **No More Health** | Die Gesundheit erreicht 0 |
-| **Animation End** | Die Sprite-Animation ist abgeschlossen |
+| **Außerhalb des Raums** | Die Instanz ist vollständig außerhalb des Rooms |
+| **Raumgrenze berührt** | Die Instanz berührt den Rand des Rooms |
+| **Spielstart** | Das Spiel startet (erster Room geladen) |
+| **Spielende** | Das Spiel wird beendet |
+| **Raumstart** | Beim Betreten eines Rooms |
+| **Raumende** | Beim Verlassen eines Rooms |
+| **Keine Leben mehr** | Die Leben erreichen 0 |
+| **Keine Gesundheit mehr** | Die Gesundheit erreicht 0 |
+| **Animationsende** | Die Sprite-Animation ist abgeschlossen |
 
 ### Draw-Events
 
 | Event | Wann |
 |-----------|-------|
-| **Draw** | Während der Renderphase |
-| **Draw GUI** | Nach dem Zeichnen des Rooms (Bildschirmraum) |
+| **Zeichnen** | Während der Renderphase |
+| **GUI zeichnen** | Nach dem Zeichnen des Rooms (Bildschirmraum) |
 
 ---
 
@@ -100,13 +100,13 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 |--------|-------------|------------|
 | **Geschwindigkeit setzen** | Bewegungsgeschwindigkeit festlegen | Geschwindigkeit, relativ |
 | **Richtung setzen** | Richtung festlegen | Richtung (0-360), relativ |
-| **Set Horizontal Speed** | hspeed festlegen | hspeed, relativ |
-| **Set Vertical Speed** | vspeed festlegen | vspeed, relativ |
-| **Set Gravity** | Schwerkraft festlegen | gravity, direction |
-| **Set Friction** | Reibung festlegen | friction |
+| **Horizontale Geschwindigkeit setzen** | hspeed festlegen | hspeed, relativ |
+| **Vertikale Geschwindigkeit setzen** | vspeed festlegen | vspeed, relativ |
+| **Schwerkraft setzen** | Schwerkraft festlegen | gravity, direction |
+| **Reibung setzen** | Reibung festlegen | friction |
 | **Zu Punkt bewegen** | Zu Koordinaten bewegen | x, y, Geschwindigkeit |
 | **Losbewegen (Richtung)** | In eine Richtung bewegen | direction, Geschwindigkeit |
-| **Jump To Position** | Zu Koordinaten teleportieren | x, y, relativ |
+| **Zu Position springen** | Zu Koordinaten teleportieren | x, y, relativ |
 | **Zur Startposition springen** | Zurück zur Erstellungsposition | - |
 | **Zu zufälliger Position springen** | Teleportation an eine vollständig zufällige Position (beide Achsen; am Gitter ausrichtbar) | snap_h, snap_v |
 | **Abprallen** | Von soliden Objekten abprallen | precise |
@@ -115,25 +115,25 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Create Instance** | Neues Objekt erzeugen | object, x, y, relativ |
-| **Create Moving Instance** | Mit Geschwindigkeit erzeugen | object, x, y, speed, direction |
-| **Destroy Instance** | Instanz entfernen | - |
-| **Change Instance** | In ein anderes Objekt verwandeln | object, perform_events |
+| **Instanz erstellen** | Neues Objekt erzeugen | object, x, y, relativ |
+| **Bewegte Instanz erstellen** | Mit Geschwindigkeit erzeugen | object, x, y, speed, direction |
+| **Instanz zerstören** | Instanz entfernen | - |
+| **Instanz ändern** | In ein anderes Objekt verwandeln | object, perform_events |
 
 ### Zeitsteuerungs-Aktionen
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Set Alarm** | Countdown starten | alarm_number, steps |
-| **Sleep** | Ausführung pausieren | Millisekunden |
+| **Wecker stellen** | Countdown starten | alarm_number, steps |
+| **Warten** | Ausführung pausieren | Millisekunden |
 
 ### Score/Leben/Gesundheit-Aktionen
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Set Score** | Score ändern | value, relativ |
-| **Set Lives** | Leben ändern | value, relativ |
-| **Set Health** | Gesundheit ändern | value, relativ |
+| **Punkte setzen** | Score ändern | value, relativ |
+| **Leben setzen** | Leben ändern | value, relativ |
+| **Gesundheit setzen** | Gesundheit ändern | value, relativ |
 | **Punkte zeichnen** | Score anzeigen | x, y, caption |
 | **Leben zeichnen** | Leben als wiederholte Sprite-Bilder anzeigen | x, y, sprite, scale, tiled |
 | **Gesundheitsbalken zeichnen** | Gesundheit als zweifarbigen Balken anzeigen | x1, y1, x2, y2, back_color, bar_color |
@@ -142,11 +142,11 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Draw Sprite** | Sprite zeichnen | sprite, x, y, subimage |
-| **Draw Text** | Text anzeigen | x, y, text |
-| **Draw Rectangle** | Rechteck zeichnen | x1, y1, x2, y2, filled |
-| **Draw Circle** | Kreis zeichnen | x, y, radius, filled |
-| **Draw Line** | Linie zeichnen | x1, y1, x2, y2 |
+| **Sprite zeichnen** | Sprite zeichnen | sprite, x, y, subimage |
+| **Text zeichnen** | Text anzeigen | x, y, text |
+| **Rechteck zeichnen** | Rechteck zeichnen | x1, y1, x2, y2, filled |
+| **Kreis zeichnen** | Kreis zeichnen | x, y, radius, filled |
+| **Linie zeichnen** | Linie zeichnen | x1, y1, x2, y2 |
 | **Zeichenfarbe festlegen** | Farbe für nachfolgende Draw Text/Draw Rectangle/etc. festlegen | color |
 | **Farbe setzen** | Farbton und Transparenz eines Sprites festlegen (nicht die Zeichenfarbe oben) | color, alpha |
 | **Zeichenschrift festlegen** | Schrift und Ausrichtung für den nächsten Textzeichenvorgang festlegen | font, halign, valign |
@@ -155,28 +155,28 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Next Room** | Zum nächsten Room gehen | transition |
-| **Previous Room** | Zum vorherigen Room gehen | transition |
-| **Restart Room** | Room zurücksetzen | - |
-| **Go to Room** | Zu einem bestimmten Room springen | room, transition |
-| **If Next Room Exists** | Prüfen, ob ein nächster Room existiert | - |
-| **If Previous Room Exists** | Prüfen, ob ein vorheriger Room existiert | - |
+| **Nächster Raum** | Zum nächsten Room gehen | transition |
+| **Vorheriger Raum** | Zum vorherigen Room gehen | transition |
+| **Raum neu starten** | Room zurücksetzen | - |
+| **Zu Raum gehen** | Zu einem bestimmten Room springen | room, transition |
+| **Wenn nächster Raum existiert** | Prüfen, ob ein nächster Room existiert | - |
+| **Wenn vorheriger Raum existiert** | Prüfen, ob ein vorheriger Room existiert | - |
 
 ### Sound-Aktionen
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Play Sound** | Soundeffekt abspielen | sound, loop |
-| **Stop Sound** | Sound stoppen | sound |
-| **Check Sound Playing** | Prüfen, ob ein Sound abgespielt wird | sound |
-| **Play Music** | Hintergrundmusik abspielen | music, loop |
-| **Stop Music** | Alle Musik stoppen | - |
+| **Klang abspielen** | Soundeffekt abspielen | sound, loop |
+| **Klang stoppen** | Sound stoppen | sound |
+| **Klangwiedergabe prüfen** | Prüfen, ob ein Sound abgespielt wird | sound |
+| **Musik abspielen** | Hintergrundmusik abspielen | music, loop |
+| **Musik stoppen** | Alle Musik stoppen | - |
 
 ### Variablen-Aktionen
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Set Variable** | Wert zuweisen | variable, value, relativ |
+| **Variable setzen** | Wert zuweisen | variable, value, relativ |
 | **Variable testen** | Wert prüfen | variable, value, operation |
 | **Variable zeichnen** | Variable anzeigen | x, y, variable |
 
@@ -186,18 +186,18 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 |--------|-------------|------------|
 | **Ausdruck testen** | Bedingungsprüfung (ein boolescher Python-Ausdruck) | expression |
 | **Sonst** | Alternativer Zweig | - |
-| **Start Block** | Aktionsgruppe beginnen | - |
-| **End Block** | Aktionsgruppe beenden | - |
-| **Repeat** | N-mal wiederholen | count |
-| **Exit Event** | Aktuelles Event stoppen | - |
+| **Block beginnen** | Aktionsgruppe beginnen | - |
+| **Block beenden** | Aktionsgruppe beenden | - |
+| **Wiederholen** | N-mal wiederholen | count |
+| **Ereignis verlassen** | Aktuelles Event stoppen | - |
 
 ### Sonstige Aktionen
 
 | Aktion | Beschreibung | Parameter |
 |--------|-------------|------------|
-| **Show Message** | Popup-Nachricht anzeigen | message |
-| **Restart Game** | Spiel neu starten | - |
-| **End Game** | Spiel schließen | - |
+| **Nachricht anzeigen** | Popup-Nachricht anzeigen | message |
+| **Spiel neu starten** | Spiel neu starten | - |
+| **Spiel beenden** | Spiel schließen | - |
 
 ---
 
