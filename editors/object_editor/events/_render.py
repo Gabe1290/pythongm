@@ -14,6 +14,7 @@ from PySide6.QtGui import QBrush, QColor
 from PySide6.QtCore import Qt
 
 from events.event_types import get_event_type
+from core.ui_names import action_label, event_label
 
 from ._action_lookup import get_action_type
 from ..object_actions_formatter import ActionParametersFormatter
@@ -52,7 +53,7 @@ class RenderMixin:
         else:
             action_type = get_action_type(action_name)
             if action_type:
-                action_item.setText(0, f"{indent}{action_type.icon} {self.tr(action_type.display_name)}")
+                action_item.setText(0, f"{indent}{action_type.icon} {action_label(action_type, self.tr)}")
             else:
                 # Unrecognized action — either a disabled/not-installed
                 # extension's action, or a genuine typo/stale name. Never
@@ -150,7 +151,7 @@ class RenderMixin:
                     continue
 
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
+                event_item.setText(0, f"{event_type.icon} {event_label(event_type, self.tr)}")
                 event_item.setData(0, Qt.UserRole, event_name)
 
                 total_actions = sum(len(sub_data.get("actions", [])) for key, sub_data in event_data.items() if key != "actions" and isinstance(sub_data, dict))
@@ -201,7 +202,7 @@ class RenderMixin:
                     continue
 
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
+                event_item.setText(0, f"{event_type.icon} {event_label(event_type, self.tr)}")
                 event_item.setData(0, Qt.UserRole, event_name)
 
                 total_actions = sum(len(sub_data.get("actions", [])) for key, sub_data in event_data.items() if key != "actions" and isinstance(sub_data, dict))
@@ -250,7 +251,7 @@ class RenderMixin:
                     continue
 
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
+                event_item.setText(0, f"{event_type.icon} {event_label(event_type, self.tr)}")
                 event_item.setText(1, f"{len(event_data.get('actions', []))} actions")
                 event_item.setData(0, Qt.UserRole, event_name)
 

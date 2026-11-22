@@ -145,12 +145,28 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
   and the raycast handouts (11, 12, 14) all say « Activer la vue Raycast », so the wiki's wording stays
   and the `.ts` one goes. Found for U4: `config/blockly_generated_block_i18n.py` already holds 119
   French parameter labels (`PARAM_LABEL_TRANSLATIONS`) for the generated Blockly blocks -- reuse them.
-- [ ] **U3 — Show it.** One helper (`ui_name`, then `tr()`, then English — the `_name` pattern of
+- [x] **U3 — Show it.** One helper (`ui_name`, then `tr()`, then English — the `_name` pattern of
   `gm80_action_dialog.py`) at every U0 display site; choice combos show the translation with the
   English value as item data, select by data, save the data. Real-widget tests in French and Japanese
   (the panel tree, both menus, the configure dialog); **every choice parameter of every action opened
   in French and saved returns the same value**; a sample project opened and saved in French is
   byte-identical.
+  *Done 2026-11-22:* `core/ui_names.py` gained `action_label`, `action_description_label`,
+  `event_label`, `param_label`, `category_label`, `choice_label` (core table by key/English → an
+  extension's English-keyed table → the `tr` passed in → English). Used in `_render.py` (actions,
+  events), `_event_crud.py` (Add Event menu, 7 sites), `_context_menu.py` (Add Action menus and
+  categories, 8), `conditional_editor.py` (3) and `action_editor.py` (title, description, parameter
+  labels, menus, the nested list, multi-choice boxes). Choice combos (`choice` params and the editable
+  object combos' `any`/`solid`) now show `choice_label` with the English value as item data
+  (`_add_choices` / `_select_value` / `_combo_value`; a typed object name is still saved as typed).
+  Tests: `tests/test_core_names_display.py` -- French dialog title and panel row; **every choice of
+  every action opened in French and saved comes back unchanged** (>100 values); a translated choice is
+  shown translated and saved in English; English unchanged. `test_action_text_is_translatable.py`
+  now accepts the helpers and pins (`test_core_helpers_fall_back_to_tr`) that each falls back to `tr`.
+  The Japanese widget check moves to U6 (no Japanese table yet). **Not in scope, recorded:** the
+  panel's second column (`object_actions_formatter.py`) is a code-like `key=value` summary with a few
+  hard-coded English words (`with:`, `then:`, `push …?`); translating it is a separate follow-up (U9
+  puts it in TODO.md).
 - [ ] **U4 — Fill the 8 wiki languages' gaps.** Parameter labels (246), event names (23), choice words
   (~60), the 7–23 missing actions and their parameter descriptions; one commit per language
   (fr, de, es, it, pt, ru, sl, uk). Guard test: every kind complete in every language.

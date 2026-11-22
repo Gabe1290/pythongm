@@ -23,6 +23,7 @@ from PySide6.QtWidgets import QMenu
 from PySide6.QtCore import Qt
 
 from events.action_types import get_actions_by_category
+from core.ui_names import action_label, category_label
 from core.ide_extension_points import apply_add_action_menu_contributions
 
 
@@ -48,10 +49,10 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(panel.tr(category))
+                category_menu = add_action_menu.addMenu(category_label(category, panel.tr))
 
                 for action_type in actions:
-                    action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
+                    action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, panel.tr)}")
                     action_item.triggered.connect(
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_collision_event(e, a)
                     )
@@ -69,10 +70,10 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(panel.tr(category))
+                category_menu = add_action_menu.addMenu(category_label(category, panel.tr))
 
                 for action_type in actions:
-                    action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
+                    action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, panel.tr)}")
                     action_item.triggered.connect(
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_mouse_event(e, a)
                     )
@@ -114,10 +115,10 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(panel.tr(category))
+                category_menu = add_action_menu.addMenu(category_label(category, panel.tr))
 
                 for action_type in actions:
-                    action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
+                    action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, panel.tr)}")
                     action_item.triggered.connect(
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_event(e, a)
                     )
@@ -148,10 +149,10 @@ def build_context_menu(panel, position):
 
                 actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
                 for category, actions in actions_by_category.items():
-                    category_menu = add_action_menu.addMenu(panel.tr(category))
+                    category_menu = add_action_menu.addMenu(category_label(category, panel.tr))
 
                     for action_type in actions:
-                        action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
+                        action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, panel.tr)}")
                         action_item.triggered.connect(
                             lambda checked, e=event_name, k=sub_event_key, a=action_type.name:
                             panel.add_action_to_sub_event(e, k, a)

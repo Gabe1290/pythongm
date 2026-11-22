@@ -24,6 +24,7 @@ from PySide6.QtWidgets import QMessageBox, QMenu, QDialog, QTreeWidgetItem
 from PySide6.QtCore import Qt
 
 from events.event_types import get_available_events
+from core.ui_names import event_label
 from core.ide_extension_points import (
     get_add_event_menu_contributions, owned_event_names,
     apply_add_event_menu_contributions,
@@ -87,22 +88,22 @@ class EventCrudMixin:
 
             elif event_type.name == "keyboard_no_key":
                 # No Key event - no key selector needed, stored under keyboard > nokey
-                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                action = menu.addAction(f"{event_type.icon} {event_label(event_type, self.tr)}")
                 action.triggered.connect(lambda checked: self.add_keyboard_no_key_event())
 
             elif event_type.name in ["keyboard", "keyboard_press", "keyboard_release"]:
                 # New keyboard events with key selector
-                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}...")
+                action = menu.addAction(f"{event_type.icon} {event_label(event_type, self.tr)}...")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_keyboard_event_with_selector(name))
 
             elif event_type.name == "mouse":
                 # Mouse event with event selector
-                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}...")
+                action = menu.addAction(f"{event_type.icon} {event_label(event_type, self.tr)}...")
                 action.triggered.connect(lambda checked: self.add_mouse_event_with_selector())
 
             elif event_type.name == "alarm":
                 # Alarm event with alarm number selector (0-11)
-                alarm_menu = menu.addMenu(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                alarm_menu = menu.addMenu(f"{event_type.icon} {event_label(event_type, self.tr)}")
                 for alarm_num in range(12):
                     alarm_action = alarm_menu.addAction(f"⏰ {self.tr('Alarm')} {alarm_num}")
                     alarm_action.triggered.connect(
@@ -117,7 +118,7 @@ class EventCrudMixin:
                 )
 
                 if has_sub_events:
-                    sub_menu = menu.addMenu(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                    sub_menu = menu.addMenu(f"{event_type.icon} {event_label(event_type, self.tr)}")
                     sub_event_param = next(
                         (p for p in event_type.parameters
                         if isinstance(p, dict) and p.get("type") == "sub_events"),
@@ -139,11 +140,11 @@ class EventCrudMixin:
                                 lambda checked, name=event_type.name, k=key: self.add_sub_event(name, k)
                             )
                 else:
-                    action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                    action = menu.addAction(f"{event_type.icon} {event_label(event_type, self.tr)}")
                     action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
             else:
                 # Regular events
-                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                action = menu.addAction(f"{event_type.icon} {event_label(event_type, self.tr)}")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
 
         # --- Registered contributions (e.g. Thymio's events submenu) ---

@@ -65,3 +65,60 @@ def clear_ui_translations() -> None:
     global _CORE_LOADED
     _TABLES.clear()
     _CORE_LOADED = False
+
+
+# --------------------------------------------------------------------------- #
+# Display helpers for the Standard events panel and the action dialogs
+# (docs/CORE_NAMES_I18N_PLAN.md, U3). Each looks in the core table (keyed by action/event KEY, or by
+# English text), then in an extension's English-keyed table, then asks ``tr`` (the Qt catalogue,
+# which still holds some of these names -- D6), then gives the English text back.
+# --------------------------------------------------------------------------- #
+
+def _lookup(kind: str, key, lang: str):
+    if lang == "en" or not isinstance(key, str) or not key:
+        return None
+    _ensure_core()
+    return _TABLES.get(kind, {}).get(key, {}).get(lang)
+
+
+def _translated(core_kind: str, core_key, ext_kind: str, english, tr=None, lang: Optional[str] = None):
+    if not isinstance(english, str) or not english:
+        return english
+    lang = lang or _current_language()
+    text = _lookup(core_kind, core_key, lang) or _lookup(ext_kind, english, lang)
+    if text:
+        return text
+    return tr(english) if tr else english
+
+
+def action_label(action_type, tr=None, lang: Optional[str] = None) -> str:
+    """An action's name as the editor shows it."""
+    english = getattr(action_type, "display_name", "") or getattr(action_type, "name", "")
+    return _translated("core.action", getattr(action_type, "name", None), "action", english, tr, lang)
+
+
+def action_description_label(action_type, tr=None, lang: Optional[str] = None) -> str:
+    return _translated("core.action_description", getattr(action_type, "name", None), "action_description",
+                       getattr(action_type, "description", "") or "", tr, lang)
+
+
+def event_label(event_type, tr=None, lang: Optional[str] = None) -> str:
+    """An event's name as the editor shows it."""
+    english = getattr(event_type, "display_name", "") or getattr(event_type, "name", "")
+    return _translated("core.event", getattr(event_type, "name", None), "event", english, tr, lang)
+
+
+def param_label(param, tr=None, lang: Optional[str] = None) -> str:
+    """A parameter's label (``Speed``), keyed by its English text."""
+    english = getattr(param, "display_name", "") or getattr(param, "name", "")
+    return _translated("core.param", english, "param", english, tr, lang)
+
+
+def category_label(category, tr=None, lang: Optional[str] = None) -> str:
+    return _translated("core.category", category, "category", category, tr, lang)
+
+
+def choice_label(value, tr=None, lang: Optional[str] = None) -> str:
+    """A drop-down value as shown; the project still stores ``value`` itself."""
+    text = str(value)
+    return _translated("core.choice", text, "choice", text, tr, lang)

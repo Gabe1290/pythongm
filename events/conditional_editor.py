@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 
 from events.action_types import get_action_type, get_actions_by_category
+from core.ui_names import action_label, category_label
 from events.action_editor import ActionConfigDialog
 
 
@@ -564,7 +565,7 @@ class ConditionalActionEditor(QDialog):
         list row index always equals the data index (L19)."""
         action_type = get_action_type(action_data.get("action", ""))
         if action_type:
-            display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
+            display_text = f"{action_type.icon} {action_label(action_type, self.tr)}"
         else:
             display_text = f"❓ {self.tr('unknown')}: {action_data.get('action', '')}"
         params = action_data.get("parameters", {})
@@ -612,10 +613,10 @@ class ConditionalActionEditor(QDialog):
         actions_by_category = get_actions_by_category(project_data=self._find_project_data())
 
         for category, actions in actions_by_category.items():
-            category_menu = menu.addMenu(self.tr(category))
+            category_menu = menu.addMenu(category_label(category, self.tr))
 
             for action_type in actions:
-                action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
+                action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, self.tr)}")
                 action_item.triggered.connect(
                     lambda checked, at=action_type, lt=list_type: self.configure_and_add_action(at, lt)
                 )

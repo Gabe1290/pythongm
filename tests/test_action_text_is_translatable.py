@@ -41,12 +41,25 @@ DISPLAY_SITES = [
 # test_name_helper_falls_back_to_tr pins that fallback so _name cannot become a loophole.
 TRANSLATING = {"tr", "_name"}
 
+# core/ui_names display helpers (docs/CORE_NAMES_I18N_PLAN.md U3): they take the whole ActionType /
+# parameter and show the attribute named here, looked up in config/ui_names and otherwise passed to
+# the tr they are given -- test_core_helpers_fall_back_to_tr pins that, so they cannot become a loophole.
+HELPERS = {"action_label": "display_name", "event_label": "display_name", "param_label": "display_name",
+           "action_description_label": "description"}
+
+
+def _call_name(func):
+    return func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else ""
+
 
 def _tr_wrapped_attributes(path):
     """Attribute names appearing as `<something>.tr(X.attr)` (or `._name(..., X.attr)`) in the file."""
     tree = ast.parse((REPO_ROOT / path).read_text(encoding="utf-8"))
     wrapped = set()
     for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and _call_name(node.func) in HELPERS:
+            wrapped.add(HELPERS[_call_name(node.func)])
+            continue
         if not (isinstance(node, ast.Call)
                 and isinstance(node.func, ast.Attribute)
                 and node.func.attr in TRANSLATING):
@@ -76,8 +89,7 @@ def _bare_display_calls(path, attr):
             has_attr = any(isinstance(i, ast.Attribute) and i.attr == attr
                            for i in ast.walk(arg))
             has_tr = any(isinstance(i, ast.Call)
-                         and isinstance(i.func, ast.Attribute)
-                         and i.func.attr in TRANSLATING
+                         and _call_name(i.func) in TRANSLATING | set(HELPERS)
                          for i in ast.walk(arg))
             if has_attr and not has_tr:
                 offenders.append((name, node.lineno))
@@ -130,3 +142,18 @@ def test_name_helper_falls_back_to_tr():
     helper = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "_name")
     calls = [c for c in ast.walk(helper) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)]
     assert any(c.func.attr == "tr" and isinstance(c.func.value, ast.Name) and c.func.value.id == "self" for c in calls)
+
+
+def test_core_helpers_fall_back_to_tr():
+    """With no table entry, every core/ui_names helper hands the English text to the tr it is given."""
+    from types import SimpleNamespace
+    from core.ui_names import (action_description_label, action_label, category_label, choice_label,
+                               event_label, param_label)
+    tr = "TR:{}".format
+    thing = SimpleNamespace(name="no_such_key", display_name="No Such Name", description="No such text")
+    assert action_label(thing, tr, lang="fr") == "TR:No Such Name"
+    assert event_label(thing, tr, lang="fr") == "TR:No Such Name"
+    assert param_label(thing, tr, lang="fr") == "TR:No Such Name"
+    assert action_description_label(thing, tr, lang="fr") == "TR:No such text"
+    assert category_label("No Such Category", tr, lang="fr") == "TR:No Such Category"
+    assert choice_label("no_such_choice", tr, lang="fr") == "TR:no_such_choice"

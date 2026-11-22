@@ -15,6 +15,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor, QKeySequence, QShortcut
 
 from core.logger import get_logger
+from core.ui_names import (action_description_label, action_label, category_label,
+                             choice_label, param_label)
 logger = get_logger(__name__)
 
 from .action_types import ActionType
@@ -54,7 +56,7 @@ class ActionConfigDialog(QDialog):
                     base_param = key[:-len("_translations")]
                     self.message_translations[base_param] = dict(val)
 
-        self.setWindowTitle(self.tr("Configure {0}").format(self.tr(action_type.display_name)))
+        self.setWindowTitle(self.tr("Configure {0}").format(action_label(action_type, self.tr)))
         self.setModal(True)
         self.resize(500, 400)
 
@@ -90,7 +92,7 @@ class ActionConfigDialog(QDialog):
         outer.addWidget(self._form_scroll)
 
         # Action info
-        title_label = QLabel(f"{self.action_type.icon} {self.tr(self.action_type.display_name)}")
+        title_label = QLabel(f"{self.action_type.icon} {action_label(self.action_type, self.tr)}")
         title_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(title_label)
 
@@ -102,7 +104,7 @@ class ActionConfigDialog(QDialog):
             # appear in any .ts catalogue: there was nothing for lrelease to
             # collect. Same failure family as the self.ide context and the
             # self.tr(f"...") f-strings.
-            desc_label = QLabel(self.tr(self.action_type.description))
+            desc_label = QLabel(action_description_label(self.action_type, self.tr))
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet("color: #666; font-style: italic;")
             layout.addWidget(desc_label)
@@ -124,7 +126,7 @@ class ActionConfigDialog(QDialog):
         for param in self.action_type.parameters:
             param_layout = QHBoxLayout()
 
-            label = QLabel(f"{self.tr(param.display_name)}:")
+            label = QLabel(f"{param_label(param, self.tr)}:")
             label.setMinimumWidth(120)
             param_layout.addWidget(label)
 
@@ -133,9 +135,8 @@ class ActionConfigDialog(QDialog):
                 widget = QComboBox()
                 widget.setEditable(True)
 
-                # Add "any" first
-                widget.addItem("any")
-                widget.addItem("solid")
+                # Add "any" first (shown translated, saved as the English value)
+                self._add_choices(widget, ["any", "solid"])
 
                 # Then add available objects
                 available_objects = self.get_available_objects()
@@ -144,10 +145,7 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.addItems(["obj_box", "obj_wall", "obj_player", "obj_enemy"])
 
-                if param.name in self.current_params:
-                    widget.setCurrentText(str(self.current_params[param.name]))
-                else:
-                    widget.setCurrentText(str(param.default_value))
+                self._select_value(widget, self.current_params.get(param.name, param.default_value))
 
             # Special handling for object selection parameters (object_name).
             # Exclude pure choice params: check_empty's param is named 'objects'
@@ -168,7 +166,7 @@ class ActionConfigDialog(QDialog):
                 # not in the list — confusing because the user couldn't
                 # re-select it from the dropdown after editing.
                 if param.choices:
-                    widget.addItems(param.choices)
+                    self._add_choices(widget, param.choices)
 
                 available_objects = self.get_available_objects()
                 if available_objects:
@@ -176,10 +174,7 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.addItems(["obj_box", "obj_wall", "obj_player", "obj_enemy"])
 
-                if param.name in self.current_params:
-                    widget.setCurrentText(str(self.current_params[param.name]))
-                else:
-                    widget.setCurrentText(str(param.default_value))
+                self._select_value(widget, self.current_params.get(param.name, param.default_value))
 
             # Special handling for room selection parameters
             elif param.name == "room_name" or "room" in param.name.lower():
@@ -264,11 +259,8 @@ class ActionConfigDialog(QDialog):
             elif param.param_type == "choice":
                 widget = QComboBox()
                 if param.choices:
-                    widget.addItems(param.choices)
-                if param.name in self.current_params:
-                    widget.setCurrentText(str(self.current_params[param.name]))
-                else:
-                    widget.setCurrentText(str(param.default_value))
+                    self._add_choices(widget, param.choices)
+                self._select_value(widget, self.current_params.get(param.name, param.default_value))
 
             # Multi-select checkboxes for list-valued params (e.g.
             # start_moving_direction's `directions`). The value round-trips as a
@@ -285,7 +277,7 @@ class ActionConfigDialog(QDialog):
                 cols = 3 if len(param.choices) > 4 else max(1, len(param.choices))
                 boxes = []
                 for i, choice in enumerate(param.choices):
-                    cb = QCheckBox(self.tr(choice))
+                    cb = QCheckBox(choice_label(choice, self.tr))
                     cb.setChecked(choice in selected)
                     grid.addWidget(cb, i // cols, i % cols)
                     boxes.append((choice, cb))
@@ -564,6 +556,33 @@ class ActionConfigDialog(QDialog):
         self._find_dialog.find_field.setFocus()
         self._find_dialog.find_field.selectAll()
 
+    def _add_choices(self, combo, choices):
+        """Fixed choices: the translation is shown, the English value is the item's data and is what
+        gets saved (docs/CORE_NAMES_I18N_PLAN.md U3) -- a project never stores translated text."""
+        for choice in choices:
+            combo.addItem(choice_label(choice, self.tr), str(choice))
+
+    @staticmethod
+    def _select_value(combo, value):
+        """Select the item whose data is ``value``; otherwise show ``value`` as text (an editable combo
+        keeps a typed object name, a non-editable one ignores an unknown value, as before)."""
+        text = "" if value is None else str(value)
+        index = combo.findData(text)
+        if index >= 0:
+            combo.setCurrentIndex(index)
+        else:
+            combo.setCurrentText(text)
+
+    @staticmethod
+    def _combo_value(combo):
+        """What to save: the selected item's data while its text is still what the combo shows (an
+        editable combo may hold typed text instead), else the text itself."""
+        index = combo.currentIndex()
+        data = combo.itemData(index) if index >= 0 else None
+        if data is not None and combo.currentText() == combo.itemText(index):
+            return data
+        return combo.currentText()
+
     def configure_nested_action(self, param_name: str, action_name: str):
         """Open configuration dialog for nested action"""
         from events.action_types import get_action_type
@@ -827,7 +846,7 @@ class ActionConfigDialog(QDialog):
             elif isinstance(widget, QDoubleSpinBox):
                 values[param_name] = widget.value()
             elif isinstance(widget, QComboBox):
-                value = widget.currentText()
+                value = self._combo_value(widget)
 
                 # Map navigation options
                 if param_name == "room_name" or "room" in param_name.lower():
@@ -998,7 +1017,7 @@ class MultiActionEditor(QDialog):
             # rows, so Remove/Move operated on the wrong action (L19).
             item = QTreeWidgetItem()
             if action_type:
-                item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
+                item.setText(0, f"{action_type.icon} {action_label(action_type, self.tr)}")
             else:
                 item.setText(0, f"❓ {self.tr('unknown')}: {action_name}")
 
@@ -1044,10 +1063,10 @@ class MultiActionEditor(QDialog):
         # open project has them active, independent of any preset.
         actions_by_category = get_actions_by_category(project_data=self._find_project_data())
         for category, actions in actions_by_category.items():
-            category_menu = menu.addMenu(self.tr(category))
+            category_menu = menu.addMenu(category_label(category, self.tr))
 
             for action_type in actions:
-                action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
+                action_item = category_menu.addAction(f"{action_type.icon} {action_label(action_type, self.tr)}")
                 action_item.triggered.connect(
                     lambda checked, at=action_type: self.configure_and_add_action(at)
                 )
