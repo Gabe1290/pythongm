@@ -9164,6 +9164,36 @@ Importez-le dans https://lab.open-roberta.org/</translation>
         <source>Failed to export project. Check console for errors.</source>
         <translation>Échec de l'export du projet. Consultez la console pour les erreurs.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>A&amp;rrêter le robot Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Arrêter le robot Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Arrêt du Thymio : pas de gestionnaire d'appareils</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Arrêt du Thymio : aucun robot trouvé</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Échec de l'arrêt du Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} est arrêté.</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

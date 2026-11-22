@@ -3253,6 +3253,36 @@ Die exportierte Datei wird dadurch etwa 15-20 MB größer. Jetzt wird einmalig I
         <source>Failed to export project. Check console for errors.</source>
         <translation>Projekt konnte nicht exportiert werden. Prüfen Sie die Konsole auf Fehler.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>Thymio-Roboter an&amp;halten</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Thymio-Roboter anhalten</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Thymio anhalten: kein Gerätemanager</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Thymio anhalten: kein Roboter gefunden</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Thymio konnte nicht angehalten werden</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} ist angehalten.</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

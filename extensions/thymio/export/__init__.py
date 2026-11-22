@@ -101,6 +101,66 @@ def _in_background(fn):
     return box.get("result")
 
 
+def _pick_robot(ide, title, no_manager_status, no_robot_status):
+    """Reach the device manager and choose a robot (asking when there are several). Returns the Robot, or None after
+    telling the user why not. Shared by Send to Thymio and Stop Thymio robot."""
+    from . import device
+
+    ide.update_status(ide.tr("Looking for a Thymio robot..."))
+    if _in_background(device.ensure_device_manager) is not True:
+        QMessageBox.warning(ide, title, ide.tr(
+            "Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again."))
+        ide.update_status(no_manager_status)
+        return None
+    robots = _in_background(device.list_robots)
+    if isinstance(robots, Exception):
+        QMessageBox.warning(ide, title, str(robots))
+        return None
+    if not robots:
+        QMessageBox.warning(ide, title, ide.tr(
+            "No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on."))
+        ide.update_status(no_robot_status)
+        return None
+    robot = robots[0]
+    if len(robots) > 1:
+        labels = [f"{r.name} ({r.status_name})" for r in robots]
+        choice, ok = QInputDialog.getItem(ide, title, ide.tr("Robot:"), labels, 0, False)
+        if not ok:
+            return None
+        robot = robots[labels.index(choice)]
+    return robot
+
+
+def stop_thymio(ide) -> None:
+    """Stop a connected robot: motors, LEDs and sound off (see device.STOP_PROGRAM). Needs no open project."""
+    from . import device
+
+    title = ide.tr("Stop Thymio robot")
+    if not device.tdmclient_installed():
+        QMessageBox.information(
+            ide, title,
+            ide.tr("Talking to the robot needs the 'tdmclient' package. Install it with:\n\n"
+                   "pip install --user tdmclient\n\nand try again."))
+        return
+    robot = _pick_robot(ide, title, ide.tr("Thymio stop: no device manager"), ide.tr("Thymio stop: no robot found"))
+    if robot is None:
+        return
+    result = _in_background(lambda: device.stop_robot(node_id=robot.id))
+    if isinstance(result, Exception):
+        QMessageBox.warning(ide, title, str(result))
+        ide.update_status(ide.tr("Thymio stop failed"))
+        return
+    if result.ok:
+        ide.update_status(ide.tr("{0} is stopped.").format(robot.name))
+    elif result.stage == "lock":
+        QMessageBox.warning(ide, title, ide.tr(
+            "The robot is in use by another program (for example Aseba Studio). Close it there and try again."))
+    else:
+        QMessageBox.warning(ide, title, ide.tr("The robot did not accept the program ({0}):\n\n{1}").format(
+            result.stage, result.message))
+        ide.update_status(ide.tr("Thymio stop failed"))
+
+
 def send_to_thymio(ide) -> None:
     """Send one Thymio object's program straight to a connected robot, with no Aseba Studio.
 
@@ -140,28 +200,9 @@ def send_to_thymio(ide) -> None:
         if not ok:
             return
 
-    ide.update_status(ide.tr("Looking for a Thymio robot..."))
-    if _in_background(device.ensure_device_manager) is not True:
-        QMessageBox.warning(ide, title, ide.tr(
-            "Could not reach the Thymio device manager. Start Thymio Suite (or thymio-device-manager) and try again."))
-        ide.update_status(ide.tr("Thymio send: no device manager"))
+    robot = _pick_robot(ide, title, ide.tr("Thymio send: no device manager"), ide.tr("Thymio send: no robot found"))
+    if robot is None:
         return
-    robots = _in_background(device.list_robots)
-    if isinstance(robots, Exception):
-        QMessageBox.warning(ide, title, str(robots))
-        return
-    if not robots:
-        QMessageBox.warning(ide, title, ide.tr(
-            "No Thymio robot found. Check the USB cable (or the wireless dongle) and that the robot is switched on."))
-        ide.update_status(ide.tr("Thymio send: no robot found"))
-        return
-    robot = robots[0]
-    if len(robots) > 1:
-        labels = [f"{r.name} ({r.status_name})" for r in robots]
-        choice, ok = QInputDialog.getItem(ide, title, ide.tr("Robot:"), labels, 0, False)
-        if not ok:
-            return
-        robot = robots[labels.index(choice)]
 
     try:
         source = exporter.generate_source(project_file, object_name)

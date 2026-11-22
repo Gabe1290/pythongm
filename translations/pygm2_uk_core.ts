@@ -3117,6 +3117,36 @@ Adds about 15-20 MB to the exported file. Needs internet once now, to download a
         <source>Failed to export project. Check console for errors.</source>
         <translation>Не вдалося експортувати проєкт. Перевірте помилки в консолі.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>&amp;Зупинити робота Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Зупинити робота Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Зупинка Thymio: немає диспетчера пристроїв</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Зупинка Thymio: робота не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Не вдалося зупинити Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} зупинено.</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

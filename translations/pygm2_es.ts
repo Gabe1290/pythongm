@@ -8822,6 +8822,36 @@ Añade unos 15-20 MB al archivo exportado. Ahora se necesita Internet una vez pa
         <source>Failed to export project. Check console for errors.</source>
         <translation>No se pudo exportar el proyecto. Revise los errores en la consola.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>&amp;Detener el robot Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Detener el robot Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Detener Thymio: no hay gestor de dispositivos</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Detener Thymio: no se encontró ningún robot</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>No se pudo detener el Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} está detenido.</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

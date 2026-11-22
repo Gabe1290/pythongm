@@ -229,7 +229,7 @@ PLUGIN_ASSET_TREE_CATEGORIES = [_register_asset_tree_category()]
 # contract only supports appending (or insertAction with a known sibling,
 # which the built-in menu doesn't expose here).
 def _build_file_menu(ide, menu):
-    from .export import export_aseba_code, export_roberta_xml, import_roberta_xml, send_to_thymio
+    from .export import export_aseba_code, export_roberta_xml, import_roberta_xml, send_to_thymio, stop_thymio
 
     # Attached to ide under their pre-hidden names (bound methods before
     # this stage, plain callables now -- Python doesn't care which for a
@@ -241,6 +241,7 @@ def _build_file_menu(ide, menu):
     ide.import_roberta_xml = lambda: import_roberta_xml(ide)
     ide.export_roberta_xml = lambda: export_roberta_xml(ide)
     ide.send_to_thymio = lambda: send_to_thymio(ide)
+    ide.stop_thymio = lambda: stop_thymio(ide)
 
     menu.addSeparator()
     ide.export_aseba_action = ide.create_action(
@@ -258,6 +259,12 @@ def _build_file_menu(ide, menu):
         ide.tr("Send to &Thymio robot..."), None, ide.send_to_thymio)
     ide.send_to_thymio_action.setProperty("pygm_requires_project", True)
     menu.addAction(ide.send_to_thymio_action)
+    # Motors, LEDs and sound off on a connected robot (export/device.py STOP_PROGRAM). A robot left driving
+    # must be stoppable without a project open, so this one is NOT pygm_requires_project.
+    ide.stop_thymio_action = ide.create_action(
+        ide.tr("St&op Thymio robot"), None, ide.stop_thymio)
+    ide.stop_thymio_action.setProperty("pygm_always_enabled", True)
+    menu.addAction(ide.stop_thymio_action)
     ide.export_roberta_action = ide.create_action(
         ide.tr("Export Open &Roberta XML..."), None, ide.export_roberta_xml)
     ide.export_roberta_action.setProperty("pygm_requires_project", True)

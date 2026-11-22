@@ -9576,6 +9576,36 @@ Adiciona cerca de 15-20 MB ao arquivo exportado. Precisa de internet uma vez ago
         <source>Failed to export project. Check console for errors.</source>
         <translation>Falha ao exportar o projeto. Verifique os erros no console.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>Pa&amp;rar o robô Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Parar o robô Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Parar o Thymio: sem gerenciador de dispositivos</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Parar o Thymio: nenhum robô encontrado</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Falha ao parar o Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} está parado.</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>

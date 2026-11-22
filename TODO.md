@@ -1144,7 +1144,7 @@ existed. Regenerated; 0 untranslated strings reported now.
 `File -> Send to Thymio robot...` (extensions/thymio/export/device.py) **works against a real Thymio II**: all six
 `thymio_hw_test` programs were sent and ran correctly (developer, 2026-11-02). Still open: the interface text is translated
 in all eleven languages since 2026-11-21 (it had been French and Polish only: those calls go through `ide.tr()`, which the
-i18n scan did not see); the exported source's header now names both Send to Thymio and Aseba Studio (fixed 2026-11-22); there is no "stop the robot" action; nobody has clicked the menu item by hand (the flow is tested
+i18n scan did not see); the exported source's header now names both Send to Thymio and Aseba Studio (fixed 2026-11-22); **File -> Stop Thymio robot** now exists (2026-11-22: sends a program that sets the motors to 0 and turns LEDs and sound off -- halting the VM alone would leave the robot driving; usable with no project open; not yet tried on a real robot); nobody has clicked the menu item by hand (the flow is tested
 with dialogs stubbed, and the device layer against the robot); not tried: the wireless dongle, a second robot at once,
 Linux / macOS, and loading an exported `.aesl` in Aseba Studio by hand.
 

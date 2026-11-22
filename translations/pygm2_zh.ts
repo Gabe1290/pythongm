@@ -9576,6 +9576,36 @@ Adds about 15-20 MB to the exported file. Needs internet once now, to download a
         <source>Failed to export project. Check console for errors.</source>
         <translation>导出项目失败。请在控制台中查看错误。</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>停止 Thymio 机器人(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>停止 Thymio 机器人</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>停止 Thymio：没有设备管理器</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>停止 Thymio：未找到机器人</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>停止 Thymio 失败</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} 已停止。</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>

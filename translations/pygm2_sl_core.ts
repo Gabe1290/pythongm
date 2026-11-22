@@ -3253,6 +3253,36 @@ Izvoženi datoteki doda približno 15-20 MB. Zdaj je enkrat potreben internet za
         <source>Failed to export project. Check console for errors.</source>
         <translation>Projekta ni bilo mogoče izvoziti. Preverite napake v konzoli.</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>Ustav&amp;i robota Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Ustavi robota Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Ustavitev Thymio: ni upravitelja naprav</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Ustavitev Thymio: ni robota</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Thymia ni bilo mogoče ustaviti</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} je ustavljen.</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

@@ -200,6 +200,27 @@ def list_robots(timeout: float = 3.0, client_factory=None, host: str = TDM_HOST,
         _close_client(client)
 
 
+# Halting the robot's program is not enough to stop a Thymio: the motors keep their last target, so it would drive
+# on. "Stop the robot" therefore REPLACES the running program with this one, which runs once at start-up: motors to
+# 0, every LED off, sound stopped (sound.freq(0, -1) stops it, checked on a real robot 2026-11-02). With no event
+# handlers left, nothing can start the motors again.
+STOP_PROGRAM = """# Stop: sent by PyGameMaker (File -> Stop Thymio robot)
+motor.left.target = 0
+motor.right.target = 0
+call leds.top(0, 0, 0)
+call leds.bottom.left(0, 0, 0)
+call leds.bottom.right(0, 0, 0)
+call leds.circle(0, 0, 0, 0, 0, 0, 0, 0)
+call sound.freq(0, -1)
+"""
+
+
+def stop_robot(node_id: Optional[str] = None, client_factory=None, host: str = TDM_HOST,
+               port: int = TDM_PORT) -> SendResult:
+    """Stop a robot: motors off, LEDs off, sound off, by sending and running :data:`STOP_PROGRAM`."""
+    return send_program(STOP_PROGRAM, node_id=node_id, run=True, client_factory=client_factory, host=host, port=port)
+
+
 def send_program(source: str, node_id: Optional[str] = None, run: bool = True, client_factory=None,
                  host: str = TDM_HOST, port: int = TDM_PORT) -> SendResult:
     """Compile ``source`` (plain Aseba text) on a robot and, unless ``run`` is False, start it.

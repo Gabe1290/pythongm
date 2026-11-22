@@ -9699,6 +9699,36 @@ Czy otworzyć folder wyjściowy?</translation>
         <source>micro:bit hex build failed</source>
         <translation>Tworzenie pliku .hex micro:bit nie powiodło się</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>Zatrzymaj r&amp;obota Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Zatrzymaj robota Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Zatrzymanie Thymio: brak menedżera urządzeń</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Zatrzymanie Thymio: nie znaleziono robota</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Nie udało się zatrzymać Thymio</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} jest zatrzymany.</translation>
+    </message>
 </context>
 <context>
     <name>ThymioDiagramWidget</name>

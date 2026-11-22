@@ -9576,6 +9576,36 @@ Adds about 15-20 MB to the exported file. Needs internet once now, to download a
         <source>Failed to export project. Check console for errors.</source>
         <translation>プロジェクトをエクスポートできませんでした。コンソールでエラーを確認してください。</translation>
     </message>
+    <message>
+        <location filename="../extensions/thymio/__init__.py" line="0"/>
+        <source>St&amp;op Thymio robot</source>
+        <translation>Thymio ロボットを停止(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Stop Thymio robot</source>
+        <translation>Thymio ロボットを停止</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no device manager</source>
+        <translation>Thymio の停止: デバイスマネージャーがありません</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop: no robot found</source>
+        <translation>Thymio の停止: ロボットが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>Thymio stop failed</source>
+        <translation>Thymio を停止できませんでした</translation>
+    </message>
+    <message>
+        <location filename="../extensions/thymio/export/__init__.py" line="0"/>
+        <source>{0} is stopped.</source>
+        <translation>{0} を停止しました。</translation>
+    </message>
 </context>
 <context>
     <name>OrphanedFilesDialog</name>
