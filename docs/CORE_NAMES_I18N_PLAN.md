@@ -210,6 +210,25 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
 - [ ] **U8 — D2 and D5.** English names for the multiplayer actions; the documents from U0 renamed to
   the names their language's IDE now shows (wiki pages, tutorials, handouts), PDFs/ODTs regenerated
   where they exist; a guard test like `test_thymio_fiches_docs.py` for any document that names actions.
+  *Progress 2026-11-22:* **D2 done** (`c5f4cc1e`): the multiplayer actions were already authored in
+  English, so no code change -- but the wiki generator's `EN_OVERRIDES` (written when they were
+  French-first) still replaced 14 names and 16 notes with older English (« Host Game » where the IDE
+  says « Host a Game »); emptied, the English network reference now matches the editor.
+  **D5 not started.** What a first look showed, for whoever does it:
+  - Documents write menu *paths*, not just names: the German in-app tutorials say
+    « Aktion hinzufuegen: **Control > Execute Code** », sometimes with old GameMaker tab names that
+    no longer exist (« **Main2 > Show Message** », « **Draw > Draw Text** »). Convert the path to the
+    category and action names the IDE now shows, not just the last word.
+  - Some pages list English names *deliberately* next to the event key, as a lookup table
+    (`| Keyboard Press | keyboard_press | …`) — keep the key column, translate the name column.
+  - Generated pages (`Full-Action-Reference*`, `*-Preset*`) are already right; skip them.
+  - The German in-app tutorials have stripped umlauts (« hinzufuegen »): fix those while there.
+  - Parameter labels too (raycast handouts: « règle **Wall Texture** »).
+  - Order: in-app tutorials (`Tutorials/<lang>`, shipped in the IDE, 114 files) → handouts (10) →
+    wiki (199 pages); one language per commit, with a guard like `test_thymio_fiches_docs.py` that
+    fails on an English action/event/parameter name in bold or a `<strong>` in a non-English
+    document. Budget it as its own session: ~4,400 mentions.
+
 - [ ] **U9 — Close.** Retire the unused `.ts` entries (D6), wiki regenerated and, with the owner's
   approval, published; QA checklist §17 item; `TODO.md`; `CLAUDE.md` note.
 

@@ -847,6 +847,14 @@ each row names what used to be wrong so a regression is recognisable.
   before still loads with the same choices selected. (In es / ru / sl / pt / ja / zh the whole Blockly
   workspace is still English -- known, see TODO.md.) In **ru / sl**, the action configure
   dialog, the If-condition editor and the multi-action editor show Russian / Slovenian, **not French**.
+- L [ ] M [ ] W [ ] **The Standard events panel is translated** (2026-11-22, `docs/CORE_NAMES_I18N_PLAN.md`;
+  checked by tests in the running widgets, never by eye): with the editor in French, an object's events
+  list (**Création**, **Étape**, **Appui sur une touche**…), the *Add Event* / *Add Action* menus and their
+  categories, and the action dialog (title, description, parameter labels) are French; a drop-down such as
+  *Déplacer sur la grille → Direction* shows **droite** and the project still saves `right` (open a saved
+  project, change nothing, save: the file is unchanged). Repeat in Japanese and Polish for width. Known: the
+  second column of the events list is a code-like `key=value` summary and stays English; tutorials and
+  wiki pages still name many actions in English (U8 of the plan).
 - L [ ] M [ ] W [ ] **The Thymio tab is translated** (2026-11-22, `docs/THYMIO_PANEL_I18N_PLAN.md`; checked by
   tests in the running widgets, never by eye): with the editor in French, open **thymio_1** → **Thymio** tab. The
   event tree (**Bouton central**…), the action rows (**Avancer**, **Régler la LED du dessus**…), the category menus,

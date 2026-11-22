@@ -908,11 +908,15 @@ not call `tr()` at all. **Thymio half DONE 2026-11-22** (`docs/THYMIO_PANEL_I18N
 names every Thymio action, event, parameter, choice and category in all eleven languages; the Thymio
 tab, both pickers and the action configure dialog use it, choices still save the English label (the
 exporter and simulator read its number). The French activity sheets use the French names. No native
-speaker has read the new text. **Still open: the core half** -- the Standard events panel's 186 action
-and 73 event names; the same mechanism takes a core table (`register_ui_translations`), the work is the
-translation itself (~260 names + descriptions x 10 languages). **Plan written 2026-11-22, awaiting the
-owner's decisions D1-D6:** `docs/CORE_NAMES_I18N_PLAN.md` (most of it already exists in the wiki's
-`tools/action_ref_i18n.py` tables, 8 languages).
+speaker has read the new text. **Core half DONE in the editor 2026-11-22**
+(`docs/CORE_NAMES_I18N_PLAN.md` U0-U7): `config/ui_names/<lang>.py` names every core action, event,
+parameter label, drop-down word and category in all ten languages, and the Standard events panel, its
+menus, the action dialog and the If editor show them (drop-downs still save the English value). The wiki
+generators read the same tables, so the wiki and the editor cannot drift. **Still open (U8, its own
+session):** documents that name actions, events or parameters in English inside non-English text --
+~4,400 mentions in the in-app tutorials, handouts and wiki pages; see U8 in the plan. Also not done: the
+panel's code-like parameter summary column (`object_actions_formatter.py`: `key=value`, `with:`,
+`then:`). No native speaker has read any of it.
 
 ### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
 
