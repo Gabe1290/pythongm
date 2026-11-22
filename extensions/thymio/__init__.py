@@ -492,3 +492,5 @@ from .blockly_categories import (
     PLUGIN_BLOCK_CATEGORIES, PLUGIN_BLOCKLY_PRESETS,
     PLUGIN_BLOCK_CATEGORY_TRANSLATIONS,
 )
+# Thymio block and event names in the Configure dialog, every language (docs/THYMIO_BLOCKS_I18N_2026-11-22.md)
+from .block_translations import PLUGIN_BLOCK_TRANSLATIONS  # noqa: E402

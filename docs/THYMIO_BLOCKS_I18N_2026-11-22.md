@@ -20,7 +20,7 @@ es, ru, sl, pt, ja and zh **every** Blockly block (core too) shows English. Logg
 
 ## Queue (one commit each)
 
-- [ ] U1 Configure dialog names, 42 entries x 11 languages
+- [x] U1 Configure dialog names, 42 entries x 11 languages
 - [ ] U2 workspace: `thymioMsg` wrapping + French
 - [ ] U3 workspace: de, it, pl, uk
 - [ ] U4 guards, TODO.md, QA checklist
