@@ -65,7 +65,7 @@ Parar o movimento na grade quando nenhuma tecla de movimento é pressionada (per
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_pt) (5)
+- [Pontuação/Vidas/Saúde](Full-Action-Reference-Score-Lives-Health_pt) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_pt) (16)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

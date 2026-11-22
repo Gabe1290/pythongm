@@ -144,7 +144,7 @@ Emite partículas continuamente, a cada passo, a partir do emissor criado mais r
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (20)
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_pt) (5)
+- [Pontuação/Vidas/Saúde](Full-Action-Reference-Score-Lives-Health_pt) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_pt) (16)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

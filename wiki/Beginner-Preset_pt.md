@@ -163,7 +163,7 @@ Este preset habilita **20** tipos de eventos e **68** tipos de ações.
 | Definir cor de desenho | `set_draw_color` | `color` |
 | Definir fonte de desenho | `set_draw_font` | `font`, `halign`, `valign` |
 
-### Score/Lives/Health
+### Pontuação/Vidas/Saúde
 
 | Ação | Nome do Bloco | Parâmetros |
 |--------|------------|------------|

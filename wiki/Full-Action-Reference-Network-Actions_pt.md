@@ -37,7 +37,7 @@ Só no anfitrião: cria uma instância que aparece automaticamente em todos os c
 | `owner` | Texto | `0` | O jogador que comanda esta instância (0 = anfitrião). Muitas vezes global.network_sender dentro de «Jogador entrou».; opcional |
 | `relative` | Sim/Não | Não | Posição relativa ao objeto que executa a ação; opcional |
 
-### End Turn (File Exchange)
+### Terminar a vez (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -45,7 +45,7 @@ Só no anfitrião: cria uma instância que aparece automaticamente em todos os c
 | **Ícone** | ✅ |
 | **Categoria** | Rede |
 
-Submit your move for this round: whatever you staged with "Set a Shared Variable (File Exchange)" since your last turn, written as one file for the host to pick up. Call it once per round -- even with nothing staged -- if this game expects every player to respond every round; a player who never calls it is skipped once the round deadline passes
+Entregar a jogada desta rodada: tudo o que foi preparado com «Definir variável partilhada (troca de ficheiros)» desde a última vez, escrito num único ficheiro que o anfitrião recolhe. Chamar uma vez por rodada, mesmo sem nada preparado, se o jogo espera uma resposta de cada jogador em cada rodada; quem nunca a chama é ignorado quando o prazo da rodada termina
 
 *Parâmetros:* nenhum
 
@@ -67,7 +67,7 @@ Torna esta máquina o anfitrião de um jogo multijogador em LAN: os outros jogad
 | `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
 | `show_lobby` | Sim/Não | Não | Mostrar um ecrã «À espera de jogadores...» com um botão Começar antes de o jogo arrancar; opcional |
 
-### Host a Game (File Exchange)
+### Alojar um jogo (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -75,15 +75,15 @@ Torna esta máquina o anfitrião de um jogo multijogador em LAN: os outros jogad
 | **Ícone** | 🗂️ |
 | **Categoria** | Rede |
 
-Become the host of a turn-based game played over a shared folder instead of a live connection -- works through a school firewall that blocks direct connections between machines. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.is_host = 1
+Tornar-se o anfitrião de um jogo por turnos jogado através de uma pasta partilhada em vez de uma ligação direta: funciona atrás da firewall de uma escola que bloqueia as ligações entre computadores. Chamar uma vez (por exemplo no evento Criação do controlador da sala). Define global.player_id = 0 e global.is_host = 1
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `folder` | Texto | — | Path to a folder both machines can reach (a mapped network drive, a synced Dropbox/OneDrive folder, ...) |
+| `folder` | Texto | — | Caminho de uma pasta acessível aos dois computadores (uma unidade de rede, uma pasta Dropbox/OneDrive sincronizada, ...) |
 | `max_players` | Número | `8` | Número máximo de jogadores, incluindo o anfitrião (de 2 a 16); opcional |
 | `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
-| `round_deadline` | Número | `30` | How long to wait for every joined player's move before advancing the round anyway (a missing player is skipped that round, not left blocking the game forever); opcional |
-| `show_lobby` | Sim/Não | Não | Show a "Waiting for players..." screen with a Start button before handing control back to the game; opcional |
+| `round_deadline` | Número | `30` | Quanto esperar pela jogada de cada jogador antes de avançar mesmo assim para a rodada seguinte (um jogador ausente é ignorado nessa rodada em vez de bloquear o jogo para sempre); opcional |
+| `show_lobby` | Sim/Não | Não | Mostrar uma tela «À espera de jogadores...» com um botão Começar antes de devolver o controlo ao jogo; opcional |
 
 ### Se eu controlo esta instância
 
@@ -128,7 +128,7 @@ Liga-se a um jogo multijogador em LAN alojado noutra máquina. O anfitrião defi
 | `port` | Número | `45782` | Porta TCP: tem de coincidir com a do anfitrião; opcional |
 | `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
 
-### Join a Game (File Exchange)
+### Entrar num jogo (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -136,11 +136,11 @@ Liga-se a um jogo multijogador em LAN alojado noutra máquina. O anfitrião defi
 | **Ícone** | 🔌 |
 | **Categoria** | Rede |
 
-Join a turn-based game hosted by another machine through a shared folder. The host assigns global.player_id (1, 2, ...)
+Entrar num jogo por turnos alojado por outro computador através de uma pasta partilhada. O anfitrião atribui global.player_id (1, 2, ...)
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `folder` | Texto | — | Path to the SAME shared folder the host used ("auto" opens the built-in screen to type it in) |
+| `folder` | Texto | — | Caminho da MESMA pasta partilhada usada pelo anfitrião («auto» abre a tela integrada para o escrever) |
 | `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
 
 ### Sair do jogo
@@ -155,7 +155,7 @@ Desliga-se (ou deixa de alojar) e limpa as variáveis globais de rede
 
 *Parâmetros:* nenhum
 
-### Leave the Game (File Exchange)
+### Sair do jogo (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -163,7 +163,7 @@ Desliga-se (ou deixa de alojar) e limpa as variáveis globais de rede
 | **Ícone** | 🚪 |
 | **Categoria** | Rede |
 
-Stop hosting or leave the game, and clear the global status variables
+Deixar de alojar ou sair do jogo, e apagar as variáveis globais de estado
 
 *Parâmetros:* nenhum
 
@@ -182,7 +182,7 @@ Copia uma variável partilhada para uma variável global, para a usar num cálcu
 | `name` | Texto | — | Nome da variável partilhada a ler |
 | `into` | Texto | — | Nome da variável global onde escrever o valor |
 
-### Read a Shared Variable (File Exchange)
+### Ler variável partilhada (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -190,7 +190,7 @@ Copia uma variável partilhada para uma variável global, para a usar num cálcu
 | **Ícone** | 📥 |
 | **Categoria** | Rede |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly -- the value as of the last round the host published, not live
+Copiar uma variável partilhada para uma variável global, para a usar num cálculo. É o mesmo que ler global.<nome> diretamente: o valor da última rodada publicada pelo anfitrião, não ao vivo
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -213,7 +213,7 @@ Difunde uma mensagem à tua escolha. Dispara o evento «Mensagem de rede» nas m
 | `data` | Texto | — | Um número, texto, true/false ou uma lista curta; opcional |
 | `target` | Escolha | `all` | all = toda a gente; host = só o anfitrião; Opções: `all`, `host` |
 
-### Send a Network Message (File Exchange)
+### Enviar mensagem de rede (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -221,13 +221,13 @@ Difunde uma mensagem à tua escolha. Dispara o evento «Mensagem de rede» nas m
 | **Ícone** | ✉️ |
 | **Categoria** | Rede |
 
-Stage a message of your own, delivered the same way "Set a Shared Variable (File Exchange)" is -- at the next round boundary, not instantly. Fires the "Network Message (File Exchange)" event, with global.network_event / global.network_data / global.network_sender
+Preparar uma mensagem própria, entregue como com «Definir variável partilhada (troca de ficheiros)»: na rodada seguinte, não de imediato. Dispara o evento «Mensagem de rede (troca de ficheiros)», com global.network_event / global.network_data / global.network_sender
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
 | `event` | Texto | — | Uma etiqueta à tua escolha que o tratamento testa (por ex. "buzz", "answer") |
 | `data` | Texto | — | Um número, texto, true/false ou uma lista curta; opcional |
-| `target` | Escolha | `all` | all = everyone, once they pick up the next round; host = the host only, processed immediately when the round resolves; Opções: `all`, `host` |
+| `target` | Escolha | `all` | all = todos, quando recebem a rodada seguinte; host = só o anfitrião, processado assim que a rodada termina; Opções: `all`, `host` |
 
 ### Definir o modo de rede (v1)
 
@@ -260,7 +260,7 @@ Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplica
 | `name` | Texto | — | Um identificador simples (letras, algarismos, _): sem espaços nem operadores |
 | `value` | Texto | `0` | Um número, texto ou true/false (objetos complexos são recusados) |
 
-### Set a Shared Variable (File Exchange)
+### Definir variável partilhada (troca de ficheiros)
 
 | Propriedade | Valor |
 |----------|-------|
@@ -268,7 +268,7 @@ Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplica
 | **Ícone** | 📤 |
 | **Categoria** | Rede |
 
-Stage a variable to publish to everyone. It takes effect once you call "End Turn" and the host folds your move into the next round -- not immediately, since there is no live connection to write over. Readable anywhere as global.<name> once published
+Preparar uma variável para publicar para todos. Tem efeito depois de «Terminar a vez», quando o anfitrião integra a jogada na rodada seguinte; não de imediato, porque não há ligação direta. Depois de publicada, pode ser lida em qualquer lado como global.<nome>
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -347,7 +347,7 @@ Marca como sincronizada a instância que executa esta ação: a sua posição, r
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (20)
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_pt) (5)
+- [Pontuação/Vidas/Saúde](Full-Action-Reference-Score-Lives-Health_pt) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_pt) (16)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

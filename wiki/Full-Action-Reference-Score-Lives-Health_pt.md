@@ -1,4 +1,4 @@
-# Score/Lives/Health
+# Pontuação/Vidas/Saúde
 
 *[Início](Home_pt) | [Guia de predefinições](Preset-Guide_pt) | [Referência de eventos](Event-Reference_pt)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nome** | `clear_highscore` |
 | **Ícone** | 🗑️🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Pontuação/Vidas/Saúde |
 
 Limpar todas as entradas da tabela de recordes
 
@@ -22,7 +22,7 @@ Limpar todas as entradas da tabela de recordes
 |----------|-------|
 | **Nome** | `show_highscore` |
 | **Ícone** | 🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Pontuação/Vidas/Saúde |
 
 Mostrar a caixa de diálogo da tabela de recordes
 
@@ -39,7 +39,7 @@ Mostrar a caixa de diálogo da tabela de recordes
 |----------|-------|
 | **Nome** | `test_health` |
 | **Ícone** | ❓💚 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Pontuação/Vidas/Saúde |
 
 Condição: comparar a saúde atual com um valor
 
@@ -54,7 +54,7 @@ Condição: comparar a saúde atual com um valor
 |----------|-------|
 | **Nome** | `test_lives` |
 | **Ícone** | ❓❤️ |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Pontuação/Vidas/Saúde |
 
 Condição: comparar o número de vidas com um valor
 
@@ -69,7 +69,7 @@ Condição: comparar o número de vidas com um valor
 |----------|-------|
 | **Nome** | `test_score` |
 | **Ícone** | ❓🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Pontuação/Vidas/Saúde |
 
 Condição: comparar a pontuação com um valor
 
