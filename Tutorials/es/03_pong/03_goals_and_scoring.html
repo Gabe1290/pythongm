@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Porterías y puntuación</h1>
+
+    <p>La pelota se escapa por los lados, ¡pero nadie marca! Vamos a añadir porterías invisibles
+    detrás de cada pala.</p>
+
+    <!-- ============= GOAL SPRITE ============= -->
+    <h2>Crear el sprite de la portería</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_goal</code></li>
+            <li>Dibuja un rectángulo de 32&times;32 de cualquier color (será invisible)</li>
+        </ol>
+    </div>
+
+    <!-- ============= GOAL OBJECTS ============= -->
+    <h2>Crear los objetos de las porterías</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_goal_left</code> &mdash; sprite: <code>spr_goal</code>, desmarca <strong>Visible</strong>, marca <strong>Sólido</strong></li>
+            <li>Crea <code>obj_goal_right</code> &mdash; sprite: <code>spr_goal</code>, desmarca <strong>Visible</strong>, marca <strong>Sólido</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= BALL SCORING ============= -->
+    <h2>Añadir la puntuación a la pelota</h2>
+    <div class="step">
+        <p>Doble clic en <code>obj_ball</code> &rarr; pestaña <strong>Blockly</strong>. Añade dos eventos de colisión nuevos:</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_goal_left</span><br>
+            <span class="block block-score block-indent">Set Variable Variable: p2score Value: <span class="block-num">1</span> Scope: global Relative: on</span><br>
+            <span class="block block-move block-indent">Jump to Start Position</span>
+        </div>
+        <p>Cuando la pelota llega a la portería izquierda, marca el Jugador 2 y la pelota vuelve a empezar.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_goal_right</span><br>
+            <span class="block block-score block-indent">Set Variable Variable: p1score Value: <span class="block-num">1</span> Scope: global Relative: on</span><br>
+            <span class="block block-move block-indent">Jump to Start Position</span>
+        </div>
+        <p>Cuando la pelota llega a la portería derecha, marca el Jugador 1.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <div class="info">
+        <strong>¿Qué es <code>global.</code>?</strong> El prefijo <code>global.</code> significa que la variable
+        la comparten todos los objetos. Cualquier objeto puede leer o cambiar <code>global.p1score</code>.
+    </div>
+
+    <!-- ============= PLACE GOALS ============= -->
+    <h2>Colocar las porterías en la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abre <code>room_pong</code></li>
+            <li>Apila <code>obj_goal_left</code> a lo largo del <strong>borde izquierdo</strong> (detrás de la pala izquierda)</li>
+            <li>Apila <code>obj_goal_right</code> a lo largo del <strong>borde derecho</strong> (detrás de la pala derecha)</li>
+        </ol>
+        <p>Las porterías son invisibles, así que no se ven al jugar.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Cuando la pelota pasa una pala, vuelve al centro</li>
+            <li>La puntuación se lleva internamente (¡enseguida la mostramos!)</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para mostrar los puntos en pantalla.
+    </div>
+</body>
+</html>
