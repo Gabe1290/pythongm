@@ -112,9 +112,9 @@
 
 **Подія: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Output** → **Show Message**
+2. Add Action: **Output** → **Показати повідомлення**
    - Message: `You Win!`
-3. Add Action: **Room** → **Next Room** (або **Restart Room** для одного рівня)
+3. Add Action: **Кімната** → **Наступна кімната** (або **Перезапустити кімнату** для одного рівня)
 
 Текст Show Message — фіксований рядок, він не може містити живе
 значення, як-от витрачений час. Таймер лишається видимим у HUD (Крок
@@ -133,10 +133,10 @@
 
 **Подія: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Score** → **Set Score**
+2. Add Action: **Рахунок** → **Задати рахунок**
    - New Score: `10`
    - Позначте "Relative" для додавання 10 очок
-3. Add Action: **Instance** → **Destroy Instance**
+3. Add Action: **Екземпляр** → **Знищити екземпляр**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
@@ -152,7 +152,7 @@
 
 ### 6.1 Рух
 
-Додайте чотири події **Keyboard (held)** та одну подію **No Key**,
+Додайте чотири події **Клавіатура (утримання)** та одну подію **No Key**,
 кожна з дією **Move** → **Set Horizontal/Vertical Speed**:
 
 | Подія | Дія |
@@ -167,7 +167,7 @@
 
 **Подія: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Зупинити рух**
 
 Тут не потрібен ручний код для перевірки позиції. Цикл руху цього
 рушія вже не дозволяє екземпляру зайти в твердий об'єкт до того, як
@@ -186,8 +186,8 @@
 1. Створіть новий об'єкт з назвою `obj_game_controller`
 2. Спрайт не потрібен
 
-**Подія: Create** — запускає таймер за допомогою **Control** →
-**Execute Code** (дія Execute Code в цьому проєкті виконує справжній
+**Подія: Create** — запускає таймер за допомогою **Керування** →
+**Виконати код** (дія Execute Code в цьому проєкті виконує справжній
 Python, а не GameMaker Language):
 
 ```python
@@ -201,7 +201,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Подія: Draw** — будує HUD за допомогою справжніх команд черги
-малювання. Додайте три дії **Draw** → **Draw Text**:
+малювання. Додайте три дії **Гра** → **Намалювати текст**:
 
 | Дія Draw Text | Текст | Позиція |
 |---|---|---|
@@ -209,7 +209,7 @@ self.timer += 1.0 / game.fps
 | 2. | `Time:` | X `10`, Y `30` |
 | 3. | `Coins:` | X `10`, Y `50` |
 
-а потім одразу за ними три дії **Draw** → **Draw Variable**, щоб
+а потім одразу за ними три дії **Малювання** → **Намалювати змінну**, щоб
 показати живі значення поруч із кожним підписом:
 
 | Дія Draw Variable | Змінна | Позиція |
@@ -220,7 +220,7 @@ self.timer += 1.0 / game.fps
 
 Немає вбудованого лічильника "монет, що залишилися", на який могла б
 вказувати Draw Variable — прямо перед діями Draw Variable додайте ще
-одну дію **Control** → **Execute Code**, щоб обчислити його в змінну
+одну дію **Керування** → **Виконати код**, щоб обчислити його в змінну
 екземпляра, яку Draw Variable потім зможе прочитати:
 
 ```python
@@ -306,40 +306,40 @@ Horizontal** (розвертає ворога, коли той зачіпає с
 потрібен; разом із вбудованим твердим зіткненням з Кроку 6.2 ворог
 ніколи не зможе пройти крізь стіну)
 
-**Подія: Collision with obj_player** — Add Action: **Room** →
-**Restart Room**
+**Подія: Collision with obj_player** — Add Action: **Кімната** →
+**Перезапустити кімнату**
 
 ### Додати Систему Життів
 
-У події **Create** для `obj_game_controller` додайте **Score** →
-**Set Lives** (Value: `3`).
+У події **Створення** для `obj_game_controller` додайте **Рахунок** →
+**Задати життя** (Value: `3`).
 
 У події **Collision with obj_player** для `obj_enemy` замініть
-**Restart Room** на дві дії: **Score** → **Set Lives** (Value: `-1`,
-позначено **Relative**), потім **Move** → **Jump to Start Position**
+**Перезапустити кімнату** на дві дії: **Рахунок** → **Задати життя** (Value: `-1`,
+позначено **Відносно**), потім **Move** → **Перейти до стартової позиції**
 (застосована до гравця через **Applies to: Other**), щоб гравець
 відроджувався, а не перезапускав увесь лабіринт.
 
 Додайте `obj_game_controller` ще одну подію: **Other Events** → **No
 More Lives** — вона спрацьовує автоматично, щойно життя досягають 0,
 тож перевіряти це вручну не потрібно. Додайте **Output** → **Show
-Message** (`Game Over!`), потім **Room** → **Restart Game**.
+Message** (`Game Over!`), потім **Гра** → **Перезапустити гру**.
 
 ### Додати Ключі та Замкнені Двері
 
-1. Створіть `obj_key` — при зіткненні з `obj_player`: **Set Variable**
+1. Створіть `obj_key` — при зіткненні з `obj_player`: **Задати змінну**
    (Variable: `global.has_key`, Value: `true`, Scope: `global`), потім
-   **Destroy Instance** (self).
+   **Знищити екземпляр** (self).
 2. Створіть `obj_locked_door` з позначеним Solid. Додайте йому подію
-   **Step** з **Control** → **Test Variable** (Variable:
-   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
-   **Destroy Instance** (self) — двері зникають (і перестають
+   **Крок** з **Керування** → **Перевірити змінну** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Екземпляр** →
+   **Знищити екземпляр** (self) — двері зникають (і перестають
    блокувати) щойно ключ підібрано.
 
 ### Додати Кілька Рівнів
 
 1. Створіть додаткові кімнати (`room_maze2`, `room_maze3`)
-2. У `obj_exit` використовуйте дію **Next Room** замість **Restart Room**
+2. У `obj_exit` використовуйте дію **Наступна кімната** замість **Перезапустити кімнату**
 
 ### Додати Звукові Ефекти
 

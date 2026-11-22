@@ -103,27 +103,27 @@
 
 **Подія: Key Press W**
 1. Add Event → Keyboard → Key Press W
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `-8` (рух вгору)
 
 **Подія: Key Release W**
 1. Add Event → Keyboard → Key Release W
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `0` (зупинка руху)
 
 **Подія: Key Press S**
 1. Add Event → Keyboard → Key Press S
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `8` (рух вниз)
 
 **Подія: Key Release S**
 1. Add Event → Keyboard → Key Release S
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `0` (зупинка руху)
 
 **Подія: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
+2. Add Action: **Move** → **Відскок** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
 ### 4.2 Права ракетка (Гравець 2)
@@ -136,27 +136,27 @@
 
 **Подія: Key Press Up Arrow**
 1. Add Event → Keyboard → Key Press Up
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `-8`
 
 **Подія: Key Release Up Arrow**
 1. Add Event → Keyboard → Key Release Up
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `0`
 
 **Подія: Key Press Down Arrow**
 1. Add Event → Keyboard → Key Press Down
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `8`
 
 **Подія: Key Release Down Arrow**
 1. Add Event → Keyboard → Key Release Down
-2. Add Action: **Move** → **Set Vertical Speed**
+2. Add Action: **Move** → **Задати вертикальну швидкість**
 3. Встановіть вертикальну швидкість на `0`
 
 **Подія: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
+2. Add Action: **Move** → **Відскок** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
 ![obj_paddle_left's Object Events panel: Keyboard (held) and Keyboard Release with W/S, plus Collision with obj_wall (Bounce). obj_paddle_right is the same with the Up/Down arrows](images/tutorial-pong-04-paddle-objects.png)
@@ -176,17 +176,17 @@
 
 **Подія: Collision with obj_paddle_left**
 1. Add Event → Collision → obj_paddle_left
-2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
+2. Add Action: **Move** → **Відскок** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
 **Подія: Collision with obj_paddle_right**
 1. Add Event → Collision → obj_paddle_right
-2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
+2. Add Action: **Move** → **Відскок** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
 **Подія: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
+2. Add Action: **Move** → **Відскок** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
 ![obj_ball's Object Events panel: Create (Start Moving), and Collision with obj_paddle_left, obj_paddle_right and obj_wall (each a Bounce)](images/tutorial-pong-05-ball-object.png)
@@ -214,17 +214,17 @@
 ### 6.3 Додавання подій зіткнення цілей до м'яча
 
 `global.p1score`/`global.p2score` — це власні змінні, по одній для
-кожного гравця — вбудована дія **Set Score** тут не підходить, бо вона
+кожного гравця — вбудована дія **Задати рахунок** тут не підходить, бо вона
 завжди записує єдиний вбудований рахунок і не має способу вказати на
-назву змінної. **Set Variable** — правильна дія для власної змінної, і
+назву змінної. **Задати змінну** — правильна дія для власної змінної, і
 вона підтримує область видимості `global`:
 
 Повертаємось до `obj_ball` і додаємо ці події:
 
 **Подія: Collision with obj_goal_left**
 1. Add Event → Collision → obj_goal_left
-2. Add Action: **Move** → **Jump to Start Position** (перезавантажує м'яч)
-3. Add Action: **Control** → **Set Variable**
+2. Add Action: **Move** → **Перейти до стартової позиції** (перезавантажує м'яч)
+3. Add Action: **Керування** → **Задати змінну**
    - Variable: `p2score`
    - Value: `1`
    - Scope: `global`
@@ -232,8 +232,8 @@
 
 **Подія: Collision with obj_goal_right**
 1. Add Event → Collision → obj_goal_right
-2. Add Action: **Move** → **Jump to Start Position**
-3. Add Action: **Control** → **Set Variable**
+2. Add Action: **Move** → **Перейти до стартової позиції**
+3. Add Action: **Керування** → **Задати змінну**
    - Variable: `p1score`
    - Value: `1`
    - Scope: `global`
@@ -250,26 +250,26 @@
 
 **Подія: Create**
 1. Add Event → Create
-2. Add Action: **Control** → **Set Variable**
+2. Add Action: **Керування** → **Задати змінну**
    - Variable: `p1score`, Value: `0`, Scope: `global`
-3. Add Action: **Control** → **Set Variable**
+3. Add Action: **Керування** → **Задати змінну**
    - Variable: `p2score`, Value: `0`, Scope: `global`
 
 **Подія: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Гра** → **Намалювати текст**
    - Text: `Гравець 1:`
    - X: `10`
    - Y: `10`
-3. Add Action: **Draw** → **Draw Variable**
+3. Add Action: **Малювання** → **Намалювати змінну**
    - Variable: `global.p1score`
    - X: `100`
    - Y: `10`
-4. Add Action: **Draw** → **Draw Text**
+4. Add Action: **Гра** → **Намалювати текст**
    - Text: `Гравець 2:`
    - X: `10`
    - Y: `30`
-5. Add Action: **Draw** → **Draw Variable**
+5. Add Action: **Малювання** → **Намалювати змінну**
    - Variable: `global.p2score`
    - X: `100`
    - Y: `30`
@@ -325,12 +325,12 @@
 *анімації* спрайта, а не швидкість руху — тому швидкість м'яча
 відстежуємо у власній змінній:
 
-1. У події **Create** для `obj_ball` додайте **Control** → **Set
+1. У події **Створення** для `obj_ball` додайте **Керування** → **Set
    Variable** (Variable: `ball_speed`, Value: `6`) одразу після дії
    Start Moving Direction.
-2. У кожній події зіткнення з ракеткою, після дії **Bounce**, додайте
-   **Control** → **Set Variable** (Variable: `ball_speed`, Value:
-   `0.5`, позначено "Relative"), потім **Move** → **Set Speed** зі
+2. У кожній події зіткнення з ракеткою, після дії **Відскок**, додайте
+   **Керування** → **Задати змінну** (Variable: `ball_speed`, Value:
+   `0.5`, позначено "Relative"), потім **Move** → **Задати швидкість** зі
    значенням `self.ball_speed`, щоб застосувати нову швидкість,
    зберігаючи поточний напрямок (Bounce уже його змінив).
 

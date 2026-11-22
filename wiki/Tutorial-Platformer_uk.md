@@ -131,7 +131,7 @@
 
 ### 5.1 Гравітація
 
-**Подія: Create** — Додайте дію **Move** → **Set Gravity**
+**Подія: Create** — Додайте дію **Move** → **Задати гравітацію**
 (Direction: `270`, Gravity: `0.5`) — 270° це прямо вниз; значення
 додається до вертикальної швидкості гравця на кожному кроці, тож гравець
 сам прискорюється вниз з цього моменту.
@@ -157,7 +157,7 @@
   відпускає клавішу напрямку.
 - **Key Press (не held)** — це те, що робить Up одним імпульсом стрибка,
   замість підкидання гравця вгору на кожному кадрі, поки клавіша
-  утримується. **Stop Movement** при приземленні потім скасовує цей
+  утримується. **Зупинити рух** при приземленні потім скасовує цей
   імпульс, щоб гравець не продовжував підніматися після приземлення —
   вбудоване зіткнення з твердими об'єктами рушія (Крок 3 уже зробив
   `obj_ground` Solid) уже не дає гравцю провалитися в землю; подія тут
@@ -176,10 +176,10 @@
 
 **Подія: Collision with obj_player**
 1. Додати Подію → Collision → obj_player
-2. Додайте дію **Score** → **Set Score**
+2. Додайте дію **Рахунок** → **Задати рахунок**
    - New Score: `10`
    - Позначте "Relative"
-3. Додайте дію **Main1** → **Destroy Instance**
+3. Додайте дію **Main1** → **Знищити екземпляр**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
@@ -195,9 +195,9 @@
 
 **Подія: Collision with obj_player**
 1. Додати Подію → Collision → obj_player
-2. Додайте дію **Main2** → **Show Message**
+2. Додайте дію **Main2** → **Показати повідомлення**
    - Message: `Ouch! You hit a spike!`
-3. Додайте дію **Main1** → **Restart Room**
+3. Додайте дію **Main1** → **Перезапустити кімнату**
 
 ![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
@@ -212,9 +212,9 @@
 
 **Подія: Collision with obj_player**
 1. Додати Подію → Collision → obj_player
-2. Додайте дію **Output** → **Show Message**
+2. Додайте дію **Output** → **Показати повідомлення**
    - Message: `Level Complete!`
-3. Додайте дію **Room** → **Next Room** (або **Restart Room** для одиночного рівня)
+3. Додайте дію **Кімната** → **Наступна кімната** (або **Перезапустити кімнату** для одиночного рівня)
 
 Текст Show Message — це фіксований рядок, у нього не можна вбудувати живе
 значення, як-от рахунок. HUD ігрового контролера (Крок 9) уже показує
@@ -233,11 +233,11 @@
 
 **Подія: Draw**
 1. Додати Подію → Draw → Draw
-2. Додайте дію **Draw** → **Draw Text** (Text: `Score:`, X: `10`, Y: `10`)
-3. Додайте дію **Draw** → **Draw Variable** (Variable: `score`, X: `70`, Y: `10`)
+2. Додайте дію **Гра** → **Намалювати текст** (Text: `Score:`, X: `10`, Y: `10`)
+3. Додайте дію **Малювання** → **Намалювати змінну** (Variable: `score`, X: `70`, Y: `10`)
 
-Необов'язково: додайте так само пару **Draw Text** (`Lives:`, X `10`, Y
-`30`) + **Draw Variable** (`lives`, X `70`, Y `30`), щойно буде додано
+Необов'язково: додайте так само пару **Намалювати текст** (`Lives:`, X `10`, Y
+`30`) + **Намалювати змінну** (`lives`, X `70`, Y `30`), щойно буде додано
 покращення «Система життів» нижче.
 
 ![obj_game_controller's Object Events panel: a Draw event with one Draw Text and one Draw Variable action, with no sprite set](images/tutorial-platformer-09-controller-object.png)
@@ -300,7 +300,7 @@ X = Шип    === = Платформа
 
 ### Додати Змінну Висоту Стрибка
 
-Додайте подію **Step** до `obj_player` з **Control** → **Execute Code**
+Додайте подію **Крок** до `obj_player` з **Керування** → **Виконати код**
 (справжній Python — `self` це поточний екземпляр, `keyboard` дозволяє
 перевірити утримувану клавішу за іменем):
 
@@ -314,22 +314,22 @@ if self.vspeed < 0 and not keyboard.check('up'):
 
 Це можна зробити повністю структурованими діями — код не потрібен.
 
-**Подія: Create** — Додайте дію **Control** → **Set Variable**
+**Подія: Create** — Додайте дію **Керування** → **Задати змінну**
 (Variable: `jumps_left`, Value: `2`)
 
-**Подія: Collision with obj_ground** — після **Stop Movement** додайте
-**Control** → **Set Variable** (Variable: `jumps_left`, Value: `2`), щоб
+**Подія: Collision with obj_ground** — після **Зупинити рух** додайте
+**Керування** → **Задати змінну** (Variable: `jumps_left`, Value: `2`), щоб
 поповнювати обидва стрибки при приземленні.
 
 Замініть єдину дію наявної події **Key Press → Up Arrow** на три, по
 порядку:
-1. **Control** → **Test Variable** (Variable: `jumps_left`, Value: `0`,
+1. **Керування** → **Перевірити змінну** (Variable: `jumps_left`, Value: `0`,
    Operation: `greater`)
-2. **Control** → **Start Block**
-3. **Move** → **Set Vertical Speed** (`-10`)
-4. **Control** → **Set Variable** (Variable: `jumps_left`, Value: `-1`,
-   позначено **Relative**)
-5. **Control** → **End Block**
+2. **Керування** → **Початок блоку**
+3. **Move** → **Задати вертикальну швидкість** (`-10`)
+4. **Керування** → **Задати змінну** (Variable: `jumps_left`, Value: `-1`,
+   позначено **Відносно**)
+5. **Керування** → **Кінець блоку**
 
 Пара Start/End Block означає, що обидві дії всередині виконуються лише
 тоді, коли Test Variable над ними істинний — той самий шаблон захищеного
@@ -339,14 +339,14 @@ if self.vspeed < 0 and not keyboard.check('up'):
 
 1. Створіть `obj_moving_platform` як нащадка `obj_platform`
 
-**Подія: Create** — Додайте дію **Control** → **Execute Code**:
+**Подія: Create** — Додайте дію **Керування** → **Виконати код**:
 
 ```python
 self.start_x = self.x
 self.hspeed = 2
 ```
 
-**Подія: Step** — Додайте дію **Control** → **Execute Code**:
+**Подія: Step** — Додайте дію **Керування** → **Виконати код**:
 
 ```python
 if self.x > self.start_x + 100:
@@ -368,18 +368,18 @@ Horizontal** (розвертається біля стін; у поєднанн�
 крізь стіну)
 
 **Подія: Collision with obj_player** — ця подія спрацьовує на `obj_enemy`,
-тож `self` це ворог, а `other` це гравець. Додайте дію **Control** →
-**Test Expression** із вкладеними діями Then/Else (той самий шаблон, який
+тож `self` це ворог, а `other` це гравець. Додайте дію **Керування** →
+**Перевірити вираз** із вкладеними діями Then/Else (той самий шаблон, який
 вбудований приклад `plateforme_3` використовує саме для цієї перевірки
 «стрибка на голову», лише дзеркально, бо перевірка тут живе на ворозі, а
 не на гравці):
    - Expression: `other.vspeed > 0 and other.y - other.vspeed < y - 16`
-   - Then Actions: **Control** → **Execute Code** з `other.vspeed = -5`
+   - Then Actions: **Керування** → **Виконати код** з `other.vspeed = -5`
      (невеликий відскок для гравця — у `set_vspeed` немає опції "applies
      to other", тож це єдине місце, де потрібен рядок справжнього Python
-     замість структурованої дії), потім **Instance** → **Destroy
+     замість структурованої дії), потім **Екземпляр** → **Destroy
      Instance** (self)
-   - Else Actions: **Room** → **Restart Room** (гравець помирає)
+   - Else Actions: **Кімната** → **Перезапустити кімнату** (гравець помирає)
 
 `other.vspeed > 0 and other.y - other.vspeed < y - 16` перевіряє позицію
 *гравця* з моменту до руху падіння в цьому кадрі (використовуючи власний
@@ -390,16 +390,16 @@ Horizontal** (розвертається біля стін; у поєднанн�
 
 ### Додати Систему Життів
 
-У події **Create** об'єкта `obj_game_controller` додайте **Score** → **Set
+У події **Створення** об'єкта `obj_game_controller` додайте **Рахунок** → **Set
 Lives** (Value: `3`).
 
 Коли гравець помирає (зіткнення з шипом і гілка Else ворога вище),
-замініть **Restart Room** на **Score** → **Set Lives** (Value: `-1`,
-позначено **Relative**) — room перезапускається автоматично, бо подія
-**No More Lives** спрацьовує лише тоді, коли життя справді досягають 0.
+замініть **Перезапустити кімнату** на **Рахунок** → **Задати життя** (Value: `-1`,
+позначено **Відносно**) — room перезапускається автоматично, бо подія
+**Життя скінчилися** спрацьовує лише тоді, коли життя справді досягають 0.
 Додайте цю подію до `obj_game_controller`: **Other Events** → **No More
-Lives** → **Output** → **Show Message** (`Game Over!`) → **Room** →
-**Restart Game**.
+Lives** → **Output** → **Показати повідомлення** (`Game Over!`) → **Гра** →
+**Перезапустити гру**.
 
 ---
 

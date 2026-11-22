@@ -112,7 +112,7 @@
 Модуль — головний об'єкт, яким керує гравець, з фізикою. На відміну від
 інших посібників про рух у цьому вікі, його керування має поступово
 накопичувати швидкість і стежити за ресурсом пального, тож цей об'єкт
-більше спирається на **Control** → **Execute Code** (справжній Python —
+більше спирається на **Керування** → **Виконати код** (справжній Python —
 `self` це поточний екземпляр, `game` це рушій гри, `keyboard.check(ім'я)`
 повідомляє про утримувану клавішу), ніж лише на структуровані дії. Скрізь,
 де структурована дія справляється, цей посібник усе одно використовує її.
@@ -123,11 +123,11 @@
 ### 5.1 Гравітація та Початкові Змінні
 
 **Подія: Create**
-1. Додайте дію **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+1. Додайте дію **Move** → **Задати гравітацію** (Direction: `270`, Gravity: `0.05`)
    — легке притягання вниз; рушій на кожному кроці автоматично додає його
    до вертикальної швидкості модуля, так само як гравітація в посібнику
    Платформер, лише слабше.
-2. Додайте дію **Control** → **Execute Code**:
+2. Додайте дію **Керування** → **Виконати код**:
 
 ```python
 self.thrust_force = 0.1
@@ -147,7 +147,7 @@ self.safe_speed = 2
 
 ### 5.2 Подія Step — Тяга та Керування
 
-**Подія: Step** — Додайте дію **Control** → **Execute Code**:
+**Подія: Step** — Додайте дію **Керування** → **Виконати код**:
 
 ```python
 if not self.landed and not self.crashed:
@@ -187,23 +187,23 @@ if not self.landed and not self.crashed:
 ### 5.3 Зіткнення з Посадковим Майданчиком
 
 **Подія: Collision with obj_pad**
-1. Додайте дію **Control** → **Test Expression**
+1. Додайте дію **Керування** → **Перевірити вираз**
    - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
      — швидкість посадки це довжина вектора швидкості; Піфагор, а не
      змінна `speed` (у цьому рушії `speed` це *швидкість анімації
      спрайта*, а не величина руху — справжня пастка для тих, хто прийшов
      з GameMaker).
    - Then Actions:
-     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
-     2. **Move** → **Stop Movement**
-     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) —
+     1. **Control** → **Задати змінну** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Зупинити рух**
+     3. **Move** → **Задати гравітацію** (Direction: `270`, Gravity: `0`) —
         не дає гравітації знову тихо накопичувати вертикальну швидкість у
         вже приземленого модуля
-     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+     4. **Output** → **Показати повідомлення** (Message: `Perfect Landing! You Win!`)
    - Else Actions:
-     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
-     3. **Room** → **Restart Room**
+     1. **Керування** → **Задати змінну** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Показати повідомлення** (Message: `Crashed! Too fast!`)
+     3. **Кімната** → **Перезапустити кімнату**
 
 Текст Show Message — це фіксований рядок, у нього не можна вбудувати
 реальну швидкість посадки. HUD (Крок 7) уже показує живу швидкість аж до
@@ -212,9 +212,9 @@ if not self.landed and not self.crashed:
 ### 5.4 Зіткнення із Землею
 
 **Подія: Collision with obj_ground**
-1. Додайте дію **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
-2. Додайте дію **Output** → **Show Message** (Message: `Crashed into terrain!`)
-3. Додайте дію **Room** → **Restart Room**
+1. Додайте дію **Керування** → **Задати змінну** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Додайте дію **Output** → **Показати повідомлення** (Message: `Crashed into terrain!`)
+3. Додайте дію **Кімната** → **Перезапустити кімнату**
 
 ![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
 
@@ -243,7 +243,7 @@ if not self.landed and not self.crashed:
 2. Спрайт не потрібен
 
 **Подія: Draw**
-1. Додайте дію **Control** → **Execute Code** — знаходить модуль та
+1. Додайте дію **Керування** → **Виконати код** — знаходить модуль та
    обчислює значення, які покажуть дії Draw нижче:
 
 ```python
@@ -265,28 +265,28 @@ else:
     self.no_fuel = False
 ```
 
-2. Додайте дію **Game** → **Set Draw Color** (Color: `#FFFFFF`)
-3. Додайте дію **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
-4. Додайте дію **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
-5. Додайте дію **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
-6. Додайте дію **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
-7. Додайте дію **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
-8. Додайте дію **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+2. Додайте дію **Малювання** → **Задати колір малювання** (Color: `#FFFFFF`)
+3. Додайте дію **Гра** → **Намалювати текст** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Додайте дію **Гра** → **Намалювати текст** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Додайте дію **Малювання** → **Намалювати змінну** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Додайте дію **Гра** → **Намалювати текст** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Додайте дію **Малювання** → **Намалювати змінну** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Додайте дію **Гра** → **Намалювати текст** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
 
-Потім два рядки попереджень, кожен під керуванням **Control** → **Test
+Потім два рядки попереджень, кожен під керуванням **Керування** → **Test
 Expression** (Else не потрібен — нічого не малюється, коли умова хибна):
 
-9. **Control** → **Test Expression** (Expression: `self.too_fast`)
-   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
-   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
-     **Draw Text** (`Speed OK`, X `10`, Y `90`)
-10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
-    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
-      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+9. **Керування** → **Перевірити вираз** (Expression: `self.too_fast`)
+   - Then Actions: **Малювання** → **Задати колір малювання** (`#FF0000`), **Game** →
+     **Намалювати текст** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Малювання** → **Задати колір малювання** (`#00FF00`), **Game** →
+     **Намалювати текст** (`Speed OK`, X `10`, Y `90`)
+10. **Керування** → **Перевірити вираз** (Expression: `self.no_fuel`)
+    - Then Actions: **Малювання** → **Задати колір малювання** (`#FF0000`), **Game** →
+      **Намалювати текст** (`NO FUEL!`, X `10`, Y `110`)
 
-11. Додайте дію **Game** → **Set Draw Color** (Color: `#808080`)
-12. Додайте дію **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+11. Додайте дію **Малювання** → **Задати колір малювання** (Color: `#808080`)
+12. Додайте дію **Гра** → **Намалювати текст** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
     X: `10`, Y: `440`) — виберіть Y ближче до низу того розміру room,
     який ви використовуєте на Кроці 8.
 
