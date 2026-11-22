@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Objekte, Schläger und Ball</h1>
+
+    <p>Wir erstellen die Spielobjekte und programmieren sie, damit wir das Spiel schnell testen können!</p>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Die Objekte erstellen</h2>
+    <p>Wir brauchen zwei verschiedene Wandarten, damit der Ball weiß, in welche Richtung er abprallt.</p>
+
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &rarr; <strong>Objekt erstellen</strong></li>
+            <li>Erstelle <code>obj_wall_side</code> &mdash; Sprite: <code>spr_wall</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_wall_top</code> &mdash; Sprite: <code>spr_wall</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_paddle</code> &mdash; Sprite: <code>spr_paddle</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_ball</code> &mdash; Sprite: <code>spr_ball</code>, lass Fest <strong>ohne Häkchen</strong></li>
+            <li>Erstelle <code>obj_death_zone</code> &mdash; Sprite: <code>spr_death_zone</code>, entferne das Häkchen bei <strong>Sichtbar</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Warum zwei Wandarten?</strong> Trifft der Ball eine Seitenwand, kehrt er seine
+        waagrechte Richtung um. Trifft er die obere Wand, kehrt er seine senkrechte Richtung um.
+        Mit zwei Objekten können wir unterschiedliches Abprallen programmieren!
+    </div>
+
+    <!-- ============= PADDLE ============= -->
+    <h2>Den Schläger programmieren</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_paddle</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>So funktioniert Blockly:</strong> Ziehe Blöcke aus der Werkzeugleiste links in den Arbeitsbereich.
+        Stecke Aktionsblöcke in Ereignisblöcke, um festzulegen, was passiert.
+        Deine Blöcke werden beim Bearbeiten automatisch in der Ereignisliste gespeichert.
+    </div>
+
+    <h2>Nach links bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">-8</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil links</strong>.
+        Stecke dann <strong>setze horizontale Geschwindigkeit</strong> aus <em>Bewegung</em> hinein.
+        Gib <strong>-8</strong> ein (negativ = nach links).</p>
+    </div>
+
+    <h2>Nach rechts bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">8</span></span>
+        </div>
+        <p>Wie oben, aber wähle <strong>Pfeil rechts</strong> und gib <strong>8</strong> ein (positiv = nach rechts).</p>
+    </div>
+
+    <h2>Anhalten, wenn keine Taste gedrückt ist</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>So rutscht der Schläger nicht endlos weiter, wenn du die Taste loslässt.</p>
+    </div>
+
+    <h2>An den Seitenwänden anhalten</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall_side</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <p>So bleibt der Schläger im Spielfeld.</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>4 Ereignisblöcke</strong> haben.</p>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Den Ball programmieren</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_ball</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Den Ball in Bewegung setzen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-3</span></span>
+        </div>
+        <p>Das Ereignis <strong>Wenn erstellt</strong> läuft einmal, wenn das Spiel startet.
+        Mit beiden Geschwindigkeiten fliegt der Ball schräg nach oben.</p>
+    </div>
+
+    <div class="info">
+        <strong>Warum zwei Geschwindigkeiten?</strong> Die horizontale Geschwindigkeit (3) bewegt den Ball seitwärts.
+        Die vertikale Geschwindigkeit (-3) bewegt ihn nach oben (negativ = nach oben). Zusammen fliegt der Ball schräg!
+    </div>
+
+    <h2>An den Seitenwänden abprallen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall_side</span><br>
+            <span class="block block-move block-indent">Horizontale Bewegung umkehren</span>
+        </div>
+        <p>Trifft der Ball eine Seitenwand, kehrt er seine Links-Rechts-Richtung um.</p>
+    </div>
+
+    <h2>An der oberen Wand abprallen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall_top</span><br>
+            <span class="block block-move block-indent">Vertikale Bewegung umkehren</span>
+        </div>
+        <p>Trifft der Ball die obere Wand, prallt er nach unten ab.</p>
+    </div>
+
+    <h2>Am Schläger abprallen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_paddle</span><br>
+            <span class="block block-move block-indent">Vertikale Bewegung umkehren</span>
+        </div>
+        <p>Wie bei der oberen Wand &mdash; der Ball prallt nach oben zurück.</p>
+    </div>
+
+    <h2>Der Ball fällt aus dem Bildschirm</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_death_zone</span><br>
+            <span class="block block-move block-indent">Springe zu x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p>Trifft der Ball unten die Todeszone, erscheint er wieder über dem Schläger.
+        Leben fügen wir später hinzu &mdash; vorerst kommt der Ball einfach zurück!</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>5 Ereignisblöcke</strong> haben.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>So funktioniert das Abprallen:</strong> Der Ball fliegt immer schräg. Trifft er eine
+        senkrechte Fläche (Seitenwand), kehren wir die horizontale Bewegung um. Trifft er eine waagrechte
+        Fläche (obere Wand, Schläger), kehren wir die vertikale Bewegung um. So prallt er echt ab!
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um den Raum zu erstellen und dein Spiel zu spielen!
+    </div>
+</body>
+</html>

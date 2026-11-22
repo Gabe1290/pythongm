@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Mehr Steinreihen</h1>
+
+    <p>Wir fügen drei weitere Reihen bunter Steine hinzu! Dank des übergeordneten Objekts
+    müssen wir den Code des Balls überhaupt nicht ändern &mdash; jede neue Steinfarbe
+    erbt das Kollisionsverhalten automatisch.</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Die neuen Stein-Sprites erstellen</h2>
+    <p>Erstelle drei neue Sprites. Zeichne für jedes ein gefülltes Rechteck oder importiere das Beispielbild:</p>
+
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>Größe</th><th>Farbe</th><th>Beispieldatei</th></tr>
+            <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Orange</td><td><code>spr_brick_orange.png</code></td></tr>
+            <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Gelb</td><td><code>spr_brick_yellow.png</code></td></tr>
+            <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Grün</td><td><code>spr_brick_green.png</code></td></tr>
+        </table>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <p>Öffne für jedes Sprite den Sprite-Editor und zeichne ein gefülltes Rechteck
+            in der passenden Farbe. Größe: <strong>32&times;16 Pixel</strong>.</p>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Die Beispiel-Sprites laden</h3>
+        <div class="option-box">
+            <p>Rechtsklicke auf jedes Sprite &rarr; <strong>Bild importieren...</strong> und wähle
+            die passende Datei aus <code>Tutorials/04_breakout/assets/</code>.</p>
+        </div>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Die neuen Stein-Objekte erstellen</h2>
+    <p>Alle Steine haben dasselbe übergeordnete Objekt, also funktioniert der Kollisionscode des Balls für alle.</p>
+
+    <div class="step">
+        <p>Für jede neue Steinfarbe:</p>
+        <ol>
+            <li>Erstelle das Objekt mit dem Namen und dem Sprite unten</li>
+            <li>Setze <strong>Übergeordnet</strong> auf <code>obj_brick_parent</code></li>
+            <li>Setze ein Häkchen bei <strong>Fest</strong></li>
+        </ol>
+        <table>
+            <tr><th>Objekt</th><th>Sprite</th><th>Übergeordnet</th></tr>
+            <tr><td><code>obj_brick_orange</code></td><td><code>spr_brick_orange</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_yellow</code></td><td><code>spr_brick_yellow</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_green</code></td><td><code>spr_brick_green</code></td><td><code>obj_brick_parent</code></td></tr>
+        </table>
+    </div>
+
+    <div class="highlight">
+        <strong>Keine Programmierung nötig!</strong> Weil alle Steine dasselbe übergeordnete Objekt haben
+        (<code>obj_brick_parent</code>), weiß der Ball schon, wie er von ihnen abprallt
+        und sie zerstört. Das ist die Stärke übergeordneter Objekte!
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Steinreihen in den Raum setzen</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_breakout</code></li>
+            <li>Ordne die Steine in 4 Reihen oben im Raum an:</li>
+        </ol>
+    </div>
+
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [Y][Y][Y][Y][Y][Y][Y][Y][Y][Y]    S
+S   [G][G][G][G][G][G][G][G][G][G]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+R = Red   O = Orange   Y = Yellow   G = Green</pre>
+
+    <div class="step">
+        <ul>
+            <li><strong>Oberste Reihe:</strong> rote Steine (<code>obj_brick_red</code>)</li>
+            <li><strong>Zweite Reihe:</strong> orange Steine (<code>obj_brick_orange</code>)</li>
+            <li><strong>Dritte Reihe:</strong> gelbe Steine (<code>obj_brick_yellow</code>)</li>
+            <li><strong>Vierte Reihe:</strong> grüne Steine (<code>obj_brick_green</code>)</li>
+        </ul>
+        <p>Verwende <strong>Am Raster ausrichten</strong> (32&times;16), damit alles sauber ausgerichtet ist.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Tipp:</strong> Gib allen Steinen dieselbe Größe (32&times;16), damit sie ordentliche Reihen bilden!
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Alle vier Steinfarben sollten zerbrechen, wenn der Ball sie trifft</li>
+            <li>Jeder Stein bringt 10 Punkte</li>
+            <li>Versuche, alle Reihen abzuräumen!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Herausforderung:</strong> Im Moment bringt jeder Stein 10 Punkte. Im klassischen Breakout
+        sind die oberen Reihen mehr wert, weil sie schwerer zu erreichen sind. Wir könnten jeder Farbe
+        einen eigenen Punktwert geben &mdash; aber zuerst fügen wir einen richtigen Spiel-Controller
+        hinzu, der die Leben verwaltet und den Punktestand anzeigt!
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um den Spiel-Controller hinzuzufügen.
+    </div>
+</body>
+</html>

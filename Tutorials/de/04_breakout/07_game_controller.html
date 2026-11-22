@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A65CA6; }
+        .block-output { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Spiel-Controller</h1>
+
+    <p>Der letzte Schritt! Wir fügen einen unsichtbaren Spiel-Controller hinzu, der die Leben verwaltet,
+    den Punktestand anzeigt und dem Spieler ein Leben abzieht, wenn der Ball herunterfällt.</p>
+
+    <!-- ============= CREATE OBJECT ============= -->
+    <h2>Das Spiel-Controller-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_game_controller</code></li>
+            <li><strong>Kein Sprite nötig</strong> (lass das Feld leer)</li>
+            <li>Lass Fest <strong>ohne Häkchen</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Was ist ein Spiel-Controller?</strong> Ein unsichtbares Objekt, das Dinge wie
+        Punkte und Leben verwaltet. Da es kein Sprite hat, erscheint es nicht
+        im Spiel &mdash; es arbeitet einfach im Hintergrund.
+    </div>
+
+    <!-- ============= INITIALIZE ============= -->
+    <h2>Leben und Punkte festlegen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_game_controller</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Baue diese Blöcke:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-score block-indent">Setze Leben auf <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Setze Punkte auf <span class="block-num">0</span></span>
+        </div>
+        <p>Das Ereignis <strong>Wenn erstellt</strong> läuft einmal, wenn das Spiel startet.
+        Es gibt dem Spieler 3 Leben und setzt die Punkte auf null.</p>
+    </div>
+
+    <!-- ============= DRAW ============= -->
+    <h2>Punkte und Leben anzeigen</h2>
+    <div class="step">
+        <p>Füge einen zweiten Ereignisblock hinzu, der Punkte und Leben auf dem Bildschirm zeigt:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-score block-indent">Zeige Punkte bei x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Zeige Leben bei x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Das Ereignis <strong>Beim Zeichnen</strong> läuft in jedem Bild. Es malt Punkte und Leben auf den Bildschirm.</p>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>2 Ereignisblöcke</strong> haben.</p>
+    </div>
+
+    <!-- ============= UPDATE BALL ============= -->
+    <h2>Den Ball ändern: ein Leben verlieren</h2>
+    <p>Im Moment erscheint der Ball nur wieder, wenn er herunterfällt. Jetzt soll er auch ein Leben abziehen.</p>
+
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_ball</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Suche den Ereignisblock <strong>Kollision mit obj_death_zone</strong></li>
+            <li>Füge einen neuen Block <strong>vor</strong> dem Sprung-Block ein:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_death_zone</span><br>
+            <span class="block block-score block-indent">Zu Leben hinzufügen <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Springe zu x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p><strong>Zu Leben hinzufügen -1</strong> (aus <em>Punkte/Leben/Gesundheit</em>) zieht jedes Mal
+        ein Leben ab, wenn der Ball am Schläger vorbeifällt.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>Den Spiel-Controller in den Raum setzen</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_breakout</code></li>
+            <li>Setze <code>obj_game_controller</code> irgendwo in den Raum
+            (er hat kein Sprite, die Position spielt also keine Rolle)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nicht vergessen!</strong> Der Spiel-Controller muss im Raum sein, damit Leben und Punkte funktionieren.
+        Auch wenn er unsichtbar ist, muss er im Raum stehen.
+    </div>
+
+    <!-- ============= GAME OVER ============= -->
+    <h2>Game Over und Bestenliste</h2>
+    <p>Im Moment erscheint der Ball endlos wieder, wenn der Spieler keine Leben mehr hat.
+    Jetzt soll das Spiel <strong>Game Over</strong> anzeigen, die Bestenliste zeigen
+    und sich dann schließen.</p>
+
+    <div class="info">
+        <strong>Das Ereignis <code>Keine Leben mehr</code></strong> läuft automatisch in dem
+        Moment, in dem die Leben des Spielers auf null fallen. Du musst das nicht selbst prüfen
+        &mdash; füge einfach das Ereignis hinzu, die Engine löst es aus.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Öffne <code>obj_game_controller</code> im Objekt-Editor</li>
+            <li>Klicke auf den Reiter <strong>Blockly</strong></li>
+            <li>Füge einen dritten Ereignisblock hinzu. Wähle in <em>Ereignisse</em> den Block <strong>Anderes Ereignis</strong>
+                und darin <strong>Keine Leben mehr</strong></li>
+            <li>Stecke diese drei Blöcke der Reihe nach hinein:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Anderes Ereignis: Keine Leben mehr</span><br>
+            <span class="block block-output block-indent">Zeige Nachricht "Game Over!"</span><br>
+            <span class="block block-game block-indent">Bestenliste anzeigen</span><br>
+            <span class="block block-game block-indent">Spiel beenden</span>
+        </div>
+        <ul>
+            <li><strong>Zeige Nachricht</strong> (aus <em>Ausgabe</em>) &mdash; öffnet ein Fenster „Game Over!“</li>
+            <li><strong>Bestenliste anzeigen</strong> (aus <em>Spiel</em>) &mdash; zeigt die Bestenliste
+                und fragt nach dem Namen, wenn der Spieler es auf die Liste geschafft hat</li>
+            <li><strong>Spiel beenden</strong> (aus <em>Spiel</em>) &mdash; schließt das Spielfenster</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Die Reihenfolge zählt!</strong> Setze <em>Bestenliste anzeigen</em> <strong>vor</strong>
+        <em>Spiel beenden</em>. Wenn du das Spiel zuerst beendest, kann das Fenster der Bestenliste
+        gar nicht erscheinen.
+    </div>
+
+    <div class="step">
+        <p>Der Spiel-Controller sollte jetzt <strong>3 Ereignisblöcke</strong> haben
+        (Wenn erstellt, Beim Zeichnen, Keine Leben mehr).</p>
+    </div>
+
+    <!-- ============= FINAL TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Glückwunsch! Teste dein fertiges Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Bewege den Schläger mit den Pfeiltasten <strong>Links</strong> und <strong>Rechts</strong></li>
+            <li>Zerschlage alle Steine, um zu gewinnen!</li>
+            <li>Lass den Ball nicht am Schläger vorbeifallen &mdash; du hast nur 3 Leben!</li>
+            <li>Behalte Punkte und Leben oben links im Blick</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Challenge Ideas:</strong>
+        <ul>
+            <li>Gib den Steinfarben unterschiedliche Punktwerte (Rot = 40, Orange = 30, Gelb = 20, Grün = 10)</li>
+            <li>Lass den Ball schneller werden, je mehr Steine zerstört sind</li>
+            <li>Füge ein zweites Level mit einer anderen Steinanordnung hinzu</li>
+            <li>Spiele einen Klang ab, wenn das Spiel endet (füge ihn dem Ereignis <em>Keine Leben mehr</em> hinzu)</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Den Raum erstellen &mdash; Los geht&rsquo;s!</h1>
+
+    <p>Zeit, den Raum zu bauen und dein Spiel zu testen! Wir setzen Wände an die Ränder,
+    eine Todeszone nach unten, einen Schläger und den Ball.</p>
+
+    <h2>Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Räume</strong> und wähle <strong>Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_breakout</code></li>
+            <li>Setze die Größe auf <strong>640&times;480</strong> Pixel</li>
+        </ol>
+    </div>
+
+    <h2>Aufbau des Raums</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+S = Side Wall (obj_wall_side)
+T = Top Wall (obj_wall_top)
+D = Death Zone (obj_death_zone, invisible)
+(o) = Ball</pre>
+
+    <h2>Die Objekte platzieren</h2>
+
+    <h3>1. Seitenwände</h3>
+    <div class="step">
+        <p>Setze <code>obj_wall_side</code> entlang des <strong>linken und rechten</strong> Rands,
+        von oben bis unten. Staple sie senkrecht zu durchgehenden Säulen.</p>
+    </div>
+
+    <h3>2. Obere Wand</h3>
+    <div class="step">
+        <p>Setze <code>obj_wall_top</code> entlang des <strong>oberen</strong> Rands,
+        zwischen die Seitenwände.</p>
+    </div>
+
+    <h3>3. Todeszone</h3>
+    <div class="step">
+        <p>Setze <code>obj_death_zone</code> entlang des <strong>unteren</strong> Rands.
+        Beim Spielen ist sie unsichtbar &mdash; sie fängt den Ball, wenn er herunterfällt.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Wichtig:</strong> Unten gibt es KEINE Wand! Durch den offenen unteren Rand
+        kann der Ball entkommen. Die unsichtbare Todeszone merkt, wenn das passiert.
+    </div>
+
+    <h3>4. Schläger</h3>
+    <div class="step">
+        <p>Setze <code>obj_paddle</code> unten in den Raum, waagrecht in die Mitte.</p>
+    </div>
+
+    <h3>5. Ball</h3>
+    <div class="step">
+        <p>Setze <code>obj_ball</code> knapp über den Schläger, nahe der Raummitte.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Bewege den Schläger mit den Pfeiltasten <strong>Links</strong> und <strong>Rechts</strong></li>
+            <li>Der Ball sollte von den Wänden und vom Schläger abprallen</li>
+            <li>Fällt der Ball am Schläger vorbei, erscheint er wieder in der Mitte</li>
+        </ul>
+        <p>Wenn etwas nicht klappt, geh zurück und prüfe deine Blockly-Blöcke.
+        Deine Änderungen werden beim Bearbeiten automatisch gespeichert, die Blöcke von Schläger und Ball sind also schon aktiv.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Gut gemacht!</strong> Du hast schon ein spielbares Spiel mit einem springenden Ball.
+        Jetzt machen wir es spannender und fügen Steine zum Zerschlagen hinzu!
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um deine erste Steinreihe hinzuzufügen.
+    </div>
+</body>
+</html>

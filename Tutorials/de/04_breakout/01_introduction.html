@@ -10,43 +10,63 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
-    <h1>Breakout: Steinbrecher-Spiel</h1>
+    <h1>Breakout: Steine zerschlagen</h1>
 
     <div class="game-preview">
         <img src="thumbnails/04_breakout.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#129521;</p>
         <p><strong>BREAKOUT</strong></p>
-        <p>Zerschlage alle Steine mit deinem Ball und Schläger!</p>
+        <p>Zerschlage alle Steine mit Ball und Schläger!</p>
     </div>
 
-    <h2>Was wir erstellen werden</h2>
-    <p>In diesem Tutorial erstellst du ein klassisches Breakout-Spiel:</p>
-    <ul>
-        <li>Ein Schläger, der sich mit den Pfeiltasten nach links und rechts bewegt</li>
-        <li>Ein Ball, der über den Bildschirm springt</li>
-        <li>Reihen von bunten Steinen zum Zerstören</li>
-        <li>Punkteverfolgung beim Zerstören von Steinen</li>
-        <li>Leben-System - verliere ein Leben, wenn der Ball fällt</li>
-    </ul>
+    <h2>Was wir bauen</h2>
+    <p>In diesem Tutorial baust du Schritt für Schritt ein klassisches Breakout mit
+    <strong>visuellen Blockly-Blöcken</strong>. Statt alles zu bauen, bevor du testest,
+    gehen wir schrittweise vor &mdash; nach jeder Phase hast du ein spielbares Spiel!</p>
 
-    <h2>Was du lernen wirst</h2>
+    <h2>So funktioniert dieses Tutorial</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Ein springender Ball</strong><br>
+        Erstelle einen Schläger, einen Ball und Wände. Der Ball springt herum und du kannst sofort spielen!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Die erste Steinreihe</strong><br>
+        Füge eine Reihe Steine zum Zerschlagen hinzu. Lerne übergeordnete Objekte und Punkte kennen.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Mehr Steinreihen</strong><br>
+        Füge bunte Steinreihen hinzu, jede mit eigenem Punktwert.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Spiel-Controller</strong><br>
+        Füge ein Lebenssystem hinzu und zeige den Punktestand auf dem Bildschirm an.
+    </div>
+
+    <h2>Was du lernst</h2>
     <ul>
-        <li>Tastatursteuerung für Schlägerbewegung</li>
-        <li>Ball-Abprall-Mechanik</li>
-        <li>Objekte bei Kollision zerstören</li>
-        <li>Punkte- und Leben-Verfolgung</li>
-        <li>Elternobjekte für ähnliche Steine verwenden</li>
+        <li>Spielverhalten mit <strong>visuellen Blockly-Blöcken</strong> programmieren</li>
+        <li>Tastatursteuerung für die Bewegung des Schlägers</li>
+        <li>Den Ball mit Umkehr-Blöcken abprallen lassen</li>
+        <li>Objekte bei einer Kollision zerstören</li>
+        <li><strong>Übergeordnete Objekte</strong> für ähnliche Steine verwenden</li>
+        <li>Punkte und Leben zählen</li>
     </ul>
 
     <div class="highlight">
-        <strong>Benötigte Zeit:</strong> Etwa 25-30 Minuten
+        <strong>Benötigte Zeit:</strong> etwa 25&ndash;30 Minuten
     </div>
 
     <div class="info">
-        <strong>Bereit?</strong> Klicke auf "Weiter", um mit dem Erstellen deiner Sprites zu beginnen!
+        <strong>Bereit?</strong> Klicke auf „Weiter“ und erstelle deine ersten Sprites!
     </div>
 </body>
 </html>

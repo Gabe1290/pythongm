@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Die Sprites erstellen</h1>
+
+    <p>Wir beginnen nur mit dem, was ein springender Ball braucht &mdash; noch keine Steine!
+    Jedes Sprite kannst du <strong>selbst zeichnen</strong> oder <strong>aus einem Beispielbild laden</strong>.</p>
+
+    <table>
+        <tr><th>Sprite</th><th>Größe</th><th>Beschreibung</th></tr>
+        <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Kleiner gelber Kreis</td></tr>
+        <tr><td><code>spr_paddle</code></td><td>64&times;16</td><td>Breites blaues Rechteck</td></tr>
+        <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Graues Steinmuster</td></tr>
+        <tr><td><code>spr_death_zone</code></td><td>32&times;32</td><td>Dunkles Rechteck (im Spiel unsichtbar)</td></tr>
+    </table>
+
+    <!-- ================================================== -->
+    <h2>spr_ball (16&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke im Asset-Baum auf <strong>Sprites</strong> und wähle <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_ball</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Doppelklicke auf <code>spr_ball</code>, um den Sprite-Editor zu öffnen</li>
+                <li>Zeichne einen kleinen Kreis in einer kräftigen Farbe wie <strong>Gelb</strong> oder Weiß</li>
+                <li>Behalte die Größe von <strong>16&times;16 Pixeln</strong></li>
+                <li>Speichere mit <strong>Strg+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke im Asset-Baum auf <code>spr_ball</code></li>
+                <li>Wähle <strong>Bild importieren...</strong></li>
+                <li>Gehe im PyGameMaker-Ordner zu <code>Tutorials/04_breakout/assets/</code></li>
+                <li>Wähle <code>spr_ball.png</code> und klicke auf Öffnen</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_paddle (64&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_paddle</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Öffne den Sprite-Editor und zeichne ein breites, flaches Rechteck</li>
+                <li>Nimm eine kräftige Farbe wie <strong>Blau</strong></li>
+                <li>Größe: <strong>64&times;16 Pixel</strong></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke auf <code>spr_paddle</code> &rarr; <strong>Bild importieren...</strong></li>
+                <li>Wähle <code>Tutorials/04_breakout/assets/spr_paddle.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_wall (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Zeichne ein Ziegel- oder Steinmuster in <strong>Grautönen</strong></li>
+                <li>Größe: <strong>32&times;32 Pixel</strong></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke auf <code>spr_wall</code> &rarr; <strong>Bild importieren...</strong></li>
+                <li>Wähle <code>Tutorials/04_breakout/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_death_zone (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_death_zone</code></li>
+        </ol>
+
+        <h3>Möglichkeit A &mdash; Selbst zeichnen</h3>
+        <div class="option-box">
+            <ol>
+                <li>Zeichne ein gefülltes Rechteck in beliebiger Farbe (z. B. Dunkelrot)</li>
+                <li>Größe: <strong>32&times;32 Pixel</strong></li>
+            </ol>
+        </div>
+
+        <h3>Möglichkeit B &mdash; Das Beispiel-Sprite laden</h3>
+        <div class="option-box">
+            <ol>
+                <li>Rechtsklicke auf <code>spr_death_zone</code> &rarr; <strong>Bild importieren...</strong></li>
+                <li>Wähle <code>Tutorials/04_breakout/assets/spr_death_zone.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="info">
+        <strong>Lernpunkt:</strong> Mit <strong>Bild importieren</strong> kannst du jede PNG-, GIF-
+        oder BMP-Datei als Sprite laden. Das ist praktisch, wenn du Grafiken aus einem anderen Programm
+        oder Beispielbilder aus einem Tutorial verwenden willst.
+    </div>
+
+    <div class="highlight">
+        <strong>Das war&rsquo;s fürs Erste!</strong> Für den Anfang brauchen wir nur 4 Sprites.
+        Die Stein-Sprites fügen wir später hinzu, wenn wir sie brauchen.
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um die Objekte zu erstellen und Schläger und Ball zu programmieren.
+    </div>
+</body>
+</html>
