@@ -96,7 +96,9 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
   instruction reads as an action. `test_thymio_fiches_docs.py` now fails on any English action or
   event name left in a French sheet. The PDF generator needs DejaVu Sans Oblique, which this Linux box
   lacks (taken from the `fonts-dejavu-extra` package for the run, not committed).
-- [ ] **U5 — Close.** QA checklist §11b/§17 items, TODO.md, and a note in `extensions/thymio/README.md`.
+- [x] **U5 — Close.** QA checklist §11b/§17 items, TODO.md, and a note in `extensions/thymio/README.md`.
+  *Done:* §17 item "The Thymio tab is translated" (and the old "stays English on purpose" note
+  removed); TODO.md records the Thymio half done and the core half open; README section "Translated names".
 
 ## Risks
 

@@ -98,6 +98,18 @@ code, only these generic contracts.
   list to exclude these categories from the generic dialog. Deliberately
   not moved; it's shared string data, not Thymio behaviour.
 
+## Translated names
+
+The names the Thymio tab, its pickers and the action configure dialog show come from
+`ui_translations.py` (`PLUGIN_UI_TRANSLATIONS`, eleven languages), looked up with
+`core.ui_names.ui_name(kind, english)`; action and event names are shared with the Configure
+dialog's `block_translations.py`. Projects still store the English text: a choice parameter is saved
+as its English label (`"3 - Central"`) because the Aseba exporter and the simulator read the number
+from it, so a drop-down shows the translation with the English label as its item data. To add a
+language, add a column to both tables (`tests/test_thymio_ui_translations.py` checks that every
+name, parameter, choice and category has all of them). The French activity sheets in
+`docs/thymio_fiches` use the French names; `tests/test_thymio_fiches_docs.py` keeps them in step.
+
 ## What is deliberately NOT here yet
 
 A real, previously-undiscovered gap found while verifying this extraction:

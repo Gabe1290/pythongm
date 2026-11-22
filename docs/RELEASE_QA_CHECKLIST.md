@@ -844,10 +844,17 @@ each row names what used to be wrong so a regression is recognisable.
   robot…** and **Stop Thymio robot** are translated; Thymio's own Configure dialog shows its
   categories, blocks and events translated; in **fr / de / it / pl / uk** the **Thymio blocks in the
   Blockly workspace** show translated labels, tooltips and drop-down entries, and a project saved
-  before still loads with the same choices selected. (The Thymio events panel and action list stay
-  English on purpose. In es / ru / sl / pt / ja / zh the whole Blockly workspace is still English --
-  known, see TODO.md.) In **ru / sl**, the action configure
+  before still loads with the same choices selected. (In es / ru / sl / pt / ja / zh the whole Blockly
+  workspace is still English -- known, see TODO.md.) In **ru / sl**, the action configure
   dialog, the If-condition editor and the multi-action editor show Russian / Slovenian, **not French**.
+- L [ ] M [ ] W [ ] **The Thymio tab is translated** (2026-11-22, `docs/THYMIO_PANEL_I18N_PLAN.md`; checked by
+  tests in the running widgets, never by eye): with the editor in French, open **thymio_1** → **Thymio** tab. The
+  event tree (**Bouton central**…), the action rows (**Avancer**, **Régler la LED du dessus**…), the category menus,
+  **+ Événement** / **Ajouter une action** pickers and the action configure dialog (title, parameter labels,
+  descriptions) are all French; a drop-down such as *Jouer un son du robot* shows **3 - Central** as
+  **3 - Central** in French and **3 - 中央** in Japanese. Open a project saved before the change, change nothing,
+  save: the project file and the exported `.aesl` are **unchanged**. Repeat once in Japanese for width/clipping.
+  The French activity sheets (`docs/thymio_fiches`) name things exactly as this tab shows them.
 - L [ ] M [ ] W [ ] **A native speaker reads it.** Several hundred strings per language were added
   on 2026-11-21/22 (see `docs/I18N_CATCHUP_2026-11-21.md` and
   `docs/BLOCKLY_DIALOG_I18N_2026-11-22.md`); none has been read by a native speaker. One teacher

@@ -903,8 +903,14 @@ Other:
 Action and event names are data passed to `tr()`, which only works when the catalogue happens to hold
 that text in that class's context. Measured live: in the Standard events panel French translates 49 of
 186 action names and 7 of 73 event names (German 49 and 0); the Thymio tab shows only English and does
-not call `tr()` at all. **Plan written, awaiting the owner's decisions D1-D4:**
-`docs/THYMIO_PANEL_I18N_PLAN.md` (Thymio first, mechanism reusable for core).
+not call `tr()` at all. **Thymio half DONE 2026-11-22** (`docs/THYMIO_PANEL_I18N_PLAN.md`, U0-U5):
+`core/ui_names.py` (`ui_name(kind, english)`, filled by an extension's `PLUGIN_UI_TRANSLATIONS`) now
+names every Thymio action, event, parameter, choice and category in all eleven languages; the Thymio
+tab, both pickers and the action configure dialog use it, choices still save the English label (the
+exporter and simulator read its number). The French activity sheets use the French names. No native
+speaker has read the new text. **Still open: the core half** -- the Standard events panel's 186 action
+and 73 event names; the same mechanism takes a core table (`register_ui_translations`), the work is the
+translation itself (~260 names + descriptions x 10 languages).
 
 ### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
 
