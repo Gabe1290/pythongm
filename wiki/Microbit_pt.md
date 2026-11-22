@@ -73,7 +73,7 @@ Um clique na placa não aciona também os seus próprios eventos de mouse.
 | **Set Display Brightness** (`microbit_set_brightness`) | Brilho geral, de 0 a 255. |
 | **Play Tone** (`microbit_play_tone`) | Um bip a uma frequência durante um número de milissegundos. |
 | **Play Melody** (`microbit_play_melody`) | Uma das 21 melodias integradas (`DADADADUM`, `ENTERTAINER`, `POWER_UP`…) ou as suas próprias notas: `"C4:4 E G C5:8 R:4"` (nota, oitava, `:duração`; `R` é uma pausa). |
-| **Stop Sound** (`microbit_stop_sound`) | Silenciar o alto-falante e descartar os sons em fila. |
+| **Parar som** (`microbit_stop_sound`) | Silenciar o alto-falante e descartar os sons em fila. |
 | **Set Radio Group** (`microbit_radio_set_group`) | Escolher o grupo de rádio, de 0 a 255. |
 | **Send Radio Message** (`microbit_radio_send`) | Enviar um número ou um texto às outras micro:bit do grupo. |
 | **Read Sensor** (`microbit_read_sensor`) | Colocar uma leitura (acelerômetro x/y/z, intensidade, bússola, luz, temperatura, nível de som, pino 0–2 analógico) em uma variável — ou em uma variável global se o nome começar com `global.`. |
@@ -109,7 +109,7 @@ São disparados no próprio objeto da micro:bit:
 | **Sound Finished** | Todas as notas e melodias em fila foram reproduzidas. |
 | **Radio Message Received** | Outra micro:bit do mesmo grupo enviou uma mensagem. |
 
-«Forever» é o evento normal **Step**.
+«Forever» é o evento normal **Passo**.
 
 ### Rádio
 

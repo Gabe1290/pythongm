@@ -56,10 +56,10 @@ Event" para adicionar um.
 
 | Evento | Quando Dispara |
 |-------|------------------|
-| **Create** | Uma vez, quando uma instância é criada |
-| **Destroy** | Quando a instância é destruída |
-| **Step** | A cada quadro do jogo (60 vezes por segundo) |
-| **Draw** | Durante a fase de desenho |
+| **Criação** | Uma vez, quando uma instância é criada |
+| **Destruição** | Quando a instância é destruída |
+| **Passo** | A cada quadro do jogo (60 vezes por segundo) |
+| **Desenho** | Durante a fase de desenho |
 | **Alarm [0-11]** | Quando um temporizador de alarme chega a zero |
 
 ### Eventos de Teclado
@@ -90,12 +90,12 @@ Event" para adicionar um.
 
 | Evento | Quando Dispara |
 |-------|------------------|
-| **Outside Room** | Quando a instância sai da sala |
-| **Intersect Boundary** | Quando a instância toca a borda da sala |
-| **Game Start** | Uma vez, ao iniciar o jogo |
-| **Game End** | Uma vez, ao fechar o jogo |
-| **Room Start** | Ao entrar numa sala |
-| **Room End** | Ao sair de uma sala |
+| **Fora da sala** | Quando a instância sai da sala |
+| **Toca a borda da sala** | Quando a instância toca a borda da sala |
+| **Início do jogo** | Uma vez, ao iniciar o jogo |
+| **Fim do jogo** | Uma vez, ao fechar o jogo |
+| **Início da sala** | Ao entrar numa sala |
+| **Fim da sala** | Ao sair de uma sala |
 
 ---
 
@@ -105,54 +105,54 @@ Ações são operações executadas quando um evento dispara. Cada evento
 pode ter várias ações, executadas em ordem.
 
 ### Ações de Movimento
-- **Set Speed** — Define a velocidade de movimento
-- **Set Direction** — Define a direção de movimento (0-360 graus)
-- **Set Horizontal Speed** — Define hspeed
-- **Set Vertical Speed** — Define vspeed
+- **Definir velocidade** — Define a velocidade de movimento
+- **Definir direção** — Define a direção de movimento (0-360 graus)
+- **Definir velocidade horizontal** — Define hspeed
+- **Definir velocidade vertical** — Define vspeed
 - **Mover para um ponto** — Move em direção a coordenadas
 - **Jump to Position** — Teletransporta instantaneamente para coordenadas
 - **Saltar para a posição inicial** — Retorna à posição de criação
 - **Saltar para posição aleatória** — Teletransporta para uma posição aleatória
 
 ### Ações de Instância
-- **Create Instance** — Cria um novo objeto
-- **Destroy Instance** — Remove a instância atual
-- **Change Instance** — Transforma-se noutro tipo de objeto
+- **Criar instância** — Cria um novo objeto
+- **Destruir instância** — Remove a instância atual
+- **Mudar instância** — Transforma-se noutro tipo de objeto
 
 ### Ações de Temporização
-- **Set Alarm** — Inicia um temporizador de contagem regressiva
-- **Sleep** — Pausa a execução por um breve momento
+- **Definir alarme** — Inicia um temporizador de contagem regressiva
+- **Pausa** — Pausa a execução por um breve momento
 
 ### Ações de Desenho
-- **Draw Sprite** — Desenha um sprite
-- **Draw Text** — Mostra texto no ecrã
-- **Draw Rectangle** — Desenha um retângulo preenchido ou contornado
+- **Desenhar sprite** — Desenha um sprite
+- **Desenhar texto** — Mostra texto no ecrã
+- **Desenhar retângulo** — Desenha um retângulo preenchido ou contornado
 - **Desenhar pontuação** — Mostra a pontuação atual
 - **Desenhar vidas** — Mostra as vidas restantes
 - **Desenhar barra de saúde** — Mostra a barra de saúde
 
 ### Score/Lives/Health
-- **Set Score** — Altera o valor da pontuação
-- **Set Lives** — Altera o número de vidas
-- **Set Health** — Altera o valor da saúde
+- **Definir pontuação** — Altera o valor da pontuação
+- **Definir vidas** — Altera o número de vidas
+- **Definir saúde** — Altera o valor da saúde
 - **Testar pontuação** — Verifica uma condição de pontuação
 - **Testar vidas** — Verifica uma condição de vidas
 - **Testar saúde** — Verifica uma condição de saúde
 
 ### Ações de Sala
-- **Next Room** — Vai para a próxima sala
-- **Previous Room** — Vai para a sala anterior
-- **Restart Room** — Reinicia a sala atual
-- **Go to Room** — Salta para uma sala específica
+- **Sala seguinte** — Vai para a próxima sala
+- **Sala anterior** — Vai para a sala anterior
+- **Reiniciar sala** — Reinicia a sala atual
+- **Ir para a sala** — Salta para uma sala específica
 
 ### Ações Sound
-- **Play Sound** — Reproduz um efeito sonoro
-- **Stop Sound** — Para um som em reprodução
-- **Play Music** — Reproduz música de fundo
-- **Stop Music** — Para a música de fundo
+- **Reproduzir som** — Reproduz um efeito sonoro
+- **Parar som** — Para um som em reprodução
+- **Reproduzir música** — Reproduz música de fundo
+- **Parar música** — Para a música de fundo
 
 ### Ações de Variáveis
-- **Set Variable** — Atribui um valor a uma variável
+- **Definir variável** — Atribui um valor a uma variável
 - **Testar variável** — Verifica uma condição de variável
 
 ---
@@ -184,7 +184,7 @@ Veja [[Programacao_Visual_pt]] para mais detalhes.
 - Destrua as instâncias que saem da sala
 
 ### Depuração
-- Use a ação **Show Message** para mostrar valores
+- Use a ação **Mostrar mensagem** para mostrar valores
 - Verifique a saída da consola para erros
 - Teste frequentemente enquanto desenvolve
 

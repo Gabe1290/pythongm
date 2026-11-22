@@ -101,8 +101,8 @@ Tamanhos de grelha comuns:
 | **Tile Horizontal** | Repete horizontalmente |
 | **Tile Vertical** | Repete verticalmente |
 | **Stretch** | Estica para preencher a sala |
-| **Horizontal Speed** | Velocidade de deslocamento (parallax) |
-| **Vertical Speed** | Velocidade de deslocamento (parallax) |
+| **Velocidade horizontal** | Velocidade de deslocamento (parallax) |
+| **Velocidade vertical** | Velocidade de deslocamento (parallax) |
 
 ### Camadas de Fundo
 

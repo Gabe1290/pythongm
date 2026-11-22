@@ -154,9 +154,9 @@ A primeira sala na árvore de recursos (no topo da lista) carrega ao iniciar o j
 ### Como mudo de sala?
 
 Use as ações de sala:
-- **Next Room**: Vai para a próxima sala em ordem
-- **Previous Room**: Vai para a sala anterior
-- **Go to Room**: Salta para uma sala específica
+- **Sala seguinte**: Vai para a próxima sala em ordem
+- **Sala anterior**: Vai para a sala anterior
+- **Ir para a sala**: Salta para uma sala específica
 
 ### Os objetos desaparecem quando mudo de sala
 
@@ -216,7 +216,7 @@ Verifique:
 
 ### Como faço a música de fundo repetir em loop?
 
-Use a ação **Play Music** com a opção de loop ativada, ou **Play Sound** com o parâmetro loop definido como verdadeiro.
+Use a ação **Reproduzir música** com a opção de loop ativada, ou **Reproduzir som** com o parâmetro loop definido como verdadeiro.
 
 ---
 

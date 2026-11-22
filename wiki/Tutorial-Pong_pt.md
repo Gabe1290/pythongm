@@ -215,9 +215,9 @@ Gols são áreas invisíveis atrás de cada raquete. Quando a bola entra em um g
 ### 6.3 Adicionar Eventos de Colisão de Gol à Bola
 
 `global.p1score`/`global.p2score` são variáveis com nome
-personalizado, uma por jogador — a ação integrada **Set Score** não
+personalizado, uma por jogador — a ação integrada **Definir pontuação** não
 serve aqui, pois sempre escreve na única pontuação integrada, sem
-forma de apontar para um nome de variável. **Set Variable** é a ação
+forma de apontar para um nome de variável. **Definir variável** é a ação
 real para uma variável com nome personalizado e suporta um escopo
 `global`:
 
@@ -226,7 +226,7 @@ Volte para `obj_ball` e adicione estes eventos:
 **Evento: Colisão com obj_goal_left**
 1. Adicionar Evento → Colisão → obj_goal_left
 2. Adicionar Ação: **Mover** → **Saltar para Posição Inicial** (reseta a bola)
-3. Adicionar Ação: **Controle** → **Set Variable**
+3. Adicionar Ação: **Controle** → **Definir variável**
    - Variável: `p2score`
    - Valor: `1`
    - Escopo: `global`
@@ -235,7 +235,7 @@ Volte para `obj_ball` e adicione estes eventos:
 **Evento: Colisão com obj_goal_right**
 1. Adicionar Evento → Colisão → obj_goal_right
 2. Adicionar Ação: **Mover** → **Saltar para Posição Inicial**
-3. Adicionar Ação: **Controle** → **Set Variable**
+3. Adicionar Ação: **Controle** → **Definir variável**
    - Variável: `p1score`
    - Valor: `1`
    - Escopo: `global`
@@ -252,9 +252,9 @@ Volte para `obj_ball` e adicione estes eventos:
 
 **Evento: Criar**
 1. Adicionar Evento → Criar
-2. Adicionar Ação: **Controle** → **Set Variable**
+2. Adicionar Ação: **Controle** → **Definir variável**
    - Variável: `p1score`, Valor: `0`, Escopo: `global`
-3. Adicionar Ação: **Controle** → **Set Variable**
+3. Adicionar Ação: **Controle** → **Definir variável**
    - Variável: `p2score`, Valor: `0`, Escopo: `global`
 
 **Evento: Desenhar**
@@ -328,11 +328,11 @@ não pode ser usado diretamente aqui — neste motor é a velocidade de
 velocidade da bola numa variável personalizada:
 
 1. No evento **Criar** de `obj_ball`, adicione **Controle** →
-   **Set Variable** (Variável: `ball_speed`, Valor: `6`) logo após a
+   **Definir variável** (Variável: `ball_speed`, Valor: `6`) logo após a
    ação Começar a mover.
 2. Em cada evento de colisão com uma raquete, após a ação **Quicar**,
-   adicione **Controle** → **Set Variable** (Variável: `ball_speed`,
-   Valor: `0.5`, **Relative** marcado), depois **Mover** → **Definir
+   adicione **Controle** → **Definir variável** (Variável: `ball_speed`,
+   Valor: `0.5`, **Relativo** marcado), depois **Mover** → **Definir
    Velocidade** com Valor `self.ball_speed` para aplicar a nova
    velocidade mantendo a direção atual (Quicar já a inverteu).
 

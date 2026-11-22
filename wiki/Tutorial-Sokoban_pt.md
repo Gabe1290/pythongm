@@ -133,18 +133,18 @@ A caixa é empurrada pelo jogador e muda de aparência quando está em um destin
 
 **Evento: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **If Collision**
+2. Add Action: **Controle** → **Se colisão**
    - X Offset: `0`
    - Y Offset: `0`
    - Against: `obj_target`
-3. Add Action: **Instance** → **Set Sprite**
+3. Add Action: **Instância** → **Definir sprite**
    - Sprite: `spr_crate_ok`
-4. Add Action: **Control** → **Else**
-5. Add Action: **Instance** → **Set Sprite**
+4. Add Action: **Controle** → **Senão**
+5. Add Action: **Instância** → **Definir sprite**
    - Sprite: `spr_crate`
 
 Isso faz a caixa ficar verde quando está em um local de destino —
-**If Collision** com ambos os deslocamentos em `0` verifica se a
+**Se colisão** com ambos os deslocamentos em `0` verifica se a
 posição *atual* da caixa se sobrepõe a um `obj_target`.
 
 ![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
@@ -160,7 +160,7 @@ O jogador se move exatamente uma célula da grade por vez e empurra as caixas em
 
 ### 6.1 Movimento em Grade
 
-Adicione um evento **Key Press** por direção, cada um com uma ação **Move** → **Move Grid**:
+Adicione um evento **Key Press** por direção, cada um com uma ação **Move** → **Mover pela grade**:
 
 | Evento | Ação Move Grid |
 |---|---|
@@ -169,7 +169,7 @@ Adicione um evento **Key Press** por direção, cada um com uma ação **Move** 
 | Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
 | Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-**Move Grid** move a instância exatamente uma célula da grade e já
+**Mover pela grade** move a instância exatamente uma célula da grade e já
 detecta colisões por conta própria — não moverá o jogador para dentro
 de um `obj_wall` sólido, então não é necessária uma verificação de
 parede adicional aqui.
@@ -178,18 +178,18 @@ parede adicional aqui.
 
 **Evento: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Parar movimento**
 
 ### 6.3 Empurrar Caixas
 
 **Evento: Collision with obj_crate**
 1. Add Event → Collision → `obj_crate`
-2. Add Action: **Control** → **If Can Push**
+2. Add Action: **Controle** → **Se pode empurrar**
    - Direction: `facing`
    - Object Type: `obj_crate`
    - Then Action: `push_and_move`
 
-**If Can Push** verifica se o espaço atrás da caixa (na direção em que
+**Se pode empurrar** verifica se o espaço atrás da caixa (na direção em que
 o jogador está se movendo) está livre e, se estiver, empurra a caixa
 uma célula e move o jogador para o lugar dela, tudo em uma única ação.
 Se o espaço atrás da caixa estiver bloqueado por uma parede ou outra
@@ -207,7 +207,7 @@ Precisamos de um controlador invisível que observe se cada caixa está em um de
 2. Nenhum sprite necessário
 
 **Evento: Create** — define a contagem de destinos uma única vez,
-usando **Control** → **Execute Code** (a ação Execute Code deste
+usando **Controle** → **Executar código** (a ação Execute Code deste
 projeto executa Python real, não GameMaker Language — `self` é a
 instância atual, `game` é o executor do jogo):
 
@@ -234,15 +234,15 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
 ```
 
 `self.restart_room_flag = True` é a forma como um bloco Execute Code
-bruto aciona o mesmo reinício de sala que a ação **Restart Room**
+bruto aciona o mesmo reinício de sala que a ação **Reiniciar sala**
 realiza — o loop principal verifica isso a cada quadro. Adicione uma
-ação **Show Message** (de **Output**, mensagem `Level Complete!`)
+ação **Mostrar mensagem** (de **Output**, mensagem `Level Complete!`)
 logo após o bloco Execute Code se quiser mostrar um popup antes do
 reinício.
 
 **Evento: Draw**
 1. Add Event → Draw
-2. Add Action: **Draw** → **Draw Text**
+2. Add Action: **Jogo** → **Desenhar texto**
    - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
@@ -308,18 +308,18 @@ T = Destino
 
 ### Adicionar um Contador de Movimentos
 
-No evento **Create** de `obj_game_controller`, adicione **Control** →
-**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
+No evento **Criação** de `obj_game_controller`, adicione **Controle** →
+**Definir variável** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 Em cada um dos quatro eventos Key Press de `obj_player`, adicione uma
-segunda ação logo após Move Grid: **Control** → **Set Variable**
-(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+segunda ação logo após Move Grid: **Controle** → **Definir variável**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativo**
 marcado) — isso soma 1 ao contador a cada pressionamento de tecla,
 independentemente de o movimento ter sido realmente bloqueado por uma
 parede.
 
-No evento **Draw** de `obj_game_controller`, adicione **Draw** →
-**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
+No evento **Desenho** de `obj_game_controller`, adicione **Desenho** →
+**Desenhar variável** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Adicionar Recurso de Desfazer
 
@@ -328,7 +328,7 @@ Armazene posições anteriores e permita pressionar Z para desfazer o último mo
 ### Adicionar Múltiplos Níveis
 
 Crie mais salas (`room_level2`, `room_level3`, etc.) e use a ação
-**Next Room** (categoria Room) em vez de **Restart Room** no bloco
+**Sala seguinte** (categoria Room) em vez de **Reiniciar sala** no bloco
 Execute Code de verificação de vitória (`self.next_room_flag = True`
 em vez de `self.restart_room_flag = True`) ao completar um nível.
 
@@ -347,7 +347,7 @@ Adicione sons para:
 | Problema | Solução |
 |----------|---------|
 | Jogador se move através de paredes | Verifique se `obj_wall` tem "Solid" marcado |
-| Caixa não muda de cor | Verifique se a ação **If Collision** do evento Step aponta para `obj_target` |
+| Caixa não muda de cor | Verifique se a ação **Se colisão** do evento Step aponta para `obj_target` |
 | Pode empurrar caixa através de parede | Verifique a detecção de colisão antes de mover a caixa |
 | Mensagem de vitória aparece imediatamente | Certifique-se de que os destinos foram colocados separadamente das caixas |
 | Jogador se move vários quadrados | Use o evento Keyboard Press, não o evento Keyboard |

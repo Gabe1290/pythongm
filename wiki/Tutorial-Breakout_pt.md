@@ -65,23 +65,23 @@ Agora vamos programar a raquete que o jogador controla.
 
 ### 2.2 Adicionar Movimento para Seta Direita
 1. Clique em **Add Event** → **Keyboard** → selecione **Right Arrow**
-2. Adicione a ação **Set Horizontal Speed**
+2. Adicione a ação **Definir velocidade horizontal**
 3. Defina **value** como `5` (ou qualquer velocidade que preferir)
 
 ### 2.3 Adicionar Movimento para Seta Esquerda
 1. Clique em **Add Event** → **Keyboard** → selecione **Left Arrow**
-2. Adicione a ação **Set Horizontal Speed**
+2. Adicione a ação **Definir velocidade horizontal**
 3. Defina **value** como `-5`
 
 ### 2.4 Parar Quando as Teclas São Libertadas
 A raquete continua a mover-se mesmo após libertar a tecla! Vamos corrigir isso.
 
-1. Clique em **Add Event** → **Keyboard Release** → selecione **Right Arrow**
-2. Adicione a ação **Set Horizontal Speed**
+1. Clique em **Add Event** → **Tecla solta** → selecione **Right Arrow**
+2. Adicione a ação **Definir velocidade horizontal**
 3. Defina **value** como `0`
 
-4. Clique em **Add Event** → **Keyboard Release** → selecione **Left Arrow**
-5. Adicione a ação **Set Horizontal Speed**
+4. Clique em **Add Event** → **Tecla solta** → selecione **Left Arrow**
+5. Adicione a ação **Definir velocidade horizontal**
 6. Defina **value** como `0`
 
 Agora a raquete para quando liberta as teclas de seta.
@@ -98,8 +98,8 @@ Agora a raquete para quando liberta as teclas de seta.
 3. Marque a caixa **Solid**
 
 ### 3.2 Definir Movimento Inicial
-1. Clique em **Add Event** → **Create**
-2. Adicione a ação **Start Moving (Direction)** (ou **Set Horizontal/Vertical Speed**)
+1. Clique em **Add Event** → **Criação**
+2. Adicione a ação **Começar a mover (direção)** (ou **Set Horizontal/Vertical Speed**)
 3. Defina uma direção diagonal com velocidade `5`
    - Por exemplo: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -107,11 +107,11 @@ Isto faz a bola começar a mover-se quando o jogo começa.
 
 ### 3.3 Ricochete na Raquete
 1. Clique em **Add Event** → **Collision** → selecione `obj_paddle`
-2. Adicione a ação **Reverse Vertical** (para ricochete)
+2. Adicione a ação **Inverter vertical** (para ricochete)
 
 ### 3.4 Ricochete nas Paredes
 1. Clique em **Add Event** → **Collision** → selecione `obj_wall`
-2. Adicione a ação **Reverse Horizontal** ou **Reverse Vertical** conforme necessário
+2. Adicione a ação **Inverter horizontal** ou **Inverter vertical** conforme necessário
    - Ou use ambos para lidar com ricochetes nos cantos
 
 ![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
@@ -127,18 +127,18 @@ Isto faz a bola começar a mover-se quando o jogo começa.
 
 ### 4.2 Destruir na Colisão com a Bola
 1. Clique em **Add Event** → **Collision** → selecione `obj_ball`
-2. Adicione a ação **Destroy Instance** com alvo **self**
+2. Adicione a ação **Destruir instância** com alvo **self**
 
 Isto destrói o tijolo quando a bola o atinge!
 
 ### 4.3 Fazer a Bola Ricochete
-**Reverse Vertical** aplica-se sempre à instância no evento da qual
+**Inverter vertical** aplica-se sempre à instância no evento da qual
 está — não tem opção de "aplicar a other" — então esta ação tem de
 estar na bola, não no tijolo:
 
 1. Volte a `obj_ball` e adicione:
 2. **Add Event** → **Collision** → selecione `obj_brick`
-3. Adicione a ação **Reverse Vertical**
+3. Adicione a ação **Inverter vertical**
 
 ![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
 
@@ -202,20 +202,20 @@ Agora coloque os seus objetos na sala:
 O seu jogo básico de Breakout está completo! Aqui estão algumas melhorias para tentar:
 
 ### Adicionar um Sistema de Vidas
-- Adicione um evento **No More Lives** para mostrar "Game Over"
+- Adicione um evento **Sem vidas** para mostrar "Game Over"
 - Perca uma vida quando a bola sai pelo fundo
 
 ### Adicionar Pontuação
 - Use a ação **Add Score** ao destruir tijolos
-- Mostre a pontuação com **Draw Score**
+- Mostre a pontuação com **Desenhar pontuação**
 
 ### Adicionar Múltiplos Níveis
 - Crie mais salas com diferentes disposições de tijolos
-- Use **Next Room** quando todos os tijolos forem destruídos
+- Use **Sala seguinte** quando todos os tijolos forem destruídos
 
 ### Adicionar Efeitos Sonoros
 - Adicione sons para ricochete e destruição de tijolos
-- Use a ação **Play Sound**
+- Use a ação **Reproduzir som**
 
 ---
 

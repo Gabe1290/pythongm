@@ -90,14 +90,14 @@ Entidades do jogo com sprites, propriedades e comportamentos. Cada objeto pode t
 
 ### Eventos
 Gatilhos que executam ações quando condições específicas ocorrem:
-- **Create** - Quando uma instância é criada
-- **Step** - Cada frame (tipicamente 60 FPS)
-- **Draw** - Fase de renderização personalizada
-- **Destroy** - Quando uma instância é destruída
+- **Criação** - Quando uma instância é criada
+- **Passo** - Cada frame (tipicamente 60 FPS)
+- **Desenho** - Fase de renderização personalizada
+- **Destruição** - Quando uma instância é destruída
 - **Keyboard** - Tecla pressionada, solta ou mantida
 - **Mouse** - Cliques, movimento, entrada/saída
 - **Collision** - Quando instâncias se tocam
-- **Alarm** - Temporizadores de contagem regressiva (12 disponíveis)
+- **Alarme** - Temporizadores de contagem regressiva (12 disponíveis)
 
 Veja a [Referência de Eventos](Event-Reference_pt) para documentação completa.
 

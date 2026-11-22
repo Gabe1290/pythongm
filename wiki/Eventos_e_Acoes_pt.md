@@ -24,9 +24,9 @@ Esta é uma referência completa de todos os eventos e ações disponíveis no P
 
 | Evento | Quando |
 |-----------|-------|
-| **Step** | A cada quadro (60 vezes por segundo) |
-| **Begin Step** | Antes das verificações de colisão |
-| **End Step** | Depois de todos os outros eventos |
+| **Passo** | A cada quadro (60 vezes por segundo) |
+| **Início do passo** | Antes das verificações de colisão |
+| **Fim do passo** | Depois de todos os outros eventos |
 
 ### Eventos Alarm
 
@@ -73,22 +73,22 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 
 | Evento | Quando |
 |-----------|-------|
-| **Outside Room** | A instância está completamente fora da sala |
-| **Intersect Boundary** | A instância toca a borda da sala |
-| **Game Start** | O jogo inicia (primeira sala carregada) |
-| **Game End** | O jogo termina |
-| **Room Start** | Ao entrar numa sala |
-| **Room End** | Ao sair de uma sala |
-| **No More Lives** | As vidas chegam a 0 |
-| **No More Health** | A saúde chega a 0 |
-| **Animation End** | A animação do sprite é concluída |
+| **Fora da sala** | A instância está completamente fora da sala |
+| **Toca a borda da sala** | A instância toca a borda da sala |
+| **Início do jogo** | O jogo inicia (primeira sala carregada) |
+| **Fim do jogo** | O jogo termina |
+| **Início da sala** | Ao entrar numa sala |
+| **Fim da sala** | Ao sair de uma sala |
+| **Sem vidas** | As vidas chegam a 0 |
+| **Sem saúde** | A saúde chega a 0 |
+| **Fim da animação** | A animação do sprite é concluída |
 
 ### Eventos Draw
 
 | Evento | Quando |
 |-----------|-------|
-| **Draw** | Durante a fase de renderização |
-| **Draw GUI** | Depois de desenhar a sala (espaço de tela) |
+| **Desenho** | Durante a fase de renderização |
+| **Desenho da interface** | Depois de desenhar a sala (espaço de tela) |
 
 ---
 
@@ -100,13 +100,13 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 |--------|-------------|------------|
 | **Definir velocidade** | Define a velocidade de movimento | velocidade, relativo |
 | **Definir direção** | Define a direção | direção (0-360), relativo |
-| **Set Horizontal Speed** | Define hspeed | hspeed, relativo |
-| **Set Vertical Speed** | Define vspeed | vspeed, relativo |
-| **Set Gravity** | Define a gravidade | gravity, direction |
-| **Set Friction** | Define o atrito | friction |
+| **Definir velocidade horizontal** | Define hspeed | hspeed, relativo |
+| **Definir velocidade vertical** | Define vspeed | vspeed, relativo |
+| **Definir gravidade** | Define a gravidade | gravity, direction |
+| **Definir atrito** | Define o atrito | friction |
 | **Mover para um ponto** | Move em direção a coordenadas | x, y, velocidade |
 | **Começar a mover (direção)** | Move numa direção | direction, velocidade |
-| **Jump To Position** | Teletransporta para coordenadas | x, y, relativo |
+| **Saltar para posição** | Teletransporta para coordenadas | x, y, relativo |
 | **Saltar para a posição inicial** | Retorna à posição de criação | - |
 | **Saltar para posição aleatória** | Teletransporte para uma posição completamente aleatória (ambos os eixos; ajustável à grade) | snap_h, snap_v |
 | **Quicar** | Ricocheteia em objetos sólidos | precise |
@@ -115,25 +115,25 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Create Instance** | Cria um novo objeto | object, x, y, relativo |
-| **Create Moving Instance** | Cria com velocidade | object, x, y, speed, direction |
-| **Destroy Instance** | Remove a instância | - |
-| **Change Instance** | Transforma em outro objeto | object, perform_events |
+| **Criar instância** | Cria um novo objeto | object, x, y, relativo |
+| **Criar instância em movimento** | Cria com velocidade | object, x, y, speed, direction |
+| **Destruir instância** | Remove a instância | - |
+| **Mudar instância** | Transforma em outro objeto | object, perform_events |
 
 ### Ações de Temporização
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Set Alarm** | Inicia uma contagem regressiva | alarm_number, steps |
-| **Sleep** | Pausa a execução | milissegundos |
+| **Definir alarme** | Inicia uma contagem regressiva | alarm_number, steps |
+| **Pausa** | Pausa a execução | milissegundos |
 
 ### Ações Score/Lives/Health
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Set Score** | Altera a pontuação | value, relativo |
-| **Set Lives** | Altera as vidas | value, relativo |
-| **Set Health** | Altera a saúde | value, relativo |
+| **Definir pontuação** | Altera a pontuação | value, relativo |
+| **Definir vidas** | Altera as vidas | value, relativo |
+| **Definir saúde** | Altera a saúde | value, relativo |
 | **Desenhar pontuação** | Mostra a pontuação | x, y, caption |
 | **Desenhar vidas** | Mostra as vidas como imagens de sprite repetidas | x, y, sprite, scale, tiled |
 | **Desenhar barra de saúde** | Mostra a saúde como barra de duas cores | x1, y1, x2, y2, back_color, bar_color |
@@ -142,11 +142,11 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Draw Sprite** | Desenha um sprite | sprite, x, y, subimage |
-| **Draw Text** | Mostra texto | x, y, text |
-| **Draw Rectangle** | Desenha um retângulo | x1, y1, x2, y2, filled |
-| **Draw Circle** | Desenha um círculo | x, y, radius, filled |
-| **Draw Line** | Desenha uma linha | x1, y1, x2, y2 |
+| **Desenhar sprite** | Desenha um sprite | sprite, x, y, subimage |
+| **Desenhar texto** | Mostra texto | x, y, text |
+| **Desenhar retângulo** | Desenha um retângulo | x1, y1, x2, y2, filled |
+| **Desenhar círculo** | Desenha um círculo | x, y, radius, filled |
+| **Desenhar linha** | Desenha uma linha | x1, y1, x2, y2 |
 | **Definir cor de desenho** | Define a cor para os Draw Text/Draw Rectangle/etc. seguintes | color |
 | **Definir cor** | Define a matiz e a transparência de um sprite (não a cor de desenho acima) | color, alpha |
 | **Definir fonte de desenho** | Define fonte e alinhamento para o próximo desenho de texto | font, halign, valign |
@@ -155,22 +155,22 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Next Room** | Vai para a próxima sala | transition |
-| **Previous Room** | Vai para a sala anterior | transition |
-| **Restart Room** | Reinicia a sala | - |
-| **Go to Room** | Salta para uma sala específica | room, transition |
-| **If Next Room Exists** | Verifica se existe uma próxima sala | - |
-| **If Previous Room Exists** | Verifica se existe uma sala anterior | - |
+| **Sala seguinte** | Vai para a próxima sala | transition |
+| **Sala anterior** | Vai para a sala anterior | transition |
+| **Reiniciar sala** | Reinicia a sala | - |
+| **Ir para a sala** | Salta para uma sala específica | room, transition |
+| **Se existe sala seguinte** | Verifica se existe uma próxima sala | - |
+| **Se existe sala anterior** | Verifica se existe uma sala anterior | - |
 
 ### Ações Sound
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Play Sound** | Reproduz um efeito sonoro | sound, loop |
-| **Stop Sound** | Para um som | sound |
-| **Check Sound Playing** | Verifica se um som está a ser reproduzido | sound |
-| **Play Music** | Reproduz música de fundo | music, loop |
-| **Stop Music** | Para toda a música | - |
+| **Reproduzir som** | Reproduz um efeito sonoro | sound, loop |
+| **Parar som** | Para um som | sound |
+| **Verificar reprodução de som** | Verifica se um som está a ser reproduzido | sound |
+| **Reproduzir música** | Reproduz música de fundo | music, loop |
+| **Parar música** | Para toda a música | - |
 
 ### Ações de Variáveis
 
@@ -186,18 +186,18 @@ As verificações de colisão ocorrem entre os eventos Step e Draw.
 |--------|-------------|------------|
 | **Testar expressão** | Verificação condicional (uma expressão booleana Python) | expression |
 | **Senão** | Ramo alternativo | - |
-| **Start Block** | Inicia um grupo de ações | - |
-| **End Block** | Termina um grupo de ações | - |
-| **Repeat** | Repete N vezes | count |
-| **Exit Event** | Interrompe o evento atual | - |
+| **Início de bloco** | Inicia um grupo de ações | - |
+| **Fim de bloco** | Termina um grupo de ações | - |
+| **Repetir** | Repete N vezes | count |
+| **Sair do evento** | Interrompe o evento atual | - |
 
 ### Outras Ações
 
 | Ação | Descrição | Parâmetros |
 |--------|-------------|------------|
-| **Show Message** | Mostra uma mensagem pop-up | message |
-| **Restart Game** | Reinicia o jogo | - |
-| **End Game** | Fecha o jogo | - |
+| **Mostrar mensagem** | Mostra uma mensagem pop-up | message |
+| **Reiniciar jogo** | Reinicia o jogo | - |
+| **Encerrar jogo** | Fecha o jogo | - |
 
 ---
 

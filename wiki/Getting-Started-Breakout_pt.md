@@ -101,7 +101,7 @@ Tudo na programação de jogos segue este padrão: **Se isto acontece, então ex
 
 Isto é o que chamamos **Events** e **Actions** no PyGameMaker:
 - **Events** = Coisas que podem acontecer (pressionar tecla, colisão, temporizador, etc.)
-- **Actions** = Coisas que queres fazer quando os eventos ocorrem (mover, destruir, alterar pontuação, etc.)
+- **Ações** = Coisas que queres fazer quando os eventos ocorrem (mover, destruir, alterar pontuação, etc.)
 
 ---
 
@@ -122,7 +122,7 @@ Num jogo Breakout, precisamos de mover a raquete para impedir que a bola escape 
 
 **Mover para a Direita:**
 1. Clica em **Add Event** → **Keyboard** → **Right Arrow**
-2. No painel de ações à direita, adiciona a ação **Set Horizontal Speed**
+2. No painel de ações à direita, adiciona a ação **Definir velocidade horizontal**
 3. Define o **value** para `5`
 4. Clica **OK**
 
@@ -130,7 +130,7 @@ Isto significa: "Quando a tecla Seta Direita é pressionada, define a velocidade
 
 **Mover para a Esquerda:**
 1. Clica em **Add Event** → **Keyboard** → **Left Arrow**
-2. Adiciona a ação **Set Horizontal Speed**
+2. Adiciona a ação **Definir velocidade horizontal**
 3. Define o **value** para `-5`
 4. Clica **OK**
 
@@ -138,12 +138,12 @@ Isto significa: "Quando a tecla Seta Direita é pressionada, define a velocidade
 
 Se testarmos agora, a raquete continuaria a mover-se mesmo depois de largar a tecla! Vamos corrigir isso:
 
-1. Clica em **Add Event** → **Keyboard Release** → **Right Arrow**
-2. Adiciona a ação **Set Horizontal Speed** com valor `0`
+1. Clica em **Add Event** → **Tecla solta** → **Right Arrow**
+2. Adiciona a ação **Definir velocidade horizontal** com valor `0`
 3. Clica **OK**
 
-4. Clica em **Add Event** → **Keyboard Release** → **Left Arrow**
-5. Adiciona a ação **Set Horizontal Speed** com valor `0`
+4. Clica em **Add Event** → **Tecla solta** → **Left Arrow**
+5. Adiciona a ação **Definir velocidade horizontal** com valor `0`
 6. Clica **OK**
 
 Agora a nossa raquete move-se quando as teclas são pressionadas e para quando são libertadas. Terminamos com este objeto por agora!
@@ -176,10 +176,10 @@ Agora vamos criar a bola, o elemento essencial do nosso jogo.
 
 Queremos que a bola se mova sozinha desde o início. Vamos dar-lhe uma velocidade e direção inicial.
 
-1. Clica em **Add Event** → **Create**
+1. Clica em **Add Event** → **Criação**
    > O evento Create executa ações quando o objeto aparece no jogo, ou seja, quando entra em cena.
-2. Adiciona a ação **Set Horizontal Speed** com valor `4`
-3. Adiciona a ação **Set Vertical Speed** com valor `-4`
+2. Adiciona a ação **Definir velocidade horizontal** com valor `4`
+3. Adiciona a ação **Definir velocidade vertical** com valor `-4`
 4. Clica **OK**
 
 Isto dá à bola um movimento diagonal (direita e para cima) no início do jogo.
@@ -190,7 +190,7 @@ Precisamos que a bola salte quando bate na raquete.
 
 1. Clica em **Add Event** → **Collision** → seleciona `obj_paddle`
    > Este evento dispara quando a bola colide com a raquete.
-2. Adiciona a ação **Reverse Vertical**
+2. Adiciona a ação **Inverter vertical**
    > Isto inverte a direção vertical, fazendo a bola saltar.
 3. Clica **OK**
 
@@ -199,8 +199,8 @@ Precisamos que a bola salte quando bate na raquete.
 Mesma operação para os tijolos parede:
 
 1. Clica em **Add Event** → **Collision** → seleciona `obj_brick_3`
-2. Adiciona a ação **Reverse Vertical**
-3. Adiciona a ação **Reverse Horizontal**
+2. Adiciona a ação **Inverter vertical**
+3. Adiciona a ação **Inverter horizontal**
    > Adicionamos ambos porque a bola pode bater na parede de diferentes ângulos.
 4. Clica **OK**
 
@@ -251,7 +251,7 @@ Vamos adicionar alguns tijolos para partir, para tornar o nosso jogo mais divert
 Vamos adicionar o comportamento para se destruir quando atingido pela bola:
 
 1. Clica em **Add Event** → **Collision** → seleciona `obj_ball`
-2. Adiciona a ação **Destroy Instance** com target **self**
+2. Adiciona a ação **Destruir instância** com target **self**
    > Esta ação remove um objeto durante o jogo - aqui, o próprio tijolo.
 3. Clica **OK**
 
@@ -275,11 +275,11 @@ Clica **OK** para guardar.
 Reabre `obj_ball` fazendo duplo clique nele, e adiciona eventos de colisão para os nossos novos tijolos:
 
 1. Clica em **Add Event** → **Collision** → seleciona `obj_brick_1`
-2. Adiciona a ação **Reverse Vertical**
+2. Adiciona a ação **Inverter vertical**
 3. Clica **OK**
 
 4. Clica em **Add Event** → **Collision** → seleciona `obj_brick_2`
-5. Adiciona a ação **Reverse Vertical**
+5. Adiciona a ação **Inverter vertical**
 6. Clica **OK**
 
 ---
@@ -290,8 +290,8 @@ Precisamos de reiniciar o nível se a bola escapar do ecrã (se o jogador não c
 
 Em `obj_ball`:
 
-1. Clica em **Add Event** → **Other** → **Outside Room**
-2. Adiciona a ação **Restart Room**
+1. Clica em **Add Event** → **Other** → **Fora da sala**
+2. Adiciona a ação **Reiniciar sala**
    > Esta ação reinicia a room atual durante o jogo.
 3. Clica **OK**
 

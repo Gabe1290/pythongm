@@ -131,7 +131,7 @@ O jogador é o objeto mais complexo, com gravidade, salto e movimento.
 
 ### 5.1 Gravidade
 
-**Evento: Create** — Adicione a ação **Move** → **Set Gravity**
+**Evento: Create** — Adicione a ação **Move** → **Definir gravidade**
 (Direction: `270`, Gravity: `0.5`) — 270° é diretamente para baixo; o
 valor é somado à velocidade vertical do jogador a cada passo, então o
 jogador acelera para baixo sozinho a partir daqui.
@@ -157,7 +157,7 @@ Dois detalhes que fazem a sensação ficar certa:
   uma tecla de direção.
 - **Key Press (não held)** é o que faz Up ser um único impulso de salto,
   em vez de lançar o jogador para cima a cada frame em que é mantido
-  pressionado. **Stop Movement** na aterrissagem então cancela esse
+  pressionado. **Parar movimento** na aterrissagem então cancela esse
   impulso, para que o jogador não continue subindo depois de pousar — a
   colisão sólida integrada do motor (o Passo 3 já tornou `obj_ground`
   Solid) já impede o jogador de afundar no chão; o evento aqui apenas
@@ -176,10 +176,10 @@ As moedas somam à pontuação quando coletadas.
 
 **Evento: Collision with obj_player**
 1. Adicionar Evento → Collision → obj_player
-2. Adicione a ação **Score** → **Set Score**
+2. Adicione a ação **Pontuação** → **Definir pontuação**
    - New Score: `10`
    - Marque "Relative"
-3. Adicione a ação **Main1** → **Destroy Instance**
+3. Adicione a ação **Main1** → **Destruir instância**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
@@ -195,9 +195,9 @@ Os espinhos ferem o jogador e reiniciam o nível.
 
 **Evento: Collision with obj_player**
 1. Adicionar Evento → Collision → obj_player
-2. Adicione a ação **Main2** → **Show Message**
+2. Adicione a ação **Main2** → **Mostrar mensagem**
    - Message: `Ouch! You hit a spike!`
-3. Adicione a ação **Main1** → **Restart Room**
+3. Adicione a ação **Main1** → **Reiniciar sala**
 
 ![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
@@ -212,9 +212,9 @@ A bandeira termina o nível quando o jogador a alcança.
 
 **Evento: Collision with obj_player**
 1. Adicionar Evento → Collision → obj_player
-2. Adicione a ação **Output** → **Show Message**
+2. Adicione a ação **Output** → **Mostrar mensagem**
    - Message: `Level Complete!`
-3. Adicione a ação **Room** → **Next Room** (ou **Restart Room** para um único nível)
+3. Adicione a ação **Sala** → **Sala seguinte** (ou **Reiniciar sala** para um único nível)
 
 O texto de Show Message é uma string fixa — ele não pode embutir um valor
 ao vivo como a pontuação. O HUD do controlador de jogo (Passo 9) já mostra
@@ -233,11 +233,11 @@ O controlador de jogo exibe a pontuação.
 
 **Evento: Draw**
 1. Adicionar Evento → Draw → Draw
-2. Adicione a ação **Draw** → **Draw Text** (Text: `Score:`, X: `10`, Y: `10`)
-3. Adicione a ação **Draw** → **Draw Variable** (Variable: `score`, X: `70`, Y: `10`)
+2. Adicione a ação **Jogo** → **Desenhar texto** (Text: `Score:`, X: `10`, Y: `10`)
+3. Adicione a ação **Desenho** → **Desenhar variável** (Variable: `score`, X: `70`, Y: `10`)
 
-Opcional: adicione um par **Draw Text** (`Lives:`, X `10`, Y `30`) +
-**Draw Variable** (`lives`, X `70`, Y `30`) da mesma forma, assim que a
+Opcional: adicione um par **Desenhar texto** (`Lives:`, X `10`, Y `30`) +
+**Desenhar variável** (`lives`, X `70`, Y `30`) da mesma forma, assim que a
 melhoria Sistema de Vidas abaixo estiver no lugar.
 
 ![obj_game_controller's Object Events panel: a Draw event with one Draw Text and one Draw Variable action, with no sprite set](images/tutorial-platformer-09-controller-object.png)
@@ -300,7 +300,7 @@ X = Espinho    === = Plataforma
 
 ### Adicionar Altura de Salto Variável
 
-Adicione um evento **Step** a `obj_player` com **Control** → **Execute
+Adicione um evento **Passo** a `obj_player` com **Controle** → **Execute
 Code** (Python real — `self` é a instância atual, `keyboard` permite
 verificar uma tecla mantida pressionada pelo nome):
 
@@ -315,22 +315,22 @@ if self.vspeed < 0 and not keyboard.check('up'):
 Isso pode ser feito inteiramente com ações estruturadas — nenhum código
 necessário.
 
-**Evento: Create** — Adicione a ação **Control** → **Set Variable**
+**Evento: Create** — Adicione a ação **Controle** → **Definir variável**
 (Variable: `jumps_left`, Value: `2`)
 
-**Evento: Collision with obj_ground** — depois de **Stop Movement**,
-adicione **Control** → **Set Variable** (Variable: `jumps_left`, Value:
+**Evento: Collision with obj_ground** — depois de **Parar movimento**,
+adicione **Controle** → **Definir variável** (Variable: `jumps_left`, Value:
 `2`) para recarregar ambos os saltos na aterrissagem.
 
 Substitua a única ação do evento **Key Press → Up Arrow** existente por
 três, em ordem:
-1. **Control** → **Test Variable** (Variable: `jumps_left`, Value: `0`,
+1. **Controle** → **Testar variável** (Variable: `jumps_left`, Value: `0`,
    Operation: `greater`)
-2. **Control** → **Start Block**
-3. **Move** → **Set Vertical Speed** (`-10`)
-4. **Control** → **Set Variable** (Variable: `jumps_left`, Value: `-1`,
-   **Relative** marcado)
-5. **Control** → **End Block**
+2. **Controle** → **Início de bloco**
+3. **Move** → **Definir velocidade vertical** (`-10`)
+4. **Controle** → **Definir variável** (Variable: `jumps_left`, Value: `-1`,
+   **Relativo** marcado)
+5. **Controle** → **Fim de bloco**
 
 O par Start/End Block significa que ambas as ações dentro dele só são
 executadas quando o Test Variable acima é verdadeiro — o mesmo padrão de
@@ -341,14 +341,14 @@ próprias condições.
 
 1. Crie `obj_moving_platform` como filho de `obj_platform`
 
-**Evento: Create** — Adicione a ação **Control** → **Execute Code**:
+**Evento: Create** — Adicione a ação **Controle** → **Executar código**:
 
 ```python
 self.start_x = self.x
 self.hspeed = 2
 ```
 
-**Evento: Step** — Adicione a ação **Control** → **Execute Code**:
+**Evento: Step** — Adicione a ação **Controle** → **Executar código**:
 
 ```python
 if self.x > self.start_x + 100:
@@ -365,23 +365,23 @@ elif self.x < self.start_x:
 (Directions: `right`, Speed: `2`)
 
 **Evento: Collision with obj_ground** — Adicione a ação **Move** →
-**Reverse Horizontal** (dá meia-volta nas paredes; combinado com o fato
+**Inverter horizontal** (dá meia-volta nas paredes; combinado com o fato
 de `obj_ground` ser Solid, o inimigo nunca pode sair da borda de uma
 plataforma para o chão abaixo nem atravessar uma parede)
 
 **Evento: Collision with obj_player** — este evento dispara em
 `obj_enemy`, então `self` é o inimigo e `other` é o jogador. Adicione a
-ação **Control** → **Test Expression**, com ações Then/Else aninhadas (o
+ação **Controle** → **Testar expressão**, com ações Then/Else aninhadas (o
 mesmo padrão que o exemplo incluído `plateforme_3` usa exatamente para
 esta verificação de "pisão", apenas espelhado porque a verificação vive
 no inimigo aqui em vez do jogador):
    - Expression: `other.vspeed > 0 and other.y - other.vspeed < y - 16`
-   - Then Actions: **Control** → **Execute Code** com `other.vspeed = -5`
+   - Then Actions: **Controle** → **Executar código** com `other.vspeed = -5`
      (um pequeno quique para o jogador — `set_vspeed` não tem opção
      "applies to other", então este é o único ponto que precisa de uma
      linha de Python real em vez de uma ação estruturada), depois
-     **Instance** → **Destroy Instance** (self)
-   - Else Actions: **Room** → **Restart Room** (o jogador morre)
+     **Instância** → **Destruir instância** (self)
+   - Else Actions: **Sala** → **Reiniciar sala** (o jogador morre)
 
 `other.vspeed > 0 and other.y - other.vspeed < y - 16` verifica a posição
 *do jogador* de antes do movimento de queda deste frame (usando o próprio
@@ -392,16 +392,16 @@ versão ingênua `other.y < y - 16` é frágil.
 
 ### Adicionar Sistema de Vidas
 
-No evento **Create** de `obj_game_controller`, adicione **Score** → **Set
+No evento **Criação** de `obj_game_controller`, adicione **Pontuação** → **Set
 Lives** (Value: `3`).
 
 Quando o jogador morre (a colisão com o espinho e o ramo Else do inimigo
-acima), substitua **Restart Room** por **Score** → **Set Lives** (Value:
-`-1`, **Relative** marcado) — a room reinicia automaticamente porque o
-evento **No More Lives** só dispara quando as vidas realmente chegam a 0.
+acima), substitua **Reiniciar sala** por **Pontuação** → **Definir vidas** (Value:
+`-1`, **Relativo** marcado) — a room reinicia automaticamente porque o
+evento **Sem vidas** só dispara quando as vidas realmente chegam a 0.
 Adicione esse evento a `obj_game_controller`: **Other Events** → **No More
-Lives** → **Output** → **Show Message** (`Game Over!`) → **Room** →
-**Restart Game**.
+Lives** → **Output** → **Mostrar mensagem** (`Game Over!`) → **Jogo** →
+**Reiniciar jogo**.
 
 ---
 

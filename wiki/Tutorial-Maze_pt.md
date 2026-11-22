@@ -112,9 +112,9 @@ A saída termina o nível quando o jogador a alcança.
 
 **Evento: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Output** → **Show Message**
+2. Add Action: **Output** → **Mostrar mensagem**
    - Message: `You Win!`
-3. Add Action: **Room** → **Next Room** (ou **Restart Room** para um único nível)
+3. Add Action: **Sala** → **Sala seguinte** (ou **Reiniciar sala** para um único nível)
 
 O texto de Show Message é uma string fixa — não pode incluir um valor
 dinâmico como o tempo decorrido. O cronômetro permanece visível no HUD
@@ -133,10 +133,10 @@ Moedas adicionam à pontuação quando coletadas.
 
 **Evento: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Score** → **Set Score**
+2. Add Action: **Pontuação** → **Definir pontuação**
    - New Score: `10`
    - Marque "Relative" para adicionar 10 pontos
-3. Add Action: **Instance** → **Destroy Instance**
+3. Add Action: **Instância** → **Destruir instância**
    - Applies to: Self
 
 ![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
@@ -152,7 +152,7 @@ O jogador se move suavemente usando as teclas de seta.
 
 ### 6.1 Movimento
 
-Adicione quatro eventos **Keyboard (held)** mais um evento **No Key**,
+Adicione quatro eventos **Teclado (mantido)** mais um evento **No Key**,
 cada um com uma ação **Move** → **Set Horizontal/Vertical Speed**:
 
 | Evento | Ação |
@@ -167,7 +167,7 @@ cada um com uma ação **Move** → **Set Horizontal/Vertical Speed**:
 
 **Evento: Collision with obj_wall**
 1. Add Event → Collision → `obj_wall`
-2. Add Action: **Move** → **Stop Movement**
+2. Add Action: **Move** → **Parar movimento**
 
 Nenhum código manual de verificação de posição é necessário aqui. O
 loop de movimento deste motor já impede que uma instância se mova para
@@ -187,8 +187,8 @@ O game controller gerencia o cronômetro e exibe informações.
 1. Crie um novo objeto chamado `obj_game_controller`
 2. Nenhum sprite necessário
 
-**Evento: Create** — inicia o cronômetro, usando **Control** →
-**Execute Code** (a ação Execute Code deste projeto executa Python
+**Evento: Create** — inicia o cronômetro, usando **Controle** →
+**Executar código** (a ação Execute Code deste projeto executa Python
 real, não GameMaker Language):
 
 ```python
@@ -202,7 +202,7 @@ self.timer += 1.0 / game.fps
 ```
 
 **Evento: Draw** — constrói o HUD com comandos reais da fila de
-desenho. Adicione três ações **Draw** → **Draw Text**:
+desenho. Adicione três ações **Jogo** → **Desenhar texto**:
 
 | Ação Draw Text | Texto | Posição |
 |---|---|---|
@@ -210,7 +210,7 @@ desenho. Adicione três ações **Draw** → **Draw Text**:
 | 2ª | `Time:` | X `10`, Y `30` |
 | 3ª | `Coins:` | X `10`, Y `50` |
 
-depois três ações **Draw** → **Draw Variable** logo em seguida, para
+depois três ações **Desenho** → **Desenhar variável** logo em seguida, para
 mostrar os valores em tempo real ao lado de cada rótulo:
 
 | Ação Draw Variable | Variável | Posição |
@@ -220,7 +220,7 @@ mostrar os valores em tempo real ao lado de cada rótulo:
 | 3ª | *(veja abaixo)* | X `70`, Y `50` |
 
 Não existe um contador integrado de "moedas restantes" para o Draw
-Variable apontar — adicione mais uma ação **Control** → **Execute
+Variable apontar — adicione mais uma ação **Controle** → **Execute
 Code**, logo antes das ações Draw Variable, para calculá-lo em uma
 variável de instância que o Draw Variable possa então ler:
 
@@ -307,41 +307,41 @@ Horizontal** (faz o inimigo virar ao bater em uma parede — nenhum
 código necessário; combinado com a colisão sólida integrada do Passo
 6.2, o inimigo nunca consegue atravessar uma parede)
 
-**Evento: Collision with obj_player** — Add Action: **Room** →
-**Restart Room**
+**Evento: Collision with obj_player** — Add Action: **Sala** →
+**Reiniciar sala**
 
 ### Adicionar Sistema de Vidas
 
-No evento **Create** de `obj_game_controller`, adicione **Score** →
-**Set Lives** (Value: `3`).
+No evento **Criação** de `obj_game_controller`, adicione **Pontuação** →
+**Definir vidas** (Value: `3`).
 
 No evento **Collision with obj_player** de `obj_enemy`, substitua
-**Restart Room** por duas ações: **Score** → **Set Lives** (Value:
-`-1`, **Relative** marcado), depois **Move** → **Jump to Start
+**Reiniciar sala** por duas ações: **Pontuação** → **Definir vidas** (Value:
+`-1`, **Relativo** marcado), depois **Move** → **Jump to Start
 Position** (aplicada ao jogador via **Applies to: Other**) para
 reaparecer o jogador em vez de reiniciar todo o labirinto.
 
 Adicione mais um evento a `obj_game_controller`: **Other Events** →
-**No More Lives** — isso é acionado automaticamente assim que as vidas
+**Sem vidas** — isso é acionado automaticamente assim que as vidas
 chegam a 0, então você não precisa verificar isso manualmente. Adicione
-**Output** → **Show Message** (`Game Over!`) seguido de **Room** →
-**Restart Game**.
+**Output** → **Mostrar mensagem** (`Game Over!`) seguido de **Jogo** →
+**Reiniciar jogo**.
 
 ### Adicionar Chaves e Portas Trancadas
 
-1. Crie `obj_key` — ao colidir com `obj_player`, **Set Variable**
+1. Crie `obj_key` — ao colidir com `obj_player`, **Definir variável**
    (Variable: `global.has_key`, Value: `true`, Scope: `global`), depois
-   **Destroy Instance** (self).
+   **Destruir instância** (self).
 2. Crie `obj_locked_door`, com Solid marcado. Dê a ele um evento
-   **Step** com **Control** → **Test Variable** (Variable:
-   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
-   **Destroy Instance** (self) — a porta desaparece (e para de
+   **Passo** com **Controle** → **Testar variável** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Instância** →
+   **Destruir instância** (self) — a porta desaparece (e para de
    bloquear) assim que a chave é coletada.
 
 ### Adicionar Múltiplos Níveis
 
 1. Crie salas adicionais (`room_maze2`, `room_maze3`)
-2. Em `obj_exit`, use a ação **Next Room** em vez de **Restart Room**
+2. Em `obj_exit`, use a ação **Sala seguinte** em vez de **Reiniciar sala**
 
 ### Adicionar Efeitos Sonoros
 
