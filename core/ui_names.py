@@ -7,12 +7,27 @@ translates 49 of 186 action names in French). Extensions supply tables instead, 
 ``PLUGIN_UI_TRANSLATIONS = {kind: {english: {lang: text}}}``; the plugin loader registers them here.
 
 Kinds in use: ``action``, ``action_description``, ``param``, ``param_description``, ``choice``,
-``event``, ``event_description``, ``category``. Qt-free; the current language comes from the
-LanguageManager unless given.
+``event``, ``event_description``, ``category`` (extensions, English-keyed), and the ``core.*`` kinds
+of ``config/ui_names`` (docs/CORE_NAMES_I18N_PLAN.md), loaded on first lookup. Qt-free; the current
+language comes from the LanguageManager unless given.
 """
 from typing import Dict, Optional
 
 _TABLES: Dict[str, Dict[str, Dict[str, str]]] = {}
+_CORE_LOADED = False
+
+
+def _ensure_core() -> None:
+    """Register config/ui_names once (the core tables), before the first lookup."""
+    global _CORE_LOADED
+    if _CORE_LOADED:
+        return
+    _CORE_LOADED = True
+    try:
+        from config.ui_names import all_tables
+    except ImportError:
+        return
+    register_ui_translations(all_tables())
 
 
 def register_ui_translations(mapping) -> int:
@@ -41,9 +56,12 @@ def ui_name(kind: str, english, lang: Optional[str] = None):
     lang = lang or _current_language()
     if lang == "en":
         return english
+    _ensure_core()
     return _TABLES.get(kind, {}).get(english, {}).get(lang) or english
 
 
 def clear_ui_translations() -> None:
-    """For tests."""
+    """For tests. The core tables load again on the next lookup."""
+    global _CORE_LOADED
     _TABLES.clear()
+    _CORE_LOADED = False

@@ -122,10 +122,17 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
     `set_hspeed`), not English name: *Stop Sound* is both `stop_sound` and `microbit_stop_sound`, with
     different French names. Kinds are prefixed `core.` so they never mix with an extension's
     English-keyed table.
-- [ ] **U1 — Tables, seeded.** `config/ui_names/` with one module per language, generated once from
+- [x] **U1 — Tables, seeded.** `config/ui_names/` with one module per language, generated once from
   `tools/action_ref_i18n.py` (actions, descriptions, parameter descriptions, categories, event
   descriptions) plus the French `.ts` names chosen in D1; registered at startup. Test: every seeded
   entry equals its wiki source; French accents; no French text in another language's table.
+  *Done 2026-11-22:* `config/ui_names/{fr,de,es,it,pt,ru,sl,uk}.py` (`NAMES = {kind: {key: text}}`),
+  generated once from `tools/action_ref_i18n.py` and proven equal to it entry by entry (0 mismatches;
+  micro:bit actions left to the extension's own table). Kinds `core.action`, `core.action_description`
+  (by key), `core.param_description`, `core.category` (by English), `core.event_description` (by key).
+  `core.ui_names` loads them on first lookup -- no registration step. The D1 French choices are applied
+  in U2, after the byte-identity proof. Plain imports, not importlib, so a frozen IDE bundles them.
+  Guard: `tests/test_core_ui_names.py`.
 - [ ] **U2 — The wiki reads them.** `tools/gen_action_reference.py` takes names, descriptions, notes and
   categories from `config/ui_names`; regenerate all nine languages; **byte-identical** wiki output is
   the proof; delete the now-duplicated tables from `action_ref_i18n.py` (its page chrome stays).
