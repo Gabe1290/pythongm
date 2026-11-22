@@ -220,7 +220,7 @@ Dieses Preset aktiviert **21** Ereignistypen und **123** Aktionstypen.
 | Partikelsystem entfernen | `destroy_particle_system` | — |
 | Partikel strömen lassen | `stream_particles` | `particle_type`, `number` |
 
-### Score/Lives/Health
+### Punkte/Leben/Gesundheit
 
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|

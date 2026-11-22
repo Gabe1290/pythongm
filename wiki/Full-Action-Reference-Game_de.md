@@ -228,7 +228,7 @@ Zeigt eine Nachricht und hält das Spiel an, bis der Spieler sie wegklickt
 - [Zeichnen](Full-Action-Reference-Drawing_de) (11)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_de) (5)
+- [Punkte/Leben/Gesundheit](Full-Action-Reference-Score-Lives-Health_de) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_de) (16)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

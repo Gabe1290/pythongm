@@ -201,7 +201,7 @@ Schriftart und Ausrichtung für das nachfolgende Textzeichnen festlegen
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (20)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_de) (5)
+- [Punkte/Leben/Gesundheit](Full-Action-Reference-Score-Lives-Health_de) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_de) (16)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

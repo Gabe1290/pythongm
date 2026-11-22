@@ -163,7 +163,7 @@ Dieses Preset aktiviert **20** Ereignistypen und **68** Aktionstypen.
 | Zeichenfarbe festlegen | `set_draw_color` | `color` |
 | Zeichenschrift festlegen | `set_draw_font` | `font`, `halign`, `valign` |
 
-### Score/Lives/Health
+### Punkte/Leben/Gesundheit
 
 | Aktion | Blockname | Parameter |
 |--------|------------|------------|

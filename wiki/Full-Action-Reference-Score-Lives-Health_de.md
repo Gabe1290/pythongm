@@ -1,4 +1,4 @@
-# Score/Lives/Health
+# Punkte/Leben/Gesundheit
 
 *[Startseite](Home_de) | [Voreinstellungs-Leitfaden](Preset-Guide_de) | [Ereignisreferenz](Event-Reference_de)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Name** | `clear_highscore` |
 | **Symbol** | 🗑️🏆 |
-| **Kategorie** | Score/Lives/Health |
+| **Kategorie** | Punkte/Leben/Gesundheit |
 
 Alle Einträge der Bestenliste löschen
 
@@ -22,7 +22,7 @@ Alle Einträge der Bestenliste löschen
 |----------|-------|
 | **Name** | `show_highscore` |
 | **Symbol** | 🏆 |
-| **Kategorie** | Score/Lives/Health |
+| **Kategorie** | Punkte/Leben/Gesundheit |
 
 Den Bestenlisten-Dialog anzeigen
 
@@ -39,7 +39,7 @@ Den Bestenlisten-Dialog anzeigen
 |----------|-------|
 | **Name** | `test_health` |
 | **Symbol** | ❓💚 |
-| **Kategorie** | Score/Lives/Health |
+| **Kategorie** | Punkte/Leben/Gesundheit |
 
 Bedingung: die aktuelle Gesundheit mit einem Wert vergleichen
 
@@ -54,7 +54,7 @@ Bedingung: die aktuelle Gesundheit mit einem Wert vergleichen
 |----------|-------|
 | **Name** | `test_lives` |
 | **Symbol** | ❓❤️ |
-| **Kategorie** | Score/Lives/Health |
+| **Kategorie** | Punkte/Leben/Gesundheit |
 
 Bedingung: die Lebenszahl mit einem Wert vergleichen
 
@@ -69,7 +69,7 @@ Bedingung: die Lebenszahl mit einem Wert vergleichen
 |----------|-------|
 | **Name** | `test_score` |
 | **Symbol** | ❓🏆 |
-| **Kategorie** | Score/Lives/Health |
+| **Kategorie** | Punkte/Leben/Gesundheit |
 
 Bedingung: die Punktzahl mit einem Wert vergleichen
 

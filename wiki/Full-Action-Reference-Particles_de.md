@@ -144,7 +144,7 @@ Stößt bei jedem Schritt fortlaufend Partikel aus dem zuletzt erstellten Emitte
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (20)
 - [Zeichnen](Full-Action-Reference-Drawing_de) (11)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_de) (5)
+- [Punkte/Leben/Gesundheit](Full-Action-Reference-Score-Lives-Health_de) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_de) (16)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)
