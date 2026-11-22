@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 from config.blockly_config import BLOCK_REGISTRY  # noqa: E402
 from config.blockly_translations import BLOCK_TRANSLATIONS, CATEGORY_TRANSLATIONS  # noqa: E402
 
-LANGS = ("de", "es", "fr", "it", "ru", "sl", "uk", "pl")
+LANGS = ("de", "es", "fr", "it", "ru", "sl", "uk", "pl", "pt")
 ALL_BLOCKS = [b for blocks in BLOCK_REGISTRY.values() for b in blocks]
 
 
