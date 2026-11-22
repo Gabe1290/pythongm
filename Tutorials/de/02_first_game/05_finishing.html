@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Der letzte Schliff</h1>
+
+    <p>Jetzt polieren wir dein Spiel, damit es sich fertig anfühlt!</p>
+
+    <h2>Den Spieler auf dem Bildschirm halten</h2>
+    <div class="step">
+        <p>Öffne <code>obj_player</code> im Blockly-Editor und füge ein Ereignis <strong>Jeden Schritt</strong>
+        mit Randprüfungen hinzu:</p>
+        <ul>
+            <li><strong>Wenn</strong> <em>meine Position</em>: <em>x-Position</em> &lt; 0 <em>dann</em> <strong>Variable setzen</strong> x auf 0</li>
+            <li><strong>Wenn</strong> <em>meine Position</em>: <em>x-Position</em> &gt; 608 <em>dann</em> <strong>Variable setzen</strong> x auf 608 (608 = Raumbreite 640 &minus; Sprite-Breite 32)</li>
+        </ul>
+        <p>So kann der Spieler den Bildschirm nicht verlassen.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Eine Hintergrundfarbe festlegen</h2>
+    <div class="step">
+        <p>Öffne <code>room_game</code> im Raum-Editor und setze die Hintergrundfarbe
+        auf ein schönes Himmelblau oder eine dunkle Weltraumfarbe.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Glückwunsch!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Dein erstes Spiel ist fertig!</strong></p>
+        <p>Drücke <strong>F5</strong>, um das fertige Spiel zu spielen. Fange so viele Sterne wie möglich!</p>
+    </div>
+
+    <h2>Ideen für Herausforderungen</h2>
+    <div class="challenge">
+        <strong>Want to go further? Try these:</strong>
+        <ul>
+            <li>Füge Leben hinzu &mdash; verliere ein Leben, wenn ein Stern unten ankommt</li>
+            <li>Lass die Sterne schneller fallen, wenn der Punktestand steigt</li>
+            <li>Füge verschiedenfarbige Sterne mit unterschiedlichen Punktwerten hinzu</li>
+            <li>Füge ein „böses“ Objekt (eine Bombe) hinzu, das das Spiel beendet, wenn man es fängt</li>
+            <li>Füge Soundeffekte beim Fangen von Sternen hinzu</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Wie geht es weiter?</strong><br>
+        Entdecke weitere Tutorials über springende Bälle, Rätsel und Jump&rsquo;n&rsquo;Runs!
+    </div>
+</body>
+</html>

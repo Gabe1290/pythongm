@@ -18,12 +18,10 @@
             "description": "Erstelle ein einfaches Spiel, in dem du fallende Sterne fängst",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_add_movement.html",
-                "05_add_star.html",
-                "06_scoring.html",
-                "07_finishing.html"
+                "02_moving_player.html",
+                "03_falling_stars.html",
+                "04_scoring.html",
+                "05_finishing.html"
             ],
             "thumbnail": "thumbnails/02_first_game.png"
         },

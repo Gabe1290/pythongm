@@ -10,6 +10,8 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -19,34 +21,50 @@
         <img src="thumbnails/02_first_game.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#11088;</p>
         <p><strong>Fange den Stern!</strong></p>
-        <p>Bewege deinen Spieler, um fallende Sterne zu fangen und Punkte zu sammeln!</p>
+        <p>Bewege deinen Spieler, fange fallende Sterne und sammle Punkte!</p>
     </div>
 
-    <h2>Was wir erstellen werden</h2>
-    <p>In diesem Tutorial baust du ein komplettes Spiel von Grund auf:</p>
-    <ul>
-        <li>Einen Spieler, der sich mit den Pfeiltasten nach links und rechts bewegt</li>
-        <li>Sterne, die von oben herunterfallen</li>
-        <li>Ein Punktesystem, das zählt, wie viele Sterne du fängst</li>
-        <li>Ein Game Over, wenn du zu viele Sterne verpasst</li>
-    </ul>
+    <h2>Was wir bauen</h2>
+    <p>In diesem Tutorial baust du Schritt für Schritt ein komplettes Spiel.
+    Nach jeder Phase hast du etwas Spielbares!</p>
 
-    <h2>Was du lernen wirst</h2>
+    <h2>So funktioniert dieses Tutorial</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Ein Spieler, der sich bewegt</strong><br>
+        Erstelle einen Spieler, der sich nach links und rechts bewegt. Teste ihn sofort!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Fallende Sterne</strong><br>
+        Lass Sterne vom Himmel fallen. Weiche ihnen aus oder versuche, sie zu erreichen!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Fangen und Punkte</strong><br>
+        Fange Sterne, sammle Punkte und zeige den Punktestand auf dem Bildschirm an.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Der letzte Schliff</strong><br>
+        Halte den Spieler auf dem Bildschirm und füge Herausforderungen hinzu.
+    </div>
+
+    <h2>Was du lernst</h2>
     <ul>
-        <li>Sprites erstellen und importieren</li>
-        <li>Objekte mit Verhaltensweisen erstellen</li>
-        <li>Tastaturereignisse für die Spielersteuerung verwenden</li>
-        <li>Kollisionserkennung zwischen Objekten</li>
-        <li>Variablen für die Punkteverfolgung verwenden</li>
-        <li>Text auf dem Bildschirm anzeigen</li>
+        <li>Sprites und Objekte erstellen</li>
+        <li>Tastatur-Ereignisse zur Steuerung des Spielers verwenden</li>
+        <li>Objekte automatisch mit einem Spawner erzeugen</li>
+        <li>Kollisionen zwischen Objekten erkennen</li>
+        <li>Punkte zählen und anzeigen</li>
     </ul>
 
     <div class="highlight">
-        <strong>Benötigte Zeit:</strong> Etwa 15-20 Minuten
+        <strong>Benötigte Zeit:</strong> etwa 15&ndash;20 Minuten
     </div>
 
     <div class="info">
-        <strong>Bereit?</strong> Klicke auf "Weiter", um mit dem Erstellen deiner Spielgrafiken zu beginnen!
+        <strong>Bereit?</strong> Klicke auf „Weiter“, um zu beginnen!
     </div>
 </body>
 </html>

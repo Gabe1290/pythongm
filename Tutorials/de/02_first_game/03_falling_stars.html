@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Fallende Sterne</h1>
+
+    <p>Jetzt lassen wir oben am Bildschirm Sterne erscheinen und herunterfallen!</p>
+
+    <h2>Das Stern-Sprite erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_star</code></li>
+            <li>Zeichne einen Stern oder eine Münze (32&times;32 Pixel) und speichere</li>
+        </ol>
+    </div>
+
+    <h2>Das Stern-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_star</code></li>
+            <li>Setze das Sprite auf <code>spr_star</code></li>
+        </ol>
+    </div>
+
+    <h2>Sterne fallen lassen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_star</code> &rarr; Reiter <strong>Blockly</strong></li>
+            <li>Füge diesen Block hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">3</span></span>
+        </div>
+        <p>Jeder Stern fällt mit Geschwindigkeit 3 nach unten, sobald er erscheint.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Einen Spawner erstellen</h2>
+    <p>Wir brauchen ein unsichtbares Objekt, das Sterne an zufälligen Positionen erzeugt.</p>
+
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_spawner</code></li>
+            <li><strong>Kein Sprite nötig</strong> (es ist unsichtbar)</li>
+        </ol>
+    </div>
+
+    <h2>Den Spawner programmieren</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke auf <code>obj_spawner</code> &rarr; Reiter <strong>Blockly</strong></li>
+            <li>Füge diese Blöcke hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">Setze Alarm 0 auf <span class="block-num">60</span> Schritte</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Alarm 0 auslöst</span><br>
+            <span class="block block-instance block-indent">Erstelle obj_star bei x: random y: <span class="block-num">0</span></span><br>
+            <span class="block block-move block-indent">Setze Alarm 0 auf <span class="block-num">60</span> Schritte</span>
+        </div>
+        <p>Das Ereignis „Wenn erstellt“ startet einen Zeitgeber. Wenn der Alarm auslöst (jede Sekunde),
+        erzeugt er oben am Bildschirm einen Stern an einer zufälligen x-Position und startet den Zeitgeber neu.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Den Spawner in den Raum setzen</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_game</code></li>
+            <li>Setze <code>obj_spawner</code> irgendwohin (er ist unsichtbar, die Position spielt keine Rolle)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Sterne sollten oben an zufälligen Positionen herunterfallen</li>
+            <li>Bewege den Spieler, um ihnen auszuweichen oder sie zu erreichen</li>
+            <li>Die Sterne fliegen vorerst durch den Spieler hindurch &mdash; das Fangen kommt als Nächstes!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Kollisionen und Punkte hinzuzufügen.
+    </div>
+</body>
+</html>
