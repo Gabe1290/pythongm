@@ -168,6 +168,21 @@ height would exceed 2x the screen, using pygame's measured row rule
 Still open: **block_world_2 (~17-18 fps) and block_world_1 standing still (~25 fps)** are
 under 30 on this machine. Their cost is the per-strip Python, not pixels (Phase 2 below).
 
+**Same day, the remaining lever measured (a visible choice, NOT applied -- the owner decides).**
+Phase 2.1 did not pay (see "Measured and rejected"). On this machine, same sitting, the two
+samples' own settings (render_distance 10, default 160 columns) vs alternatives:
+
+| setting | bw1 static | bw1 walking | bw2 static | bw2 walking |
+|---|---|---|---|---|
+| distance 10, 160 columns (today) | 25.3 | 34.2 | 17.3 | 18.0 |
+| distance 8 | 28.2 | 38.0 | 26.6 | 26.7 |
+| 128 columns | 24.8 | 36.1 | 18.6 | 18.3 |
+| distance 8 + 128 columns | **32.1** | **43.2** | **30.6** | **31.7** |
+
+Distance 8 + 128 columns meets 30 fps everywhere. The cost is visible: in block_world_2 the far
+platform is narrower and hazier and the stone layer behind it fades into the fog (no hard edge --
+Phase 1's fog hides the cut). It is a two-number change in each sample's Enable Block World View.
+
 
 
 Measured with a spike against `block_world_2`'s real shape (9,000 strips, 4px
@@ -238,6 +253,11 @@ first, because **this is the expensive one**.
 - **`Surface.blits()` on its own.** Measured **slower** than individual blits
   for this workload — building the sequence costs more than the saved call
   overhead. It only pays combined with 2.1.
+- **2.1, reusing the strip's scale destination** (2026-11-22). The spike's 1.38x on the surface ops did
+  not survive the real renderer: a window into one tall surface per width was ~5% SLOWER on
+  block_world_2 (creating a subsurface per strip costs more than allocating), and an exact-size cache
+  keyed by (width, height, format) was flat within noise (building the key per strip costs what the
+  allocation did). Two same-sitting A/B rounds each, pixel-identical, reverted.
 - **More occlusion culling.** The August pass already showed it is a net loss
   on open terrain: long sightlines over rolling ground rarely occlude, so
   every column pays the bookkeeping. Same reason merging fails.
