@@ -144,7 +144,7 @@ Emette particelle in continuo, a ogni passo, dall'emettitore creato più di rece
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (20)
 - [Disegno](Full-Action-Reference-Drawing_it) (11)
 - [Rete](Full-Action-Reference-Network-Actions_it) (22)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_it) (5)
+- [Punteggio/Vite/Salute](Full-Action-Reference-Score-Lives-Health_it) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_it) (16)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

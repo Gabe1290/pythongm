@@ -1,4 +1,4 @@
-# Score/Lives/Health
+# Punteggio/Vite/Salute
 
 *[Home](Home_it) | [Guida ai preset](Preset-Guide_it) | [Riferimento eventi](Event-Reference_it)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nome** | `clear_highscore` |
 | **Icona** | 🗑️🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Punteggio/Vite/Salute |
 
 Cancella tutte le voci della tabella dei record
 
@@ -22,7 +22,7 @@ Cancella tutte le voci della tabella dei record
 |----------|-------|
 | **Nome** | `show_highscore` |
 | **Icona** | 🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Punteggio/Vite/Salute |
 
 Mostra la finestra della tabella dei record
 
@@ -39,7 +39,7 @@ Mostra la finestra della tabella dei record
 |----------|-------|
 | **Nome** | `test_health` |
 | **Icona** | ❓💚 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Punteggio/Vite/Salute |
 
 Condizione: confronta la salute attuale con un valore
 
@@ -54,7 +54,7 @@ Condizione: confronta la salute attuale con un valore
 |----------|-------|
 | **Nome** | `test_lives` |
 | **Icona** | ❓❤️ |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Punteggio/Vite/Salute |
 
 Condizione: confronta il numero di vite con un valore
 
@@ -69,7 +69,7 @@ Condizione: confronta il numero di vite con un valore
 |----------|-------|
 | **Nome** | `test_score` |
 | **Icona** | ❓🏆 |
-| **Categoria** | Score/Lives/Health |
+| **Categoria** | Punteggio/Vite/Salute |
 
 Condizione: confronta il punteggio con un valore
 

@@ -63,7 +63,7 @@ Configura una vista di camera: quale parte della stanza mostra, dove si disegna 
 - [Disegno](Full-Action-Reference-Drawing_it) (11)
 - [Rete](Full-Action-Reference-Network-Actions_it) (22)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_it) (5)
+- [Punteggio/Vite/Salute](Full-Action-Reference-Score-Lives-Health_it) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_it) (16)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

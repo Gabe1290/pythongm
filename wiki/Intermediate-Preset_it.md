@@ -220,7 +220,7 @@ Questo preset abilita **21** tipi di eventi e **123** tipi di azioni.
 | Elimina sistema di particelle | `destroy_particle_system` | — |
 | Emetti particelle in continuo | `stream_particles` | `particle_type`, `number` |
 
-### Score/Lives/Health
+### Punteggio/Vite/Salute
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|

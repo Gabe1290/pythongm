@@ -201,7 +201,7 @@ Imposta il font e l'allineamento per il successivo disegno del testo
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (20)
 - [Rete](Full-Action-Reference-Network-Actions_it) (22)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
-- [Score/Lives/Health](Full-Action-Reference-Score-Lives-Health_it) (5)
+- [Punteggio/Vite/Salute](Full-Action-Reference-Score-Lives-Health_it) (5)
 - [micro:bit](Full-Action-Reference-Microbit-Actions_it) (16)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)
