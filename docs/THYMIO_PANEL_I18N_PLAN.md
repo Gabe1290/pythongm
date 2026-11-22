@@ -78,7 +78,7 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
 - [x] **U1 — The helper** (`core/ui_names.py`, done; extension tables then English -- the Qt-catalogue step is left for the core follow-up, which is the only user). `ui_name(kind, english)` in core (extension tables, then Qt catalogue, then
   English) + the plugin-loader hook for `PLUGIN_UI_TRANSLATIONS`. Tests: lookup order, fallback,
   unknown language.
-- [ ] **U2 — Thymio's table, eleven languages.** ~186 strings. Reuse the wording already chosen for the
+- [x] **U2 — Thymio's table, eleven languages.** ~186 strings. Reuse the wording already chosen for the
   Configure dialog (`block_translations.py`) where the same thing is named, so the dialog, the blocks
   and the panel agree. Guard test: every name, description, parameter label, choice label and category
   has all eleven languages; French accents; same-word list explicit.
