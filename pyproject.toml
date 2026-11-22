@@ -69,6 +69,7 @@ py-modules = ["main"]
 packages = [
     "actions",
     "config",
+    "config.ui_names",
     "core",
     "core.ide",
     "dialogs",
