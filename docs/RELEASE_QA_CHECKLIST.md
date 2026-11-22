@@ -841,8 +841,12 @@ each row names what used to be wrong so a regression is recognisable.
   by eye): in **pl / pt / ja / zh**, *Tools → Configure Action Blocks…* shows every category and block
   translated; the editors' shared toolbar (**Float / Attach**, auto-save) is translated in every
   editor and every language (it used to stay English even in French); **File → Send to Thymio
-  robot…** and **Stop Thymio robot** are translated; Thymio's own Configure dialog shows translated
-  **category** names (its block names stay English on purpose). In **ru / sl**, the action configure
+  robot…** and **Stop Thymio robot** are translated; Thymio's own Configure dialog shows its
+  categories, blocks and events translated; in **fr / de / it / pl / uk** the **Thymio blocks in the
+  Blockly workspace** show translated labels, tooltips and drop-down entries, and a project saved
+  before still loads with the same choices selected. (The Thymio events panel and action list stay
+  English on purpose. In es / ru / sl / pt / ja / zh the whole Blockly workspace is still English --
+  known, see TODO.md.) In **ru / sl**, the action configure
   dialog, the If-condition editor and the multi-action editor show Russian / Slovenian, **not French**.
 - L [ ] M [ ] W [ ] **A native speaker reads it.** Several hundred strings per language were added
   on 2026-11-21/22 (see `docs/I18N_CATCHUP_2026-11-21.md` and

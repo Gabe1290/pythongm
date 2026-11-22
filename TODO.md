@@ -898,6 +898,15 @@ Other:
 
 ## Translations / i18n
 
+### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
+
+`editors/object_editor/blockly/blockly_i18n.js`'s `BLOCK_MESSAGES` / `CATEGORY_MESSAGES` /
+`BLOCKLY_MSG_TRANSLATIONS` (and now `THYMIO_BLOCK_MESSAGES`) have fr, pl, de, it and uk only. In
+**es, ru, sl, pt, ja and zh every block in the Blockly workspace -- core and Thymio -- shows
+English**, while the rest of the IDE (menus, dialogs, the Configure Blocks dialog) is translated.
+Sizeable: `BLOCK_MESSAGES` alone is ~260 keys per language (pl was built from fr's key set, see
+`tests/test_blockly_i18n_pl.py`, which shows how to pin parity). Not started.
+
 ### ~~`ide.tr()` / `self.ide.tr()` / `panel.tr()` strings: ~27-38 per language untranslated~~ (found and FIXED 2026-11-21)
 
 **Fixed.** `scripts/i18n_catchup.py` has a `RECEIVERS` table (ide / self.ide ->
@@ -1019,11 +1028,11 @@ blocks) is English** -- the Blockly workspace itself (`blockly_i18n.js`) is a se
 **FIXED 2026-11-22** (`docs/BLOCKLY_DIALOG_I18N_2026-11-22.md`): `config/blockly_block_i18n_{pl,pt,ja,zh}.py`,
 merged via `MODULE_LANGUAGES`; the guard covers all eleven languages and builds the real dialog
 in each. Thymio's own Configure dialog: its 8 category names now exist in all eleven languages
-(2026-11-22, `tests/test_thymio_block_category_i18n.py`). **Its 42 block names stay English on
-purpose:** the Thymio Blockly blocks are hard-coded English in `blockly_blocks.js` (no i18n hook)
-and the Thymio actions/events are English in the IDE (the French activity sheets rely on it), so
-translating the names only in the dialog would make it disagree with the workspace. Doing it
-properly means translating the workspace blocks too -- a separate, larger job.
+(2026-11-22, `tests/test_thymio_block_category_i18n.py`). **Its 42 block/event names were then
+translated too, at the owner's decision** (`docs/THYMIO_BLOCKS_I18N_2026-11-22.md`): the dialog in all
+eleven languages, and the 28 Thymio blocks in the Blockly workspace in the five languages the
+workspace supports (fr/de/it/pl/uk). The Thymio events panel and action list keep their English
+names (the French activity sheets rely on them).
 Original note: 32 more blocks lack a
 translation, but inside categories whose own label IS already translated
 (so the dialog mostly reads correctly, just a handful of individual block

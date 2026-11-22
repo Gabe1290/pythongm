@@ -23,4 +23,6 @@ es, ru, sl, pt, ja and zh **every** Blockly block (core too) shows English. Logg
 - [x] U1 Configure dialog names, 42 entries x 11 languages
 - [x] U2 workspace: `thymioMsg` wrapping + French
 - [x] U3 workspace: de, it, pl, uk (landed with U2: one table, five languages)
-- [ ] U4 guards, TODO.md, QA checklist
+- [x] U4 guards, TODO.md, QA checklist
+
+**Done 2026-11-22.** No native speaker has read the new text.
