@@ -417,6 +417,11 @@ class PluginLoader:
         block_tr = getattr(module, 'PLUGIN_BLOCK_TRANSLATIONS', None)
         generated_tr = getattr(module, 'PLUGIN_GENERATED_BLOCK_TRANSLATIONS', None)
         colors = getattr(module, 'PLUGIN_BLOCK_CATEGORY_COLORS', None)
+        ui_tr = getattr(module, 'PLUGIN_UI_TRANSLATIONS', None)
+        if ui_tr:
+            # Names that are data (actions, events, parameters...): core/ui_names.py
+            from core.ui_names import register_ui_translations
+            register_ui_translations(ui_tr)
         if colors:
             from config.blockly_config import register_block_category_colors
             register_block_category_colors(colors)

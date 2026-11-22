@@ -75,25 +75,22 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
   `^\d+ - [A-Za-z]` -- a Latin letter, so a Cyrillic or Japanese label would silently fall back). **U3
   must therefore show the translation but keep the English label as the item's data, save the data, and
   select by data on reopen.** Projects keep storing English labels; nothing else changes.
-- **U0 — Verify the value/label split.** For every Thymio parameter with choices, confirm what is
-  stored (text or index) in a saved project, the Aseba exporter and the simulator. Record the answer
-  here. If a choice's text is its stored value, U3 must use item data. No user-visible change.
-- **U1 — The helper.** `ui_name(kind, english)` in core (extension tables, then Qt catalogue, then
+- [x] **U1 — The helper** (`core/ui_names.py`, done; extension tables then English -- the Qt-catalogue step is left for the core follow-up, which is the only user). `ui_name(kind, english)` in core (extension tables, then Qt catalogue, then
   English) + the plugin-loader hook for `PLUGIN_UI_TRANSLATIONS`. Tests: lookup order, fallback,
   unknown language.
-- **U2 — Thymio's table, eleven languages.** ~186 strings. Reuse the wording already chosen for the
+- [ ] **U2 — Thymio's table, eleven languages.** ~186 strings. Reuse the wording already chosen for the
   Configure dialog (`block_translations.py`) where the same thing is named, so the dialog, the blocks
   and the panel agree. Guard test: every name, description, parameter label, choice label and category
   has all eleven languages; French accents; same-word list explicit.
-- **U3 — Show it.** Route every display site through `ui_name`: the Thymio tab (event/action trees,
+- [ ] **U3 — Show it.** Route every display site through `ui_name`: the Thymio tab (event/action trees,
   category buttons and menus), both selectors, `panel_menus.py`, the action configure dialog's title and
   parameter labels, choice combos (with item data if U0 says so). Real-widget test in French and
   Japanese: build each panel/dialog and read what it shows; no English left except the listed same
   words; a project saved before still loads, shows the same selections and exports the same Aseba code
   (byte-identical `.aesl` before/after).
-- **U4 — The sheets (D3).** French names in `fiche_1..9` and `corrige`, re-shot screenshot, PDF/ODT
+- [ ] **U4 — The sheets (D3).** French names in `fiche_1..9` and `corrige`, re-shot screenshot, PDF/ODT
   regenerated (the ODT generator never overwrites: delete first), test switched to the French names.
-- **U5 — Close.** QA checklist §11b/§17 items, TODO.md, and a note in `extensions/thymio/README.md`.
+- [ ] **U5 — Close.** QA checklist §11b/§17 items, TODO.md, and a note in `extensions/thymio/README.md`.
 
 ## Risks
 
