@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Punkteanzeige</h1>
+
+    <p>Wir fügen einen Spiel-Controller hinzu, der die Punkte setzt und auf dem Bildschirm anzeigt.</p>
+
+    <!-- ============= SCORE CONTROLLER ============= -->
+    <h2>Den Punkte-Controller erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_score</code></li>
+            <li><strong>Kein Sprite nötig</strong></li>
+        </ol>
+    </div>
+
+    <h2>Die Punkte auf null setzen</h2>
+    <div class="step">
+        <p>Doppelklicke auf <code>obj_score</code> &rarr; Reiter <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-score block-indent">Variable setzen Variable: p1score Wert: <span class="block-num">0</span> Gültigkeitsbereich: global Relativ: aus</span><br>
+            <span class="block block-score block-indent">Variable setzen Variable: p2score Wert: <span class="block-num">0</span> Gültigkeitsbereich: global Relativ: aus</span>
+        </div>
+    </div>
+
+    <h2>Die Punkte auf dem Bildschirm zeichnen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-score block-indent">Zeichenfarbe festlegen Farbe: <span class="block-text">#ffffff</span></span><br>
+            <span class="block block-score block-indent">Zeichne Text "Player 1:" bei x: <span class="block-num">10</span> y: <span class="block-num">40</span></span><br>
+            <span class="block block-score block-indent">Variable zeichnen X: <span class="block-num">100</span> Y: <span class="block-num">40</span> Variable: global.p1score</span><br>
+            <span class="block block-score block-indent">Zeichne Text "Player 2:" bei x: <span class="block-num">10</span> y: <span class="block-num">60</span></span><br>
+            <span class="block block-score block-indent">Variable zeichnen X: <span class="block-num">100</span> Y: <span class="block-num">60</span> Variable: global.p2score</span>
+        </div>
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>In den Raum setzen</h2>
+    <div class="step">
+        <p>Öffne <code>room_pong</code> und setze <code>obj_score</code> irgendwohin
+        (es hat kein Sprite, es zeichnet nur Text).</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Glückwunsch! Teste dein fertiges Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li><strong>Spieler 1:</strong> W (hoch) und S (runter)</li>
+            <li><strong>Spieler 2:</strong> Pfeil oben und Pfeil unten</li>
+            <li>Die Punkte stehen oben links</li>
+            <li>Wer den Ball verpasst, schenkt dem anderen Spieler einen Punkt!</li>
+        </ul>
+    </div>
+
+    <div class="challenge">
+        <strong>Challenge Ideas:</strong>
+        <ul>
+            <li>Lass den Ball nach jedem Ballwechsel schneller werden</li>
+            <li>Beende das Spiel, wenn ein Spieler 10 Punkte erreicht</li>
+            <li>Füge eine Mittellinie als Schmuck hinzu</li>
+            <li>Lass den Abprallwinkel davon abhängen, wo der Ball den Schläger trifft</li>
+        </ul>
+    </div>
+</body>
+</html>

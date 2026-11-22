@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Schläger und springender Ball</h1>
+
+    <p>Wir erstellen alles, was wir für ein spielbares Pong brauchen!</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Die Sprites erstellen</h2>
+    <div class="step">
+        <p>Erstelle diese 3 Sprites (zeichne sie oder importiere Bilder):</p>
+        <table>
+            <tr><th>Sprite</th><th>Größe</th><th>Beschreibung</th></tr>
+            <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Kleiner weißer Kreis</td></tr>
+            <tr><td><code>spr_paddle</code></td><td>16&times;64</td><td>Hohes, schmales Rechteck</td></tr>
+            <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Grauer Block</td></tr>
+        </table>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Die Objekte erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle <code>obj_wall</code> &mdash; Sprite: <code>spr_wall</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_paddle_left</code> &mdash; Sprite: <code>spr_paddle</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_paddle_right</code> &mdash; Sprite: <code>spr_paddle</code>, setze ein Häkchen bei <strong>Fest</strong></li>
+            <li>Erstelle <code>obj_ball</code> &mdash; Sprite: <code>spr_ball</code>, lass Fest <strong>ohne Häkchen</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= LEFT PADDLE ============= -->
+    <h2>Den linken Schläger programmieren (Spieler 1: W/S)</h2>
+    <div class="step">
+        <p>Doppelklicke auf <code>obj_paddle_left</code> &rarr; Reiter <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: W (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: S (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+    </div>
+
+    <!-- ============= RIGHT PADDLE ============= -->
+    <h2>Den rechten Schläger programmieren (Spieler 2: Pfeiltasten)</h2>
+    <div class="step">
+        <p>Doppelklicke auf <code>obj_paddle_right</code> &rarr; Reiter <strong>Blockly</strong>. Gleicher Aufbau, aber andere Tasten:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil oben (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">-8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil unten (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-num">8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Den Ball programmieren</h2>
+    <div class="step">
+        <p>Doppelklicke auf <code>obj_ball</code> &rarr; Reiter <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">Bewege oder Winkel <span class="block-num">45</span> mit Geschwindigkeit <span class="block-num">6</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_wall</span><br>
+            <span class="block block-move block-indent">Abprallen</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_paddle_left</span><br>
+            <span class="block block-move block-indent">Abprallen</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_paddle_right</span><br>
+            <span class="block block-move block-indent">Abprallen</span>
+        </div>
+    </div>
+
+    <!-- ============= ROOM ============= -->
+    <h2>Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Erstelle einen neuen Raum namens <code>room_pong</code> (640&times;480)</li>
+            <li>Setze <code>obj_wall</code> entlang des <strong>oberen und unteren</strong> Rands</li>
+            <li>Setze <code>obj_paddle_left</code> an den linken Rand, senkrecht in die Mitte</li>
+            <li>Setze <code>obj_paddle_right</code> an den rechten Rand, senkrecht in die Mitte</li>
+            <li>Setze <code>obj_ball</code> in die Mitte des Raums</li>
+        </ol>
+    </div>
+
+    <pre>
++--[WALL WALL WALL WALL WALL WALL]--+
+|                                     |
+|  [P1]                        [P2]  |
+|  [  ]         (o)            [  ]  |
+|  [  ]                        [  ]  |
+|                                     |
++--[WALL WALL WALL WALL WALL WALL]--+</pre>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li><strong>Spieler 1:</strong> W (hoch) und S (runter)</li>
+            <li><strong>Spieler 2:</strong> Pfeil oben und Pfeil unten</li>
+            <li>Der Ball prallt von Wänden und Schlägern ab</li>
+            <li>Der Ball fliegt seitlich hinaus &mdash; als Nächstes kommen die Tore!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Tore und Punkte hinzuzufügen.
+    </div>
+</body>
+</html>
