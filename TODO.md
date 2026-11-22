@@ -898,6 +898,14 @@ Other:
 
 ## Translations / i18n
 
+### Thymio events panel / action list, and core action & event names, mostly untranslated (found 2026-11-22)
+
+Action and event names are data passed to `tr()`, which only works when the catalogue happens to hold
+that text in that class's context. Measured live: in the Standard events panel French translates 49 of
+186 action names and 7 of 73 event names (German 49 and 0); the Thymio tab shows only English and does
+not call `tr()` at all. **Plan written, awaiting the owner's decisions D1-D4:**
+`docs/THYMIO_PANEL_I18N_PLAN.md` (Thymio first, mechanism reusable for core).
+
 ### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
 
 `editors/object_editor/blockly/blockly_i18n.js`'s `BLOCK_MESSAGES` / `CATEGORY_MESSAGES` /
