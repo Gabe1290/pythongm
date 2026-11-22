@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Jugador y laberinto</h1>
+
+    <p>En esta fase crearás los sprites del jugador y de la pared, construirás los objetos,
+    programarás el movimiento con Blockly, harás que el jugador mire en la dirección
+    en la que camina y diseñarás un laberinto sencillo.
+    ¡Al final podrás caminar por tu laberinto!</p>
+
+    <!-- ========== SPRITES ========== -->
+    <h2>Paso 1: Crear los sprites</h2>
+
+    <h2>spr_player (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>En el árbol de recursos, haz clic derecho en <strong>Sprites</strong> y elige <strong>Crear sprite</strong></li>
+            <li>Llámalo <code>spr_player</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Haz doble clic en <code>spr_player</code> para abrir el editor de sprites</li>
+                <li>Pon el tamaño en <strong>32x32 píxeles</strong></li>
+                <li>Dibuja un personaje pequeño (un círculo con ojos o una persona sencilla)</li>
+                <li>Usa un color vivo, como <strong>azul</strong></li>
+                <li>Guarda con <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Haz clic derecho en <code>spr_player</code> en el árbol de recursos</li>
+                <li>Elige <strong>Importar imagen...</strong></li>
+                <li>Busca <code>Tutorials/06_maze/assets/</code></li>
+                <li>Elige <code>spr_player.png</code> y haz clic en Abrir</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>spr_wall (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalo tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Abre el editor de sprites y pon el tamaño en <strong>32x32 píxeles</strong></li>
+                <li>Dibuja un motivo de ladrillo o de piedra</li>
+                <li>Usa colores <strong>grises o marrones</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga el sprite de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic derecho en <code>spr_wall</code> &rarr; <strong>Importar imagen...</strong></li>
+                <li>Elige <code>Tutorials/06_maze/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ========== OBJECTS ========== -->
+    <h2>Paso 2: Crear los objetos</h2>
+
+    <h2>obj_wall (sólido)</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> &rarr; <strong>Crear objeto</strong></li>
+            <li>Llámalo <code>obj_wall</code></li>
+            <li>Asígnale el sprite <code>spr_wall</code></li>
+            <li><strong>Marca «Sólido»</strong> &mdash; es imprescindible para que el jugador no atraviese las paredes</li>
+            <li>La pared no necesita eventos</li>
+        </ol>
+    </div>
+
+    <h2>obj_player</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un objeto nuevo llamado <code>obj_player</code></li>
+            <li>Asígnale el sprite <code>spr_player</code></li>
+            <li>Deja «Sólido» sin marcar</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Paso 3: Programar al jugador (Blockly)</h2>
+
+    <div class="info">
+        <strong>Cómo funciona Blockly:</strong> arrastra bloques desde la caja de herramientas de la izquierda al área de trabajo.
+        Encaja bloques de acción dentro de bloques de evento para indicar qué ocurre.
+        Tus bloques se guardan automáticamente en el panel de eventos mientras editas.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_player</code> en el árbol de recursos para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong> de la parte de arriba del editor</li>
+        </ol>
+    </div>
+
+    <h2>Mover a la derecha</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Busca <strong>Keyboard (held)</strong> en la categoría <em>Events</em> y elige <strong>Right Arrow</strong> en la lista desplegable.
+        Luego busca <strong>Set Horizontal Speed</strong> en la categoría <em>Movement</em> y encájalo dentro.
+        Escribe <strong>4</strong> en el campo del número.</p>
+    </div>
+
+    <h2>Mover a la izquierda</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Igual que arriba, pero elige <strong>Left Arrow</strong> y escribe <strong>-4</strong> (negativo = hacia la izquierda).</p>
+    </div>
+
+    <h2>Mover hacia abajo</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Usa <strong>Set Vertical Speed</strong> de <em>Movement</em>. Positivo = hacia abajo.</p>
+    </div>
+
+    <h2>Mover hacia arriba</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Escribe <strong>-4</strong> para moverte hacia arriba.</p>
+    </div>
+
+    <h2>Detenerse cuando no se pulsa ninguna tecla</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Busca <strong>Keyboard: No key</strong> en <em>Events</em> y <strong>Stop Movement</strong> en <em>Movement</em>.
+        ¡Así el jugador no sigue deslizándose sin fin!</p>
+    </div>
+
+    <h2>Detenerse en las paredes</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Busca <strong>Collision</strong> en <em>Events</em>. Escribe <code>obj_wall</code> en el campo de texto.
+        Encaja dentro un bloque <strong>Stop Movement</strong>.</p>
+    </div>
+
+    <div class="step">
+        <p>Deberías tener <strong>6 bloques de evento</strong> en el área de trabajo.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Cómo funciona:</strong> cada flecha pone la velocidad en su dirección.
+        Cuando sueltas todas las teclas, el jugador se detiene. Si choca con una pared, también se detiene.
+    </div>
+
+    <!-- ========== FACING DIRECTION ========== -->
+    <h2>Paso 3B: Haz que tu jugador mire hacia donde va</h2>
+
+    <div class="info">
+        Ahora mismo tu jugador se ve siempre igual, vaya en la dirección que vaya.
+        Muchos juegos muestran <strong>una imagen distinta para cada dirección</strong> &mdash;
+        un <em>sprite</em> distinto según hacia dónde mira el personaje.
+        Ya construiste los 4 eventos de las flechas; en este paso solo se añade un
+        bloque más a cada uno.
+    </div>
+
+    <h2>spr_player_up / _down / _left / _right (24x24)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <strong>4 sprites nuevos</strong>: <code>spr_player_up</code>,
+            <code>spr_player_down</code>, <code>spr_player_left</code>, <code>spr_player_right</code></li>
+        </ol>
+
+        <h3>Opción A &mdash; Dibújalos tú mismo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Dale a cada uno el mismo tamaño que <code>spr_player</code></li>
+                <li>Dibuja el mismo personaje pequeño, pero mueve los ojos (o una
+                flecha) para mostrar hacia dónde mira: los dos ojos para
+                <code>_down</code>, sin cara para <code>_up</code> (la parte de
+                atrás de la cabeza), un ojo en ese lado para <code>_left</code> /
+                <code>_right</code></li>
+            </ol>
+        </div>
+
+        <h3>Opción B &mdash; Carga los sprites de ejemplo</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic derecho en cada sprite nuevo &rarr; <strong>Importar imagen...</strong></li>
+                <li>Busca <code>Tutorials/06_maze/assets/</code></li>
+                <li>Elige el archivo correspondiente (<code>spr_player_up.png</code>,
+                <code>spr_player_down.png</code>, <code>spr_player_left.png</code>,
+                <code>spr_player_right.png</code>)</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>Añadir un bloque Set Sprite a cada flecha</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_player</code> para abrir el editor de objetos
+            (si no está ya abierto) y haz clic en la pestaña <strong>Blockly</strong></li>
+            <li>Busca cada uno de tus 4 eventos de flechas del Paso 3 y encaja un
+            bloque más dentro &mdash; <strong>Set Sprite</strong> (de la
+            categoría <em>Instance</em>)</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_right</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_left</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_up</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_down</span></span>
+        </div>
+
+        <p>Deja <strong>Keyboard: No key</strong> y <strong>When colliding with
+        obj_wall</strong> tal como estaban &mdash; el jugador simplemente sigue
+        mostrando la última dirección en la que se movió.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Cómo funciona:</strong> ahora cada flecha hace dos cosas: pone
+        la velocidad <em>y</em> elige la imagen correspondiente. El sprite del jugador
+        muestra siempre la última dirección que pulsaste, aunque te detengas.
+    </div>
+
+    <!-- ========== ROOM ========== -->
+    <h2>Paso 4: Crear la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Salas</strong> &rarr; <strong>Crear sala</strong></li>
+            <li>Llámala <code>room_maze</code></li>
+            <li>Pon el tamaño en <strong>640x480</strong></li>
+            <li>Activa el <strong>ajuste a la cuadrícula</strong>: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Construir un laberinto sencillo</h2>
+    <div class="step">
+        <ol>
+            <li>Elige <code>obj_wall</code> y haz clic para poner paredes alrededor del borde</li>
+            <li>Añade paredes interiores para crear pasillos y caminos</li>
+            <li>Coloca <code>obj_player</code> cerca de la esquina superior izquierda del laberinto</li>
+            <li>Deja algo de espacio libre para poder caminar</li>
+        </ol>
+    </div>
+
+    <h2>Ejemplo de distribución del laberinto</h2>
+    <pre>
+W W W W W W W W W W W W W W W W W W W W
+W P . . . . W . . . . . . . W . . . . W
+W . W W W . W . W W W W W . W . W W . W
+W . W . . . . . . . . . . . . . . W . W
+W . W . W W W W W . W W W W W W . W . W
+W . . . W . . . . . . . . . . W . . . W
+W W W . W . W W W W W W W . . W W W . W
+W . . . . . W . . . . . W . . . . . . W
+W . W W W W W . W W W . W W W W W W . W
+W . . . . . . . . . . . . . . . . . . W
+W . W W W W W W W W W . W W W W W W . W
+W . . . . . . . . . . . W . . . . . . W
+W W W W W W W W W W W . W . W W W W . W
+W . . . . . . . . . . . . . W . . . . W
+W W W W W W W W W W W W W W W W W W W W
+
+W = obj_wall   P = obj_player   . = Empty space</pre>
+
+    <div class="highlight">
+        <strong>Consejo:</strong> mantén pulsado el botón del ratón y arrastra para poner muchas paredes rápido.
+        Asegúrate de que cada pasillo tenga al menos una casilla de ancho para que pase el jugador.
+    </div>
+
+    <!-- ========== TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Usa las <strong>flechas</strong> para mover al jugador</li>
+            <li>La imagen del jugador debería girarse hacia donde te mueves</li>
+            <li>El jugador debería detenerse al chocar con las paredes</li>
+            <li>El jugador debería detenerse cuando sueltas todas las teclas</li>
+            <li>Intenta recorrer los pasillos de tu laberinto</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        ¡Tu laberinto ya es jugable! Haz clic en «Siguiente» para añadir monedas y una salida.
+    </div>
+</body>
+</html>

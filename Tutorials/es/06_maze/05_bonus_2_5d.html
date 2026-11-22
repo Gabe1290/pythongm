@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Extra: hazlo en 2.5D</h1>
+
+    <div class="info">
+        <strong>Esta página es opcional.</strong> Tu juego de laberinto ya está terminado
+        &mdash; esto es un extra para quien quiera probar algo nuevo. Ni laberinto nuevo
+        ni dibujos nuevos para el laberinto: verás <em>exactamente el mismo
+        laberinto</em> desde dentro, al estilo de Doom o Wolfenstein.
+    </div>
+
+    <p>¿Recuerdas la Fase 1, en la que tu jugador mostraba una imagen distinta para cada
+    dirección en la que se movía? Eso era la <strong>dirección en la que mira</strong>. Una cámara en primera persona
+    necesita exactamente la misma idea &mdash; hacia dónde apunta &mdash; solo que,
+    en lugar de elegir una imagen, usa esa dirección para decidir qué dibujar.
+    Ya conoces este patrón; vas a volver a usarlo.</p>
+
+    <h2>Activar la vista 2.5D</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-view block-indent">Enable Raycast View &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span>
+        </div>
+        <ol>
+            <li>Haz doble clic en <code>obj_player</code> para abrir el editor de objetos y haz clic en la pestaña <strong>Blockly</strong></li>
+            <li>Añade un nuevo evento <strong>When created</strong> (de <em>Events</em>)</li>
+            <li>Busca <strong>Enable Raycast View</strong> en la categoría <em>3D View</em> y encájalo dentro</li>
+            <li>Pon <strong>Cell Size</strong> en <code>32</code> &mdash; tiene que coincidir con la cuadrícula de tu laberinto</li>
+            <li>Deja <strong>Camera Object</strong> vacío &mdash; eso significa «quien ejecute esta acción», es decir, el jugador</li>
+        </ol>
+        <div class="info">
+            ¿No ves <em>3D View</em> en la caja de herramientas? Abre <strong>Archivo &rarr;
+            Configuración del proyecto... &rarr; Extensiones</strong> y marca <strong>2.5D
+            Raycast View</strong>.
+        </div>
+    </div>
+
+    <h2>Hacer que la cámara mire hacia donde mira tu sprite</h2>
+    <div class="step">
+        <p>Vuelve a los mismos 4 eventos de las flechas de la Fase 1 y añade <strong>un
+        bloque más</strong> a cada uno &mdash; <strong>Set Facing Angle</strong>
+        (de <em>3D View</em>), con los ángulos de una brújula: 0 =
+        derecha, 90 = arriba, 180 = izquierda, 270 = abajo.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_right</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_left</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">180</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_up</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">90</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Set sprite to <span class="block-str">spr_player_down</span></span><br>
+            <span class="block block-view block-indent">Set Facing Angle <span class="block-num">270</span></span>
+        </div>
+
+        <div class="highlight">
+            <strong>¿Por qué no reutilizar el sprite?</strong> <code>Set Sprite</code>
+            elige una imagen; <code>Set Facing Angle</code> elige un número (el
+            ángulo). La cámara necesita el número para calcular lo que de verdad verías
+            &mdash; paredes, pasillos, todo &mdash; desde esa
+            dirección.
+        </div>
+    </div>
+
+    <h2>Las paredes ya bloquean al jugador</h2>
+    <div class="info">
+        ¡Aquí no hay nada que añadir! Tu evento <strong>When colliding with obj_wall &rarr; Stop
+        movement</strong> de la Fase 1 ya hace que las paredes detengan al jugador
+        &mdash; funciona exactamente igual tanto si la sala se dibuja desde arriba como
+        en primera persona.
+    </div>
+
+    <h2>¡Prueba tu laberinto 2.5D!</h2>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Ahora la sala aparece en <strong>primera persona</strong> en lugar de desde arriba</li>
+            <li>Las paredes llevan como textura tu propia imagen <code>spr_wall</code> &mdash; nunca pusiste una textura de pared: cada pared usa su propio sprite automáticamente</li>
+            <li>Al girar miras enseguida hacia la flecha que mantienes pulsada, igual que hacía tu sprite en la Fase 1</li>
+            <li>Chocas con las paredes en lugar de atravesarlas</li>
+            <li>Las monedas y la salida siguen funcionando &mdash; aparecen flotando en el aire, mirándote, sin ningún cambio</li>
+        </ul>
+    </div>
+
+    <h2>Si algo se ve mal</h2>
+    <table class="t"><tr><th>Lo que ves</th><th>Causa probable</th></tr>
+    <tr><td>La sala normal vista desde arriba, sin cambios</td><td>Falta el evento <strong>When created</strong> con <strong>Enable Raycast View</strong>, o <em>2.5D Raycast View</em> no está marcado en Archivo &rarr; Configuración del proyecto... &rarr; Extensiones</td></tr>
+    <tr><td>Atraviesas las paredes</td><td><code>obj_wall</code> no es <strong>Sólido</strong>, o se borró el evento <strong>When colliding with obj_wall</strong> de la Fase 1</td></tr>
+    <tr><td>Las paredes se ven mal o hay huecos</td><td>Un bloque de pared no está en la cuadrícula de 32 píxeles, o <strong>Cell Size</strong> no es <code>32</code></td></tr>
+    <tr><td>La cámara no gira cuando te mueves</td><td>Falta un bloque <strong>Set Facing Angle</strong> en uno de los 4 eventos de las flechas, o tiene el número equivocado</td></tr>
+    <tr><td>El giro parece al revés (a la izquierda ves lo que debería estar a la derecha)</td><td>Se han intercambiado dos valores de <strong>Set Facing Angle</strong> &mdash; compara 0/90/180/270 con la lista de arriba</td></tr>
+    </table>
+
+    <h2>¿Quieres más?</h2>
+    <div class="highlight">
+        Hay dos acciones más de 3D View si quieres seguir explorando por tu cuenta:
+        <strong>Draw Minimap</strong> (un pequeño mapa visto desde arriba en una esquina de la
+        pantalla) y <strong>Draw DOOM HUD</strong> (una barra de estado clásica con
+        salud y puntuación). Ninguna se explica aquí &mdash; ¡prueba a encajar una en el
+        evento When drawing de tu <code>obj_game_controller</code> y mira qué pasa!
+    </div>
+
+    <div class="info">
+        Acabas de convertir un laberinto 2D visto desde arriba en un juego de estilo 3D en primera persona usando
+        exactamente la misma sala, exactamente las mismas paredes y exactamente la misma idea de
+        dirección de la Fase 1 &mdash; solo que apuntando a una cámara en lugar de a un
+        sprite.
+    </div>
+</body>
+</html>

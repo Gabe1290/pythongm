@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Controlador del juego</h1>
+
+    <p>El juego funciona, ¡pero todavía no ves tu puntuación en pantalla!
+    En esta última fase crearás un objeto controlador del juego invisible
+    que muestra la puntuación y la pone a cero al empezar el juego.</p>
+
+    <div class="info">
+        <strong>¿Qué es un controlador del juego?</strong> Es un objeto sin sprite que gestiona
+        cosas como la puntuación en pantalla. Como es invisible, no molesta
+        en el juego &mdash; simplemente trabaja en segundo plano.
+    </div>
+
+    <!-- ========== CREATE OBJECT ========== -->
+    <h2>Paso 1: Crear el objeto</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> &rarr; <strong>Crear objeto</strong></li>
+            <li>Llámalo <code>obj_game_controller</code></li>
+            <li><strong>No necesita sprite</strong> &mdash; deja vacío el campo del sprite</li>
+            <li>Deja «Sólido» sin marcar</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Paso 2: Programar el controlador del juego (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Haz doble clic en <code>obj_game_controller</code> para abrir el editor de objetos</li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Poner la puntuación a cero al empezar</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>Desde <em>Events</em>, arrastra un bloque <strong>When created</strong>.
+        Desde <em>Score/Lives/Health</em>, encaja dentro <strong>Set Score to</strong> y escribe <strong>0</strong>.</p>
+        <p>Así la puntuación empieza en cero cada vez que se carga la sala.</p>
+    </div>
+
+    <h2>Mostrar la puntuación en pantalla</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Desde <em>Events</em>, arrastra un bloque <strong>When drawing</strong>.
+        Desde <em>Score/Lives/Health</em>, encaja dentro <strong>Draw Score</strong>.
+        Pon x en <strong>10</strong> e y en <strong>10</strong> (esquina superior izquierda).</p>
+    </div>
+
+    <h2>Aplicar tus bloques</h2>
+    <div class="step">
+        <ol>
+            <li>Deberías tener <strong>2 bloques de evento</strong> en el área de trabajo (Create y Draw)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Cómo funciona:</strong> el evento <strong>When created</strong> se ejecuta una vez cuando el objeto aparece en la sala
+        y pone la puntuación a 0. El evento <strong>When drawing</strong> se ejecuta en cada fotograma y muestra
+        «Score: X» en la esquina superior izquierda. ¡A medida que el jugador recoge monedas,
+        la puntuación se actualiza sola!
+    </div>
+
+    <!-- ========== PLACE IN ROOM ========== -->
+    <h2>Paso 3: Colocar en la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abre <code>room_maze</code></li>
+            <li>Elige <code>obj_game_controller</code> y colócalo en cualquier sitio de la sala</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>¡No lo olvides!</strong> El controlador del juego tiene que estar en la sala
+        para que se muestre la puntuación. Como no tiene sprite, no lo verás al jugar,
+        pero sigue funcionando.
+    </div>
+
+    <!-- ========== FINAL TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>La puntuación debería aparecer como <strong>«Score: 0»</strong> en la esquina superior izquierda</li>
+            <li>Recoge monedas &mdash; la puntuación debería subir <strong>10</strong> por cada moneda</li>
+            <li>Llega a la salida &mdash; aparece el mensaje <strong>«You Win!»</strong></li>
+            <li>Después del mensaje, la sala vuelve a empezar y la puntuación vuelve a 0</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>¡Enhorabuena!</strong> ¡Has construido un juego de laberinto completo!
+        </p>
+        <p>Tu juego tiene un jugador que recorre pasillos, monedas que recoger,
+        la puntuación en pantalla y una salida para ganar. ¡Bien hecho!</p>
+    </div>
+
+    <!-- ========== CHALLENGES ========== -->
+    <h2>Ideas de retos</h2>
+    <div class="challenge">
+        <p>¿Quieres mejorar todavía más tu juego de laberinto? Prueba estos retos:</p>
+        <ul>
+            <li><strong>Varios niveles:</strong> crea más salas (<code>room_maze2</code>, <code>room_maze3</code>)
+            con laberintos más difíciles. Cambia el bloque <strong>Restart room</strong> de la salida por <strong>Go to next room</strong>.</li>
+            <li><strong>Temporizador:</strong> añade una cuenta atrás con una variable. ¡Si se acaba el tiempo, la sala vuelve a empezar!</li>
+            <li><strong>Enemigos:</strong> crea un enemigo que patrulle de un lado a otro.
+            Si el jugador choca con él, la sala vuelve a empezar.</li>
+            <li><strong>Llaves y puertas:</strong> añade una llave que haya que recoger antes de que se abra la salida.</li>
+            <li><strong>Pasa al 2.5D:</strong> ¿quieres ver tu laberinto desde dentro? La
+            página siguiente es un extra opcional que lo convierte en un juego en primera persona
+            al estilo de Doom &mdash; sin hacer un laberinto nuevo.</li>
+        </ul>
+    </div>
+</body>
+</html>

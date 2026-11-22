@@ -8,45 +8,76 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <h1>Laberinto: Navega hacia la Salida</h1>
+    <h1>Laberinto: llega a la salida</h1>
 
     <div class="game-preview">
         <img src="thumbnails/06_maze.png" width="280" height="210" style="border-radius: 5px;">
-        <p style="font-size: 24px;">&#128736;</p>
-        <p><strong>JUEGO DE LABERINTO</strong></p>
-        <p>Encuentra tu camino a través del laberinto y recoge monedas!</p>
+        <p style="font-size: 24px;">&#128737;</p>
+        <p><strong>JUEGO DEL LABERINTO</strong></p>
+        <p>¡Encuentra el camino por el laberinto y recoge monedas!</p>
     </div>
 
-    <h2>Lo que Crearemos</h2>
-    <p>En este tutorial, construiras un juego de navegación por laberinto:</p>
-    <ul>
-        <li>Un jugador que se mueve suavemente con las teclas de dirección</li>
-        <li>Paredes que bloquean el movimiento del jugador</li>
-        <li>Monedas para recoger y obtener puntos</li>
-        <li>Una salida que completa el nivel</li>
-        <li>Un temporizador para registrar que tan rápido terminas</li>
-    </ul>
+    <h2>Lo que vamos a crear</h2>
+    <p>En este tutorial construirás paso a paso un juego de laberinto.
+    El juego es <strong>jugable al final de cada fase</strong>, ¡así que puedes probar sobre la marcha!</p>
 
-    <h2>Lo que Aprenderás</h2>
+    <div class="phase">
+        <strong>Fase 1 &mdash; Caminar por un laberinto</strong><br>
+        Crea un jugador que se mueve con las flechas y paredes que cierran el paso.
+        Construye un laberinto sencillo y camina por él.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; Recoger monedas y la salida</strong><br>
+        Añade monedas que aumentan tu puntuación y una puerta de salida
+        que muestra un mensaje de victoria.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Mostrar la puntuación</strong><br>
+        Añade un controlador del juego que muestre la puntuación en pantalla
+        para que el jugador vea su progreso.
+    </div>
+
+    <h2>Lo que aprenderás</h2>
     <ul>
-        <li>Movimiento suave con entrada de teclado</li>
-        <li>Detección y manejo de colisiones con paredes</li>
-        <li>Crear objetos coleccionables</li>
-        <li>Mostrar temporizador y puntuación</li>
+        <li>Usar <strong>bloques visuales de Blockly</strong> para programar el comportamiento del juego</li>
+        <li>Movimiento fluido con bloques de entrada de teclado</li>
+        <li>Detectar y gestionar las colisiones con las paredes</li>
+        <li>Crear objetos que se pueden recoger</li>
+        <li>Mostrar la puntuación con un objeto controlador del juego</li>
         <li>Diseño de niveles para juegos de laberinto</li>
     </ul>
 
     <div class="highlight">
-        <strong>Tiempo Requerido:</strong> Aproximadamente 25-30 minutos
+        <strong>Tiempo necesario:</strong> unos 20&ndash;25 minutos
     </div>
 
     <div class="info">
-        <strong>Listo?</strong> Haz clic en "Siguiente" para comenzar a crear tus sprites!
+        <strong>¿Listo?</strong> ¡Haz clic en «Siguiente» para empezar la Fase 1: construir el jugador y el laberinto!
     </div>
 </body>
 </html>
