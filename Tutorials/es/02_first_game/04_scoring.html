@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Atrapar y puntuar</h1>
+
+    <p>¡Hagamos que el jugador atrape estrellas, gane puntos y muestre la puntuación!</p>
+
+    <h2>Atrapar estrellas al chocar</h2>
+    <div class="step">
+        <ol>
+            <li>Doble clic en <code>obj_player</code> &rarr; pestaña <strong>Blockly</strong></li>
+            <li>Añade este nuevo bloque de evento (conserva tus bloques de movimiento):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_star</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>Cuando el jugador toca una estrella:</p>
+        <ul>
+            <li><strong>Add to score 10</strong> (de <em>Score/Lives/Health</em>) &mdash; gana 10 puntos</li>
+            <li><strong>Destroy other instance</strong> (de <em>Instance</em>) &mdash; la estrella desaparece</li>
+        </ul>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Mostrar la puntuación</h2>
+    <p>Necesitamos un controlador del juego que muestre la puntuación en pantalla.</p>
+
+    <div class="step">
+        <ol>
+            <li>Crea un objeto nuevo llamado <code>obj_game_controller</code></li>
+            <li><strong>No necesita sprite</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Doble clic en <code>obj_game_controller</code> &rarr; pestaña <strong>Blockly</strong></li>
+            <li>Añade estos bloques:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <h2>Limpiar las estrellas perdidas</h2>
+    <div class="step">
+        <ol>
+            <li>Doble clic en <code>obj_star</code> &rarr; pestaña <strong>Blockly</strong></li>
+            <li>Añade este evento (conserva el evento When created que ya tienes):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Other event: Outside Room</span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+        <div class="info">
+            <strong>Cómo encontrar «Outside Room»:</strong> no es un bloque propio
+            &mdash; en la categoría <strong>Events</strong> de la caja de herramientas de Blockly,
+            arrastra el bloque <strong>Other event:</strong> y elige
+            «Outside Room» en su lista desplegable.
+        </div>
+        <p>Las estrellas que caen por la parte inferior de la pantalla se destruyen para que no se acumulen en la memoria.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Colocar el controlador del juego</h2>
+    <div class="step">
+        <p>Abre <code>room_game</code> y coloca <code>obj_game_controller</code> en cualquier sitio de la sala.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Atrapa estrellas que caen para ganar puntos</li>
+            <li>La puntuación aparece en la esquina superior izquierda</li>
+            <li>Las estrellas que no atrapas caen fuera de la pantalla y desaparecen</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para los últimos detalles y los retos.
+    </div>
+</body>
+</html>

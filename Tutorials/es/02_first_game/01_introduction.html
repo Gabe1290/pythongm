@@ -10,6 +10,8 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -18,35 +20,51 @@
     <div class="game-preview">
         <img src="thumbnails/02_first_game.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#11088;</p>
-        <p><strong>Atrapa la estrella!</strong></p>
-        <p>Mueve tu jugador para atrapar las estrellas que caen y ganar puntos!</p>
+        <p><strong>¡Atrapa la estrella!</strong></p>
+        <p>¡Mueve a tu jugador para atrapar estrellas que caen y sumar puntos!</p>
     </div>
 
-    <h2>Lo que crearemos</h2>
-    <p>En este tutorial, construiras un juego completo desde cero:</p>
-    <ul>
-        <li>Un jugador que se mueve a izquierda y derecha con las teclas de flecha</li>
-        <li>Estrellas que caen desde la parte superior de la pantalla</li>
-        <li>Un sistema de puntuación que registra cuantas estrellas atrapas</li>
-        <li>Fin del juego cuando fallas demasiadas estrellas</li>
-    </ul>
+    <h2>Lo que vamos a crear</h2>
+    <p>En este tutorial construirás un juego completo paso a paso.
+    ¡Tendrás algo jugable al final de cada fase!</p>
+
+    <h2>Cómo funciona este tutorial</h2>
+
+    <div class="phase">
+        <strong>Fase 1 &mdash; Un jugador que se mueve</strong><br>
+        Crea un jugador que se mueve a la izquierda y a la derecha. ¡Pruébalo enseguida!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; Estrellas que caen</strong><br>
+        Añade estrellas que caen del cielo. ¡Esquívalas o intenta alcanzarlas!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Atrapar y puntuar</strong><br>
+        Atrapa estrellas para ganar puntos y muestra la puntuación en pantalla.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 4 &mdash; Los últimos detalles</strong><br>
+        Mantén al jugador en la pantalla y añade retos para ir más allá.
+    </div>
 
     <h2>Lo que aprenderás</h2>
     <ul>
-        <li>Crear e importar sprites</li>
-        <li>Crear objetos con comportamientos</li>
+        <li>Crear sprites y objetos</li>
         <li>Usar eventos de teclado para controlar al jugador</li>
-        <li>Detección de colisiones entre objetos</li>
-        <li>Usar variables para el seguimiento de la puntuación</li>
-        <li>Mostrar texto en pantalla</li>
+        <li>Crear objetos automáticamente con un generador</li>
+        <li>Detectar colisiones entre objetos</li>
+        <li>Llevar y mostrar la puntuación</li>
     </ul>
 
     <div class="highlight">
-        <strong>Tiempo requerido:</strong> Aproximadamente 15-20 minutos
+        <strong>Tiempo necesario:</strong> unos 15&ndash;20 minutos
     </div>
 
     <div class="info">
-        <strong>Listo?</strong> Haz clic en "Siguiente" para comenzar a crear los sprites de tu juego!
+        <strong>¿Listo?</strong> ¡Haz clic en «Siguiente» para empezar!
     </div>
 </body>
 </html>

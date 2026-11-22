@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 4: Los últimos detalles</h1>
+
+    <p>¡Vamos a pulir tu juego para que se sienta terminado!</p>
+
+    <h2>Mantener al jugador en la pantalla</h2>
+    <div class="step">
+        <p>Abre <code>obj_player</code> en el editor Blockly y añade un evento <strong>Every step</strong>
+        con comprobaciones de los bordes:</p>
+        <ul>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &lt; 0 <em>then</em> <strong>Set variable</strong> x to 0</li>
+            <li><strong>If</strong> <em>my position</em>: <em>x position</em> &gt; 608 <em>then</em> <strong>Set variable</strong> x to 608 (608 = ancho de la sala 640 &minus; ancho del sprite 32)</li>
+        </ul>
+        <p>Así el jugador no puede salir de la pantalla.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Poner un color de fondo</h2>
+    <div class="step">
+        <p>Abre <code>room_game</code> en el editor de salas y pon como color de fondo
+        un bonito azul cielo o un color oscuro de espacio.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Enhorabuena!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Tu primer juego está terminado!</strong></p>
+        <p>Pulsa <strong>F5</strong> para jugar al juego terminado. ¡Atrapa todas las estrellas que puedas!</p>
+    </div>
+
+    <h2>Ideas de retos</h2>
+    <div class="challenge">
+        <strong>Want to go further? Try these:</strong>
+        <ul>
+            <li>Añade vidas &mdash; pierde una vida cuando una estrella llega abajo</li>
+            <li>Haz que las estrellas caigan más rápido a medida que sube la puntuación</li>
+            <li>Añade estrellas de distintos colores que valgan puntos distintos</li>
+            <li>Añade un objeto «malo» (una bomba) que termine el juego si lo atrapas</li>
+            <li>Añade efectos de sonido al atrapar estrellas</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>¿Y ahora qué?</strong><br>
+        ¡Explora más tutoriales sobre pelotas que rebotan, rompecabezas y juegos de plataformas!
+    </div>
+</body>
+</html>

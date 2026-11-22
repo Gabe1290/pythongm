@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Estrellas que caen</h1>
+
+    <p>¡Ahora haremos que aparezcan estrellas en la parte superior de la pantalla y que caigan!</p>
+
+    <h2>Crear el sprite de la estrella</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite nuevo llamado <code>spr_star</code></li>
+            <li>Dibuja una estrella o una moneda (32&times;32 píxeles) y guarda</li>
+        </ol>
+    </div>
+
+    <h2>Crear el objeto de la estrella</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un objeto nuevo llamado <code>obj_star</code></li>
+            <li>Asígnale el sprite <code>spr_star</code></li>
+        </ol>
+    </div>
+
+    <h2>Hacer que caigan las estrellas</h2>
+    <div class="step">
+        <ol>
+            <li>Doble clic en <code>obj_star</code> &rarr; pestaña <strong>Blockly</strong></li>
+            <li>Añade este bloque:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+        <p>Cada estrella cae a velocidad 3 en cuanto aparece.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Crear un generador</h2>
+    <p>Necesitamos un objeto invisible que cree estrellas en posiciones aleatorias.</p>
+
+    <div class="step">
+        <ol>
+            <li>Crea un objeto nuevo llamado <code>obj_spawner</code></li>
+            <li><strong>No necesita sprite</strong> (será invisible)</li>
+        </ol>
+    </div>
+
+    <h2>Programar el generador</h2>
+    <div class="step">
+        <ol>
+            <li>Doble clic en <code>obj_spawner</code> &rarr; pestaña <strong>Blockly</strong></li>
+            <li>Añade estos bloques:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set Alarm 0 to <span class="block-num">60</span> steps</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">When alarm 0 triggers</span><br>
+            <span class="block block-instance block-indent">Create instance of obj_star at x: random y: <span class="block-num">0</span></span><br>
+            <span class="block block-move block-indent">Set Alarm 0 to <span class="block-num">60</span> steps</span>
+        </div>
+        <p>El evento When created pone en marcha un temporizador. Cuando suena la alarma (cada segundo),
+        crea una estrella en una posición x aleatoria en la parte superior de la pantalla y vuelve a poner el temporizador.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Colocar el generador en la sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abre <code>room_game</code></li>
+            <li>Coloca <code>obj_spawner</code> en cualquier sitio (es invisible, la posición no importa)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Las estrellas deberían caer desde posiciones aleatorias de arriba</li>
+            <li>Mueve al jugador para esquivarlas o alcanzarlas</li>
+            <li>De momento las estrellas atraviesan al jugador &mdash; ¡enseguida añadimos la captura!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Haz clic en «Siguiente» para añadir colisiones y puntuación.
+    </div>
+</body>
+</html>
