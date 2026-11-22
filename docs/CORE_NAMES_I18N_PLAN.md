@@ -1,6 +1,6 @@
 # Translating the core action and event names — plan (2026-11-22)
 
-**Status: plan only, waiting for the owner's decisions D1–D6.** This is the second half of
+**Status: owner chose the recommendations (2026-11-22); in progress — see the checkboxes.** This is the second half of
 `docs/THYMIO_PANEL_I18N_PLAN.md`: that plan built `core/ui_names.py` and used it for Thymio; this one
 uses it for everything else in the Standard events panel.
 
@@ -92,13 +92,36 @@ parameter's key, not its label), event names, choice values, and pl / ja / zh en
 
 ## Units (one commit each, assuming the recommendations)
 
-- [ ] **U0 — Audit.** Confirm the choice-storage finding for every choice parameter (open each in the
+- [x] **U0 — Audit.** Confirm the choice-storage finding for every choice parameter (open each in the
   dialog, save, compare); list every display site (known: `editors/object_editor/events/_render.py`,
   `_event_crud.py`, `_context_menu.py`, `events/action_editor.py` (title, description, parameter labels,
   choices, the nested action tree, the Add Action menu), `events/conditional_editor.py` (menus),
   the keyboard/mouse sub-event names in `_render.py` and `events/mouse_events_complete.py`); count, per
   language, the documents that name an action or event in English (wiki, `Tutorials/<lang>`,
   `docs/handouts`, `docs/junior`).
+  *Done 2026-11-22:*
+  - **Choices:** confirmed in code. `ActionConfigDialog.get_parameter_values` saves
+    `widget.currentText()` for every combo (`events/action_editor.py` ~line 830), including the
+    *editable* object combos that put `any` / `solid` before the project's object names (lines 132–182,
+    where a typed object name must still be saved as typed). `multi_choice` already shows
+    `self.tr(choice)` and saves the choice. So U3: item data for the fixed choices, and for an editable
+    combo save the data only when the shown text is still that item's text.
+  - **Display sites:** as listed above; all go through `self.tr(...)` / `panel.tr(...)` today, so one
+    helper replaces each call. `create_action_dialog` routes `if_condition` to
+    `ConditionalActionEditor` (its condition combos already store canonical values) and everything
+    else to `ActionConfigDialog`.
+  - **Documents:** far more than the 4 pages seen while planning. Two-word-or-longer English action and
+    event names, outside the generated action reference: **4,027 mentions in 199 wiki pages**, **322 in
+    114 in-app tutorial pages** (`Tutorials/<lang>`, shipped in the IDE) and **36 in 10 handouts**,
+    spread evenly over the 8 languages (464–618 each; most frequent: *Execute Code*, *Set Horizontal
+    Speed*, *Draw Text*, *Set Variable*, *Show Message*). Most are mechanical (`**Set Horizontal Speed**`
+    → the table's name), like the Thymio sheets' conversion script, but U8 is now the largest unit:
+    split it by document set (in-app tutorials first, then handouts, then the wiki), one language per
+    commit.
+  - **Design consequence:** actions and events are keyed by KEY in the tables (`core.action` /
+    `set_hspeed`), not English name: *Stop Sound* is both `stop_sound` and `microbit_stop_sound`, with
+    different French names. Kinds are prefixed `core.` so they never mix with an extension's
+    English-keyed table.
 - [ ] **U1 — Tables, seeded.** `config/ui_names/` with one module per language, generated once from
   `tools/action_ref_i18n.py` (actions, descriptions, parameter descriptions, categories, event
   descriptions) plus the French `.ts` names chosen in D1; registered at startup. Test: every seeded
