@@ -910,7 +910,9 @@ tab, both pickers and the action configure dialog use it, choices still save the
 exporter and simulator read its number). The French activity sheets use the French names. No native
 speaker has read the new text. **Still open: the core half** -- the Standard events panel's 186 action
 and 73 event names; the same mechanism takes a core table (`register_ui_translations`), the work is the
-translation itself (~260 names + descriptions x 10 languages).
+translation itself (~260 names + descriptions x 10 languages). **Plan written 2026-11-22, awaiting the
+owner's decisions D1-D6:** `docs/CORE_NAMES_I18N_PLAN.md` (most of it already exists in the wiki's
+`tools/action_ref_i18n.py` tables, 8 languages).
 
 ### The Blockly WORKSPACE is translated in only 5 of the 11 languages (found 2026-11-22)
 
