@@ -310,7 +310,7 @@ Fügen Sie im **Erstellen**-Ereignis von `obj_game_controller` **Steuerung** →
 **Variable setzen** hinzu (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
 Fügen Sie in jedem der vier Key-Press-Ereignisse von `obj_player` direkt
-nach Move Grid eine zweite Aktion hinzu: **Steuerung** → **Variable setzen**
+nach Auf Gitter bewegen eine zweite Aktion hinzu: **Steuerung** → **Variable setzen**
 (Variable: `global.moves`, Value: `1`, Scope: `global`, **Relativ**
 aktiviert) — dies addiert bei jedem Tastendruck 1 zum Zähler, unabhängig
 davon, ob die Bewegung tatsächlich durch eine Wand blockiert wurde.

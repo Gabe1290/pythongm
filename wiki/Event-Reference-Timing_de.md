@@ -2,7 +2,7 @@
 
 *[Startseite](Home_de) | [Ereignis-Referenz](Event-Reference_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
-### Alarm
+### Wecker
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `alarm` |
@@ -24,17 +24,17 @@
 
 ---
 
-### Begin Step
+### Schrittbeginn
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `begin_step` |
 | **Symbol** | ▶️ |
-| **Kategorie** | Step |
+| **Kategorie** | Schritt |
 | **Preset** | Anfänger |
 
 **Beschreibung:** Löst am Anfang jedes Frames aus, vor regulären Step-Ereignissen.
 
-**Ausführungsreihenfolge:** Begin Step → Step → End Step
+**Ausführungsreihenfolge:** Schrittbeginn → Step → Schrittende
 
 **Häufige Verwendungen:**
 - Eingabeverarbeitung
@@ -42,12 +42,12 @@
 
 ---
 
-### End Step
+### Schrittende
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `end_step` |
 | **Symbol** | ⏹️ |
-| **Kategorie** | Step |
+| **Kategorie** | Schritt |
 | **Preset** | Anfänger |
 
 **Beschreibung:** Löst am Ende jedes Frames aus, nach Kollisionen.

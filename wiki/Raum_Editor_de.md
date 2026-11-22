@@ -151,7 +151,7 @@ Damit die Kamera dem Spieler folgt:
 
 Die Reihenfolge der Rooms im Ressourcenbaum bestimmt:
 1. Welcher Room zuerst lädt (oberster Room = Start-Room)
-2. Die Reihenfolge für die Aktionen „Next Room" und „Previous Room"
+2. Die Reihenfolge für die Aktionen „Nächster Raum" und „Vorheriger Raum"
 
 ### Room-Reihenfolge ändern
 

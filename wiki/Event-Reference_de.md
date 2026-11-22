@@ -26,7 +26,7 @@ Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielve
 2. **Wecker** — Alle ausgelösten Alarme zählen herunter und lösen aus
 3. **Schritt** (und **Keyboard (gehalten)**) — Haupt-Spiellogik, danach kontinuierliche
    Tastenprüfungen für dieselbe Instanz
-4. **Keyboard Press/Release, Mouse** — Für diesen Frame angesammelte Eingabeereignisse
+4. **Taste gedrückt/Release, Mouse** — Für diesen Frame angesammelte Eingabeereignisse
    werden verarbeitet (das geschieht *nach* Step, nicht davor — Code im Step-Ereignis
    reagiert auf Tasten, die zu *Beginn* des Frames bereits gedrückt waren, nicht auf
    solche, die während des Frames gedrückt wurden)
@@ -47,9 +47,9 @@ Ereignisse/Aktionen-Panel) und wie das Preset eines Projekts festgelegt wird.
 
 | Preset | Enthaltene Ereignisse |
 |--------|----------------------|
-| **Anfänger** (19 Ereignisse) | Create, Step, Keyboard (gehalten), Keyboard \<Keine Taste\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
-| **Fortgeschritten** (21 Ereignisse) | + Destroy, Keyboard Press |
-| **Voll** (nur Entwicklungsedition, 23 Ereignisse) | + Keyboard Release, Mouse |
+| **Anfänger** (19 Ereignisse) | Create, Step, Keyboard (gehalten), Keyboard \<Keine Taste\>, Collision, Schrittbeginn, Schrittende, Alarm, Draw, GUI zeichnen, Raumstart, Raumende, Spielstart, Spielende, Außerhalb des Raums, Raumgrenze berührt, Keine Leben mehr, Keine Gesundheit mehr, Animationsende |
+| **Fortgeschritten** (21 Ereignisse) | + Destroy, Taste gedrückt |
+| **Voll** (nur Entwicklungsedition, 23 Ereignisse) | + Taste losgelassen, Mouse |
 
 ---
 

@@ -147,7 +147,7 @@ Kollisionsprüfungen finden zwischen den Events Step und Draw statt.
 | **Rechteck zeichnen** | Rechteck zeichnen | x1, y1, x2, y2, filled |
 | **Kreis zeichnen** | Kreis zeichnen | x, y, radius, filled |
 | **Linie zeichnen** | Linie zeichnen | x1, y1, x2, y2 |
-| **Zeichenfarbe festlegen** | Farbe für nachfolgende Draw Text/Draw Rectangle/etc. festlegen | color |
+| **Zeichenfarbe festlegen** | Farbe für nachfolgende Text zeichnen/Rechteck zeichnen/etc. festlegen | color |
 | **Farbe setzen** | Farbton und Transparenz eines Sprites festlegen (nicht die Zeichenfarbe oben) | color, alpha |
 | **Zeichenschrift festlegen** | Schrift und Ausrichtung für den nächsten Textzeichenvorgang festlegen | font, halign, valign |
 

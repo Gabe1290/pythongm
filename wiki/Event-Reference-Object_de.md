@@ -2,7 +2,7 @@
 
 *[Startseite](Home_de) | [Ereignis-Referenz](Event-Reference_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
-### Create
+### Erstellen
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `create` |
@@ -24,7 +24,7 @@
 
 ---
 
-### Step
+### Schritt
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `step` |
@@ -46,7 +46,7 @@
 
 ---
 
-### Destroy
+### Zerstören
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `destroy` |

@@ -17,7 +17,7 @@ Objekte sind die Grundbausteine Ihres Spiels. Sie stehen für alles vom Spieler
 2. Rechtsklick auf **Objekte** > **Objekt erstellen**
 
 ![Der Objekt-Editor: eine Ereignisliste links (Create, Step, mehrere
-Collision-Ereignisse, Keyboard, No More Lives, Game Start),
+Collision-Ereignisse, Keyboard, Keine Leben mehr, Spielstart),
 Objekteigenschaften (Sprite, Parent, Visible/Persistent/Solid) rechts,
 und die Tabs Event List / Blockly / Code-Editor, mit denen Sie festlegen,
 wie Sie die Aktionen jedes Ereignisses bearbeiten](images/object-editor.png)

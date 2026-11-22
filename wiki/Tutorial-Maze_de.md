@@ -116,7 +116,7 @@ Der Ausgang beendet das Level, wenn der Spieler ihn erreicht.
    - Message: `You Win!`
 3. Add Action: **Raum** → **Nächster Raum** (oder **Raum neu starten** für ein einzelnes Level)
 
-Der Text von Show Message ist eine feste, statische Zeichenkette — er kann
+Der Text von Nachricht anzeigen ist eine feste, statische Zeichenkette — er kann
 keinen Live-Wert wie die vergangene Zeit einbetten. Der Timer bleibt im HUD
 (Schritt 7) bis zum Sieg sichtbar, der Spieler hat seine Zeit also bereits
 gesehen.
@@ -158,11 +158,11 @@ jeweils mit einer **Move** → **Set Horizontal/Vertical Speed**-Aktion:
 
 | Event | Aktion |
 |---|---|
-| Keyboard (held) → Right Arrow | Set Horizontal Speed auf `4` |
-| Keyboard (held) → Left Arrow | Set Horizontal Speed auf `-4` |
-| Keyboard (held) → Down Arrow | Set Vertical Speed auf `4` |
-| Keyboard (held) → Up Arrow | Set Vertical Speed auf `-4` |
-| Keyboard: No Key | Set Horizontal Speed auf `0` **und** Set Vertical Speed auf `0` |
+| Tastatur (gehalten) → Right Arrow | Horizontale Geschwindigkeit setzen auf `4` |
+| Tastatur (gehalten) → Left Arrow | Horizontale Geschwindigkeit setzen auf `-4` |
+| Tastatur (gehalten) → Down Arrow | Vertikale Geschwindigkeit setzen auf `4` |
+| Tastatur (gehalten) → Up Arrow | Vertikale Geschwindigkeit setzen auf `-4` |
+| Keyboard: No Key | Horizontale Geschwindigkeit setzen auf `0` **und** Vertikale Geschwindigkeit setzen auf `0` |
 
 ### 6.2 An Wänden stoppen
 
@@ -223,7 +223,7 @@ Live-Werte neben jeder Beschriftung anzuzeigen:
 Es gibt keinen eingebauten "verbleibende Münzen"-Zähler, auf den Draw
 Variable zeigen könnte — fügen Sie direkt vor den Draw-Variable-Aktionen
 eine weitere **Steuerung** → **Code ausführen**-Aktion hinzu, um ihn in eine
-Instanzvariable zu berechnen, die Draw Variable dann lesen kann:
+Instanzvariable zu berechnen, die Variable zeichnen dann lesen kann:
 
 ```python
 self.coins_left = sum(

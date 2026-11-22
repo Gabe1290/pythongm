@@ -2,7 +2,7 @@
 
 *[Startseite](Home_de) | [Ereignis-Referenz](Event-Reference_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
-### Outside Room
+### Außerhalb des Raums
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `outside_room` |
@@ -19,7 +19,7 @@
 
 ---
 
-### Intersect Boundary
+### Raumgrenze berührt
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `intersect_boundary` |
@@ -35,7 +35,7 @@
 
 ---
 
-### No More Lives
+### Keine Leben mehr
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `no_more_lives` |
@@ -52,7 +52,7 @@
 
 ---
 
-### No More Health
+### Keine Gesundheit mehr
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `no_more_health` |
@@ -69,7 +69,7 @@
 
 ---
 
-### Animation End
+### Animationsende
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `animation_end` |

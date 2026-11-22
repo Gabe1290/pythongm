@@ -352,8 +352,8 @@ Du kannst es auch weiter verfeinern, zum Beispiel durch Hinzufügen von:
 
 | Objekt | Sprite | Solid | Events |
 |--------|--------|-------|--------|
-| `obj_paddle` | `spr_paddle` | Ja | Keyboard (Links/Rechts), Keyboard Release |
-| `obj_ball` | `spr_ball` | Ja | Create, Collision (Schläger, Steine), Outside Room |
+| `obj_paddle` | `spr_paddle` | Ja | Keyboard (Links/Rechts), Taste losgelassen |
+| `obj_ball` | `spr_ball` | Ja | Create, Collision (Schläger, Steine), Außerhalb des Raums |
 | `obj_brick_1` | `spr_brick_1` | Ja | Collision (Ball) - Selbst zerstören |
 | `obj_brick_2` | `spr_brick_2` | Ja | Erbt von `obj_brick_1` |
 | `obj_brick_3` | `spr_brick_3` | Ja | Keine (nur eine Wand) |

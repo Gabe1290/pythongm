@@ -2,7 +2,7 @@
 
 *[Startseite](Home_de) | [Ereignis-Referenz](Event-Reference_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
-### Draw
+### Zeichnen
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `draw` |
@@ -31,7 +31,7 @@
 
 ---
 
-### Draw GUI
+### GUI zeichnen
 | Eigenschaft | Wert |
 |-------------|------|
 | **Name** | `draw_gui` |
@@ -41,7 +41,7 @@
 
 **Beschreibung:** Zeichnet im **Bildschirm- (GUI-)Raum**, über dem Raum und unbeeinflusst vom Scrollen der Ansichten/Kamera.
 
-**Unterschied zu Draw:** Das reguläre Draw-Ereignis ist in Raumkoordinaten (es scrollt mit der Ansicht); Draw GUI bleibt fest am Bildschirm — für HUDs, Punktestände und Menüs.
+**Unterschied zu Draw:** Das reguläre Draw-Ereignis ist in Raumkoordinaten (es scrollt mit der Ansicht); GUI zeichnen bleibt fest am Bildschirm — für HUDs, Punktestände und Menüs.
 
 ---
 

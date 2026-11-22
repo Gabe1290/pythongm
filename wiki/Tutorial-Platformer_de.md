@@ -143,16 +143,16 @@ Tutorials dieses Wikis:
 
 | Event | Aktion |
 |---|---|
-| Keyboard (held) → Left Arrow | Set Horizontal Speed auf `-4` |
-| Keyboard (held) → Right Arrow | Set Horizontal Speed auf `4` |
-| Keyboard: No Key | Set Horizontal Speed auf `0` |
-| Key Press → Up Arrow | Set Vertical Speed auf `-10` |
-| Collision with obj_ground | Stop Movement |
+| Tastatur (gehalten) → Left Arrow | Horizontale Geschwindigkeit setzen auf `-4` |
+| Tastatur (gehalten) → Right Arrow | Horizontale Geschwindigkeit setzen auf `4` |
+| Keyboard: No Key | Horizontale Geschwindigkeit setzen auf `0` |
+| Key Press → Up Arrow | Vertikale Geschwindigkeit setzen auf `-10` |
+| Collision with obj_ground | Bewegung stoppen |
 
 Zwei Details, die dafür sorgen, dass es sich richtig anfühlt:
 
 - **No Key setzt NUR die Horizontalgeschwindigkeit auf 0** — verwenden Sie
-  hier niemals Stop Movement, denn Stop Movement setzt auch die
+  hier niemals Bewegung stoppen, denn Bewegung stoppen setzt auch die
   Vertikalgeschwindigkeit auf null, was die Schwerkraft jedes Mal
   aufheben würde, wenn der Spieler eine Richtungstaste loslässt.
 - **Key Press (nicht held)** ist es, was Up zu einem einzelnen
@@ -217,7 +217,7 @@ Die Flagge beendet das Level, wenn der Spieler sie erreicht.
    - Message: `Level Complete!`
 3. Aktion hinzufügen: **Raum** → **Nächster Raum** (oder **Raum neu starten** für ein einzelnes Level)
 
-Der Text von Show Message ist eine feste Zeichenkette — er kann keinen
+Der Text von Nachricht anzeigen ist eine feste Zeichenkette — er kann keinen
 Live-Wert wie den Punktestand einbetten. Das HUD des Spiel-Controllers
 (Schritt 9) zeigt den Punktestand während des gesamten Levels auf dem
 Bildschirm, der Spieler hat ihn also bereits gesehen.
@@ -334,8 +334,8 @@ Arrow**-Events durch drei, in dieser Reihenfolge:
    **Relativ** aktiviert)
 5. **Steuerung** → **Block beenden**
 
-Das Paar Start/End Block bedeutet, dass beide darin enthaltenen Aktionen
-nur ausgeführt werden, wenn das Test Variable darüber wahr ist — dasselbe
+Das Paar Start/Block beenden bedeutet, dass beide darin enthaltenen Aktionen
+nur ausgeführt werden, wenn das Variable testen darüber wahr ist — dasselbe
 geschützte Block-Muster, das die Tutorials Sokoban und Labyrinth für ihre
 eigenen Bedingungen verwenden.
 
@@ -414,10 +414,10 @@ Game**.
 | Problem | Lösung |
 |---------|--------|
 | Der Spieler fällt durch den Boden | Prüfen Sie, ob `obj_ground` "Solid" aktiviert hat |
-| Der Spieler kann nicht springen | Prüfen Sie, ob das Event Key Press → Up Arrow existiert und Set Vertical Speed negativ ist |
+| Der Spieler kann nicht springen | Prüfen Sie, ob das Event Key Press → Up Arrow existiert und Vertikale Geschwindigkeit setzen negativ ist |
 | Der Spieler steigt nach der Landung weiter | Stellen Sie sicher, dass Collision with obj_ground eine Stop-Movement-Aktion hat |
-| Der Sprung fühlt sich schwebend an | Erhöhen Sie den Gravity-Wert von Set Gravity, oder machen Sie den Sprungwert von Set Vertical Speed negativer |
-| Der Sprung fühlt sich zu schwach an | Verringern Sie den Gravity-Wert von Set Gravity, oder machen Sie den Sprungwert von Set Vertical Speed negativer |
+| Der Sprung fühlt sich schwebend an | Erhöhen Sie den Gravity-Wert von Schwerkraft setzen, oder machen Sie den Sprungwert von Vertikale Geschwindigkeit setzen negativer |
+| Der Sprung fühlt sich zu schwach an | Verringern Sie den Gravity-Wert von Schwerkraft setzen, oder machen Sie den Sprungwert von Vertikale Geschwindigkeit setzen negativer |
 
 ---
 
@@ -425,7 +425,7 @@ Game**.
 
 Herzlichen Glückwunsch! Sie haben ein Plattformer-Spiel erstellt! Sie haben gelernt:
 
-- **Schwerkraftphysik** - Set Gravity wendet bei jedem Schritt eine konstante Abwärtskraft an
+- **Schwerkraftphysik** - Schwerkraft setzen wendet bei jedem Schritt eine konstante Abwärtskraft an
 - **Sprungmechanik** - Ein Key-Press-Event (nicht held) gibt einen einzelnen Geschwindigkeitsimpuls nach oben
 - **Eingebaute solide Kollision** - Der Boden blockiert den Spieler automatisch, sobald er als Solid markiert ist, ohne manuellen Positionsprüfungs-Code
 - **Gefahren** - Objekte erstellen, die das Level neu starten

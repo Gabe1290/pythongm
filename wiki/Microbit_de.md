@@ -180,7 +180,7 @@ der auf einer physischen Platine läuft.
    Platine, die noch nie MicroPython ausgeführt hat.
 
 Alle micro:bit-Aktionen und -Bedingungen werden übersetzt, ebenso *Set
-Variable*, *Test Variable*, Blöcke und Kommentare. Jedes Ereignis wird zu einer
+Variable*, *Variable testen*, Blöcke und Kommentare. Jedes Ereignis wird zu einer
 Abfrage innerhalb einer einzigen Schleife. Spielaktionen, die auf einer Platine
 nichts bedeuten (Räume, Sprites, Punkte …), werden nicht exportiert. In
 Ausdrücken funktionieren `irandom`, `random` und `choose`; andere

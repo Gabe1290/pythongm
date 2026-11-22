@@ -18,7 +18,7 @@ In diesem Tutorial erstellen Sie ein **Mondlandungs-Spiel** - ein klassisches Ar
 - Sichere Landezonen
 
 **Schwierigkeit:** Anfänger
-**Preset:** Fortgeschrittenen-Preset (die Schub-/Treibstoffphysik verlässt sich durchgehend auf Execute Code, das nicht im Anfänger-Preset ist)
+**Preset:** Fortgeschrittenen-Preset (die Schub-/Treibstoffphysik verlässt sich durchgehend auf Code ausführen, das nicht im Anfänger-Preset ist)
 
 ---
 
@@ -208,7 +208,7 @@ das `self`-Objekt hat keine Möglichkeit, ein Event mittendrin abzubrechen
      2. **Output** → **Nachricht anzeigen** (Message: `Crashed! Too fast!`)
      3. **Raum** → **Raum neu starten**
 
-Der Text von Show Message ist eine feste Zeichenkette — er kann die
+Der Text von Nachricht anzeigen ist eine feste Zeichenkette — er kann die
 tatsächliche Landegeschwindigkeit nicht einbetten. Das HUD (Schritt 7)
 zeigt die Live-Geschwindigkeit bis zum Moment des Aufsetzens, der Spieler
 hat die Zahl also bereits gesehen.
@@ -353,7 +353,7 @@ Statt Links/Rechts-Bewegung: drehen Sie die Landefähre und geben Sie Schub
 in die Richtung, in die sie zeigt. Die Instanzen dieser Engine haben ein
 echtes `rotation`-Attribut (Grad, 0 = rechts, gegen den Uhrzeigersinn
 zunehmend), mit dem das Sprite gedreht wird — kein
-`image_angle`/`lengthdir_x`/`lengthdir_y` nötig, da `math` in Execute Code
+`image_angle`/`lengthdir_x`/`lengthdir_y` nötig, da `math` in Code ausführen
 bereits verfügbar ist:
 
 Ersetzen Sie den Create-Event-Code aus 5.1 durch:
@@ -426,7 +426,7 @@ self.hspeed += self.wind_force
 
 | Problem | Lösung |
 |---------|--------|
-| Die Landefähre fällt zu schnell | Verringern Sie den `Gravity`-Wert von Set Gravity, oder erhöhen Sie `thrust_force` im Create-Event-Code |
+| Die Landefähre fällt zu schnell | Verringern Sie den `Gravity`-Wert von Schwerkraft setzen, oder erhöhen Sie `thrust_force` im Create-Event-Code |
 | Kann nicht genug abbremsen | Erhöhen Sie `thrust_force`, oder erhöhen Sie `safe_speed` |
 | Der Treibstoff geht zu schnell aus | Verringern Sie `fuel_use`, oder erhöhen Sie den Start-`fuel` |
 | Die Landefähre verlässt den Bildschirm | Prüfen Sie den Grenzblock am Ende des Step-Event-Codes |
@@ -441,8 +441,8 @@ Herzlichen Glückwunsch! Sie haben ein Mondlandungs-Spiel erstellt! Sie haben ge
 - **Schubphysik** - `self.vspeed` gegen einen kontinuierlichen Set-Gravity-Zug anstupsen
 - **Geschwindigkeitsverwaltung** - Geschwindigkeit aus `hspeed`/`vspeed` mit dem Satz des Pythagoras berechnen
 - **Treibstoffsystem** - Ressourcenverwaltungs-Gameplay mit einer einfachen Instanzvariablen
-- **Kollisionserkennung** - Unterschiedliche Ergebnisse für Plattform vs. Boden, gewählt mit Test Expression
-- **HUD-Anzeige** - Anzeigewerte in Execute Code berechnen und dann mit Draw Text/Draw Variable anzeigen
+- **Kollisionserkennung** - Unterschiedliche Ergebnisse für Plattform vs. Boden, gewählt mit Ausdruck testen
+- **HUD-Anzeige** - Anzeigewerte in Code ausführen berechnen und dann mit Text zeichnen/Variable zeichnen anzeigen
 
 ---
 
