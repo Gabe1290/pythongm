@@ -1001,6 +1001,10 @@ registered block translated, also through the real dialog. **Still open, found t
 day: pl, pt, ja and zh have no entry at all in `CATEGORY_TRANSLATIONS` /
 `BLOCK_TRANSLATIONS`, so for them the whole Configure Blocks dialog (13 categories, 131
 blocks) is English** -- the Blockly workspace itself (`blockly_i18n.js`) is a separate table.
+**FIXED 2026-11-22** (`docs/BLOCKLY_DIALOG_I18N_2026-11-22.md`): `config/blockly_block_i18n_{pl,pt,ja,zh}.py`,
+merged via `MODULE_LANGUAGES`; the guard covers all eleven languages and builds the real dialog
+in each. Not done: Thymio's own Configure dialog tables (`extensions/thymio/blockly_categories.py`)
+have category names in 7 languages and no block names at all.
 Original note: 32 more blocks lack a
 translation, but inside categories whose own label IS already translated
 (so the dialog mostly reads correctly, just a handful of individual block

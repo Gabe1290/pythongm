@@ -20,4 +20,6 @@ Scope: the core registry only (Thymio's own dialog tables are separate).
 - [x] U2 pt (Brazilian, as the pt catalogue)
 - [x] U3 ja
 - [x] U4 zh
-- [ ] U5 close: TODO.md entry, guard covers all eleven languages
+- [x] U5 close: TODO.md entry, guard covers all eleven languages
+
+**Done 2026-11-22.** All four languages landed (`e9c1d8ba`, `aa887f4c`, `bbea712f`, and the zh commit). No native speaker has read them.
