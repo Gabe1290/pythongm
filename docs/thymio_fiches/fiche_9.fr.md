@@ -31,7 +31,7 @@ Pilote le robot avec les quatre flèches (programme de la fiche 3). La LED du de
 
 Après un appui sur la barre d'espace, une LED du cercle de plus s'allume toutes les secondes (0, 2, 4 puis 6). À la cinquième seconde, tout s'éteint et ça recommence.
 
-- [ ] Réalise le programme avec **Set Circle LED**.
+- [ ] Réalise le programme avec **Régler une LED du cercle**.
 - [ ] Modifie-le pour que les **huit** LED s'allument une à une.
 
 ## Défi 4 : l'arrêt avant la ligne

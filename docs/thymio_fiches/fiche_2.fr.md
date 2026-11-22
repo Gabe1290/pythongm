@@ -9,16 +9,16 @@
 
 ## 1. Le mélange des couleurs
 
-Chaque LED de couleur est commandée par trois nombres (**red**, **green**, **blue**) entre **0** et **32**.
+Chaque LED de couleur est commandée par trois nombres (**Rouge**, **Vert**, **Bleu**) entre **0** et **32**.
 
-- [ ] Associe chaque bouton à une couleur de la LED du dessus (**Set Top LED Color**), puis teste :
+- [ ] Associe chaque bouton à une couleur de la LED du dessus (**Régler la LED du dessus**), puis teste :
 
-| Bouton | red | green | blue | Couleur obtenue |
+| Bouton | Rouge | Vert | Bleu | Couleur obtenue |
 |---|---|---|---|---|
-| **Button Forward** | 32 | 32 | 0 | ……………… |
-| **Button Backward** | 32 | 16 | 0 | ……………… |
-| **Button Left** | 32 | 0 | 32 | ……………… |
-| **Button Right** | 0 | 32 | 32 | ……………… |
+| **Bouton avant** | 32 | 32 | 0 | ……………… |
+| **Bouton arrière** | 32 | 16 | 0 | ……………… |
+| **Bouton gauche** | 32 | 0 | 32 | ……………… |
+| **Bouton droit** | 0 | 32 | 32 | ……………… |
 
 - [ ] Complète la dernière colonne en regardant le robot.
 
@@ -28,9 +28,9 @@ Chaque LED de couleur est commandée par trois nombres (**red**, **green**, **bl
 
 Les LED du cercle sont numérotées de **0 à 7**. Leur intensité va de **0** à **32** (une seule couleur, pas de mélange).
 
-- [ ] Sur **Button Center**, ajoute **Set Circle LED** : **led_index = 0**, **intensity = 32**. Teste : quelle LED s'allume ?
-- [ ] Ajoute d'autres actions **Set Circle LED** (index 2, 4, 6) pour allumer une LED sur deux.
-- [ ] Remplace-les par une seule action **Set All Circle LEDs**, en donnant 32 aux LED 0, 2, 4, 6 et 0 aux autres.
+- [ ] Sur **Bouton central**, ajoute **Régler une LED du cercle** : **Position de la LED = 0**, **Intensité = 32**. Teste : quelle LED s'allume ?
+- [ ] Ajoute d'autres actions **Régler une LED du cercle** (index 2, 4, 6) pour allumer une LED sur deux.
+- [ ] Remplace-les par une seule action **Régler toutes les LED du cercle**, en donnant 32 aux LED 0, 2, 4, 6 et 0 aux autres.
 
 > DONE: tu peux produire n'importe quelle couleur et dessiner un motif avec le cercle.
 

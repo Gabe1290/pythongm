@@ -27,7 +27,14 @@ def test_the_set_is_complete_and_the_readme_links_the_corrige():
         assert first.startswith(f"# Fiche {n} :"), (p.name, first)
 
 
+def _fr(kind, english):
+    """What the French IDE shows (docs/THYMIO_PANEL_I18N_PLAN.md: names follow the IDE language)."""
+    from extensions.thymio.ui_translations import PLUGIN_UI_TRANSLATIONS
+    return PLUGIN_UI_TRANSLATIONS[kind][english]["fr"]
+
+
 def test_every_action_and_event_of_the_solutions_is_named_as_the_ide_shows_it():
+    """The sheets are French, so they use the names a French IDE shows."""
     from tools.thymio_fiches_solutions import PROGRAMS
     from extensions.thymio.actions import THYMIO_ACTIONS
     from extensions.thymio.events import THYMIO_EVENT_TYPES
@@ -35,12 +42,23 @@ def test_every_action_and_event_of_the_solutions_is_named_as_the_ide_shows_it():
     missing = set()
     for prog in PROGRAMS.values():
         for event, actions in prog["events"].items():
-            if event != "create" and THYMIO_EVENT_TYPES[event].display_name not in text:
-                missing.add(THYMIO_EVENT_TYPES[event].display_name)
+            if event != "create" and _fr("event", THYMIO_EVENT_TYPES[event].display_name) not in text:
+                missing.add(_fr("event", THYMIO_EVENT_TYPES[event].display_name))
             for a in actions:
-                if a["action"] in THYMIO_ACTIONS and THYMIO_ACTIONS[a["action"]].display_name not in text:
-                    missing.add(THYMIO_ACTIONS[a["action"]].display_name)
+                if a["action"] in THYMIO_ACTIONS and _fr("action", THYMIO_ACTIONS[a["action"]].display_name) not in text:
+                    missing.add(_fr("action", THYMIO_ACTIONS[a["action"]].display_name))
     assert not missing, missing
+
+
+def test_no_english_action_or_event_name_is_left():
+    import re
+    from extensions.thymio.actions import THYMIO_ACTIONS
+    from extensions.thymio.events import THYMIO_EVENT_TYPES
+    text = _text(FICHES + [DOCS / "corrige.fr.md", DOCS / "README.fr.md"])
+    english = {a.display_name for a in THYMIO_ACTIONS.values()} | {e.display_name for e in THYMIO_EVENT_TYPES.values()}
+    left = sorted(n for n in english if re.search(r"(?<![\w-])" + re.escape(n) + r"(?![\w-])", text))
+    assert not left, left
+    assert "**Add Action**" not in text and "**Leds**" not in text
 
 
 def test_french_keeps_its_accents():

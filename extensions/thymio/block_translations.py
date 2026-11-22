@@ -108,7 +108,7 @@ _T = {
          "Prejeto infrardeče sporočilo", "Отримано ІЧ-повідомлення", "赤外線メッセージを受信", "收到红外消息")),
     # ---- motors
     "thymio_set_motor_speed": (
-        ("Vitesse des moteurs", "Motorgeschwindigkeiten setzen", "Velocidad de los motores", "Velocità dei motori",
+        ("Régler la vitesse des moteurs", "Motorgeschwindigkeiten setzen", "Fijar la velocidad de los motores", "Imposta la velocità dei motori",
          "Ustaw prędkość silników", "Definir velocidade dos motores", "Задать скорость моторов", "Nastavi hitrost motorjev",
          "Задати швидкість моторів", "モーターの速さを設定", "设置电机速度"),
         ("Régler la vitesse des moteurs gauche et droit", "Geschwindigkeit des linken und rechten Motors setzen",
@@ -152,38 +152,38 @@ _T = {
          "両方のモーターを止める", "停止两个电机")),
     # ---- LEDs
     "thymio_set_led_top": (
-        ("LED du dessus", "Obere LED setzen", "LED superior", "LED superiore", "Ustaw górną diodę LED", "LED de cima",
+        ("Régler la LED du dessus", "Obere LED setzen", "Fijar el LED superior", "Imposta il LED superiore", "Ustaw górną diodę LED", "Definir o LED de cima",
          "Задать верхний светодиод", "Nastavi zgornjo LED", "Задати верхній світлодіод", "上の LED を設定", "设置顶部 LED"),
         ("Régler la couleur de la LED RVB du dessus", "Farbe der oberen RGB-LED setzen", "Fijar el color del LED RGB superior",
          "Imposta il colore del LED RGB superiore", "Ustaw kolor górnej diody RGB", "Define a cor do LED RGB de cima",
          "Задать цвет верхнего RGB-светодиода", "Nastavi barvo zgornje RGB LED", "Задати колір верхнього RGB-світлодіода",
          "上の RGB LED の色を設定", "设置顶部 RGB LED 的颜色")),
     "thymio_set_led_bottom_left": (
-        ("LED en bas à gauche", "LED unten links setzen", "LED inferior izquierdo", "LED in basso a sinistra",
-         "Ustaw lewą dolną diodę LED", "LED de baixo à esquerda", "Задать нижний левый светодиод", "Nastavi spodnjo levo LED",
+        ("Régler la LED en bas à gauche", "LED unten links setzen", "Fijar el LED inferior izquierdo", "Imposta il LED in basso a sinistra",
+         "Ustaw lewą dolną diodę LED", "Definir o LED de baixo à esquerda", "Задать нижний левый светодиод", "Nastavi spodnjo levo LED",
          "Задати нижній лівий світлодіод", "左下の LED を設定", "设置左下 LED"),
         ("Régler la LED RVB en bas à gauche", "Untere linke RGB-LED setzen", "Fijar el LED RGB inferior izquierdo",
          "Imposta il LED RGB in basso a sinistra", "Ustaw lewą dolną diodę RGB", "Define o LED RGB de baixo à esquerda",
          "Задать нижний левый RGB-светодиод", "Nastavi spodnjo levo RGB LED", "Задати нижній лівий RGB-світлодіод",
          "左下の RGB LED を設定", "设置左下 RGB LED")),
     "thymio_set_led_bottom_right": (
-        ("LED en bas à droite", "LED unten rechts setzen", "LED inferior derecho", "LED in basso a destra",
-         "Ustaw prawą dolną diodę LED", "LED de baixo à direita", "Задать нижний правый светодиод", "Nastavi spodnjo desno LED",
+        ("Régler la LED en bas à droite", "LED unten rechts setzen", "Fijar el LED inferior derecho", "Imposta il LED in basso a destra",
+         "Ustaw prawą dolną diodę LED", "Definir o LED de baixo à direita", "Задать нижний правый светодиод", "Nastavi spodnjo desno LED",
          "Задати нижній правий світлодіод", "右下の LED を設定", "设置右下 LED"),
         ("Régler la LED RVB en bas à droite", "Untere rechte RGB-LED setzen", "Fijar el LED RGB inferior derecho",
          "Imposta il LED RGB in basso a destra", "Ustaw prawą dolną diodę RGB", "Define o LED RGB de baixo à direita",
          "Задать нижний правый RGB-светодиод", "Nastavi spodnjo desno RGB LED", "Задати нижній правий RGB-світлодіод",
          "右下の RGB LED を設定", "设置右下 RGB LED")),
     "thymio_set_led_circle": (
-        ("LED du cercle", "Kreis-LED setzen", "LED del círculo", "LED del cerchio", "Ustaw diodę LED okręgu",
-         "LED do círculo", "Задать светодиод круга", "Nastavi LED kroga", "Задати світлодіод кола", "円の LED を設定",
+        ("Régler une LED du cercle", "Kreis-LED setzen", "Fijar un LED del círculo", "Imposta un LED del cerchio", "Ustaw diodę LED okręgu",
+         "Definir um LED do círculo", "Задать светодиод круга", "Nastavi LED kroga", "Задати світлодіод кола", "円の LED を設定",
          "设置圆环 LED"),
         ("Régler une LED du cercle", "Eine LED des Kreises setzen", "Fijar un LED del círculo", "Imposta un LED del cerchio",
          "Ustaw jedną diodę LED okręgu", "Define um LED do círculo", "Задать один светодиод круга", "Nastavi eno LED kroga",
          "Задати один світлодіод кола", "円の LED を 1 つ設定", "设置圆环上的一个 LED")),
     "thymio_set_led_circle_all": (
-        ("Toutes les LED du cercle", "Alle Kreis-LEDs setzen", "Todos los LED del círculo", "Tutti i LED del cerchio",
-         "Ustaw wszystkie diody LED okręgu", "Todos os LEDs do círculo", "Задать все светодиоды круга",
+        ("Régler toutes les LED du cercle", "Alle Kreis-LEDs setzen", "Fijar todos los LED del círculo", "Imposta tutti i LED del cerchio",
+         "Ustaw wszystkie diody LED okręgu", "Definir todos os LEDs do círculo", "Задать все светодиоды круга",
          "Nastavi vse LED kroga", "Задати всі світлодіоди кола", "円の LED をすべて設定", "设置圆环所有 LED"),
         ("Régler les 8 LED du cercle", "Alle 8 Kreis-LEDs setzen", "Fijar los 8 LED del círculo", "Imposta gli 8 LED del cerchio",
          "Ustaw 8 diod LED okręgu", "Define os 8 LEDs do círculo", "Задать 8 светодиодов круга", "Nastavi 8 LED kroga",
@@ -284,8 +284,8 @@ _T = {
          "変数の条件を調べる", "检查变量条件")),
     # ---- timers
     "thymio_set_timer_period": (
-        ("Période de la minuterie", "Timer-Periode setzen", "Periodo del temporizador", "Periodo del timer",
-         "Ustaw okres licznika czasu", "Período do temporizador", "Задать период таймера", "Nastavi periodo časovnika",
+        ("Régler la période de la minuterie", "Timer-Periode setzen", "Fijar el periodo del temporizador", "Imposta il periodo del timer",
+         "Ustaw okres licznika czasu", "Definir o período do temporizador", "Задать период таймера", "Nastavi periodo časovnika",
          "Задати період таймера", "タイマーの周期を設定", "设置计时器周期"),
         ("Régler la période de la minuterie (ms)", "Timer-Periode setzen (ms)", "Fijar el periodo del temporizador (ms)",
          "Imposta il periodo del timer (ms)", "Ustaw okres licznika czasu (ms)", "Define o período do temporizador (ms)",

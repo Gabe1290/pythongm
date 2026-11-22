@@ -54,7 +54,7 @@ def test_the_configure_dialog_is_translated(lang):
     lang("fr")
     d = _dialog("thymio_set_motor_speed")
     try:
-        assert "Vitesse des moteurs" in d.windowTitle()
+        assert "Régler la vitesse des moteurs" in d.windowTitle()
         labels = _labels(d)
         assert any("Vitesse du moteur gauche" in t for t in labels), labels
         assert any("Régler séparément la vitesse" in t for t in labels), labels

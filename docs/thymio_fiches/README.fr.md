@@ -13,10 +13,10 @@ Neuf fiches progressives pour apprendre à programmer le robot **Thymio** avec l
 | **Thymio — Activités : les murs** | une arène fermée avec deux boîtes | 4, 8, 9 |
 | **Thymio — Activités : le sol et le ruban** | un sol blanc, un ruban noir, un bord de table | 5, 9 |
 
-3. Ouvre l'objet **thymio_1** : son onglet **Thymio** est l'endroit où tu écris le programme. Le bouton **+ Événement** ajoute un événement ; un clic droit sur l'événement → **Add Action** ajoute une action, rangée par catégorie (**Leds**, **Motors**, **Sensors**, **Conditions**, **Variables**, **Timing**).
+3. Ouvre l'objet **thymio_1** : son onglet **Thymio** est l'endroit où tu écris le programme. Le bouton **+ Événement** ajoute un événement ; un clic droit sur l'événement → **Ajouter une action** ajoute une action, rangée par catégorie (**LED**, **Motors**, **Sensors**, **Conditions**, **Variables**, **Timing**).
 4. Lance avec **Test Game** (F5). Les boutons du robot se commandent au clavier : **↑ ↓ ← →** et **barre d'espace** (bouton du centre), ou en cliquant sur les boutons dessinés sur le robot.
 
-> INFO: les noms des événements et des actions restent en anglais dans l'éditeur (par exemple **Button Forward**, **Set Top LED Color**). Les fiches les écrivent exactement comme tu les vois à l'écran.
+> INFO: les noms des événements et des actions s'affichent dans la langue de l'éditeur (par exemple **Bouton avant**, **Régler la LED du dessus**). Les fiches les écrivent exactement comme tu les vois quand l'éditeur est en **français** (menu *Outils → 🌐 Langue*).
 
 ## Ce que le simulateur fait… et ne fait pas
 
@@ -32,7 +32,7 @@ Neuf fiches progressives pour apprendre à programmer le robot **Thymio** avec l
 
 - **Le simulateur est rapide.** La vitesse 200 du vrai robot fait courir le robot virtuel presque 12 fois plus vite que la réalité. Dans les fiches, on utilise des vitesses de **20 à 50**.
 - **Un mur ne bloque pas le robot virtuel** : il passe à travers. C'est donc à ton programme de le faire s'arrêter, avec les capteurs.
-- **Un événement de bouton se déclenche à l'appui et au relâchement**, comme sur le vrai robot. On les distingue avec les conditions **If Button Pressed** / **If Button Released**.
+- **Un événement de bouton se déclenche à l'appui et au relâchement**, comme sur le vrai robot. On les distingue avec les conditions **Si bouton appuyé** / **Si bouton relâché**.
 - **Le son sort du haut-parleur de l'ordinateur.** Règle le volume, ou coupe le son avec la touche **M** pendant le jeu. Les sons du robot sont des mélodies synthétisées qui y ressemblent, pas ses enregistrements.
 - Une condition (« si… ») s'applique à l'action ou au bloc `start_block … end_block` qui la suit.
 

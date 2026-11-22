@@ -88,8 +88,14 @@ Standard events panel, French translates **49 of 186** action names and **7 of 7
   Japanese: build each panel/dialog and read what it shows; no English left except the listed same
   words; a project saved before still loads, shows the same selections and exports the same Aseba code
   (byte-identical `.aesl` before/after).
-- [ ] **U4 — The sheets (D3).** French names in `fiche_1..9` and `corrige`, re-shot screenshot, PDF/ODT
+- [x] **U4 — The sheets (D3).** French names in `fiche_1..9` and `corrige`, re-shot screenshot, PDF/ODT
   regenerated (the ODT generator never overwrites: delete first), test switched to the French names.
+  *Done:* names, choice labels, parameter labels and the menu path are what the French editor shows;
+  the screenshot shows no names, so it was kept. Six noun-style action names became verbs in the
+  Romance languages (« Régler la LED du dessus » rather than « LED du dessus »), so a sheet's
+  instruction reads as an action. `test_thymio_fiches_docs.py` now fails on any English action or
+  event name left in a French sheet. The PDF generator needs DejaVu Sans Oblique, which this Linux box
+  lacks (taken from the `fonts-dejavu-extra` package for the run, not committed).
 - [ ] **U5 — Close.** QA checklist §11b/§17 items, TODO.md, and a note in `extensions/thymio/README.md`.
 
 ## Risks

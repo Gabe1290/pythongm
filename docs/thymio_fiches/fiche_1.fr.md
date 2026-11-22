@@ -25,8 +25,8 @@ Ferme le jeu, ouvre l'objet **thymio_1** et va dans l'onglet **Thymio**.
 
 ![Dans l'éditeur d'objet, l'onglet Thymio est entouré en rouge](img/fiche_1_onglet_thymio.png)
 
-- [ ] Clique sur **+ Événement** et choisis **Button Forward**.
-- [ ] Clic droit sur l'événement → **Add Action** → **Leds** → **Set Top LED Color**. Mets **red = 0**, **green = 32**, **blue = 0**.
+- [ ] Clique sur **+ Événement** et choisis **Bouton avant**.
+- [ ] Clic droit sur l'événement → **Ajouter une action** → **LED** → **Régler la LED du dessus**. Mets **Rouge = 0**, **Vert = 32**, **Bleu = 0**.
 - [ ] Lance **Test Game** et appuie sur **↑** : la LED du dessus devient verte.
 
 > INFO: pour chaque LED, une couleur est composée de trois nombres de **0** (éteint) à **32** (maximum). La fiche 2 explique le mélange.
@@ -37,10 +37,10 @@ Ajoute les événements suivants :
 
 | Événement | Action à ajouter |
 |---|---|
-| **Button Backward** | **Set Top LED Color** : rouge (32, 0, 0) |
-| **Button Left** | **Set Bottom Left LED** : bleu (0, 0, 32) |
-| **Button Right** | **Set Bottom Right LED** : bleu (0, 0, 32) |
-| **Button Center** | **Turn Off All LEDs** |
+| **Bouton arrière** | **Régler la LED du dessus** : rouge (32, 0, 0) |
+| **Bouton gauche** | **Régler la LED en bas à gauche** : bleu (0, 0, 32) |
+| **Bouton droit** | **Régler la LED en bas à droite** : bleu (0, 0, 32) |
+| **Bouton central** | **Éteindre les LED** |
 
 - [ ] Teste chaque bouton. Quel bouton éteint tout ?
 - [ ] Appuie sur **←** puis sur **→** : les deux LED du bas sont-elles allumées en même temps ?
@@ -49,5 +49,5 @@ Ajoute les événements suivants :
 
 ## Pour aller plus loin
 
-- Fais que **Button Center** allume la LED du dessus en blanc (32, 32, 32).
-- Fais que **Button Left** allume **aussi** la LED du dessus : ajoute deux actions au même événement.
+- Fais que **Bouton central** allume la LED du dessus en blanc (32, 32, 32).
+- Fais que **Bouton gauche** allume **aussi** la LED du dessus : ajoute deux actions au même événement.

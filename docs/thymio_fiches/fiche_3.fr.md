@@ -10,7 +10,7 @@
 
 ## 1. Avancer
 
-- [ ] Efface les programmes précédents (ou ouvre à nouveau l'exemple). Ajoute **Button Forward** avec l'action **Move Forward**, **speed = 30**.
+- [ ] Efface les programmes précédents (ou ouvre à nouveau l'exemple). Ajoute **Bouton avant** avec l'action **Avancer**, **Vitesse = 30**.
 - [ ] Teste : appuie sur **↑**. Le robot avance, puis ne s'arrête plus. Pourquoi ?
 
 > INFO: dans le simulateur, la vitesse **30** donne environ **72 pixels par seconde**. Le robot fait 110 pixels de large : vitesse 30 = un peu plus d'une demi-largeur par seconde. Reste entre **20 et 50**.
@@ -19,14 +19,14 @@
 
 Un événement de bouton se déclenche **deux fois** : quand tu **appuies**, et quand tu **relâches**. Pour agir seulement à l'appui, ou seulement au relâchement, on utilise une condition qui s'applique à l'action suivante.
 
-- [ ] Dans **Button Forward**, mets, dans cet ordre :
+- [ ] Dans **Bouton avant**, mets, dans cet ordre :
 
 | N° | Ce que tu ajoutes |
 |---|---|
-| 1 | **If Button Pressed** (button = forward) |
-| 2 | **Move Forward** (speed = 30) |
-| 3 | **If Button Released** (button = forward) |
-| 4 | **Stop Motors** |
+| 1 | **Si bouton appuyé** (Bouton = avant) |
+| 2 | **Avancer** (Vitesse = 30) |
+| 3 | **Si bouton relâché** (Bouton = avant) |
+| 4 | **Arrêter les moteurs** |
 
 - [ ] Teste : le robot avance **tant que tu tiens** la touche ↑ et s'arrête dès que tu la relâches.
 
@@ -34,13 +34,13 @@ Un événement de bouton se déclenche **deux fois** : quand tu **appuies**, et 
 
 ## 3. Reculer et tourner
 
-- [ ] Fais la même chose pour **Button Backward** avec **Move Backward** (speed 30).
-- [ ] Pour tourner sur place, utilise **Set Motor Speeds** (la roue gauche et la roue droite tournent en sens contraires) :
+- [ ] Fais la même chose pour **Bouton arrière** avec **Reculer** (vitesse 30).
+- [ ] Pour tourner sur place, utilise **Régler la vitesse des moteurs** (la roue gauche et la roue droite tournent en sens contraires) :
 
-| Bouton | left_speed | right_speed | Le robot… |
+| Bouton | Vitesse du moteur gauche | Vitesse du moteur droit | Le robot… |
 |---|---|---|---|
-| **Button Left** | -30 | 30 | tourne vers la gauche |
-| **Button Right** | 30 | -30 | tourne vers la droite |
+| **Bouton gauche** | -30 | 30 | tourne vers la gauche |
+| **Bouton droit** | 30 | -30 | tourne vers la droite |
 
 - [ ] Maintiens **←** environ **une seconde** : le robot fait à peu près **un quart de tour**.
 
@@ -49,5 +49,5 @@ Un événement de bouton se déclenche **deux fois** : quand tu **appuies**, et 
 ## Pour aller plus loin
 
 - Le robot sort de la pièce ? Remets-le au centre en relançant le jeu, puis essaie de dessiner un carré **à la main** avec les quatre boutons.
-- Fais en sorte que **Button Center** arrête le robot, quoi qu'il fasse.
+- Fais en sorte que **Bouton central** arrête le robot, quoi qu'il fasse.
 - Essaie la vitesse 50. Que remarques-tu pour le quart de tour ?

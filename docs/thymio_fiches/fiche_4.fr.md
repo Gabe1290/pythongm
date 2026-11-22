@@ -14,26 +14,26 @@ Le robot a **7 capteurs** infrarouges : 5 à l'avant et 2 à l'arrière.
 
 | N° | Capteur | N° | Capteur |
 |---|---|---|---|
-| 0 | Front Left Far | 4 | Front Right Far |
-| 1 | Front Left | 5 | Back Left |
-| 2 | **Front Center** | 6 | Back Right |
-| 3 | Front Right | | |
+| 0 | Avant gauche loin | 4 | Avant droit loin |
+| 1 | Avant gauche | 5 | Arrière gauche |
+| 2 | **Avant centre** | 6 | Arrière droit |
+| 3 | Avant droit | | |
 
-Un capteur donne **0** quand il ne voit rien, et un nombre de plus en plus grand quand un obstacle s'approche (jusqu'à plus de 2000 au contact). Ils sont mis à jour **dix fois par seconde** : l'événement **Proximity Sensors Update** se déclenche à chaque mise à jour.
+Un capteur donne **0** quand il ne voit rien, et un nombre de plus en plus grand quand un obstacle s'approche (jusqu'à plus de 2000 au contact). Ils sont mis à jour **dix fois par seconde** : l'événement **Mise à jour de proximité** se déclenche à chaque mise à jour.
 
 > INFO: dans cette pièce, l'arène est fermée par quatre murs et contient deux boîtes. Le robot part à gauche, tourné vers la droite.
 
 ## 2. S'arrêter devant l'obstacle
 
-- [ ] Ajoute **Button Center** : **If Button Pressed** (center), puis **Move Forward** (speed 40).
-- [ ] Ajoute l'événement **Proximity Sensors Update** avec cette condition :
+- [ ] Ajoute **Bouton central** : **Si bouton appuyé** (centre), puis **Avancer** (vitesse 40).
+- [ ] Ajoute l'événement **Mise à jour de proximité** avec cette condition :
 
 | N° | Ce que tu ajoutes |
 |---|---|
-| 1 | **If Proximity Detected** (sensor_index = 2 - Front Center, comparison = **>**, threshold = **1000**) |
+| 1 | **Si proximité** (Capteur = 2 - Avant centre, Comparaison = **>**, Seuil = **1000**) |
 | 2 | `start_block` |
-| 3 | **Stop Motors** |
-| 4 | **Set Top LED Color** : rouge (32, 0, 0) |
+| 3 | **Arrêter les moteurs** |
+| 4 | **Régler la LED du dessus** : rouge (32, 0, 0) |
 | 5 | `end_block` |
 
 - [ ] Teste : appuie sur la barre d'espace. Le robot s'arrête devant la première boîte et sa LED devient rouge.
@@ -43,14 +43,14 @@ Un capteur donne **0** quand il ne voit rien, et un nombre de plus en plus grand
 
 ## 3. Éviter les obstacles
 
-Le robot doit rouler sans jamais toucher un mur ni une boîte. Dans **Proximity Sensors Update**, mets, dans cet ordre :
+Le robot doit rouler sans jamais toucher un mur ni une boîte. Dans **Mise à jour de proximité**, mets, dans cet ordre :
 
 | N° | Ce que tu ajoutes |
 |---|---|
-| 1 | **Move Forward** (speed 40) et **Set Top LED Color** vert (0, 32, 0) : par défaut, on avance |
-| 2 | Si **Front Right** > 250 : **Set Motor Speeds** (-30, 30) et LED orange (32, 16, 0) |
-| 3 | Si **Front Left** > 250 : **Set Motor Speeds** (30, -30) et LED orange |
-| 4 | Si **Front Center** > 250 : **Set Motor Speeds** (30, -30) et LED orange |
+| 1 | **Avancer** (vitesse 40) et **Régler la LED du dessus** vert (0, 32, 0) : par défaut, on avance |
+| 2 | Si **Avant droit** > 250 : **Régler la vitesse des moteurs** (-30, 30) et LED orange (32, 16, 0) |
+| 3 | Si **Avant gauche** > 250 : **Régler la vitesse des moteurs** (30, -30) et LED orange |
+| 4 | Si **Avant centre** > 250 : **Régler la vitesse des moteurs** (30, -30) et LED orange |
 
 - [ ] Teste. Le robot explore l'arène : vert quand la voie est libre, orange quand il tourne.
 
