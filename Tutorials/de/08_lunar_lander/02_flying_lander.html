@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Eine fliegende Landefähre</h1>
+
+    <p>In dieser Phase erstellen wir die Sprites, Objekte und die Steuerung, um eine Landefähre in der Mondschwerkraft zu fliegen.
+    Am Ende hast du eine spielbare Landefähre, mit der du herumfliegen kannst!</p>
+
+    <h2>Die Sprites erstellen</h2>
+
+    <div class="step">
+        <p><strong>spr_lander</strong> (32x32) &mdash; Das Raumschiff</p>
+        <ol>
+            <li>Rechtsklicke auf <strong>Sprites</strong> &gt; <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_lander</code> (32x32 Pixel)</li>
+            <li>Zeichne ein kleines Raumschiff (ein Dreieck oder die klassische Form einer Landefähre) oder importiere es aus <code>Tutorials/08_lunar_lander/assets/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>spr_ground</strong> (32x32) &mdash; Felsiges Gelände</p>
+        <ol>
+            <li>Erstelle ein neues Sprite namens <code>spr_ground</code> (32x32 Pixel)</li>
+            <li>Zeichne felsiges Gelände in Grau oder Braun oder importiere es aus den Assets</li>
+        </ol>
+    </div>
+
+    <h2>Die Objekte erstellen</h2>
+
+    <div class="step">
+        <p><strong>obj_ground</strong></p>
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &gt; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_ground</code> und gib ihm <code>spr_ground</code></li>
+            <li>Setze ein Häkchen bei <strong>Fest</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>obj_lander</strong></p>
+        <ol>
+            <li>Erstelle ein neues Objekt namens <code>obj_lander</code></li>
+            <li>Gib ihm <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Die Landefähre programmieren (Blockly)</h2>
+    <p>Doppelklicke auf <code>obj_lander</code> und öffne den Reiter <strong>Blockly</strong>.</p>
+
+    <h2>1. Schwerkraft einschalten (Wenn erstellt)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-move block-indent">Setze Schwerkraft Richtung: <span class="block-val">270</span>, Stärke: <span class="block-val">0.05</span></span>
+        </div>
+        <p>Suche <strong>Wenn erstellt</strong> in der Kategorie <em>Ereignisse</em>.
+        Suche dann <strong>Setze Schwerkraft</strong> in der Kategorie <em>Bewegung</em>.
+        Setze die Richtung auf <strong>270</strong> (nach unten) und die Stärke auf <strong>0.05</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Warum 0.05?</strong> Die Schwerkraft auf dem Mond beträgt etwa 1/6 der Erdschwerkraft.
+        Ein sehr kleiner Wert wie 0.05 lässt die Landefähre langsam schweben &mdash; wie bei einer echten Mondlandung!
+    </div>
+
+    <h2>2. Schub nach oben (Pfeil oben gehalten)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil oben (gehalten)</span><br>
+            <span class="block block-move block-indent">setze vertikale Geschwindigkeit auf <span class="block-val">-2</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil oben</strong>.
+        Füge <strong>setze vertikale Geschwindigkeit auf</strong> (aus <em>Bewegung</em>) mit dem Wert <strong>-2</strong> hinzu.
+        Eine negative vertikale Geschwindigkeit bewegt die Landefähre nach oben (Schub gegen die Schwerkraft).</p>
+    </div>
+
+    <h2>3. Nach links steuern (Pfeil links gehalten)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">-2</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil links</strong>.
+        Füge <strong>setze horizontale Geschwindigkeit auf</strong> (aus <em>Bewegung</em>) mit dem Wert <strong>-2</strong> hinzu.</p>
+    </div>
+
+    <h2>4. Nach rechts steuern (Pfeil rechts gehalten)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">2</span></span>
+        </div>
+        <p>Suche <strong>Tastatur (gehalten)</strong> in <em>Ereignisse</em> und wähle <strong>Pfeil rechts</strong>.
+        Füge <strong>setze horizontale Geschwindigkeit auf</strong> (aus <em>Bewegung</em>) mit dem Wert <strong>2</strong> hinzu.</p>
+    </div>
+
+    <h2>5. Waagrechte Bewegung stoppen, wenn keine Taste gedrückt ist</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">setze horizontale Geschwindigkeit auf <span class="block-val">0</span></span>
+        </div>
+        <p>Suche <strong>Tastatur: Keine Taste</strong> in <em>Ereignisse</em>.
+        Füge <strong>setze horizontale Geschwindigkeit auf</strong> mit dem Wert <strong>0</strong> hinzu.
+        So endet die waagrechte Bewegung, wenn keine Pfeiltaste gedrückt ist, aber die Schwerkraft zieht die Landefähre weiter nach unten!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Wichtig:</strong> Wir setzen nur <code>hspeed</code> auf 0, nicht <code>vspeed</code>.
+        So wirkt die Schwerkraft weiter auf die Landefähre, wenn keine Taste gedrückt ist &mdash; sie fällt weiter!
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>5 Ereignisblöcke</strong> haben (Wenn erstellt + 3 Tastatur + Keine Taste).</p>
+    </div>
+
+    <h2>Den Raum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Räume</strong> &gt; <strong>Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_game</code></li>
+            <li>Setze die Größe: <strong>640 x 480</strong></li>
+            <li>Setze die Hintergrundfarbe auf <strong>Schwarz</strong> (Weltraum!)</li>
+            <li>Schalte „Am Raster ausrichten“ ein (32x32)</li>
+            <li>Setze <code>obj_ground</code>-Blöcke entlang der ganzen untersten Reihe</li>
+            <li>Setze <code>obj_lander</code> oben in den Raum</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Die Landefähre fällt langsam auf den Boden zu (Mondschwerkraft!)</li>
+            <li><strong>Pfeil oben:</strong> Schub nach oben gegen die Schwerkraft</li>
+            <li><strong>Pfeiltasten Links/Rechts:</strong> waagrecht steuern</li>
+            <li>Lass alle Tasten los und sieh zu, wie die Landefähre langsam nach unten schwebt</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um Landen und Abstürzen hinzuzufügen!
+    </div>
+</body>
+</html>

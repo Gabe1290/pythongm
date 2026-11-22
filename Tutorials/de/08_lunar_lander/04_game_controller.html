@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Spiel-Controller</h1>
+
+    <p>Wir fügen ein Spiel-Controller-Objekt hinzu, das einen Titel und eine Anleitung zeigt und die Punkte festlegt.</p>
+
+    <h2>Das Controller-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &gt; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_game_controller</code></li>
+            <li><strong>Kein Sprite nötig</strong> &mdash; das ist ein unsichtbarer Controller</li>
+        </ol>
+    </div>
+
+    <h2>Den Controller programmieren (Blockly)</h2>
+    <p>Doppelklicke auf <code>obj_game_controller</code> und öffne den Reiter <strong>Blockly</strong>.</p>
+
+    <h2>1. Punkte festlegen (Wenn erstellt)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-score block-indent">Setze Punkte auf <span class="block-val">0</span></span>
+        </div>
+        <p>Suche <strong>Wenn erstellt</strong> in <em>Ereignisse</em>.
+        Füge <strong>Setze Punkte auf</strong> (aus <em>Punkte</em>) mit dem Wert <strong>0</strong> hinzu.
+        So werden die Punkte bei jedem Start des Raums zurückgesetzt.</p>
+    </div>
+
+    <h2>2. Anzeigetext zeichnen (Beim Zeichnen)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-draw block-indent">Zeichenfarbe festlegen Farbe: <span class="block-val">#ffffff</span></span><br>
+            <span class="block block-draw block-indent">Text zeichnen <span class="block-val">"Lunar Lander"</span> bei <span class="block-val">10</span>, <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Text zeichnen <span class="block-val">"Land on the green pad!"</span> bei <span class="block-val">10</span>, <span class="block-val">30</span></span>
+        </div>
+        <p>Suche <strong>Beim Zeichnen</strong> in <em>Ereignisse</em>.
+        Füge zuerst <strong>Zeichenfarbe festlegen</strong> (Weiß) hinzu &mdash; Text wird normalerweise schwarz gezeichnet und ist in einem schwarzen Raum unsichtbar.
+        Füge dann zwei Blöcke <strong>Text zeichnen</strong> (aus <em>Zeichnen</em>) hinzu &mdash;
+        einen für den Spieltitel an Position (10, 10) und einen für die Anleitung an Position (10, 30).</p>
+    </div>
+
+    <h2>Deine Blöcke anwenden</h2>
+    <div class="step">
+        <ol>
+            <li>Du solltest jetzt <strong>2 Ereignisblöcke</strong> haben (Wenn erstellt + Beim Zeichnen)</li>
+        </ol>
+    </div>
+
+    <h2>Den Controller in den Raum setzen</h2>
+    <div class="step">
+        <ol>
+            <li>Öffne <code>room_game</code></li>
+            <li>Setze eine Instanz von <code>obj_game_controller</code> irgendwo in den Raum (sie hat kein Sprite, die Position spielt also keine Rolle)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Der Titel „Lunar Lander“ erscheint oben links</li>
+            <li>Darunter steht die Anleitung „Land on the green pad!“</li>
+            <li>Flieg deine Landefähre, lande auf der Plattform, um zu gewinnen, und stürze ab, um neu zu beginnen</li>
+            <li>Das ganze Spiel ist jetzt fertig!</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Glückwunsch! Du hast ein Mondlandungs-Spiel gebaut!</strong>
+        </p>
+        <p>Dein Spiel hat Mondschwerkraft, Schubsteuerung, eine Landeplattform, Absturzerkennung und eine Anzeige. Gut gemacht!</p>
+    </div>
+
+    <h2>Ideen für Herausforderungen</h2>
+    <div class="challenge">
+        <p>Willst du dein Spiel noch besser machen? Probiere diese Verbesserungen:</p>
+        <ul>
+            <li><strong>Treibstoff:</strong> Füge eine Variable für den Treibstoff hinzu, die beim Schub abnimmt. Ist der Treibstoff bei 0, funktioniert der Schub nicht mehr!</li>
+            <li><strong>Absturz je nach Geschwindigkeit:</strong> Prüfe mit <code>vspeed</code> der Landefähre die Landegeschwindigkeit. Ist sie beim Aufsetzen auf der Plattform zu schnell, stürzt sie ab, statt sicher zu landen!</li>
+            <li><strong>Kleinere Landeplattform:</strong> Mach die Plattform kleiner (weniger Blöcke), um es schwerer zu machen</li>
+            <li><strong>Mehrere Level:</strong> Erstelle weitere Räume mit anderem Gelände und schwierigeren Landeplätzen</li>
+            <li><strong>Punkte je nach übrigem Treibstoff:</strong> Gib mehr Punkte, wenn beim Landen mehr Treibstoff übrig ist &mdash; das belohnt sparsames Fliegen!</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Landen und Abstürzen</h1>
+
+    <p>Jetzt fügen wir eine Landeplattform und Kollisionserkennung hinzu.
+    Lande auf der Plattform, um zu gewinnen &mdash; stürzt du auf den Boden, beginnt alles von vorn!</p>
+
+    <h2>Das Sprite der Landeplattform erstellen</h2>
+    <div class="step">
+        <p><strong>spr_pad</strong> (32x32) &mdash; Eine flache grüne Landeplattform</p>
+        <ol>
+            <li>Rechtsklicke auf <strong>Sprites</strong> &gt; <strong>Sprite erstellen</strong></li>
+            <li>Nenne es <code>spr_pad</code> (32x32 Pixel)</li>
+            <li>Zeichne eine flache grüne Plattform (ein hellgrünes Rechteck) oder importiere sie aus den Assets</li>
+        </ol>
+    </div>
+
+    <h2>Das Objekt der Landeplattform erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklicke auf <strong>Objekte</strong> &gt; <strong>Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_pad</code> und gib ihm <code>spr_pad</code></li>
+            <li>Setze ein Häkchen bei <strong>Fest</strong></li>
+        </ol>
+    </div>
+
+    <h2>Die Kollisionen der Landefähre programmieren (Blockly)</h2>
+    <p>Öffne den Blockly-Editor von <code>obj_lander</code> und füge zwei neue Kollisionsereignisse hinzu.</p>
+
+    <h2>1. Auf der Plattform landen (Erfolg!)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_pad</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span><br>
+            <span class="block block-move block-indent">Setze Schwerkraft Richtung: 270, Stärke: <span class="block-val">0</span></span><br>
+            <span class="block block-game block-indent">Zeige Nachricht <span class="block-val">"Landing successful!"</span></span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_pad</code> ein.
+        Füge <strong>Bewegung stoppen</strong> (aus <em>Bewegung</em>) hinzu, um die Landefähre anzuhalten.
+        Füge <strong>Setze Schwerkraft</strong> (aus <em>Bewegung</em>) mit der Richtung <strong>270</strong> und der Stärke <strong>0</strong> hinzu
+        und dann <strong>Zeige Nachricht</strong> (aus <em>Spiel</em>) mit deinem Siegestext.</p>
+        <div class="highlight"><strong>Warum die Schwerkraft ausschalten?</strong> Die Schwerkraft drückt die gelandete Fähre in jedem Bild auf die Plattform,
+        und jeder Druck löst die Kollision erneut aus &mdash; die Meldung würde also immer wieder erscheinen. Schaltest du die Schwerkraft nach der Landung aus,
+        erscheint sie nur einmal.</div>
+    </div>
+
+    <h2>2. Auf den Boden stürzen (Misserfolg!)</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_ground</span><br>
+            <span class="block block-game block-indent">Zeige Nachricht <span class="block-val">"Crashed!"</span></span><br>
+            <span class="block block-game block-indent">Raum neu starten</span>
+        </div>
+        <p>Suche <strong>Kollision</strong> in <em>Ereignisse</em> und gib <code>obj_ground</code> ein.
+        Füge <strong>Zeige Nachricht</strong> (aus <em>Spiel</em>) mit einem Absturztext hinzu
+        und dann <strong>Raum neu starten</strong> (aus <em>Raum</em>).
+        Wer auf den felsigen Boden prallt, beginnt das Level von vorn!</p>
+    </div>
+
+    <h2>Deine Blöcke anwenden</h2>
+    <div class="step">
+        <ol>
+            <li>Du solltest jetzt insgesamt <strong>7 Ereignisblöcke</strong> haben (Wenn erstellt + 3 Tastatur + Keine Taste + 2 Kollisionen)</li>
+        </ol>
+    </div>
+
+    <h2>Den Raum ändern</h2>
+    <div class="step">
+        <p>Öffne <code>room_game</code> und ändere das Gelände:</p>
+        <ol>
+            <li>Mach den Boden <strong>uneben</strong> &mdash; staple an manchen Stellen <code>obj_ground</code>-Blöcke höher, damit Hügel entstehen</li>
+            <li>Entferne ein oder zwei Bodenblöcke aus der untersten Reihe, damit eine Lücke entsteht</li>
+            <li>Setze <code>obj_pad</code> in die Lücke (der Landeplatz!)</li>
+        </ol>
+    </div>
+
+    <h2>Beispiel für einen Levelaufbau</h2>
+    <pre>
+        L                          &lt;- Lander starts here
+
+
+
+GG       GG
+GGG     GGGG    PP     GGGGG     GGG
+GGGGGGGGGGGG    PP     GGGGGGGGGGGGG
+
+G = Ground (crash!)    L = Lander    P = Landing Pad (safe!)</pre>
+
+    <div class="highlight">
+        <strong>Tipp:</strong> Mach den Landeplatz klein genug für eine Herausforderung, aber nicht unmöglich winzig!
+        Ein oder zwei Plattformblöcke nebeneinander funktionieren gut.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Flieg zur <strong>grünen Landeplattform</strong></li>
+            <li>Lande auf der Plattform &rarr; die Meldung „Landing successful!“ erscheint</li>
+            <li>Stürze auf den Boden &rarr; die Meldung „Crashed!“ erscheint, dann startet der Raum neu</li>
+            <li>Gib kurze Schubstöße (tippe auf Pfeil oben), um deinen Sinkflug zu steuern</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf „Weiter“, um den Spiel-Controller mit Anzeigetext hinzuzufügen!
+    </div>
+</body>
+</html>
