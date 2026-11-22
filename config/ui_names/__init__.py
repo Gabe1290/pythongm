@@ -13,9 +13,9 @@ from typing import Dict
 
 # Plain imports, not importlib: a frozen build (PyInstaller / Nuitka) only bundles modules it can
 # see being imported. Add a language here when its module exists.
-from . import de, es, fr, it, pt, ru, sl, uk
+from . import de, es, fr, it, pl, pt, ru, sl, uk
 
-_MODULES = {"fr": fr, "de": de, "es": es, "it": it, "pt": pt, "ru": ru, "sl": sl, "uk": uk}
+_MODULES = {"fr": fr, "de": de, "es": es, "it": it, "pt": pt, "ru": ru, "sl": sl, "uk": uk, "pl": pl}
 LANGUAGES = tuple(_MODULES)
 
 
