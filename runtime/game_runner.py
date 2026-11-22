@@ -6,8 +6,15 @@ Enhanced GameRunner with smooth movement that snaps to grid
 import os
 import sys
 # Force pygame to use software rendering to avoid conflicts with Qt
-# Use appropriate video driver based on platform
-if sys.platform == 'win32':
+# Use appropriate video driver based on platform -- unless the caller explicitly asked for a
+# HEADLESS driver (the test suite's conftest sets "dummy"; CI and verification tools may too).
+# Overriding that opened a real X11 window for every test that ran a game: the window manager's
+# focus/move/expose events, and anything the person at the desk typed, then reached those games
+# at random moments -- the cause of the flaky tests/test_tutorial_reference_projects.py T06 runs.
+_HEADLESS_DRIVERS = ('dummy', 'offscreen')
+if os.environ.get('SDL_VIDEODRIVER', '').lower() in _HEADLESS_DRIVERS:
+    pass
+elif sys.platform == 'win32':
     os.environ['SDL_VIDEODRIVER'] = 'windows'
 elif sys.platform == 'darwin':
     os.environ['SDL_VIDEODRIVER'] = 'cocoa'
