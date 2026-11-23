@@ -989,17 +989,28 @@ def render_raycast_view(room, screen: pygame.Surface):
                 col_idx = min(num_columns - 1, max(0, int(screen_x / col_width)))
                 if corrected < col_wall_dist[col_idx]:
                     col_h = blit_h
+                    blit_y, blit_off = y0, off
                     if stairs:
                         # Steps nearer than the billboard hide its lower rows:
                         # draw only above the free-rows limit the column walk
                         # had reached before this distance (S7).
-                        limit = _clip_before(stairs_layouts[col_idx]["occluders"],
-                                             corrected, view_h)
-                        if y0 + col_h > limit:
-                            col_h = max(0, limit - y0)
+                        lay = stairs_layouts[col_idx]
+                        limit = _clip_before(lay["occluders"], corrected, view_h)
+                        # A lintel nearer than the billboard hides its UPPER rows
+                        # (ceilings plan, C5): draw only below the rows the
+                        # column walk's top clip had reached by this distance.
+                        occ_top = lay.get("occluders_top")
+                        if occ_top:
+                            top_lim = _clip_top_before(occ_top, corrected)
+                            if top_lim > y0:
+                                cut = top_lim - y0
+                                blit_y, blit_off = top_lim, off + cut
+                                col_h = max(0, col_h - cut)
+                        if blit_y + col_h > limit:
+                            col_h = max(0, limit - blit_y)
                     if col_h > 0:
-                        screen.blit(scaled, (screen_x, y0),
-                                    (slice_x, off, 1, col_h))
+                        screen.blit(scaled, (screen_x, blit_y),
+                                    (slice_x, blit_off, 1, col_h))
             slice_x += 1
 
     # DOOM-bar letterbox: fill the reserved band below the 3D view opaque
@@ -1020,6 +1031,19 @@ def _clip_before(occluders, dist, view_h):
         if d >= dist:
             break
         limit = clip
+    return _row(limit)
+
+
+def _clip_top_before(occluders_top, dist):
+    """The first screen row NOT hidden from above, in one column, for something
+    at corrected distance ``dist``: the top clip the column walk had reached
+    after the last crossing nearer than it (lintels, ceiling spans). 0 = nothing
+    nearer hides any upper row."""
+    limit = 0.0
+    for d, top in occluders_top:
+        if d >= dist:
+            break
+        limit = top
     return _row(limit)
 
 
