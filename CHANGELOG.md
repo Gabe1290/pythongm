@@ -7,7 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.2] - 2026-11-23
+
+### Fixed
+- **The IDE crashed right after opening, on every launch, in any language
+  other than English once its window had been closed maximised.** At
+  startup the IDE switched its menus and toolbar to the chosen language by
+  deleting the toolbar and building a new one, while Qt was still restoring
+  the saved maximised window around the old one — a native crash that
+  logging out, rebooting or downloading again did not cure (seen on a
+  classroom machine and on a teacher's computer, Debian 12, French). The
+  toolbar is now refilled in place. Earlier builds: switch the IDE to
+  English, or remove `window_geometry_b64` and `window_state_b64` from
+  `~/.pygamemaker/config.json`.
+- A second, greyed copy of the toolbar no longer appears next to the real
+  one after the startup language change.
+- **Kivy (Android/iOS) exports: Begin Step and End Step events broke every
+  frame.** Their handlers were generated without the `dt` argument the scene
+  passes, so each call failed and the rest of that frame was skipped — in
+  `maze_4` and `treasure`, among others.
+- **2.5D floors now line up with the walls.** The floor and ceiling were
+  drawn as if the eye were lower than the walls assumed, so floor tiles were
+  two-thirds of a cell wide and slid against the wall bases as you walked.
+- HTML5 export: the game runs at the same speed on 90/120 Hz screens (fixed
+  60 Hz logic step); "If mouse…" conditions work (they always took the
+  "else" branch) and mouse events use room coordinates in a room with views;
+  Set/Test Variable honour "Applies to".
+- Kivy (Android/iOS) export: "If" conditions on position, collision and the
+  mouse are no longer always true; every action that reads or sets `y` uses
+  the author's coordinates; Destroy Instance with target "object" destroys
+  every instance; Play Music, Stop Music and Set Volume work.
+- Blockly: object, sprite, sound and room fields on generated blocks are
+  drop-down lists; each block appears once in the toolbox; the Beginner
+  toolbox can build every Beginner tutorial.
+- Junior edition: dialogs no longer clip their text at the larger font.
+- Tall action forms scroll instead of running off a laptop screen.
+- Block World: walking is about 2.3× faster.
+- Translations: about 150 strings that showed in English even in French
+  (and other languages) are now translated, as are Qt's standard dialog
+  buttons (Save, Discard, Cancel…).
+
 ### Added
+- **Action and event names in every language.** The events panel, the
+  action dialog, the events list and Blockly now name actions, events and
+  their parameters in the IDE's language (all eleven languages).
+- **LAN multiplayer on phones and in the browser.** An Android/iOS export
+  can host a game (with the waiting room) or join one, finds hosts by
+  itself, and plays its own avatar; a browser player controls the avatar
+  the host gives it. Shared-folder (file exchange) multiplayer also runs on
+  Android/iOS.
+- Thymio: File → Stop Thymio robot, and File → Export Open Roberta XML.
 - **Climbable stairs in the 2.5D (raycast) view.** A new **Set Floor Height**
   action (3D View) turns a non-solid object into a step: the cells it covers
   become raised floor, drawn as real steps — fronts, textured tops, walls
@@ -22,15 +71,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/RAYCAST_STAIRS_PLAN.md`.
 - **Wall Height** for every raycast room: taller walls repeat their
   texture instead of stretching it.
-
-### Fixed
-- **2.5D floors now line up with the walls.** The floor and ceiling were
-  drawn as if the eye were lower than the walls assumed, so floor tiles were
-  two-thirds of a cell wide and slid against the wall bases as you walked.
-- **Kivy (Android/iOS) exports: Begin Step and End Step events broke every
-  frame.** Their handlers were generated without the `dt` argument the scene
-  passes, so each call failed and the rest of that frame was skipped — in
-  `maze_4` and `treasure`, among others.
 
 ## [1.6.1] - 2026-11-18
 
