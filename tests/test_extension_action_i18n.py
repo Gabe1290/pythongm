@@ -227,9 +227,10 @@ def test_there_are_extension_actions_to_check():
     translated the same commit, not left to lag. 46 -> 47 when the raycast
     extension's set_billboard_rotation (Doom/Build actor-rotation billboards)
     landed, same discipline. 47 -> 48 with set_floor_height (raycast stairs,
-    docs/RAYCAST_STAIRS_PLAN.md S3), translated in the same commit."""
+    docs/RAYCAST_STAIRS_PLAN.md S3), translated in the same commit. 48 -> 49 with
+    set_ceiling_height (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md C1), same commit."""
     actions = _extension_actions()
-    assert len(actions) == 48, sorted(actions)
+    assert len(actions) == 49, sorted(actions)
 
 
 @pytest.mark.parametrize("lang", SHIPPED)

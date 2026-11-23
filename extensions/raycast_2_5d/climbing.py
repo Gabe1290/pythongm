@@ -26,7 +26,7 @@ snapping: up at CLIMB_SPEED px per frame, down with FALL_GRAVITY (stored as
 Pure Python, no pygame (the IDE imports the extension without one).
 """
 
-from .heights import (build_floor_heights, clamp_wall_height, is_step,
+from .heights import (build_floor_heights, clamp_wall_height, is_geometry,
                       max_floor_height, RAYCAST_EYE_HEIGHT, RAYCAST_WALL_HEIGHT)
 from .state import peek_camera, raycast_state
 
@@ -44,7 +44,7 @@ def _camera_cfg(game_runner):
 
 
 def _is_mover(inst):
-    if is_step(inst):
+    if is_geometry(inst):          # steps and ceiling markers never move
         return False
     return not (getattr(inst, "_cached_object_data", None) or {}).get("solid", False)
 

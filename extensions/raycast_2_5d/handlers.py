@@ -125,6 +125,32 @@ class PluginExecutor:
         instance.raycast_step_top_texture = str(parameters.get("top_texture", "") or "")
         instance.raycast_step_side_texture = str(parameters.get("side_texture", "") or "")
 
+    def execute_set_ceiling_height_action(self, instance, parameters):
+        """Lower the ceiling over the cells this instance's sprite covers
+        (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md, C1) -- the mirror of
+        set_floor_height.
+
+        Only RECORDS the height and texture on the instance; the ceiling map is
+        derived every frame by heights.build_ceiling_heights, which is also
+        where out-of-range heights are clamped (one place, one warning).
+
+        Parameters:
+            height: Ceiling height in room pixels above the ground (expression
+                allowed).
+            texture: Sprite name (blank = the camera's ceiling texture).
+        """
+        ae = self._executor(instance)
+        raw = parameters.get("height", 40)
+        height = ae._parse_value(raw, instance) if ae else raw
+        try:
+            height = float(height)
+        except (TypeError, ValueError):
+            height = 0.0                      # clamped up to the lowest legal ceiling
+        if height != height or height in (float("inf"), float("-inf")):
+            height = 0.0                      # NaN / inf from an expression
+        instance.raycast_ceiling_height = height
+        instance.raycast_ceiling_texture = str(parameters.get("texture", "") or "")
+
     def execute_enable_raycast_view_action(self, instance, parameters):
         """Switch the current room to a Doom/Wolfenstein-style raycast
         first-person view (docs/RAYCAST_2_5D_PLAN.md), or back to the normal

@@ -28,7 +28,7 @@ from typing import Any, Dict, Set, Tuple
 
 import pygame
 
-from .heights import build_floor_heights, is_step, max_floor_height
+from .heights import build_floor_heights, is_geometry, max_floor_height
 from .state import raycast_state
 
 
@@ -786,8 +786,8 @@ def render_raycast_view(room, screen: pygame.Surface):
             continue
         if (inst._cached_object_data or {}).get('solid', False):
             continue
-        if is_step(inst):
-            continue        # a step is floor, drawn by the stairs pass, not a cutout
+        if is_geometry(inst):
+            continue        # a step / ceiling marker is level geometry, not a cutout
         _bx0, _by0 = room._sprite_top_left(inst)   # origin-aware
         bx = _bx0 + inst._cached_width / 2
         by = _by0 + inst._cached_height / 2

@@ -75,6 +75,16 @@ def is_step(inst) -> bool:
     return getattr(inst, "raycast_floor_height", None) is not None
 
 
+def is_ceiling(inst) -> bool:
+    """True if this instance ran set_ceiling_height (it is ceiling, not a sprite)."""
+    return getattr(inst, "raycast_ceiling_height", None) is not None
+
+
+def is_geometry(inst) -> bool:
+    """A step or a ceiling marker: part of the level, never a billboard or a mover."""
+    return is_step(inst) or is_ceiling(inst)
+
+
 def max_floor_height(cell_size, wall_height_cells, eye_height_cells) -> float:
     """Highest floor allowed: the eye (floor + eye height) must stay at least
     CEILING_MARGIN below the ceiling (wall_height_cells * cell_size)."""
@@ -139,3 +149,56 @@ def build_floor_heights(room, cell_size, max_height):
     st["floor_heights"] = heights
     st["floor_textures"] = textures
     return heights, textures
+
+
+def build_ceiling_heights(room, cell_size, room_ceiling, floor_heights, eye_height):
+    """Derive the per-cell ceiling map from the room's ceiling markers
+    (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md, C1).
+
+    ``room_ceiling`` is the room-wide ceiling in room px (wall_height x cell),
+    ``floor_heights`` the map build_floor_heights returned, ``eye_height`` the
+    eye above the floor in room px. Stores, and returns, ``(ceilings,
+    textures)`` in the room's raycast state: ``ceilings`` maps ``(gx, gy) ->
+    height`` for LOWERED cells only (an absent cell has the room ceiling);
+    ``textures`` maps the same cells to the winning marker's texture name.
+
+    Same rules as the floor map, mirrored: a marker covers every cell its
+    sprite box covers; where markers overlap the LOWEST wins; solid instances
+    are walls and are ignored. Each cell's ceiling is clamped to
+    ``[floor(cell) + eye_height + CEILING_MARGIN, room_ceiling]`` -- never so
+    low the eye would reach it, never above the walls -- with one warning per
+    instance. A marker at or above the room ceiling changes nothing.
+    """
+    st = raycast_state(room)
+    warned = st.setdefault("ceiling_height_warned", set())
+    ceilings = {}
+    textures = {}
+    for inst in room.instances:
+        if not is_ceiling(inst):
+            continue
+        if (getattr(inst, "_cached_object_data", None) or {}).get("solid", False):
+            continue
+        raw = float(inst.raycast_ceiling_height)
+        tex = getattr(inst, "raycast_ceiling_texture", "") or ""
+        clamped_to = None
+        for cell in _covered_cells(room, inst, cell_size):
+            lowest = floor_heights.get(cell, 0.0) + eye_height + CEILING_MARGIN
+            height = min(max(raw, lowest), room_ceiling)
+            if height != raw:
+                clamped_to = height
+            if height >= room_ceiling:
+                continue
+            if height < ceilings.get(cell, room_ceiling):
+                ceilings[cell] = height
+                textures[cell] = tex
+        if clamped_to is not None and id(inst) not in warned:
+            warned.add(id(inst))
+            logger.warning(
+                "set_ceiling_height: %s's height %s is outside the range this view "
+                "allows (at least the floor plus the eye height plus %s, at most the "
+                "room ceiling %s); using %s. Lower the floor or raise the ceiling.",
+                getattr(inst, "object_name", "?"), raw, CEILING_MARGIN,
+                room_ceiling, clamped_to)
+    st["ceiling_heights"] = ceilings
+    st["ceiling_textures"] = textures
+    return ceilings, textures

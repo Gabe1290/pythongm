@@ -194,6 +194,28 @@ PLUGIN_ACTIONS = {
                             "wall texture)"),
         ]
     ),
+    # docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md (C1): the mirror of set_floor_height.
+    "set_ceiling_height": ActionType(
+        name="set_ceiling_height",
+        display_name="Set Ceiling Height",
+        description="Lower the CEILING in the raycast view: the grid cells this "
+                    "instance's sprite covers get a ceiling at this height, for "
+                    "low tunnels, alcoves or doorway lintels. Use it in the Create "
+                    "event of a non-solid object",
+        category="3D View",
+        icon="🔻",
+        parameters=[
+            ActionParameter(name="height", display_name="Height", param_type="number",
+                default_value=40,
+                description="Ceiling height in room pixels above the ground, the same "
+                            "unit as x/y and Cell Size (at least the cell's floor plus "
+                            "room to stand)"),
+            ActionParameter(name="texture", display_name="Ceiling Texture",
+                param_type="sprite", default_value="", required=False,
+                description="Sprite for this part of the ceiling (blank = the "
+                            "ceiling texture)"),
+        ]
+    ),
     "draw_doom_hud": ActionType(
         name="draw_doom_hud",
         display_name="Draw DOOM HUD",

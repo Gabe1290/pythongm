@@ -150,8 +150,19 @@ player; fade or other visible transitions for the new action.
 ## Units (one commit + push each; raycast test files + smoke after each)
 
 - [x] **C0 — This plan.** (2026-11-23)
-- [ ] **C1 — Set Ceiling Height + the ceiling map.** Action schema/handler in the
+- [x] **C1 — Set Ceiling Height + the ceiling map.** (2026-11-23) Action schema/handler in the
   extension, `build_ceiling_heights`, clamping + warning, unit tests. No rendering yet.
+  `heights.py`: `is_ceiling`, `is_geometry` (step or ceiling marker), and
+  `build_ceiling_heights(room, cell, room_ceiling, floor_heights, eye)` — lowest marker
+  wins per cell, clamped per cell to `[floor + eye + 4, room ceiling]`, one warning per
+  instance, stored in `raycast_state(room)["ceiling_heights"/"ceiling_textures"]`. The
+  renderer's billboard pass and `climbing._is_mover` now skip ceiling markers as well as
+  steps (`is_geometry`). Parameter labels reuse "Height" / "Ceiling Texture" (already in
+  every language); the action name and description are in all eleven `config/ui_names`
+  tables, the two parameter descriptions in the eight that have that section. Extension
+  action count 48 → 49. `tests/test_raycast_ceiling_heights.py` (18). **Known gap until
+  C7/C8:** the HTML5 and Kivy exports do not know the action, so a marker there is drawn
+  as an ordinary sprite.
 - [ ] **C2 — Timing spike (throwaway; result recorded here).** Two-clip walk +
   column-major ceiling cast on `base_heights` with tunnels added: if a ceiling room
   costs more than ~1.3× the same room without ceilings on the dev box, decide
