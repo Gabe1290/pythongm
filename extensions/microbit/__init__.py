@@ -79,6 +79,12 @@ PLUGIN_FRAME_UPDATES = [(_frame_update_boards, "after_collision")]
 
 
 def _draw_board(instance, screen):
+    # Offered EVERY instance of the room EVERY frame: return before the
+    # import for the ones that cannot be a micro:bit (no extension state --
+    # draw_overlay would return at simulator_of anyway). In a 64 x 64 raycast
+    # level this hook alone cost ~3.5 ms a frame (2026-11-23).
+    if not getattr(instance, "extension_state", None):
+        return
     # Imported lazily: keeps pygame out of the IDE's schema-only load.
     from .renderer import draw_overlay
     draw_overlay(instance, screen)

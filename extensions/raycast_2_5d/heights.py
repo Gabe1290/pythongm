@@ -120,6 +120,16 @@ def _clamped(inst, height, max_height, warned):
     return clamped
 
 
+def _geometry_key(inst, *attrs):
+    """What a step / ceiling marker's covered cells and value depend on: if
+    this is unchanged for every marker, the map built from them is too.
+    (The sprite's origin enters through the sprite object, fixed at load.)"""
+    data = getattr(inst, "_cached_object_data", None) or {}
+    return (id(inst), inst.x, inst.y, getattr(inst, "_cached_width", 0),
+            getattr(inst, "_cached_height", 0), id(getattr(inst, "sprite", None)),
+            bool(data.get("solid", False))) + tuple(getattr(inst, a, "") for a in attrs)
+
+
 def build_floor_heights(room, cell_size, max_height):
     """Derive the floor-height map from the room's step instances.
 
@@ -129,6 +139,16 @@ def build_floor_heights(room, cell_size, max_height):
     ``(top_texture, side_texture)`` names ('' = fall back).
     """
     st = raycast_state(room)
+    # Built twice a frame (renderer + climbing) from every instance: reuse the
+    # last map while no step changed (2026-11-23 -- a 64 x 64 level spent
+    # ~2.5 ms a frame here). Destroying, creating or moving a step changes the
+    # key, so the map still follows the live instances.
+    sig = (cell_size, max_height, tuple(
+        _geometry_key(i, "raycast_floor_height", "raycast_step_top_texture",
+                      "raycast_step_side_texture")
+        for i in room.instances if is_step(i)))
+    if st.get("floor_sig") == sig:
+        return st["floor_heights"], st["floor_textures"]
     warned = st.setdefault("floor_height_warned", set())
     heights = {}
     textures = {}
@@ -148,6 +168,7 @@ def build_floor_heights(room, cell_size, max_height):
                 textures[cell] = tex
     st["floor_heights"] = heights
     st["floor_textures"] = textures
+    st["floor_sig"] = sig
     return heights, textures
 
 
@@ -170,6 +191,14 @@ def build_ceiling_heights(room, cell_size, room_ceiling, floor_heights, eye_heig
     instance. A marker at or above the room ceiling changes nothing.
     """
     st = raycast_state(room)
+    # Reused while no marker, no floor and no limit changed (see
+    # build_floor_heights); the floors enter because each ceiling is clamped
+    # to its cell's floor.
+    sig = (cell_size, room_ceiling, eye_height, tuple(sorted(floor_heights.items())),
+           tuple(_geometry_key(i, "raycast_ceiling_height", "raycast_ceiling_texture")
+                 for i in room.instances if is_ceiling(i)))
+    if st.get("ceiling_sig") == sig:
+        return st["ceiling_heights"], st["ceiling_textures"]
     warned = st.setdefault("ceiling_height_warned", set())
     ceilings = {}
     textures = {}
@@ -201,4 +230,5 @@ def build_ceiling_heights(room, cell_size, room_ceiling, floor_heights, eye_heig
                 room_ceiling, clamped_to)
     st["ceiling_heights"] = ceilings
     st["ceiling_textures"] = textures
+    st["ceiling_sig"] = sig
     return ceilings, textures
