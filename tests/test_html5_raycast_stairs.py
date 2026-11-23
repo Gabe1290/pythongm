@@ -41,7 +41,7 @@ def test_the_port_registers_its_pieces():
     assert "registerFrameUpdate(raycastClimbBefore);" in JS
     assert "registerFrameUpdate(raycastClimbAfter, 'after_collision');" in JS
     assert "max_step: rNum('max_step', 12)," in JS
-    assert "if (raycastIsStep(inst)) continue;" in JS          # steps are not billboards
+    assert "if (raycastIsGeometry(inst)) continue;" in JS      # steps and ceiling markers are not billboards
 
 
 def test_the_port_s_constants_match_python():
