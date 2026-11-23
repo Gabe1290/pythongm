@@ -102,7 +102,7 @@ Triggers that execute actions when specific conditions occur:
 See the [Event Reference](Event-Reference) for complete documentation.
 
 ### Actions
-Operations performed when events trigger. **186** built-in actions for:
+Operations performed when events trigger. **188** built-in actions for:
 - Movement and physics
 - Drawing and sprites
 - Score, lives, and health

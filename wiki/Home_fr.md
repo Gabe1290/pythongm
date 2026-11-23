@@ -102,7 +102,7 @@ Déclencheurs qui exécutent des actions lorsque des conditions spécifiques se 
 Consultez la [Référence des Événements](Event-Reference_fr) pour la documentation complète.
 
 ### Actions
-Opérations effectuées quand les événements se déclenchent. **186** actions intégrées pour:
+Opérations effectuées quand les événements se déclenchent. **188** actions intégrées pour:
 - Mouvement et physique
 - Dessin et sprites
 - Score, vies et santé
