@@ -18,7 +18,7 @@ La ligne jaune en haut à gauche indique :
 - **ms/image** : le temps de *travail* moyen par image sur les 30 dernières images (mise à
   jour et dessin, sans l'attente qui limite le jeu à 60 images par seconde). C'est ce
   chiffre qu'il faut comparer entre les deux salles : le test exige que l'escalier coûte
-  au plus 1,6 × la salle plate, plus 5 ms.
+  au plus 2,5 × la salle plate, plus 5 ms (1,6 × jusqu’au 23 novembre 2026).
 - **i/s** : images par seconde (60 au maximum).
 
 Mesuré sur la machine de développement (Linux, sans écran) : environ 17 ms avec l'escalier,

@@ -17,7 +17,7 @@ The yellow line at the top left shows:
 - **ms/image**: the average *work* time per frame over the last 30 frames (update and
   drawing, without the wait that caps the game at 60 frames per second). This is the
   number to compare between the two rooms: the test requires the staircase to cost at
-  most 1.6 × the flat room, plus 5 ms.
+  most 2.5 × the flat room, plus 5 ms (1.6 × until 2026-11-23).
 - **i/s**: frames per second (at most 60).
 
 Measured on the dev box (Linux, headless): about 17 ms with the staircase, about 11 ms
