@@ -179,8 +179,20 @@ player; fade or other visible transitions for the new action.
   two-clip walk itself is negligible. The prototype cast the whole upper half, so the
   real C4 (ceiling spans only, as the floor does treads) should cost no more. If C4
   needs speed later, the lever is the same as the floor's: `floor_cast_res`.
-- [ ] **C3 — Desktop two-clip walk.** `layout_column` gains `clip_top`, ceiling spans
+- [x] **C3 — Desktop two-clip walk.** (2026-11-23) `layout_column` gains `clip_top`, ceiling spans
   and lintels; identity proof for stair-only and plain rooms (768-frame diff).
+  As built: `layout_column` is untouched; a separate `layout_column_ceilings` (two
+  clips: ceiling spans, lintels where the next ceiling is lower, the wall rising to the
+  ceiling of the cell in front of it, `occluders_top` for C5) runs only when the room
+  has lowered ceilings. `cast_ray_steps(..., ceilings=None)` also records ceiling
+  changes when given a map (sixth item, None = room ceiling). `render_raycast_view`
+  builds the ceiling map each frame; a room with markers takes the column walk even
+  without steps. Lowered spans are drawn in the flat `ceiling_color` (C4 casts them),
+  lintels with the wall texture and shading. **Identity proof:** real engine, scripted
+  walk, every frame hashed, new vs previous renderer — `raycast_1` and `raycast_5`
+  identical on all 321 frames; `stairs_speed` and `base_heights` identical on all 321
+  below the yellow readout (its timings differ between any two runs, new vs new
+  included): 1,284 frames. `tests/test_raycast_ceilings_render.py` (9).
 - [ ] **C4 — Column-major ceiling cast + per-cell texture; sky interplay.**
 - [ ] **C5 — Billboards clipped by lintels.**
 - [ ] **C6 — Headroom in `climbing.py`; `raycast_ceiling_z`.** Through the real

@@ -28,7 +28,8 @@ from typing import Any, Dict, Set, Tuple
 
 import pygame
 
-from .heights import build_floor_heights, is_geometry, max_floor_height
+from .heights import (build_ceiling_heights, build_floor_heights, is_geometry,
+                      max_floor_height)
 from .state import raycast_state
 
 
@@ -292,7 +293,7 @@ def stairs_y(z, eye_z, d, half_h, view_h):
     return half_h + (eye_z - z) * view_h / d
 
 
-def cast_ray_steps(room, px, py, angle_rad, cell_size, max_cells, heights):
+def cast_ray_steps(room, px, py, angle_rad, cell_size, max_cells, heights, ceilings=None):
     """cast_ray, also recording where the floor height changes on the way.
 
     Returns (crossings, hit). ``crossings`` lists, nearest first, every grid
@@ -300,6 +301,12 @@ def cast_ray_steps(room, px, py, angle_rad, cell_size, max_cells, heights):
     previous one: (dist_cells, new_height, side, tex_u, cell). ``hit`` is
     cast_ray's wall result (dist_px, side, hit, tex_u, sprite) -- identical
     to cast_ray for the same ray: steps never stop a ray, walls do.
+
+    With a ``ceilings`` map (cell -> lowered ceiling; docs/
+    RAYCAST_CEILINGS_TELEPORT_PLAN.md, C3) a crossing is also recorded where
+    the CEILING changes, and carries the entered cell's ceiling as a sixth
+    item (None = the room ceiling). Without one, the result is exactly the
+    stairs result above.
     """
     st = raycast_state(room)
     v_walls, h_walls = st["v_walls"], st["h_walls"]
@@ -325,6 +332,7 @@ def cast_ray_steps(room, px, py, angle_rad, cell_size, max_cells, heights):
 
     crossings = []
     h_prev = heights.get((map_x, map_y), 0.0)
+    c_prev = ceilings.get((map_x, map_y)) if ceilings is not None else None
     side = 0
     dist_cells = float(max_cells)
     for _ in range(max_cells):
@@ -358,9 +366,16 @@ def cast_ray_steps(room, px, py, angle_rad, cell_size, max_cells, heights):
             sprite = v_sprites.get(wall_key) if side == 0 else h_sprites.get(wall_key)
             return crossings, (max(d_cells, 1e-4) * cell_size, side, True, tex_u, sprite)
         h_next = heights.get((map_x, map_y), 0.0)
-        if h_next != h_prev:
-            crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y)))
-            h_prev = h_next
+        if ceilings is None:
+            if h_next != h_prev:
+                crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y)))
+                h_prev = h_next
+        else:
+            c_next = ceilings.get((map_x, map_y))
+            if h_next != h_prev or c_next != c_prev:
+                crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y), c_next))
+                h_prev = h_next
+                c_prev = c_next
     return crossings, (max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None)
 
 
@@ -416,6 +431,92 @@ def layout_column(crossings, hit, h0, eye_z, wall_top_z, cell_size, cos_off,
         occluders.append((d, min(clip, y_top)))
     return {"treads": treads, "risers": risers, "wall": wall,
             "occluders": occluders, "wall_dist": d if is_hit else float("inf")}
+
+
+def layout_column_ceilings(crossings, hit, h0, c0, eye_z, room_top_z, cell_size,
+                           cos_off, half_h, view_h, max_cells):
+    """layout_column for a room with lowered ceilings: a TWO-clip walk
+    (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md, C3).
+
+    ``crossings`` come from cast_ray_steps(..., ceilings=...) and carry each
+    entered cell's ceiling (None = ``room_top_z``); ``c0`` is the camera
+    cell's. ``bot`` rises from the bottom of the view exactly as
+    layout_column's single clip; ``top`` falls from the top of the view:
+
+    * the ceiling of the cell being left is a span from ``top`` down to its
+      projected row (recorded for drawing / the ceiling cast);
+    * a LOWER ceiling ahead shows its LINTEL (Doom's "upper texture") from
+      the current ceiling's row down to the lower one's; a higher one ahead
+      faces away and only shows through what ``top`` leaves free;
+    * the wall rises to the ceiling of the cell in front of it.
+
+    Same dict as layout_column, plus ``ceilings``: [(y_top, y_bot, height,
+    d_near)], ``lintels``: [(y_top, y_bot, d, side, tex_u, cell, c_lo, c_hi)]
+    and ``occluders_top``: [(d, top)] (for billboards, C5). Every span is
+    clipped to the rows between the two clips, so nothing overlaps.
+    """
+    bot = float(view_h)
+    top = 0.0
+    treads, risers, ceils, lintels = [], [], [], []
+    occluders, occluders_top = [], []
+    h_cur = h0
+    c_cur = c0 if c0 is not None else room_top_z
+    d_prev = 0.0
+    for dist_cells, h_next, side, tex_u, cell, c_raw in crossings:
+        c_next = c_raw if c_raw is not None else room_top_z
+        d = max(dist_cells * cell_size * cos_off, 1e-4)
+        y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+        if y_cur < bot:
+            y_cur = max(y_cur, top)
+            treads.append((y_cur, bot, h_cur, d_prev))
+            bot = y_cur
+        yc_cur = stairs_y(c_cur, eye_z, d, half_h, view_h)
+        if yc_cur > top:
+            yc_cur = min(yc_cur, bot)
+            ceils.append((top, yc_cur, c_cur, d_prev))
+            top = yc_cur
+        if h_next > h_cur:
+            y_up = stairs_y(h_next, eye_z, d, half_h, view_h)
+            if y_up < bot:
+                y_up = max(y_up, top)
+                risers.append((y_up, bot, d, side, tex_u, cell, h_cur, h_next))
+                bot = y_up
+        if c_next < c_cur:
+            y_dn = stairs_y(c_next, eye_z, d, half_h, view_h)
+            if y_dn > top:
+                y_dn = min(y_dn, bot)
+                lintels.append((top, y_dn, d, side, tex_u, cell, c_next, c_cur))
+                top = y_dn
+        occluders.append((d, bot))
+        occluders_top.append((d, top))
+        h_cur, c_cur, d_prev = h_next, c_next, d
+        if top >= bot:
+            return {"treads": treads, "risers": risers, "wall": None,
+                    "ceilings": ceils, "lintels": lintels, "occluders": occluders,
+                    "occluders_top": occluders_top, "wall_dist": float("inf")}
+    dist_px, side, is_hit, tex_u, sprite = hit
+    d = max(dist_px * cos_off, 1e-4)
+    if not is_hit:
+        d = max(max_cells * cell_size * cos_off, 1e-4)
+    y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+    if y_cur < bot:
+        y_cur = max(y_cur, top)
+        treads.append((y_cur, bot, h_cur, d_prev))
+        bot = y_cur
+    yc_cur = stairs_y(c_cur, eye_z, d, half_h, view_h)
+    if yc_cur > top:
+        yc_cur = min(yc_cur, bot)
+        ceils.append((top, yc_cur, c_cur, d_prev))
+        top = yc_cur
+    wall = None
+    if is_hit:
+        if top < bot:
+            wall = (top, bot, d, side, tex_u, sprite)
+        occluders.append((d, top))
+        occluders_top.append((d, top))
+    return {"treads": treads, "risers": risers, "wall": wall,
+            "ceilings": ceils, "lintels": lintels, "occluders": occluders,
+            "occluders_top": occluders_top, "wall_dist": d if is_hit else float("inf")}
 
 
 def _row(y):
@@ -538,7 +639,13 @@ def render_raycast_view(room, screen: pygame.Surface):
     # path below; non-empty -> the column walk.
     heights, step_textures = build_floor_heights(
         room, cell_size, max_floor_height(cell_size, wall_h, RAYCAST_EYE_HEIGHT))
-    stairs = bool(heights)
+    # Lowered ceilings (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md, C3): also
+    # rebuilt every frame. Empty -> nothing below changes; non-empty -> the
+    # column walk, with a second clip from the top (layout_column_ceilings),
+    # even in a room without steps.
+    ceilings, ceiling_textures = build_ceiling_heights(
+        room, cell_size, wall_h * cell_size, heights, RAYCAST_EYE_HEIGHT * cell_size)
+    stairs = bool(heights) or bool(ceilings)
 
     camera = room._find_first_instance(cfg.get('camera_object', ''))
     w, h = screen.get_size()
@@ -689,6 +796,8 @@ def render_raycast_view(room, screen: pygame.Surface):
             "col_width": col_width, "textured": textured,
             "wall_texture": wall_texture, "wall_color": wall_color,
             "floor_color": floor_color,
+            "ceilings": ceilings, "ceiling_textures": ceiling_textures,
+            "ceiling_color": ceiling_color,
             "max_dist": render_distance_cells * cell_size,
             "strip_cache": {},          # scaled wall/riser strips, this frame only
         }
@@ -905,6 +1014,16 @@ def _clip_before(occluders, dist, view_h):
 def _layout_stairs_column(room, sf, ray_angle, cos_off):
     """One column of a room with steps: the ray walk and its layout."""
     cell_size = sf["cell_size"]
+    ceilings = sf.get("ceilings")
+    if ceilings:                     # lowered ceilings in the room: the two-clip walk (C3)
+        crossings, hit = cast_ray_steps(room, sf["cam_x"], sf["cam_y"], ray_angle,
+                                        cell_size, sf["max_cells"], sf["heights"],
+                                        ceilings)
+        cam_cell = (int(sf["cam_x"] // cell_size), int(sf["cam_y"] // cell_size))
+        return layout_column_ceilings(
+            crossings, hit, sf["floor_z"], ceilings.get(cam_cell), sf["eye_z"],
+            sf["wall_top_z"], cell_size, cos_off, sf["half_h"], sf["view_h"],
+            sf["max_cells"])
     crossings, hit = cast_ray_steps(room, sf["cam_x"], sf["cam_y"], ray_angle,
                                     cell_size, sf["max_cells"], sf["heights"])
     return layout_column(crossings, hit, sf["floor_z"], sf["eye_z"], sf["wall_top_z"],
@@ -935,6 +1054,22 @@ def _draw_stairs_column(screen, sf, col, lay, floor_cast):
             spr = sf["sprites"].get(name) if name else None
             spr = spr if spr is not None else sf["wall_texture"]
             frame = spr.get_frame(0) if spr is not None else None
+        draw_wall_rows(screen, frame, sf["wall_color"], tex_u, x0, strip_w, d,
+                       sf["eye_z"], cell_size, sf["half_h"], view_h,
+                       _row(y_top), _row(y_bot),
+                       wall_shade(side, d, sf["max_dist"]), sf["strip_cache"])
+    # Lowered ceilings (C3): their spans in the flat ceiling colour (C4 casts
+    # them textured), then their lintels like risers -- the wall texture.
+    # Spans at the room ceiling are already painted by the room's ceiling pass.
+    for y_top, y_bot, height, _d in lay.get("ceilings", ()):
+        if height < sf["wall_top_z"]:
+            r0, r1 = max(0, _row(y_top)), min(view_h, _row(y_bot))
+            if r1 > r0:
+                screen.fill(sf["ceiling_color"], (x0, r0, strip_w, r1 - r0))
+    for y_top, y_bot, d, side, tex_u, cell, _lo, _hi in lay.get("lintels", ()):
+        frame = None
+        if sf["textured"] and sf["wall_texture"] is not None:
+            frame = sf["wall_texture"].get_frame(0)
         draw_wall_rows(screen, frame, sf["wall_color"], tex_u, x0, strip_w, d,
                        sf["eye_z"], cell_size, sf["half_h"], view_h,
                        _row(y_top), _row(y_bot),
