@@ -518,6 +518,12 @@ game genre, each adding the events/actions the previous didn't need:
   monster turns back at the pillar; the minimap shades the gallery and the
   steps. Also in a browser (HTML5 export) and on an Android phone (Kivy) —
   nobody has played stairs on a real phone yet.
+- L [ ] M [ ] W [ ] **raycast_6** (the junction) -- the corridor's ceiling is visibly lower than the
+  hall's, with a lintel hanging at its mouth; walking down the corridor with the arrow held, **you
+  cannot tell where the room changes** (no fade, no stop, no jump; that is the thing to judge); turn
+  round after it and the hall behind you is the low-ceilinged one (the space under the gallery), and
+  walking back west brings you to the first hall; the flags end the game. Also in a browser and on an
+  Android phone -- nobody has played this on a phone yet.
 
 ---
 

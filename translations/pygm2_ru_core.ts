@@ -3299,6 +3299,10 @@ Adds about 15-20 MB to the exported file. Needs internet once now, to download a
             <source>2.5 D — Level 5</source>
             <translation>2.5 D — Уровень 5</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 6</source>
+            <translation>2.5 D — Уровень 6</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>

@@ -141,7 +141,8 @@ def _play(tmp_path, before_space=None, frames=14, **project_args):
             "facing": getattr(cam, "facing_angle", None) if cam else None,
             "hspeed": getattr(cam, "hspeed", None) if cam else None,
             "vspeed": getattr(cam, "vspeed", None) if cam else None,
-            "eye": st.get("eye_floor")})
+            "eye": st.get("eye_floor"),
+            "keys": sorted(getattr(cam, "keys_pressed", None) or ()) if cam else None})
 
     runner = _run(_project(tmp_path, **project_args), frames, hold_up=False, on_frame=on_frame)
     return runner, records
@@ -177,6 +178,14 @@ def test_speed_is_carried_across(tmp_path):
     _, records = _play(tmp_path, before_space=set_speed)
     first = _in_room1(records)[0]
     assert (first["hspeed"], first["vspeed"]) == (2.0, -1.0)
+
+
+def test_held_keys_are_carried_so_a_walk_does_not_stop(tmp_path):
+    def hold_up(runner):
+        _camera(runner).keys_pressed = {"up"}
+
+    _, records = _play(tmp_path, before_space=hold_up)
+    assert "up" in _in_room1(records)[0]["keys"]          # (space, the trigger, is held too)
 
 
 def test_the_eased_view_height_is_carried_not_reset(tmp_path):

@@ -3299,6 +3299,10 @@ Aggiunge circa 15-20 MB al file esportato. Serve Internet una volta adesso, per 
             <source>2.5 D — Level 5</source>
             <translation>2.5 D — Livello 5</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 6</source>
+            <translation>2.5 D — Livello 6</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>

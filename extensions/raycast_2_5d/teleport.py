@@ -5,8 +5,8 @@
 Two rooms built to match around a junction can feel like one place: the author
 puts ONE instance of a *marker* object in each room at the "same" spot of the
 shared geometry, and **Go to Room Seamlessly** moves the camera to the other
-room at the same offset from the marker, with the same facing, speed and
-eased view height -- no fade, no frame at the new room's authored start.
+room at the same offset from the marker, with the same facing, speed, held keys
+and eased view height -- no fade, no frame at the new room's authored start.
 
 How it works on desktop:
 
@@ -83,6 +83,10 @@ def request(executor, instance, parameters):
             "dx": camera.x - marker.x, "dy": camera.y - marker.y,
             "facing": getattr(camera, "facing_angle", 0.0),
             "hspeed": getattr(camera, "hspeed", 0.0), "vspeed": getattr(camera, "vspeed", 0.0),
+            # The held keys belong to the camera INSTANCE and the new room has a fresh one: without
+            # them a player holding Up would stop at the junction (the keyboard event sets the speed
+            # every frame, and "no key" would set it to 0).
+            "keys": set(getattr(camera, "keys_pressed", None) or ()),
             "eye_floor": st.get("eye_floor"), "eye_vz": st.get("eye_vz", 0.0),
         }
     setattr(runner, ARRIVAL_ATTR, arrival)
@@ -116,6 +120,7 @@ def after_collision(game_runner):
     camera.facing_angle = arrival["facing"]
     camera.hspeed = arrival["hspeed"]
     camera.vspeed = arrival["vspeed"]
+    camera.keys_pressed = set(arrival["keys"])
     if arrival["eye_floor"] is not None:
         st = raycast_state(room)
         st["eye_floor"] = arrival["eye_floor"]       # climbing keeps easing from here

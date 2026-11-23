@@ -1555,7 +1555,10 @@ registerExtensionAction('go_to_room_seamlessly', function(obj, params, game) {
                     };
                 }
                 game._raycastArrival = arrival;
+                // changeRoom clears the keyboard state; a held key stays held across the junction.
+                const heldKeys = Object.assign({}, game.keys);
                 game.changeRoom(target, false, 'none');
+                if (arrival) Object.assign(game.keys, heldKeys);
                 return;
             });
 

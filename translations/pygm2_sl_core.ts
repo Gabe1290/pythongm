@@ -3299,6 +3299,10 @@ Izvoženi datoteki doda približno 15-20 MB. Zdaj je enkrat potreben internet za
             <source>2.5 D — Level 5</source>
             <translation>2.5 D — Stopnja 5</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 6</source>
+            <translation>2.5 D — Stopnja 6</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>

@@ -79,6 +79,17 @@ def test_the_camera_arrives_at_the_marker_offset_and_no_wrong_frame_is_shown(tmp
 
 
 @needs_browser
+def test_a_held_key_stays_held_across_the_junction(tmp_path):
+    with _page(_make(tmp_path), tmp_path) as pg:
+        pg.keyboard.down("ArrowUp")
+        pg.evaluate(GO)
+        pg.wait_for_timeout(400)
+        res = pg.evaluate("() => ({room: window.game.currentRoom.name, up: !!window.game.keys['ArrowUp']})")
+        pg.keyboard.up("ArrowUp")
+    assert res["room"] == "room1" and res["up"]
+
+
+@needs_browser
 def test_a_missing_marker_in_the_new_room_is_a_plain_change(tmp_path):
     with _page(_make(tmp_path, marker_b=False), tmp_path) as pg:
         pg.evaluate(RECORDER)

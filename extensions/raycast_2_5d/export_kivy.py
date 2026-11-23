@@ -57,6 +57,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                        'facing': float(getattr(camera, 'facing_angle', 0.0)),
                        'hspeed': getattr(camera, 'hspeed', 0.0),
                        'vspeed': getattr(camera, 'vspeed', 0.0),
+                       'keys': dict(getattr(self, 'keys_pressed', None) or {}),
                        'eye_floor': self._raycast_eye_floor, 'eye_vz': self._raycast_eye_vz}
         app._raycast_arrival = arrival
         goto_room(room_name, 'none')
@@ -98,6 +99,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         camera.facing_angle = arrival['facing']
         camera.hspeed = arrival['hspeed']
         camera.vspeed = arrival['vspeed']
+        if arrival.get('keys'):
+            self.keys_pressed.update(arrival['keys'])      # a held key stays held across the junction
         if arrival['eye_floor'] is not None:
             self._raycast_eye_floor = arrival['eye_floor']
             self._raycast_eye_vz = arrival['eye_vz']

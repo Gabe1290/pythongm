@@ -3299,6 +3299,10 @@ Die exportierte Datei wird dadurch etwa 15-20 MB größer. Jetzt wird einmalig I
             <source>2.5 D — Level 5</source>
             <translation>2.5 D — Level 5</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 6</source>
+            <translation>2.5 D — Level 6</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>

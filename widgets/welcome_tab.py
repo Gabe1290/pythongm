@@ -55,6 +55,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/raycast_3", "2.5 D — Level 3"),
     ("samples/raycast_4", "2.5 D — Level 4"),
     ("samples/raycast_5", "2.5 D — Level 5"),
+    ("samples/raycast_6", "2.5 D — Level 6"),
     # multiplayer_lan_1 ("LAN Multiplayer — Demo") is intentionally NOT
     # listed: it has no in-game networking UI and only connects when
     # launched from a terminal with run_game.py --net-host / --net-client,

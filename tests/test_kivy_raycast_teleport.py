@@ -60,6 +60,7 @@ def _inst(gx_px, gy_gm, w=32, h=32, room_h=480, name=None):
 def _scene(cls, room_name, camera_gm, marker_gm, room_h=480, with_camera=True, with_marker=True):
     scene, cam = _stairs_scene(cls, {}, room=room_h)
     scene.room_name = room_name
+    scene.keys_pressed = {}                                   # the real scene has it from __init__
     scene.instances = [i for i in scene.instances if i is not cam]
     cam = _inst(camera_gm[0], camera_gm[1], room_h=room_h, name="obj_person")
     cam.facing_angle = 40.0
@@ -110,6 +111,7 @@ def test_the_new_scene_applies_it_at_its_first_overlay_call(wired):
     cls = _scene_class(exported)
     scene0, cam0 = _scene(cls, "room0", camera_gm=(64, 224), marker_gm=(160, 224))
     cam0.hspeed = 2.0
+    scene0.keys_pressed["up"] = True
     scene0._raycast_eye_floor = 12.0
     scene0._raycast_go_seamless("room1", "obj_marker")
     # room1 is taller, so a GM-space offset (not a Kivy one) is what must carry over.
@@ -120,6 +122,7 @@ def test_the_new_scene_applies_it_at_its_first_overlay_call(wired):
     assert (gm_x, gm_y) == (320 - 96, 128)                    # marker + the carried offset
     assert cam1.facing_angle == 40.0 and cam1.hspeed == 2.0
     assert scene1._raycast_eye_floor == 12.0
+    assert scene1.keys_pressed == {"up": True}               # a held key stays held
     assert app._raycast_arrival is None                       # consumed
 
 

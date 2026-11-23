@@ -9909,6 +9909,10 @@ Do you want to save anyway?</source>
             <source>2.5 D — Level 5</source>
             <translation>2.5 D — Nivel 5</translation>
         </message>
+        <message>
+            <source>2.5 D — Level 6</source>
+            <translation>2.5 D — Nivel 6</translation>
+        </message>
 
         <message>
             <source>2.5 D — Level 3</source>
