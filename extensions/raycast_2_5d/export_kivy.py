@@ -27,9 +27,85 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         self._raycast_eye_floor = None
         self._raycast_eye_vz = 0.0
 
+    def _raycast_go_seamless(self, room_name, marker_name):
+        # Go to Room Seamlessly (teleport.request, ceilings plan T1/T2): record the
+        # arrival on the game app, then an ordinary instant room change. The offset
+        # is measured in GM y-down space so rooms of different heights agree.
+        from main import get_game_app, goto_room, ROOM_ORDER
+        app = get_game_app()
+        if app is None or room_name not in ROOM_ORDER:
+            return
+        cfg = getattr(self, 'raycast_camera', None)
+        camera = self._find_raycast_camera(cfg) if cfg and cfg.get('enabled') else None
+        marker = None
+        for inst in self.instances:
+            if marker_name and getattr(inst, 'object_name', None) == marker_name:
+                marker = inst
+                break
+        arrival = None
+        if getattr(self, 'room_name', None) == room_name:
+            print('go_to_room_seamlessly: already in room ' + room_name + '; changing room normally')
+        elif camera is None:
+            print('go_to_room_seamlessly: no raycast camera in this room; changing room normally')
+        elif marker is None:
+            print('go_to_room_seamlessly: no ' + str(marker_name) + ' object in this room; changing room normally')
+        else:
+            cx, cy = self._raycast_gm_xy(camera)
+            mx, my = self._raycast_gm_xy(marker)
+            arrival = {'from_scene': self, 'to': room_name, 'marker': marker_name,
+                       'dx': cx - mx, 'dy': cy - my,
+                       'facing': float(getattr(camera, 'facing_angle', 0.0)),
+                       'hspeed': getattr(camera, 'hspeed', 0.0),
+                       'vspeed': getattr(camera, 'vspeed', 0.0),
+                       'eye_floor': self._raycast_eye_floor, 'eye_vz': self._raycast_eye_vz}
+        app._raycast_arrival = arrival
+        goto_room(room_name, 'none')
+
+    def _raycast_apply_arrival(self):
+        # Apply a pending arrival to THIS scene (the new room), before its frame is
+        # drawn: the scene constructor already renders the first overlay frame after
+        # the create events, and calls this hook first, so the carried values replace
+        # what the camera's Create event set and no frame shows the authored start.
+        try:
+            from main import get_game_app
+            app = get_game_app()
+        except Exception:
+            return
+        arrival = getattr(app, '_raycast_arrival', None)
+        if not arrival or arrival['from_scene'] is self:
+            return
+        app._raycast_arrival = None
+        if getattr(self, 'room_name', None) != arrival['to']:
+            return
+        cfg = getattr(self, 'raycast_camera', None)
+        camera = self._find_raycast_camera(cfg) if cfg and cfg.get('enabled') else None
+        marker = None
+        for inst in self.instances:
+            if getattr(inst, 'object_name', None) == arrival['marker']:
+                marker = inst
+                break
+        if camera is None:
+            print('go_to_room_seamlessly: the new room has no raycast camera')
+            return
+        if marker is None:
+            print('go_to_room_seamlessly: no ' + str(arrival['marker']) + ' object in room '
+                  + str(arrival['to']) + '; arriving at its start')
+            return
+        mx, my = self._raycast_gm_xy(marker)
+        ih = float(getattr(camera, 'image_height', 0) or 0)
+        camera.x = mx + arrival['dx']
+        camera.y = self.room_height - (my + arrival['dy']) - ih
+        camera.facing_angle = arrival['facing']
+        camera.hspeed = arrival['hspeed']
+        camera.vspeed = arrival['vspeed']
+        if arrival['eye_floor'] is not None:
+            self._raycast_eye_floor = arrival['eye_floor']
+            self._raycast_eye_vz = arrival['eye_vz']
+
     def _ext_overlay__raycast_2_5d(self):
         # Claim the frame when the raycast camera is enabled; the scene then
         # composites the HUD over this opaque overlay. Returns True if drawn.
+        self._raycast_apply_arrival()
         if getattr(self, 'raycast_camera', None) and self.raycast_camera.get('enabled'):
             self._render_raycast()
             return True
@@ -1481,6 +1557,13 @@ def _cg_set_ceiling_height(gen, params, event_type):
     return (f"self.raycast_ceiling_height = float({height}); "
             f"self.raycast_ceiling_texture = {texture!r}")
 
+def _cg_go_to_room_seamlessly(gen, params, event_type):
+    # Go to Room Seamlessly (execute_go_to_room_seamlessly_action); the scene's
+    # _raycast_go_seamless records the arrival and changes room.
+    room = str(params.get('room') or '')
+    marker = str(params.get('marker') or '')
+    return f"self.scene._raycast_go_seamless({room!r}, {marker!r})"
+
 def _cg_enable_raycast_view(gen, params, event_type):
     from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
     # Configure the scene's Doom-style first-person raycast camera
@@ -1630,6 +1713,7 @@ ACTION_CODEGEN = {
     'set_billboard_rotation': _cg_set_billboard_rotation,
     'set_floor_height': _cg_set_floor_height,
     'set_ceiling_height': _cg_set_ceiling_height,
+    'go_to_room_seamlessly': _cg_go_to_room_seamlessly,
     'enable_raycast_view': _cg_enable_raycast_view,
     'draw_doom_hud': _cg_draw_doom_hud,
     'draw_minimap': _cg_draw_minimap,

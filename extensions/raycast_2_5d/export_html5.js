@@ -1211,6 +1211,52 @@ function raycastClimbAfter(game) {
     room._raycastEyeFloor = cur;
     room._raycastEyeVz = vz;
 }
+// teleport.py (ceilings plan, T1/T2): Go to Room Seamlessly. In the browser the room
+// change happens in the middle of a logic step and the NEW room's Create events run
+// at the start of ITS first step, so two things differ from desktop: the arrival is
+// applied only once that step has consumed room_start (and, like desktop, in the
+// after_collision phase, BEFORE climbing's hook), and any frame drawn in between
+// shows the pre-change frame (a snapshot) instead of the new room at its authored
+// start. Registered before the climbing hooks.
+function raycastFindByName(room, name) {
+    if (!name) return null;
+    for (const inst of room.instances) {
+        if (inst.name === name && !inst.toDestroy) return inst;
+    }
+    return null;
+}
+function raycastCameraOf(room) {
+    const cfg = room && room.raycastCamera;
+    if (!cfg || !cfg.enabled) return null;
+    return room.findFirstInstance(cfg.camera_object || '');
+}
+function raycastArrivalAfter(game) {
+    const arrival = game._raycastArrival;
+    if (!arrival) return;
+    const room = game.currentRoom;
+    if (!room || room === arrival.fromRoom) return;          // the change has not happened yet
+    if (room._pendingRoomStart) return;                      // its Create / Room Start have not run yet
+    game._raycastArrival = null;                             // from here on frames draw normally
+    if (room.name !== arrival.to) return;
+    const camera = raycastCameraOf(room);
+    const marker = raycastFindByName(room, arrival.marker);
+    if (!camera) { console.warn('go_to_room_seamlessly: the new room has no raycast camera'); return; }
+    if (!marker) {
+        console.warn('go_to_room_seamlessly: no ' + arrival.marker + ' object in room ' + arrival.to
+            + '; arriving at its start');
+        return;
+    }
+    camera.x = marker.x + arrival.dx;
+    camera.y = marker.y + arrival.dy;
+    camera.facing_angle = arrival.facing;
+    camera.hspeed = arrival.hspeed;
+    camera.vspeed = arrival.vspeed;
+    if (typeof arrival.eyeFloor === 'number') {
+        room._raycastEyeFloor = arrival.eyeFloor;
+        room._raycastEyeVz = arrival.eyeVz;
+    }
+}
+registerFrameUpdate(raycastArrivalAfter, 'after_collision');
 registerFrameUpdate(raycastClimbBefore);
 registerFrameUpdate(raycastClimbAfter, 'after_collision');
 
@@ -1218,6 +1264,14 @@ registerFrameUpdate(raycastClimbAfter, 'after_collision');
 // engine.js's old inline dispatch -- the engine now gives every room to
 // renderExtensionRoom() first (Stage C1a).
 registerRoomRenderer(function(room, ctx) {
+    // A seamless arrival is pending: until the new room's first step has run
+    // and the arrival is applied, show the frame from before the change.
+    const gm = room._gameRef;
+    const pend = gm && gm._raycastArrival;
+    if (pend && pend.snapshot && room !== pend.fromRoom) {
+        ctx.drawImage(pend.snapshot, 0, 0);
+        return true;
+    }
     if (room.raycastCamera && room.raycastCamera.enabled) {
         room.renderRaycastView(ctx);
         return true;
@@ -1470,6 +1524,38 @@ registerExtensionAction('set_floor_height', function(obj, params, game) {
                 obj.raycast_floor_height = hgt;
                 obj.raycast_step_top_texture = params.top_texture ? String(params.top_texture) : '';
                 obj.raycast_step_side_texture = params.side_texture ? String(params.side_texture) : '';
+                return;
+            });
+
+registerExtensionAction('go_to_room_seamlessly', function(obj, params, game) {
+                // teleport.request: record the arrival, then an ordinary instant change.
+                const target = String(params.room || '').trim();
+                if (!target || !game.gameData.assets.rooms[target]) return;
+                const room = game.currentRoom;
+                const markerName = String(params.marker || '').trim();
+                const camera = raycastCameraOf(room);
+                const marker = raycastFindByName(room, markerName);
+                let arrival = null;
+                if (room.name === target) {
+                    console.warn('go_to_room_seamlessly: already in room ' + target + '; changing room normally');
+                } else if (!camera) {
+                    console.warn('go_to_room_seamlessly: no raycast camera in this room; changing room normally');
+                } else if (!marker) {
+                    console.warn('go_to_room_seamlessly: no ' + markerName + ' object in this room; changing room normally');
+                } else {
+                    const snap = document.createElement('canvas');
+                    snap.width = game.canvas.width; snap.height = game.canvas.height;
+                    snap.getContext('2d').drawImage(game.canvas, 0, 0);
+                    arrival = {
+                        fromRoom: room, to: target, marker: markerName,
+                        dx: camera.x - marker.x, dy: camera.y - marker.y,
+                        facing: camera.facing_angle, hspeed: camera.hspeed, vspeed: camera.vspeed,
+                        eyeFloor: room._raycastEyeFloor, eyeVz: room._raycastEyeVz || 0,
+                        snapshot: snap,
+                    };
+                }
+                game._raycastArrival = arrival;
+                game.changeRoom(target, false, 'none');
                 return;
             });
 

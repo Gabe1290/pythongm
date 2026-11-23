@@ -37,7 +37,8 @@ MARKER_A = (160.0, 224.0)          # the marker in room0 (camera starts at (64, 
 MARKER_B = (320.0, 128.0)
 
 
-def _project(root, *, marker_a=True, marker_b=True, camera=True, target="room1", marker="obj_marker"):
+def _project(root, *, marker_a=True, marker_b=True, camera=True, target="room1", marker="obj_marker",
+             colors=False, via_step=False):
     (root / "sprites").mkdir()
     surf = pygame.Surface((32, 32))
     surf.fill((128, 128, 128))
@@ -50,23 +51,32 @@ def _project(root, *, marker_a=True, marker_b=True, camera=True, target="room1",
         return {"name": name, "asset_type": "object", "sprite": "spr_block", "visible": True,
                 "solid": solid, "persistent": False, "depth": 0, "events": events}
 
-    def person(angle):
+    def person(angle, ceiling="#0000ff"):
         create = [{"action": "set_facing_angle", "parameters": {"angle": str(angle)}}]
         if camera:
-            create.insert(0, {"action": "enable_raycast_view", "parameters": {
-                "camera_object": "", "cell_size": "32", "wall_height": "3",
-                "wall_textured": "false"}})
+            params = {"camera_object": "", "cell_size": "32", "wall_height": "3",
+                      "wall_textured": "false"}
+            if colors:                       # distinct ceilings, so a browser test can see which room drew
+                params["ceiling_color"] = ceiling
+            create.insert(0, {"action": "enable_raycast_view", "parameters": params})
         return create
 
     # Two objects so each room's camera has its own authored facing angle.
     objects = {
         "obj_wall": obj("obj_wall", True, {}),
         "obj_marker": obj("obj_marker", False, {}),
-        "obj_person": obj("obj_person", False, {
+        "obj_person": obj("obj_person", False, dict({
             "create": {"actions": person(40)},
             "keyboard_press": {"space": {"actions": [
-                {"action": "go_to_room_seamlessly", "parameters": {"room": target, "marker": marker}}]}}}),
-        "obj_person_b": obj("obj_person_b", False, {"create": {"actions": person(90)}}),
+                {"action": "go_to_room_seamlessly", "parameters": {"room": target, "marker": marker}}]}}},
+            # via_step: the action runs inside the room's own step (the browser engine's awkward case:
+            # the room changes in the middle of a step, and the new room has not run its Create yet)
+            **({"step": {"actions": [{"action": "if_condition", "parameters": {
+                "condition_type": "expression", "expression": "global.go == 1",
+                "then_actions": [{"action": "go_to_room_seamlessly",
+                                  "parameters": {"room": target, "marker": marker}}],
+                "else_actions": []}}]}} if via_step else {}))),
+        "obj_person_b": obj("obj_person_b", False, {"create": {"actions": person(90, "#ff0000")}}),
     }
 
     def room(name, camera_obj, camera_at, marker_at):
