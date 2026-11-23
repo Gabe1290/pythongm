@@ -2808,3 +2808,26 @@ so SIGTERM kills the IDE (SDL swallowed it), a damaged `config.json` is set asid
   the same room flat; yellow readout = work ms/frame): ~17 vs ~11 ms on the dev box, smooth at 60 fps.
   CI had measured a steady 2.0-2.2x and failed every run. The stairs code was NOT changed. (The other
   long-red test, Junior French tip clipping, was fixed in `64455e0a`.)
+
+**2026-11-23 — Per-cell ceilings + seamless teleport: plan written, C0–C3 done.** Plan and resume
+state: `docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md` (owner took the recommended choice on D1–D5; next
+unit **C4**, textured lowered ceilings, column-major like `cast_stairs_floor`). Done: Set Ceiling
+Height action + `heights.build_ceiling_heights` (C1, `1907f921`), timing spike 1.16× (C2,
+`4406faa8`), desktop two-clip walk `layout_column_ceilings` with lintels (C3, `2cba0471`).
+Also new: hand-test levels `tools/perf_levels/stairs_speed` and `base_heights` (generators
+`tools/gen_stairs_perf_level.py`, `tools/gen_heights_perf_level.py`; yellow readout = work
+ms/frame via Clock.get_rawtime); stairs speed-test limit raised 1.6x → 2.5x (`4f048fde`).
+Landmines from this session:
+- **Frame-identity proofs on those levels: exclude the top ~30 rows.** The readout prints
+  timings, so two runs of the SAME code differ there; everything below must match.
+- **Opening a level in the IDE and running it can save it**, rewriting every file under
+  `tools/perf_levels/<level>/` (once with an accidental extra wall). Their guard tests then
+  fail locally; `git checkout -- tools/perf_levels/` restores them.
+- **Spike/patch scripts must patch the LOADED renderer**: `importlib.import_module(
+  "pygm_extension_raycast_2_5d.renderer")` after `load_all_plugins()` (it is imported lazily, so
+  it is not in `sys.modules` yet).
+- `config/ui_names/<lang>.py` is now the one place action names/descriptions/param text are
+  translated (11 tables; pl/ja/zh have no `core.param_description`); the wiki reference
+  generator reads it too. A new extension action bumps the count in
+  `tests/test_extension_action_i18n.py`.
+- Never chain `git commit` after a test run without checking its result (it happened once).
