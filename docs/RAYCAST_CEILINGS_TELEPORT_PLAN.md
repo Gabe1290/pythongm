@@ -163,11 +163,22 @@ player; fade or other visible transitions for the new action.
   action count 48 → 49. `tests/test_raycast_ceiling_heights.py` (18). **Known gap until
   C7/C8:** the HTML5 and Kivy exports do not know the action, so a marker there is drawn
   as an ordinary sprite.
-- [ ] **C2 — Timing spike (throwaway; result recorded here).** Two-clip walk +
+- [x] **C2 — Timing spike (throwaway; result recorded here).** (2026-11-23) Two-clip walk +
   column-major ceiling cast on `base_heights` with tunnels added: if a ceiling room
   costs more than ~1.3× the same room without ceilings on the dev box, decide
   (here, with the owner) between a lower ceiling-cast resolution and dropping the
   per-cell ceiling texture before writing C3.
+  **Result: 1.16× — under the limit, design unchanged.** Real engine, headless, the
+  hand-test's scripted walk (up the staircase, turn round), 311 frames, two runs per
+  mode. A (today): 26.3–26.5 ms work/frame, of which the column-major floor cast
+  6.4–6.5 ms. B (the row-major ceiling cast replaced by a prototype column-major one
+  — a mirror of `cast_stairs_floor`'s per-pixel loop with a per-cell texture lookup —
+  plus a second pass over each column's spans for `clip_top`): 30.4–30.9 ms, of which
+  the ceiling cast 8.0–8.1 ms and the extra walk pass 0.2 ms. So the cost is the
+  ceiling's per-pixel cast (≈ 8 ms in place of the row-major plane's ≈ 4 ms); the
+  two-clip walk itself is negligible. The prototype cast the whole upper half, so the
+  real C4 (ceiling spans only, as the floor does treads) should cost no more. If C4
+  needs speed later, the lever is the same as the floor's: `floor_cast_res`.
 - [ ] **C3 — Desktop two-clip walk.** `layout_column` gains `clip_top`, ceiling spans
   and lintels; identity proof for stair-only and plain rooms (768-frame diff).
 - [ ] **C4 — Column-major ceiling cast + per-cell texture; sky interplay.**
