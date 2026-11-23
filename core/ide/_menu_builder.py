@@ -23,7 +23,7 @@ constructed menu/toolbar, never patched) -- confirmed by searching
 """
 
 from pathlib import Path
-from PySide6.QtWidgets import QLabel, QProgressBar, QStyle, QMessageBox
+from PySide6.QtWidgets import QLabel, QProgressBar, QStyle, QMessageBox, QToolBar
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QAction
 
@@ -463,8 +463,22 @@ class MenuBuilderMixin:
                 self.language_action_group.addAction(action)
 
     def create_toolbar(self):
-        toolbar = self.addToolBar(self.tr("Main"))
-        toolbar.setObjectName("MainToolbar")
+        # On a language change (changeEvent) the EXISTING toolbar is emptied
+        # and refilled, never deleted and replaced. Deleting it crashed the
+        # IDE natively (segfault, on every launch): after restoreState() of a
+        # saved maximised window, Qt's QMainWindowLayout keeps a copy of the
+        # restored layout -- pointing at this toolbar -- until the window
+        # finishes resizing; the startup LanguageChange (any non-English
+        # language) deleted the toolbar first, and the maximise then walked a
+        # dangling pointer. Real classroom incident 2026-11-18, reproduced on
+        # the dev box 2026-11-23 (fr/pt + saved maximised layout).
+        toolbar = self.findChild(QToolBar, "MainToolbar")
+        if toolbar is not None:
+            toolbar.clear()
+            toolbar.setWindowTitle(self.tr("Main"))
+        else:
+            toolbar = self.addToolBar(self.tr("Main"))
+            toolbar.setObjectName("MainToolbar")
         toolbar.setMovable(False)
         # docs/KID_UI_SIMPLIFICATION_PLAN.md Phase 2.5: bigger click
         # targets for the junior tier. Unlike the theme/font defaults in

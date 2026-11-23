@@ -942,20 +942,13 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.menuBar().clear()
             self.create_menu_bar()
 
-            # Remove EVERY existing main toolbar before creating the new one.
-            # deleteLater() keeps a removed toolbar alive (and findable) until
-            # the event loop runs, and startup sends several LanguageChange
-            # events in a row (main.py's retranslate_all reaches every widget):
-            # a single findChild then returned the already-removed toolbar, the
-            # live one stayed, and a second toolbar appeared beside it holding
-            # the previous menus' actions -- disabled before the project opened
-            # and never updated again (a grey Test Game button next to the
-            # working one). Renaming the old toolbar keeps it out of any later
-            # lookup.
-            for existing_toolbar in self.findChildren(QToolBar, "MainToolbar"):
-                existing_toolbar.setObjectName("")
-                self.removeToolBar(existing_toolbar)
-                existing_toolbar.deleteLater()
+            # Refill the ONE existing toolbar in place (create_toolbar). Never
+            # delete it here: after restoreState() of a maximised window Qt still
+            # points at it, and deleting it segfaulted the IDE at every launch.
+            # Refilling also keeps the earlier duplicate-toolbar bug away (a
+            # second, greyed toolbar holding the previous menus' stale actions,
+            # 96dd755b): there is only ever one toolbar, and clear() drops the
+            # old actions before the new menus' actions go in.
             self.create_toolbar()
 
             # Update UI state to enable/disable actions based on project state
