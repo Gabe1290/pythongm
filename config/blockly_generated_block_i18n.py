@@ -323,7 +323,7 @@ def get_translated_event_display_name(event_name: str, language: str, fallback: 
 # (config/ui_names, docs/CORE_NAMES_I18N_PLAN.md), so the panel and the blocks agree. Elsewhere the
 # hand-written blocks are English, and translating only the generated ones would mix two languages
 # in one workspace -- those stay English until the workspace itself is translated.
-BLOCKLY_WORKSPACE_LANGUAGES = ("fr", "pl", "de", "it", "uk")
+BLOCKLY_WORKSPACE_LANGUAGES = ("fr", "pl", "de", "it", "uk", "ru")
 
 
 def _panel_name(kind: str, key: str, language: str):

@@ -216,7 +216,8 @@ def test_translated_workspaces_fall_back_to_the_panel_names():
     from config.blockly_generated_block_i18n import BLOCKLY_WORKSPACE_LANGUAGES
     from events.plugin_loader import load_all_plugins
     load_all_plugins()
-    assert set(BLOCKLY_WORKSPACE_LANGUAGES) == {"fr", "pl", "de", "it", "uk"}
+    # the five original translated workspaces; more join as their workspace is translated
+    assert {"fr", "pl", "de", "it", "uk"} <= set(BLOCKLY_WORKSPACE_LANGUAGES)
     for lang in BLOCKLY_WORKSPACE_LANGUAGES:
         table = language_table(lang)
         assert get_translated_action_display_name("bounce", lang, "Bounce") != "Bounce", lang

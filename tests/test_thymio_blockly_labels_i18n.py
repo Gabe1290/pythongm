@@ -25,7 +25,7 @@ from conftest import skip_without_pyside6  # noqa: E402
 pytestmark = skip_without_pyside6
 
 BLOCKLY = ROOT / "editors" / "object_editor" / "blockly"
-LANGS = ("fr", "de", "it", "pl", "uk")
+LANGS = ("fr", "de", "it", "pl", "uk", "ru")
 # Translations that are the same word as the English (checked by hand).
 SAME_WORD = {("fr", "3 - Central"), ("fr", "5 - Collision"),
              ("fr", "ms"), ("de", "ms"), ("it", "ms"), ("pl", "ms")}
