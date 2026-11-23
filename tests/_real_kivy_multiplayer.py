@@ -17,6 +17,10 @@ os.chdir(game_dir)
 sys.path.insert(0, game_dir)
 sys.path.insert(1, repo_root)
 os.environ["KIVY_NO_ARGS"] = "1"
+# pytest's conftest sets SDL_VIDEODRIVER=dummy for pygame and the child inherits it; Kivy's SDL2 window has
+# no GL under that driver (Window comes back None). This process needs the real one.
+if os.environ.get("SDL_VIDEODRIVER") == "dummy":
+    del os.environ["SDL_VIDEODRIVER"]
 result = {"error": None}
 try:
     from kivy.config import Config

@@ -21,6 +21,10 @@ game_dir, request_path, result_path = sys.argv[1:4]
 os.chdir(game_dir)
 sys.path.insert(0, game_dir)
 os.environ["KIVY_NO_ARGS"] = "1"
+# pytest's conftest sets SDL_VIDEODRIVER=dummy for pygame and the child inherits it; Kivy's SDL2 window has
+# no GL under that driver (Window comes back None). This process needs the real one.
+if os.environ.get("SDL_VIDEODRIVER") == "dummy":
+    del os.environ["SDL_VIDEODRIVER"]
 # This worker checks pictures, not sound. With a Kivy window open, SDL2 audio
 # through PulseAudio can block forever on some machines (a game that plays
 # music in its first frame -- maze_4 -- then never finishes; found in raycast
