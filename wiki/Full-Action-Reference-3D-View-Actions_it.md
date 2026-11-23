@@ -401,6 +401,20 @@ Rende questa istanza un GRADINO nella vista raycast: le celle della griglia cope
 | `top_texture` | Sprite | — | Sprite per la parte superiore del gradino (vuoto = la texture del pavimento); facoltativo |
 | `side_texture` | Sprite | — | Sprite per la parte frontale del gradino (vuoto = la texture dei muri); facoltativo |
 
+### Imposta texture del pavimento
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `set_floor_texture` |
+| **Icona** | 🟫 |
+| **Categoria** | Vista 3D |
+
+Dà a una parte del PAVIMENTO una texture propria nella vista raycast, al livello del suolo: le celle della griglia coperte dal suo sprite usano questo sprite al posto della texture del pavimento (un tappeto, una pozzanghera, una sala piastrellata). Da usare nell'evento Create di un oggetto non solido
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite per questa parte del pavimento (vuoto = la texture del pavimento) |
+
 ---
 
 ## Altre Categorie

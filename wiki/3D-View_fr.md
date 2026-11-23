@@ -52,6 +52,7 @@ barre d'état façon DOOM).
 | **Définir l'angle de vue** (`set_facing_angle`) | Fait tourner la caméra. Angle en degrés GameMaker (0 = droite, 90 = haut) ; `relative` ajoute à l'angle courant. |
 | **Dessiner la mini-carte** (`draw_minimap`) | Dessine une mini-carte orientée nord des murs de la salle avec un repère « vous êtes ici ». C'est une action d'ATH (HUD) — à placer dans un événement Dessin. |
 | **Définir la hauteur du sol** (`set_floor_height`) | Fait de cette instance une **marche** : les cases de la grille couvertes par son sprite deviennent un sol surélevé de cette hauteur (en pixels). À placer dans l'événement Création d'un objet non solide. Textures du dessus et du côté facultatives. Voir *Escaliers et plates-formes* ci-dessous. |
+| **Définir la texture du sol** (`set_floor_texture`) | Donne au **sol** sous le sprite de cette instance sa propre texture, au niveau du sol (un tapis, une flaque, un dallage). À placer dans l'événement Création d'un objet non solide. Voir *Textures du sol par zone* ci-dessous. |
 | **Définir la hauteur du plafond** (`set_ceiling_height`) | Abaisse le **plafond** au-dessus des cases de la grille couvertes par le sprite de cette instance (une hauteur en pixels au-dessus du sol). À placer dans l'événement Création d'un objet non solide. Texture facultative. Voir *Plafonds bas et sauts sans coupure* ci-dessous. |
 | **Aller dans une salle sans transition** (`go_to_room_seamlessly`) | Change de salle sans fondu ni saut visible : la caméra arrive au même décalage d'un objet repère placé dans les deux salles, en gardant sa direction, sa vitesse, les touches enfoncées et la hauteur de sa vue. Voir *Plafonds bas et sauts sans coupure* ci-dessous. |
 | **Définir la rotation du sprite** (`set_billboard_rotation`) | Donne à un billboard plusieurs images selon l'angle de vue, pour qu'il montre ses côtés quand on tourne autour. |
@@ -106,6 +107,23 @@ la grille comme des murs — le plus simple est un objet par hauteur
 L'exemple **raycast_5** (*2.5 D — Niveau 5*) est un petit niveau construit
 autour d'un escalier. Les escaliers fonctionnent sur ordinateur et dans les
 exports HTML5 et Kivy (Android/iOS).
+
+---
+
+## Textures du sol par zone
+
+**Texture du sol** dans Activer la vue Raycast couvre tout le sol. Pour donner
+un autre aspect à une partie du sol **au niveau du sol**, créez un objet *non
+solide* avec **Définir la texture du sol** dans son événement Création
+(`texture` : un sprite). Chaque case de la grille couverte par son sprite
+utilise ce sprite à la place — placez ces objets sur la grille comme des murs.
+Là où deux se chevauchent, celui placé en dernier l'emporte. Ils sont plats :
+on marche dessus, ils ne cachent rien et ne sont jamais dessinés comme des
+sprites.
+
+Une case surélevée (une marche) garde sa propre **Texture du dessus** (vide =
+la texture du sol de la salle), pas celle de la zone en dessous. Fonctionne sur
+ordinateur et dans les exports HTML5 et Kivy (Android/iOS).
 
 ---
 

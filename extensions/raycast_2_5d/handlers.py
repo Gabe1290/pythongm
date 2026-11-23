@@ -165,6 +165,16 @@ class PluginExecutor:
         instance.raycast_ceiling_height = height
         instance.raycast_ceiling_texture = str(parameters.get("texture", "") or "")
 
+    def execute_set_floor_texture_action(self, instance, parameters):
+        """Give the floor cells this instance's sprite covers their own texture,
+        at ground level (a rug, a puddle). Only RECORDS the sprite name; the map
+        is derived every frame by heights.build_floor_textures.
+
+        Parameters:
+            texture: Sprite name (blank = the camera's floor texture).
+        """
+        instance.raycast_floor_texture = str(parameters.get("texture", "") or "")
+
     def execute_enable_raycast_view_action(self, instance, parameters):
         """Switch the current room to a Doom/Wolfenstein-style raycast
         first-person view (docs/RAYCAST_2_5D_PLAN.md), or back to the normal

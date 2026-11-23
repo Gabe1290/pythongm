@@ -401,6 +401,20 @@ Ta primerek spremeni v STOPNICO v pogledu raycast: celice mreže, ki jih pokriva
 | `top_texture` | Sprite | — | Sprite za vrh stopnice (prazno = tekstura tal); neobvezno |
 | `side_texture` | Sprite | — | Sprite za sprednjo stran stopnice (prazno = tekstura sten); neobvezno |
 
+### Nastavi teksturo tal
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_floor_texture` |
+| **Ikona** | 🟫 |
+| **Kategorija** | Pogled 3D |
+
+V pogledu raycast da delu TAL lastno teksturo, v višini tal: celice mreže, ki jih pokriva njegov sprite, uporabijo ta sprite namesto teksture tal (preproga, luža, tlakovana dvorana). Uporabite v dogodku Create netrdnega objekta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite za ta del tal (prazno = tekstura tal) |
+
 ---
 
 ## Druge Kategorije

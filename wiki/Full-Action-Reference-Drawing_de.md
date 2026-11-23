@@ -198,7 +198,7 @@ Schriftart und Ausrichtung für das nachfolgende Textzeichnen festlegen
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Gitter](Full-Action-Reference-Grid_de) (3)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (22)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (23)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (22)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
 - [Punkte/Leben/Gesundheit](Full-Action-Reference-Score-Lives-Health_de) (5)

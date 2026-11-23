@@ -28,7 +28,8 @@ from typing import Any, Dict, Set, Tuple
 
 import pygame
 
-from .heights import (build_ceiling_heights, build_floor_heights, is_geometry,
+from .heights import (build_ceiling_heights, build_floor_heights, build_floor_textures,
+                      is_geometry,
                       max_floor_height)
 from .state import raycast_state
 
@@ -692,6 +693,9 @@ def render_raycast_view(room, screen: pygame.Surface):
     ceilings, ceiling_textures = build_ceiling_heights(
         room, cell_size, wall_h * cell_size, heights, RAYCAST_EYE_HEIGHT * cell_size)
     stairs = bool(heights) or bool(ceilings)
+    # Ground-level floor patches (set_floor_texture): cell -> sprite name.
+    # Empty -> the floor casts below are unchanged.
+    ground_textures = build_floor_textures(room, cell_size)
 
     camera = room._find_first_instance(cfg.get('camera_object', ''))
     w, h = screen.get_size()
@@ -792,7 +796,20 @@ def render_raycast_view(room, screen: pygame.Surface):
     ceil_tex_name = cfg.get('ceiling_texture', '')
     ceil_sprite = (getattr(room, '_all_sprites', {}) or {}).get(ceil_tex_name) if ceil_tex_name else None
     cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
-    if floor_sprite is not None and not stairs:   # stairs rooms: cast_stairs_floor
+    ground_frames = {}
+    for cell, tex_name in ground_textures.items():
+        spr = (getattr(room, '_all_sprites', {}) or {}).get(tex_name)
+        if spr is not None:
+            ground_frames[cell] = spr.get_frame(0)
+    if ground_frames and not stairs:
+        # Patches: cast per cell (the patch's sprite, else the floor
+        # texture, else the flat floor colour).
+        cast_floor_plane(screen,
+                         floor_sprite.get_frame(0) if floor_sprite is not None else None,
+                         cam_cx, cam_cy, facing_screen_rad, fov_rad,
+                         cast_res, ceiling=False, view_h=view_h,
+                         cell_frames=ground_frames, flat=floor_color)
+    elif floor_sprite is not None and not stairs:   # stairs rooms: cast_stairs_floor
         cast_floor_plane(screen, floor_sprite.get_frame(0),
                                cam_cx, cam_cy, facing_screen_rad, fov_rad,
                                cast_res, ceiling=False, view_h=view_h,
@@ -919,10 +936,11 @@ def render_raycast_view(room, screen: pygame.Surface):
             if spr is not None:
                 top_frames[cell] = spr.get_frame(0)
         floor_frame = floor_sprite.get_frame(0) if floor_sprite is not None else None
-        floor_cast = floor_frame is not None or bool(top_frames)
+        floor_cast = floor_frame is not None or bool(top_frames) or bool(ground_frames)
         if floor_cast:
             cast_stairs_floor(screen, stairs_layouts, sf, floor_frame, top_frames,
-                              facing_screen_rad, fov_rad, cast_res)
+                              facing_screen_rad, fov_rad, cast_res,
+                              ground_frames=ground_frames)
         # Lowered ceilings (C4): cast textured when the camera or any marker has
         # a ceiling texture; otherwise their spans stay crisp flat fills.
         cell_ceil_frames = {}
@@ -1171,7 +1189,7 @@ def _draw_stairs_column(screen, sf, col, lay, floor_cast, ceiling_cast=False):
 
 
 def cast_stairs_floor(screen, layouts, sf, floor_frame, top_frames,
-                      facing_screen_rad, fov_rad, res):
+                      facing_screen_rad, fov_rad, res, ground_frames=None):
     """The floor of a room with steps, cast COLUMN-major (stairs plan S6).
 
     Every low-res floor pixel belongs to one tread span of its column (from
@@ -1179,8 +1197,9 @@ def cast_stairs_floor(screen, layouts, sf, floor_frame, top_frames,
         distance_cells = ((eye_z - h) / cell) * view_h / (y - horizon)
     then textured like cast_floor_plane (one texture tile per grid cell).
     The texture is the cell's step top texture (``top_frames``: cell ->
-    frame, only cells that have one), else ``floor_frame``, else the flat
-    floor colour. Each pixel is cast exactly once -- measured in the S2
+    frame, only cells that have one); a ground cell takes its floor patch
+    (``ground_frames``, set_floor_texture); else ``floor_frame``, else the
+    flat floor colour. Each pixel is cast exactly once -- measured in the S2
     spike as cheaper than casting the ground row-major and re-casting the
     treads.
 
@@ -1248,6 +1267,8 @@ def cast_stairs_floor(screen, layouts, sf, floor_frame, top_frames,
             frame = None
             if top_frames and height > 0:
                 frame = top_frames.get((int(floor(fx)), int(floor(fy))))
+            elif ground_frames and height <= 0:
+                frame = ground_frames.get((int(floor(fx)), int(floor(fy))))
             if frame is not None:
                 tw, th = frame.get_size()
                 tx = int(tw * (fx - floor(fx)))
@@ -1404,7 +1425,7 @@ def blit_wall_tile(screen, frame, tex_x, x0, strip_w, y_top, full_h, y0, vis_h,
 
 def cast_floor_plane(screen, frame, cam_cx, cam_cy,
                      facing_screen_rad, fov_rad, res, ceiling=False,
-                     view_h=None, plane_height=None):
+                     view_h=None, plane_height=None, cell_frames=None, flat=None):
     """Low-res floor/ceiling texture casting (Phase 5). Renders the ground
     (or ceiling) plane into a downsampled surface, then upscales — full-res
     per-pixel casting is ~13x too slow in pure Python (timing spike).
@@ -1419,6 +1440,10 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
     directions (camera-plane method) are interpolated across columns, which
     keeps floor lines straight (the fisheye-correct equivalent of the wall
     pass). `ceiling` mirrors the same cast into the top half.
+
+    `cell_frames` (floor patches, set_floor_texture) maps a grid cell to its
+    own frame; other cells use `frame`, or the flat colour `flat` when
+    `frame` is None. Without it the loop below is the original one.
     """
     w, h = screen.get_size()
     # Letterbox: the cast fills the floor/ceiling of the shrunk 3D view, so
@@ -1430,6 +1455,10 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
     half_h = view_h // 2
     region_h = view_h - half_h
     if region_h <= 0:
+        return
+    if cell_frames:
+        _cast_floor_cells(screen, frame, cam_cx, cam_cy, facing_screen_rad,
+                          fov_rad, res, view_h, plane_height, cell_frames, flat)
         return
     tw, th = frame.get_width(), frame.get_height()
     if tw <= 0 or th <= 0:
@@ -1481,3 +1510,58 @@ def cast_floor_plane(screen, frame, cam_cx, cam_cy,
         screen.blit(scaled, (0, 0))
     else:
         screen.blit(scaled, (0, half_h))
+
+
+def _cast_floor_cells(screen, frame, cam_cx, cam_cy, facing_screen_rad, fov_rad,
+                      res, view_h, plane_height, cell_frames, flat):
+    """cast_floor_plane's floor with per-cell patches: the same rows, steps and
+    sampling, but each sample takes its cell's frame from `cell_frames`, else
+    `frame`, else the flat colour `flat`."""
+    w = screen.get_width()
+    half_h = view_h // 2
+    region_h = view_h - half_h
+    dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+    plane = math.tan(fov_rad / 2)
+    plane_x, plane_y = -dir_y * plane, dir_x * plane
+    rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+    rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+    if plane_height is None:
+        plane_height = RAYCAST_EYE_HEIGHT
+    pos_z = plane_height * view_h
+    sw = max(1, w // res)
+    sh = max(1, region_h // res)
+    small = pygame.Surface((sw, sh))
+    put = small.set_at
+    floor = math.floor
+    sizes = {id(f): f.get_size() for f in cell_frames.values()}
+    if frame is not None:
+        sizes[id(frame)] = frame.get_size()
+    get_cell = cell_frames.get
+    step_scale = res / w
+    for j in range(sh):
+        y = half_h + j * res
+        p = y - half_h
+        if p <= 0:
+            p = 1
+        rowd = pos_z / p
+        stepx = rowd * (rdx1 - rdx0) * step_scale
+        stepy = rowd * (rdy1 - rdy0) * step_scale
+        fx = cam_cx + rowd * rdx0
+        fy = cam_cy + rowd * rdy0
+        for i in range(sw):
+            gx, gy = floor(fx), floor(fy)
+            f = get_cell((int(gx), int(gy)), frame)
+            if f is None:
+                put((i, j), flat)
+            else:
+                tw, th = sizes[id(f)]
+                tx = int(tw * (fx - gx))
+                ty = int(th * (fy - gy))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                put((i, j), f.get_at((tx, ty)))
+            fx += stepx
+            fy += stepy
+    screen.blit(pygame.transform.scale(small, (w, region_h)), (0, half_h))

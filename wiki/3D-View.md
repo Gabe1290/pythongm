@@ -47,6 +47,7 @@ variant, and a DOOM-style status-bar showcase).
 | **Draw Minimap** (`draw_minimap`) | Draw a north-up minimap of the room's walls with a "you are here" marker. A HUD action — put it in a Draw event. |
 | **Set Floor Height** (`set_floor_height`) | Make this instance a **step**: the grid cells its sprite covers become raised floor of that height (pixels). Put it in the Create event of a non-solid object. Optional top and side textures. See *Stairs and platforms* below. |
 | **Set Ceiling Height** (`set_ceiling_height`) | Lower the **ceiling** over the grid cells this instance's sprite covers (a height in pixels above the ground). Put it in the Create event of a non-solid object. Optional texture. See *Low ceilings and seamless jumps* below. |
+| **Set Floor Texture** (`set_floor_texture`) | Give the **floor** under this instance's sprite its own texture, at ground level (a rug, a puddle, a tiled hall). Put it in the Create event of a non-solid object. See *Floor textures by area* below. |
 | **Go to Room Seamlessly** (`go_to_room_seamlessly`) | Change room with no fade and no visible jump: the camera lands at the same offset from a marker object placed in both rooms, keeping its facing, speed, held keys and view height. See *Low ceilings and seamless jumps* below. |
 | **Set Billboard Rotation** (`set_billboard_rotation`) | Give a billboard several view-angle frames, so it shows its sides as you walk around it. |
 | **Draw DOOM HUD** (`draw_doom_hud`) | Draw a DOOM-style bottom status bar: health bar + number, a health-reactive face, score, lives, and an objective counter. Pairs with `enable_raycast_view`'s `viewport_height`. |
@@ -93,6 +94,21 @@ height is the easy way (`obj_step_8`, `obj_step_16`, …).
 
 The **raycast_5** sample (*2.5 D — Level 5*) is a small level built around
 stairs. Stairs work on desktop, HTML5 and Kivy (Android/iOS) exports.
+
+---
+
+## Floor textures by area
+
+**Floor Texture** on Enable Raycast View covers the whole floor. To give part of
+it a different look **at ground level**, make an object that is *not solid* with
+**Set Floor Texture** in its Create event (`texture`: a sprite). Every grid cell
+its sprite covers uses that sprite instead — place these objects on the grid
+like walls. Where two overlap, the one placed later wins. They are flat: you
+walk over them, they hide nothing, and they are never drawn as sprites.
+
+A raised cell (a step) keeps its own **Top Texture** (blank = the room's floor
+texture), not the patch under it. Works on desktop, HTML5 and Kivy
+(Android/iOS) exports.
 
 ---
 

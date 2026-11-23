@@ -401,6 +401,20 @@ Fait de cette instance une MARCHE dans la vue raycast : les cases de la grille c
 | `top_texture` | Sprite | — | Sprite du dessus de la marche (vide = la texture du sol); optionnel |
 | `side_texture` | Sprite | — | Sprite de l'avant de la marche (vide = la texture des murs); optionnel |
 
+### Définir la texture du sol
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `set_floor_texture` |
+| **Icône** | 🟫 |
+| **Catégorie** | Vue 3D |
+
+Donne à une partie du SOL sa propre texture dans la vue raycast, au niveau du sol : les cases de la grille couvertes par son sprite utilisent ce sprite à la place de la texture du sol (un tapis, une flaque, un dallage). À utiliser dans l'événement Create d'un objet non solide
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite pour cette partie du sol (vide = la texture du sol) |
+
 ---
 
 ## Autres Catégories

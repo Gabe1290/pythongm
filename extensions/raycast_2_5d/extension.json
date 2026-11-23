@@ -12,6 +12,7 @@
         "set_billboard_rotation",
         "set_floor_height",
         "set_ceiling_height",
+        "set_floor_texture",
         "go_to_room_seamlessly"
     ]
 }

@@ -58,7 +58,7 @@ def test_codegen_for_the_action():
 def test_ceiling_markers_are_not_billboards_or_movers_in_kivy():
     body = KIVY_SRC[KIVY_SRC.index("        billboards = []"):]
     assert "if getattr(inst, 'raycast_ceiling_height', None) is not None:" in body[:1500]
-    assert "and getattr(i, 'raycast_ceiling_height', None) is None]" in KIVY_SRC
+    assert "and getattr(i, 'raycast_ceiling_height', None) is None" in KIVY_SRC
 
 
 # ------------------------------------------------------------ stub harness

@@ -401,6 +401,20 @@ Macht diese Instanz in der Raycast-Ansicht zu einer STUFE: Die Rasterzellen, die
 | `top_texture` | Sprite | — | Sprite für die Oberseite der Stufe (leer = die Bodentextur); optional |
 | `side_texture` | Sprite | — | Sprite für die Vorderseite der Stufe (leer = die Wandtextur); optional |
 
+### Bodentextur festlegen
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `set_floor_texture` |
+| **Symbol** | 🟫 |
+| **Kategorie** | 3D-Ansicht |
+
+Gibt einem Teil des BODENS in der Raycast-Ansicht eine eigene Textur, auf Bodenhöhe: Die Rasterzellen, die ihr Sprite bedeckt, verwenden dieses Sprite statt der Bodentextur (ein Teppich, eine Pfütze, ein gefliester Saal). Im Create-Ereignis eines nicht soliden Objekts verwenden
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite für diesen Teil des Bodens (leer = die Bodentextur) |
+
 ---
 
 ## Weitere Kategorien

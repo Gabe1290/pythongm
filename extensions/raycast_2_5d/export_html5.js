@@ -153,6 +153,8 @@ Object.assign(GameRoom.prototype, {
                                                  RAYCAST_EYE_HEIGHT * cellSize);
         const ceilings = ceilMap.ceilings;
         const stairs = heights.size > 0 || ceilings.size > 0;
+        // Ground-level floor patches (set_floor_texture): key -> sprite name.
+        const groundTextures = this.buildFloorTextures(cellSize);
 
         const w = ctx.canvas.width, h = ctx.canvas.height;
         // DOOM-bar letterbox: the 3D view occupies only the top viewH px; the
@@ -215,7 +217,16 @@ Object.assign(GameRoom.prototype, {
         const castRes = Math.max(1, Math.floor(cfg.floor_cast_res || 4));
         const floorTex = cfg.floor_texture ? this._textureData(sprites[cfg.floor_texture]) : null;
         const camCx = camX / cellSize, camCy = camY / cellSize;
-        if (floorTex && !stairs) {      // stairs rooms: castStairsFloor, below
+        const groundTex = new Map();
+        for (const [key, name] of groundTextures) {
+            const td = this._textureData(sprites[name]);
+            if (td) groundTex.set(key, td);
+        }
+        if (groundTex.size && !stairs) {
+            // Patches: per cell (the patch, else the floor texture, else flat).
+            this.castFloorCells(ctx, floorTex, groundTex, raycastParseHex(cfg.floor_color || '#464632') || [70, 70, 50],
+                                camCx, camCy, facingScreenRad, fovRad, castRes, viewH);
+        } else if (floorTex && !stairs) {      // stairs rooms: castStairsFloor, below
             this.castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false, viewH);
         }
         const ceilTex = (cfg.ceiling_texture && !skyTex)
@@ -329,10 +340,10 @@ Object.assign(GameRoom.prototype, {
                 const td = tex[0] ? this._textureData(sprites[tex[0]]) : null;
                 if (td) topTex.set(key, td);
             }
-            const floorCast = !!floorTex || topTex.size > 0;
+            const floorCast = !!floorTex || topTex.size > 0 || groundTex.size > 0;
             if (floorCast) {
                 this.castStairsFloor(ctx, stairsLayouts, sf, floorTex, topTex, facingScreenRad,
-                                     fovRad, castRes);
+                                     fovRad, castRes, groundTex);
             }
             // Lowered ceilings (C4): cast textured when the camera or any marker has
             // a ceiling texture; otherwise their spans stay crisp flat fills.
@@ -548,6 +559,62 @@ Object.assign(GameRoom.prototype, {
         } else {
             ctx.drawImage(small, 0, 0, sw, sh, 0, halfH, w, regionH);
         }
+    },
+    // renderer._cast_floor_cells: the floor with ground-level patches
+    // (set_floor_texture). Same rows and steps as castFloorPlane; each sample
+    // takes its cell's texture from cellTex, else texData, else the flat rgb.
+    castFloorCells(ctx, texData, cellTex, flat, camCx, camCy, facingScreenRad, fovRad, res, viewH) {
+        const w = ctx.canvas.width, h = ctx.canvas.height;
+        if (viewH === undefined || viewH === null) viewH = h;
+        viewH = Math.max(1, Math.min(viewH, h));
+        const halfH = Math.floor(viewH / 2);
+        const regionH = viewH - halfH;
+        if (regionH <= 0) return;
+        const dirX = Math.cos(facingScreenRad), dirY = Math.sin(facingScreenRad);
+        const plane = Math.tan(fovRad / 2);
+        const planeX = -dirY * plane, planeY = dirX * plane;
+        const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
+        const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
+        const posZ = RAYCAST_EYE_HEIGHT * viewH;
+        const sw = Math.max(1, Math.floor(w / res));
+        const sh = Math.max(1, Math.floor(regionH / res));
+        const stepScale = res / w;
+        if (!this._floorSmall) this._floorSmall = document.createElement('canvas');
+        const small = this._floorSmall;
+        if (small.width !== sw || small.height !== sh) { small.width = sw; small.height = sh; }
+        const sctx = small.getContext('2d');
+        const img = sctx.createImageData(sw, sh);
+        const d = img.data;
+        for (let j = 0; j < sh; j++) {
+            const y = halfH + j * res;
+            let p = y - halfH; if (p <= 0) p = 1;
+            const rowd = posZ / p;
+            const stepx = rowd * (rdx1 - rdx0) * stepScale;
+            const stepy = rowd * (rdy1 - rdy0) * stepScale;
+            let fx = camCx + rowd * rdx0;
+            let fy = camCy + rowd * rdy0;
+            let di = j * sw * 4;
+            for (let i = 0; i < sw; i++) {
+                const gx = Math.floor(fx), gy = Math.floor(fy);
+                const tex = cellTex.get(gx + ',' + gy) || texData;
+                if (tex) {
+                    const tw = tex.width, th = tex.height;
+                    let tx = (tw * (fx - gx)) | 0;
+                    let ty = (th * (fy - gy)) | 0;
+                    if (tx >= tw) tx = tw - 1;
+                    if (ty >= th) ty = th - 1;
+                    const si = (ty * tw + tx) * 4;
+                    d[di] = tex.data[si]; d[di + 1] = tex.data[si + 1]; d[di + 2] = tex.data[si + 2];
+                } else {
+                    d[di] = flat[0]; d[di + 1] = flat[1]; d[di + 2] = flat[2];
+                }
+                d[di + 3] = 255;
+                di += 4;
+                fx += stepx; fy += stepy;
+            }
+        }
+        sctx.putImageData(img, 0, 0);
+        ctx.drawImage(small, 0, 0, sw, sh, 0, halfH, w, regionH);
     }
 });
 
@@ -572,8 +639,12 @@ function raycastIsStep(inst) {
 function raycastIsCeiling(inst) {
     return inst.raycast_ceiling_height !== undefined && inst.raycast_ceiling_height !== null;
 }
+// heights.is_floor_patch: a Set Floor Texture patch (ground-level floor texture).
+function raycastIsFloorPatch(inst) {
+    return inst.raycast_floor_texture !== undefined && inst.raycast_floor_texture !== null;
+}
 function raycastIsGeometry(inst) {
-    return raycastIsStep(inst) || raycastIsCeiling(inst);
+    return raycastIsStep(inst) || raycastIsCeiling(inst) || raycastIsFloorPatch(inst);
 }
 
 function raycastMaxFloorHeight(cellSize, wallH) {
@@ -790,6 +861,29 @@ Object.assign(GameRoom.prototype, {
         return { heights, textures };
     },
 
+    // heights.build_floor_textures: ground-level floor patches. Returns a Map
+    // key -> sprite name; the later patch in the instance list wins; blank
+    // names and solid instances are ignored.
+    buildFloorTextures(cellSize) {
+        const textures = new Map();
+        for (const inst of this.instances) {
+            if (!raycastIsFloorPatch(inst) || inst.solid) continue;
+            const name = inst.raycast_floor_texture || '';
+            if (!name) continue;
+            const tl = GameRoom.spriteTopLeft(inst);
+            const bw = inst.boxWidth(), bh = inst.boxHeight();
+            const gx0 = Math.floor(tl.x / cellSize), gy0 = Math.floor(tl.y / cellSize);
+            const gx1 = bw > 0 ? Math.floor((tl.x + bw) / cellSize - 1e-9) : gx0;
+            const gy1 = bh > 0 ? Math.floor((tl.y + bh) / cellSize - 1e-9) : gy0;
+            for (let gx = gx0; gx <= Math.max(gx0, gx1); gx++) {
+                for (let gy = gy0; gy <= Math.max(gy0, gy1); gy++) {
+                    textures.set(gx + ',' + gy, name);
+                }
+            }
+        }
+        return textures;
+    },
+
     // heights.build_ceiling_heights (ceilings plan, C1): the lowered-ceiling map
     // from Set Ceiling Height markers. Returns {ceilings, textures}; each cell's
     // ceiling is clamped to [floor + eye + margin, roomCeiling], lowest marker
@@ -987,7 +1081,7 @@ Object.assign(GameRoom.prototype, {
 
     // renderer.cast_stairs_floor: the floor of a room with steps, cast column
     // by column, each low-res pixel at its own tread's height.
-    castStairsFloor(ctx, layouts, sf, floorTex, topTex, facingScreenRad, fovRad, res) {
+    castStairsFloor(ctx, layouts, sf, floorTex, topTex, facingScreenRad, fovRad, res, groundTex) {
         const w = ctx.canvas.width;
         const viewH = sf.viewH;
         const halfH = Math.floor(viewH / 2);
@@ -1035,6 +1129,7 @@ Object.assign(GameRoom.prototype, {
                 const fx = camCx + rowd * rdx, fy = camCy + rowd * rdy;
                 let tex = null;
                 if (topTex.size && hgt > 0) tex = topTex.get(Math.floor(fx) + ',' + Math.floor(fy)) || null;
+                else if (groundTex && groundTex.size && hgt <= 0) tex = groundTex.get(Math.floor(fx) + ',' + Math.floor(fy)) || null;
                 if (!tex) tex = floorTex;
                 const di = (j * sw + i) * 4;
                 if (tex) {
@@ -1573,6 +1668,13 @@ registerExtensionAction('set_ceiling_height', function(obj, params, game) {
                 }
                 obj.raycast_ceiling_height = hgt;
                 obj.raycast_ceiling_texture = params.texture ? String(params.texture) : '';
+                return;
+            });
+
+registerExtensionAction('set_floor_texture', function(obj, params, game) {
+                // Give this instance's cells their own ground-level floor texture
+                // (execute_set_floor_texture_action): records the sprite name.
+                obj.raycast_floor_texture = params.texture ? String(params.texture) : '';
                 return;
             });
 

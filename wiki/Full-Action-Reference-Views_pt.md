@@ -59,7 +59,7 @@ Configurar uma vista de câmera: qual parte da sala mostra, onde é desenhada na
 - [Jogo](Full-Action-Reference-Game_pt) (14)
 - [Controle](Full-Action-Reference-Control_pt) (19)
 - [Grade](Full-Action-Reference-Grid_pt) (3)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (22)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (23)
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)

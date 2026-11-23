@@ -198,7 +198,7 @@ Définir la police et l'alignement pour le dessin de texte suivant
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (22)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (23)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
 - [Score/Vies/Santé](Full-Action-Reference-Score-Lives-Health_fr) (5)

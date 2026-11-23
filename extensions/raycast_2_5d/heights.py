@@ -80,9 +80,15 @@ def is_ceiling(inst) -> bool:
     return getattr(inst, "raycast_ceiling_height", None) is not None
 
 
+def is_floor_patch(inst) -> bool:
+    """True if this instance ran set_floor_texture (a ground-level floor patch)."""
+    return getattr(inst, "raycast_floor_texture", None) is not None
+
+
 def is_geometry(inst) -> bool:
-    """A step or a ceiling marker: part of the level, never a billboard or a mover."""
-    return is_step(inst) or is_ceiling(inst)
+    """A step, a ceiling marker or a floor patch: part of the level, never a
+    billboard or a mover."""
+    return is_step(inst) or is_ceiling(inst) or is_floor_patch(inst)
 
 
 def max_floor_height(cell_size, wall_height_cells, eye_height_cells) -> float:
@@ -170,6 +176,38 @@ def build_floor_heights(room, cell_size, max_height):
     st["floor_textures"] = textures
     st["floor_sig"] = sig
     return heights, textures
+
+
+def build_floor_textures(room, cell_size):
+    """Derive the ground-level floor-texture map from the room's floor patches
+    (set_floor_texture).
+
+    Stores, and returns, ``textures``: ``(gx, gy) -> sprite name`` for the
+    cells a patch covers (an absent cell uses the camera's floor texture). A
+    patch covers every cell its sprite box covers; where patches overlap, the
+    one LATER in the room's instance list wins; a blank texture name is no
+    patch; solid instances are walls and are ignored. Only GROUND cells use it:
+    a raised cell (a step) is textured by the step's own Top Texture.
+    """
+    st = raycast_state(room)
+    sig = (cell_size, tuple(_geometry_key(i, "raycast_floor_texture")
+                            for i in room.instances if is_floor_patch(i)))
+    if st.get("ground_sig") == sig:
+        return st["ground_textures"]
+    textures = {}
+    for inst in room.instances:
+        if not is_floor_patch(inst):
+            continue
+        if (getattr(inst, "_cached_object_data", None) or {}).get("solid", False):
+            continue
+        name = inst.raycast_floor_texture or ""
+        if not name:
+            continue
+        for cell in _covered_cells(room, inst, cell_size):
+            textures[cell] = name
+    st["ground_textures"] = textures
+    st["ground_sig"] = sig
+    return textures
 
 
 def build_ceiling_heights(room, cell_size, room_ceiling, floor_heights, eye_height):

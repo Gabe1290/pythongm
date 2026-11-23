@@ -401,6 +401,20 @@ Convierte esta instancia en un ESCALÓN de la vista raycast: las casillas de la 
 | `top_texture` | Sprite | — | Sprite para la parte superior del escalón (vacío = la textura del suelo); opcional |
 | `side_texture` | Sprite | — | Sprite para la parte frontal del escalón (vacío = la textura de los muros); opcional |
 
+### Definir textura del suelo
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_floor_texture` |
+| **Icono** | 🟫 |
+| **Categoría** | Vista 3D |
+
+Da a una parte del SUELO su propia textura en la vista raycast, a ras de suelo: las casillas de la cuadrícula que cubre su sprite usan este sprite en lugar de la textura del suelo (una alfombra, un charco, una sala embaldosada). Úsalo en el evento Create de un objeto no sólido
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite para esta parte del suelo (vacío = la textura del suelo) |
+
 ---
 
 ## Otras Categorías

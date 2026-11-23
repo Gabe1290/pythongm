@@ -22,7 +22,7 @@ sky, and billboard sprites for pickups and monsters. The game's *logic*
 | `extension.json` | The manifest. Name, version, and `enabled: true`. Its presence is what marks this folder as an extension. |
 | `__init__.py` | The entry point. Declares the room-renderer hook and decides, per room, whether to claim the drawing. |
 | `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. The big file, ordinary Python. |
-| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`, `set_floor_height`, `set_ceiling_height`, `go_to_room_seamlessly`. |
+| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`, `set_floor_height`, `set_ceiling_height`, `set_floor_texture`, `go_to_room_seamlessly`. |
 | `handlers.py` | The action **handlers** — what each of those does at runtime. |
 | `hud.py` | The minimap + DOOM-bar geometry builders (`build_minimap_commands`, `build_doom_hud_commands`), the single source the exports mirror. |
 | `state.py` | The per-room state helper — all raycast state lives under `room.extension_state["raycast"]`. |
@@ -108,6 +108,18 @@ The HTML5 and Kivy ports follow the same structure and are pinned by
 `tests/test_html5_raycast_stairs.py` and `tests/test_kivy_raycast_stairs.py`.
 The design, the decisions and the proofs are in
 `docs/RAYCAST_STAIRS_PLAN.md`; the `raycast_5` sample is built around it.
+
+## Floor textures by area
+
+A **Set Floor Texture** patch (`heights.build_floor_textures`: cell -> sprite name,
+later patch wins, blank and solid ignored) gives ground-level cells their own floor
+texture. It does NOT switch to the column walk: a flat room casts through
+`_cast_floor_cells` (`cast_floor_plane`'s rows with a per-cell lookup; the original
+loop runs unchanged when there are no patches), a room with steps reads the patch in
+`cast_stairs_floor` for ground treads only (raised cells keep the step's Top
+Texture). Patches are geometry (`is_geometry`): never billboards, never movers.
+HTML5: `buildFloorTextures` / `castFloorCells`; Kivy: `_raycast_build_floor_textures`
+/ `_floor_cells_buffer`.
 
 ## Low ceilings and the seamless jump
 

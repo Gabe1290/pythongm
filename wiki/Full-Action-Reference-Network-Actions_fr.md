@@ -344,7 +344,7 @@ Marquer l'instance qui exécute l'action comme « synchronisée » : sa position
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (22)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (23)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
 - [Score/Vies/Santé](Full-Action-Reference-Score-Lives-Health_fr) (5)

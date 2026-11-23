@@ -438,6 +438,73 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 fy += stepy
         return bytes(out), sw, sh
 
+    def _floor_cells_buffer(self, cell_px, floor_px, floor_color, res,
+                            facing_screen_rad, fov_rad, cam_cx, cam_cy, view_h):
+        """Port of renderer._cast_floor_cells: _floor_buffer's floor with
+        ground-level patches (set_floor_texture). Each sample takes its cell's
+        (bytes, tw, th) from cell_px, else floor_px, else the flat floor_color
+        (Kivy 0..1 rgb). Rows are bottom-up in the sources, flipped when sampled."""
+        import math
+        w = float(self.display_width)
+        half_h = int(view_h // 2)
+        region_h = int(view_h) - half_h
+        sw = max(1, int(w) // res)
+        sh = max(1, region_h // res)
+        flat = bytes([int(floor_color[0] * 255), int(floor_color[1] * 255),
+                      int(floor_color[2] * 255), 255])
+        out = bytearray(flat * (sw * sh))
+        dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+        plane = math.tan(fov_rad / 2)
+        plane_x, plane_y = -dir_y * plane, dir_x * plane
+        rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+        rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+        pos_z = self.RAYCAST_EYE_HEIGHT * view_h
+        step_scale = res / w
+        floor = math.floor
+        for j in range(sh):
+            y = half_h + j * res
+            p = y - half_h
+            if p <= 0:
+                p = 1
+            rowd = pos_z / p
+            stepx = rowd * (rdx1 - rdx0) * step_scale
+            stepy = rowd * (rdy1 - rdy0) * step_scale
+            fx = cam_cx + rowd * rdx0
+            fy = cam_cy + rowd * rdy0
+            di = j * sw * 4
+            for _ in range(sw):
+                gx, gy = floor(fx), floor(fy)
+                src = cell_px.get((int(gx), int(gy)), floor_px)
+                if src is not None:
+                    pixels, tw, th = src
+                    tx = int(tw * (fx - gx))
+                    ty = int(th * (fy - gy))
+                    if tx >= tw:
+                        tx = tw - 1
+                    if ty >= th:
+                        ty = th - 1
+                    si = ((th - 1 - ty) * tw + tx) * 4
+                    out[di] = pixels[si]; out[di + 1] = pixels[si + 1]
+                    out[di + 2] = pixels[si + 2]
+                di += 4
+                fx += stepx
+                fy += stepy
+        return bytes(out), sw, sh
+
+    def _render_floor_cells(self, group, cell_px, floor_px, floor_color, res,
+                            facing_screen_rad, fov_rad, cam_cx, cam_cy, w, h, view_h):
+        """The floor with ground-level patches, drawn like _render_floor_plane's floor."""
+        from kivy.graphics.texture import Texture
+        view_h = max(1.0, min(float(view_h), h))
+        buf, sw, sh = self._floor_cells_buffer(cell_px, floor_px, floor_color, res,
+                                               facing_screen_rad, fov_rad, cam_cx,
+                                               cam_cy, view_h)
+        tex = Texture.create(size=(sw, sh), colorfmt='rgba')
+        tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        group.add(Color(1, 1, 1, 1))
+        group.add(Rectangle(texture=tex, pos=(0, h - view_h), size=(w, view_h / 2.0),
+                            tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
+
     def _render_floor_plane(self, group, px, res, facing_screen_rad, fov_rad,
                             cam_cx, cam_cy, w, h, ceiling, view_h=None,
                             plane_height=None):
@@ -509,6 +576,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             cell_size, wall_h * cell_size, heights,
             self.RAYCAST_EYE_HEIGHT * cell_size)
         stairs = bool(heights) or bool(ceilings)
+        # Ground-level floor patches (set_floor_texture): cell -> sprite name.
+        ground_textures = self._raycast_build_floor_textures(cell_size)
 
         w = float(self.display_width)
         h = float(self.display_height)
@@ -595,7 +664,17 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         cast_res = max(1, int(cfg.get('floor_cast_res', 4)))
         cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
         floor_px = self._raycast_texture_pixels(cfg.get('floor_texture', ''))
-        if floor_px is not None and not stairs:    # stairs: _stairs_floor below
+        ground_px = {}
+        for cell, tex_name in ground_textures.items():
+            px_ = self._raycast_texture_pixels(tex_name)
+            if px_ is not None:
+                ground_px[cell] = px_
+        if ground_px and not stairs:
+            # Patches: per cell (the patch, else the floor texture, else flat).
+            self._render_floor_cells(group, ground_px, floor_px, floor_color, cast_res,
+                                     facing_screen_rad, fov_rad, cam_cx, cam_cy, w, h,
+                                     view_h)
+        elif floor_px is not None and not stairs:    # stairs: _stairs_floor below
             self._render_floor_plane(group, floor_px, cast_res, facing_screen_rad,
                                      fov_rad, cam_cx, cam_cy, w, h, False, view_h)
         ceil_name = cfg.get('ceiling_texture', '')
@@ -722,14 +801,15 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 px_ = self._raycast_texture_pixels(top_name) if top_name else None
                 if px_ is not None:
                     top_px[cell] = px_
-            floor_cast = floor_px is not None or bool(top_px)
+            floor_cast = floor_px is not None or bool(top_px) or bool(ground_px)
             sf = {'eye_z': eye_z, 'cell_size': cell_size, 'half_h': half_h,
                   'view_h': view_h, 'h': h, 'w': w, 'col_width': col_width,
                   'cam_x': cam_x, 'cam_y': cam_y, 'textured': textured,
                   'wall_texture': wall_texture, 'wall_color': wall_color,
                   'floor_color': floor_color, 'step_textures': step_textures,
                   'max_dist': render_distance_cells * cell_size,
-                  'wall_top_z': wall_h * cell_size, 'ceiling_color': ceiling_color}
+                  'wall_top_z': wall_h * cell_size, 'ceiling_color': ceiling_color,
+                  'ground_px': ground_px}
             if floor_cast:
                 self._stairs_floor(group, stairs_layouts, sf, floor_px, top_px,
                                    facing_screen_rad, fov_rad, cast_res)
@@ -759,6 +839,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 continue        # a step is floor, not a cutout
             if getattr(inst, 'raycast_ceiling_height', None) is not None:
                 continue        # so is a ceiling marker
+            if getattr(inst, 'raycast_floor_texture', None) is not None:
+                continue        # and a floor patch
             iw = float(getattr(inst, 'image_width', 0) or 0)
             ih = float(getattr(inst, 'image_height', 0) or 0)
             if iw <= 0 or ih <= 0:
@@ -907,6 +989,28 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                         textures[(gx, gy)] = tex
         self._raycast_floor_heights = heights
         return heights, textures
+
+    def _raycast_build_floor_textures(self, cell_size):
+        # heights.build_floor_textures: ground-level floor patches (Set Floor
+        # Texture). Later patch in the instance list wins; blank names and
+        # solid instances are ignored.
+        import math
+        textures = {}
+        for inst in self.instances:
+            name = getattr(inst, 'raycast_floor_texture', None)
+            if not name or getattr(inst, 'solid', False):
+                continue
+            gm_x, gm_y = self._raycast_gm_xy(inst)
+            bw = float(getattr(inst, 'image_width', 0) or 0)
+            bh = float(getattr(inst, 'image_height', 0) or 0)
+            gx0 = int(math.floor(gm_x / cell_size))
+            gy0 = int(math.floor(gm_y / cell_size))
+            gx1 = int(math.floor((gm_x + bw) / cell_size - 1e-9)) if bw > 0 else gx0
+            gy1 = int(math.floor((gm_y + bh) / cell_size - 1e-9)) if bh > 0 else gy0
+            for gx in range(gx0, max(gx0, gx1) + 1):
+                for gy in range(gy0, max(gy0, gy1) + 1):
+                    textures[(gx, gy)] = name
+        return textures
 
     def _raycast_build_ceiling_heights(self, cell_size, room_ceiling, floor_heights,
                                        eye_height):
@@ -1269,6 +1373,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         flat = bytes([int(fc[0] * 255), int(fc[1] * 255), int(fc[2] * 255), 255])
         out = bytearray(flat * (sw * sh))
         floor = math.floor
+        ground_px = sf.get('ground_px')
         ncol = len(layouts)
         for i in range(sw):
             sx = i * res
@@ -1300,6 +1405,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 src = None
                 if top_px and height > 0:
                     src = top_px.get((int(floor(fx)), int(floor(fy))))
+                elif ground_px and height <= 0:
+                    src = ground_px.get((int(floor(fx)), int(floor(fy))))
                 if src is None:
                     src = floor_px
                 if src is None:
@@ -1466,7 +1573,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         movers = [i for i in self.instances
                   if id(i) not in dead and not getattr(i, 'solid', False)
                   and getattr(i, 'raycast_floor_height', None) is None
-                  and getattr(i, 'raycast_ceiling_height', None) is None]
+                  and getattr(i, 'raycast_ceiling_height', None) is None
+                  and getattr(i, 'raycast_floor_texture', None) is None]
         for inst in movers:
             old = prev.get(id(inst))
             blocked = 0
@@ -1559,6 +1667,13 @@ def _cg_set_ceiling_height(gen, params, event_type):
     texture = str(params.get('texture') or '')
     return (f"self.raycast_ceiling_height = float({height}); "
             f"self.raycast_ceiling_texture = {texture!r}")
+
+def _cg_set_floor_texture(gen, params, event_type):
+    # Give this instance's cells their own ground-level floor texture
+    # (execute_set_floor_texture_action); the scene's _raycast_build_floor_textures
+    # builds the map.
+    texture = str(params.get('texture') or '')
+    return f"self.raycast_floor_texture = {texture!r}"
 
 def _cg_go_to_room_seamlessly(gen, params, event_type):
     # Go to Room Seamlessly (execute_go_to_room_seamlessly_action); the scene's
@@ -1716,6 +1831,7 @@ ACTION_CODEGEN = {
     'set_billboard_rotation': _cg_set_billboard_rotation,
     'set_floor_height': _cg_set_floor_height,
     'set_ceiling_height': _cg_set_ceiling_height,
+    'set_floor_texture': _cg_set_floor_texture,
     'go_to_room_seamlessly': _cg_go_to_room_seamlessly,
     'enable_raycast_view': _cg_enable_raycast_view,
     'draw_doom_hud': _cg_draw_doom_hud,

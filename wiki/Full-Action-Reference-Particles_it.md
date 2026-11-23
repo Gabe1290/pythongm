@@ -141,7 +141,7 @@ Emette particelle in continuo, a ogni passo, dall'emettitore creato più di rece
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Griglia](Full-Action-Reference-Grid_it) (3)
 - [Viste](Full-Action-Reference-Views_it) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (22)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (23)
 - [Disegno](Full-Action-Reference-Drawing_it) (11)
 - [Rete](Full-Action-Reference-Network-Actions_it) (22)
 - [Punteggio/Vite/Salute](Full-Action-Reference-Score-Lives-Health_it) (5)

@@ -32,7 +32,7 @@ def test_raycast_manifest_declares_its_actions():
     assert set(manifest.get("provides_actions", [])) == {
         "enable_raycast_view", "set_facing_angle", "draw_minimap", "draw_doom_hud",
         "set_billboard_rotation", "set_floor_height", "set_ceiling_height",
-        "go_to_room_seamlessly"}
+        "go_to_room_seamlessly", "set_floor_texture"}
 
 
 def test_list_available_extensions_exposes_provides_actions():

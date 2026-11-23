@@ -216,6 +216,25 @@ PLUGIN_ACTIONS = {
                             "ceiling texture)"),
         ]
     ),
+    # Per-area floor texture at ground level (2026-11-23): set_floor_height
+    # ignores height 0, so a rug or a puddle needed a 1 px step.
+    "set_floor_texture": ActionType(
+        name="set_floor_texture",
+        display_name="Set Floor Texture",
+        description="Give part of the FLOOR its own texture in the raycast view, "
+                    "at ground level: the grid cells this instance's sprite covers "
+                    "use this sprite instead of the floor texture (a rug, a "
+                    "puddle, a tiled hall). Use it in the Create event of a "
+                    "non-solid object",
+        category="3D View",
+        icon="🟫",
+        parameters=[
+            ActionParameter(name="texture", display_name="Floor Texture",
+                param_type="sprite", default_value="",
+                description="Sprite for this part of the floor (blank = the "
+                            "floor texture)"),
+        ]
+    ),
     # docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md (T1).
     "go_to_room_seamlessly": ActionType(
         name="go_to_room_seamlessly",

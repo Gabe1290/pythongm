@@ -301,7 +301,7 @@ Tester la valeur d'une variable d'instance ou globale
 - [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Grille](Full-Action-Reference-Grid_fr) (3)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (22)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (23)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)

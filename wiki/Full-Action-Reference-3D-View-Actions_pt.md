@@ -401,6 +401,20 @@ Transforma esta instância em um DEGRAU na vista raycast: as células da grade c
 | `top_texture` | Sprite | — | Sprite para o topo do degrau (vazio = a textura do chão); opcional |
 | `side_texture` | Sprite | — | Sprite para a frente do degrau (vazio = a textura das paredes); opcional |
 
+### Definir textura do chão
+
+| Propriedade | Valor |
+|----------|-------|
+| **Nome** | `set_floor_texture` |
+| **Ícone** | 🟫 |
+| **Categoria** | Vista 3D |
+
+Dá a uma parte do CHÃO a sua própria textura na vista raycast, ao nível do chão: as células da grade cobertas pelo seu sprite usam este sprite em vez da textura do chão (um tapete, uma poça, um salão ladrilhado). Usar no evento Create de um objeto não sólido
+
+| Parâmetro | Tipo | Padrão | Notas |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite para esta parte do chão (vazio = a textura do chão) |
+
 ---
 
 ## Outras Categorias

@@ -401,6 +401,20 @@ Make this instance a STEP in the raycast view: the grid cells its sprite covers 
 | `top_texture` | Sprite | — | Sprite for the top of the step (blank = the floor texture); optional |
 | `side_texture` | Sprite | — | Sprite for the front of the step (blank = the wall texture); optional |
 
+### Set Floor Texture
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_floor_texture` |
+| **Icon** | 🟫 |
+| **Category** | 3D View |
+
+Give part of the FLOOR its own texture in the raycast view, at ground level: the grid cells this instance's sprite covers use this sprite instead of the floor texture (a rug, a puddle, a tiled hall). Use it in the Create event of a non-solid object
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `texture` | Sprite | — | Sprite for this part of the floor (blank = the floor texture) |
+
 ---
 
 ## Other Categories
