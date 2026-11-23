@@ -1,0 +1,221 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "spr_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "enable_raycast_view",
+          "parameters": {
+            "camera_object": "",
+            "fov": "66",
+            "cell_size": "32",
+            "render_distance": "20",
+            "wall_texture": "spr_wall_texture",
+            "sky_texture": "",
+            "floor_texture": "spr_floor",
+            "ceiling_texture": "spr_ceiling",
+            "wall_color": "#993333",
+            "floor_color": "#464632",
+            "ceiling_color": "#87CEEB",
+            "wall_height": "3",
+            "max_step": "12"
+          }
+        },
+        {
+          "action": "set_facing_angle",
+          "parameters": {
+            "angle": "90",
+            "relative": false
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "up": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle+180",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "-3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "0",
+              "speed": "0"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_wall": {
+      "actions": [],
+      "target_object": "obj_wall"
+    },
+    "collision_with_obj_goal": {
+      "actions": [
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "You walked through the junction without noticing!",
+            "message_translations": {
+              "fr": "Tu as traversé la jonction sans t'en apercevoir !"
+            }
+          }
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_goal"
+    },
+    "collision_with_obj_gate_a1": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room1",
+            "marker": "obj_junction_1"
+          }
+        }
+      ],
+      "target_object": "obj_gate_a1"
+    },
+    "collision_with_obj_gate_b1": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room0",
+            "marker": "obj_junction_1"
+          }
+        }
+      ],
+      "target_object": "obj_gate_b1"
+    },
+    "collision_with_obj_gate_a2": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room1",
+            "marker": "obj_junction_2"
+          }
+        }
+      ],
+      "target_object": "obj_gate_a2"
+    },
+    "collision_with_obj_gate_b2": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room0",
+            "marker": "obj_junction_2"
+          }
+        }
+      ],
+      "target_object": "obj_gate_b2"
+    },
+    "collision_with_obj_gate_a3": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room1",
+            "marker": "obj_junction_3"
+          }
+        }
+      ],
+      "target_object": "obj_gate_a3"
+    },
+    "collision_with_obj_gate_b3": {
+      "actions": [
+        {
+          "action": "go_to_room_seamlessly",
+          "parameters": {
+            "room": "room0",
+            "marker": "obj_junction_3"
+          }
+        }
+      ],
+      "target_object": "obj_gate_b3"
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "clock = game.clock\nhist = getattr(self, 'perf_hist', None)\nif hist is None:\n    hist = []\n    self.perf_hist = hist\nhist.append(clock.get_rawtime())\ndel hist[:-30]\nms = sum(hist) / len(hist)\nz = getattr(self, 'raycast_floor_z', 0) or 0\nlabel = 'HAUT' if game.current_room.name == 'room0' else 'CRYPTE'\nself.perf_text = '%s   %.1f ms/image   %d i/s   hauteur %d px' % (label, ms, clock.get_fps(), z)\n"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "x": "8",
+            "y": "8",
+            "text": "perf_text",
+            "color": "#ffff00"
+          }
+        },
+        {
+          "action": "draw_minimap",
+          "parameters": {
+            "x": "536",
+            "y": "8",
+            "size": "96",
+            "mark_object": "obj_goal",
+            "mark_color": "#40e0ff"
+          }
+        }
+      ]
+    }
+  }
+}

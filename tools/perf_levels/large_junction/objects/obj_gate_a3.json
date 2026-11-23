@@ -1,0 +1,11 @@
+{
+  "name": "obj_gate_a3",
+  "asset_type": "object",
+  "sprite": "spr_gate",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {}
+}

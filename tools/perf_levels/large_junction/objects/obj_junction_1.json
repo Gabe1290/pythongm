@@ -1,0 +1,11 @@
+{
+  "name": "obj_junction_1",
+  "asset_type": "object",
+  "sprite": "spr_junction",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {}
+}

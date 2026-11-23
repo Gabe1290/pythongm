@@ -1,0 +1,21 @@
+Sprite art in this sample — License notice
+==========================================
+
+This sample reuses art from two earlier samples, unchanged:
+
+  sprites/spr_person.png                 (from raycast_4) -- CC0 1.0, created by
+                                            the pygm2 author; see
+                                            ../raycast_4/CREDITS.txt
+  sprites/spr_wall_texture.png, spr_floor.png, spr_ceiling.png
+                                         (from raycast_4)
+  sprites/spr_goal.png                   (from raycast_1)
+
+The latter came in via the GameMaker 8.x .gmk import and their provenance is
+not yet documented -- see "Maze samples" in ../../docs/ASSET_LICENSES.md.
+
+sprites/spr_wall.png, spr_low.png, spr_junction.png, spr_gate.png and
+spr_step_*.png are trivial generated placeholders (a flat coloured square with a
+darker border, written by tools/gen_raycast_6_junction.py) -- not derived from
+any licensed artwork, no license notice needed. They are never drawn in the
+first-person view; they only show where walls, steps, ceilings, the marker and
+the gates are in the room editor.

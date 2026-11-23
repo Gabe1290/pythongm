@@ -1,0 +1,23 @@
+{
+  "name": "obj_c48",
+  "asset_type": "object",
+  "sprite": "spr_low",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_ceiling_height",
+          "parameters": {
+            "height": "48",
+            "texture": ""
+          }
+        }
+      ]
+    }
+  }
+}
