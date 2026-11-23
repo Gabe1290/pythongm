@@ -525,6 +525,45 @@ def _row(y):
     return int(math.floor(y + 0.5))
 
 
+# Tallest scaled strip _blit_tile_cached builds. A wall/riser/lintel only needs
+# more when it is a fraction of a pixel from the eye -- e.g. the camera stopped
+# EXACTLY on a grid line in front of a ledge taller than the eye, where the ray
+# meets it at distance 0: the strip then reached 10.8 million rows, ~190 ms a
+# frame for as long as the player stood there (found 2026-11-23). Normal
+# strips stay far below this, so they take the old path, pixel for pixel.
+MAX_STRIP_ROWS = 4096
+
+
+def _fill_texel_rows(screen, frame, th, tex_x, x0, strip_w, y_top, texels_per_px,
+                     y0, vis_h, shade_v):
+    """Draw rows [y0, y0 + vis_h) of a strip whose tile starts at y_top, one
+    fill per visible texel: the texel at a row is the one its top falls in,
+    shaded with the same BLEND_RGB_MULT the scaled path uses."""
+    y_end = y0 + vis_h
+    y = y0
+    tint = None
+    while y < y_end:
+        t = int(math.floor((y - y_top) * texels_per_px))
+        if t < 0:
+            t = 0
+        elif t > th - 1:
+            t = th - 1
+        ny = int(math.ceil(y_top + (t + 1) / texels_per_px))
+        if ny <= y:
+            ny = y + 1
+        if ny > y_end:
+            ny = y_end
+        color = frame.get_at((tex_x, t))
+        if shade_v < 256:
+            if tint is None:
+                tint = pygame.Surface((1, 1))
+            tint.fill(color)
+            tint.fill((shade_v, shade_v, shade_v), special_flags=pygame.BLEND_RGB_MULT)
+            color = tint.get_at((0, 0))
+        screen.fill(color, (x0, y, strip_w, ny - y))
+        y = ny
+
+
 def _blit_tile_cached(screen, cache, frame, th, tex_x, x0, strip_w, y_top,
                       full_h, y0, vis_h, shade_v):
     """blit_wall_tile's exact maths, reusing the scaled+shaded strip when an
@@ -551,6 +590,13 @@ def _blit_tile_cached(screen, cache, frame, th, tex_x, x0, strip_w, y_top,
     dest_h = int(round(src_h / texels_per_px))
     if dest_h < 1:
         dest_h = 1
+    if dest_h > MAX_STRIP_ROWS:
+        # A surface (almost) at the camera: one texel spans thousands of rows,
+        # and scaling would build a strip millions of rows tall to blit a few
+        # hundred of them. Fill each visible texel's rows directly instead.
+        _fill_texel_rows(screen, frame, th, tex_x, x0, strip_w, y_top,
+                         texels_per_px, y0, vis_h, shade_v)
+        return
     key = (id(frame), tex_x, src_y, src_h, dest_h, strip_w, shade_v)
     strip = cache.get(key)
     if strip is None:
