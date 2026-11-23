@@ -722,9 +722,17 @@ MODULE_LANGUAGES = ("pl", "pt", "ja", "zh")
 
 
 def _merge_language_modules():
-    import importlib
+    # Plain imports, NOT importlib.import_module(f"..._{lang}"): a frozen build
+    # (PyInstaller / Nuitka) only bundles modules it can see being imported. The
+    # importlib version shipped in the 1.6.2 downloads, which then died at startup
+    # on EVERY launch with "No module named 'config.blockly_block_i18n_pl'"
+    # (2026-11-23). Add a language here AND to MODULE_LANGUAGES.
+    from config import (blockly_block_i18n_ja, blockly_block_i18n_pl,
+                        blockly_block_i18n_pt, blockly_block_i18n_zh)
+    modules = {"pl": blockly_block_i18n_pl, "pt": blockly_block_i18n_pt,
+               "ja": blockly_block_i18n_ja, "zh": blockly_block_i18n_zh}
     for _lang in MODULE_LANGUAGES:
-        _mod = importlib.import_module(f"config.blockly_block_i18n_{_lang}")
+        _mod = modules[_lang]
         CATEGORY_TRANSLATIONS.setdefault(_lang, {}).update(_mod.CATEGORIES)
         for _type, (_name, _desc) in _mod.BLOCKS.items():
             _entry = BLOCK_TRANSLATIONS.setdefault(_type, {"name": {}, "description": {}})
