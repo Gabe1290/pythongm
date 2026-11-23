@@ -216,6 +216,27 @@ PLUGIN_ACTIONS = {
                             "ceiling texture)"),
         ]
     ),
+    # docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md (T1).
+    "go_to_room_seamlessly": ActionType(
+        name="go_to_room_seamlessly",
+        display_name="Go to Room Seamlessly",
+        description="Move to another room with no visible change: the camera "
+                    "lands at the matching spot (the same marker object placed in "
+                    "both rooms), keeping its direction, speed and view height. "
+                    "Use it for a junction between two rooms built to match",
+        category="3D View",
+        icon="🚪",
+        parameters=[
+            ActionParameter(name="room", display_name="Room", param_type="room",
+                default_value="",
+                description="The room to go to (it needs the marker object too)"),
+            ActionParameter(name="marker", display_name="Object", param_type="object",
+                default_value="",
+                description="An object placed once in EACH room, at the same spot "
+                            "of the shared geometry; the camera keeps its offset "
+                            "from it"),
+        ]
+    ),
     "draw_doom_hud": ActionType(
         name="draw_doom_hud",
         display_name="Draw DOOM HUD",

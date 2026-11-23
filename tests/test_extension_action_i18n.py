@@ -228,9 +228,10 @@ def test_there_are_extension_actions_to_check():
     extension's set_billboard_rotation (Doom/Build actor-rotation billboards)
     landed, same discipline. 47 -> 48 with set_floor_height (raycast stairs,
     docs/RAYCAST_STAIRS_PLAN.md S3), translated in the same commit. 48 -> 49 with
-    set_ceiling_height (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md C1), same commit."""
+    set_ceiling_height (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md C1), same commit. 49 -> 50 with
+    go_to_room_seamlessly (T1), same commit."""
     actions = _extension_actions()
-    assert len(actions) == 49, sorted(actions)
+    assert len(actions) == 50, sorted(actions)
 
 
 @pytest.mark.parametrize("lang", SHIPPED)

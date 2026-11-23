@@ -125,6 +125,20 @@ class PluginExecutor:
         instance.raycast_step_top_texture = str(parameters.get("top_texture", "") or "")
         instance.raycast_step_side_texture = str(parameters.get("side_texture", "") or "")
 
+    def execute_go_to_room_seamlessly_action(self, instance, parameters):
+        """Move to another room with no visible change: the camera arrives at
+        the matching spot (the same marker object placed in both rooms), keeping
+        its facing, speed and view height (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md,
+        T1; the logic lives in teleport.py).
+
+        Parameters:
+            room: The room to go to.
+            marker: An object placed once in EACH room at the same spot of the
+                shared geometry.
+        """
+        from . import teleport
+        teleport.request(self._executor(instance), instance, parameters)
+
     def execute_set_ceiling_height_action(self, instance, parameters):
         """Lower the ceiling over the cells this instance's sprite covers
         (docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md, C1) -- the mirror of

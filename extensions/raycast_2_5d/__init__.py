@@ -65,9 +65,12 @@ PLUGIN_ROOM_RENDERERS = [render_room]
 # Climbing stairs (docs/RAYCAST_STAIRS_PLAN.md, S8): remember where movers
 # stand before the frame moves them; after core has moved them and resolved
 # the walls, refuse climbs higher than max_step and ease the view height.
-from . import climbing  # noqa: E402
+from . import climbing, teleport  # noqa: E402
 
+# teleport.after_collision runs BEFORE climbing's: a seamless arrival (T1) sets the
+# camera and the carried view height first, then climbing eases from there.
 PLUGIN_FRAME_UPDATES = [
     (climbing.before_step, "before_step"),
+    (teleport.after_collision, "after_collision"),
     (climbing.after_collision, "after_collision"),
 ]

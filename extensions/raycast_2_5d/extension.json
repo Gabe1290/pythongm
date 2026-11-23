@@ -11,6 +11,7 @@
         "draw_doom_hud",
         "set_billboard_rotation",
         "set_floor_height",
-        "set_ceiling_height"
+        "set_ceiling_height",
+        "go_to_room_seamlessly"
     ]
 }
