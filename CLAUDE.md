@@ -2848,3 +2848,19 @@ Go to Room Seamlessly (marker-offset arrival), on desktop, HTML5 and Kivy; sampl
   153 changed files): run it through a wrapper that forces extensions on and read `git diff --stat` before committing.
   (4) The tests' `_real_kivy_*` workers must drop pytest's `SDL_VIDEODRIVER=dummy` (Kivy gets no window under it).
 - **Needs human eyes:** how `raycast_6` feels, on desktop, in a browser and on a phone.
+
+**2026-11-23 (later) — Large 2.5D test level + two speed fixes it exposed.** `tools/perf_levels/large_junction`
+(generator `tools/gen_large_junction_level.py`, guard `tests/test_large_junction_level.py` incl. a cell-by-cell
+walkability check): two 48 x 48 rooms, three seamless junctions, stairs + low ceilings, ~1.1k / 2.4k instances,
+22-32 ms/frame on the dev box. Measuring before building it found:
+- **`b43352a1`: a camera stopped EXACTLY on a grid line in front of a ledge taller than the eye** (any stairs/ceiling
+  room; raycast_6's gallery qualifies) made `_blit_tile_cached` scale each column's strip to ~10.8 million rows
+  (~190 ms/frame while standing there). Strips over `MAX_STRIP_ROWS` (4096) are now one fill per texel. Desktop only.
+- **`86476d4a`: per-instance per-frame costs.** Floor/ceiling maps are now reused while their geometry key is unchanged
+  (they were rebuilt twice a frame from every instance); the micro:bit overlay hook returns before importing for
+  instances with no extension state. 64 x 64: 25.1 -> 20.7 ms. Still O(instances) per frame and NOT changed: the wall
+  map rebuild (a 2026-10-06 cache keyed on cell size alone left destroyed walls visible -- don't re-add that kind) and
+  core's per-instance held-key update in `runtime/input_handler.py`.
+- Both proven frame-identical on raycast_5, raycast_6 and the perf levels (scripted walk, frame hashes below the
+  readout). The scratch harnesses (`frame_hashes.py`, `scale_spike.py`) are not committed; rewrite from the commit
+  messages if needed.
