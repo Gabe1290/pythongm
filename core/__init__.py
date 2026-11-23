@@ -15,7 +15,7 @@ Core functionality and business logic:
 
 from .logger import get_logger, configure_logging, enable_debug, disable_debug
 
-__version__ = "1.6.2"
+__version__ = "1.6.3"
 
 try:
     from .ide_window import PyGameMakerIDE

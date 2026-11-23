@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.3] - 2026-11-23
+
+### Fixed
+- **The 1.6.2 downloads did not start at all** — on every platform, in every
+  language, they closed before any window opened (`No module named
+  'config.blockly_block_i18n_pl'`). The Blockly translations for Polish,
+  Portuguese, Japanese and Chinese were loaded by a computed module name, so
+  the packaged build left them out. They are now imported normally, and a
+  test stops any code that goes into the executable from doing this again.
+  Everything listed under 1.6.2 below ships in this version, including the
+  fix for the crash at startup in a non-English language with a saved
+  maximised window.
+
 ## [1.6.2] - 2026-11-23
+
+> Withdrawn: this build does not start. Use 1.6.3.
 
 ### Fixed
 - **The IDE crashed right after opening, on every launch, in any language
