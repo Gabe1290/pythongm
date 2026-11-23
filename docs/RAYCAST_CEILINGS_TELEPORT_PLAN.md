@@ -193,7 +193,7 @@ player; fade or other visible transitions for the new action.
   identical on all 321 frames; `stairs_speed` and `base_heights` identical on all 321
   below the yellow readout (its timings differ between any two runs, new vs new
   included): 1,284 frames. `tests/test_raycast_ceilings_render.py` (9).
-- [ ] **C4 — Column-major ceiling cast + per-cell texture; sky interplay.**
+- [x] **C4 — Column-major ceiling cast + per-cell texture; sky interplay.** (2026-11-23) `cast_ceiling_spans` (mirror of `cast_stairs_floor`): only the LOWERED spans of each column are cast, at their own height, into a transparent low-res surface that is upscaled over the screen before the lintels, risers and walls are drawn at full resolution. Texture per pixel: the cell's own ceiling texture, else the camera's, else the flat ceiling colour. The room-ceiling spans are not touched, so the room's own flat / sky / row-major pass stands and a sky stays visible where the ceiling is open; a lowered cell roofs over it (camera texture if set, else flat). The cast runs only when the camera or a marker names a ceiling texture; otherwise the spans stay the crisp flat fills of C3, and a room without lowered ceilings never reaches the new code (byte-identical by construction). `tests/test_raycast_ceilings_cast.py` (8; 5 fail without the change). Cost not re-measured: it casts only the lowered spans, which C2 already costed at the whole upper half (1.16x).
 - [ ] **C5 — Billboards clipped by lintels.**
 - [ ] **C6 — Headroom in `climbing.py`; `raycast_ceiling_z`.** Through the real
   `GameRunner` loop (the stairs plan's harness), not a hand-built room.

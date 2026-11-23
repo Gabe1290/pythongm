@@ -877,8 +877,20 @@ def render_raycast_view(room, screen: pygame.Surface):
         if floor_cast:
             cast_stairs_floor(screen, stairs_layouts, sf, floor_frame, top_frames,
                               facing_screen_rad, fov_rad, cast_res)
+        # Lowered ceilings (C4): cast textured when the camera or any marker has
+        # a ceiling texture; otherwise their spans stay crisp flat fills.
+        cell_ceil_frames = {}
+        for cell, tex_name in ceiling_textures.items():
+            spr = sf["sprites"].get(tex_name) if tex_name else None
+            if spr is not None:
+                cell_ceil_frames[cell] = spr.get_frame(0)
+        ceil_default = ceil_sprite.get_frame(0) if ceil_sprite is not None else None
+        ceiling_cast = bool(ceilings) and (bool(cell_ceil_frames) or ceil_default is not None)
+        if ceiling_cast:
+            cast_ceiling_spans(screen, stairs_layouts, sf, cell_ceil_frames, ceil_default,
+                               facing_screen_rad, fov_rad, cast_res)
         for col, lay in enumerate(stairs_layouts):
-            _draw_stairs_column(screen, sf, col, lay, floor_cast)
+            _draw_stairs_column(screen, sf, col, lay, floor_cast, ceiling_cast)
 
     # Billboard sprites (Phase 6 of the plan doc, scoped down to a
     # single first cut): any visible, sprited, non-solid instance
@@ -1030,7 +1042,7 @@ def _layout_stairs_column(room, sf, ray_angle, cos_off):
                          cell_size, cos_off, sf["half_h"], sf["view_h"], sf["max_cells"])
 
 
-def _draw_stairs_column(screen, sf, col, lay, floor_cast):
+def _draw_stairs_column(screen, sf, col, lay, floor_cast, ceiling_cast=False):
     """Draw one laid-out column: raised treads (flat, only when the floor is
     not cast), then risers and the wall at full resolution -- over the
     low-res floor, so their edges stay crisp."""
@@ -1058,11 +1070,12 @@ def _draw_stairs_column(screen, sf, col, lay, floor_cast):
                        sf["eye_z"], cell_size, sf["half_h"], view_h,
                        _row(y_top), _row(y_bot),
                        wall_shade(side, d, sf["max_dist"]), sf["strip_cache"])
-    # Lowered ceilings (C3): their spans in the flat ceiling colour (C4 casts
-    # them textured), then their lintels like risers -- the wall texture.
-    # Spans at the room ceiling are already painted by the room's ceiling pass.
+    # Lowered ceilings: their spans in the flat ceiling colour -- unless C4's
+    # cast already painted them textured -- then their lintels like risers, the
+    # wall texture. Spans at the room ceiling are already painted by the room's
+    # ceiling pass.
     for y_top, y_bot, height, _d in lay.get("ceilings", ()):
-        if height < sf["wall_top_z"]:
+        if height < sf["wall_top_z"] and not ceiling_cast:
             r0, r1 = max(0, _row(y_top)), min(view_h, _row(y_bot))
             if r1 > r0:
                 screen.fill(sf["ceiling_color"], (x0, r0, strip_w, r1 - r0))
@@ -1185,6 +1198,108 @@ def cast_stairs_floor(screen, layouts, sf, floor_frame, top_frames,
             else:
                 put((i, j), flat)
     screen.blit(pygame.transform.scale(small, (w, region_h)), (0, half_h))
+
+
+def cast_ceiling_spans(screen, layouts, sf, cell_frames, ceil_frame,
+                       facing_screen_rad, fov_rad, res):
+    """The LOWERED ceilings of a room, cast COLUMN-major (ceilings plan, C4).
+
+    The mirror of cast_stairs_floor. Every low-res ceiling pixel inside a
+    lowered span of its column (layout_column_ceilings' ``ceilings``) is cast
+    at THAT span's height:
+        distance_cells = ((height - eye_z) / cell) * view_h / (horizon - y)
+    and textured like the floor: the cell's own ceiling texture
+    (``cell_frames``: cell -> frame), else the camera's (``ceil_frame``), else
+    the flat ceiling colour. Spans at the room ceiling are NOT touched: the
+    room's own ceiling pass (flat, sky or the row-major plane) already drew
+    them, so a sky stays visible wherever the ceiling is open and a lowered
+    cell is a roof over it. The cast goes into a transparent low-res surface
+    that is upscaled over the screen; lintels, risers and walls are drawn
+    afterwards at full resolution and cover whatever a block overhangs.
+    """
+    w = screen.get_width()
+    view_h = sf["view_h"]
+    half_h = view_h // 2
+    if half_h <= 0 or not layouts:
+        return
+    cell_size = sf["cell_size"]
+    eye_cells = sf["eye_z"] / cell_size
+    cam_cx = sf["cam_x"] / cell_size
+    cam_cy = sf["cam_y"] / cell_size
+    room_top = sf["wall_top_z"]
+    dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+    plane = math.tan(fov_rad / 2)
+    plane_x, plane_y = -dir_y * plane, dir_x * plane
+    rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+    rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+
+    sw = max(1, w // res)
+    sh = max(1, half_h // res)
+    small = pygame.Surface((sw, sh), pygame.SRCALPHA)
+    put = small.set_at
+    floor = math.floor
+    flat = tuple(sf["ceiling_color"])[:3] + (255,)
+    if ceil_frame is not None:
+        c_get = ceil_frame.get_at
+        c_tw, c_th = ceil_frame.get_size()
+    ncol = len(layouts)
+    col_width = sf["col_width"]
+    painted = False
+    for i in range(sw):
+        c = int(i * res / col_width)
+        if c >= ncol:
+            c = ncol - 1
+        spans = [sp for sp in layouts[c].get("ceilings", ()) if sp[2] < room_top]
+        if not spans:
+            continue
+        t = (i * res) / w
+        rdx = rdx0 + (rdx1 - rdx0) * t
+        rdy = rdy0 + (rdy1 - rdy0) * t
+        n = len(spans)
+        k = 0
+        # spans run near -> far, i.e. top -> bottom of the screen.
+        for j in range(sh):
+            y_c = j * res + res - 1                 # the block's row nearest the horizon
+            while k < n and y_c >= spans[k][1]:
+                k += 1
+            if k >= n:
+                break
+            if y_c < spans[k][0]:
+                continue                            # above this span: the room ceiling
+            dz = spans[k][2] / cell_size - eye_cells
+            if dz <= 0:
+                continue
+            p = half_h - (j * res + res)
+            if p <= 0:
+                p = 1
+            rowd = dz * view_h / p
+            fx = cam_cx + rowd * rdx
+            fy = cam_cy + rowd * rdy
+            frame = cell_frames.get((int(floor(fx)), int(floor(fy)))) if cell_frames else None
+            if frame is not None:
+                tw, th = frame.get_size()
+                tx = int(tw * (fx - floor(fx)))
+                ty = int(th * (fy - floor(fy)))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                col = frame.get_at((tx, ty))
+                put((i, j), (col[0], col[1], col[2], 255))
+            elif ceil_frame is not None:
+                tx = int(c_tw * (fx - floor(fx)))
+                ty = int(c_th * (fy - floor(fy)))
+                if tx >= c_tw:
+                    tx = c_tw - 1
+                if ty >= c_th:
+                    ty = c_th - 1
+                col = c_get((tx, ty))
+                put((i, j), (col[0], col[1], col[2], 255))
+            else:
+                put((i, j), flat)
+            painted = True
+    if painted:
+        screen.blit(pygame.transform.scale(small, (w, half_h)), (0, 0))
 
 
 def blit_wall_tile(screen, frame, tex_x, x0, strip_w, y_top, full_h, y0, vis_h,
