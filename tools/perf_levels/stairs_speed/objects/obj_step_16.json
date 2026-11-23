@@ -1,0 +1,24 @@
+{
+  "name": "obj_step_16",
+  "asset_type": "object",
+  "sprite": "spr_step_16",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_floor_height",
+          "parameters": {
+            "height": "16",
+            "top_texture": "",
+            "side_texture": ""
+          }
+        }
+      ]
+    }
+  }
+}
