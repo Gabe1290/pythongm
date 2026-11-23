@@ -124,6 +124,11 @@ change at the target's authored start; target room missing → nothing happens (
 
 ## Decisions (owner, before C1)
 
+**Decided 2026-11-23: the recommended choice on all five** — a separate Set Ceiling
+Height action (D1), absolute heights (D2), marker objects (D3), "Go to Room
+Seamlessly" / « Aller dans une salle sans transition » (D4), a new sample `raycast_6`
+(D5).
+
 - **D1 — Authoring.** A separate **Set Ceiling Height** action (recommended) vs a
   `ceiling` parameter on Set Floor Height. Separate keeps both actions small and lets
   an object be a ceiling-only marker.
