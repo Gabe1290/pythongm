@@ -82,6 +82,9 @@ class TutorialDialog(QDialog):
 
         # Tip
         tip_label = QLabel(self.tr("Tip: Check the documentation (F1) for quick help!"))
+        # The French tip is ~550 px at the Junior 13 pt font with some system
+        # fonts (CI's): wider than the dialog, so it was cut off. Wrap it.
+        tip_label.setWordWrap(True)
         tip_label.setStyleSheet("color: gray; font-style: italic;")
         layout.addWidget(tip_label)
 
