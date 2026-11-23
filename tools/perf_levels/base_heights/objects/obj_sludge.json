@@ -1,0 +1,24 @@
+{
+  "name": "obj_sludge",
+  "asset_type": "object",
+  "sprite": "spr_nukage",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "parent": "",
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_floor_height",
+          "parameters": {
+            "height": "8",
+            "top_texture": "spr_nukage",
+            "side_texture": ""
+          }
+        }
+      ]
+    }
+  }
+}
