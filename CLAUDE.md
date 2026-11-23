@@ -2778,3 +2778,32 @@ string, translate it under the concrete contexts (run `propagate`).
 Third: `tr()` called on ANOTHER object (`ide.tr`, `self.ide.tr`, `panel.tr`) runs under
 that object's class; the scan maps receivers via `RECEIVERS` in `scripts/i18n_catchup.py`, and a
 new receiver fails `test_every_tr_receiver_is_known` until it is listed.
+
+**2026-11-18 → 11-23 — Classroom startup failures; releases 1.6.1, 1.6.2 (withdrawn), 1.6.3.**
+A student's IDE (Debian 12, French, release build) "closed right after opening" on every launch,
+through logout/reboot/re-download, until the account was deleted. Real cause, found 11-23 on the dev
+box via the new `~/.pygamemaker/crash.log` + gdb: **any non-English language + a saved MAXIMISED
+window** segfaulted -- the startup LanguageChange deleted the main toolbar while Qt's restoreState
+still pointed at it. Fix `9e12d68c`: `create_toolbar()` refills the ONE toolbar in place; never
+delete it in `changeEvent`. Offscreen Qt can't reproduce it (no WM); `tests/test_language_change_keeps_toolbar.py`
+replays the exact crashing layout on a real X display (skips in CI). Hardening shipped in 1.6.1:
+per-user single-instance lock in `$XDG_RUNTIME_DIR` (was machine-wide `/tmp`), `SDL_NO_SIGNAL_HANDLERS`
+so SIGTERM kills the IDE (SDL swallowed it), a damaged `config.json` is set aside
+(`config.json.broken-*` + `startup_error.log`) and startup retried with defaults, faulthandler → `crash.log`.
+- **1.6.2 is WITHDRAWN** (pre-release + warning in its notes; 1.6.1 made Latest): every download died at
+  import -- `config/blockly_translations.py` loaded `blockly_block_i18n_<lang>` via
+  `importlib.import_module(f"...")`, invisible to PyInstaller. Fix `bda2b0d4` (plain imports) +
+  `tests/test_frozen_build_static_imports.py`. **Landmine: never import a module by a computed name in
+  frozen code** (extensions/plugins excepted -- they are data-loaded). A local
+  `venv/bin/python -m PyInstaller PyGameMaker.spec --distpath <scratch> --workpath <scratch>` build
+  (~2 min) is the way to prove a packaging fix before tagging.
+- **1.6.3 tagged (`a46600e4`) -- OPEN when this session ended:** the Build run was still going. Next
+  session: (1) `gh release list` -- confirm v1.6.3 published and is **Latest** (`gh api
+  repos/Gabe1290/pythongm/releases/latest`); (2) download the Linux build and run it with a French
+  config holding `window_geometry_b64`/`window_state_b64` (maximised) and with `{"language":"pt"}` --
+  it must stay up; (3) tell the teacher to replace the classroom downloads.
+- **CI still red on one test**, pre-existing since the stairs work (~11-20):
+  `test_raycast_stairs_render.py::test_a_staircase_costs_at_most_a_bit_more_than_a_flat_room` -- 1.5x
+  on the dev box, a steady 2.0x on CI against a 1.6x+5 ms limit. Needs a decision by whoever owns the
+  stairs perf budget; don't loosen it blind. (The other long-red test, Junior French tip clipping, was
+  fixed in `64455e0a`.)
