@@ -2797,11 +2797,12 @@ so SIGTERM kills the IDE (SDL swallowed it), a damaged `config.json` is set asid
   frozen code** (extensions/plugins excepted -- they are data-loaded). A local
   `venv/bin/python -m PyInstaller PyGameMaker.spec --distpath <scratch> --workpath <scratch>` build
   (~2 min) is the way to prove a packaging fix before tagging.
-- **1.6.3 tagged (`a46600e4`) -- OPEN when this session ended:** the Build run was still going. Next
-  session: (1) `gh release list` -- confirm v1.6.3 published and is **Latest** (`gh api
-  repos/Gabe1290/pythongm/releases/latest`); (2) download the Linux build and run it with a French
-  config holding `window_geometry_b64`/`window_state_b64` (maximised) and with `{"language":"pt"}` --
-  it must stay up; (3) tell the teacher to replace the classroom downloads.
+- **1.6.3 (`a46600e4`) is published and Latest; verified 2026-11-23**: the downloaded Linux build
+  (reports v1.6.3) starts and stays up with a French config holding the crashing maximised layout
+  (`CRASHING_GEOMETRY`/`CRASHING_STATE` in `tests/test_language_change_keeps_toolbar.py`) and with
+  `{"language":"pt"}`. Only the human step remains: the teacher replaces the classroom downloads (and
+  the stale v1.6.0 at `~/Bureau/PyGameMaker-Linux/` on the dev box). Windows/macOS builds were not
+  launched by hand.
 - **CI still red on one test**, pre-existing since the stairs work (~11-20):
   `test_raycast_stairs_render.py::test_a_staircase_costs_at_most_a_bit_more_than_a_flat_room` -- 1.5x
   on the dev box, a steady 2.0x on CI against a 1.6x+5 ms limit. Needs a decision by whoever owns the
