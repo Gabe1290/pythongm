@@ -22,6 +22,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # Stairs (docs/RAYCAST_STAIRS_PLAN.md, S11): the floor-height map,
         # the climbing snapshot and the eased view height.
         self._raycast_floor_heights = {}
+        self._raycast_ceiling_heights = {}      # lowered ceilings (ceilings plan, C8)
         self._raycast_step_prev = None
         self._raycast_eye_floor = None
         self._raycast_eye_vz = 0.0
@@ -423,7 +424,12 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         # walls. Empty -> the single-hit path below, unchanged.
         heights, step_textures = self._raycast_build_floor_heights(
             cell_size, self._raycast_max_floor_height(cell_size, wall_h))
-        stairs = bool(heights)
+        # Lowered ceilings (ceilings plan, C3/C8): also rebuilt every frame; a
+        # non-empty map takes the two-clip column walk even without steps.
+        ceilings, ceiling_textures = self._raycast_build_ceiling_heights(
+            cell_size, wall_h * cell_size, heights,
+            self.RAYCAST_EYE_HEIGHT * cell_size)
+        stairs = bool(heights) or bool(ceilings)
 
         w = float(self.display_width)
         h = float(self.display_height)
@@ -542,12 +548,22 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
             if stairs:
-                crossings, hit_s = self._cast_ray_steps(
-                    cam_x, cam_y, ray_angle, cell_size, render_distance_cells, heights)
-                lay = self._layout_column(crossings, hit_s, floor_z, eye_z,
-                                          wall_h * cell_size, cell_size,
-                                          math.cos(ray_offset), half_h, view_h,
-                                          render_distance_cells)
+                if ceilings:                 # lowered ceilings: the two-clip walk
+                    crossings, hit_s = self._cast_ray_steps(
+                        cam_x, cam_y, ray_angle, cell_size, render_distance_cells,
+                        heights, ceilings)
+                    cam_cell = (int(cam_x // cell_size), int(cam_y // cell_size))
+                    lay = self._layout_column_ceilings(
+                        crossings, hit_s, floor_z, ceilings.get(cam_cell), eye_z,
+                        wall_h * cell_size, cell_size, math.cos(ray_offset), half_h,
+                        view_h, render_distance_cells)
+                else:
+                    crossings, hit_s = self._cast_ray_steps(
+                        cam_x, cam_y, ray_angle, cell_size, render_distance_cells, heights)
+                    lay = self._layout_column(crossings, hit_s, floor_z, eye_z,
+                                              wall_h * cell_size, cell_size,
+                                              math.cos(ray_offset), half_h, view_h,
+                                              render_distance_cells)
                 stairs_layouts.append(lay)
                 col_wall_dist[col] = lay['wall_dist']
                 continue
@@ -633,12 +649,26 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                   'cam_x': cam_x, 'cam_y': cam_y, 'textured': textured,
                   'wall_texture': wall_texture, 'wall_color': wall_color,
                   'floor_color': floor_color, 'step_textures': step_textures,
-                  'max_dist': render_distance_cells * cell_size}
+                  'max_dist': render_distance_cells * cell_size,
+                  'wall_top_z': wall_h * cell_size, 'ceiling_color': ceiling_color}
             if floor_cast:
                 self._stairs_floor(group, stairs_layouts, sf, floor_px, top_px,
                                    facing_screen_rad, fov_rad, cast_res)
+            # Lowered ceilings (C4/C8): cast textured when the camera or any
+            # marker has a ceiling texture; otherwise their spans stay crisp flat
+            # fills.
+            cell_ceil_px = {}
+            for cell, tex_name in ceiling_textures.items():
+                px_ = self._raycast_texture_pixels(tex_name) if tex_name else None
+                if px_ is not None:
+                    cell_ceil_px[cell] = px_
+            ceil_default_px = self._raycast_texture_pixels(ceil_name) if ceil_name else None
+            ceiling_cast = bool(ceilings) and (bool(cell_ceil_px) or ceil_default_px is not None)
+            if ceiling_cast:
+                self._stairs_ceiling(group, stairs_layouts, sf, cell_ceil_px, ceil_default_px,
+                                     facing_screen_rad, fov_rad, cast_res)
             for col, lay in enumerate(stairs_layouts):
-                self._draw_stairs_column(group, sf, col, lay, floor_cast)
+                self._draw_stairs_column(group, sf, col, lay, floor_cast, ceiling_cast)
 
         billboards = []
         for inst in self.instances:
@@ -648,6 +678,8 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 continue
             if getattr(inst, 'raycast_floor_height', None) is not None:
                 continue        # a step is floor, not a cutout
+            if getattr(inst, 'raycast_ceiling_height', None) is not None:
+                continue        # so is a ceiling marker
             iw = float(getattr(inst, 'image_width', 0) or 0)
             ih = float(getattr(inst, 'image_height', 0) or 0)
             if iw <= 0 or ih <= 0:
@@ -715,6 +747,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 if corrected_b >= col_wall_dist[col]:
                     continue
                 c_by0, c_bv0 = by0, bv0
+                c_by1, c_bv1 = by1, bv1
                 if stairs:
                     # Steps nearer than it hide its lower rows (S7): rows at
                     # or below the y-down limit -> Kivy y below h - limit.
@@ -724,6 +757,16 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                     if c_by0 >= by1:
                         continue
                     c_bv0 = (c_by0 - y_bot_b) / full_h_b
+                    # A lintel nearer than it hides its UPPER rows (ceilings
+                    # plan, C5/C8): y-down rows above top_lim -> Kivy y above
+                    # h - top_lim.
+                    occ_top = stairs_layouts[col].get('occluders_top')
+                    if occ_top:
+                        top_lim = self._clip_top_before(occ_top, corrected_b)
+                        c_by1 = min(by1, h - top_lim)
+                        if c_by1 <= c_by0:
+                            continue
+                        c_bv1 = (c_by1 - y_bot_b) / full_h_b
                 seg_x0 = max(x_left, col * col_width)
                 seg_x1 = min(x_left + sprite_w, (col + 1) * col_width)
                 if seg_x1 <= seg_x0:
@@ -737,9 +780,9 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 # Float tex_coords select the visible vertical slice sub-texel
                 # exactly (get_region would snap to whole texels).
                 group.add(Rectangle(texture=region, pos=(seg_x0, c_by0),
-                                    size=(seg_x1 - seg_x0, by1 - c_by0),
+                                    size=(seg_x1 - seg_x0, c_by1 - c_by0),
                                     tex_coords=(0.0, c_bv0, 1.0, c_bv0,
-                                                1.0, bv1, 0.0, bv1)))
+                                                1.0, c_bv1, 0.0, c_bv1)))
 
     # ------------------------------------------------------------------
     # Stairs (docs/RAYCAST_STAIRS_PLAN.md, S11): ports of heights.py,
@@ -786,7 +829,46 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         self._raycast_floor_heights = heights
         return heights, textures
 
-    def _cast_ray_steps(self, px, py, angle_rad, cell_size, max_cells, heights):
+    def _raycast_build_ceiling_heights(self, cell_size, room_ceiling, floor_heights,
+                                       eye_height):
+        # heights.build_ceiling_heights (ceilings plan, C1/C8): lowered cells
+        # from Set Ceiling Height markers, each clamped to [floor + eye + margin,
+        # room ceiling]; the lowest marker wins; a marker at the room ceiling
+        # changes nothing.
+        import math
+        ceilings = {}
+        textures = {}
+        for inst in self.instances:
+            raw = getattr(inst, 'raycast_ceiling_height', None)
+            if raw is None or getattr(inst, 'solid', False):
+                continue
+            try:
+                raw = float(raw)
+            except (TypeError, ValueError):
+                raw = 0.0
+            if raw != raw:
+                raw = 0.0
+            tex = getattr(inst, 'raycast_ceiling_texture', '') or ''
+            gm_x, gm_y = self._raycast_gm_xy(inst)
+            bw = float(getattr(inst, 'image_width', 0) or 0)
+            bh = float(getattr(inst, 'image_height', 0) or 0)
+            gx0 = int(math.floor(gm_x / cell_size))
+            gy0 = int(math.floor(gm_y / cell_size))
+            gx1 = int(math.floor((gm_x + bw) / cell_size - 1e-9)) if bw > 0 else gx0
+            gy1 = int(math.floor((gm_y + bh) / cell_size - 1e-9)) if bh > 0 else gy0
+            for gx in range(gx0, max(gx0, gx1) + 1):
+                for gy in range(gy0, max(gy0, gy1) + 1):
+                    lowest = floor_heights.get((gx, gy), 0.0) + eye_height + self.RAYCAST_CEILING_MARGIN
+                    height = min(max(raw, lowest), room_ceiling)
+                    if height >= room_ceiling:
+                        continue
+                    if height < ceilings.get((gx, gy), room_ceiling):
+                        ceilings[(gx, gy)] = height
+                        textures[(gx, gy)] = tex
+        self._raycast_ceiling_heights = ceilings
+        return ceilings, textures
+
+    def _cast_ray_steps(self, px, py, angle_rad, cell_size, max_cells, heights, ceilings=None):
         import math
         v_walls, h_walls = self._raycast_v_walls, self._raycast_h_walls
         v_sprites = getattr(self, '_raycast_v_wall_sprites', {}) or {}
@@ -812,6 +894,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
 
         crossings = []
         h_prev = heights.get((map_x, map_y), 0.0)
+        c_prev = ceilings.get((map_x, map_y)) if ceilings is not None else None
         side = 0
         dist_cells = float(max_cells)
         for _ in range(max_cells):
@@ -843,9 +926,16 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 sprite = v_sprites.get(wall_key) if side == 0 else h_sprites.get(wall_key)
                 return crossings, (max(d_cells, 1e-4) * cell_size, side, True, tex_u, sprite)
             h_next = heights.get((map_x, map_y), 0.0)
-            if h_next != h_prev:
-                crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y)))
-                h_prev = h_next
+            if ceilings is None:
+                if h_next != h_prev:
+                    crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y)))
+                    h_prev = h_next
+            else:
+                c_next = ceilings.get((map_x, map_y))
+                if h_next != h_prev or c_next != c_prev:
+                    crossings.append((d_cells, h_next, side, tex_u, (map_x, map_y), c_next))
+                    h_prev = h_next
+                    c_prev = c_next
         return crossings, (max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None)
 
     @staticmethod
@@ -891,6 +981,88 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             occluders.append((d, min(clip, y_top)))
         return {"treads": treads, "risers": risers, "wall": wall,
                 "occluders": occluders, "wall_dist": d if is_hit else float("inf")}
+
+    @staticmethod
+    def _layout_column_ceilings(crossings, hit, h0, c0, eye_z, room_top_z, cell_size,
+                                cos_off, half_h, view_h, max_cells):
+        # renderer.layout_column_ceilings, verbatim (ceilings plan, C3): the
+        # two-clip walk.
+        def stairs_y(z, eye_z, d, half_h, view_h):
+            return half_h + (eye_z - z) * view_h / d
+
+        bot = float(view_h)
+        top = 0.0
+        treads, risers, ceils, lintels = [], [], [], []
+        occluders, occluders_top = [], []
+        h_cur = h0
+        c_cur = c0 if c0 is not None else room_top_z
+        d_prev = 0.0
+        for dist_cells, h_next, side, tex_u, cell, c_raw in crossings:
+            c_next = c_raw if c_raw is not None else room_top_z
+            d = max(dist_cells * cell_size * cos_off, 1e-4)
+            y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+            if y_cur < bot:
+                y_cur = max(y_cur, top)
+                treads.append((y_cur, bot, h_cur, d_prev))
+                bot = y_cur
+            yc_cur = stairs_y(c_cur, eye_z, d, half_h, view_h)
+            if yc_cur > top:
+                yc_cur = min(yc_cur, bot)
+                ceils.append((top, yc_cur, c_cur, d_prev))
+                top = yc_cur
+            if h_next > h_cur:
+                y_up = stairs_y(h_next, eye_z, d, half_h, view_h)
+                if y_up < bot:
+                    y_up = max(y_up, top)
+                    risers.append((y_up, bot, d, side, tex_u, cell, h_cur, h_next))
+                    bot = y_up
+            if c_next < c_cur:
+                y_dn = stairs_y(c_next, eye_z, d, half_h, view_h)
+                if y_dn > top:
+                    y_dn = min(y_dn, bot)
+                    lintels.append((top, y_dn, d, side, tex_u, cell, c_next, c_cur))
+                    top = y_dn
+            occluders.append((d, bot))
+            occluders_top.append((d, top))
+            h_cur, c_cur, d_prev = h_next, c_next, d
+            if top >= bot:
+                return {"treads": treads, "risers": risers, "wall": None,
+                        "ceilings": ceils, "lintels": lintels, "occluders": occluders,
+                        "occluders_top": occluders_top, "wall_dist": float("inf")}
+        dist_px, side, is_hit, tex_u, sprite = hit
+        d = max(dist_px * cos_off, 1e-4)
+        if not is_hit:
+            d = max(max_cells * cell_size * cos_off, 1e-4)
+        y_cur = stairs_y(h_cur, eye_z, d, half_h, view_h)
+        if y_cur < bot:
+            y_cur = max(y_cur, top)
+            treads.append((y_cur, bot, h_cur, d_prev))
+            bot = y_cur
+        yc_cur = stairs_y(c_cur, eye_z, d, half_h, view_h)
+        if yc_cur > top:
+            yc_cur = min(yc_cur, bot)
+            ceils.append((top, yc_cur, c_cur, d_prev))
+            top = yc_cur
+        wall = None
+        if is_hit:
+            if top < bot:
+                wall = (top, bot, d, side, tex_u, sprite)
+            occluders.append((d, top))
+            occluders_top.append((d, top))
+        return {"treads": treads, "risers": risers, "wall": wall,
+                "ceilings": ceils, "lintels": lintels, "occluders": occluders,
+                "occluders_top": occluders_top, "wall_dist": d if is_hit else float("inf")}
+
+    @classmethod
+    def _clip_top_before(cls, occluders_top, dist):
+        # renderer._clip_top_before (C5): the first y-down row NOT hidden from
+        # above for something at corrected distance dist.
+        limit = 0.0
+        for d, top in occluders_top:
+            if d >= dist:
+                break
+            limit = top
+        return cls._stairs_row(limit)
 
     @staticmethod
     def _stairs_row(y):
@@ -943,7 +1115,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                                 tex_coords=(0.0, v_low, 1.0, v_low,
                                             1.0, v_high, 0.0, v_high)))
 
-    def _draw_stairs_column(self, group, sf, col, lay, floor_cast):
+    def _draw_stairs_column(self, group, sf, col, lay, floor_cast, ceiling_cast=False):
         x0 = int(col * sf['col_width'])
         strip_w = max(1, int((col + 1) * sf['col_width']) - x0)
         view_h, h = sf['view_h'], sf['h']
@@ -962,6 +1134,21 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 tex = self._raycast_texture(name) if name else None
                 if tex is None:
                     tex = sf['wall_texture']
+            self._stairs_wall_rows(group, tex, sf['wall_color'], tex_u, x0, strip_w, d,
+                                   sf['eye_z'], sf['cell_size'], sf['half_h'], view_h, h,
+                                   row(y_top), row(y_bot),
+                                   self._wall_shade(side, d, sf['max_dist']))
+        # Lowered ceilings (C3/C4): their spans flat, unless the cast already
+        # painted them textured; then their lintels, textured like walls.
+        low_spans = [sp for sp in lay.get('ceilings', ()) if sp[2] < sf['wall_top_z']]
+        if low_spans and not ceiling_cast:
+            group.add(Color(*sf['ceiling_color'], 1))
+            for y_top, y_bot, height, _d in low_spans:
+                r0, r1 = max(0, row(y_top)), min(int(view_h), row(y_bot))
+                if r1 > r0:
+                    group.add(Rectangle(pos=(x0, h - r1), size=(strip_w, r1 - r0)))
+        for y_top, y_bot, d, side, tex_u, cell, _lo, _hi in lay.get('lintels', ()):
+            tex = sf['wall_texture'] if sf['textured'] else None
             self._stairs_wall_rows(group, tex, sf['wall_color'], tex_u, x0, strip_w, d,
                                    sf['eye_z'], sf['cell_size'], sf['half_h'], view_h, h,
                                    row(y_top), row(y_bot),
@@ -1064,6 +1251,100 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         group.add(Rectangle(texture=tex, pos=(0, h - view_h), size=(sf['w'], view_h / 2.0),
                             tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
 
+    def _stairs_ceiling_buffer(self, layouts, sf, cell_px, ceil_px,
+                               facing_screen_rad, fov_rad, res):
+        # Port of renderer.cast_ceiling_spans (ceilings plan, C4/C8) into an
+        # RGBA buffer, row 0 = the TOP row of the view, fully transparent where
+        # nothing is cast. The *_px are (bytes, tw, th) with Kivy's bottom-up rows.
+        import math
+        w = float(sf['w'])
+        view_h = sf['view_h']
+        half_h = int(view_h // 2)
+        sw = max(1, int(w) // res)
+        sh = max(1, half_h // res)
+        cell_size = sf['cell_size']
+        eye_cells = sf['eye_z'] / cell_size
+        cam_cx, cam_cy = sf['cam_x'] / cell_size, sf['cam_y'] / cell_size
+        room_top = sf['wall_top_z']
+        dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+        plane = math.tan(fov_rad / 2)
+        plane_x, plane_y = -dir_y * plane, dir_x * plane
+        rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+        rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+        cc = sf['ceiling_color']
+        flat = (int(cc[0] * 255), int(cc[1] * 255), int(cc[2] * 255))
+        out = bytearray(sw * sh * 4)
+        floor = math.floor
+        ncol = len(layouts)
+        painted = False
+        for i in range(sw):
+            c = int(i * res / sf['col_width'])
+            if c >= ncol:
+                c = ncol - 1
+            spans = [sp for sp in layouts[c].get('ceilings', ()) if sp[2] < room_top]
+            if not spans:
+                continue
+            t = (i * res) / w
+            rdx = rdx0 + (rdx1 - rdx0) * t
+            rdy = rdy0 + (rdy1 - rdy0) * t
+            n = len(spans)
+            k = 0
+            for j in range(sh):
+                y_c = j * res + res - 1
+                while k < n and y_c >= spans[k][1]:
+                    k += 1
+                if k >= n:
+                    break
+                if y_c < spans[k][0]:
+                    continue
+                dz = spans[k][2] / cell_size - eye_cells
+                if dz <= 0:
+                    continue
+                p = half_h - (j * res + res)
+                if p <= 0:
+                    p = 1
+                rowd = dz * view_h / p
+                fx = cam_cx + rowd * rdx
+                fy = cam_cy + rowd * rdy
+                src = cell_px.get((int(floor(fx)), int(floor(fy)))) if cell_px else None
+                if src is None:
+                    src = ceil_px
+                di = (j * sw + i) * 4
+                if src is not None:
+                    pixels, tw, th = src
+                    tx = int(tw * (fx - floor(fx)))
+                    ty = int(th * (fy - floor(fy)))
+                    if tx >= tw:
+                        tx = tw - 1
+                    if ty >= th:
+                        ty = th - 1
+                    si = ((th - 1 - ty) * tw + tx) * 4
+                    out[di] = pixels[si]
+                    out[di + 1] = pixels[si + 1]
+                    out[di + 2] = pixels[si + 2]
+                else:
+                    out[di], out[di + 1], out[di + 2] = flat
+                out[di + 3] = 255
+                painted = True
+        return bytes(out), sw, sh, painted
+
+    def _stairs_ceiling(self, group, layouts, sf, cell_px, ceil_px,
+                        facing_screen_rad, fov_rad, res):
+        from kivy.graphics.texture import Texture
+        buf, sw, sh, painted = self._stairs_ceiling_buffer(
+            layouts, sf, cell_px, ceil_px, facing_screen_rad, fov_rad, res)
+        if not painted:
+            return
+        tex = Texture.create(size=(sw, sh), colorfmt='rgba')
+        tex.mag_filter = 'nearest'
+        tex.min_filter = 'nearest'
+        tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        view_h, h = sf['view_h'], sf['h']
+        group.add(Color(1, 1, 1, 1))
+        group.add(Rectangle(texture=tex, pos=(0, h - view_h / 2.0),
+                            size=(sf['w'], int(view_h // 2)),
+                            tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
+
     def _ext_update__raycast_2_5d(self, dt):
         # Climbing (climbing.py), after movement and collisions, before End
         # Step. Kivy has no before-step hook, so moves are measured against
@@ -1075,6 +1356,10 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
         wall_h = self._clamp_wall_height(cfg.get('wall_height', self.RAYCAST_WALL_HEIGHT))
         heights, _tex = self._raycast_build_floor_heights(
             cell_size, self._raycast_max_floor_height(cell_size, wall_h))
+        room_top = wall_h * cell_size
+        eye_px = self.RAYCAST_EYE_HEIGHT * cell_size
+        ceilings, _ctex = self._raycast_build_ceiling_heights(
+            cell_size, room_top, heights, eye_px)
         try:
             max_step = max(0.0, float(cfg.get('max_step', self.RAYCAST_DEFAULT_MAX_STEP)))
         except (TypeError, ValueError):
@@ -1090,11 +1375,19 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             cy = room_h - y - ih + ih / 2.0
             return heights.get((int(cx // cell_size), int(cy // cell_size)), 0.0)
 
+        def ceiling_at(inst, x, y):
+            iw = float(getattr(inst, 'image_width', 0) or 0)
+            ih = float(getattr(inst, 'image_height', 0) or 0)
+            cx = x + iw / 2.0
+            cy = room_h - y - ih + ih / 2.0
+            return ceilings.get((int(cx // cell_size), int(cy // cell_size)), room_top)
+
         dead = set(id(i) for i in (getattr(self, 'instances_to_destroy', None) or []))
         prev = self._raycast_step_prev or {}
         movers = [i for i in self.instances
                   if id(i) not in dead and not getattr(i, 'solid', False)
-                  and getattr(i, 'raycast_floor_height', None) is None]
+                  and getattr(i, 'raycast_floor_height', None) is None
+                  and getattr(i, 'raycast_ceiling_height', None) is None]
         for inst in movers:
             old = prev.get(id(inst))
             blocked = 0
@@ -1113,6 +1406,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                                 break
             inst.raycast_step_blocked = blocked
             inst.raycast_floor_z = floor_at(inst, float(inst.x), float(inst.y))
+            inst.raycast_ceiling_z = ceiling_at(inst, float(inst.x), float(inst.y))
         self._raycast_step_prev = {id(i): (i, float(i.x), float(i.y)) for i in movers}
 
         camera = self._find_raycast_camera(cfg)
@@ -1120,6 +1414,7 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
             return
         target = floor_at(camera, float(camera.x), float(camera.y))
         camera.raycast_floor_z = target
+        camera.raycast_ceiling_z = ceiling_at(camera, float(camera.x), float(camera.y))
         cur = self._raycast_eye_floor
         vz = self._raycast_eye_vz
         if cur is None:
@@ -1133,6 +1428,10 @@ SCENE_CODE = '''\n    def _ext_init__raycast_2_5d(self):
                 vz = 0.0
         else:
             vz = 0.0
+        # The view never rises above the ceiling over the camera (C6).
+        eye_limit = camera.raycast_ceiling_z - self.RAYCAST_CEILING_MARGIN - eye_px
+        if cur > eye_limit:
+            cur, vz = max(target, eye_limit), 0.0
         self._raycast_eye_floor = cur
         self._raycast_eye_vz = vz
 '''
@@ -1171,6 +1470,16 @@ def _cg_set_floor_height(gen, params, event_type):
     return (f"self.raycast_floor_height = float({height}); "
             f"self.raycast_step_top_texture = {top!r}; "
             f"self.raycast_step_side_texture = {side!r}")
+
+def _cg_set_ceiling_height(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    # Lower the ceiling over this instance's cells (execute_set_ceiling_height_action);
+    # the scene's _raycast_build_ceiling_heights clamps.
+    raw = params.get('height', 40)
+    height = _num_code(raw, 0) if raw is not None else '40'
+    texture = str(params.get('texture') or '')
+    return (f"self.raycast_ceiling_height = float({height}); "
+            f"self.raycast_ceiling_texture = {texture!r}")
 
 def _cg_enable_raycast_view(gen, params, event_type):
     from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
@@ -1320,6 +1629,7 @@ ACTION_CODEGEN = {
     'set_facing_angle': _cg_set_facing_angle,
     'set_billboard_rotation': _cg_set_billboard_rotation,
     'set_floor_height': _cg_set_floor_height,
+    'set_ceiling_height': _cg_set_ceiling_height,
     'enable_raycast_view': _cg_enable_raycast_view,
     'draw_doom_hud': _cg_draw_doom_hud,
     'draw_minimap': _cg_draw_minimap,
