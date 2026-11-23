@@ -61,7 +61,7 @@ Stop movement on grid when no movement keys are pressed (perfect for smooth grid
 - [Game](Full-Action-Reference-Game) (14)
 - [Control](Full-Action-Reference-Control) (19)
 - [Views](Full-Action-Reference-Views) (2)
-- [3D View](Full-Action-Reference-3D-View-Actions) (20)
+- [3D View](Full-Action-Reference-3D-View-Actions) (22)
 - [Drawing](Full-Action-Reference-Drawing) (11)
 - [Network](Full-Action-Reference-Network-Actions) (22)
 - [Particles](Full-Action-Reference-Particles) (8)

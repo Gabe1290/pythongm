@@ -198,7 +198,7 @@ Establecer la fuente y la alineación para el siguiente dibujo de texto
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (3)
 - [Vistas](Full-Action-Reference-Views_es) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (22)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
 - [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)

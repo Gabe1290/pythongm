@@ -301,7 +301,7 @@ Preveri vrednost spremenljivke instance ali globalne
 - [Igra](Full-Action-Reference-Game_sl) (14)
 - [Mreža](Full-Action-Reference-Grid_sl) (3)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (20)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (22)
 - [Risanje](Full-Action-Reference-Drawing_sl) (11)
 - [Omrežje](Full-Action-Reference-Network-Actions_sl) (22)
 - [Delci](Full-Action-Reference-Particles_sl) (8)

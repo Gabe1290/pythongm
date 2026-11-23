@@ -1216,6 +1216,17 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Extensions
 
+### Raycast ceilings and seamless teleport (2026-11-23) -- DONE on all three targets
+`docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md` (C0-C8, T1-T2, D5 and docs all ticked). Set Ceiling Height, textured
+lowered ceilings with lintels, billboards clipped by lintels, `raycast_ceiling_z` and the view limit; Go to
+Room Seamlessly with the arrival applied before the first drawn frame; sample `raycast_6`. **Still open:** a
+human playing `raycast_6` (does the jump feel seamless? on a phone too -- QA checklist, raycast_6); the wiki
+`3D-View` page has the new section in English and French only (the other seven languages lack the stairs section
+as well); the new action text has had no native-speaker read; Kivy: a PERSISTENT room reused from the cache is not
+rebuilt, so a seamless arrival into it shows its last frame until its first update; HTML5: the pre-change snapshot
+is drawn at the OLD canvas size, so two rooms of different sizes flash briefly. The held arrow keys are carried
+across the jump on every target (without that a player holding Up stops at the junction).
+
 ### Thymio — send straight to the robot (2026-11-02)
 `File -> Send to Thymio robot...` (extensions/thymio/export/device.py) **works against a real Thymio II**: all six
 `thymio_hw_test` programs were sent and ran correctly (developer, 2026-11-02). Still open: the interface text is translated

@@ -198,7 +198,7 @@ Imposta il font e l'allineamento per il successivo disegno del testo
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Griglia](Full-Action-Reference-Grid_it) (3)
 - [Viste](Full-Action-Reference-Views_it) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (22)
 - [Rete](Full-Action-Reference-Network-Actions_it) (22)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
 - [Punteggio/Vite/Salute](Full-Action-Reference-Score-Lives-Health_it) (5)

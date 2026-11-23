@@ -22,12 +22,13 @@ sky, and billboard sprites for pickups and monsters. The game's *logic*
 | `extension.json` | The manifest. Name, version, and `enabled: true`. Its presence is what marks this folder as an extension. |
 | `__init__.py` | The entry point. Declares the room-renderer hook and decides, per room, whether to claim the drawing. |
 | `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. The big file, ordinary Python. |
-| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`, `set_floor_height`. |
+| `actions.py` | The "3D View" action **schemas** (`PLUGIN_ACTIONS`): `set_facing_angle`, `enable_raycast_view`, `draw_minimap`, `draw_doom_hud`, `set_billboard_rotation`, `set_floor_height`, `set_ceiling_height`, `go_to_room_seamlessly`. |
 | `handlers.py` | The action **handlers** — what each of those does at runtime. |
 | `hud.py` | The minimap + DOOM-bar geometry builders (`build_minimap_commands`, `build_doom_hud_commands`), the single source the exports mirror. |
 | `state.py` | The per-room state helper — all raycast state lives under `room.extension_state["raycast"]`. |
 | `heights.py` | Stairs: the floor-height map built every frame from the step instances (`set_floor_height`), and the vertical model (eye height, wall height, texture tile). No pygame. |
-| `climbing.py` | Stairs: the climbing rule (`max_step`, sliding along ledges, eased view height) as two frame hooks (`PLUGIN_FRAME_UPDATES`). No pygame. |
+| `climbing.py` | Stairs: the climbing rule (`max_step`, sliding along ledges, eased view height, and the view never rising above a low ceiling) as two frame hooks (`PLUGIN_FRAME_UPDATES`). No pygame. |
+| `teleport.py` | **Go to Room Seamlessly**: the pending arrival and the `after_collision` hook that applies it before the new room's first frame is drawn. No pygame. |
 | `export_html5.js` | The **HTML5** port of the renderer + actions, injected into the exported `engine.js` (Stage C). |
 | `export_kivy.py` | The **Kivy** port: `SCENE_CODE` (renderer), `BASE_OBJECT_CODE` (`_draw_minimap`), and `ACTION_CODEGEN` (the action codegen), injected into the Kivy export. |
 | `README.md` | This file. |
@@ -107,6 +108,23 @@ The HTML5 and Kivy ports follow the same structure and are pinned by
 `tests/test_html5_raycast_stairs.py` and `tests/test_kivy_raycast_stairs.py`.
 The design, the decisions and the proofs are in
 `docs/RAYCAST_STAIRS_PLAN.md`; the `raycast_5` sample is built around it.
+
+## Low ceilings and the seamless jump
+
+A **Set Ceiling Height** marker (`heights.build_ceiling_heights`: lowest marker wins,
+each cell clamped to floor + eye + 4 px) switches a room to a *two-clip* column walk
+(`layout_column_ceilings`): ceiling spans and lintels from the top, treads and
+risers from the bottom. Only the lowered spans are cast textured
+(`cast_ceiling_spans`); the room's own flat / sky / plane ceiling pass stays
+underneath. **Go to Room Seamlessly** (`teleport.py`) records the camera's offset
+from a marker object, its facing, speed, held keys and eased view height, asks for
+an ordinary instant room change, and applies the arrival in the `after_collision`
+hook of the iteration that changes room -- after the new room's Create events and
+before the frame is drawn (the first `before_step` of the new room is too late on
+desktop). The HTML5 port applies it once the new room has run its Create step and
+shows the pre-change frame in between; the Kivy port applies it at the head of the
+scene constructor's first overlay call. Design, decisions, corrections and proofs:
+`docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md`; the `raycast_6` sample uses both.
 
 ## What is deliberately NOT here
 

@@ -186,6 +186,21 @@ Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, 
 | `max_step` | Število | `12` | Najvišja stopnica v slikovnih pikah sobe, na katero se lahko povzpne igralec (in vse, kar se premika); višja ovira kot zid; neobvezno |
 | `viewport_height` | Število | `0` | Skrči 3D-pogled na to višino v pikslih (letterbox), pri čemer se pod njim rezervira pas za vrstico stanja v slogu DOOM (0 = polna višina okna, nespremenjeno); neobvezno |
 
+### Pojdi v sobo brez prehoda
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `go_to_room_seamlessly` |
+| **Ikona** | 🚪 |
+| **Kategorija** | Pogled 3D |
+
+Preide v drugo sobo brez vidne spremembe: kamera pristane na ustrezni točki (isti označevalni objekt, postavljen v obe sobi) in obdrži smer, hitrost in višino pogleda. Uporabi za stik dveh sob, zgrajenih tako, da se ujemata
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `room` | Soba | — | Soba, v katero greš (potrebuje tudi označevalni objekt) |
+| `marker` | Predmet | — | Objekt, postavljen enkrat v VSAKO sobo, na isto mesto skupne geometrije; kamera obdrži svoj odmik od njega |
+
 ### Skoči
 
 | Lastnost | Vrednost |
@@ -318,6 +333,21 @@ Dodeli točke, ko »Razbij blok« uspešno odstrani izbrano vrsto bloka: poklič
 |-----------|------|---------|-------|
 | `block_type` | Izbira | `diamond_block` | Katera vrsta bloka ob razbitju prinese točke; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Število | `10` | Točke za vsak razbit blok te vrste |
+
+### Nastavi višino stropa
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_ceiling_height` |
+| **Ikona** | 🔻 |
+| **Kategorija** | Pogled 3D |
+
+V pogledu raycast zniža STROP: celice mreže, ki jih pokriva njegov sprite, dobijo strop na tej višini – za nizke predore, niše ali preklade vrat. Uporabite v dogodku Create netrdnega objekta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `height` | Število | `40` | Višina stropa v slikovnih pikah sobe, merjena od tal, ista enota kot x/y in Cell Size (vsaj tla celice in še prostor za stanje) |
+| `texture` | Sprite | — | Sprite za ta del stropa (prazno = tekstura stropa); neobvezno |
 
 ### Nastavi recept za izdelavo
 

@@ -198,7 +198,7 @@
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Сетка](Full-Action-Reference-Grid_ru) (3)
 - [Виды](Full-Action-Reference-Views_ru) (2)
-- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (20)
+- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (22)
 - [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
 - [Частицы](Full-Action-Reference-Particles_ru) (8)
 - [Счёт/Жизни/Здоровье](Full-Action-Reference-Score-Lives-Health_ru) (5)

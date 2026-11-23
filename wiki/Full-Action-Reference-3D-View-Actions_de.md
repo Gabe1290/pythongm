@@ -186,6 +186,21 @@ Den Raum als First-Person-3D-Ansicht im Doom/Wolfenstein-Stil (Wände, Himmel, B
 | `max_step` | Zahl | `12` | Höchste Stufe in Raumpixeln, die der Spieler (und alles, was sich bewegt) hinaufsteigen kann; alles Höhere blockiert wie eine Wand; optional |
 | `viewport_height` | Zahl | `0` | Die 3D-Ansicht auf diese Pixelhöhe verkleinern (Letterbox) und das Band darunter für eine DOOM-Statusleiste reservieren (0 = volle Fensterhöhe, unverändert); optional |
 
+### Nahtlos in einen Raum wechseln
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `go_to_room_seamlessly` |
+| **Symbol** | 🚪 |
+| **Kategorie** | 3D-Ansicht |
+
+Wechselt ohne sichtbaren Übergang in einen anderen Raum: Die Kamera landet an der entsprechenden Stelle (dasselbe Markierungsobjekt in beiden Räumen), behält Richtung, Geschwindigkeit und Blickhöhe. Für einen Übergang zwischen zwei Räumen, die dafür passend gebaut sind
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `room` | Raum | — | Der Raum, in den gewechselt wird (er braucht ebenfalls das Markierungsobjekt) |
+| `marker` | Objekt | — | Ein Objekt, das in JEDEM Raum einmal an derselben Stelle der gemeinsamen Geometrie steht; die Kamera behält ihren Abstand dazu |
+
 ### Springen
 
 | Eigenschaft | Wert |
@@ -318,6 +333,21 @@ Vergibt Punkte, wenn „Block abbauen“ einen gewählten Blocktyp erfolgreich e
 |-----------|------|---------|-------|
 | `block_type` | Auswahl | `diamond_block` | Welcher Blocktyp beim Abbauen Punkte gibt; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Zahl | `10` | Punkte je abgebautem Block dieses Typs |
+
+### Deckenhöhe festlegen
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `set_ceiling_height` |
+| **Symbol** | 🔻 |
+| **Kategorie** | 3D-Ansicht |
+
+Senkt in der Raycast-Ansicht die DECKE: Die Rasterzellen, die ihr Sprite bedeckt, erhalten eine Decke in dieser Höhe – für niedrige Tunnel, Nischen oder Türstürze. Im Create-Ereignis eines nicht soliden Objekts verwenden
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `height` | Zahl | `40` | Deckenhöhe in Raumpixeln, vom Boden aus gemessen, dieselbe Einheit wie x/y und Cell Size (mindestens der Boden der Zelle plus Platz zum Stehen) |
+| `texture` | Sprite | — | Sprite für diesen Teil der Decke (leer = die Deckentextur); optional |
 
 ### Rezept festlegen
 

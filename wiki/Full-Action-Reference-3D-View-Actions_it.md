@@ -186,6 +186,21 @@ Renderizza la stanza come vista 3D in prima persona in stile Doom/Wolfenstein (m
 | `max_step` | Numero | `12` | Gradino più alto, in pixel della stanza, che il giocatore (e tutto ciò che si muove) può salire; uno più alto blocca come un muro; facoltativo |
 | `viewport_height` | Numero | `0` | Riduci la vista 3D a questa altezza in pixel (letterbox), riservando la fascia sottostante per una barra di stato in stile DOOM (0 = altezza piena della finestra, invariato); facoltativo |
 
+### Vai in una stanza senza transizione
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `go_to_room_seamlessly` |
+| **Icona** | 🚪 |
+| **Categoria** | Vista 3D |
+
+Passa a un'altra stanza senza cambiamenti visibili: la telecamera arriva nel punto corrispondente (lo stesso oggetto di riferimento posto in entrambe le stanze), mantenendo direzione, velocità e altezza della vista. Da usare per un raccordo tra due stanze costruite per combaciare
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `room` | Stanza | — | La stanza in cui andare (serve anche l'oggetto di riferimento) |
+| `marker` | Oggetto | — | Un oggetto posto una volta in OGNI stanza, nello stesso punto della geometria condivisa; la telecamera mantiene il suo scostamento da esso |
+
 ### Salta
 
 | Proprietà | Valore |
@@ -318,6 +333,21 @@ Assegna punti quando «Rompi blocco» rimuove con successo un tipo di blocco sce
 |-----------|------|---------|-------|
 | `block_type` | Scelta | `diamond_block` | Quale tipo di blocco assegna punti quando viene rotto; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Numero | `10` | Punti assegnati per ogni blocco di questo tipo rotto |
+
+### Imposta altezza del soffitto
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `set_ceiling_height` |
+| **Icona** | 🔻 |
+| **Categoria** | Vista 3D |
+
+Abbassa il SOFFITTO nella vista raycast: le celle della griglia coperte dal suo sprite ricevono un soffitto a questa altezza, per tunnel bassi, nicchie o architravi delle porte. Da usare nell'evento Create di un oggetto non solido
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `height` | Numero | `40` | Altezza del soffitto in pixel della stanza, misurata dal suolo, la stessa unità di x/y e Cell Size (almeno il pavimento della cella più lo spazio per stare in piedi) |
+| `texture` | Sprite | — | Sprite per questa parte del soffitto (vuoto = la texture del soffitto); facoltativo |
 
 ### Imposta ricetta di creazione
 

@@ -116,7 +116,7 @@
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (3)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
-- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (20)
+- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (22)
 - [Малювання](Full-Action-Reference-Drawing_uk) (11)
 - [Мережа](Full-Action-Reference-Network-Actions_uk) (22)
 - [Частки](Full-Action-Reference-Particles_uk) (8)

@@ -52,6 +52,8 @@ barre d'état façon DOOM).
 | **Définir l'angle de vue** (`set_facing_angle`) | Fait tourner la caméra. Angle en degrés GameMaker (0 = droite, 90 = haut) ; `relative` ajoute à l'angle courant. |
 | **Dessiner la mini-carte** (`draw_minimap`) | Dessine une mini-carte orientée nord des murs de la salle avec un repère « vous êtes ici ». C'est une action d'ATH (HUD) — à placer dans un événement Dessin. |
 | **Définir la hauteur du sol** (`set_floor_height`) | Fait de cette instance une **marche** : les cases de la grille couvertes par son sprite deviennent un sol surélevé de cette hauteur (en pixels). À placer dans l'événement Création d'un objet non solide. Textures du dessus et du côté facultatives. Voir *Escaliers et plates-formes* ci-dessous. |
+| **Définir la hauteur du plafond** (`set_ceiling_height`) | Abaisse le **plafond** au-dessus des cases de la grille couvertes par le sprite de cette instance (une hauteur en pixels au-dessus du sol). À placer dans l'événement Création d'un objet non solide. Texture facultative. Voir *Plafonds bas et sauts sans coupure* ci-dessous. |
+| **Aller dans une salle sans transition** (`go_to_room_seamlessly`) | Change de salle sans fondu ni saut visible : la caméra arrive au même décalage d'un objet repère placé dans les deux salles, en gardant sa direction, sa vitesse, les touches enfoncées et la hauteur de sa vue. Voir *Plafonds bas et sauts sans coupure* ci-dessous. |
 | **Définir la rotation du sprite** (`set_billboard_rotation`) | Donne à un billboard plusieurs images selon l'angle de vue, pour qu'il montre ses côtés quand on tourne autour. |
 | **Dessiner l'ATH DOOM** (`draw_doom_hud`) | Dessine une barre d'état inférieure façon DOOM : barre de santé + valeur, un visage réactif à la santé, le score, les vies et un compteur d'objectif. S'associe au `viewport_height` de `enable_raycast_view`. |
 
@@ -104,6 +106,39 @@ la grille comme des murs — le plus simple est un objet par hauteur
 L'exemple **raycast_5** (*2.5 D — Niveau 5*) est un petit niveau construit
 autour d'un escalier. Les escaliers fonctionnent sur ordinateur et dans les
 exports HTML5 et Kivy (Android/iOS).
+
+---
+
+## Plafonds bas et sauts sans coupure
+
+La vue 2.5 D ne peut pas mettre un sol au-dessus d'un autre sol : deux astuces
+des jeux de l'époque de Doom masquent cette limite.
+
+**Un plafond bas.** **Définir la hauteur du plafond** (`height` en pixels au-dessus
+du sol, une texture facultative) dans l'événement Création d'un objet non solide
+abaisse le plafond au-dessus de chaque case de la grille couverte par son sprite :
+un tunnel, une alcôve, une porte. Là où un plafond plus bas commence, on voit un
+**linteau** (la texture de mur qui descend), et les billboards situés derrière
+perdent leurs rangées du haut. Un plafond n'est jamais plus bas que le sol de la
+case plus l'œil plus 4 px, on peut donc toujours se tenir dans une case ; la vue
+s'abaisse quand on entre dans un tunnel bas. Toute instance mobile lit
+`raycast_ceiling_z` (le plafond au-dessus d'elle) à côté de `raycast_floor_z`.
+
+**Un saut sans coupure.** **Aller dans une salle sans transition** prend une
+`room` et un objet `marker`. Place une instance du repère dans **chaque** salle, au
+même endroit de la géométrie que les deux salles partagent. La caméra arrive dans
+l'autre salle au même décalage du repère, dans la même direction, à la même
+vitesse, avec les mêmes touches enfoncées et la même hauteur de vue ; aucune image
+n'est dessinée au départ de la nouvelle salle, et il n'y a ni fondu ni pause. Deux
+salles construites pour se raccorder autour d'une jonction paraissent alors n'en
+former qu'une — « sous la plateforme » peut être une deuxième salle. Déclenche-le
+par une collision avec un objet portillon invisible, et garde un portillon loin de
+l'endroit où l'*autre* salle te fait arriver. Si la salle ou un repère manque,
+l'action se réduit à un simple changement de salle.
+
+L'exemple **raycast_6** (*2.5 D — Niveau 6*) utilise les deux. Les plafonds bas et
+le saut sans coupure fonctionnent sur ordinateur, dans l'export HTML5 et dans
+l'export Kivy (Android/iOS).
 
 ---
 

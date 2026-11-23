@@ -186,6 +186,21 @@ Renderizar la sala como una vista 3D en primera persona al estilo Doom/Wolfenste
 | `max_step` | Número | `12` | Escalón más alto, en píxeles de la sala, que el jugador (y todo lo que se mueve) puede subir; uno más alto bloquea como un muro; opcional |
 | `viewport_height` | Número | `0` | Reduce la vista 3D a esta altura en píxeles (letterbox), reservando la franja inferior para una barra de estado al estilo DOOM (0 = altura completa de la ventana, sin cambios); opcional |
 
+### Ir a una sala sin transición
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `go_to_room_seamlessly` |
+| **Icono** | 🚪 |
+| **Categoría** | Vista 3D |
+
+Pasa a otra sala sin cambio visible: la cámara llega al punto correspondiente (el mismo objeto de referencia colocado en ambas salas), conservando su dirección, velocidad y altura de vista. Úsalo para una unión entre dos salas construidas para encajar
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `room` | Sala | — | La sala a la que ir (también necesita el objeto de referencia) |
+| `marker` | Objeto | — | Un objeto colocado una vez en CADA sala, en el mismo punto de la geometría compartida; la cámara conserva su desplazamiento respecto a él |
+
 ### Saltar
 
 | Propiedad | Valor |
@@ -318,6 +333,21 @@ Concede puntos cuando «Romper bloque» quita con éxito un tipo de bloque elegi
 |-----------|------|---------|-------|
 | `block_type` | Elección | `diamond_block` | Qué tipo de bloque da puntos al romperlo; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Número | `10` | Puntos concedidos por cada bloque de este tipo roto |
+
+### Definir altura del techo
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_ceiling_height` |
+| **Icono** | 🔻 |
+| **Categoría** | Vista 3D |
+
+Baja el TECHO en la vista raycast: las casillas de la cuadrícula que cubre su sprite reciben un techo a esta altura, para túneles bajos, nichos o dinteles de puerta. Úsala en el evento Create de un objeto no sólido
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `height` | Número | `40` | Altura del techo en píxeles de la sala, medida desde el suelo, la misma unidad que x/y y Cell Size (al menos el suelo de la casilla más el espacio para estar de pie) |
+| `texture` | Sprite | — | Sprite para esta parte del techo (vacío = la textura del techo); opcional |
 
 ### Definir receta de fabricación
 

@@ -141,7 +141,7 @@ Emite partículas de forma continua en cada paso desde el emisor creado más rec
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (3)
 - [Vistas](Full-Action-Reference-Views_es) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (22)
 - [Dibujo](Full-Action-Reference-Drawing_es) (11)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Puntuación/Vidas/Salud](Full-Action-Reference-Score-Lives-Health_es) (5)

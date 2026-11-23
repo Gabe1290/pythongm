@@ -186,6 +186,21 @@ Renderizar a sala como uma vista 3D em primeira pessoa no estilo Doom/Wolfenstei
 | `max_step` | Número | `12` | Degrau mais alto, em pixels da sala, que o jogador (e tudo o que se move) pode subir; um mais alto bloqueia como uma parede; opcional |
 | `viewport_height` | Número | `0` | Reduz a vista 3D para esta altura em pixels (letterbox), reservando a faixa inferior para uma barra de status no estilo DOOM (0 = altura total da janela, inalterado); opcional |
 
+### Ir para uma sala sem transição
+
+| Propriedade | Valor |
+|----------|-------|
+| **Nome** | `go_to_room_seamlessly` |
+| **Ícone** | 🚪 |
+| **Categoria** | Vista 3D |
+
+Passa para outra sala sem alteração visível: a câmara chega ao ponto correspondente (o mesmo objeto de referência colocado nas duas salas), mantendo a direção, a velocidade e a altura da vista. Use para uma junção entre duas salas construídas para encaixar
+
+| Parâmetro | Tipo | Padrão | Notas |
+|-----------|------|---------|-------|
+| `room` | Sala | — | A sala para onde ir (também precisa do objeto de referência) |
+| `marker` | Objeto | — | Um objeto colocado uma vez em CADA sala, no mesmo ponto da geometria partilhada; a câmara mantém o seu deslocamento em relação a ele |
+
 ### Saltar
 
 | Propriedade | Valor |
@@ -318,6 +333,21 @@ Atribui pontos quando «Quebrar bloco» remove com sucesso um tipo de bloco esco
 |-----------|------|---------|-------|
 | `block_type` | Escolha | `diamond_block` | Que tipo de bloco dá pontos quando é partido; Opções: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Número | `10` | Pontos atribuídos por cada bloco deste tipo partido |
+
+### Definir altura do teto
+
+| Propriedade | Valor |
+|----------|-------|
+| **Nome** | `set_ceiling_height` |
+| **Ícone** | 🔻 |
+| **Categoria** | Vista 3D |
+
+Abaixa o TETO na vista raycast: as células da grade cobertas pelo seu sprite recebem um teto com esta altura, para túneis baixos, nichos ou vergas de porta. Usar no evento Create de um objeto não sólido
+
+| Parâmetro | Tipo | Padrão | Notas |
+|-----------|------|---------|-------|
+| `height` | Número | `40` | Altura do teto em pixels da sala, medida a partir do chão, a mesma unidade que x/y e Cell Size (no mínimo o chão da célula mais o espaço para ficar de pé) |
+| `texture` | Sprite | — | Sprite para esta parte do teto (vazio = a textura do teto); opcional |
 
 ### Definir receita de fabricação
 

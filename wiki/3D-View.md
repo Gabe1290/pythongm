@@ -46,6 +46,8 @@ variant, and a DOOM-style status-bar showcase).
 | **Set Facing Angle** (`set_facing_angle`) | Turn the camera. Angle in GameMaker degrees (0 = right, 90 = up); `relative` adds to the current facing. |
 | **Draw Minimap** (`draw_minimap`) | Draw a north-up minimap of the room's walls with a "you are here" marker. A HUD action — put it in a Draw event. |
 | **Set Floor Height** (`set_floor_height`) | Make this instance a **step**: the grid cells its sprite covers become raised floor of that height (pixels). Put it in the Create event of a non-solid object. Optional top and side textures. See *Stairs and platforms* below. |
+| **Set Ceiling Height** (`set_ceiling_height`) | Lower the **ceiling** over the grid cells this instance's sprite covers (a height in pixels above the ground). Put it in the Create event of a non-solid object. Optional texture. See *Low ceilings and seamless jumps* below. |
+| **Go to Room Seamlessly** (`go_to_room_seamlessly`) | Change room with no fade and no visible jump: the camera lands at the same offset from a marker object placed in both rooms, keeping its facing, speed, held keys and view height. See *Low ceilings and seamless jumps* below. |
 | **Set Billboard Rotation** (`set_billboard_rotation`) | Give a billboard several view-angle frames, so it shows its sides as you walk around it. |
 | **Draw DOOM HUD** (`draw_doom_hud`) | Draw a DOOM-style bottom status bar: health bar + number, a health-reactive face, score, lives, and an objective counter. Pairs with `enable_raycast_view`'s `viewport_height`. |
 
@@ -91,6 +93,36 @@ height is the easy way (`obj_step_8`, `obj_step_16`, …).
 
 The **raycast_5** sample (*2.5 D — Level 5*) is a small level built around
 stairs. Stairs work on desktop, HTML5 and Kivy (Android/iOS) exports.
+
+---
+
+## Low ceilings and seamless jumps
+
+The 2.5D view cannot put a floor above another floor, so two tricks from Doom-era
+games hide the limit.
+
+**A low ceiling.** **Set Ceiling Height** (`height` in pixels above the ground, an
+optional texture) in the Create event of a non-solid object lowers the ceiling
+over every grid cell its sprite covers: a tunnel, an alcove, a doorway. Where a
+lower ceiling begins you see a **lintel** (the wall texture hanging down), and
+billboards behind it lose their top rows. A ceiling is never lower than the cell's
+floor plus the eye plus 4 px, so every cell can be stood in; the view drops to fit
+when you walk into a low tunnel. Every moving instance reads `raycast_ceiling_z`
+(the ceiling over it) next to `raycast_floor_z`.
+
+**A seamless jump.** **Go to Room Seamlessly** takes a `room` and a `marker`
+object. Put one instance of the marker in **each** room, at the same spot of the
+geometry the two rooms share. The camera arrives in the other room at the same
+offset from the marker, facing the same way, at the same speed, with the same held
+keys and view height; no frame is drawn at the new room's own start, and there is
+no fade or pause. Two rooms built to match around a junction then feel like one
+place — "under the platform" can be a second room. Trigger it from a collision with
+an invisible gate object, and keep a gate away from the spot where the *other* room
+lets you arrive. If the room or a marker is missing the action degrades to a plain
+room change.
+
+The **raycast_6** sample (*2.5 D — Level 6*) uses both. Low ceilings and the
+seamless jump work on desktop, HTML5 and Kivy (Android/iOS) exports.
 
 ---
 

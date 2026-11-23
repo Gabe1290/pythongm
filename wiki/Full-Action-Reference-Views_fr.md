@@ -59,7 +59,7 @@ Configurer une vue de caméra : quelle partie de la salle elle montre, où elle 
 - [Jeu](Full-Action-Reference-Game_fr) (14)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (3)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (20)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (22)
 - [Dessin](Full-Action-Reference-Drawing_fr) (11)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (22)
 - [Particules](Full-Action-Reference-Particles_fr) (8)

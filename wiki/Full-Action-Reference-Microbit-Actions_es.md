@@ -250,7 +250,7 @@ Apagar el altavoz y descartar los sonidos en espera
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (3)
 - [Vistas](Full-Action-Reference-Views_es) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (22)
 - [Dibujo](Full-Action-Reference-Drawing_es) (11)
 - [Red](Full-Action-Reference-Network-Actions_es) (22)
 - [Partículas](Full-Action-Reference-Particles_es) (8)

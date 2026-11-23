@@ -186,6 +186,21 @@ Render the room as a Doom/Wolfenstein-style first-person 3D view (walls, sky, fl
 | `max_step` | Number | `12` | Highest step, in room pixels, the player (and anything else that moves) can climb; anything higher blocks like a wall; optional |
 | `viewport_height` | Number | `0` | Letterbox the 3D view into this many pixels tall, reserving the band below for a DOOM-style status bar (0 = full window height, unchanged); optional |
 
+### Go to Room Seamlessly
+
+| Property | Value |
+|----------|-------|
+| **Name** | `go_to_room_seamlessly` |
+| **Icon** | 🚪 |
+| **Category** | 3D View |
+
+Move to another room with no visible change: the camera lands at the matching spot (the same marker object placed in both rooms), keeping its direction, speed and view height. Use it for a junction between two rooms built to match
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `room` | Room | — | The room to go to (it needs the marker object too) |
+| `marker` | Object | — | An object placed once in EACH room, at the same spot of the shared geometry; the camera keeps its offset from it |
+
 ### Jump
 
 | Property | Value |
@@ -318,6 +333,21 @@ Award score when Break Block successfully removes a chosen block type -- call on
 |-----------|------|---------|-------|
 | `block_type` | Choice | `diamond_block` | Which block type awards score when broken; Choices: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Number | `10` | Score awarded per block of this type broken |
+
+### Set Ceiling Height
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_ceiling_height` |
+| **Icon** | 🔻 |
+| **Category** | 3D View |
+
+Lower the CEILING in the raycast view: the grid cells this instance's sprite covers get a ceiling at this height, for low tunnels, alcoves or doorway lintels. Use it in the Create event of a non-solid object
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `height` | Number | `40` | Ceiling height in room pixels above the ground, the same unit as x/y and Cell Size (at least the cell's floor plus room to stand) |
+| `texture` | Sprite | — | Sprite for this part of the ceiling (blank = the ceiling texture); optional |
 
 ### Set Crafting Recipe
 

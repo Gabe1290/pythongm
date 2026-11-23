@@ -2831,3 +2831,20 @@ Landmines from this session:
   generator reads it too. A new extension action bumps the count in
   `tests/test_extension_action_i18n.py`.
 - Never chain `git commit` after a test run without checking its result (it happened once).
+
+**2026-11-23 — Raycast ceilings + seamless teleport (plan `docs/RAYCAST_CEILINGS_TELEPORT_PLAN.md`, all units done).**
+Set Ceiling Height (lowered ceilings, lintels, textured cast, billboards clipped, `raycast_ceiling_z`, view limit) and
+Go to Room Seamlessly (marker-offset arrival), on desktop, HTML5 and Kivy; sample `raycast_6`; one commit per unit.
+- **Plan corrections found by building it:** the arrival must be applied in `after_collision`, NOT the new room's first
+  `before_step` (on desktop the room changes inside `update()` and the frame is drawn in the same iteration -- the
+  test fails 4 ways with `before_step`); a movement "headroom" refusal is unnecessary (C1 already clamps every cell's
+  ceiling to floor + eye + 4); the held keys belong to the camera INSTANCE, so they must be carried across the jump
+  or a player holding Up stops at the junction; a corridor 1 cell wide cannot be entered by the 32 px player.
+- **Landmines:** (1) in HTML5 an action fired from a *keyboard* event runs before the room's own step and has no
+  gap, one fired from a Step/collision/alarm event does -- test the browser path with a step trigger; a mutation that
+  survives means the test does not reach the path. (2) Kivy: the scene constructor already draws the first overlay
+  frame after the Create events, so the arrival goes at the head of `_ext_overlay__raycast_2_5d`. (3) **The wiki
+  action-reference generator, run bare on this box, drops every disabled extension** (152 actions instead of 188 and
+  153 changed files): run it through a wrapper that forces extensions on and read `git diff --stat` before committing.
+  (4) The tests' `_real_kivy_*` workers must drop pytest's `SDL_VIDEODRIVER=dummy` (Kivy gets no window under it).
+- **Needs human eyes:** how `raycast_6` feels, on desktop, in a browser and on a phone.

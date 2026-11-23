@@ -116,7 +116,7 @@ Definir a pontuação, ou somar a ela com «Relativo»
 - [Controle](Full-Action-Reference-Control_pt) (19)
 - [Grade](Full-Action-Reference-Grid_pt) (3)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (22)
 - [Desenho](Full-Action-Reference-Drawing_pt) (11)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)

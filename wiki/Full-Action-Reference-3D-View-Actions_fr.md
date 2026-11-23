@@ -186,6 +186,21 @@ Afficher la salle en vue 3D à la première personne façon Doom/Wolfenstein (mu
 | `max_step` | Nombre | `12` | Plus haute marche, en pixels de la salle, que le joueur (et tout ce qui bouge) peut monter ; plus haut, elle bloque comme un mur; optionnel |
 | `viewport_height` | Nombre | `0` | Réduire la vue 3D à cette hauteur en pixels (format boîte aux lettres), en réservant la bande inférieure pour une barre d'état façon DOOM (0 = pleine hauteur de la fenêtre, inchangé); optionnel |
 
+### Aller dans une salle sans transition
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `go_to_room_seamlessly` |
+| **Icône** | 🚪 |
+| **Catégorie** | Vue 3D |
+
+Passe dans une autre salle sans changement visible : la caméra arrive au point correspondant (le même objet repère placé dans les deux salles), en gardant sa direction, sa vitesse et la hauteur de sa vue. À utiliser pour une jonction entre deux salles construites pour se raccorder
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `room` | Salle | — | La salle où aller (elle doit aussi contenir l'objet repère) |
+| `marker` | Objet | — | Un objet placé une fois dans CHAQUE salle, au même endroit de la géométrie commune ; la caméra garde son décalage par rapport à lui |
+
 ### Sauter
 
 | Propriété | Valeur |
@@ -318,6 +333,21 @@ Accorde des points quand « Casser un bloc » retire avec succès un type de blo
 |-----------|------|---------|-------|
 | `block_type` | Choix | `diamond_block` | Quel type de bloc rapporte des points quand on le casse; Choix: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Nombre | `10` | Points accordés par bloc cassé de ce type |
+
+### Définir la hauteur du plafond
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `set_ceiling_height` |
+| **Icône** | 🔻 |
+| **Catégorie** | Vue 3D |
+
+Abaisse le PLAFOND dans la vue raycast : les cases de la grille couvertes par son sprite reçoivent un plafond à cette hauteur, pour faire des tunnels bas, des alcôves ou des linteaux de porte. À utiliser dans l'événement Create d'un objet non solide
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `height` | Nombre | `40` | Hauteur du plafond en pixels de la salle, mesurée depuis le sol, la même unité que x/y et Cell Size (au moins le sol de la case plus la place de se tenir debout) |
+| `texture` | Sprite | — | Sprite pour cette partie du plafond (vide = la texture du plafond); optionnel |
 
 ### Définir une recette de fabrication
 

@@ -198,7 +198,7 @@ Definir a fonte e o alinhamento para o desenho de texto seguinte
 - [Controle](Full-Action-Reference-Control_pt) (19)
 - [Grade](Full-Action-Reference-Grid_pt) (3)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (20)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (22)
 - [Rede](Full-Action-Reference-Network-Actions_pt) (22)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)
 - [Pontuação/Vidas/Saúde](Full-Action-Reference-Score-Lives-Health_pt) (5)

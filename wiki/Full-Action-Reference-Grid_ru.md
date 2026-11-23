@@ -61,7 +61,7 @@
 - [Игра](Full-Action-Reference-Game_ru) (14)
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Виды](Full-Action-Reference-Views_ru) (2)
-- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (20)
+- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (22)
 - [Рисование](Full-Action-Reference-Drawing_ru) (11)
 - [Сеть](Full-Action-Reference-Network-Actions_ru) (22)
 - [Частицы](Full-Action-Reference-Particles_ru) (8)
