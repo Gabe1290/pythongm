@@ -161,6 +161,25 @@ class TestStopGame:
         stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
         ide.stop_game(stub)  # no process / timer / capture — must not raise
 
+    def test_no_running_game_leaves_the_window_state_alone(self):
+        """Close Project, a project switch and quitting all call stop_game
+        with no game running. Restoring there ran showNormal() and
+        un-maximised the IDE (seen: Close Project shrank a maximised
+        window)."""
+        ide = _ide_cls()
+        restored = MagicMock()
+        stub = SimpleNamespace(
+            _game_process=None,
+            update_status=lambda *a, **k: None,
+            tr=lambda s: s,
+            _restore_after_test_game=restored,
+        )
+        stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
+
+        ide.stop_game(stub)
+
+        restored.assert_not_called()
+
     def test_restores_the_ide_window(self):
         """stop_game (e.g. IDE-close or a manual stop) must un-minimize the
         IDE, not just terminate the child — otherwise a student who closes

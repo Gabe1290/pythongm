@@ -456,7 +456,12 @@ class TestGameMixin:
     def stop_game(self):
         """Stop the running game subprocess"""
         return_code = None
-        if hasattr(self, '_game_process') and self._game_process is not None:
+        # Only a running game minimised the IDE, so only then is there a
+        # window state to restore. stop_game is also called with no game at
+        # all (Close Project, a project switch, quitting); restoring there
+        # used showNormal() and un-maximised the IDE.
+        game_was_running = getattr(self, '_game_process', None) is not None
+        if game_was_running:
             try:
                 self._game_process.terminate()
                 # Give it a moment to terminate gracefully
@@ -471,7 +476,8 @@ class TestGameMixin:
         if hasattr(self, '_check_game_timer') and self._check_game_timer:
             self._check_game_timer.stop()
         self._drain_game_stderr(return_code)
-        self._restore_after_test_game()
+        if game_was_running:
+            self._restore_after_test_game()
 
     def debug_game(self):
         """Run game in debug mode with additional logging"""
