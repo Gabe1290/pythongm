@@ -111,6 +111,11 @@ python3 tools/verify_desktop_export.py   py -3.12 tools/verify_desktop_export.py
 
 ## 2. IDE application shell
 
+- L [ ] M [ ] W [ ] **Downloaded build, fresh user** (no `~/.pygamemaker` folder): the IDE starts in the
+  **Beginner** edition, Preferences -> Extensions shows **every extension unticked** (no Thymio tab, no
+  micro:bit menu entry), and the Welcome tab lists only the maze, platform, match-3, views, treasure and
+  sky-strike samples. Ticking an extension and restarting brings its actions back (ticking micro:bit also
+  brings `microbit_1` to the list). A user who had already saved Preferences keeps their own choices.
 - L [ ] M [ ] W [ ] Launches with **no console error**; Welcome tab shown
   by default with no project.
 - L [ ] M [ ] W [ ] Window opens at a sensible size; nothing off-screen;

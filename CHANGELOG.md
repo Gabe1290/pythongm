@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **The downloaded IDE now starts simple:** the Beginner edition, every extension switched off, and a
+  sample list with only the beginner samples that need no extension. Extensions are switched on in
+  Preferences -> Extensions (restart the IDE). Choices already saved in Preferences are kept. Running
+  from source and exported games are unchanged.
+
 ## [1.6.3] - 2026-11-23
 
 ### Fixed

@@ -148,8 +148,9 @@ EDITION_KEYS = list(EDITIONS.keys())
 
 def get_current_edition():
     """Get the current edition config dict"""
+    from utils import build_profile
     from utils.config import Config
-    edition_key = Config.get("edition", DEFAULT_EDITION)
+    edition_key = Config.get("edition", build_profile.edition(DEFAULT_EDITION))
     return EDITIONS.get(edition_key, EDITIONS[DEFAULT_EDITION])
 
 
@@ -222,7 +223,10 @@ def filter_samples_for_edition(sample_projects):
     widgets/welcome_tab.py's SAMPLE_PROJECTS; the folder name is the basename
     of relative_path (e.g. "samples/maze_1" -> "maze_1").
 
-    DELIBERATE ASYMMETRY vs filter_tutorials_for_edition: samples show ALL by
+    In the COMPILED IDE (utils/build_profile.py) an unset edition counts as the profile's
+    (Beginner), and a sample needing a switched-off extension is hidden.
+
+    From source, DELIBERATE ASYMMETRY vs filter_tutorials_for_edition: samples show ALL by
     default and are curated ONLY when the user has EXPLICITLY selected an
     edition whose sample_folders whitelist excludes some. An UNSET edition
     (a fresh machine) shows every sample, even though tutorials default to
@@ -232,15 +236,24 @@ def filter_samples_for_edition(sample_projects):
     default. Do NOT "simplify" it to get_current_edition() — that reintroduces
     the disappear-by-default bug.
     """
+    from utils import build_profile
     from utils.config import Config
-    edition_key = Config.get("edition", None)       # None = never chosen
+    # None = never chosen. The compiled IDE's profile names an edition for that case.
+    edition_key = Config.get("edition", None) or build_profile.edition()
     edition = EDITIONS.get(edition_key) if edition_key else None
     allowed = edition.get("sample_folders") if edition else None
     if allowed is None:                             # unset / advanced / development
-        return list(sample_projects)
-    allowed_set = set(allowed)
-    return [(path, label) for (path, label) in sample_projects
-            if path.rstrip("/").rsplit("/", 1)[-1] in allowed_set]
+        shown = list(sample_projects)
+    else:
+        allowed_set = set(allowed)
+        shown = [(path, label) for (path, label) in sample_projects
+                 if path.rstrip("/").rsplit("/", 1)[-1] in allowed_set]
+    if build_profile.hides_samples_needing_disabled_extensions():
+        from events.plugin_loader import get_app_root, sample_works_with_enabled_extensions
+        root = get_app_root()
+        shown = [(path, label) for (path, label) in shown
+                 if sample_works_with_enabled_extensions(root / path)]
+    return shown
 
 
 def _load_base_index_tutorials(base_tutorials_path):

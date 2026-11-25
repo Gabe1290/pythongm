@@ -550,6 +550,38 @@ def get_extension_directory() -> Path:
 EXTENSIONS_CONFIG_KEY = "extensions"
 
 
+def sample_works_with_enabled_extensions(project_dir) -> bool:
+    """Whether every extension a bundled project uses is switched on.
+
+    Reads the project and its object side files and looks for extension ACTIONS and EVENTS (plus
+    the recorded ``requires_extensions``). A project that cannot be read counts as working: a
+    parse error must never be what hides a sample.
+    """
+    import json
+    project_dir = Path(project_dir)
+    try:
+        data = json.loads((project_dir / "project.json").read_text(encoding="utf-8"))
+        side = {file.stem: json.loads(file.read_text(encoding="utf-8"))
+                for file in sorted((project_dir / "objects").glob("*.json"))}
+        embedded = (data.get("assets") or {}).get("objects") or {}
+        actions = (collect_project_action_names(data)
+                   | collect_project_action_names({"assets": {"objects": side}}))
+        events = set()
+        for obj in list(embedded.values()) + list(side.values()):
+            if isinstance(obj, dict):
+                events |= set(obj.get("events") or {})
+        recorded = set(data.get("requires_extensions") or [])
+    except Exception:
+        return True
+    for info in list_available_extensions():
+        uses = (info["folder"] in recorded
+                or actions & set(info.get("provides_actions") or [])
+                or events & set(info.get("provides_events") or []))
+        if uses and not info["enabled"]:
+            return False
+    return True
+
+
 def is_extension_enabled(folder_name: str, manifest_default: bool = True) -> bool:
     """Should this extension load? Config override beats the manifest.
 
@@ -564,7 +596,10 @@ def is_extension_enabled(folder_name: str, manifest_default: bool = True) -> boo
     except Exception:
         # Never let a config problem hide every extension.
         logger.debug("Could not read extension overrides; using manifest defaults")
-    return manifest_default
+    # The compiled IDE starts with every extension off (utils/build_profile.py); running from
+    # source and exported games keep the manifest's own value.
+    from utils import build_profile
+    return build_profile.extension_default(manifest_default)
 
 
 def set_extension_enabled(folder_name: str, enabled: bool) -> None:

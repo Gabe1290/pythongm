@@ -100,6 +100,9 @@ datas = [
     # App icon: the IDE window icon (main.py) and the HTML5 export's
     # fallback PWA icon (export/HTML5/html5_exporter.py).
     (str(project_dir / 'resources' / 'icon.*'), 'resources'),
+    # How the compiled IDE starts (utils/build_profile.py): Beginner edition, every extension
+    # off, only the samples that need none. At the TOP of the bundle.
+    (str(project_dir / 'build_config' / 'build_profile.json'), '.'),
 ]
 
 # Add PySide6 data files
