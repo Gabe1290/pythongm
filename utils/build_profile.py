@@ -5,13 +5,15 @@ of the bundle. It sets how a fresh install STARTS:
 
 * ``edition``: the edition used while the user has not chosen one -- also for the sample list, which
   otherwise shows every sample on an unset edition;
-* ``extensions_enabled_by_default``: ``false`` makes every extension start switched off;
-* ``hide_samples_needing_disabled_extensions``: the sample list shows only samples that work with the
-  extensions currently switched on.
+* ``extensions_enabled_by_default``: ``false`` makes every extension start switched off.
 
 These are DEFAULTS: a choice the user saved in Preferences wins. Running from source has no profile
 file, so nothing changes there, and neither does an exported game (its bundle does not carry the
 file).
+
+The Welcome tab's sample list always hides a sample whose extension is actually switched off
+(config/editions.py's filter_samples_for_edition), source or compiled -- that one is unconditional,
+not part of this profile, since a disabled extension's actions are genuinely unregistered either way.
 """
 
 import json
@@ -49,7 +51,3 @@ def extension_default(manifest_default: bool) -> bool:
     if load_profile().get("extensions_enabled_by_default") is False:
         return False
     return manifest_default
-
-
-def hides_samples_needing_disabled_extensions() -> bool:
-    return load_profile().get("hide_samples_needing_disabled_extensions") is True

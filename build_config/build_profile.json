@@ -1,5 +1,4 @@
 {
   "edition": "beginner",
-  "extensions_enabled_by_default": false,
-  "hide_samples_needing_disabled_extensions": true
+  "extensions_enabled_by_default": false
 }

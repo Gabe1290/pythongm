@@ -217,14 +217,15 @@ def filter_tutorials_for_edition(tutorials_list, base_tutorials_path=None):
 
 
 def filter_samples_for_edition(sample_projects):
-    """Filter the Welcome-tab sample list by the current edition.
+    """Filter the Welcome-tab sample list by the current edition, then hide
+    any sample whose extension is actually switched off.
 
     ``sample_projects`` is the list of (relative_path, label) tuples from
     widgets/welcome_tab.py's SAMPLE_PROJECTS; the folder name is the basename
     of relative_path (e.g. "samples/maze_1" -> "maze_1").
 
     In the COMPILED IDE (utils/build_profile.py) an unset edition counts as the profile's
-    (Beginner), and a sample needing a switched-off extension is hidden.
+    (Beginner).
 
     From source, DELIBERATE ASYMMETRY vs filter_tutorials_for_edition: samples show ALL by
     default and are curated ONLY when the user has EXPLICITLY selected an
@@ -235,6 +236,14 @@ def filter_samples_for_edition(sample_projects):
     key rather than get_current_edition(), which would apply the Beginner
     default. Do NOT "simplify" it to get_current_edition() — that reintroduces
     the disappear-by-default bug.
+
+    The extension check below runs unconditionally, source or compiled: an
+    extension the user actually switched off (in Preferences, or the compiled
+    IDE's own all-off start state) has no registered actions at all, so a
+    sample needing it is genuinely broken, not just de-curated. This is
+    unrelated to the edition show-all-by-default behaviour above — with every
+    extension at its untouched default (manifest default is enabled), this
+    filter removes nothing.
     """
     from utils import build_profile
     from utils.config import Config
@@ -248,11 +257,10 @@ def filter_samples_for_edition(sample_projects):
         allowed_set = set(allowed)
         shown = [(path, label) for (path, label) in sample_projects
                  if path.rstrip("/").rsplit("/", 1)[-1] in allowed_set]
-    if build_profile.hides_samples_needing_disabled_extensions():
-        from events.plugin_loader import get_app_root, sample_works_with_enabled_extensions
-        root = get_app_root()
-        shown = [(path, label) for (path, label) in shown
-                 if sample_works_with_enabled_extensions(root / path)]
+    from events.plugin_loader import get_app_root, sample_works_with_enabled_extensions
+    root = get_app_root()
+    shown = [(path, label) for (path, label) in shown
+             if sample_works_with_enabled_extensions(root / path)]
     return shown
 
 

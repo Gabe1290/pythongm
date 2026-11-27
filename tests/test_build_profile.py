@@ -63,7 +63,6 @@ def test_the_shipped_profile_says_what_was_asked():
     assert json.loads(SHIPPED.read_text(encoding="utf-8")) == {
         "edition": "beginner",
         "extensions_enabled_by_default": False,
-        "hide_samples_needing_disabled_extensions": True,
     }
 
 
@@ -154,6 +153,17 @@ def test_a_chosen_advanced_edition_shows_more_but_nothing_that_cannot_run(compil
 @skip_without_pyside6
 def test_from_source_an_unset_edition_still_shows_every_sample(from_source):
     assert filter_samples_for_edition(_samples()) == list(_samples())
+
+
+@skip_without_pyside6
+def test_from_source_switching_microbit_off_hides_its_sample(from_source):
+    """The reported bug: disabling an extension in Preferences while running
+    from source must hide the samples that need it, same as the compiled
+    IDE -- a disabled extension's actions are genuinely unregistered either
+    way, so this is not part of the compiled-only start-up profile."""
+    assert "microbit_1" in _names(filter_samples_for_edition(_samples()))
+    from_source["extensions"] = {"microbit": False}
+    assert "microbit_1" not in _names(filter_samples_for_edition(_samples()))
 
 
 def test_a_sample_that_cannot_be_read_is_not_hidden(compiled, tmp_path):
